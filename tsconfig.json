@@ -16,7 +16,13 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "strict": true
+    "strict": true,
+    "baseUrl": ".",
+    "paths": {
+      "/*": [
+        "src/*"
+      ]
+    }
   },
   "exclude": [
     "node_modules"
