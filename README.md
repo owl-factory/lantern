@@ -2,10 +2,13 @@
 A web application for playing tabletop RPGs.
 
 ## Requirements
-This project requires Node.js and Yarn to be installed to use.
+This project requires either Docker or a Node.js development enviornment with to get started.
 
 ## Getting Started
-To test or build this application clone it locally and open a terminal in the project root. Run 'yarn' to install dependancies and 'yarn dev' to spin up a development server.
+Clone it locally and open a terminal in the project root. Simply run 'docker-compose up' and the project will start in development mode on a Node.js contaner. You can also run the project directly in a Node.js development enviornment by installing the dependancies with 'yarn install' and running the project with 'yarn dev'.
+
+## Building
+The project can be built and run in production mode by running 'docker-compose -f docker-compose.prod.yml up'.
 
 ## Built With
 * React
