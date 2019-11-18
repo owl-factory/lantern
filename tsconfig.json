@@ -16,13 +16,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "strict": true,
-    "baseUrl": ".",
-    "paths": {
-      "/*": [
-        "src/*"
-      ]
-    }
+    "strict": true
   },
   "exclude": [
     "node_modules"
@@ -30,6 +24,7 @@
   "include": [
     "next-env.d.ts",
     "**/*.ts",
-    "**/*.tsx"
+    "**/*.tsx",
+    "next.config.js"
   ]
 }

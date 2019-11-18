@@ -1,35 +1,30 @@
-import React from 'react';
-import Container from '@material-ui/core/Container';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
-import MuiLink from '@material-ui/core/Link';
-import ProTip from '../components/ProTip';
-import Link from '../components/Link';
+import { Button, Typography } from "@material-ui/core";
+import React from "react";
+import Page from "../components/Page";
+import Link from "next/link";
 
-function Copyright() {
+function About() {
   return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      <MuiLink color="inherit" href="https://material-ui.com/">
-        Your Website
-      </MuiLink>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
+    <Page>
+      <Typography variant="h3" paragraph>
+        About
+      </Typography>
+      <Typography variant="body1" paragraph>
+        This version of the app is really only here as a placeholder and for testing basic layout and styling.
+        Well, its also here to check the performace of the app when actually published instead of only
+        doing local testing. The current theme (colors and design) is just a placeholder until the day
+        we get a proper desigenr on board. Still, let me know what you think!
+      </Typography>
+      <Typography variant="body1" paragraph>
+        P.S. You are Cute, whoever you are.
+      </Typography>
+      <Link href="../" passHref>
+        <Button title="Home" color="secondary" variant="contained">
+          Home
+        </Button>
+      </Link>
+    </Page>
   );
 }
 
-export default function About() {
-  return (
-    <Container maxWidth="sm">
-      <Box my={4}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          Next.js with TypeScript example
-        </Typography>
-        <Link href="/">Go to the main page</Link>
-        <ProTip />
-        <Copyright />
-      </Box>
-    </Container>
-  );
-}
+export default About;

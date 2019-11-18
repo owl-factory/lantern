@@ -1,37 +1,49 @@
-import React from 'react';
-import Container from '@material-ui/core/Container';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
-import MuiLink from '@material-ui/core/Link';
-import ProTip from '../components/ProTip';
-import Link from '../components/Link';
+import { Button, Input, Typography } from "@material-ui/core";
+import React from "react";
+import Page from "../components/Page";
+import Link from "next/link"
 
-function Copyright() {
+function Index() {
   return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      <MuiLink color="inherit" href="https://material-ui.com/">
-        Your Website
-      </MuiLink>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
-
-export default function Index() {
-  return (
-    <Container maxWidth="sm">
-      <Box my={4}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          Next.js with TypeScript example
-        </Typography>
-        <Link href="/about" color="secondary">
-          Go to the about page
+    <Page>
+      <Typography variant="h3" paragraph>
+        Welcome to Reroll!
+      </Typography>
+      <Typography variant="body1" paragraph>
+        Reroll is a new in development web app for playing tabletop games with friends.
+        There isn't much here yet but there will be some day soon.
+      </Typography>
+      <Link href="../about" passHref>
+        <Button title="About" color="secondary" variant="contained">
+          About
+        </Button>
+      </Link>
+      <div>
+        <Input type="text" placeholder="Enter your username..."> </Input>
+      </div>
+      <div>
+        <Button title="Your Account" color="secondary" variant="contained">
+          Go To Profile
+        </Button>
+      </div>
+      <div>
+        <Input type="text" placeholder="Enter new username..."></Input>
+      </div>
+      <div>
+        <Button title="Your Account" color="secondary" variant="contained">
+          Create User
+        </Button>
+      </div>
+      <div>
+        Character Sheets<br />
+        <Link href="../character" passHref>
+          <Button title="New Character Sheet" color="secondary" variant="contained">
+            Waals
+          </Button>
         </Link>
-        <ProTip />
-        <Copyright />
-      </Box>
-    </Container>
+      </div>
+    </Page>
   );
 }
+
+export default Index;
