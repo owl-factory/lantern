@@ -5,7 +5,7 @@ WORKDIR /usr/src/app
 
 # Installing dependencies
 COPY package.json ./
-RUN yarn install --ignore-optional
+RUN yarn install
 
 # Copying source files
 COPY . .
