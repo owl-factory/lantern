@@ -8,3 +8,20 @@ services:
     volumes:
       - ./:/usr/src/app
     working_dir: /usr/src/app
+    env_file:
+     - .server.env
+    networks:
+     - reroll-net
+
+  database:
+    image: mongo:4.2.1-bionic
+    env_file:
+     - .mongo.env
+    volumes: 
+     - ./mongo/:/data/db
+    networks: 
+     - reroll-net
+
+networks: 
+  reroll-net:
+  
