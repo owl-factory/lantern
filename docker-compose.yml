@@ -9,15 +9,15 @@ services:
       - ./:/usr/src/app
     working_dir: /usr/src/app
     env_file:
-     - .server.env
+     - .web.env
     networks:
      - reroll-net
 
   database:
     image: mongo:4.2.1-bionic
     env_file:
-     - .mongo.env
-    volumes: 
+     - .database.env
+    volumes:
      - ./mongo/:/data/db
     networks: 
      - reroll-net
