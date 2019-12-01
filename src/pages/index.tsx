@@ -35,6 +35,13 @@ function Index() {
         </Button>
       </div>
       <div>
+        <Link href="../laura-playground" passHref>
+          <Button title="Laura's Playground" color="secondary" variant="contained">
+            Laura's Playground
+          </Button>
+        </Link>
+      </div>
+      <div>
         Character Sheets<br />
         <Link href="../character" passHref>
           <Button title="New Character Sheet" color="secondary" variant="contained">
