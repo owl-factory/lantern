@@ -1,7 +1,7 @@
-import { Button, Input, Typography } from "@material-ui/core";
+import { Button, Typography } from "@material-ui/core";
+import Link from "next/link";
 import React from "react";
 import Page from "../components/Page";
-import Link from "next/link";
 
 function Profile() {
 
