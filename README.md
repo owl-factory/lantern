@@ -13,6 +13,8 @@ The project can be built and run in production mode by running `docker-compose -
 ### Using with nginx-proxy image
 By default, the .web.env file is empty. This works for local development through `localhost:3000`. For servers, the environment variables `VIRTUAL_HOST=[urls]` and  `VIRTUAL_PORT=3000` variables must be set within the .web.env file. 
 
+There must also be a network shared between the nginx-proxy and the reroll-web containers. Since the reroll container networks must be specified in the docker-compose.yaml and external containers are not guaranteed to exist in other systems, the best option is to add the nginx-proxy container to the reroll network. **Note:** this will cause an error when tearing down with `docker-compose down`, where the reroll network will not be deleted. This will simply leave the network up. `docker-compose up` will utlize this existing network. 
+
 ## Testing
 The project can be tested through Jest using `yarn test`.
 
