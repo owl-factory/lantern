@@ -10,6 +10,9 @@ Clone it locally and open a terminal in the project root. Simply run `docker-com
 ## Building
 The project can be built and run in production mode by running `docker-compose -f docker-compose.prod.yml up`.
 
+### Using with nginx-proxy image
+By default, the .web.env file is empty. This works for local development through `localhost:3000`. For servers, the environment variables `VIRTUAL_HOST=[urls]` and  `VIRTUAL_PORT=3000` variables must be set within the .web.env file. 
+
 ## Testing
 The project can be tested through Jest using `yarn test`.
 
