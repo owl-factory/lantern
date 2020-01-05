@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import Page from "../../components/Page";
+import Page from "../../../components/Page";
 
 function Campaign() {
   const router = useRouter();
@@ -7,7 +7,7 @@ function Campaign() {
 
   return (
     <Page>
-      <h1>Viewing the campaign with id { id } </h1>
+      <h1>Viewing the campaign with id {id} </h1>
     </Page>
   );
 }

@@ -7,7 +7,7 @@ function Search() {
 
   return (
     <Page>
-      <h1>Searching in game {gamekey} and content type {contenttype} </h1>
+      <h1>Content for game {gamekey} and content type {contenttype} </h1>
     </Page>
   );
 }

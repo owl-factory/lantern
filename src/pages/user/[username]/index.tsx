@@ -1,13 +1,13 @@
 import { useRouter } from "next/router";
-import Page from "../../components/Page";
+import Page from "../../../components/Page";
 
 function User() {
   const router = useRouter();
-  const { gamekey } = router.query;
+  const { username } = router.query;
 
   return (
     <Page>
-      <h1>Searching for game key { gamekey }</h1>
+      <h1>User with id/alias {username}</h1>
     </Page>
   );
 }
