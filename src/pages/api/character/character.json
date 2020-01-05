@@ -1,0 +1,14 @@
+[
+  {
+    "type":"character",
+    "id": "1",
+    "alias": "waals-ocaera",
+    "fullname": "Waals O'Caera"
+  },
+  {
+    "type":"character",
+    "id": "2",
+    "alias": "iris-treespark",
+    "fullname": "Iris Treespark"
+  }
+]
