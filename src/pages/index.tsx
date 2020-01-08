@@ -1,6 +1,8 @@
-import { Button, Input, Typography } from "@material-ui/core";
+import { Box, Button, Grid, Input, Typography } from "@material-ui/core";
 import Link from "next/link";
 import React from "react";
+import News from "../components/announcements/News";
+import LoginBox from "../components/authetication/LoginCard";
 import Page from "../components/Page";
 
 function Index() {
@@ -18,6 +20,15 @@ function Index() {
           About
         </Button>
       </Link>
+
+      <Grid container>
+        <Grid item md={4} sm={12}>
+          <LoginBox/>
+        </Grid>
+      </Grid>
+
+      <News/>
+
       <div>
         <Input type="text" placeholder="Enter your username..."> </Input>
       </div>
