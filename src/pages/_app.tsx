@@ -7,6 +7,9 @@ import HeaderBar from "../components/HeaderBar";
 import theme from "../components/Theme";
 
 export default class MyApp extends App {
+  // TODO - convert this to a function?
+  // TODO - add session loading
+
   public componentDidMount() {
     // Remove the server-side injected CSS.
     const jssStyles = document.querySelector("#jss-server-side");
@@ -21,7 +24,7 @@ export default class MyApp extends App {
     return (
       <React.Fragment>
         <Head>
-          <title>My page</title>
+          <title>Reroll</title>
         </Head>
         <ThemeProvider theme={theme}>
           {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
