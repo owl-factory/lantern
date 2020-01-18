@@ -3,7 +3,9 @@ import Link from "next/link";
 import React from "react";
 import News from "../components/announcements/News";
 import LoginBox from "../components/authetication/LoginCard";
+import ContentTiles from "../components/content/Tiles";
 import Page from "../components/Page";
+import campaigns from "./api/campaign/campaign.json";
 
 /**
  * Renders the index page and one of two subviews
@@ -14,10 +16,14 @@ function Index(props: any) {
 
   // TODO - move the session up to App
   const [session, setSession] = React.useState({
-    "isLoggedIn": true,
+    "user": {
+      "isLoggedIn": true,
+      "username": "laura",
+      "displayName": "Laura",
+    },
   });
 
-  if (session.isLoggedIn) {
+  if (session.user.isLoggedIn) {
     return <UserView session={session} setSession={setSession}/>;
   }
 
@@ -29,7 +35,14 @@ function Index(props: any) {
 function UserView(props: any) {
   return (
     <Page>
-      The User View
+      <Typography variant="h3">Welcome back {props.session.user.displayName}!</Typography>
+
+      {/* Recent Games */}
+      <Typography variant="h4">Recent Games</Typography>
+      <ContentTiles contents={campaigns}></ContentTiles>
+
+
+      {/* Characters */}
 
       <div>
         <Input type="text" placeholder="Enter your username..."> </Input>
