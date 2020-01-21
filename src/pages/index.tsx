@@ -47,7 +47,7 @@ function Index(props: any) {
 
 /**
  * 
- * @param props 
+ * @param props
  */
 function UserView(props: any) {
   return (
@@ -56,17 +56,16 @@ function UserView(props: any) {
 
       {/* Recent Games */}
       <Typography variant="h4">My Games</Typography>
-      <CampaignTiles contents={campaigns}/>
+      <CampaignTiles contents={campaigns} includeNew={true}/>
 
       {/* Characters */}
       <Typography variant="h4">My Characters</Typography>
-      <CharacterTiles contents={characters}/>
+      <CharacterTiles contents={characters} includeNew={true}/>
     </div>
   );
 }
 
 function GuestView(props: any) {
-
   return (
     <Page>
       <Typography variant="h3" paragraph>
