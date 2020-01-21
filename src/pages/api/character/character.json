@@ -3,12 +3,16 @@
     "type":"character",
     "id": "1",
     "alias": "waals-ocaera",
-    "fullname": "Waals O'Caera"
+    "name": "Waals O'Caera",
+    "game": "The Endless Sea: Balance",
+    "system": "Dungeons & Dragons 5e"
   },
   {
     "type":"character",
     "id": "2",
     "alias": "iris-treespark",
-    "fullname": "Iris Treespark"
+    "name": "Iris Treespark",
+    "game": "The Endless Sea: Balance",
+    "system": "Dungeons & Dragons 5e"
   }
 ]

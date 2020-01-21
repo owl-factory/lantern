@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "type": "article",
+    "title": "Development Started",
+    "content": ["First level", "Second level"],
+    "postedAt": "2019-11-15",
+    "author": "Laura"
+  },
+  {
+    "id": 2,
+    "type": "article",
+    "title": "Laura's 25th Birthday",
+    "content": ["It's Laura's birthday today!", "Send me gifts, peasants! >:D"],
+    "postedAt": "2019-07-21",
+    "author": "Laura"
+  }
+]

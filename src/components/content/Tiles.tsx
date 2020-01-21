@@ -1,14 +1,23 @@
-import { Card, CardContent, Grid } from "@material-ui/core";
+import { Card, CardContent, Grid, Typography } from "@material-ui/core";
 
+/**
+ * Renders the content tiles
+ * @param props
+ */
 function ContentTiles(props: any) {
   const tiles: JSX.Element[] = [];
 
   props.contents.forEach((item: any) => {
     tiles.push(
-      <Grid item lg={2} md={3} sm={4} xs={12}>
+      <Grid item xl={2} lg={3} sm={4} xs={12}>
         <Card>
           <CardContent>
-            {item.name}
+            <Typography variant="h6">
+              {item.name}
+            </Typography>
+            <Typography variant="body1">
+              Next Game: { (new Date).toString() }
+            </Typography>
           </CardContent>
         </Card>
       </Grid>,
