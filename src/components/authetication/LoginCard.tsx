@@ -10,7 +10,7 @@ function LoginCard(props: any) {
       <CardContent>
           <Button
             variant="contained"
-            onClick={() => {props.setSession({"user": {isLoggedIn: true}})}}
+            onClick={() => {props.setSession({"user": {isLoggedIn: true}});}}
           >
             Google Login
           </Button>
