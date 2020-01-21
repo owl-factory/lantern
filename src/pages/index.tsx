@@ -20,7 +20,7 @@ function Index(props: any) {
   // TODO - move the session up to App
   const [session, setSession] = React.useState({
     "user": {
-      "isLoggedIn": true,
+      "isLoggedIn": false,
       "username": "laura",
       "displayName": "Laura",
     },
@@ -31,7 +31,7 @@ function Index(props: any) {
   if (session.user.isLoggedIn) {
     userView = <UserView session={session} setSession={setSession}/>;
   } else {
-    userView = <GuestView session={session} setStsetSessionate={setSession}/>
+    userView = <GuestView session={session} setSession={setSession}/>;
   }
 
   return (
@@ -92,38 +92,6 @@ function GuestView(props: any) {
           <LoginBox session={props.session} setSession={props.setSession}/>
         </Grid>
       </Grid>
-
-      <div>
-        <Input type="text" placeholder="Enter your username..."> </Input>
-      </div>
-      <div>
-        <Button title="Your Account" color="secondary" variant="contained">
-          Go To Profile
-        </Button>
-      </div>
-      <div>
-        <Input type="text" placeholder="Enter new username..."></Input>
-      </div>
-      <div>
-        <Button title="Your Account" color="secondary" variant="contained">
-          Create User
-        </Button>
-      </div>
-      <div>
-        <Link href="../laura-playground" passHref>
-          <Button title="Laura's Playground" color="secondary" variant="contained">
-            Laura's Playground
-          </Button>
-        </Link>
-      </div>
-      <div>
-        Character Sheets<br />
-        <Link href="../character" passHref>
-          <Button title="New Character Sheet" color="secondary" variant="contained">
-            Waals
-          </Button>
-        </Link>
-      </div>
     </Page>
   );
 }
