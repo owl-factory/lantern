@@ -28,8 +28,9 @@ function CampaignTiles(props: any) {
  * @param props
  */
 function CampaignTile(props: any) {
+  const linkAddress: string = "/campaign/" + props.item.alias;
   return (
-    <TileWrapper>
+    <TileWrapper href={linkAddress}>
       <Typography variant="h6">
         {props.item.name}
       </Typography>
