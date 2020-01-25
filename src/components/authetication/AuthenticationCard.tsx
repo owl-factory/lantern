@@ -8,7 +8,7 @@ interface ISetState {
 }
 
 /**
- * Renders an authentication card 
+ * Renders an authentication card
  * @param props Contains the session
  */
 function AuthenticationCard(props: any) {
@@ -22,7 +22,7 @@ function AuthenticationCard(props: any) {
   let cardContent: JSX.Element = <LoginForm/>;
   switch (state.section) {
     case "login":
-      cardContent = <LoginForm setState={setState}/>;
+      cardContent = <LoginForm setSession={props.setSession} setState={setState}/>;
       break;
     case "signup":
       cardContent = <SignUpForm setState={setState}/>;
