@@ -2,7 +2,7 @@ import { Box, Button, Grid, Input, Typography } from "@material-ui/core";
 import Link from "next/link";
 import React from "react";
 import News from "../components/announcements/News";
-import LoginBox from "../components/authetication/LoginCard";
+import AuthenticationCard from "../components/authetication/AuthenticationCard";
 import CampaignTiles from "../components/campaigns/CampaignTiles";
 import CharacterTiles from "../components/characters/CharacterTiles";
 import Page from "../components/Page";
@@ -89,7 +89,7 @@ function GuestView(props: any) {
           </Typography>
         </Grid>
         <Grid item md={4} sm={12}>
-          <LoginBox session={props.session} setSession={props.setSession}/>
+          <AuthenticationCard session={props.session} setSession={props.setSession}/>
         </Grid>
       </Grid>
     </Page>
