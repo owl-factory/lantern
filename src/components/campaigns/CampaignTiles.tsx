@@ -1,4 +1,4 @@
-import { Card, CardContent, Grid, Typography } from "@material-ui/core";
+import { Grid, Typography } from "@material-ui/core";
 import NewContentTile from "../common/NewContentTile";
 import { TileWrapper } from "../common/wrappers";
 
