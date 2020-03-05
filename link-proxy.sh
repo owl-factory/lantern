@@ -1,4 +1,4 @@
 # TODO
 
-docker network connect reroll_reroll-net nginx_proxy_1
-docker network connect reroll_reroll-net nginx_letsencrypt_1
+docker network connect reroll_reroll-net composer_nginx-proxy_1
+docker network connect reroll_reroll-net composer_letsencrypt_1
