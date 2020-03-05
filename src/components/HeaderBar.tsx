@@ -15,7 +15,9 @@ import MoreIcon from "@material-ui/icons/MoreVert";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import SearchIcon from "@material-ui/icons/Search";
 import { makeStyles } from "@material-ui/styles";
+import Link from "next/link";
 import React, { MouseEvent } from "react";
+import Router from "next/router";
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -125,9 +127,14 @@ function HeaderBar(props: any) {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Settings</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Log Out</MenuItem>
+      <MenuItem onClick={() => {Router.push("/profile")}}>Profile</MenuItem>
+
+      <Link href="/settings" passHref>
+        <MenuItem onClick={handleMenuClose}>Settings</MenuItem>
+      </Link>
+      <Link href="/logout" passHref>
+        <MenuItem onClick={handleMenuClose}>Log Out</MenuItem>
+      </Link>
     </Menu>
   );
 

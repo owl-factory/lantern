@@ -42,17 +42,19 @@ function BugReport() {
  * Renders the bug report form
  */
 function BugReportForm() {
-  const [data, setData] = React.useState({
+  const defaultData = {
     email: "",
     bugType: "",
     message: "",
-  });
+  };
+  
+  const [data, setData] = React.useState(defaultData);
 
   function updateData(event: any) {
     const newData = {...data};
-    if (typeof event.target.name === "string") {
-      newData[event.target.name] = event.target.value;
-    }
+    // if ( fields.includes(event.target.name)) {
+    //   newData[event.target.name] = event.target.value;
+    // }
     setData(newData);
   }
 
@@ -65,7 +67,6 @@ function BugReportForm() {
           required={true}
           variant="filled"
           onChange={(e: any) => (updateData(e))}
-          
         />
       </Grid>
 
@@ -79,7 +80,7 @@ function BugReportForm() {
             required={true}
             variant="filled"
             value={data.bugType}
-            onChange={(e) => {updateData(e)}}
+            onChange={(e) => {updateData(e);}}
           >
             <MenuItem value="render-issue">Render Issue</MenuItem>
             <MenuItem value="loss-of-data">Loss of Data</MenuItem>
@@ -96,6 +97,7 @@ function BugReportForm() {
           required={true}
           multiline
           rows="5"
+          onChange={(e) => {updateData(e);}}
         />
       </Grid>
 
