@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import Page from "../../../components/Page";
 
-function User() {
+function ContentIndex() {
   const router = useRouter();
   const { gamekey } = router.query;
 
@@ -12,4 +12,4 @@ function User() {
   );
 }
 
-export default User;
+export default ContentIndex;
