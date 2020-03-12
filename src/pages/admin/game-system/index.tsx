@@ -3,47 +3,33 @@ import { useRouter } from "next/router";
 import Table, { ILayoutItem } from "../../../components/design/Table";
 import Page from "../../../components/Page";
 import gamesystemJson from "./gamesystems.json";
+import content from "../../api/content";
 
 function GameSystemRows() {
 
 }
 
 function GameSystemTable() {
-  // return (
-  //   <Table padding="default" stickyHeader={true}>
-  //     <TableHead>
-  //       <TableRow>
-  //         <TableCell></TableCell>
-  //         <TableCell>System</TableCell>
-  //         <TableCell>Content</TableCell>
-  //         <TableCell>Entities</TableCell>
-  //         <TableCell>Tools</TableCell>
-  //       </TableRow>
-  //     </TableHead>
-
-  //     <GameSystemRows/>
-  //   </Table>
-  // )
 
   const layout: ILayoutItem[] = [
     {
-      header: "",
-      key: "id",
+      title: "",
+      component: (props: any) => {return <b>{props.content.id}</b>},
     },
     {
-      header: "System",
+      title: "System",
       key: "system",
     },
     {
-      header: "Content",
+      title: "Content",
       key: "officialContentCount",
     },
     {
-      header: "Entities",
+      title: "Entities",
       key: "officialEntityCount",
     },
     {
-      header: "Tools",
+      title: "Tools",
       key: "Tools",
     },
   ];

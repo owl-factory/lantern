@@ -1,17 +1,18 @@
 
 import {
-  Table as MDTable,
-  TableBody as MDTableBody,
-  TableCell,
-  TableHead as MDTableHead,
+  Table as MuiTable,
+  TableBody as MuiTableBody,
+  TableCell as MuiTableCell,
+  TableHead as MuiTableHead,
   TableRow,
 } from "@material-ui/core";
 import react from "react";
 import Pagination, {usePageState} from "./Pagination";
 
 export interface ILayoutItem {
-  header: string;
-  key: string;
+  title: string;
+  key?: string;
+  component?: (content: any) => JSX.Element; // A JSX element given content[i] as a content arg
   // TODO - put in static content for actions
 }
 
@@ -30,9 +31,55 @@ interface ITableHead {
 interface ITableBody {
 }
 
+interface ITableCell {
+  children?: any;
+  content?: any;
+  layoutItem?: ILayoutItem;
+}
+
+/**
+ * Renders the contents of the table cell.
+ * @param props see ITableCell
+ */
+function renderCellContent(props: ITableCell) {
+  let cellContent: string | JSX.Element = "";
+
+  if (props.layoutItem === undefined || props.content === undefined) {
+    return "";
+  }
+
+  if (props.layoutItem.key !== undefined && props.content[props.layoutItem.key] !== undefined) {
+    cellContent = props.content[props.layoutItem.key];
+  } else if (props.layoutItem.component !== undefined) {
+    cellContent = props.layoutItem.component(props);
+  }
+
+  return cellContent;
+}
+
+/**
+ * Renders the table cell, either a static value or a component
+ * @param props see ITableCell
+ */
+function TableCell(props: ITableCell) {
+  let cellContent: JSX.Element | string = "";
+
+  if (props.children !== undefined) {
+    cellContent = props.children;
+  } else {
+    cellContent = renderCellContent(props);
+  }
+
+  return (
+    <MuiTableCell>
+      {cellContent}
+    </MuiTableCell>
+  );
+}
+
 /**
  * Renders the body of the table
- * TODO - this is ugly as sin and doesn't handle complex usecases (like links)
+ *
  * @param props see ITableBody
  */
 function TableBody(props: any) {
@@ -48,16 +95,16 @@ function TableBody(props: any) {
 
     const cells: JSX.Element[] = [];
     props.layout.forEach((layoutItem: ILayoutItem) => {
-      cells.push(<TableCell>{content[layoutItem.key]}</TableCell>)
+      cells.push(<TableCell content={content} layoutItem={layoutItem}/>);
     });
 
     rows.push(<TableRow>{cells}</TableRow>);
   }
 
   return (
-    <MDTableBody>
+    <MuiTableBody>
       {rows}
-    </MDTableBody>
+    </MuiTableBody>
   );
 }
 
@@ -70,18 +117,18 @@ function TableHead(props: ITableHead) {
 
   props.layout.forEach((layoutItem: ILayoutItem) => {
     tableHeadContents.push(
-      <TableCell>
-        { layoutItem.header }
-      </TableCell>,
+      <MuiTableCell>
+        { layoutItem.title }
+      </MuiTableCell>,
     );
   });
 
   return (
-    <MDTableHead>
+    <MuiTableHead>
       <TableRow>
         { tableHeadContents }
       </TableRow>
-    </MDTableHead>
+    </MuiTableHead>
   );
 }
 
@@ -118,6 +165,7 @@ function Table(props: ITable) {
    */
   function setPage(page: number) {
     let offset: number = 0;
+    
     if (willQuery === false) {
       offset = (page - 1) * state.perPage;
     } else {
@@ -129,10 +177,16 @@ function Table(props: ITable) {
 
   return (
     <div>
-      <MDTable>
+      <MuiTable>
         <TableHead layout={props.layout}/>
-        <TableBody layout={props.layout} contents={contents} page={state.currentPage} perPage={state.perPage} offset={state.offset}/>
-      </MDTable>
+        <TableBody
+          contents={contents}
+          layout={props.layout}
+          page={state.currentPage}
+          perPage={state.perPage}
+          offset={state.offset}
+        />
+      </MuiTable>
 
       <Pagination pageState={state}/>
     </div>
