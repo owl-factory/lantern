@@ -7,13 +7,14 @@ import {
   TableRow,
 } from "@material-ui/core";
 import react from "react";
+import { def } from "../../helpers/common";
 import Pagination, {usePageState} from "./Pagination";
 
 export interface ILayoutItem {
-  title: string;
-  key?: string;
+  title: string; // The title to place at the title header
+  // TODO - sorting by column
+  key?: string; // The key from the data struct to use
   component?: (content: any) => JSX.Element; // A JSX element given content[i] as a content arg
-  // TODO - put in static content for actions
 }
 
 interface ITable {
@@ -95,10 +96,10 @@ function TableBody(props: any) {
 
     const cells: JSX.Element[] = [];
     props.layout.forEach((layoutItem: ILayoutItem) => {
-      cells.push(<TableCell content={content} layoutItem={layoutItem}/>);
+      cells.push(<TableCell key={"row" + i + "-" + layoutItem.title} content={content} layoutItem={layoutItem}/>);
     });
 
-    rows.push(<TableRow>{cells}</TableRow>);
+    rows.push(<TableRow key={"row" + i}>{cells}</TableRow>);
   }
 
   return (
@@ -117,7 +118,7 @@ function TableHead(props: ITableHead) {
 
   props.layout.forEach((layoutItem: ILayoutItem) => {
     tableHeadContents.push(
-      <MuiTableCell>
+      <MuiTableCell key={"row0-" + layoutItem.title}>
         { layoutItem.title }
       </MuiTableCell>,
     );
@@ -133,19 +134,6 @@ function TableHead(props: ITableHead) {
 }
 
 /**
- * Creates a sinple generic default value function.
- *
- * @param arg The original argument
- * @param defaultValue The default value if the arg is undefined
- */
-function def<T>(arg: T | undefined, defaultValue: T): T {
-  if (arg === undefined) {
-    return defaultValue;
-  }
-  return arg;
-}
-
-/**
  * Renders a standard table for consistent formating, design, and pagination
  * @param props see ITable
  */
@@ -155,25 +143,8 @@ function Table(props: ITable) {
   const [contents, setContents] = react.useState(
     def<string>(props.json, "[]"),
   );
-  const [state, setState] = usePageState();
+  const [pageState, setPageState] = usePageState();
   const willQuery = props.graphqlQuery !== undefined;
-
-  /**
-   * A function for setting the current page.
-   * TODO - can this be moved to pagination? It should be similar for everything
-   * @param page The page to switch to
-   */
-  function setPage(page: number) {
-    let offset: number = 0;
-    
-    if (willQuery === false) {
-      offset = (page - 1) * state.perPage;
-    } else {
-      // TODO - run query once GraphQL is setup
-    }
-
-    setState({...state, currentPage: page, offset});
-  }
 
   return (
     <div>
@@ -182,13 +153,17 @@ function Table(props: ITable) {
         <TableBody
           contents={contents}
           layout={props.layout}
-          page={state.currentPage}
-          perPage={state.perPage}
-          offset={state.offset}
+          page={pageState.currentPage}
+          perPage={pageState.perPage}
+          offset={pageState.offset}
         />
       </MuiTable>
 
-      <Pagination pageState={state}/>
+      <Pagination
+        pageState={pageState}
+        setPageState={setPageState}
+        onPageChange={(pageState: any) => {console.log("Page changed!");}}
+      />
     </div>
   );
 }
