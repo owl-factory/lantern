@@ -18,6 +18,7 @@ interface IPageState {
 interface IPaginationCell {
   targetPage: number; // The target page
   pageText?: string; // Alternate text to put on the link, eg "Last"
+  setPage: (page: number) => (void); // Alternate text to put on the link, eg "Last"
   hasLink?: boolean; // Whether to have this as a link or a static button (eg for current page)
 }
 
@@ -37,7 +38,7 @@ export function usePageState(perPage: number = 25, totalCount: number = 181) {
 function PaginationCell(props: IPaginationCell) {
   const pageText = def<string>(props.pageText, props.targetPage.toString());
   return (
-    <div>
+    <div onClick={() => {props.setPage(props.targetPage);}}>
       {pageText}
     </div>
   );
@@ -52,8 +53,21 @@ function Pagination(props: IPagination) {
   const perPage = min(props.pageState.perPage, 1);
   const maxPage = Math.ceil(props.pageState.totalCount / perPage);
 
+  /**
+   * Sets the page and runs associated actions
+   * @param page The page to set to
+   */
   function setPage(page: number) {
-    console.log("Page changed to", page);
+    let offset: number = 0;
+    if (useOffset === true) {
+      offset = (page - 1) * perPage;
+    }
+    props.setPageState({...props.pageState, currentPage: page, perPage, offset});
+
+    if (props.onPageChange === undefined) {
+      return;
+    }
+    props.onPageChange(props.pageState);
   }
 
   /**
@@ -68,6 +82,7 @@ function Pagination(props: IPagination) {
       <PaginationCell
         targetPage={props.pageState.currentPage}
         hasLink={false}
+        setPage={setPage}
       />,
     );
 
@@ -75,23 +90,23 @@ function Pagination(props: IPagination) {
     for (let i: number = 1; i < width; i++) {
       let targetPage: number = props.pageState.currentPage - i;
       if (targetPage > 0) {
-        cells.unshift(<PaginationCell targetPage={targetPage}/>);
+        cells.unshift(<PaginationCell targetPage={targetPage} setPage={setPage}/>);
       }
 
       targetPage = props.pageState.currentPage + i;
       if (targetPage <= maxPage) {
-        cells.push(<PaginationCell targetPage={targetPage}/>);
+        cells.push(<PaginationCell targetPage={targetPage} setPage={setPage}/>);
       }
     }
 
     // Render first
     if (props.pageState.currentPage - width >= 1) {
-      cells.unshift(<PaginationCell pageText="First" targetPage={1}/>);
+      cells.unshift(<PaginationCell pageText="First" targetPage={1} setPage={setPage}/>);
     }
 
     // Render last
     if (props.pageState.currentPage + width <= maxPage) {
-      cells.push(<PaginationCell pageText="Last" targetPage={1}/>);
+      cells.push(<PaginationCell pageText="Last" targetPage={maxPage} setPage={setPage}/>);
     }
 
     return cells;
