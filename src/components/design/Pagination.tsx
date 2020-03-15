@@ -1,3 +1,4 @@
+import { Paper, Tab, Tabs } from "@material-ui/core";
 import react from "react";
 import { def, min } from "../../helpers/common";
 
@@ -38,9 +39,7 @@ export function usePageState(perPage: number = 25, totalCount: number = 181) {
 function PaginationCell(props: IPaginationCell) {
   const pageText = def<string>(props.pageText, props.targetPage.toString());
   return (
-    <div onClick={() => {props.setPage(props.targetPage);}}>
-      {pageText}
-    </div>
+    <Tab label={pageText} onClick={() => {props.setPage(props.targetPage);}}/>
   );
 }
 
@@ -75,7 +74,7 @@ function Pagination(props: IPagination) {
    */
   function renderCells() {
     const cells: JSX.Element[] = [];
-    const width: number = 2;
+    const width: number = 3;
 
     // Render current page
     cells.push(
@@ -113,9 +112,11 @@ function Pagination(props: IPagination) {
   }
 
   return (
-    <div>
-      {renderCells()}
-    </div>
+    <Paper square>
+      <Tabs value={-1} indicatorColor="primary" textColor="primary" centered>
+        {renderCells()}
+      </Tabs>
+    </Paper>
   );
 }
 
