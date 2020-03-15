@@ -46,7 +46,7 @@ function Index(props: any) {
 }
 
 /**
- * 
+ * Renders the view for users who are logged in
  * @param props
  */
 function UserView(props: any) {
@@ -65,6 +65,10 @@ function UserView(props: any) {
   );
 }
 
+/**
+ * Renders the view for new visitors or users not logged in
+ * @param props TODO
+ */
 function GuestView(props: any) {
   return (
     <Page>

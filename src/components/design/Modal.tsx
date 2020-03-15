@@ -1,6 +1,5 @@
 import { Backdrop as MuiBackdrop, Button, createStyles, Fade as MuiFade, makeStyles, Modal as MuiModal, Theme } from "@material-ui/core";
 import react from "react";
-import { def } from "../../helpers/common";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -19,31 +18,39 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface IModal {
-  children?: JSX.Element;
-  linkText?: string;
-  ariaLabeledBy?: string;
-  ariaDescribedBy?: string;
-  openComponent: JSX.Element;
+  children?: JSX.Element; // The children to place within the modal
+  ariaLabeledBy?: string; // Accessibility label
+  ariaDescribedBy?: string; // Accessibility description
 }
 
-function Modal(props: IModal) {
-  const classes = useStyles();
+/**
+ * Registers a new modal and an open function linked together, allowing for
+ * multiple modals to be created and used without interfering with each other.
+ */
+function registerModal(): [(props: any) => (JSX.Element | null), () => (void)] {
   const [open, setOpen] = react.useState(false);
-  const linkText = def<string>(props.linkText, "Modal Open");
+  const classes = useStyles();
 
+  /**
+   * Opens the modal
+   */
   function handleOpen() {
     setOpen(true);
   }
 
+  /**
+   * Closes the modal
+   */
   function handleClose() {
     setOpen(false);
   }
 
-  return (
-    <div>
-      <div onClick={handleOpen}>
-        {props.openComponent}
-      </div>
+  /**
+   * Renders a modal with the given settings and passed props
+   * @param props see IModal
+   */
+  function Modal(props: IModal): JSX.Element | null {
+    return (
       <MuiModal
         aria-labeledby={props.ariaLabeledBy}
         aria-describedby={props.ariaDescribedBy}
@@ -60,8 +67,10 @@ function Modal(props: IModal) {
           </div>
         </MuiFade>
       </MuiModal>
-    </div>
-  );
+    );
+  }
+
+  return [Modal, handleOpen];
 }
 
-export default Modal;
+export default registerModal;
