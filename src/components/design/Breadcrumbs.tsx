@@ -17,7 +17,11 @@ function Breadcrumbs(props: IBreadcrumb) {
   const skipLevels: number = def<number>(props.skipLevels, 0);
   const titles: string[] = def<string[]>(props.titles, []);
 
+  /**
+   * Builds out the breadcrumb links
+   */
   function buildCrumbs() {
+    // TODO - BUG where trailing / causes extra slash to appear in breadcrumbs
     const crumbs = router.asPath.split("/");
     const breadcrumbs: JSX.Element[] = [];
     let uri = "";

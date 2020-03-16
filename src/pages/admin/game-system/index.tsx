@@ -6,6 +6,7 @@ import registerModal from "../../../components/design/Modal";
 import Table, { ILayoutItem } from "../../../components/design/Table";
 import Page from "../../../components/Page";
 import gamesystemJson from "./gamesystems.json";
+import { NewGameSystemForm } from "./new";
 
 const tableLayout: ILayoutItem[] = [
   {
@@ -40,9 +41,9 @@ function GameSystems() {
     <Page>
       <h1>Game Systems</h1>
       <Breadcrumbs skipLevels={1} titles={["Admin", "Game Systems"]}/>
-      <Button onClick={openNewSystemModal}>Open</Button>
+      <Button onClick={openNewSystemModal} >+ Add Game System</Button>
       <NewGameSystemModal>
-        <div>Hello!</div>
+        <NewGameSystemForm/>
       </NewGameSystemModal>
       <Table layout={tableLayout} json={JSON.stringify(gamesystemJson)}/>
     </Page>
