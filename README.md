@@ -1,14 +1,14 @@
 # Reroll
-A web application for playing tabletop RPGs.
+A web application for playing tabletop RPGs with friends. It is currently in it's earliest stages and is not a functional product.
 
 ## Requirements
 This project requires either Docker or a Node.js development enviornment with to get started.
 
 ## Getting Started
-Clone it locally and open a terminal in the project root. Simply run `docker-compose up` and the project will start in development mode on a Node.js contaner. You can also run the project directly in a Node.js development enviornment by installing the dependancies with `yarn install` and running the project with 'yarn dev'.
+Clone it locally and open a terminal in the project root. Simply run `docker-compose up` and the project will start in development mode on a Node.js contaner. You can also run the project directly in a Node.js development enviornment by installing the dependancies with `yarn install` and running the project with `yarn dev`.
 
 ## Building
-The project can be built and run in production mode by running `docker-compose -f docker-compose.prod.yml up`.
+The project can be built and run in production mode eitehr by building a docker container with `docker build .` and running it or with a local Node enviornment using `yarn build` and `yarn start`.
 
 ### Using with nginx-proxy image
 By default, the .web.env file is empty. This works for local development through `localhost:3000`. For servers, the environment variables `VIRTUAL_HOST=[urls]` and  `VIRTUAL_PORT=3000` variables must be set within the .web.env file. 
