@@ -10,16 +10,10 @@ export function NewGameSystemForm() {
     key: "",
   });
 
-  // TODO - move this function to the form and export it
-  function onChange(event: object) {
-    console.log(event)
-  }
-
   return (
     <Form>
-      <Grid item xs={12}><Typography variant="h5">Add a new Game System</Typography></Grid>
-      <Input id="name" label="System Name" required={true} onChange={onChange} value={form.name}/>
-      <Input id="key" label="System Key" required={true} onChange={onChange} value={form.key}/>
+      <Input id="name" label="System Name" required={true} defaultValue={form.name}/>
+      <Input id="key" label="System Key" required={true} defaultValue={form.key}/>
     </Form>
   );
 }

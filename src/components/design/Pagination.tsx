@@ -51,6 +51,7 @@ function Pagination(props: IPagination) {
   const useOffset = def<boolean>(props.useOffset, false);
   const perPage = min(props.pageState.perPage, 1);
   const maxPage = Math.ceil(props.pageState.totalCount / perPage);
+  let activePageIndex: number = 0;
 
   /**
    * Sets the page and runs associated actions
@@ -75,6 +76,7 @@ function Pagination(props: IPagination) {
   function renderCells() {
     const cells: JSX.Element[] = [];
     const width: number = 3;
+    activePageIndex = 0;
 
     // Render current page
     cells.push(
@@ -90,6 +92,7 @@ function Pagination(props: IPagination) {
       let targetPage: number = props.pageState.currentPage - i;
       if (targetPage > 0) {
         cells.unshift(<PaginationCell targetPage={targetPage} setPage={setPage}/>);
+        activePageIndex++;
       }
 
       targetPage = props.pageState.currentPage + i;
@@ -101,6 +104,7 @@ function Pagination(props: IPagination) {
     // Render first
     if (props.pageState.currentPage - width >= 1) {
       cells.unshift(<PaginationCell pageText="First" targetPage={1} setPage={setPage}/>);
+      activePageIndex++;
     }
 
     // Render last
@@ -111,10 +115,12 @@ function Pagination(props: IPagination) {
     return cells;
   }
 
+  const cells = renderCells();
+
   return (
     <Paper square>
-      <Tabs value={-1} indicatorColor="primary" textColor="primary" centered>
-        {renderCells()}
+      <Tabs value={activePageIndex} indicatorColor="primary" textColor="primary" centered>
+        {cells}
       </Tabs>
     </Paper>
   );

@@ -1,6 +1,8 @@
 import { Backdrop as MuiBackdrop, Button, createStyles, Fade as MuiFade, makeStyles, Modal as MuiModal, Theme } from "@material-ui/core";
 import react from "react";
 
+// TODO - add flag for "You may have unsaved changes!" before closing
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     modal: {
@@ -21,6 +23,7 @@ interface IModal {
   children?: JSX.Element; // The children to place within the modal
   ariaLabeledBy?: string; // Accessibility label
   ariaDescribedBy?: string; // Accessibility description
+  dirty?: boolean; // True if this modal has been touched
 }
 
 /**
@@ -41,7 +44,12 @@ function registerModal(): [(props: any) => (JSX.Element | null), () => (void)] {
   /**
    * Closes the modal
    */
-  function handleClose() {
+  function handleClose(isDirty?: boolean) {
+    if (isDirty === true) {
+      if (!confirm("Are you sure you want to close? You might lose data?")) {
+        return;
+      }
+    }
     setOpen(false);
   }
 
@@ -56,7 +64,7 @@ function registerModal(): [(props: any) => (JSX.Element | null), () => (void)] {
         aria-describedby={props.ariaDescribedBy}
         className={classes.modal}
         open={open}
-        onClose={handleClose}
+        onClose={() => handleClose(props.dirty)}
         closeAfterTransition
         BackdropComponent={MuiBackdrop}
         BackdropProps={{timeout: 500}}
