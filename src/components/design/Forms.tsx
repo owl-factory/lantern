@@ -1,3 +1,14 @@
+/**
+ * A standard design file for all form components. The aim is to make creating and designing forms
+ * as easy, simple, and flexible as possible while providing a standardized view of the form
+ *
+ * @TODOS
+ *  - Error handling for all inputs
+ *  - Classes!
+ *  - Checkboxes
+ *  - Accessibility options for all
+ */
+
 import {
   FormControl,
   FormControlLabel,
@@ -38,6 +49,7 @@ interface IInput extends ISharedGrid {
   color?: "primary" | "secondary"; // The color of the input
   defaultValue?: string; // The default value to start with (if given no value)
   disabled?: boolean; // If an input is disabled or not
+  inputLabelProps?: object; // Props to apply to the input label
   onChange?: (event: object) => void; // The event that occurs on change
   placeholder?: string; // A placeholder value for when the input is empty
   required?: boolean; // If this is required or not
@@ -57,6 +69,25 @@ interface ISelect extends ISharedGrid {
   includeEmpty?: boolean; // Include an empty selection
   onChange?: (event: object) => void; // The function to use on change
   multiple?: boolean; // True allows for multiple items to be selected
+  value?: any; // The default value to display
+
+  data?: object[]; // An array of structs containing the label and value to use
+  children?: any; // User-defined children, if that wants to be handled externally
+  labelKey?: string; // The key to use for label inputs
+  valueKey?: string; // The key of the value
+}
+
+type LabelPlacement = ("start" | "top" | "bottom" | "end" | undefined);
+
+interface IRadioButtons extends ISharedGrid {
+  id: string; // The input 'id' content
+  name?: string; // The name of the input
+  label?: string; // The label to display
+
+  ariaLabel?: string; // Usability label
+  defaultValue?: string; // The default value to use, if blank
+  labelPlacement?: LabelPlacement; // The placement of the label
+  onChange?: (event: object) => void; // The function to use on change
   value?: any; // The default value to display
 
   data?: object[]; // An array of structs containing the label and value to use
@@ -149,6 +180,28 @@ function GridItem(props: IGridItem) {
 }
 
 /**
+ * An input set up for handling dates. Formats the Input function to work properly
+ * @param props see IInput
+ */
+export function Date(props: IInput) {
+  const baseInputLabelProps = def<object>(props.inputLabelProps, {});
+  const dateInputLabelProps = {...baseInputLabelProps, shrink: true};
+
+  return <Input {...props} inputLabelProps={dateInputLabelProps} type="date"/>;
+}
+
+/**
+ * An input set up for handling datetimes. Formats the Input function to work properly
+ * @param props see IInput
+ */
+export function DateTime(props: IInput) {
+  const baseInputLabelProps = def<object>(props.inputLabelProps, {});
+  const dateInputLabelProps = {...baseInputLabelProps, shrink: true};
+
+  return <Input {...props} inputLabelProps={dateInputLabelProps} type="datetime-local"/>;
+}
+
+/**
  * Renders out a grid-based input block
  * @param props see IInput
  */
@@ -160,7 +213,7 @@ export function Input(props: IInput) {
   return (
     <Grid item sm={6} xs={12}>
       <FormControl>
-        <InputLabel html-for={props.id}>{label}</InputLabel>
+        <InputLabel {...props.inputLabelProps} html-for={props.id}>{label}</InputLabel>
         <MuiInput
           id={props.id}
           name={name}
@@ -169,8 +222,8 @@ export function Input(props: IInput) {
           color={props.color}
           disabled={disabled}
           // TODO - error
-          onChange={props.onChange}
           fullWidth={true}
+          onChange={props.onChange}
           placeholder={props.placeholder}
           required={props.required}
           type={props.type}
@@ -245,9 +298,14 @@ export function Checkboxes(props: any) {
   );
 }
 
-export function RadioButtons(props: any) {
+/**
+ * Renders a collection of radio buttons linked together. Operates in a very similar manner to Select
+ * @param props see IRadioButtons
+ */
+export function RadioButtons(props: IRadioButtons) {
   const name = def<string>(props.name, props.id);
   const label = def<string>(props.label, name);
+  const ariaLabel = def<string>(props.ariaLabel, label);
 
   const data = def<object[]>(props.data, []);
   const labelKey = def<string>(props.labelKey, "label");
@@ -256,7 +314,14 @@ export function RadioButtons(props: any) {
   let children: any = [];
   if (props.children === undefined) {
     data.forEach((item: any) => {
-    children.push(<FormControlLabel value={item[valueKey]} label={item[labelKey]} control={<Radio/>}/>);
+      children.push(
+        <FormControlLabel
+          control={<Radio/>}
+          label={item[labelKey]}
+          labelPlacement={props.labelPlacement}
+          value={item[valueKey]}
+        />,
+      );
     });
   } else {
     children = props.children;
@@ -269,6 +334,7 @@ export function RadioButtons(props: any) {
         <RadioGroup
           id={props.id}
           name={name}
+          aria-label={ariaLabel}
           onChange={props.onChange}
           value={props.value}
         >
@@ -277,4 +343,15 @@ export function RadioButtons(props: any) {
       </FormControl>
     </GridItem>
   );
+}
+
+/**
+ * An input set up for handling times. Formats the Input function to work properly
+ * @param props see IInput
+ */
+export function Time(props: IInput) {
+  const baseInputLabelProps = def<object>(props.inputLabelProps, {});
+  const dateInputLabelProps = {...baseInputLabelProps, shrink: true};
+
+  return <Input {...props} inputLabelProps={dateInputLabelProps} type="time"/>;
 }

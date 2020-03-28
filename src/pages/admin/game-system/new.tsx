@@ -1,7 +1,7 @@
 import { Grid, Typography } from "@material-ui/core";
 import react from "react";
 import Breadcrumbs from "../../../components/design/Breadcrumbs";
-import { Checkboxes, Form, Input, RadioButtons, Select } from "../../../components/design/Forms";
+import { Checkboxes, Date, DateTime, Form, Input, RadioButtons, Select, Time } from "../../../components/design/Forms";
 import Page from "../../../components/Page";
 
 export function NewGameSystemForm() {
@@ -23,6 +23,9 @@ export function NewGameSystemForm() {
       <Select id="selectTest" label="Select Test"  data={selectData} defaultValue="rainbows"/>
       <Checkboxes id="checkboxTest" label="Checkbox Test"></Checkboxes>
       <RadioButtons id="radioTest" label="Radio Test"  data={selectData} defaultValue="rainbows"/>
+      <Date id="date" label="Date Test"/>
+      <DateTime id="datetime" label="Date Time Test"/>
+      <Time id="time" label="Time Test"/>
 
     </Form>
   );
