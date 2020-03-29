@@ -16,12 +16,18 @@ export function NewGameSystemForm() {
     {label: "Rainbows", value: "rainbows"},
   ];
 
+  const checkboxData = [
+    {label: "Dungeons and Dragons 5th Edition", name: "dnd-5e", defaultValue: false},
+    {label: "Pathfinder 2", name: "pathfinder2", defaultValue: true},
+    {label: "Rainbows", name: "rainbows", defaultValue: false},
+  ];
+
   return (
     <Form>
       <Input id="name" label="System Name" required={true} defaultValue="Test"/>
       <Input id="key" label="System Key" required={true} defaultValue={form.key}/>
       <Select id="selectTest" label="Select Test"  data={selectData} defaultValue="rainbows"/>
-      <Checkboxes id="checkboxTest" label="Checkbox Test"></Checkboxes>
+      <Checkboxes label="Checkbox Test" data={checkboxData}/>
       <RadioButtons id="radioTest" label="Radio Test"  data={selectData} defaultValue="rainbows"/>
       <Date id="date" label="Date Test"/>
       <DateTime id="datetime" label="Date Time Test"/>

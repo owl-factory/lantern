@@ -10,8 +10,10 @@
  */
 
 import {
+  Checkbox,
   FormControl,
   FormControlLabel,
+  FormGroup,
   FormLabel,
   Grid,
   Input as MuiInput,
@@ -40,6 +42,18 @@ interface ISharedGrid {
 
 interface IGridItem extends ISharedGrid {
   children?: any;
+}
+
+interface ICheckboxes extends ISharedGrid {
+  label?: string; // The label of the checkbox group
+
+  onChange?: (event: object) => (void); // The function to call on change
+
+  data: object[]; // An array of objects containing the label, name, and default value of the checkboxes to render
+  labelKey?: string; // The key of the label in data
+  nameKey?: string; // The key of the name in data
+  defaultValueKey?: string; // The key of the default value in data
+  getValue?: (name: string) => (boolean); // A function that fetches the value of the checkbox
 }
 
 interface IInput extends ISharedGrid {
@@ -122,12 +136,26 @@ export function Form(props: IForm) {
     setFormData(event.target.name, event.target.value);
   }
 
+  function onCheckboxChange(event: any) {
+    setFormData(event.target.name, !getValue(event.target.name));
+  }
+
+  function registerValue(name: string, value: string | boolean | undefined, defaultValue: any = "" ) {
+    if (getValue(name) !== undefined) {
+      return;
+    }
+
+    const newValue = def<string | boolean>(value, defaultValue);
+
+    setFormData(name, newValue);
+  }
+
   /**
    * A general function to set form data
    * @param name The key to write the data to
    * @param value The value to write
    */
-  function setFormData(name: string, value: string) {
+  function setFormData(name: string, value: string | boolean) {
     const newData: any = {...data};
 
     newData[name] = value;
@@ -138,16 +166,43 @@ export function Form(props: IForm) {
   react.Children.toArray(props.children).forEach((child: any) => {
     const newChildName = def<string>(child.props.name, child.props.id);
 
-    const newChild = react.cloneElement(child, {
+    const newChildProps: any = {
       name: newChildName,
-      onChange: (event: any) => { onChange(event); },
-      value: getValue(newChildName),
-    });
+    };
+
+    switch (child.type.name) {
+      case "Checkboxes":
+        const nameKey = def<string>(child.props.nameKey, "name");
+        const defaultValueKey = def<string>(child.props.defaultValueKey, "defaultValue");
+        const checkboxes = def<object[]>(child.props.data, []);
+
+        checkboxes.forEach((item: any) => {
+          registerValue(item[nameKey], item[defaultValueKey], false);
+        });
+
+        newChildProps["getValue"] = getValue;
+        newChildProps["onChange"] = (event: any) => { onCheckboxChange(event); };
+        break;
+
+      case "Date":
+      case "DateTime":
+      case "Input":
+      case "RadioButtons":
+      case "Select":
+      case "Time":
+        newChildProps["value"] = getValue(newChildName);
+        newChildProps["onChange"] = (event: any) => { onChange(event); };
+
+        break;
+      // This is not a proper child of Form, so we can't update its props to have values it doesn't allow
+      default:
+        return;
+    }
+
+    const newChild = react.cloneElement(child, newChildProps);
 
     // Ensure this field exists in the data before render
-    if (getValue(newChildName) === undefined) {
-      setFormData(newChildName, def<string>(child.props.defaultValue, ""));
-    }
+    registerValue(newChildName, child.props.defaultValue);
 
     children.push(newChild);
   });
@@ -176,6 +231,42 @@ function GridItem(props: IGridItem) {
     <Grid item xl={xl} lg={lg} md={md} sm={sm} xs={xs}>
       {props.children}
     </Grid>
+  );
+}
+
+/**
+ * Renders a checkbox form group and a collection of checkboxes from the given checkbox
+ * @param props see ICheckboxes
+ */
+export function Checkboxes(props: ICheckboxes) {
+  const label = def<string>(props.label, "Checkbox");
+
+  const data = def<object[]>(props.data, []);
+  const labelKey = def<string>(props.labelKey, "label");
+  const nameKey = def<string>(props.nameKey, "name");
+  const getValue = def<(name: string) => (boolean | undefined)>(props.getValue, (name) => (false));
+
+  const checkboxes: any = [];
+  data.forEach((item: any) => {
+    checkboxes.push(
+      <FormControlLabel
+        control={
+         <Checkbox checked={getValue(item[nameKey])} onChange={props.onChange} name={item[nameKey]}/>
+        }
+        label={item[labelKey]}
+      />,
+    );
+  });
+
+  return (
+    <GridItem xs={props.xs} sm={props.sm} md={props.md} lg={props.lg} xl={props.xl}>
+      <FormControl component="fieldset">
+        <FormLabel component="legend">{label}</FormLabel>
+        <FormGroup>
+          {checkboxes}
+        </FormGroup>
+      </FormControl>
+    </GridItem>
   );
 }
 
@@ -277,22 +368,6 @@ export function Select(props: ISelect) {
           {emptyElement}
           {children}
         </MuiSelect>
-      </FormControl>
-    </GridItem>
-  );
-}
-
-export function Checkboxes(props: any) {
-  const name = def<string>(props.name, props.id);
-  const label = def<string>(props.label, name);
-
-  const checkboxes: any = [];
-
-  return (
-    <GridItem xs={props.xs} sm={props.sm} md={props.md} lg={props.lg} xl={props.xl}>
-      <FormControl component="fieldset">
-        <FormLabel html-for={props.id}>{label}</FormLabel>
-        {checkboxes}
       </FormControl>
     </GridItem>
   );
