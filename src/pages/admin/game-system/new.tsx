@@ -1,7 +1,7 @@
 import { Grid, Typography } from "@material-ui/core";
 import react from "react";
 import Breadcrumbs from "../../../components/design/Breadcrumbs";
-import { Checkboxes, Date, DateTime, Form, Input, RadioButtons, Select, TextArea, Time } from "../../../components/design/Forms";
+import { Checkboxes, Container, Date, DateTime, Form, Input, RadioButtons, Select, TextArea, Time } from "../../../components/design/Forms";
 import Page from "../../../components/Page";
 
 export function NewGameSystemForm() {
@@ -33,7 +33,10 @@ export function NewGameSystemForm() {
       <DateTime id="datetime" label="Date Time Test"/>
       <Time id="time" label="Time Test"/>
       <TextArea id="textarea" label="Text Area"/>
-
+      <Container>
+        <Input id="name" label="System Name" required={true} defaultValue="Test"/>
+        <Input id="key" label="System Key" required={true} defaultValue={form.key}/>
+      </Container>
     </Form>
   );
 }

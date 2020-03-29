@@ -6,6 +6,7 @@
  *  - Error handling for all inputs
  *  - Classes!
  *  - Accessibility options for all
+ *  - External data and state
  */
 
 import {
@@ -27,6 +28,7 @@ import react from "react";
 import { def } from "../../helpers/common";
 
 interface IForm {
+  id?: string; // The form id. Used for creating the postfix
   children?: any; // The contents to place within the form
 }
 
@@ -49,6 +51,7 @@ interface IGridItem extends ISharedGrid {
 
 interface ICheckboxes extends ISharedGrid {
   label?: string; // The label of the checkbox group
+  keyPostfix?: string; // A postfix to append to the end of the id and key to prevent overlaps
 
   onChange?: (event: object) => (void); // The function to call on change
 
@@ -59,10 +62,15 @@ interface ICheckboxes extends ISharedGrid {
   getValue?: (name: string) => (boolean); // A function that fetches the value of the checkbox
 }
 
+interface IContainer extends ISharedGrid {
+  children?: any; // The children of the grid
+}
+
 interface IInput extends ISharedGrid {
   id: string; // The input 'id' content
   name?: string; // The name of the input
   label?: string; // The label to display as
+  keyPostfix?: string; // A postfix to append to the end of the key
 
   color?: "primary" | "secondary"; // The color of the input
   defaultValue?: string; // The default value to start with (if given no value)
@@ -83,6 +91,7 @@ interface ISelect extends ISharedGrid {
   label?: string; // The label to display
   disabled?: boolean; // If this is disabled or not
   required?: boolean; // If this is required or not
+  keyPostfix?: string; // A postfix to append to the end of the key
 
   defaultValue?: string; // The default value to use, if blank
   includeEmpty?: boolean; // Include an empty selection
@@ -102,6 +111,7 @@ interface IRadioButtons extends ISharedGrid {
   id: string; // The input 'id' content
   name?: string; // The name of the input
   label?: string; // The label to display
+  keyPostfix?: string; // A postfix to append to the end of the key
 
   ariaLabel?: string; // Usability label
   defaultValue?: string; // The default value to use, if blank
@@ -116,14 +126,18 @@ interface IRadioButtons extends ISharedGrid {
 }
 
 // TODO - classes for inputs
+let formIndex: number = 0;
 
 /**
  * Renders the outside of a form
  * @param props see IForm
  */
 export function Form(props: IForm) {
-  const children: JSX.Element[] = [];
+  const [formID, setFormID] = react.useState(def<string>(props.id, "form" + formIndex++));
   const [data, setData] = react.useState({});
+
+  let children: JSX.Element[] = [];
+  let childIndex: number = 0;
 
   /**
    * Gets the value for a specific input
@@ -155,6 +169,65 @@ export function Form(props: IForm) {
     setFormData(name, newValue);
   }
 
+  function renderChildren(formChildren: any) {
+    const renderedChildren: JSX.Element[] = [];
+    react.Children.toArray(formChildren).forEach((child: any) => {
+      const newChildName = def<string>(child.props.name, child.props.id);
+      const keyPostfix: string = formID + "_" + childIndex++;
+      const newChildProps: any = {};
+      let newChild: any;
+
+      switch (child.type.name) {
+        case "Checkboxes":
+          const nameKey = def<string>(child.props.nameKey, "name");
+          const defaultValueKey = def<string>(child.props.defaultValueKey, "defaultValue");
+          const checkboxes = def<object[]>(child.props.data, []);
+
+          checkboxes.forEach((item: any) => {
+            registerValue(item[nameKey], item[defaultValueKey], false);
+          });
+
+          newChildProps["name"] = newChildName;
+          newChildProps["getValue"] = getValue;
+          newChildProps["keyPostfix"] = keyPostfix;
+          newChildProps["onChange"] = (event: any) => { onCheckboxChange(event); };
+          newChild = react.cloneElement(child, newChildProps);
+          registerValue(newChildName, child.props.defaultValue);
+          break;
+
+        case "Date":
+        case "DateTime":
+        case "Input":
+        case "RadioButtons":
+        case "Select":
+        case "TextArea":
+        case "Time":
+          newChildProps["name"] = newChildName;
+          newChildProps["keyPostfix"] = keyPostfix;
+          newChildProps["value"] = getValue(newChildName);
+          newChildProps["onChange"] = (event: any) => { onChange(event); };
+
+          newChild = react.cloneElement(child, newChildProps);
+          registerValue(newChildName, child.props.defaultValue);
+
+          break;
+
+        case "Container":
+          newChildProps["children"] = renderChildren(child.props.children);
+          newChild = react.cloneElement(child, newChildProps);
+          break;
+
+        // This is not a proper child of Form, so we can't update its props to have values it doesn't allow
+        default:
+          renderedChildren.push(child);
+          return;
+      }
+
+      renderedChildren.push(newChild);
+    });
+    return renderedChildren;
+  }
+
   /**
    * A general function to set form data
    * @param name The key to write the data to
@@ -168,50 +241,7 @@ export function Form(props: IForm) {
   }
 
   // Clones and alters the children of this Form
-  react.Children.toArray(props.children).forEach((child: any) => {
-    const newChildName = def<string>(child.props.name, child.props.id);
-
-    const newChildProps: any = {
-      name: newChildName,
-    };
-
-    switch (child.type.name) {
-      case "Checkboxes":
-        const nameKey = def<string>(child.props.nameKey, "name");
-        const defaultValueKey = def<string>(child.props.defaultValueKey, "defaultValue");
-        const checkboxes = def<object[]>(child.props.data, []);
-
-        checkboxes.forEach((item: any) => {
-          registerValue(item[nameKey], item[defaultValueKey], false);
-        });
-
-        newChildProps["getValue"] = getValue;
-        newChildProps["onChange"] = (event: any) => { onCheckboxChange(event); };
-        break;
-
-      case "Date":
-      case "DateTime":
-      case "Input":
-      case "RadioButtons":
-      case "Select":
-      case "TextArea":
-      case "Time":
-        newChildProps["value"] = getValue(newChildName);
-        newChildProps["onChange"] = (event: any) => { onChange(event); };
-
-        break;
-      // This is not a proper child of Form, so we can't update its props to have values it doesn't allow
-      default:
-        return;
-    }
-
-    const newChild = react.cloneElement(child, newChildProps);
-
-    // Ensure this field exists in the data before render
-    registerValue(newChildName, child.props.defaultValue);
-
-    children.push(newChild);
-  });
+  children = renderChildren(props.children);
 
   return (
     <form noValidate>
@@ -246,6 +276,7 @@ function GridItem(props: IGridItem) {
  */
 export function Checkboxes(props: ICheckboxes) {
   const label = def<string>(props.label, "Checkbox");
+  const keyPostfix = "_" + def<string>(props.keyPostfix, "");
 
   const data = def<object[]>(props.data, []);
   const labelKey = def<string>(props.labelKey, "label");
@@ -257,7 +288,7 @@ export function Checkboxes(props: ICheckboxes) {
   data.forEach((item: any) => {
     checkboxes.push(
       <FormControlLabel
-        key={item[nameKey] + "_" + index++}
+        key={item[nameKey] + "_" + index++ + keyPostfix}
         control={
          <Checkbox checked={getValue(item[nameKey])} onChange={props.onChange} name={item[nameKey]}/>
         }
@@ -274,6 +305,20 @@ export function Checkboxes(props: ICheckboxes) {
           {checkboxes}
         </FormGroup>
       </FormControl>
+    </GridItem>
+  );
+}
+
+/**
+ * Allows us to render a new container grid for a new set of columns inside the existing Form
+ * @param props see IContainer
+ */
+export function Container(props: IContainer) {
+  return (
+    <GridItem xs={props.xs} sm={props.sm} md={props.md} lg={props.lg} xl={props.xl}>
+      <Grid container>
+        {props.children}
+      </Grid>
     </GridItem>
   );
 }
@@ -307,6 +352,7 @@ export function DateTime(props: IInput) {
 export function Input(props: IInput) {
   const name = def<string>(props.name, props.id);
   const label = def<string>(props.label, name);
+  const keyPostfix = "_" + def<string>(props.keyPostfix, "");
   const disabled = def<boolean>(props.disabled, false);
 
   const helperTextID = props.id + "_helper";
@@ -316,9 +362,9 @@ export function Input(props: IInput) {
       <FormControl>
         <InputLabel {...props.inputLabelProps} html-for={props.id}>{label}</InputLabel>
         <MuiInput
-          id={props.id}
+          id={props.id + keyPostfix}
           name={name}
-
+          key={name + keyPostfix}
           aria-describedby={helperTextID}
           color={props.color}
           disabled={disabled}
@@ -345,6 +391,8 @@ export function Input(props: IInput) {
 export function Select(props: ISelect) {
   const name = def<string>(props.name, props.id);
   const label = def<string>(props.label, name);
+  const keyPostfix = "_" + def<string>(props.keyPostfix, "");
+
   const disabled = def<boolean>(props.disabled, false);
   const required = def<boolean>(props.required, false);
 
@@ -361,7 +409,9 @@ export function Select(props: ISelect) {
   if (props.children === undefined) {
     let index = 0;
     data.forEach((item: any) => {
-      children.push(<MuiMenuItem key={props.id + "_" + index++} value={item[valueKey]}>{item[labelKey]}</MuiMenuItem>);
+      children.push(
+        <MuiMenuItem key={props.id + "_" + index++ + keyPostfix} value={item[valueKey]}>{item[labelKey]}</MuiMenuItem>,
+      );
     });
   } else {
     children = props.children;
@@ -372,7 +422,7 @@ export function Select(props: ISelect) {
       <FormControl>
         <InputLabel html-for={props.id}>{label}</InputLabel>
         <MuiSelect
-          id={props.id}
+          id={props.id + keyPostfix}
           name={name}
           disabled={disabled}
           onChange={props.onChange}
@@ -394,6 +444,7 @@ export function Select(props: ISelect) {
 export function RadioButtons(props: IRadioButtons) {
   const name = def<string>(props.name, props.id);
   const label = def<string>(props.label, name);
+  const keyPostfix = "_" + def<string>(props.keyPostfix, "");
   const ariaLabel = def<string>(props.ariaLabel, label);
 
   const data = def<object[]>(props.data, []);
@@ -406,7 +457,7 @@ export function RadioButtons(props: IRadioButtons) {
     data.forEach((item: any) => {
       children.push(
         <FormControlLabel
-          key={props.id + "_" + index++}
+          key={props.id + "_" + index++ + keyPostfix}
           control={<Radio/>}
           label={item[labelKey]}
           labelPlacement={props.labelPlacement}
@@ -423,7 +474,7 @@ export function RadioButtons(props: IRadioButtons) {
       <FormControl>
         <FormLabel html-for={props.id}>{label}</FormLabel>
         <RadioGroup
-          id={props.id}
+          id={props.id + keyPostfix}
           name={name}
           aria-label={ariaLabel}
           onChange={props.onChange}
