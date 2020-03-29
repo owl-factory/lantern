@@ -74,13 +74,14 @@ function Pagination(props: IPagination) {
    * Renders the pagination cells
    */
   function renderCells() {
-    const cells: JSX.Element[] = [];
+    const renderedCells: JSX.Element[] = [];
     const width: number = 3;
     activePageIndex = 0;
 
     // Render current page
-    cells.push(
+    renderedCells.push(
       <PaginationCell
+        key="page_current"
         targetPage={props.pageState.currentPage}
         hasLink={false}
         setPage={setPage}
@@ -91,28 +92,28 @@ function Pagination(props: IPagination) {
     for (let i: number = 1; i < width; i++) {
       let targetPage: number = props.pageState.currentPage - i;
       if (targetPage > 0) {
-        cells.unshift(<PaginationCell targetPage={targetPage} setPage={setPage}/>);
+        renderedCells.unshift(<PaginationCell key={"page_" + targetPage} targetPage={targetPage} setPage={setPage}/>);
         activePageIndex++;
       }
 
       targetPage = props.pageState.currentPage + i;
       if (targetPage <= maxPage) {
-        cells.push(<PaginationCell targetPage={targetPage} setPage={setPage}/>);
+        renderedCells.push(<PaginationCell key={"page_" + targetPage} targetPage={targetPage} setPage={setPage}/>);
       }
     }
 
     // Render first
     if (props.pageState.currentPage - width >= 1) {
-      cells.unshift(<PaginationCell pageText="First" targetPage={1} setPage={setPage}/>);
+      renderedCells.unshift(<PaginationCell key="page_first" pageText="First" targetPage={1} setPage={setPage}/>);
       activePageIndex++;
     }
 
     // Render last
     if (props.pageState.currentPage + width <= maxPage) {
-      cells.push(<PaginationCell pageText="Last" targetPage={maxPage} setPage={setPage}/>);
+      renderedCells.push(<PaginationCell key="page_last" pageText="Last" targetPage={maxPage} setPage={setPage}/>);
     }
 
-    return cells;
+    return renderedCells;
   }
 
   const cells = renderCells();

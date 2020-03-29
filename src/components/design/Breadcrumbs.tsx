@@ -24,14 +24,11 @@ function Breadcrumbs(props: IBreadcrumb) {
     // TODO - BUG where trailing / causes extra slash to appear in breadcrumbs
     const crumbs = router.asPath.split("/");
     const breadcrumbs: JSX.Element[] = [];
-    let uri = "";
+    let uri = "/";
 
     for (let i: number = 0; i < crumbs.length; i++) {
       const titleIndex: number = i - skipLevels;
       uri += crumbs[i];
-      if (i < crumbs.length - 1) {
-        uri += "/";
-      }
 
       if (titleIndex < 0) {
         continue;
@@ -47,6 +44,10 @@ function Breadcrumbs(props: IBreadcrumb) {
           <MuiLink color="inherit">{title}</MuiLink>
         </Link>,
       );
+
+      if (i < crumbs.length - 1) {
+        uri += "/";
+      }
     }
 
     return breadcrumbs;

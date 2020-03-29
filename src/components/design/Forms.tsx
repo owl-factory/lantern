@@ -155,20 +155,33 @@ export function Form(props: IForm) {
     setFormData(event.target.name, event.target.value);
   }
 
+  /**
+   * Toggles event target value
+   * @param event The input onChange event
+   */
   function onCheckboxChange(event: any) {
     setFormData(event.target.name, !getValue(event.target.name));
   }
 
+  /**
+   * Ensures that an input has the appropriate allocation in data
+   * @param name The key to save the value under
+   * @param value The value to save
+   * @param defaultValue The default value to register if value is undefined
+   */
   function registerValue(name: string, value: string | boolean | undefined, defaultValue: any = "" ) {
     if (getValue(name) !== undefined) {
       return;
     }
 
     const newValue = def<string | boolean>(value, defaultValue);
-
     setFormData(name, newValue);
   }
 
+  /**
+   * Renders out children and processes them to have the correct functionality
+   * @param formChildren The children to process
+   */
   function renderChildren(formChildren: any) {
     const renderedChildren: JSX.Element[] = [];
     react.Children.toArray(formChildren).forEach((child: any) => {
