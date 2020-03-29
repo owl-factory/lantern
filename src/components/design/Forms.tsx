@@ -5,7 +5,6 @@
  * @TODOS
  *  - Error handling for all inputs
  *  - Classes!
- *  - Checkboxes
  *  - Accessibility options for all
  */
 
@@ -14,6 +13,7 @@ import {
   FormControl,
   FormControlLabel,
   FormGroup,
+  FormHelperText,
   FormLabel,
   Grid,
   Input as MuiInput,
@@ -23,25 +23,28 @@ import {
   RadioGroup,
   Select as MuiSelect,
 } from "@material-ui/core";
-import react, { Dispatch, SetStateAction } from "react";
+import react from "react";
 import { def } from "../../helpers/common";
 
 interface IForm {
   children?: any; // The contents to place within the form
 }
 
+// TODO - put this in a types sheet (in models?)
 type Size = (boolean | 2 | 1 | 12 | 6 | "auto" | 3 | 4 | 5 | 7 | 8 | 9 | 10 | 11 | undefined);
 
 interface ISharedGrid {
-  xs?: Size;
-  sm?: Size;
-  md?: Size;
-  lg?: Size;
-  xl?: Size;
+  xs?: Size; // Width for extra small screens
+  sm?: Size; // Width for small screens
+  md?: Size; // Width for extra medium screens
+  lg?: Size; // Width for large screens
+  xl?: Size; // Width for extra large screens
+
+  helperText?: string; // Accessibility text
 }
 
 interface IGridItem extends ISharedGrid {
-  children?: any;
+  children?: any; // Children of the grid
 }
 
 interface ICheckboxes extends ISharedGrid {
@@ -60,16 +63,18 @@ interface IInput extends ISharedGrid {
   id: string; // The input 'id' content
   name?: string; // The name of the input
   label?: string; // The label to display as
+
   color?: "primary" | "secondary"; // The color of the input
   defaultValue?: string; // The default value to start with (if given no value)
   disabled?: boolean; // If an input is disabled or not
   inputLabelProps?: object; // Props to apply to the input label
+  multiline?: boolean; // Allows for creating text areas
   onChange?: (event: object) => void; // The event that occurs on change
   placeholder?: string; // A placeholder value for when the input is empty
   required?: boolean; // If this is required or not
+  rows?: number; // The number of rows (multiline must be true)
   type?: string; // The ???
   value?: string; // The value of the input
-  ariaDescribedBy?: string; // Readability setting
 }
 
 interface ISelect extends ISharedGrid {
@@ -189,6 +194,7 @@ export function Form(props: IForm) {
       case "Input":
       case "RadioButtons":
       case "Select":
+      case "TextArea":
       case "Time":
         newChildProps["value"] = getValue(newChildName);
         newChildProps["onChange"] = (event: any) => { onChange(event); };
@@ -247,9 +253,11 @@ export function Checkboxes(props: ICheckboxes) {
   const getValue = def<(name: string) => (boolean | undefined)>(props.getValue, (name) => (false));
 
   const checkboxes: any = [];
+  let index: number = 0;
   data.forEach((item: any) => {
     checkboxes.push(
       <FormControlLabel
+        key={item[nameKey] + "_" + index++}
         control={
          <Checkbox checked={getValue(item[nameKey])} onChange={props.onChange} name={item[nameKey]}/>
         }
@@ -301,6 +309,8 @@ export function Input(props: IInput) {
   const label = def<string>(props.label, name);
   const disabled = def<boolean>(props.disabled, false);
 
+  const helperTextID = props.id + "_helper";
+
   return (
     <Grid item sm={6} xs={12}>
       <FormControl>
@@ -309,17 +319,20 @@ export function Input(props: IInput) {
           id={props.id}
           name={name}
 
-          aria-describedby={props.ariaDescribedBy}
+          aria-describedby={helperTextID}
           color={props.color}
           disabled={disabled}
           // TODO - error
           fullWidth={true}
+          multiline={props.multiline}
           onChange={props.onChange}
           placeholder={props.placeholder}
           required={props.required}
+          rows={props.rows}
           type={props.type}
           value={props.value}
         />
+        <FormHelperText id={helperTextID}>{props.helperText}</FormHelperText>
       </FormControl>
     </Grid>
   );
@@ -346,8 +359,9 @@ export function Select(props: ISelect) {
 
   let children: any = [];
   if (props.children === undefined) {
+    let index = 0;
     data.forEach((item: any) => {
-      children.push(<MuiMenuItem value={item[valueKey]}>{item[labelKey]}</MuiMenuItem>);
+      children.push(<MuiMenuItem key={props.id + "_" + index++} value={item[valueKey]}>{item[labelKey]}</MuiMenuItem>);
     });
   } else {
     children = props.children;
@@ -388,9 +402,11 @@ export function RadioButtons(props: IRadioButtons) {
 
   let children: any = [];
   if (props.children === undefined) {
+    let index: number = 0;
     data.forEach((item: any) => {
       children.push(
         <FormControlLabel
+          key={props.id + "_" + index++}
           control={<Radio/>}
           label={item[labelKey]}
           labelPlacement={props.labelPlacement}
@@ -418,6 +434,15 @@ export function RadioButtons(props: IRadioButtons) {
       </FormControl>
     </GridItem>
   );
+}
+
+/**
+ * An input set up for handling times. Formats the Input function to work properly
+ * @param props see IInput
+ */
+export function TextArea(props: IInput) {
+  const rows = def<number>(props.rows, 4);
+  return <Input {...props} multiline rows={rows}/>;
 }
 
 /**

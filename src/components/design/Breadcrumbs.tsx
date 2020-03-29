@@ -43,7 +43,7 @@ function Breadcrumbs(props: IBreadcrumb) {
       }
 
       breadcrumbs.push(
-        <Link href={uri} passHref>
+        <Link key={"crumb_" + i} href={uri} passHref>
           <MuiLink color="inherit">{title}</MuiLink>
         </Link>,
       );
