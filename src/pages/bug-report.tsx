@@ -1,7 +1,7 @@
+import { Card, CardContent, Typography } from "@material-ui/core";
 import React from "react";
 import {Form, Input, Select, TextArea} from "../components/design/Forms";
 import Page from "../components/Page";
-import { Card, CardContent, Typography } from "@material-ui/core";
 
 /**
  * Renders the Bug Report page
@@ -37,7 +37,7 @@ function BugReportForm() {
 
   return (
     <Form>
-      <Input id="email" label="Label" placeholder="email@gmail.com"/>
+      <Input id="email" label="Email"/>
       <Select id="bugType" label="Bug Type" data={bugOptions} labelKey="name"/>
       <TextArea id="message" label="What Happened?"/>
     </Form>

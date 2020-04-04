@@ -1,14 +1,29 @@
-import { Grid, Typography } from "@material-ui/core";
+import { Container as MuiContainer } from "@material-ui/core";
 import react from "react";
 import Breadcrumbs from "../../../components/design/Breadcrumbs";
-import { Checkboxes, Container, Date, DateTime, Form, Input, RadioButtons, Select, TextArea, Time } from "../../../components/design/Forms";
+import {
+  Button,
+  Checkboxes,
+  Date,
+  DateTime,
+  Form,
+  Input,
+  RadioButtons,
+  Section,
+  Select,
+  TextArea,
+  Time,
+} from "../../../components/design/Forms";
 import Page from "../../../components/Page";
+import { defState } from "../../../helpers/common";
 
-export function NewGameSystemForm() {
-  const [form, setForm] = react.useState({
+export function NewGameSystemForm(props: any) {
+  const [data, setData] = defState(props.state, props.setState, {
     name: "Boop",
     key: "",
   });
+
+  const [formState, setFormState] = defState(props.formState, props.setFormState, {});
 
   const selectData = [
     {label: "Dungeons and Dragons 5th Edition", value: "dnd-5e"},
@@ -22,21 +37,30 @@ export function NewGameSystemForm() {
     {label: "Rainbows", name: "rainbows", defaultValue: false},
   ];
 
+  const errors = {
+    checkboxText: "Error!",
+    name: "Name error",
+    radioTest: "radioTest error",
+    selectTest: "Select errors",
+
+  };
+
   return (
-    <Form>
+    <Form data={data} setData={setData} formState={formState} setFormState={setFormState} errors={errors}>
       <Input id="name" label="System Name" required={true} defaultValue="Test"/>
-      <Input id="key" label="System Key" required={true} defaultValue={form.key}/>
+      <Input id="key" label="System Key" required={true} defaultValue={data.key}/>
       <Select id="selectTest" label="Select Test"  data={selectData} defaultValue="rainbows"/>
-      <Checkboxes label="Checkbox Test" data={checkboxData}/>
+      <Checkboxes id="checkboxText" label="Checkbox Test" data={checkboxData}/>
       <RadioButtons id="radioTest" label="Radio Test"  data={selectData} defaultValue="rainbows"/>
       <Date id="date" label="Date Test"/>
       <DateTime id="datetime" label="Date Time Test"/>
       <Time id="time" label="Time Test"/>
       <TextArea id="textarea" label="Text Area"/>
-      <Container>
+      <Section>
         <Input id="name" label="System Name" required={true} defaultValue="Test"/>
-        <Input id="key" label="System Key" required={true} defaultValue={form.key}/>
-      </Container>
+        <Input id="key" label="System Key" required={true} defaultValue={data.key}/>
+      </Section>
+      <Button color="primary">Submit!</Button>
     </Form>
   );
 }
@@ -45,12 +69,17 @@ export function NewGameSystemForm() {
  * Renders a the page to create a new game system
  */
 function NewGameSystem() {
+
   return (
     <Page>
-      <h1>New Game Systems</h1>
-      <Breadcrumbs skipLevels={1} titles={["Admin", "Game Systems", "New Game System"]}/>
+      <MuiContainer fixed>
+        <h1>New Game Systems</h1>
+        <Breadcrumbs skipLevels={1} titles={["Admin", "Game Systems", "New Game System"]}/>
 
-      <NewGameSystemForm/>
+        <br/>
+
+        <NewGameSystemForm/>
+      </MuiContainer>
     </Page>
   );
 }

@@ -7,9 +7,11 @@
  *  - Classes!
  *  - Accessibility options for all
  *  - External data and state
+ *  - Buttons
  */
 
 import {
+  Button as MuiButton,
   Checkbox,
   FormControl,
   FormControlLabel,
@@ -25,15 +27,25 @@ import {
   Select as MuiSelect,
 } from "@material-ui/core";
 import react from "react";
-import { def } from "../../helpers/common";
+import { def, defState } from "../../helpers/common";
 
 interface IForm {
   id?: string; // The form id. Used for creating the postfix
   children?: any; // The contents to place within the form
+
+  data?: object;
+  setData?: react.Dispatch<react.SetStateAction<any>>;
+
+  formState?: object;
+  setFormState?: react.Dispatch<react.SetStateAction<any>>;
+
+  errors?: object;
+
 }
 
 // TODO - put this in a types sheet (in models?)
 type Size = (boolean | 2 | 1 | 12 | 6 | "auto" | 3 | 4 | 5 | 7 | 8 | 9 | 10 | 11 | undefined);
+type ButtonVariant = ("contained" | "text" | "outlined" | undefined);
 
 interface ISharedGrid {
   xs?: Size; // Width for extra small screens
@@ -49,7 +61,15 @@ interface IGridItem extends ISharedGrid {
   children?: any; // Children of the grid
 }
 
-interface ICheckboxes extends ISharedGrid {
+interface IField extends ISharedGrid {
+  id: string;
+
+  error?: string;
+  message?: string;
+}
+
+interface ICheckboxes extends IField {
+  id: string;
   label?: string; // The label of the checkbox group
   keyPostfix?: string; // A postfix to append to the end of the id and key to prevent overlaps
 
@@ -59,14 +79,14 @@ interface ICheckboxes extends ISharedGrid {
   labelKey?: string; // The key of the label in data
   nameKey?: string; // The key of the name in data
   defaultValueKey?: string; // The key of the default value in data
-  getValue?: (name: string) => (boolean); // A function that fetches the value of the checkbox
+  getValue?: (name: string, defaultValue: any) => (boolean); // A function that fetches the value of the checkbox
 }
 
-interface IContainer extends ISharedGrid {
+interface ISection extends ISharedGrid {
   children?: any; // The children of the grid
 }
 
-interface IInput extends ISharedGrid {
+interface IInput extends IField {
   id: string; // The input 'id' content
   name?: string; // The name of the input
   label?: string; // The label to display as
@@ -83,9 +103,11 @@ interface IInput extends ISharedGrid {
   rows?: number; // The number of rows (multiline must be true)
   type?: string; // The ???
   value?: string; // The value of the input
+
+  getError?: (name: string) => (string); // Grabs errors for the given name
 }
 
-interface ISelect extends ISharedGrid {
+interface ISelect extends IField {
   id: string; // The input 'id' content
   name?: string; // The name of the input
   label?: string; // The label to display
@@ -103,11 +125,14 @@ interface ISelect extends ISharedGrid {
   children?: any; // User-defined children, if that wants to be handled externally
   labelKey?: string; // The key to use for label inputs
   valueKey?: string; // The key of the value
+
+  getError?: (name: string) => (string); // Grabs errors for the given name
 }
 
 type LabelPlacement = ("start" | "top" | "bottom" | "end" | undefined);
+type GetValue = (name: string, defaultValue: any) => (boolean | undefined);
 
-interface IRadioButtons extends ISharedGrid {
+interface IRadioButtons extends IField {
   id: string; // The input 'id' content
   name?: string; // The name of the input
   label?: string; // The label to display
@@ -123,18 +148,46 @@ interface IRadioButtons extends ISharedGrid {
   children?: any; // User-defined children, if that wants to be handled externally
   labelKey?: string; // The key to use for label inputs
   valueKey?: string; // The key of the value
+
+  getError?: (name: string) => (string); // Grabs errors for the given name
 }
 
 // TODO - classes for inputs
-let formIndex: number = 0;
+
+export function getDefaultFormState() {
+  return {
+    isDirty: false,
+  };
+}
+
+/**
+ * Determines if the error is a valid error
+ * @param error The error message
+ */
+function hasError(error: string | undefined) {
+  if (error === undefined || error === "") {
+    return false;
+  }
+  return true;
+}
+
+function renderMessage(message: string | undefined, error: string | undefined) {
+  if (hasError(error)) {
+    return error;
+  } else if (hasError(message)) {
+    return message;
+  }
+}
 
 /**
  * Renders the outside of a form
  * @param props see IForm
  */
 export function Form(props: IForm) {
-  const [formID, setFormID] = react.useState(def<string>(props.id, "form" + formIndex++));
-  const [data, setData] = react.useState({});
+  const [formID, setFormID] = react.useState(def<string>(props.id, "form"));
+  const [data, setData] = defState<any>(props.data, props.setData, {});
+  const [formState, setFormState] = defState<any>(props.formState, props.setFormState, getDefaultFormState());
+  const errors = def(props.errors, {});
 
   let children: JSX.Element[] = [];
   let childIndex: number = 0;
@@ -143,7 +196,11 @@ export function Form(props: IForm) {
    * Gets the value for a specific input
    * @param name The name of the field to pull data from
    */
-  function getValue(name: string) {
+  function getValue(name: string, defaultValue: any = "") {
+    // Ensures that all components are controlled even if they haven't been registered
+    if (!(name in data)) {
+      return defaultValue;
+    }
     return (data as any)[name];
   }
 
@@ -175,7 +232,8 @@ export function Form(props: IForm) {
     }
 
     const newValue = def<string | boolean>(value, defaultValue);
-    setFormData(name, newValue);
+    data[name] = newValue;
+    setFormData(name, newValue, false);
   }
 
   /**
@@ -225,7 +283,7 @@ export function Form(props: IForm) {
 
           break;
 
-        case "Container":
+        case "Section":
           newChildProps["children"] = renderChildren(child.props.children);
           newChild = react.cloneElement(child, newChildProps);
           break;
@@ -246,8 +304,12 @@ export function Form(props: IForm) {
    * @param name The key to write the data to
    * @param value The value to write
    */
-  function setFormData(name: string, value: string | boolean) {
+  function setFormData(name: string, value: string | boolean, doesDirty?: boolean) {
     const newData: any = {...data};
+
+    if (doesDirty !== false && formState.dirty === false) {
+      setFormState({...formState, dirty: true});
+    }
 
     newData[name] = value;
     setData(newData);
@@ -283,6 +345,24 @@ function GridItem(props: IGridItem) {
   );
 }
 
+export function Button(props: any) {
+  const variant = def<ButtonVariant>(props.variant, "contained");
+
+  return (
+    <MuiButton
+      aria-label={props.ariaLabel}
+      color={props.color}
+      endIcon={props.endIcon}
+      onClick={(event) => {props.onClick(event, props.data, props.setData);}}
+      size={props.size}
+      startIcon={props.startIcon}
+      variant={variant}
+    >
+      {props.children}
+    </MuiButton>
+  );
+}
+
 /**
  * Renders a checkbox form group and a collection of checkboxes from the given checkbox
  * @param props see ICheckboxes
@@ -294,7 +374,7 @@ export function Checkboxes(props: ICheckboxes) {
   const data = def<object[]>(props.data, []);
   const labelKey = def<string>(props.labelKey, "label");
   const nameKey = def<string>(props.nameKey, "name");
-  const getValue = def<(name: string) => (boolean | undefined)>(props.getValue, (name) => (false));
+  const getValue = def<GetValue>(props.getValue, (name, defaultValue) => (false));
 
   const checkboxes: any = [];
   let index: number = 0;
@@ -303,7 +383,7 @@ export function Checkboxes(props: ICheckboxes) {
       <FormControlLabel
         key={item[nameKey] + "_" + index++ + keyPostfix}
         control={
-         <Checkbox checked={getValue(item[nameKey])} onChange={props.onChange} name={item[nameKey]}/>
+         <Checkbox checked={getValue(item[nameKey], false)} onChange={props.onChange} name={item[nameKey]}/>
         }
         label={item[labelKey]}
       />,
@@ -312,11 +392,12 @@ export function Checkboxes(props: ICheckboxes) {
 
   return (
     <GridItem xs={props.xs} sm={props.sm} md={props.md} lg={props.lg} xl={props.xl}>
-      <FormControl component="fieldset">
+      <FormControl component="fieldset" error={hasError(props.error)}>
         <FormLabel component="legend">{label}</FormLabel>
         <FormGroup>
           {checkboxes}
         </FormGroup>
+        <FormHelperText>{renderMessage(props.message, props.error)}</FormHelperText>
       </FormControl>
     </GridItem>
   );
@@ -326,7 +407,7 @@ export function Checkboxes(props: ICheckboxes) {
  * Allows us to render a new container grid for a new set of columns inside the existing Form
  * @param props see IContainer
  */
-export function Container(props: IContainer) {
+export function Section(props: ISection) {
   return (
     <GridItem xs={props.xs} sm={props.sm} md={props.md} lg={props.lg} xl={props.xl}>
       <Grid container>
@@ -372,7 +453,7 @@ export function Input(props: IInput) {
 
   return (
     <Grid item sm={6} xs={12}>
-      <FormControl>
+      <FormControl error={hasError(props.error)}>
         <InputLabel {...props.inputLabelProps} html-for={props.id}>{label}</InputLabel>
         <MuiInput
           id={props.id + keyPostfix}
@@ -391,7 +472,8 @@ export function Input(props: IInput) {
           type={props.type}
           value={props.value}
         />
-        <FormHelperText id={helperTextID}>{props.helperText}</FormHelperText>
+        {/* <FormHelperText id={helperTextID}>{props.helperText}</FormHelperText> */}
+        <FormHelperText>{renderMessage(props.message, props.error)}</FormHelperText>
       </FormControl>
     </Grid>
   );
@@ -415,7 +497,7 @@ export function Select(props: ISelect) {
 
   let emptyElement: JSX.Element | undefined;
   if (props.includeEmpty !== false) {
-    emptyElement = <MuiMenuItem value=""/>;
+    emptyElement = <MuiMenuItem value="">&nbsp;</MuiMenuItem>;
   }
 
   let children: any = [];
@@ -432,7 +514,7 @@ export function Select(props: ISelect) {
 
   return (
     <GridItem xs={props.xs} sm={props.sm} md={props.md} lg={props.lg} xl={props.xl}>
-      <FormControl>
+      <FormControl error={hasError(props.error)}>
         <InputLabel html-for={props.id}>{label}</InputLabel>
         <MuiSelect
           id={props.id + keyPostfix}
@@ -445,6 +527,7 @@ export function Select(props: ISelect) {
           {emptyElement}
           {children}
         </MuiSelect>
+        <FormHelperText>{renderMessage(props.message, props.error)}</FormHelperText>
       </FormControl>
     </GridItem>
   );
@@ -484,7 +567,7 @@ export function RadioButtons(props: IRadioButtons) {
 
   return (
     <GridItem xs={props.xs} sm={props.sm} md={props.md} lg={props.lg} xl={props.xl}>
-      <FormControl>
+      <FormControl error={hasError(props.error)}>
         <FormLabel html-for={props.id}>{label}</FormLabel>
         <RadioGroup
           id={props.id + keyPostfix}
@@ -495,6 +578,7 @@ export function RadioButtons(props: IRadioButtons) {
         >
           {children}
         </RadioGroup>
+        <FormHelperText>{renderMessage(props.message, props.error)}</FormHelperText>
       </FormControl>
     </GridItem>
   );

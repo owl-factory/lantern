@@ -1,4 +1,5 @@
-import { Button, Typography } from "@material-ui/core";
+import { Button, Container, Typography } from "@material-ui/core";
+import react from "react";
 import { useRouter } from "next/router";
 // import { Table, TableBody, TableCell, TableHead, TableRow } from "@material-ui/core";
 import Breadcrumbs from "../../../components/design/Breadcrumbs";
@@ -43,8 +44,10 @@ function GameSystems() {
       <Breadcrumbs skipLevels={1} titles={["Admin", "Game Systems"]}/>
       <Button onClick={openNewSystemModal} >+ Add Game System</Button>
       <NewGameSystemModal dirty={true}>
-        <Typography variant="h5">Add a new Game System</Typography>
-        <NewGameSystemForm/>
+        <Container fixed>
+          <Typography variant="h5">Add a new Game System</Typography>
+          <NewGameSystemForm/>
+        </Container>
       </NewGameSystemModal>
       <Table layout={tableLayout} json={JSON.stringify(gamesystemJson)}/>
     </Page>

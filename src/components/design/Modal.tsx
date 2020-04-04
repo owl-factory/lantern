@@ -60,7 +60,6 @@ function registerModal(): [(props: any) => (JSX.Element | null), () => (void)] {
   function Modal(props: IModal): JSX.Element | null {
     return (
       <MuiModal
-        aria-labeledby={props.ariaLabeledBy}
         aria-describedby={props.ariaDescribedBy}
         className={classes.modal}
         open={open}

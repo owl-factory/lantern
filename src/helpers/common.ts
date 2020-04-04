@@ -1,3 +1,5 @@
+import react from "react";
+
 /**
  * Creates a sinple generic default value function.
  *
@@ -9,6 +11,25 @@ export function def<T>(arg: T | undefined, defaultValue: T): T {
     return defaultValue;
   }
   return arg;
+}
+
+/**
+ * Ensures a state exists
+ *
+ * @param state The state to check existence of
+ * @param setState The setState function to check existence of
+ * @param defaultState The default state to use instead if missing state
+ */
+export function defState<T>(
+  state: T | undefined,
+  setState: react.Dispatch<react.SetStateAction<T>> | undefined,
+  defaultState: T,
+): [T, react.Dispatch<react.SetStateAction<T>>] {
+  if (state === undefined || setState === undefined) {
+    return react.useState(defaultState);
+  }
+
+  return [state, setState];
 }
 
 /**
