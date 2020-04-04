@@ -27,7 +27,7 @@ import {
   Select as MuiSelect,
 } from "@material-ui/core";
 import react from "react";
-import { def, defState } from "../../helpers/common";
+import { deepCopy, deepGet, deepSet, def, defState } from "../../helpers/common";
 
 interface IForm {
   id?: string; // The form id. Used for creating the postfix
@@ -198,10 +198,12 @@ export function Form(props: IForm) {
    */
   function getValue(name: string, defaultValue: any = "") {
     // Ensures that all components are controlled even if they haven't been registered
-    if (!(name in data)) {
+    const result = deepGet(data, name);
+    if (result === undefined) {
       return defaultValue;
     }
-    return (data as any)[name];
+
+    return result;
   }
 
   /**
@@ -305,13 +307,13 @@ export function Form(props: IForm) {
    * @param value The value to write
    */
   function setFormData(name: string, value: string | boolean, doesDirty?: boolean) {
-    const newData: any = {...data};
+    const newData: any = deepCopy(data);
 
     if (doesDirty !== false && formState.dirty === false) {
       setFormState({...formState, dirty: true});
     }
 
-    newData[name] = value;
+    deepSet(newData, name, value);
     setData(newData);
   }
 
@@ -345,6 +347,10 @@ function GridItem(props: IGridItem) {
   );
 }
 
+/**
+ * Renders a button and performs a given action
+ * @param props see IButton
+ */
 export function Button(props: any) {
   const variant = def<ButtonVariant>(props.variant, "contained");
 

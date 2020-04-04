@@ -1,4 +1,74 @@
+import { cloneDeep } from "lodash";
 import react from "react";
+
+/**
+ * Wrappers the cloneDeep lodash function to give future developers a standard library of tools to pull from,
+ * as well as fixing issues in a single spot in the future
+ *
+ * @param obj The object or array to deep copy
+ */
+export function deepCopy(obj: object | any[] ) {
+  return cloneDeep(obj);
+}
+
+/**
+ * Given a combined key containing periods delimiting keys, parses the obj and finds the value matching key
+ * @param obj The object or array to find data in given a key
+ * @param key The key to pull data from. Returns undefined if the key doesn't exist
+ */
+export function deepGet(obj: any, key: string) {
+  const keys = key.split(".");
+  let current: any = obj;
+
+  while (true) {
+    if (keys.length === 0) {
+      return current;
+    }
+
+    // If simple type check
+    if (typeof current === "string" || typeof current === "number" || typeof current === "boolean" ) {
+      return undefined;
+    }
+
+    // TODO - check if this works for array
+    if (!(keys[0] in current)) {
+      return undefined;
+    }
+
+    current = current[keys[0]];
+    keys.splice(0, 1);
+  }
+}
+
+export function deepSet(obj: any, key: string, value: any) {
+  const keys = key.split(".");
+
+  // TODO - throw error?
+  if (keys.length === 0) {
+    return obj;
+  }
+
+  let current: any = obj;
+  while (true) {
+    // Base case
+    if (keys.length === 1) {
+      current[keys[0]] = value;
+      return;
+    }
+
+    // If simple type check
+    if (typeof current === "string" || typeof current === "number" || typeof current === "boolean" ) {
+      return;
+    }
+
+    if (!(keys[0] in current)) {
+      current[keys[0]] = {};
+    }
+    current = current[keys[0]];
+    keys.splice(0, 1);
+  }
+
+}
 
 /**
  * Creates a sinple generic default value function.

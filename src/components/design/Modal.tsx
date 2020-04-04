@@ -1,4 +1,4 @@
-import { Backdrop as MuiBackdrop, Button, createStyles, Fade as MuiFade, makeStyles, Modal as MuiModal, Theme } from "@material-ui/core";
+import { Backdrop as MuiBackdrop, Button, Container, createStyles, Fade as MuiFade, makeStyles, Modal as MuiModal, Theme } from "@material-ui/core";
 import react from "react";
 
 // TODO - add flag for "You may have unsaved changes!" before closing
@@ -59,21 +59,21 @@ function registerModal(): [(props: any) => (JSX.Element | null), () => (void)] {
    */
   function Modal(props: IModal): JSX.Element | null {
     return (
-      <MuiModal
-        aria-describedby={props.ariaDescribedBy}
-        className={classes.modal}
-        open={open}
-        onClose={() => handleClose(props.dirty)}
-        closeAfterTransition
-        BackdropComponent={MuiBackdrop}
-        BackdropProps={{timeout: 500}}
-      >
-        <MuiFade in={open}>
-          <div className={classes.paper}>
-            {props.children}
-          </div>
-        </MuiFade>
-      </MuiModal>
+        <MuiModal
+          aria-describedby={props.ariaDescribedBy}
+          className={classes.modal}
+          open={open}
+          onClose={() => handleClose(props.dirty)}
+          closeAfterTransition
+          BackdropComponent={MuiBackdrop}
+          BackdropProps={{timeout: 500}}
+        >
+          <MuiFade in={open}>
+            <Container fixed className={classes.paper}>
+              {props.children}
+            </Container>
+          </MuiFade>
+        </MuiModal>
     );
   }
 

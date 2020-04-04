@@ -19,7 +19,7 @@ import { defState } from "../../../helpers/common";
 
 export function NewGameSystemForm(props: any) {
   const [data, setData] = defState(props.state, props.setState, {
-    name: "Boop",
+    name: {nameAgain: "Boop"},
     key: "",
   });
 
@@ -47,7 +47,7 @@ export function NewGameSystemForm(props: any) {
 
   return (
     <Form data={data} setData={setData} formState={formState} setFormState={setFormState} errors={errors}>
-      <Input id="name" label="System Name" required={true} defaultValue="Test"/>
+      <Input id="name.nameAgain" label="System Name" required={true} defaultValue="Test"/>
       <Input id="key" label="System Key" required={true} defaultValue={data.key}/>
       <Select id="selectTest" label="Select Test"  data={selectData} defaultValue="rainbows"/>
       <Checkboxes id="checkboxText" label="Checkbox Test" data={checkboxData}/>
@@ -57,7 +57,7 @@ export function NewGameSystemForm(props: any) {
       <Time id="time" label="Time Test"/>
       <TextArea id="textarea" label="Text Area"/>
       <Section>
-        <Input id="name" label="System Name" required={true} defaultValue="Test"/>
+        <Input id="name.nameAgain" label="System Name" required={true} defaultValue="Test"/>
         <Input id="key" label="System Key" required={true} defaultValue={data.key}/>
       </Section>
       <Button color="primary">Submit!</Button>

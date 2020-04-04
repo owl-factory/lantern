@@ -44,10 +44,8 @@ function GameSystems() {
       <Breadcrumbs skipLevels={1} titles={["Admin", "Game Systems"]}/>
       <Button onClick={openNewSystemModal} >+ Add Game System</Button>
       <NewGameSystemModal dirty={true}>
-        <Container fixed>
-          <Typography variant="h5">Add a new Game System</Typography>
-          <NewGameSystemForm/>
-        </Container>
+        <Typography variant="h5">Add a new Game System</Typography>
+        <NewGameSystemForm/>
       </NewGameSystemModal>
       <Table layout={tableLayout} json={JSON.stringify(gamesystemJson)}/>
     </Page>
