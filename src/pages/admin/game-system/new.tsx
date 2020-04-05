@@ -15,7 +15,7 @@ import {
   Time,
 } from "../../../components/design/Forms";
 import Page from "../../../components/Page";
-import { defState } from "../../../helpers/common";
+import { defState } from "../../../helpers/tools";
 
 export function NewGameSystemForm(props: any) {
   const [data, setData] = defState(props.state, props.setState, {
@@ -47,18 +47,18 @@ export function NewGameSystemForm(props: any) {
 
   return (
     <Form data={data} setData={setData} formState={formState} setFormState={setFormState} errors={errors}>
-      <Input id="name.nameAgain" label="System Name" required={true} defaultValue="Test"/>
-      <Input id="key" label="System Key" required={true} defaultValue={data.key}/>
-      <Select id="selectTest" label="Select Test"  data={selectData} defaultValue="rainbows"/>
+      <Input name="name.nameAgain" label="System Name" required={true} defaultValue="Test"/>
+      <Input name="key" label="System Key" required={true} defaultValue={data.key}/>
+      <Select name="selectTest" label="Select Test"  data={selectData} defaultValue="rainbows"/>
       <Checkboxes id="checkboxText" label="Checkbox Test" data={checkboxData}/>
-      <RadioButtons id="radioTest" label="Radio Test"  data={selectData} defaultValue="rainbows"/>
-      <Date id="date" label="Date Test"/>
-      <DateTime id="datetime" label="Date Time Test"/>
-      <Time id="time" label="Time Test"/>
-      <TextArea id="textarea" label="Text Area"/>
+      <RadioButtons name="radioTest" label="Radio Test"  data={selectData} defaultValue="rainbows"/>
+      <Date name="date" label="Date Test"/>
+      <DateTime name="datetime" label="Date Time Test"/>
+      <Time name="time" label="Time Test"/>
+      <TextArea name="textarea" label="Text Area"/>
       <Section>
-        <Input id="name.nameAgain" label="System Name" required={true} defaultValue="Test"/>
-        <Input id="key" label="System Key" required={true} defaultValue={data.key}/>
+        <Input name="name.nameAgain" label="System Name" required={true} defaultValue="Test"/>
+        <Input name="key" label="System Key" required={true} defaultValue={data.key}/>
       </Section>
       <Button color="primary">Submit!</Button>
     </Form>

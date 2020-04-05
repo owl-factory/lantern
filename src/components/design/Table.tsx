@@ -7,7 +7,7 @@ import {
   TableRow,
 } from "@material-ui/core";
 import react from "react";
-import { def } from "../../helpers/common";
+import { def } from "../../helpers/tools";
 import Pagination, {usePageState} from "./Pagination";
 
 export interface ILayoutItem {

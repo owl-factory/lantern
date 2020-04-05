@@ -40,6 +40,13 @@ export function deepGet(obj: any, key: string) {
   }
 }
 
+/**
+ * Sets data for objects and arrays that may be as deeply nested as desired
+ *
+ * @param obj The object to set data in
+ * @param key The key to set data at
+ * @param value The value to set at key
+ */
 export function deepSet(obj: any, key: string, value: any) {
   const keys = key.split(".");
 
@@ -112,4 +119,42 @@ export function min(arg: number, defaultValue: number): number {
     return defaultValue;
   }
   return arg;
+}
+
+/**
+ * Saves the desired fields to a new object by deep copying them. Returns a new object with the requested fields
+ *
+ * @param obj The object to keep fields from
+ * @param fields The fields to keep
+ */
+export function objectKeepFields(obj: any, fields: string[]) {
+  const newObject: any = {};
+
+  fields.forEach((field: string) => {
+    // Prevents errors with reading empty field
+    if (!(field in obj)) {
+      return;
+    }
+
+    newObject[field] = deepCopy(obj[field]);
+  });
+
+  return newObject;
+}
+
+/**
+ * Strips fields from a given object for the requested fields. Returns a deep copy of the original object without the 
+ * requested fields
+ *
+ * @param obj The object to strip fields from
+ * @param fields The fields to remove
+ */
+export function objectStripFields(obj: any, fields: string[]) {
+  const newObj: any = deepCopy(obj);
+
+  fields.forEach((field: string) => {
+    delete newObj[field];
+  });
+
+  return;
 }

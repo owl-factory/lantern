@@ -1,7 +1,7 @@
 import { Breadcrumbs as MuiBreadcrumbs, Link as MuiLink } from "@material-ui/core";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { def } from "../../helpers/common";
+import { def } from "../../helpers/tools";
 
 interface IBreadcrumb {
   skipLevels?: number; // the endpoint to start from

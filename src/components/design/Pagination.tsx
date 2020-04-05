@@ -1,6 +1,6 @@
 import { Paper, Tab, Tabs } from "@material-ui/core";
 import react from "react";
-import { def, min } from "../../helpers/common";
+import { def, min } from "../../helpers/tools";
 
 interface IPagination {
   pageState: IPageState; // The state of the page to use and update

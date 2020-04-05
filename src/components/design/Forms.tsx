@@ -27,7 +27,7 @@ import {
   Select as MuiSelect,
 } from "@material-ui/core";
 import react from "react";
-import { deepCopy, deepGet, deepSet, def, defState } from "../../helpers/common";
+import { deepCopy, deepGet, deepSet, def, defState, objectKeepFields, objectStripFields } from "../../helpers/tools";
 
 interface IForm {
   id?: string; // The form id. Used for creating the postfix
@@ -62,15 +62,14 @@ interface IGridItem extends ISharedGrid {
 }
 
 interface IField extends ISharedGrid {
-  id: string;
+  id?: string; // The input id
+  label?: string; // The label of the inputs
 
   error?: string;
   message?: string;
 }
 
 interface ICheckboxes extends IField {
-  id: string;
-  label?: string; // The label of the checkbox group
   keyPostfix?: string; // A postfix to append to the end of the id and key to prevent overlaps
 
   onChange?: (event: object) => (void); // The function to call on change
@@ -87,10 +86,8 @@ interface ISection extends ISharedGrid {
 }
 
 interface IInput extends IField {
-  id: string; // The input 'id' content
-  name?: string; // The name of the input
-  label?: string; // The label to display as
-  keyPostfix?: string; // A postfix to append to the end of the key
+  name: string; // The name of the input
+  keyPostfix?: string; // A postfix to append to the end of the key // TODO - do we need this?
 
   color?: "primary" | "secondary"; // The color of the input
   defaultValue?: string; // The default value to start with (if given no value)
@@ -108,9 +105,7 @@ interface IInput extends IField {
 }
 
 interface ISelect extends IField {
-  id: string; // The input 'id' content
-  name?: string; // The name of the input
-  label?: string; // The label to display
+  name: string; // The name of the input
   disabled?: boolean; // If this is disabled or not
   required?: boolean; // If this is required or not
   keyPostfix?: string; // A postfix to append to the end of the key
@@ -133,15 +128,14 @@ type LabelPlacement = ("start" | "top" | "bottom" | "end" | undefined);
 type GetValue = (name: string, defaultValue: any) => (boolean | undefined);
 
 interface IRadioButtons extends IField {
-  id: string; // The input 'id' content
-  name?: string; // The name of the input
+  name: string; // The name of the input
   label?: string; // The label to display
   keyPostfix?: string; // A postfix to append to the end of the key
 
   ariaLabel?: string; // Usability label
   defaultValue?: string; // The default value to use, if blank
   labelPlacement?: LabelPlacement; // The placement of the label
-  onChange?: (event: object) => void; // The function to use on change
+  onChange?: (event: any) => void; // The function to use on change
   value?: any; // The default value to display
 
   data?: object[]; // An array of structs containing the label and value to use
@@ -154,6 +148,11 @@ interface IRadioButtons extends IField {
 
 // TODO - classes for inputs
 
+const $gridItemPropFields = ["xs", "sm", "md", "lg", "xl"];
+
+/**
+ * Grabs the default form state
+ */
 export function getDefaultFormState() {
   return {
     isDirty: false,
@@ -162,19 +161,26 @@ export function getDefaultFormState() {
 
 /**
  * Determines if the error is a valid error
+ *
  * @param error The error message
  */
-function hasError(error: string | undefined) {
+function $hasMessage(error: string | undefined) {
   if (error === undefined || error === "") {
     return false;
   }
   return true;
 }
 
-function renderMessage(message: string | undefined, error: string | undefined) {
-  if (hasError(error)) {
+/**
+ * Renders a message given inputs, putting precedence on the error message
+ *
+ * @param message The message to display, if any
+ * @param error The error to display, if any
+ */
+function $renderMessage(message: string | undefined, error: string | undefined) {
+  if ($hasMessage(error)) {
     return error;
-  } else if (hasError(message)) {
+  } else if ($hasMessage(message)) {
     return message;
   }
 }
@@ -187,7 +193,6 @@ export function Form(props: IForm) {
   const [formID, setFormID] = react.useState(def<string>(props.id, "form"));
   const [data, setData] = defState<any>(props.data, props.setData, {});
   const [formState, setFormState] = defState<any>(props.formState, props.setFormState, getDefaultFormState());
-  const errors = def(props.errors, {});
 
   let children: JSX.Element[] = [];
   let childIndex: number = 0;
@@ -353,15 +358,16 @@ function GridItem(props: IGridItem) {
  */
 export function Button(props: any) {
   const variant = def<ButtonVariant>(props.variant, "contained");
+  const classes = undefined;
+
+  const buttonProps = objectStripFields(props, ["ariaLabel", "classes", "onClick", "variant"]);
 
   return (
     <MuiButton
+      {...buttonProps}
       aria-label={props.ariaLabel}
-      color={props.color}
-      endIcon={props.endIcon}
+      classes={classes}
       onClick={(event) => {props.onClick(event, props.data, props.setData);}}
-      size={props.size}
-      startIcon={props.startIcon}
       variant={variant}
     >
       {props.children}
@@ -398,12 +404,12 @@ export function Checkboxes(props: ICheckboxes) {
 
   return (
     <GridItem xs={props.xs} sm={props.sm} md={props.md} lg={props.lg} xl={props.xl}>
-      <FormControl component="fieldset" error={hasError(props.error)}>
+      <FormControl component="fieldset" error={$hasMessage(props.error)}>
         <FormLabel component="legend">{label}</FormLabel>
         <FormGroup>
           {checkboxes}
         </FormGroup>
-        <FormHelperText>{renderMessage(props.message, props.error)}</FormHelperText>
+        <FormHelperText>{$renderMessage(props.message, props.error)}</FormHelperText>
       </FormControl>
     </GridItem>
   );
@@ -414,8 +420,10 @@ export function Checkboxes(props: ICheckboxes) {
  * @param props see IContainer
  */
 export function Section(props: ISection) {
+  const gridItemProps = objectKeepFields(props, $gridItemPropFields);
+
   return (
-    <GridItem xs={props.xs} sm={props.sm} md={props.md} lg={props.lg} xl={props.xl}>
+    <GridItem {...gridItemProps}>
       <Grid container>
         {props.children}
       </Grid>
@@ -450,38 +458,32 @@ export function DateTime(props: IInput) {
  * @param props see IInput
  */
 export function Input(props: IInput) {
-  const name = def<string>(props.name, props.id);
-  const label = def<string>(props.label, name);
+  const id = def<string>(props.id, props.name);
+  const label = def<string>(props.label, props.name);
   const keyPostfix = "_" + def<string>(props.keyPostfix, "");
   const disabled = def<boolean>(props.disabled, false);
 
   const helperTextID = props.id + "_helper";
+  const inputProps = objectKeepFields(
+    props,
+    ["color", "disabled", "multiline", "name", "placeholder", "required", "rows", "type", "value"],
+  );
+  const gridItemProps = objectKeepFields(props, $gridItemPropFields);
 
   return (
-    <Grid item sm={6} xs={12}>
-      <FormControl error={hasError(props.error)}>
+    <GridItem {...gridItemProps}>
+      <FormControl error={$hasMessage(props.error)}>
         <InputLabel {...props.inputLabelProps} html-for={props.id}>{label}</InputLabel>
         <MuiInput
-          id={props.id + keyPostfix}
-          name={name}
-          key={name + keyPostfix}
+          {...inputProps}
+          id={id}
           aria-describedby={helperTextID}
-          color={props.color}
-          disabled={disabled}
-          // TODO - error
           fullWidth={true}
-          multiline={props.multiline}
           onChange={props.onChange}
-          placeholder={props.placeholder}
-          required={props.required}
-          rows={props.rows}
-          type={props.type}
-          value={props.value}
         />
-        {/* <FormHelperText id={helperTextID}>{props.helperText}</FormHelperText> */}
-        <FormHelperText>{renderMessage(props.message, props.error)}</FormHelperText>
+        <FormHelperText id={helperTextID}>{$renderMessage(props.message, props.error)}</FormHelperText>
       </FormControl>
-    </Grid>
+    </GridItem>
   );
 }
 
@@ -490,16 +492,16 @@ export function Input(props: IInput) {
  * @param props see ISelect
  */
 export function Select(props: ISelect) {
-  const name = def<string>(props.name, props.id);
-  const label = def<string>(props.label, name);
+  const id = def<string>(props.id, props.name);
+  const label = def<string>(props.label, props.name);
   const keyPostfix = "_" + def<string>(props.keyPostfix, "");
-
-  const disabled = def<boolean>(props.disabled, false);
-  const required = def<boolean>(props.required, false);
 
   const data = def<object[]>(props.data, []);
   const labelKey = def<string>(props.labelKey, "label");
   const valueKey = def<string>(props.valueKey, "value");
+
+  const selectProps = objectKeepFields(props, ["disabled", "name", "required", "value"]);
+  const gridItemProps = objectKeepFields(props, $gridItemPropFields);
 
   let emptyElement: JSX.Element | undefined;
   if (props.includeEmpty !== false) {
@@ -519,21 +521,18 @@ export function Select(props: ISelect) {
   }
 
   return (
-    <GridItem xs={props.xs} sm={props.sm} md={props.md} lg={props.lg} xl={props.xl}>
-      <FormControl error={hasError(props.error)}>
+    <GridItem {...gridItemProps}>
+      <FormControl error={$hasMessage(props.error)}>
         <InputLabel html-for={props.id}>{label}</InputLabel>
         <MuiSelect
+          {...selectProps}
           id={props.id + keyPostfix}
-          name={name}
-          disabled={disabled}
           onChange={props.onChange}
-          required={required}
-          value={props.value}
         >
           {emptyElement}
           {children}
         </MuiSelect>
-        <FormHelperText>{renderMessage(props.message, props.error)}</FormHelperText>
+        <FormHelperText>{$renderMessage(props.message, props.error)}</FormHelperText>
       </FormControl>
     </GridItem>
   );
@@ -544,8 +543,8 @@ export function Select(props: ISelect) {
  * @param props see IRadioButtons
  */
 export function RadioButtons(props: IRadioButtons) {
-  const name = def<string>(props.name, props.id);
-  const label = def<string>(props.label, name);
+  const id = def<string>(props.id, props.name);
+  const label = def<string>(props.label, props.name);
   const keyPostfix = "_" + def<string>(props.keyPostfix, "");
   const ariaLabel = def<string>(props.ariaLabel, label);
 
@@ -553,13 +552,16 @@ export function RadioButtons(props: IRadioButtons) {
   const labelKey = def<string>(props.labelKey, "label");
   const valueKey = def<string>(props.valueKey, "value");
 
+  const radioGroupProps = objectKeepFields(props, ["name", "value"]);
+  const gridItemProps = objectKeepFields(props, $gridItemPropFields);
+
   let children: any = [];
   if (props.children === undefined) {
     let index: number = 0;
     data.forEach((item: any) => {
       children.push(
         <FormControlLabel
-          key={props.id + "_" + index++ + keyPostfix}
+          key={id + "_" + index++ + keyPostfix}
           control={<Radio/>}
           label={item[labelKey]}
           labelPlacement={props.labelPlacement}
@@ -572,19 +574,18 @@ export function RadioButtons(props: IRadioButtons) {
   }
 
   return (
-    <GridItem xs={props.xs} sm={props.sm} md={props.md} lg={props.lg} xl={props.xl}>
-      <FormControl error={hasError(props.error)}>
-        <FormLabel html-for={props.id}>{label}</FormLabel>
+    <GridItem {...gridItemProps}>
+      <FormControl error={$hasMessage(props.error)}>
+        <FormLabel html-for={id}>{label}</FormLabel>
         <RadioGroup
-          id={props.id + keyPostfix}
-          name={name}
+          {...radioGroupProps}
+          id={id + keyPostfix}
           aria-label={ariaLabel}
           onChange={props.onChange}
-          value={props.value}
         >
           {children}
         </RadioGroup>
-        <FormHelperText>{renderMessage(props.message, props.error)}</FormHelperText>
+        <FormHelperText>{$renderMessage(props.message, props.error)}</FormHelperText>
       </FormControl>
     </GridItem>
   );
