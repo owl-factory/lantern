@@ -1,4 +1,5 @@
 import Page from "../components/Page";
+import React from "react";
 
 function Login() {
   return (
