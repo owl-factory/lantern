@@ -89,7 +89,7 @@ function GuestView(props: any) {
       <Grid container>
         <Grid item md={8} sm={12}>
           <Typography variant="body1">
-            Some stuff goes here
+            Azure Web App Test!
           </Typography>
         </Grid>
         <Grid item md={4} sm={12}>

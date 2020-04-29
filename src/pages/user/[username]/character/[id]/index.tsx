@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import Page from "../../../../../components/Page";
+import React from "react";
 
 function Character() {
   const router = useRouter();
