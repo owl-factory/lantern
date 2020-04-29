@@ -31,4 +31,4 @@ jobs:
         app-name: 'reroll'
         slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_5b52850a2e384ad6831bb5d33486aac0 }}
-        package: .next
+        package: .
