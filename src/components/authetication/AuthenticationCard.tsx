@@ -52,7 +52,7 @@ function LoginForm(props: any) {
       <Typography variant="h5">Login</Typography>
       <Button
         variant="contained"
-        onClick={() => {props.setSession({"user": {isLoggedIn: true}});}}
+        onClick={() => {props.setSession({"user": {isLoggedIn: true}}); }}
       >
         Google Login
       </Button>

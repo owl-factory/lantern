@@ -143,7 +143,7 @@ export function objectKeepFields(obj: any, fields: string[]) {
 }
 
 /**
- * Strips fields from a given object for the requested fields. Returns a deep copy of the original object without the 
+ * Strips fields from a given object for the requested fields. Returns a deep copy of the original object without the
  * requested fields
  *
  * @param obj The object to strip fields from

@@ -367,7 +367,7 @@ export function Button(props: any) {
       {...buttonProps}
       aria-label={props.ariaLabel}
       classes={classes}
-      onClick={(event) => {props.onClick(event, props.data, props.setData);}}
+      onClick={(event) => {props.onClick(event, props.data, props.setData); }}
       variant={variant}
     >
       {props.children}

@@ -162,7 +162,7 @@ function Table(props: ITable) {
       <Pagination
         pageState={pageState}
         setPageState={setPageState}
-        onPageChange={(pageState: any) => {console.log("Page changed!");}}
+        // onPageChange={(pageState: any) => {console.log("Page changed!");}} // TODO!
       />
     </div>
   );

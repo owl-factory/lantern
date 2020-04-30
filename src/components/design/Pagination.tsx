@@ -39,7 +39,7 @@ export function usePageState(perPage: number = 25, totalCount: number = 181) {
 function PaginationCell(props: IPaginationCell) {
   const pageText = def<string>(props.pageText, props.targetPage.toString());
   return (
-    <Tab label={pageText} onClick={() => {props.setPage(props.targetPage);}}/>
+    <Tab label={pageText} onClick={() => {props.setPage(props.targetPage); }}/>
   );
 }
 

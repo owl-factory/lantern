@@ -1,4 +1,12 @@
-import { Backdrop as MuiBackdrop, Button, Container, createStyles, Fade as MuiFade, makeStyles, Modal as MuiModal, Theme } from "@material-ui/core";
+import {
+  Backdrop as MuiBackdrop,
+  Container,
+  createStyles,
+  Fade as MuiFade,
+  makeStyles,
+  Modal as MuiModal,
+  Theme,
+} from "@material-ui/core";
 import React from "react";
 
 // TODO - add flag for "You may have unsaved changes!" before closing
