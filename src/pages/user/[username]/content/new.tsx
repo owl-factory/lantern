@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import React from "react";
 import Page from "../../../../components/Page";
 
 function NewContent() {

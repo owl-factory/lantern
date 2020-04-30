@@ -1,5 +1,5 @@
 import { Backdrop as MuiBackdrop, Button, Container, createStyles, Fade as MuiFade, makeStyles, Modal as MuiModal, Theme } from "@material-ui/core";
-import react from "react";
+import React from "react";
 
 // TODO - add flag for "You may have unsaved changes!" before closing
 
@@ -31,7 +31,7 @@ interface IModal {
  * multiple modals to be created and used without interfering with each other.
  */
 function registerModal(): [(props: any) => (JSX.Element | null), () => (void)] {
-  const [open, setOpen] = react.useState(false);
+  const [open, setOpen] = React.useState(false);
   const classes = useStyles();
 
   /**

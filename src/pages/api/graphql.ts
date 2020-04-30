@@ -1,15 +1,23 @@
-import { buildSchema, graphql } from "graphql";
+import { graphql } from "graphql";
+import mongo from "mongoose";
+import rootSchema from "../../models/schema";
 
-const schema = buildSchema(`
-  type Query {
-    hello: String
-  }
-`);
+const connectURL = process.env.MONGO_CONNECTION_STRING;
+if (connectURL === undefined) {
+  throw new Error("MONGO_CONNECTION_STRING is undefined");
+}
 
-const root = { hello: () => "Hello world!" };
+mongo.connect(connectURL, {
+  useUnifiedTopology: true,
+  useNewUrlParser: true,
+})
+.catch((err) => {
+  throw new Error(err);
+});
 
-export default function(req: any, res: any) {
-  graphql(schema, "{ hello }", root).then((response) => {
-    res.status(200).json(response);
-  });
+export default async function(req: any, res: any) {
+  const query = req.body.query;
+
+  const result = await graphql(rootSchema, query);
+  res.status(200).json(result);
 }

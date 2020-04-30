@@ -1,5 +1,5 @@
 import { Paper, Tab, Tabs } from "@material-ui/core";
-import react from "react";
+import React from "react";
 import { def, min } from "../../helpers/tools";
 
 interface IPagination {
@@ -29,7 +29,7 @@ interface IPaginationCell {
  * @param totalCount Total number of items
  */
 export function usePageState(perPage: number = 25, totalCount: number = 181) {
-  return react.useState({currentPage: 1, perPage, totalCount, offset: 0});
+  return React.useState({currentPage: 1, perPage, totalCount, offset: 0});
 }
 
 /**

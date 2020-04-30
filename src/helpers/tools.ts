@@ -1,5 +1,5 @@
 import { cloneDeep } from "lodash";
-import react from "react";
+import React from "react";
 
 /**
  * Wrappers the cloneDeep lodash function to give future developers a standard library of tools to pull from,
@@ -99,11 +99,11 @@ export function def<T>(arg: T | undefined, defaultValue: T): T {
  */
 export function defState<T>(
   state: T | undefined,
-  setState: react.Dispatch<react.SetStateAction<T>> | undefined,
+  setState: React.Dispatch<React.SetStateAction<T>> | undefined,
   defaultState: T,
-): [T, react.Dispatch<react.SetStateAction<T>>] {
+): [T, React.Dispatch<React.SetStateAction<T>>] {
   if (state === undefined || setState === undefined) {
-    return react.useState(defaultState);
+    return React.useState(defaultState);
   }
 
   return [state, setState];

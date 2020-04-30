@@ -1,7 +1,7 @@
 import { Box, Button, Card, CardContent, TextField, Typography } from "@material-ui/core";
 import { Theme } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
-import react from "react";
+import React from "react";
 
 interface ISetState {
   setState: (section: object) => void;
@@ -17,7 +17,7 @@ function AuthenticationCard(props: any) {
     section = props.section;
   }
 
-  const [state, setState] = react.useState({"section": section});
+  const [state, setState] = React.useState({"section": section});
 
   let cardContent: JSX.Element = <LoginForm/>;
   switch (state.section) {

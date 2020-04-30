@@ -37,9 +37,15 @@ function BugReportForm() {
 
   return (
     <Form>
+<<<<<<< HEAD
       <Input id="email" label="Email" name="Email"/>
       <Select id="bugType" label="Bug Type" name="Bug Type" data={bugOptions} labelKey="name"/>
       <TextArea id="message" label="What Happened?" name="What Happened?"/>
+=======
+      <Input name="email" label="Email"/>
+      <Select name="bugType" label="Bug Type" data={bugOptions} labelKey="name"/>
+      <TextArea name="message" label="What Happened?"/>
+>>>>>>> aed7594... Resolves build errors, changes react to React
     </Form>
   );
 }

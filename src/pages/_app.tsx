@@ -10,9 +10,12 @@ import Head from "next/head";
 import React from "react";
 import HeaderBar from "../components/HeaderBar";
 import theme from "../components/Theme";
+import { def } from "../helpers/tools";
+
+const apiURL = def<string>(process.env.API_URL, "/api/graphql");
 
 const httpOptions: HttpLink.Options = {
-  uri: "https://graphql-pokemon.now.sh",
+  uri: apiURL,
   fetch,
 };
 const cache = new InMemoryCache();
