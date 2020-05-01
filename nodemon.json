@@ -1,0 +1,10 @@
+{
+  "verbose": true,
+  "ignore": [
+    "mongo",
+    "node_modules",
+    ".next"
+  ],
+  "watch": ["src/"],
+  "ext": "ts tsx"
+}

@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "env-cmd next dev",
+    "dev": "env-cmd nodemon --exec next dev",
     "build": "next build",
     "start": "next start",
     "test": "jest"
@@ -46,6 +46,7 @@
     "eslint-plugin-react": "^7.19.0",
     "eslint-plugin-react-hooks": "^3.0.0",
     "jest": "^24.9.0",
+    "nodemon": "^2.0.3",
     "ts-jest": "^24.2.0",
     "typescript": "^3.7.2"
   }
