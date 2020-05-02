@@ -1,4 +1,4 @@
-version: '3'
+version: "2.4"
 services:
   web:
     image: node:12
@@ -11,15 +11,6 @@ services:
     env_file:
      - .env
     networks:
-     - reroll-net
-
-  database:
-    image: mongo:4.2.1-bionic
-    env_file:
-     - .database.env
-    volumes:
-     - ./mongo/:/data/db
-    networks: 
      - reroll-net
 
 networks: 

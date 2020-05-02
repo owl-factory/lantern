@@ -1,0 +1,15 @@
+version: "2.4"
+
+services:
+  database:
+    image: mongo:4.2.1-bionic
+    env_file:
+     - .env
+    volumes:
+     - ./data/:/data/db
+    networks: 
+     - reroll_reroll-net
+
+networks:
+  reroll_reroll-net:
+    external: true

@@ -19,7 +19,7 @@
 .DS_Store
 .env*
 *.env
-/mongo
+/mongo/data
 
 # debug
 npm-debug.log*
