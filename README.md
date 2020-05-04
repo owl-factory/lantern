@@ -7,6 +7,14 @@ This project requires either Docker or a Node.js development enviornment with to
 ## Getting Started
 Clone it locally and open a terminal in the project root. Simply run `docker-compose up` and the project will start in development mode on a Node.js contaner. You can also run the project directly in a Node.js development enviornment by installing the dependancies with `yarn install` and running the project with `yarn dev`.
 
+### Common Issues
+#### ENOSPC: System limit for number of file watchers reached
+This error is caused by nodemon's reloading. A Linux system has a limited number of file watchers. By default, this number is 8192. With VSCode in play, this allotment can be reached very quickly, causing this error. To resolve, run 
+
+`echo fs.inotify.max_user_watches=582222 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p`
+
+This permanently sets the maximum number of watchers per user to 582222, giving much needed breathing room for nodemon. 
+
 ## Building
 The project can be built and run in production mode eitehr by building a docker container with `docker build .` and running it or with a local Node enviornment using `yarn build` and `yarn start`.
 
