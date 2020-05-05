@@ -4,9 +4,9 @@ services:
   database:
     image: mongo:4.2.1-bionic
     env_file:
-     - .env
+     - database.env
     volumes:
-     - ./data/:/data/db
+     - ./mongo/:/data/db
     networks: 
      - reroll_reroll-net
 
