@@ -4,8 +4,19 @@ A web application for playing tabletop RPGs with friends. It is currently in it'
 ## Requirements
 This project requires either Docker or a Node.js development enviornment with to get started.
 
+### Environment
+#### Node Environment
+MONGO_CONNECTION_STRING - the fully qualified URI for connecting to a MongoDB database. The full format should appear something similar to `mongodb://[username]:[password]@[mongoURL]:27017/[dbname]?authSource=[auth_dbname]`.
+
+#### MongoDB Environment
+Within database.env, add the following:
+ * MONGO_INITDB_ROOT_USERNAME - the username of the root user on database initialization 
+ * MONGO_INITDB_ROOT_PASSWORD - the password of the root user on database initialization
+
 ## Getting Started
 Clone it locally and open a terminal in the project root. Simply run `docker-compose up` and the project will start in development mode on a Node.js contaner. You can also run the project directly in a Node.js development enviornment by installing the dependancies with `yarn install` and running the project with `yarn dev`.
+
+To start up the included mongo database, use `docker-compose -f docker-compose.mongo.yml up -d`. This can be started in tandem with the node container or seperately. 
 
 ### Common Issues
 #### ENOSPC: System limit for number of file watchers reached
