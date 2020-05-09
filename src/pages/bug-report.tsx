@@ -1,6 +1,6 @@
 import { Card, CardContent, Typography } from "@material-ui/core";
 import React from "react";
-import {Form, Input, Select, TextArea} from "../components/design/Forms";
+import {Form, Input, Select, TextArea} from "../components/design/forms/Forms";
 import Page from "../components/Page";
 
 /**

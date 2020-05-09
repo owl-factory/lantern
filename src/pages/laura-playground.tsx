@@ -1,7 +1,11 @@
 import { useQuery } from "@apollo/react-hooks";
 import gql from "graphql-tag";
 import React from "react"
+<<<<<<< HEAD
 import Page from "../components/Page";
+=======
+import Page from "../components/design/Page";
+>>>>>>> bootstrap-master
 import { NewGameSystemForm } from "../pages/admin/game-system/new";
 
 const GET_POKEMON_INFO = gql`
@@ -40,10 +44,13 @@ function LauraPlayground() {
 
   return (
     <Page>
-      Laura&apos;s Playground!
-      Here&apos;s where Laura is going to be doing her testing. &lt;3
-      {pokemon()}
-
+      <p>
+        Laura&apos;s Playground!
+      </p>
+      <p>
+        Here&apos;s where Laura is going to be doing her testing. &lt;3
+      </p>
+      
       <NewGameSystemForm/>
     </Page>
   );

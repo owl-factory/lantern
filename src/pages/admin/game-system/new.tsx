@@ -1,19 +1,20 @@
 import React from "react";
+import { Button, Col, Row } from "react-bootstrap";
 import Breadcrumbs from "../../../components/design/Breadcrumbs";
 import {
-  Button,
   Checkboxes,
   Date,
   DateTime,
   Form,
   Input,
+  Multiselect,
   RadioButtons,
-  Section,
+  // Section,
   Select,
   TextArea,
   Time,
-} from "../../../components/design/Forms";
-import Page from "../../../components/Page";
+} from "../../../components/design/forms/Forms";
+import Page from "../../../components/design/Page";
 import { defState } from "../../../helpers/tools";
 
 export function NewGameSystemForm(props: any) {
@@ -46,20 +47,43 @@ export function NewGameSystemForm(props: any) {
 
   return (
     <Form data={data} setData={setData} formState={formState} setFormState={setFormState} errors={errors}>
+<<<<<<< HEAD
       <Input prepend={<Button variant="outline-secondary">Button</Button>} name="name.nameAgain" label="System Name" required={true} defaultValue="Test" message="Hello"/>
+=======
+<<<<<<< Updated upstream
+      <Input name="name.nameAgain" label="System Name" required={true} defaultValue="Test"/>
+>>>>>>> bootstrap-master
       <Input name="key" label="System Key" required={true} defaultValue={data.key}/>
+=======
+      <Row>
+        <Col>
+          <Input prepend={<Button variant="outline-secondary">Button</Button>} name="name.nameAgain" label="System Name" required={true} defaultValue="Test" message="Hello"/>
+        </Col>
+        <Col>
+          <Input prepend={<Button variant="outline-secondary">Button</Button>} name="name.nameAgain" label="System Name" required={true} defaultValue="Test" message="Hello"/>
+        </Col>
+
+      </Row>
+      {/* <Input name="key" label="System Key" required={true} defaultValue={data.key}/>
+      
+>>>>>>> Stashed changes
       <Select name="selectTest" label="Select Test"  data={selectData} defaultValue="rainbows"/>
+      <Multiselect name="selectTest2" label="Multiselect Test" data={selectData} defaultValue={[]}/>
+      
       <Checkboxes id="checkboxText" label="Checkbox Test" data={checkboxData}/>
       <RadioButtons name="radioTest" label="Radio Test"  data={selectData} defaultValue="rainbows"/>
+      
       <Date name="date" label="Date Test"/>
       <DateTime name="datetime" label="Date Time Test"/>
+      
       <Time name="time" label="Time Test"/>
-      <TextArea name="textarea" label="Text Area"/>
+      <TextArea name="textarea" rows={2} label="Text Area"/>
+      
       <Section>
         <Input name="name.nameAgain" label="System Name" required={true} defaultValue="Test"/>
         <Input name="key" label="System Key" required={true} defaultValue={data.key}/>
       </Section>
-      <Button color="primary">Submit!</Button>
+      <Button variant="primary">Submit!</Button>   */}
     </Form>
   );
 }
