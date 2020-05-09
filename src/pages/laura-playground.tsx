@@ -1,9 +1,8 @@
 import { useQuery } from "@apollo/react-hooks";
-import { Typography } from "@material-ui/core"
 import gql from "graphql-tag";
-// import mongodb from "mongodb"
-import * as React from "react"
-import Page from "../components/Page";
+import React from "react"
+import Page from "../components/design/Page";
+import { NewGameSystemForm } from "../pages/admin/game-system/new";
 
 const GET_POKEMON_INFO = gql`
 {
@@ -42,13 +41,14 @@ function LauraPlayground() {
 
   return (
     <Page>
-      <Typography variant="h3" paragraph>
-        Laura's Playground!
-      </Typography>
-      <Typography paragraph>
-        Here's where Laura is going to be doing her testing. &lt;3
-      </Typography>
-      {pokemon()}
+      <p>
+        Laura&apos;s Playground!
+      </p>
+      <p>
+        Here&apos;s where Laura is going to be doing her testing. &lt;3
+      </p>
+      
+      <NewGameSystemForm/>
     </Page>
   );
 }
