@@ -1,5 +1,4 @@
-import { Container as MuiContainer } from "@material-ui/core";
-import react from "react";
+import React from "react";
 import Breadcrumbs from "../../../components/design/Breadcrumbs";
 import {
   Button,
@@ -47,7 +46,7 @@ export function NewGameSystemForm(props: any) {
 
   return (
     <Form data={data} setData={setData} formState={formState} setFormState={setFormState} errors={errors}>
-      <Input name="name.nameAgain" label="System Name" required={true} defaultValue="Test"/>
+      <Input prepend={<Button variant="outline-secondary">Button</Button>} name="name.nameAgain" label="System Name" required={true} defaultValue="Test" message="Hello"/>
       <Input name="key" label="System Key" required={true} defaultValue={data.key}/>
       <Select name="selectTest" label="Select Test"  data={selectData} defaultValue="rainbows"/>
       <Checkboxes id="checkboxText" label="Checkbox Test" data={checkboxData}/>
@@ -72,14 +71,12 @@ function NewGameSystem() {
 
   return (
     <Page>
-      <MuiContainer fixed>
-        <h1>New Game Systems</h1>
-        <Breadcrumbs skipLevels={1} titles={["Admin", "Game Systems", "New Game System"]}/>
+      <h1>New Game Systems</h1>
+      <Breadcrumbs skipLevels={1} titles={["Admin", "Game Systems", "New Game System"]}/>
 
-        <br/>
+      <br/>
 
-        <NewGameSystemForm/>
-      </MuiContainer>
+      <NewGameSystemForm/>
     </Page>
   );
 }
