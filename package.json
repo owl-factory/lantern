@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "env-cmd nodemon --exec next dev",
+    "nodemon": "nodemon --exec yarn dev",
+    "dev": "env-cmd next dev",
     "build": "next build",
     "start": "next start",
     "test": "jest"

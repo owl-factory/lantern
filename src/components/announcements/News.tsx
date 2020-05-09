@@ -1,6 +1,5 @@
-import { Row, Card } from "react-bootstrap";
+import { Row, Card, Col } from "react-bootstrap";
 import React from "react";
-import { FullWrapper } from "../common/wrappers";
 
 function News(props: any) {
   const news: JSX.Element[] = [];
@@ -21,13 +20,17 @@ function ArticleCard(props: any) {
   });
 
   return (
-    <FullWrapper>
-      <h5>{props.article.title}</h5>
-      <p>
-        Posted at {props.article.postedAt} by {props.article.author}
-      </p>
-      {contents}
-    </FullWrapper>
+    <Col md="12">
+      <Card bg="light" className="mb-2">
+        <Card.Body>
+          <h5>{props.article.title}</h5>
+          <p>
+            Posted at {props.article.postedAt} by {props.article.author}
+          </p>
+          {contents}
+        </Card.Body>
+      </Card>
+    </Col>
   );
 }
 

@@ -34,7 +34,7 @@ function AuthenticationCard(props: any) {
   }
 
   return (
-    <Card>
+    <Card bg="light">
       { cardBody }
     </Card>
   );
@@ -48,7 +48,7 @@ function LoginForm(props: any) {
   return (
     <Card.Body>
       <h5>Login</h5>
-      <Button
+      <Button variant="secondary"
         onClick={() => {props.setSession({"user": {isLoggedIn: true}});}}
       >
         Google Login
@@ -60,10 +60,8 @@ function LoginForm(props: any) {
         <Form.Label>Password</Form.Label>
         <Form.Control id="password"/>
         <br/><br/>
-        <Card>
-          <Button type="submit" color="primary">Log In</Button>
-        </Card><br/>
-
+        <Button type="submit" color="primary">Log In</Button>
+        <br/>
         <SignUpLink setState={props.setState}/>
         <ForgotPasswordLink setState={props.setState}/>
       </Form>
