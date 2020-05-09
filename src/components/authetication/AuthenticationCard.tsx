@@ -1,7 +1,5 @@
-import { Box, Button, Card, CardContent, TextField, Typography } from "@material-ui/core";
-import { Theme } from "@material-ui/core";
-import { makeStyles } from "@material-ui/styles";
-import react from "react";
+import React, { useState } from "react";
+import { Card, Button, Form } from "react-bootstrap";
 
 interface ISetState {
   setState: (section: object) => void;
@@ -17,27 +15,27 @@ function AuthenticationCard(props: any) {
     section = props.section;
   }
 
-  const [state, setState] = react.useState({"section": section});
+  const [state, setState] = useState({"section": section});
 
-  let cardContent: JSX.Element = <LoginForm/>;
+  let cardBody: JSX.Element = <LoginForm/>;
   switch (state.section) {
     case "login":
-      cardContent = <LoginForm setSession={props.setSession} setState={setState}/>;
+      cardBody = <LoginForm setSession={props.setSession} setState={setState}/>;
       break;
     case "signup":
-      cardContent = <SignUpForm setState={setState}/>;
+      cardBody = <SignUpForm setState={setState}/>;
       break;
     case "forgotpassword":
-      cardContent = <ForgotPasswordForm setState={setState}/>;
+      cardBody = <ForgotPasswordForm setState={setState}/>;
       break;
     default:
-      cardContent = <LoginForm setState={setState}/>;
+      cardBody = <LoginForm setState={setState}/>;
       break;
   }
 
   return (
     <Card>
-      { cardContent }
+      { cardBody }
     </Card>
   );
 }
@@ -48,27 +46,28 @@ function AuthenticationCard(props: any) {
  */
 function LoginForm(props: any) {
   return (
-    <CardContent>
-      <Typography variant="h5">Login</Typography>
+    <Card.Body>
+      <h5>Login</h5>
       <Button
-        variant="contained"
         onClick={() => {props.setSession({"user": {isLoggedIn: true}});}}
       >
         Google Login
       </Button>
 
-      <form noValidate>
-        <TextField id="username" label="Username" variant="outlined" fullWidth margin="normal"/>
-        <TextField id="password" label="Password" type="password" variant="outlined" fullWidth margin="normal"/>
+      <Form>
+        <Form.Label>Username</Form.Label>
+        <Form.Control id="username"/>
+        <Form.Label>Password</Form.Label>
+        <Form.Control id="password"/>
         <br/><br/>
-        <Box>
-          <Button variant="contained" type="submit" color="primary">Log In</Button>
-        </Box><br/>
+        <Card>
+          <Button type="submit" color="primary">Log In</Button>
+        </Card><br/>
 
         <SignUpLink setState={props.setState}/>
         <ForgotPasswordLink setState={props.setState}/>
-      </form>
-    </CardContent>
+      </Form>
+    </Card.Body>
   );
 }
 
@@ -78,30 +77,27 @@ function LoginForm(props: any) {
  */
 function SignUpForm(props: any) {
   return (
-    <CardContent>
-      <Typography variant="h5">Sign Up</Typography>
+    <Card.Body>
+      <h5>Sign Up</h5>
 
-      <form noValidate>
-        <TextField id="username" label="Username" variant="outlined" fullWidth margin="normal"/>
-        <TextField id="email" label="Email" variant="outlined" fullWidth margin="normal"/>
-        <TextField id="password" label="Password" type="password" variant="outlined" fullWidth margin="normal"/>
-        <TextField
-          id="confirm-password"
-          label="Confirm Password"
-          type="confirm-password"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-        />
+      <Form>
+        <Form.Label>Username</Form.Label>
+        <Form.Control id="username"/>
+        <Form.Label>Email</Form.Label>
+        <Form.Control id="email"/>
+        <Form.Label>Password</Form.Label>
+        <Form.Control id="password"/>
+        <Form.Label>Confirm Password</Form.Label>
+        <Form.Control id="confirm-password" type="confirm-password"/>
         <br/><br/>
-        <Box>
-          <Button variant="contained" type="submit" color="primary">Sign Up</Button>
-        </Box><br/>
+        <Card>
+          <Button type="submit">Sign Up</Button>
+        </Card><br/>
 
         <LoginLink setState={props.setState}/>
         <ForgotPasswordLink setState={props.setState}/>
-      </form>
-    </CardContent>
+      </Form>
+    </Card.Body>
   );
 }
 
@@ -111,18 +107,19 @@ function SignUpForm(props: any) {
  */
 function ForgotPasswordForm(props: any) {
   return (
-    <CardContent>
-      <Typography variant="h5">Sign Up</Typography>
+    <Card.Body>
+      <h5>Sign Up</h5>
 
-      <TextField id="email" label="Email" variant="outlined" fullWidth margin="normal"/>
+      <Form.Label>Email</Form.Label>
+      <Form.Control id="email"/>
 
       <br/><br/>
-      <Box>
-        <Button variant="contained" type="submit" color="primary">Recover Account</Button>
-      </Box><br/>
+      <Card>
+        <Button type="submit" color="primary">Recover Account</Button>
+      </Card><br/>
       <LoginLink setState={props.setState}/>
       <SignUpLink setState={props.setState}/>
-    </CardContent>
+    </Card.Body>
   );
 }
 
@@ -132,7 +129,7 @@ function ForgotPasswordForm(props: any) {
  */
 function LoginLink(props: ISetState) {
   return (
-    <Button variant="text" onClick={() => (props.setState({section: "login"}))}>Log In</Button>
+    <Button onClick={() => (props.setState({section: "login"}))}>Log In</Button>
   );
 }
 
@@ -142,7 +139,7 @@ function LoginLink(props: ISetState) {
  */
 function SignUpLink(props: ISetState) {
   return (
-    <Button variant="text" onClick={() => (props.setState({section: "signup"}))}>Sign Up</Button>
+    <Button onClick={() => (props.setState({section: "signup"}))}>Sign Up</Button>
   );
 }
 
@@ -152,16 +149,8 @@ function SignUpLink(props: ISetState) {
  */
 function ForgotPasswordLink(props: ISetState) {
   return (
-    <Button variant="text" onClick={() => (props.setState({section: "forgotpassword"}))}>Forgot Password</Button>
+    <Button onClick={() => (props.setState({section: "forgotpassword"}))}>Forgot Password</Button>
   );
 }
-
-// TODO - create a full style component for global styles
-const useStyles = makeStyles((theme: Theme) => ({
-  floatCenter: {
-    display: "inline-block",
-    textAlign: "center",
-  },
-}));
 
 export default AuthenticationCard;

@@ -5,7 +5,8 @@ import { HttpLink } from "apollo-link-http";
 import fetch from "cross-fetch";
 import React from "react";
 import { AppProps } from "next/app";
-import "../styles/App.scss";
+import "./_app.scss";
+import HeaderBar from "../components/design/HeaderBar";
 
 const httpOptions: HttpLink.Options = {
   uri: "https://graphql-pokemon.now.sh",
@@ -22,8 +23,9 @@ const client = new ApolloClient({
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <ApolloProvider client={client}>
-      <Component {...pageProps} />
-    </ApolloProvider>
+      <ApolloProvider client={client}>
+        <HeaderBar />
+        <Component {...pageProps} />
+      </ApolloProvider>
   );
 }
