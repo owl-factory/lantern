@@ -1,7 +1,7 @@
-import {  Grid, Typography } from "@material-ui/core";
 import session from "../../pages/api/session.json";
 import NewContentTile from "../common/NewContentTile";
 import { TileWrapper } from "../common/wrappers";
+import { Container } from "react-bootstrap";
 
 /**
  * Renders the character tiles
@@ -20,7 +20,7 @@ function CharacterTiles(props: any) {
   }
 
   return (
-    <Grid container>{tiles}</Grid>
+    <Container>{tiles}</Container>
   );
 }
 
@@ -32,12 +32,12 @@ function CharacterTile(props: any) {
   const linkAddress: string = "/user/" + session.alias + "/character/" + props.item.alias;
   return (
     <TileWrapper href={linkAddress}>
-      <Typography variant="h6">
+      <h6>
         {props.item.name}
-      </Typography>
-      <Typography variant="body1">
+      </h6>
+      <p>
         {props.item.game.length > 0 ? "From" : ""} { props.item.game }
-      </Typography>
+      </p>
     </TileWrapper>
   );
 }

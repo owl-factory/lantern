@@ -1,14 +1,14 @@
-import { Card, CardContent, Grid, Typography } from "@material-ui/core";
-import { FullWrapper } from "../common/wrappers";
+import { Container, Card } from "react-bootstrap";
+import React from "react";
 
 function News(props: any) {
   const news: JSX.Element[] = [];
 
   props.articles.forEach((article: any) => {
-    news.push(<ArticleCard key={article.id} article={article}/>);
+    news.push(<ArticleCard key={article.id} article={article} />);
   });
 
-  return <Grid container>{news}</Grid>;
+  return <Container>{news}</Container>;
 }
 
 function ArticleCard(props: any) {
@@ -16,17 +16,17 @@ function ArticleCard(props: any) {
   let contentKey: number = 0;
 
   props.article.content.forEach((line: string) => {
-    contents.push(<Typography key={contentKey++} variant="body2">{line}</Typography>);
+    contents.push(<p key={contentKey++}>{line}</p>);
   });
 
   return (
-    <FullWrapper>
-      <Typography variant="h5">{props.article.title}</Typography>
-      <Typography color="textSecondary" gutterBottom>
+    <Card>
+      <h5>{props.article.title}</h5>
+      <p>
         Posted at {props.article.postedAt} by {props.article.author}
-      </Typography>
+      </p>
       {contents}
-    </FullWrapper>
+    </Card>
   );
 }
 

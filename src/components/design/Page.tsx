@@ -1,15 +1,9 @@
-import { makeStyles } from "@material-ui/styles";
 import React, { ReactNode } from "react";
+import { Container } from "react-bootstrap";
 
 interface PageProps {
   children: ReactNode;
 }
-
-const useStyles = makeStyles({
-  mainMargins: {
-    margin: 15,
-  },
-});
 
 /**
  * The page component is used to wrap the content of a page to apply uniform
@@ -19,11 +13,10 @@ const useStyles = makeStyles({
  * These are passed automatically
  */
 function Page(props: PageProps) {
-  const classes = useStyles();
   return (
-    <main className={classes.mainMargins}>
+    <Container>
       {props.children}
-    </main>
+    </Container>
   );
 }
 
