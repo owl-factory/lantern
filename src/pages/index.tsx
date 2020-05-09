@@ -8,7 +8,7 @@ import Page from "../components/design/Page";
 import campaigns from "./api/campaign/campaign.json";
 import characters from "./api/character/character.json";
 import news from "./api/news/news.json";
-import { Container, Button, Row, Col } from "react-bootstrap";
+import { Row, Button, Col } from "react-bootstrap";
 
 /**
  * Renders the index page and one of two subviews
@@ -71,7 +71,7 @@ function UserView(props: any) {
  */
 function GuestView(props: any) {
   return (
-    <Page>
+    <div>
       <h3>
         Welcome to Reroll!
       </h3>
@@ -86,7 +86,7 @@ function GuestView(props: any) {
         </Button>
       </Link>
 
-      <Container>
+      <Row>
         <Col md="8" sm="12">
           <p>
             Azure Web App Test!
@@ -95,8 +95,8 @@ function GuestView(props: any) {
         <Col md="4" sm="12">
           <AuthenticationCard session={props.session} setSession={props.setSession}/>
         </Col>
-      </Container>
-    </Page>
+      </Row>
+    </div>
   );
 }
 

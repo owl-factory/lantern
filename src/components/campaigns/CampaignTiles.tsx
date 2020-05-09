@@ -1,6 +1,6 @@
 import NewContentTile from "../common/NewContentTile";
 import { TileWrapper } from "../common/wrappers";
-import { Container } from "react-bootstrap";
+import { Row } from "react-bootstrap";
 
 /**
  * Renders the campaign tiles
@@ -19,7 +19,7 @@ function CampaignTiles(props: any) {
   }
 
   return (
-    <Container>{tiles}</Container>
+    <Row>{tiles}</Row>
   );
 }
 

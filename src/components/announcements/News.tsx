@@ -1,5 +1,6 @@
-import { Container, Card } from "react-bootstrap";
+import { Row, Card } from "react-bootstrap";
 import React from "react";
+import { FullWrapper } from "../common/wrappers";
 
 function News(props: any) {
   const news: JSX.Element[] = [];
@@ -8,7 +9,7 @@ function News(props: any) {
     news.push(<ArticleCard key={article.id} article={article} />);
   });
 
-  return <Container>{news}</Container>;
+  return <Row>{news}</Row>;
 }
 
 function ArticleCard(props: any) {
@@ -20,13 +21,13 @@ function ArticleCard(props: any) {
   });
 
   return (
-    <Card>
+    <FullWrapper>
       <h5>{props.article.title}</h5>
       <p>
         Posted at {props.article.postedAt} by {props.article.author}
       </p>
       {contents}
-    </Card>
+    </FullWrapper>
   );
 }
 

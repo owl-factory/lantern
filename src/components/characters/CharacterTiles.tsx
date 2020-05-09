@@ -1,7 +1,7 @@
 import session from "../../pages/api/session.json";
 import NewContentTile from "../common/NewContentTile";
 import { TileWrapper } from "../common/wrappers";
-import { Container } from "react-bootstrap";
+import { Row } from "react-bootstrap";
 
 /**
  * Renders the character tiles
@@ -20,7 +20,7 @@ function CharacterTiles(props: any) {
   }
 
   return (
-    <Container>{tiles}</Container>
+    <Row>{tiles}</Row>
   );
 }
 

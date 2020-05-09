@@ -14,7 +14,7 @@ interface PageProps {
  */
 function Page(props: PageProps) {
   return (
-    <Container>
+    <Container className="mt-3">
       {props.children}
     </Container>
   );
