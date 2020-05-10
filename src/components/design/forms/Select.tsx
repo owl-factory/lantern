@@ -38,16 +38,13 @@ export function Multiselect(props: SelectProps) {
  */
 export function Select(props: SelectProps) {
   const id = def<string>(props.id, props.name);
-  const label = def<string>(props.label, props.name);
-  const keyPostfix = "_" + def<string>(props.keyPostfix, "");
 
-  const data = def<object[]>(props.data, []);
+  const options = def<object[]>(props.data, []);
   const labelKey = def<string>(props.labelKey, "label");
   const valueKey = def<string>(props.valueKey, "value");
   const emptyText = def<string>(props.emptyText, "-- Select One --");
 
   const selectProps = objectKeepFields(props, ["disabled", "multiple", "name", "required", "size", "value"]);
-  const gridItemProps = objectKeepFields(props, $gridItemPropFields);
 
   let emptyElement: JSX.Element | undefined;
   if (props.includeEmpty !== false) {
@@ -57,10 +54,9 @@ export function Select(props: SelectProps) {
   let children: any = [];
   if (props.children === undefined) {
     let index = 0;
-    data.forEach((item: any) => {
-      // MuiMenuItem
+    options.forEach((option: any) => {
       children.push(
-        <option key={id + "_" + index++ + keyPostfix} value={item[valueKey]}>{item[labelKey]}</option> , 
+        <option key={id + "_" + index++} value={option[valueKey]}>{option[labelKey]}</option> , 
       );
     });
   } else {
@@ -68,20 +64,14 @@ export function Select(props: SelectProps) {
   }
 
   return (
-    <Col {...gridItemProps}>
-      <Form.Group /* error={$hasMessage(props.error)} */> { /* FormControl */}
-        <Form.Label html-for={props.id}>{label}</Form.Label>
-        <Form.Control
-          as="select"
-          {...selectProps}
-          id={props.id + keyPostfix}
-          onChange={props.onChange}
-        >
-          {emptyElement}
-          {children}
-        </Form.Control>
-        <div>{$renderMessage(props.message, props.error)}</div> { /* FormHelperText */}
-      </Form.Group>
-    </Col>
+    <Form.Control
+      as="select"
+      {...selectProps}
+      id={id}
+      onChange={props.onChange}
+    >
+      {emptyElement}
+      {children}
+    </Form.Control>
   );
 }

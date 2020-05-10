@@ -17,7 +17,7 @@ import {
 import Page from "../../../components/design/Page";
 import { defState } from "../../../helpers/tools";
 
-export function NewGameSystemForm(props: any) {
+export function TestForm(props: any) {
   const [data, setData] = defState(props.state, props.setState, {
     name: {nameAgain: "Boop"},
     key: "",
@@ -93,18 +93,17 @@ export function NewGameSystemForm(props: any) {
 /**
  * Renders a the page to create a new game system
  */
-function NewGameSystem() {
+function TestForms() {
 
   return (
     <Page>
-      <h1>New Game Systems</h1>
-      <Breadcrumbs skipLevels={1} titles={["Admin", "Game Systems", "New Game System"]}/>
+      <h1>Test Forms</h1>
 
       <br/>
 
-      <NewGameSystemForm/>
+      <TestForm/>
     </Page>
   );
 }
 
-export default NewGameSystem;
+export default TestForms;

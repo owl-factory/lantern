@@ -1,11 +1,7 @@
 import { useQuery } from "@apollo/react-hooks";
 import gql from "graphql-tag";
 import React from "react"
-<<<<<<< HEAD
-import Page from "../components/Page";
-=======
 import Page from "../components/design/Page";
->>>>>>> bootstrap-master
 import { NewGameSystemForm } from "../pages/admin/game-system/new";
 
 const GET_POKEMON_INFO = gql`

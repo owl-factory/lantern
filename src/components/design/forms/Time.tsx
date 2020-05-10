@@ -7,8 +7,6 @@ import { def } from "../../../helpers/tools";
  * @param props see InputProps
  */
 export function Time(props: InputProps) {
-  const baseInputLabelProps = def<object>(props.inputLabelProps, {});
-  const dateInputLabelProps = {...baseInputLabelProps, shrink: true};
 
-  return <Input {...props} inputLabelProps={dateInputLabelProps} type="time"/>;
+  return <Input {...props} type="time"/>;
 }

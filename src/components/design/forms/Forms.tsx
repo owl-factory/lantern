@@ -14,12 +14,10 @@
  */
 
 import React from "react";
-import { deepCopy, deepGet, deepSet, def, defState, objectKeepFields } from "../../../helpers/tools";
-import { 
-  Col as BSCol, 
+import { deepCopy, deepGet, deepSet, def, defState } from "../../../helpers/tools";
+import {
   Row as BSRow 
 } from "react-bootstrap";
-
 
 interface FormProps {
   id?: string; // The form id. Used for creating the postfix
@@ -34,25 +32,6 @@ interface FormProps {
   errors?: object;
 
 }
-
-// interface ColumnProps extends SharedColumnProps {
-//   children?: any; // Children of the grid
-// }
-
-
-
-// interface SectionProps extends SharedColumnProps {
-//   children?: any; // The children of the grid
-// }
-
-
-
-
-
-
-
-
-// TODO - classes for inputs
 
 export const $gridItemPropFields = ["xs", "sm", "md", "lg", "xl"];
 
@@ -95,7 +74,7 @@ export function $renderMessage(message: string | undefined, error: string | unde
  * Renders the outside of a form
  * @param props see IForm
  */
-export function Form(props: FormProps) {
+export function AutoForm(props: FormProps) {
   const [formID] = React.useState(def<string>(props.id, "form"));
   const [data, setData] = defState<any>(props.data, props.setData, {});
   const [formState, setFormState] = defState<any>(props.formState, props.setFormState, getDefaultFormState());
@@ -166,64 +145,72 @@ export function Form(props: FormProps) {
    */
   function renderChildren(formChildren: any) {
     const renderedChildren: JSX.Element[] = [];
+
     React.Children.toArray(formChildren).forEach((child: any) => {
-    const newChildName = def<string>(child.props.name, child.props.id);
-    const keyPostfix: string = formID + "_" + childIndex++;
-    const newChildProps: any = {};
-    let newChild: any;
+      const childType = typeof child;
 
-    switch (child.type.name) {
-      case "Checkboxes":
-        const nameKey = def<string>(child.props.nameKey, "name");
-        const defaultValueKey = def<string>(child.props.defaultValueKey, "defaultValue");
-        const checkboxes = def<object[]>(child.props.data, []);
+      if (childType !== "object") {
+        renderedChildren.push(child);
+        return;
+      }
 
-        checkboxes.forEach((item: any) => {
-          registerValue(item[nameKey], item[defaultValueKey], false);
-        });
+      const newChildName = def<string>(child.props.name, child.props.id);
+      const keyPostfix: string = formID + "_" + childIndex++;
+      const newChildProps: any = {};
+      let newChild: any;
+      console.log(child)
 
-        newChildProps["name"] = newChildName;
-        newChildProps["getValue"] = getValue;
-        newChildProps["keyPostfix"] = keyPostfix;
-        newChildProps["onChange"] = (event: any) => { onCheckboxChange(event); };
-        newChild = React.cloneElement(child, newChildProps);
-        registerValue(newChildName, child.props.defaultValue);
-        break;
+      switch (child.type.name) {
+        case "Checkboxes":
+          const nameKey = def<string>(child.props.nameKey, "name");
+          const defaultValueKey = def<string>(child.props.defaultValueKey, "defaultValue");
+          const checkboxes = def<object[]>(child.props.data, []);
 
-      case "Date":
-      case "DateTime":
-      case "Input":
-      case "RadioButtons":
-      case "Select":
-      case "TextArea":
-      case "Time":
-        newChildProps["name"] = newChildName;
-        newChildProps["keyPostfix"] = keyPostfix;
-        newChildProps["value"] = getValue(newChildName);
-        newChildProps["onChange"] = (event: any) => { onChange(event); };
+          checkboxes.forEach((item: any) => {
+            registerValue(item[nameKey], item[defaultValueKey], false);
+          });
 
-        newChild = React.cloneElement(child, newChildProps);
-        registerValue(newChildName, child.props.defaultValue);
+          newChildProps["name"] = newChildName;
+          newChildProps["getValue"] = getValue;
+          newChildProps["keyPostfix"] = keyPostfix;
+          newChildProps["onChange"] = (event: any) => { onCheckboxChange(event); };
+          newChild = React.cloneElement(child, newChildProps);
+          registerValue(newChildName, child.props.defaultValue);
+          break;
 
-        break;
-      
-      case "Multiselect":
-        newChildProps["name"] = newChildName;
-        newChildProps["keyPostfix"] = keyPostfix;
-        newChildProps["value"] = getValue(newChildName, []);
-        newChildProps["onChange"] = (event: any) => { onMultiselectChange(event); };
+        case "Date":
+        case "DateTime":
+        case "Input":
+        case "RadioButtons":
+        case "Select":
+        case "TextArea":
+        case "Time":
+          newChildProps["name"] = newChildName;
+          newChildProps["keyPostfix"] = keyPostfix;
+          newChildProps["value"] = getValue(newChildName);
+          newChildProps["onChange"] = (event: any) => { onChange(event); };
 
-        newChild = React.cloneElement(child, newChildProps);
-        registerValue(newChildName, child.props.defaultValue);
+          newChild = React.cloneElement(child, newChildProps);
+          registerValue(newChildName, child.props.defaultValue);
 
-        break;
+          break;
+        
+        case "Multiselect":
+          newChildProps["name"] = newChildName;
+          newChildProps["keyPostfix"] = keyPostfix;
+          newChildProps["value"] = getValue(newChildName, []);
+          newChildProps["onChange"] = (event: any) => { onMultiselectChange(event); };
 
-      // Any child of Form is recursively searched through to find any form elements 
-      // that we can apply the Form to
-      default:
-        console.log(child)
-        newChildProps["children"] = renderChildren(child.props.children);
-        newChild = React.cloneElement(child, newChildProps);
+          newChild = React.cloneElement(child, newChildProps);
+          registerValue(newChildName, child.props.defaultValue);
+
+          break;
+
+        // Any child of Form is recursively searched through to find any form elements 
+        // that we can apply the Form to
+        default:
+          newChildProps["children"] = renderChildren(child.props.children);
+          newChild = React.cloneElement(child, newChildProps);
       }
 
       renderedChildren.push(newChild);
@@ -252,46 +239,10 @@ export function Form(props: FormProps) {
 
   return (
     <form noValidate>
-      <BSRow>
-        {children}
-      </BSRow>
+      {children}
     </form>
   );
 }
-
-// /**
-//  * Creates a standard wrapper for Grid Items
-//  * @param props see IGridItem
-//  */
-// function Col(props: ColumnProps) {
-//   const xs = def<Size>(props.xs, 12);
-//   const sm = def<Size>(props.sm, 6);
-//   const md = def<Size>(props.md, sm);
-//   const lg = def<Size>(props.lg, md);
-//   const xl = def<Size>(props.xl, lg);
-
-//   return (
-//     <BSCol xl={xl} lg={lg} md={md} sm={sm} xs={xs}>
-//       {props.children}
-//     </BSCol>
-//   );
-// }
-
-// /**
-//  * Allows us to render a new container grid for a new set of columns inside the existing Form
-//  * @param props see IContainer
-//  */
-// export function Section(props: SectionProps) {
-//   const gridItemProps = objectKeepFields(props, $gridItemPropFields);
-
-//   return (
-//     <Col {...gridItemProps}>
-//       <BSRow>
-//         {props.children}
-//       </BSRow>
-//     </Col>
-//   );
-// }
 
 export { Checkboxes } from "./Checkboxes";
 export { Date } from "./Date";
