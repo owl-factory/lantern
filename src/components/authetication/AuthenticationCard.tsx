@@ -34,7 +34,7 @@ function AuthenticationCard(props: any) {
   }
 
   return (
-    <Card bg="light">
+    <Card>
       { cardBody }
     </Card>
   );

@@ -21,7 +21,7 @@ function ArticleCard(props: any) {
 
   return (
     <Col md="12">
-      <Card bg="light" className="mb-2">
+      <Card className="mb-2 mt-2">
         <Card.Body>
           <h5>{props.article.title}</h5>
           <p>

@@ -8,9 +8,29 @@ $theme-colors: (
   "primary": #b33951,
   "secondary": #91C7B1,
   "dark": #483d3f,
-  "light": #f9f9ed
+  "light": #f9f9ed,
 );
 
-$enable-shadows: true;
-
 @import "~bootstrap/scss/bootstrap";
+
+.card {
+  @extend .shadow-sm;
+  @extend .bg-light;
+  border-radius: 0.8em;
+}
+
+.btn {
+  @extend .shadow-sm;
+  border-radius: 0.8em;
+}
+
+.form-control {
+  background-color: $body-bg;
+  border-radius: 0.8em;
+}
+
+.form-control:focus {
+  border-color: theme-color("secondary");
+  box-shadow: 0 0 4px theme-color("secondary");
+  background-color: $body-bg;
+}
