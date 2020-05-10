@@ -1,4 +1,4 @@
-import { Breadcrumbs as MuiBreadcrumbs, Link as MuiLink } from "@material-ui/core";
+import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { def } from "../../helpers/tools";
@@ -41,7 +41,7 @@ function Breadcrumbs(props: IBreadcrumb) {
 
       breadcrumbs.push(
         <Link key={"crumb_" + i} href={uri} passHref>
-          <MuiLink color="inherit">{title}</MuiLink>
+          <div>{title}</div>
         </Link>,
       );
 
@@ -54,9 +54,9 @@ function Breadcrumbs(props: IBreadcrumb) {
   }
 
   return (
-    <MuiBreadcrumbs aria-label="breadcrumb">
+    <div aria-label="breadcrumb">
       { buildCrumbs() }
-    </MuiBreadcrumbs>
+    </div>
   );
 }
 

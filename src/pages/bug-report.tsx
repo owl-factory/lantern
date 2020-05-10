@@ -1,5 +1,5 @@
 import React from "react";
-import {Form, Input, Select, TextArea} from "../components/design/Forms";
+import {AutoForm, Input, Select, TextArea} from "../components/design/forms/Forms";
 import Page from "../components/design/Page";
 import { Card } from "react-bootstrap";
 
@@ -36,11 +36,11 @@ function BugReportForm() {
   ];
 
   return (
-    <Form>
+    <AutoForm>
       <Input id="email" label="Email" name="Email"/>
       <Select id="bugType" label="Bug Type" name="Bug Type" data={bugOptions} labelKey="name"/>
       <TextArea id="message" label="What Happened?" name="What Happened?"/>
-    </Form>
+    </AutoForm>
   );
 }
 

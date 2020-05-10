@@ -1,9 +1,8 @@
 import { useQuery } from "@apollo/react-hooks";
-import { Typography } from "@material-ui/core"
 import gql from "graphql-tag";
-// import mongodb from "mongodb"
-import * as React from "react"
-import Page from "../components/Page";
+import React from "react"
+import Page from "../components/design/Page";
+import { NewGameSystemForm } from "../pages/admin/game-system/new";
 
 const GET_POKEMON_INFO = gql`
 {
@@ -25,30 +24,30 @@ const GET_POKEMON_INFO = gql`
  * A playground for Laura's development so we don't bump into each other <3
  */
 function LauraPlayground() {
-  const { data, loading, error } = useQuery(GET_POKEMON_INFO);
+  // const { data, loading, error } = useQuery(GET_POKEMON_INFO);
 
   function pokemon() {
-    // mongodb.
-    if (loading) {
-      return <div>Loading...</div>;
-    }
+    // if (loading) {
+    //   return <div>Loading...</div>;
+    // }
 
-    if (error) {
-      return <div>Error...</div>;
-    }
+    // if (error) {
+    //   return <div>Error...</div>;
+    // }
 
-    console.log(data);
+    console.log("data");
   }
 
   return (
     <Page>
-      <Typography variant="h3" paragraph>
-        Laura's Playground!
-      </Typography>
-      <Typography paragraph>
-        Here's where Laura is going to be doing her testing. &lt;3
-      </Typography>
-      {pokemon()}
+      <p>
+        Laura&apos;s Playground!
+      </p>
+      <p>
+        Here&apos;s where Laura is going to be doing her testing. &lt;3
+      </p>
+      
+      <NewGameSystemForm/>
     </Page>
   );
 }

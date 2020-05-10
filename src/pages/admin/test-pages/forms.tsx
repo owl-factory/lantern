@@ -2,7 +2,8 @@ import React from "react";
 import { Button, Col, Form, InputGroup, Row } from "react-bootstrap";
 import Breadcrumbs from "../../../components/design/Breadcrumbs";
 import {
-  Checkboxes,
+  BaseCheckbox,
+  Checkbox,
   Date,
   DateTime,
   AutoForm,
@@ -17,7 +18,7 @@ import {
 import Page from "../../../components/design/Page";
 import { defState } from "../../../helpers/tools";
 
-export function NewGameSystemForm(props: any) {
+export function TestForm(props: any) {
   const [data, setData] = defState(props.state, props.setState, {
     name: {nameAgain: "Boop"},
     key: "",
@@ -47,6 +48,7 @@ export function NewGameSystemForm(props: any) {
 
   return (
     <AutoForm data={data} setData={setData} formState={formState} setFormState={setFormState} errors={errors}>
+      <h2>Text Inputs</h2>
       <Row>
         <Form.Group as={Col}>
           <Form.Label>Test</Form.Label>
@@ -60,19 +62,44 @@ export function NewGameSystemForm(props: any) {
         </Form.Group>
       </Row>
 
-      {/* <Row>
-        <BSForm.Group as={Col}>
-          <Select name="selectTest" label="Select Test"  data={selectData} defaultValue="rainbows"/>
-        </BSForm.Group>
+      <h2>Select Inputs</h2>
+      <Row>
+        <Form.Group as={Col}>
+          <Form.Label>Select Test</Form.Label>
+          <Select name="selectTest" label="Select Test"  options={selectData} defaultValue="rainbows"/>
+        </Form.Group>
 
-        <BSForm.Group as={Col}>
-          <Multiselect name="selectTest2" label="Multiselect Test" data={selectData} defaultValue={[]}/>
-        </BSForm.Group>
-      </Row> */}
-      {/* <Input name="key" label="System Key" required={true} defaultValue={data.key}/>
-      
-      
-      <Checkboxes id="checkboxText" label="Checkbox Test" data={checkboxData}/>
+        <Form.Group as={Col}>
+          <Form.Label>Select Test 2</Form.Label>
+          <Select name="selectTest" label="Select Test"  options={selectData} defaultValue="rainbows"/>
+        </Form.Group>
+      </Row>
+
+      <Row>
+        <Form.Group as={Col}>
+          <Multiselect name="selectTest2" label="Multiselect Test" options={selectData}/>
+        </Form.Group>
+
+        <Form.Group as={Col}>
+          <Multiselect name="selectTest2" label="Multiselect Test" options={selectData} defaultValue={[]}/>
+        </Form.Group>
+      </Row>
+
+      <h2>Checkboxes</h2>
+      <Row>
+        <Form.Group as={Col}>
+          <Checkbox name="checkboxText" label="Checkbox Test v1" />
+          <Checkbox name="checkboxText" label="Matching Checkbox" />
+
+        </Form.Group>
+
+        <Form.Group as={Col}>
+          {/* <Checkboxes id="checkboxText" options={checkboxData}/> */}
+
+        </Form.Group>
+      </Row>
+
+      <h2>Radio Buttoms</h2>
       <RadioButtons name="radioTest" label="Radio Test"  data={selectData} defaultValue="rainbows"/>
       
       <Date name="date" label="Date Test"/>
@@ -81,11 +108,7 @@ export function NewGameSystemForm(props: any) {
       <Time name="time" label="Time Test"/>
       <TextArea name="textarea" rows={2} label="Text Area"/>
       
-      <Section>
-        <Input name="name.nameAgain" label="System Name" required={true} defaultValue="Test"/>
-        <Input name="key" label="System Key" required={true} defaultValue={data.key}/>
-      </Section>
-      <Button variant="primary">Submit!</Button>   */}
+      <Button variant="primary">Submit!</Button>  
     </AutoForm>
   );
 }
@@ -93,18 +116,17 @@ export function NewGameSystemForm(props: any) {
 /**
  * Renders a the page to create a new game system
  */
-function NewGameSystem() {
+function TestForms() {
 
   return (
     <Page>
-      <h1>New Game Systems</h1>
-      <Breadcrumbs skipLevels={1} titles={["Admin", "Game Systems", "New Game System"]}/>
+      <h1>Test Forms</h1>
 
       <br/>
 
-      <NewGameSystemForm/>
+      <TestForm/>
     </Page>
   );
 }
 
-export default NewGameSystem;
+export default TestForms;
