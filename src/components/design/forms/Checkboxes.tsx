@@ -38,6 +38,7 @@ export function Checkbox(props: CheckboxProps) {
     <Form.Check 
       type="checkbox"
       aria-label={props.ariaLabel}
+      custom
       id={id}
       onChange={props.onChange}
       {...checkboxProps}
@@ -61,6 +62,7 @@ export function BaseCheckbox(props: CheckboxProps) {
     <Form.Check.Input 
       type="checkbox"
       aria-label={props.ariaLabel}
+      custom
       id={id}
       onChange={props.onChange}
       {...checkboxProps}
