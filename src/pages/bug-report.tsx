@@ -1,7 +1,7 @@
-import { Card, CardContent, Typography } from "@material-ui/core";
 import React from "react";
-import {Form, Input, Select, TextArea} from "../components/design/forms/Forms";
-import Page from "../components/Page";
+import {AutoForm, Input, Select, TextArea} from "../components/design/forms/Forms";
+import Page from "../components/design/Page";
+import { Card } from "react-bootstrap";
 
 /**
  * Renders the Bug Report page
@@ -10,17 +10,17 @@ function BugReport() {
   return (
     <Page>
       <Card>
-        <CardContent>
-          <Typography variant="h4">
+        <Card.Body>
+          <h4>
             Report a Bug
-          </Typography>
+          </h4>
 
-          <Typography variant="body1">
+          <p>
             Something break? Encounter an error? Let us know!
-          </Typography>
+          </p>
 
           <BugReportForm/>
-        </CardContent>
+        </Card.Body>
       </Card>
     </Page>
   );
@@ -36,11 +36,11 @@ function BugReportForm() {
   ];
 
   return (
-    <Form>
+    <AutoForm>
       <Input id="email" label="Email" name="Email"/>
       <Select id="bugType" label="Bug Type" name="Bug Type" data={bugOptions} labelKey="name"/>
       <TextArea id="message" label="What Happened?" name="What Happened?"/>
-    </Form>
+    </AutoForm>
   );
 }
 

@@ -1,5 +1,16 @@
-@import "~bootstrap/scss/bootstrap";
-
-nav {
-  color: white;
+body {
+  font-family: 'Muli', sans-serif;
 }
+
+$body-bg: #fbfbf0;
+
+$theme-colors: (
+  "primary": #b33951,
+  "secondary": #91C7B1,
+  "dark": #483d3f,
+  "light": #f9f9ed
+);
+
+$enable-shadows: true;
+
+@import "~bootstrap/scss/bootstrap";

@@ -8,7 +8,7 @@ import Page from "../components/design/Page";
 import campaigns from "./api/campaign/campaign.json";
 import characters from "./api/character/character.json";
 import news from "./api/news/news.json";
-import { Container, Button, Row, Col } from "react-bootstrap";
+import { Row, Button, Col } from "react-bootstrap";
 
 /**
  * Renders the index page and one of two subviews
@@ -29,9 +29,9 @@ function Index(props: any) {
   // Sets the view for the currenly logged in user
   let userView: JSX.Element;
   if (session.user.isLoggedIn) {
-    userView = <UserView session={session} setSession={setSession}/>;
+    userView = <UserView session={session} setSession={setSession} />;
   } else {
-    userView = <GuestView session={session} setSession={setSession}/>;
+    userView = <GuestView session={session} setSession={setSession} />;
   }
 
   return (
@@ -40,7 +40,7 @@ function Index(props: any) {
       <h4>
         News
       </h4>
-      <News articles={news}/>
+      <News articles={news} />
     </Page>
   );
 }
@@ -56,11 +56,11 @@ function UserView(props: any) {
 
       {/* Recent Games */}
       <h4>My Games</h4>
-      <CampaignTiles contents={campaigns} includeNew={true}/>
+      <CampaignTiles contents={campaigns} includeNew={true} />
 
       {/* Characters */}
       <h4>My Characters</h4>
-      <CharacterTiles contents={characters} includeNew={true}/>
+      <CharacterTiles contents={characters} includeNew={true} />
     </div>
   );
 }
@@ -71,7 +71,7 @@ function UserView(props: any) {
  */
 function GuestView(props: any) {
   return (
-    <Page>
+    <div>
       <h3>
         Welcome to Reroll!
       </h3>
@@ -80,23 +80,22 @@ function GuestView(props: any) {
         There isn't much here yet but there will be some day soon.
       </p>
 
-      <Link href="/about" passHref>
-        <Button title="About">
-          About
-        </Button>
-      </Link>
-
-      <Container>
+      <Row>
         <Col md="8" sm="12">
           <p>
-            Azure Web App Test!
+            This is some test home page content. Oh look, a button!
           </p>
+          <Link href="/about" passHref>
+            <Button title="About">
+              About
+            </Button>
+          </Link>
         </Col>
         <Col md="4" sm="12">
-          <AuthenticationCard session={props.session} setSession={props.setSession}/>
+          <AuthenticationCard session={props.session} setSession={props.setSession} />
         </Col>
-      </Container>
-    </Page>
+      </Row>
+    </div>
   );
 }
 

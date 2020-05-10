@@ -1,4 +1,4 @@
-import { Container, Card } from "react-bootstrap";
+import { Row, Card, Col } from "react-bootstrap";
 import React from "react";
 
 function News(props: any) {
@@ -8,7 +8,7 @@ function News(props: any) {
     news.push(<ArticleCard key={article.id} article={article} />);
   });
 
-  return <Container>{news}</Container>;
+  return <Row>{news}</Row>;
 }
 
 function ArticleCard(props: any) {
@@ -20,13 +20,17 @@ function ArticleCard(props: any) {
   });
 
   return (
-    <Card>
-      <h5>{props.article.title}</h5>
-      <p>
-        Posted at {props.article.postedAt} by {props.article.author}
-      </p>
-      {contents}
-    </Card>
+    <Col md="12">
+      <Card bg="light" className="mb-2">
+        <Card.Body>
+          <h5>{props.article.title}</h5>
+          <p>
+            Posted at {props.article.postedAt} by {props.article.author}
+          </p>
+          {contents}
+        </Card.Body>
+      </Card>
+    </Col>
   );
 }
 
