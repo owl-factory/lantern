@@ -15,9 +15,6 @@
 
 import React from "react";
 import { deepCopy, deepGet, deepSet, def, defState } from "../../../helpers/tools";
-import {
-  Row as BSRow 
-} from "react-bootstrap";
 
 interface FormProps {
   id?: string; // The form id. Used for creating the postfix
@@ -109,18 +106,22 @@ export function AutoForm(props: FormProps) {
    * @param event The input onChange event
    */
   function onCheckboxChange(event: any) {
+    console.log(event.target)
     setFormData(event.target.name, !getValue(event.target.name));
   }
 
   function onMultiselectChange(event: any) {
-    const multiSelectArray = getValue(event.target.name, []);
+    const multiSelectArray = getValue(event.currentTarget.name, []);
+    console.log(multiSelectArray);
     if (multiSelectArray.includes(event.target.value)) {
       multiSelectArray.splice(multiSelectArray.indexOf(event.target.value), 1);
     } else {
       multiSelectArray.push(event.target.value);
     }
 
-    setFormData(event.target.name, multiSelectArray);
+    console.log(multiSelectArray);
+
+    setFormData(event.currentTarget.name, multiSelectArray);
   }
 
   /**
@@ -158,22 +159,13 @@ export function AutoForm(props: FormProps) {
       const keyPostfix: string = formID + "_" + childIndex++;
       const newChildProps: any = {};
       let newChild: any;
-      console.log(child)
 
       switch (child.type.name) {
-        case "Checkboxes":
-          const nameKey = def<string>(child.props.nameKey, "name");
-          const defaultValueKey = def<string>(child.props.defaultValueKey, "defaultValue");
-          const checkboxes = def<object[]>(child.props.data, []);
-
-          checkboxes.forEach((item: any) => {
-            registerValue(item[nameKey], item[defaultValueKey], false);
-          });
-
+        case "BaseCheckbox":
+        case "Checkbox":
           newChildProps["name"] = newChildName;
-          newChildProps["getValue"] = getValue;
-          newChildProps["keyPostfix"] = keyPostfix;
           newChildProps["onChange"] = (event: any) => { onCheckboxChange(event); };
+          newChildProps["checked"] = getValue(newChildName);
           newChild = React.cloneElement(child, newChildProps);
           registerValue(newChildName, child.props.defaultValue);
           break;
@@ -199,7 +191,7 @@ export function AutoForm(props: FormProps) {
           newChildProps["name"] = newChildName;
           newChildProps["keyPostfix"] = keyPostfix;
           newChildProps["value"] = getValue(newChildName, []);
-          newChildProps["onChange"] = (event: any) => { onMultiselectChange(event); };
+          newChildProps["onClick"] = (event: any) => { onMultiselectChange(event); };
 
           newChild = React.cloneElement(child, newChildProps);
           registerValue(newChildName, child.props.defaultValue);
@@ -244,7 +236,7 @@ export function AutoForm(props: FormProps) {
   );
 }
 
-export { Checkboxes } from "./Checkboxes";
+export { BaseCheckbox, Checkbox } from "./Checkboxes";
 export { Date } from "./Date";
 export { DateTime } from "./DateTime";
 export { Input } from "./Input";
