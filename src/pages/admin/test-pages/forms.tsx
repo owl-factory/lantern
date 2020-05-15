@@ -1,17 +1,18 @@
 import React from "react";
 import { Button, Col, Form, InputGroup, Row } from "react-bootstrap";
-import Breadcrumbs from "../../../components/design/Breadcrumbs";
 import {
   BaseCheckbox,
+  BaseRadioButton,
+  BaseSwitch,
   Checkbox,
   Date,
   DateTime,
   AutoForm,
   Input,
   Multiselect,
-  RadioButtons,
-  // Section,
+  RadioButton,
   Select,
+  Switch,
   TextArea,
   Time,
 } from "../../../components/design/forms/Forms";
@@ -22,6 +23,7 @@ export function TestForm(props: any) {
   const [data, setData] = defState(props.state, props.setState, {
     name: {nameAgain: "Boop"},
     key: "",
+    radioButtonTest: "Thing"
   });
 
   const [formState, setFormState] = defState(props.formState, props.setFormState, {});
@@ -90,24 +92,100 @@ export function TestForm(props: any) {
         <Form.Group as={Col}>
           <Checkbox name="checkboxText" label="Checkbox Test v1" />
           <Checkbox name="checkboxText" label="Matching Checkbox" />
-
         </Form.Group>
 
         <Form.Group as={Col}>
-          {/* <Checkboxes id="checkboxText" options={checkboxData}/> */}
-
+          <BaseCheckbox name="basecheckboxText">
+            <Form.Check.Label>Base Checkbox Text</Form.Check.Label>
+          </BaseCheckbox>
+        
+          <BaseCheckbox name="basecheckboxText">
+            <Form.Check.Label>Matching Checkbox</Form.Check.Label>
+          </BaseCheckbox>
         </Form.Group>
       </Row>
 
-      <h2>Radio Buttoms</h2>
-      <RadioButtons name="radioTest" label="Radio Test"  data={selectData} defaultValue="rainbows"/>
+      <h2>Radio Buttons</h2>
+      <Row>
+        <Form.Group as={Col}>
+          <RadioButton id="1" name="radioButtonTest" label="Radio Button Test v1" value="Thing"/>
+          <RadioButton id="2" name="radioButtonTest" label="Another Radio Button" value="Thing2"/>
+        </Form.Group>
+
+        <Form.Group as={Col}>
+          <BaseRadioButton id="base1" name="basecheckboxText" value="boopp">
+            <Form.Check.Label>Base Checkbox Text</Form.Check.Label>
+          </BaseRadioButton>
+        
+          <BaseRadioButton id="base2" name="basecheckboxText" value="boop2">
+            <Form.Check.Label>Matching Checkbox</Form.Check.Label>
+          </BaseRadioButton>
+        </Form.Group>
+      </Row>
+
+      <h2>Switches</h2>
+      <Row>
+        <Form.Group as={Col}>
+          <Switch id="swtich1" name="switchtest" label="Radio Button Test v1"/>
+          <Switch id="swtich2" name="switchtest" label="Another Radio Button"/>
+        </Form.Group>
+
+        {/* TODO - this doesn't work */}
+        <Form.Group as={Col}>
+          <BaseSwitch name="baseswitchText">
+            <Form.Check.Label>Base Checkbox Text</Form.Check.Label>
+          </BaseSwitch>
+        
+          <BaseSwitch name="baseswitchText2">
+            <Form.Check.Label>Matching Checkbox</Form.Check.Label>
+          </BaseSwitch>
+        </Form.Group>
+      </Row>
       
-      <Date name="date" label="Date Test"/>
-      <DateTime name="datetime" label="Date Time Test"/>
-      
-      <Time name="time" label="Time Test"/>
-      <TextArea name="textarea" rows={2} label="Text Area"/>
-      
+      <h2>Dates</h2>
+      <Row>
+        <Form.Group as={Col}>
+          <Date name="dateTest" label="Date Test" />
+        </Form.Group>
+
+        <Form.Group as={Col}>
+          <Date name="dateTest" label="Date Test" />
+        </Form.Group>
+      </Row>
+
+      <h2>Date Time</h2>
+      <Row>
+        <Form.Group as={Col}>
+          <DateTime name="datetime" label="Date Time Test"/>
+        </Form.Group>
+
+        <Form.Group as={Col}>
+          <DateTime name="datetime" label="Date Time Test"/>
+        </Form.Group>
+      </Row>
+
+      <h2>Time</h2>
+      <Row>
+        <Form.Group as={Col}>
+          <Time name="time" label="Time Test"/>
+        </Form.Group>
+
+        <Form.Group as={Col}>
+          <Time name="time" label="Time Test"/>
+        </Form.Group>
+      </Row>
+
+      <h2>TextArea</h2>
+      <Row>
+        <Form.Group as={Col}>
+          <TextArea name="textarea" rows={2} label="Text Area"/>
+        </Form.Group>
+
+        <Form.Group as={Col}>
+          <TextArea name="textarea" rows={2} label="Text Area"/>
+        </Form.Group>
+      </Row>
+
       <Button variant="primary">Submit!</Button>  
     </AutoForm>
   );

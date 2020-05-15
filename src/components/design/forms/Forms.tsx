@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-use-before-define */
 /* eslint-disable @typescript-eslint/no-inferrable-types */
 /* eslint-disable react/prop-types */
 /* eslint-disable no-case-declarations */
@@ -112,14 +113,12 @@ export function AutoForm(props: FormProps) {
 
   function onMultiselectChange(event: any) {
     const multiSelectArray = getValue(event.currentTarget.name, []);
-    console.log(multiSelectArray);
+
     if (multiSelectArray.includes(event.target.value)) {
       multiSelectArray.splice(multiSelectArray.indexOf(event.target.value), 1);
     } else {
       multiSelectArray.push(event.target.value);
     }
-
-    console.log(multiSelectArray);
 
     setFormData(event.currentTarget.name, multiSelectArray);
   }
@@ -155,7 +154,6 @@ export function AutoForm(props: FormProps) {
         return;
       }
 
-      const newChildName = def<string>(child.props.name, child.props.id);
       const keyPostfix: string = formID + "_" + childIndex++;
       const newChildProps: any = {};
       let newChild: any;
@@ -163,11 +161,12 @@ export function AutoForm(props: FormProps) {
       switch (child.type.name) {
         case "BaseCheckbox":
         case "Checkbox":
-          newChildProps["name"] = newChildName;
+        case "BaseSwitch":
+        case "Switch":
           newChildProps["onChange"] = (event: any) => { onCheckboxChange(event); };
-          newChildProps["checked"] = getValue(newChildName);
+          newChildProps["checked"] = getValue(child.props.name);
           newChild = React.cloneElement(child, newChildProps);
-          registerValue(newChildName, child.props.defaultValue);
+          registerValue(child.props.name, child.props.defaultValue);
           break;
 
         case "Date":
@@ -177,24 +176,22 @@ export function AutoForm(props: FormProps) {
         case "Select":
         case "TextArea":
         case "Time":
-          newChildProps["name"] = newChildName;
           newChildProps["keyPostfix"] = keyPostfix;
-          newChildProps["value"] = getValue(newChildName);
+          newChildProps["value"] = getValue(child.props.name);
           newChildProps["onChange"] = (event: any) => { onChange(event); };
 
           newChild = React.cloneElement(child, newChildProps);
-          registerValue(newChildName, child.props.defaultValue);
+          registerValue(child.props.name, child.props.defaultValue);
 
           break;
         
         case "Multiselect":
-          newChildProps["name"] = newChildName;
           newChildProps["keyPostfix"] = keyPostfix;
-          newChildProps["value"] = getValue(newChildName, []);
+          newChildProps["value"] = getValue(child.props.name, []);
           newChildProps["onClick"] = (event: any) => { onMultiselectChange(event); };
 
           newChild = React.cloneElement(child, newChildProps);
-          registerValue(newChildName, child.props.defaultValue);
+          registerValue(child.props.name, child.props.defaultValue);
 
           break;
 
@@ -240,7 +237,8 @@ export { BaseCheckbox, Checkbox } from "./Checkboxes";
 export { Date } from "./Date";
 export { DateTime } from "./DateTime";
 export { Input } from "./Input";
-export { RadioButtons } from "./RadioButtons";
+export { BaseRadioButton, RadioButton } from "./RadioButtons";
 export { Multiselect, Select } from "./Select";
+export { BaseSwitch, Switch } from "./Switch";
 export { TextArea } from "./Textarea";
 export { Time } from "./Time";

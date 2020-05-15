@@ -18,7 +18,4 @@ interface SharedColumnProps {
 export interface FieldProps extends SharedColumnProps {
   id?: string; // The input id
   label?: string; // The label of the inputs
-
-  error?: string;
-  message?: string;
 }

@@ -2,14 +2,9 @@ import React from "react";
 import { Button, Col, Form, InputGroup, Row } from "react-bootstrap";
 import Breadcrumbs from "../../../components/design/Breadcrumbs";
 import {
-  Checkboxes,
-  Date,
-  DateTime,
   AutoForm,
   Input,
   Multiselect,
-  RadioButtons,
-  // Section,
   Select,
   TextArea,
   Time,
@@ -60,32 +55,7 @@ export function NewGameSystemForm(props: any) {
         </Form.Group>
       </Row>
 
-      {/* <Row>
-        <BSForm.Group as={Col}>
-          <Select name="selectTest" label="Select Test"  data={selectData} defaultValue="rainbows"/>
-        </BSForm.Group>
-
-        <BSForm.Group as={Col}>
-          <Multiselect name="selectTest2" label="Multiselect Test" data={selectData} defaultValue={[]}/>
-        </BSForm.Group>
-      </Row> */}
-      {/* <Input name="key" label="System Key" required={true} defaultValue={data.key}/>
-      
-      
-      <Checkboxes id="checkboxText" label="Checkbox Test" data={checkboxData}/>
-      <RadioButtons name="radioTest" label="Radio Test"  data={selectData} defaultValue="rainbows"/>
-      
-      <Date name="date" label="Date Test"/>
-      <DateTime name="datetime" label="Date Time Test"/>
-      
-      <Time name="time" label="Time Test"/>
-      <TextArea name="textarea" rows={2} label="Text Area"/>
-      
-      <Section>
-        <Input name="name.nameAgain" label="System Name" required={true} defaultValue="Test"/>
-        <Input name="key" label="System Key" required={true} defaultValue={data.key}/>
-      </Section>
-      <Button variant="primary">Submit!</Button>   */}
+      <Button variant="primary">Submit!</Button>
     </AutoForm>
   );
 }

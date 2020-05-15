@@ -1,8 +1,7 @@
-import { useRouter } from "next/router";
-import Page from "../../components/Page";
+import React from "react";
+import Page from "../../components/design/Page";
 
 function AdminIndex() {
-
   return (
     <Page>
       <h1>Admin Index Page</h1>

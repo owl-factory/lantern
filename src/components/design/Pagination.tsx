@@ -1,8 +1,9 @@
-import { Paper, Tab, Tabs } from "@material-ui/core";
-import react from "react";
+/* eslint-disable @typescript-eslint/no-inferrable-types */
+import React from "react";
+import { Pagination as BSPagination } from "react-bootstrap";
 import { def, min } from "../../helpers/tools";
 
-interface IPagination {
+interface PaginationProps {
   pageState: IPageState; // The state of the page to use and update
   setPageState: (pageState: IPageState) => (void); // Function to update the page state
   onPageChange?: (pageState: IPageState) => (void); // A callback function
@@ -16,7 +17,8 @@ interface IPageState {
   offset: number; // An offset for handling static lists
 }
 
-interface IPaginationCell {
+interface PaginationCellProps {
+  className?: string;
   targetPage: number; // The target page
   pageText?: string; // Alternate text to put on the link, eg "Last"
   setPage: (page: number) => (void); // Alternate text to put on the link, eg "Last"
@@ -29,17 +31,29 @@ interface IPaginationCell {
  * @param totalCount Total number of items
  */
 export function usePageState(perPage: number = 25, totalCount: number = 181) {
-  return react.useState({currentPage: 1, perPage, totalCount, offset: 0});
+  return React.useState({currentPage: 1, perPage, totalCount, offset: 0});
+}
+
+function isDisabled(
+  currentPage: number,
+  targetPage: number
+) {
+  if (currentPage === targetPage) {
+    return "disabled"
+  }
+  return "";
 }
 
 /**
  * Renders a single pagination cell
  * @param props See IPaginationCell
  */
-function PaginationCell(props: IPaginationCell) {
+function PaginationCell(props: PaginationCellProps) {
   const pageText = def<string>(props.pageText, props.targetPage.toString());
   return (
-    <Tab label={pageText} onClick={() => {props.setPage(props.targetPage);}}/>
+    <BSPagination.Item className={props.className} onClick={() => {props.setPage(props.targetPage);}}>
+      {pageText}
+    </BSPagination.Item>
   );
 }
 
@@ -47,11 +61,10 @@ function PaginationCell(props: IPaginationCell) {
  * Renders pagination and handles pagination-related actions
  * @param props see IPagination
  */
-function Pagination(props: IPagination) {
+function Pagination(props: PaginationProps) {
   const useOffset = def<boolean>(props.useOffset, false);
   const perPage = min(props.pageState.perPage, 1);
   const maxPage = Math.ceil(props.pageState.totalCount / perPage);
-  let activePageIndex: number = 0;
 
   /**
    * Sets the page and runs associated actions
@@ -76,12 +89,12 @@ function Pagination(props: IPagination) {
   function renderCells() {
     const renderedCells: JSX.Element[] = [];
     const width: number = 3;
-    activePageIndex = 0;
 
     // Render current page
     renderedCells.push(
       <PaginationCell
         key="page_current"
+        className="active"
         targetPage={props.pageState.currentPage}
         hasLink={false}
         setPage={setPage}
@@ -93,7 +106,6 @@ function Pagination(props: IPagination) {
       let targetPage: number = props.pageState.currentPage - i;
       if (targetPage > 0) {
         renderedCells.unshift(<PaginationCell key={"page_" + targetPage} targetPage={targetPage} setPage={setPage}/>);
-        activePageIndex++;
       }
 
       targetPage = props.pageState.currentPage + i;
@@ -103,15 +115,24 @@ function Pagination(props: IPagination) {
     }
 
     // Render first
-    if (props.pageState.currentPage - width >= 1) {
-      renderedCells.unshift(<PaginationCell key="page_first" pageText="First" targetPage={1} setPage={setPage}/>);
-      activePageIndex++;
-    }
+    renderedCells.unshift(
+      <PaginationCell 
+      className={isDisabled(props.pageState.currentPage, 1)} 
+      key="page_first"
+      pageText="First"
+      targetPage={1}
+      setPage={setPage}/>
+    );
 
     // Render last
-    if (props.pageState.currentPage + width <= maxPage) {
-      renderedCells.push(<PaginationCell key="page_last" pageText="Last" targetPage={maxPage} setPage={setPage}/>);
-    }
+    renderedCells.push(
+      <PaginationCell 
+      className={isDisabled(props.pageState.currentPage, maxPage)} 
+      key="page_last"
+      pageText="Last"
+      targetPage={maxPage}
+      setPage={setPage}/>
+    );
 
     return renderedCells;
   }
@@ -119,11 +140,9 @@ function Pagination(props: IPagination) {
   const cells = renderCells();
 
   return (
-    <Paper square>
-      <Tabs value={activePageIndex} indicatorColor="primary" textColor="primary" centered>
-        {cells}
-      </Tabs>
-    </Paper>
+    <BSPagination>
+      {cells}
+    </BSPagination>
   );
 }
 
