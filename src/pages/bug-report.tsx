@@ -38,7 +38,7 @@ function BugReportForm() {
   return (
     <AutoForm>
       <Input id="email" label="Email" name="Email"/>
-      <Select id="bugType" label="Bug Type" name="Bug Type" data={bugOptions} labelKey="name"/>
+      <Select id="bugType" label="Bug Type" name="Bug Type" options={bugOptions} labelKey="name"/>
       <TextArea id="message" label="What Happened?" name="What Happened?"/>
     </AutoForm>
   );

@@ -1,8 +1,8 @@
 import { useQuery } from "@apollo/react-hooks";
 import gql from "graphql-tag";
 import React from "react"
-import Page from "../components/design/Page";
-import { NewGameSystemForm } from "../pages/admin/game-system/new";
+import Page from "../../../components/design/Page";
+import { NewGameSystemForm } from "../game-system/new";
 
 const GET_POKEMON_INFO = gql`
 {
@@ -50,6 +50,10 @@ function LauraPlayground() {
       <NewGameSystemForm/>
     </Page>
   );
+}
+
+export function testJest(a: number, b: number) {
+  return a + b;
 }
 
 export default LauraPlayground;

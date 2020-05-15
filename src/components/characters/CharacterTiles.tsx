@@ -1,4 +1,4 @@
-import session from "../../pages/api/session.json";
+import React from "react";
 import NewContentTile from "../common/NewContentTile";
 import { TileWrapper } from "../common/wrappers";
 import { Row } from "react-bootstrap";
@@ -15,7 +15,7 @@ function CharacterTiles(props: any) {
   });
 
   if (props.includeNew === true) {
-    const linkAddress: string = "/user/" + session.alias + "/character/new/";
+    const linkAddress: string = "/user/" + "session.alias" + "/character/new/";
     tiles.push(<NewContentTile href={linkAddress}>Character</NewContentTile>);
   }
 
@@ -29,7 +29,7 @@ function CharacterTiles(props: any) {
  * @param props
  */
 function CharacterTile(props: any) {
-  const linkAddress: string = "/user/" + session.alias + "/character/" + props.item.alias;
+  const linkAddress: string = "/user/" + "session.alias" + "/character/" + props.item.alias;
   return (
     <TileWrapper href={linkAddress}>
       <h6>

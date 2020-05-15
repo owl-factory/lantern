@@ -1,3 +1,4 @@
+import React from "react";
 import NewContentTile from "../common/NewContentTile";
 import { TileWrapper } from "../common/wrappers";
 import { Row } from "react-bootstrap";

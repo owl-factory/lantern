@@ -1,5 +1,5 @@
-import { Row, Card, Col } from "react-bootstrap";
 import React from "react";
+import { Row, Card, Col } from "react-bootstrap";
 
 function News(props: any) {
   const news: JSX.Element[] = [];
