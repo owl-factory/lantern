@@ -9,14 +9,12 @@ function HeaderBar() {
       <Link href="/" passHref>
         <Navbar.Brand>Reroll</Navbar.Brand>
       </Link>
-      <Form inline>
-        <InputGroup>
-          <Form.Control type="text" placeholder="Search everything..." />
-          <InputGroup.Append>
-            <Button variant="secondary"><MdSearch /></Button>
-          </InputGroup.Append>
-        </InputGroup>
-      </Form>
+      <InputGroup className="animate">
+        <Form.Control type="text" placeholder="Search everything..." />
+        <InputGroup.Append>
+          <Button variant="secondary"><MdSearch /></Button>
+        </InputGroup.Append>
+      </InputGroup>
     </Navbar>
   );
 }

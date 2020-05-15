@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "nodemon": "nodemon --exec yarn dev",
-    "dev": "env-cmd next dev",
+    "dev": "next dev",
+    "compose": "yarn install && next dev",
     "build": "next build",
     "start": "next start",
     "test": "jest"
@@ -42,7 +43,6 @@
     "babel-jest": "^24.9.0",
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
-    "env-cmd": "^10.1.0",
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.15.1",
     "eslint": "^6.8.0",
