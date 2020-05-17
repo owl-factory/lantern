@@ -4,7 +4,7 @@ WORKDIR /usr/src/app
 
 # Install dependencies
 COPY package*.json ./
-RUN yarn install
+RUN yarn install --network-timeout 100000
 
 # Copy files to container
 COPY . .
