@@ -1,23 +1,14 @@
 import { useQuery } from "@apollo/react-hooks";
-import { Typography } from "@material-ui/core"
+import { Typography } from "@material-ui/core";
 import gql from "graphql-tag";
-// import mongodb from "mongodb"
-import * as React from "react"
+import * as React from "react";
 import Page from "../components/Page";
 
-const GET_POKEMON_INFO = gql`
+const characterQuery = gql`
 {
-  pokemons(first: 150) {
-    id
-    number
-    name,
-    image,
-    evolutions {
-      id,
-      number,
-      name,
-      image
-    }
+  characters {
+    id,
+    name
   }
 }`;
 
@@ -25,10 +16,9 @@ const GET_POKEMON_INFO = gql`
  * A playground for Laura's development so we don't bump into each other <3
  */
 function LauraPlayground() {
-  const { data, loading, error } = useQuery(GET_POKEMON_INFO);
+  const { data, loading, error } = useQuery(characterQuery);
 
-  function pokemon() {
-    // mongodb.
+  function testCharacters() {
     if (loading) {
       return <div>Loading...</div>;
     }
@@ -36,8 +26,7 @@ function LauraPlayground() {
     if (error) {
       return <div>Error...</div>;
     }
-
-    console.log(data);
+    return <div>{JSON.stringify(data.characters)}</div>;
   }
 
   return (
@@ -48,7 +37,7 @@ function LauraPlayground() {
       <Typography paragraph>
         Here's where Laura is going to be doing her testing. &lt;3
       </Typography>
-      {pokemon()}
+      {testCharacters()}
     </Page>
   );
 }

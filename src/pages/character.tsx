@@ -48,7 +48,7 @@ function Character() {
     case "5e":
       sheetElement = <CharacterSheet5e />;
       break;
-    default: sheetElement = <div>No Ruleset Selected</div>
+    default: sheetElement = <div>No Ruleset Selected</div>;
   }
 
   return (

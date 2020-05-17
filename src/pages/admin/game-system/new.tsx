@@ -1,5 +1,5 @@
 import { Container as MuiContainer } from "@material-ui/core";
-import react from "react";
+import React from "react";
 import Breadcrumbs from "../../../components/design/Breadcrumbs";
 import {
   Button,

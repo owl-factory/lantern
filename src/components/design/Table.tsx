@@ -6,7 +6,7 @@ import {
   TableHead as MuiTableHead,
   TableRow,
 } from "@material-ui/core";
-import react from "react";
+import React from "react";
 import { def } from "../../helpers/tools";
 import Pagination, {usePageState} from "./Pagination";
 
@@ -140,7 +140,7 @@ function TableHead(props: ITableHead) {
 function Table(props: ITable) {
   const perPage = def<number>(props.perPage, 25);
 
-  const [contents, setContents] = react.useState(
+  const [contents, setContents] = React.useState(
     def<string>(props.json, "[]"),
   );
   const [pageState, setPageState] = usePageState();
@@ -162,7 +162,7 @@ function Table(props: ITable) {
       <Pagination
         pageState={pageState}
         setPageState={setPageState}
-        onPageChange={(pageState: any) => {console.log("Page changed!");}}
+        // onPageChange={(pageState: any) => {console.log("Page changed!");}} // TODO!
       />
     </div>
   );

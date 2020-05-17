@@ -37,9 +37,9 @@ function BugReportForm() {
 
   return (
     <Form>
-      <Input id="email" label="Email" name="Email"/>
-      <Select id="bugType" label="Bug Type" name="Bug Type" data={bugOptions} labelKey="name"/>
-      <TextArea id="message" label="What Happened?" name="What Happened?"/>
+      <Input name="email" label="Email"/>
+      <Select name="bugType" label="Bug Type" data={bugOptions} labelKey="name"/>
+      <TextArea name="message" label="What Happened?"/>
     </Form>
   );
 }

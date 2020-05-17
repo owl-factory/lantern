@@ -26,7 +26,7 @@ import {
   RadioGroup,
   Select as MuiSelect,
 } from "@material-ui/core";
-import react from "react";
+import React from "react";
 import { deepCopy, deepGet, deepSet, def, defState, objectKeepFields, objectStripFields } from "../../helpers/tools";
 
 interface IForm {
@@ -34,10 +34,10 @@ interface IForm {
   children?: any; // The contents to place within the form
 
   data?: object;
-  setData?: react.Dispatch<react.SetStateAction<any>>;
+  setData?: React.Dispatch<React.SetStateAction<any>>;
 
   formState?: object;
-  setFormState?: react.Dispatch<react.SetStateAction<any>>;
+  setFormState?: React.Dispatch<React.SetStateAction<any>>;
 
   errors?: object;
 
@@ -190,7 +190,7 @@ function $renderMessage(message: string | undefined, error: string | undefined) 
  * @param props see IForm
  */
 export function Form(props: IForm) {
-  const [formID, setFormID] = react.useState(def<string>(props.id, "form"));
+  const [formID, setFormID] = React.useState(def<string>(props.id, "form"));
   const [data, setData] = defState<any>(props.data, props.setData, {});
   const [formState, setFormState] = defState<any>(props.formState, props.setFormState, getDefaultFormState());
 
@@ -249,7 +249,7 @@ export function Form(props: IForm) {
    */
   function renderChildren(formChildren: any) {
     const renderedChildren: JSX.Element[] = [];
-    react.Children.toArray(formChildren).forEach((child: any) => {
+    React.Children.toArray(formChildren).forEach((child: any) => {
       const newChildName = def<string>(child.props.name, child.props.id);
       const keyPostfix: string = formID + "_" + childIndex++;
       const newChildProps: any = {};
@@ -269,7 +269,7 @@ export function Form(props: IForm) {
           newChildProps["getValue"] = getValue;
           newChildProps["keyPostfix"] = keyPostfix;
           newChildProps["onChange"] = (event: any) => { onCheckboxChange(event); };
-          newChild = react.cloneElement(child, newChildProps);
+          newChild = React.cloneElement(child, newChildProps);
           registerValue(newChildName, child.props.defaultValue);
           break;
 
@@ -285,14 +285,14 @@ export function Form(props: IForm) {
           newChildProps["value"] = getValue(newChildName);
           newChildProps["onChange"] = (event: any) => { onChange(event); };
 
-          newChild = react.cloneElement(child, newChildProps);
+          newChild = React.cloneElement(child, newChildProps);
           registerValue(newChildName, child.props.defaultValue);
 
           break;
 
         case "Section":
           newChildProps["children"] = renderChildren(child.props.children);
-          newChild = react.cloneElement(child, newChildProps);
+          newChild = React.cloneElement(child, newChildProps);
           break;
 
         // This is not a proper child of Form, so we can't update its props to have values it doesn't allow
@@ -367,7 +367,7 @@ export function Button(props: any) {
       {...buttonProps}
       aria-label={props.ariaLabel}
       classes={classes}
-      onClick={(event) => {props.onClick(event, props.data, props.setData);}}
+      onClick={(event) => {props.onClick(event, props.data, props.setData); }}
       variant={variant}
     >
       {props.children}
