@@ -1,20 +1,15 @@
-import { Container as MuiContainer } from "@material-ui/core";
 import React from "react";
+import { Button, Col, Form, InputGroup, Row } from "react-bootstrap";
 import Breadcrumbs from "../../../components/design/Breadcrumbs";
 import {
-  Button,
-  Checkboxes,
-  Date,
-  DateTime,
-  Form,
+  AutoForm,
   Input,
-  RadioButtons,
-  Section,
+  Multiselect,
   Select,
   TextArea,
   Time,
-} from "../../../components/design/Forms";
-import Page from "../../../components/Page";
+} from "../../../components/design/forms/Forms";
+import Page from "../../../components/design/Page";
 import { defState } from "../../../helpers/tools";
 
 export function NewGameSystemForm(props: any) {
@@ -46,22 +41,22 @@ export function NewGameSystemForm(props: any) {
   };
 
   return (
-    <Form data={data} setData={setData} formState={formState} setFormState={setFormState} errors={errors}>
-      <Input name="name.nameAgain" label="System Name" required={true} defaultValue="Test"/>
-      <Input name="key" label="System Key" required={true} defaultValue={data.key}/>
-      <Select name="selectTest" label="Select Test"  data={selectData} defaultValue="rainbows"/>
-      <Checkboxes id="checkboxText" label="Checkbox Test" data={checkboxData}/>
-      <RadioButtons name="radioTest" label="Radio Test"  data={selectData} defaultValue="rainbows"/>
-      <Date name="date" label="Date Test"/>
-      <DateTime name="datetime" label="Date Time Test"/>
-      <Time name="time" label="Time Test"/>
-      <TextArea name="textarea" label="Text Area"/>
-      <Section>
-        <Input name="name.nameAgain" label="System Name" required={true} defaultValue="Test"/>
-        <Input name="key" label="System Key" required={true} defaultValue={data.key}/>
-      </Section>
-      <Button color="primary">Submit!</Button>
-    </Form>
+    <AutoForm data={data} setData={setData} formState={formState} setFormState={setFormState} errors={errors}>
+      <Row>
+        <Form.Group as={Col}>
+          <Form.Label>Test</Form.Label>
+          <InputGroup>
+            <Input name="name.nameAgain" label="System Name" required={true} defaultValue="Test"/>
+          </InputGroup>
+        </Form.Group>
+        <Form.Group as={Col}>
+        <Form.Label>Second Test</Form.Label>
+          <Input name="name.nameAgain" label="System Name" required={true} defaultValue="Test"/>
+        </Form.Group>
+      </Row>
+
+      <Button variant="primary">Submit!</Button>
+    </AutoForm>
   );
 }
 
@@ -72,14 +67,12 @@ function NewGameSystem() {
 
   return (
     <Page>
-      <MuiContainer fixed>
-        <h1>New Game Systems</h1>
-        <Breadcrumbs skipLevels={1} titles={["Admin", "Game Systems", "New Game System"]}/>
+      <h1>New Game Systems</h1>
+      <Breadcrumbs skipLevels={1} titles={["Admin", "Game Systems", "New Game System"]}/>
 
-        <br/>
+      <br/>
 
-        <NewGameSystemForm/>
-      </MuiContainer>
+      <NewGameSystemForm/>
     </Page>
   );
 }

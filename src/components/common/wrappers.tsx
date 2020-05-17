@@ -1,5 +1,6 @@
-import { Card, CardContent, Grid } from "@material-ui/core";
+import React from "react";
 import Link from "next/link";
+import { Col, Card } from "react-bootstrap";
 
 /**
  * A single tile inside of a row
@@ -7,11 +8,11 @@ import Link from "next/link";
  */
 export function TileWrapper(props: any) {
   return (
-    <Grid item xl={2} lg={3} md={4} sm={6} xs={12}>
+    <Col xl={2} lg={3} md={4} sm={6} xs={12}>
       <CardWrapper href={props.href}>
         {props.children}
       </CardWrapper>
-    </Grid>
+    </Col>
   );
 }
 
@@ -21,11 +22,11 @@ export function TileWrapper(props: any) {
  */
 export function FullWrapper(props: any) {
   return (
-    <Grid item xs={12}>
+    <Col xs={12}>
       <CardWrapper href={props.href}>
         {props.children}
       </CardWrapper>
-    </Grid>
+    </Col>
   );
 }
 
@@ -36,9 +37,9 @@ export function FullWrapper(props: any) {
 function CardWrapper(props: any) {
   const cardWrapper = (
     <Card>
-      <CardContent>
+      <Card.Body>
         {props.children}
-      </CardContent>
+      </Card.Body>
     </Card>
   );
 

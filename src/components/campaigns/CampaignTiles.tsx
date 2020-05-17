@@ -1,6 +1,7 @@
-import { Grid, Typography } from "@material-ui/core";
+import React from "react";
 import NewContentTile from "../common/NewContentTile";
 import { TileWrapper } from "../common/wrappers";
+import { Row } from "react-bootstrap";
 
 /**
  * Renders the campaign tiles
@@ -19,7 +20,7 @@ function CampaignTiles(props: any) {
   }
 
   return (
-    <Grid container>{tiles}</Grid>
+    <Row>{tiles}</Row>
   );
 }
 
@@ -31,12 +32,12 @@ function CampaignTile(props: any) {
   const linkAddress: string = "/campaign/" + props.item.alias;
   return (
     <TileWrapper href={linkAddress}>
-      <Typography variant="h6">
+      <h6>
         {props.item.name}
-      </Typography>
-      <Typography variant="body1">
+      </h6>
+      <p>
         Next Game: { (new Date).toString() }
-      </Typography>
+      </p>
     </TileWrapper>
   );
 }

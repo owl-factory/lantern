@@ -1,10 +1,9 @@
-import { Button, Container, Typography } from "@material-ui/core";
 import React from "react";
-// import { Table, TableBody, TableCell, TableHead, TableRow } from "@material-ui/core";
+import { Button } from "react-bootstrap";
 import Breadcrumbs from "../../../components/design/Breadcrumbs";
 import registerModal from "../../../components/design/Modal";
 import Table, { ILayoutItem } from "../../../components/design/Table";
-import Page from "../../../components/Page";
+import Page from "../../../components/design/Page";
 import gamesystemJson from "./gamesystems.json";
 import { NewGameSystemForm } from "./new";
 
@@ -39,11 +38,11 @@ function GameSystems() {
 
   return (
     <Page>
-      <Typography variant="h3">Game Systems</Typography>
+      <h3>Game Systems</h3>
       <Breadcrumbs skipLevels={1} titles={["Admin", "Game Systems"]}/>
       <Button onClick={openNewSystemModal} >+ Add Game System</Button>
       <NewGameSystemModal dirty={true}>
-        <Typography variant="h5">Add a new Game System</Typography>
+        <h5 >Add a new Game System</h5>
         <NewGameSystemForm/>
       </NewGameSystemModal>
       <Table layout={tableLayout} json={JSON.stringify(gamesystemJson)}/>

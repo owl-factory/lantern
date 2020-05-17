@@ -1,14 +1,14 @@
-import { Box, Button, Grid, Input, Typography } from "@material-ui/core";
 import Link from "next/link";
 import React from "react";
 import News from "../components/announcements/News";
 import AuthenticationCard from "../components/authetication/AuthenticationCard";
 import CampaignTiles from "../components/campaigns/CampaignTiles";
 import CharacterTiles from "../components/characters/CharacterTiles";
-import Page from "../components/Page";
+import Page from "../components/design/Page";
 import campaigns from "./api/campaign/campaign.json";
 import characters from "./api/character/character.json";
 import news from "./api/news/news.json";
+import { Row, Button, Col } from "react-bootstrap";
 
 /**
  * Renders the index page and one of two subviews
@@ -29,18 +29,18 @@ function Index(props: any) {
   // Sets the view for the currenly logged in user
   let userView: JSX.Element;
   if (session.user.isLoggedIn) {
-    userView = <UserView session={session} setSession={setSession}/>;
+    userView = <UserView session={session} setSession={setSession} />;
   } else {
-    userView = <GuestView session={session} setSession={setSession}/>;
+    userView = <GuestView session={session} setSession={setSession} />;
   }
 
   return (
     <Page>
       {userView}
-      <Typography variant="h4">
+      <h4>
         News
-      </Typography>
-      <News articles={news}/>
+      </h4>
+      <News articles={news} />
     </Page>
   );
 }
@@ -52,15 +52,15 @@ function Index(props: any) {
 function UserView(props: any) {
   return (
     <div>
-      <Typography variant="h3">Welcome back {props.session.user.displayName}!</Typography>
+      <h3>Welcome back {props.session.user.displayName}!</h3>
 
       {/* Recent Games */}
-      <Typography variant="h4">My Games</Typography>
-      <CampaignTiles contents={campaigns} includeNew={true}/>
+      <h4>My Games</h4>
+      <CampaignTiles contents={campaigns} includeNew={true} />
 
       {/* Characters */}
-      <Typography variant="h4">My Characters</Typography>
-      <CharacterTiles contents={characters} includeNew={true}/>
+      <h4>My Characters</h4>
+      <CharacterTiles contents={characters} includeNew={true} />
     </div>
   );
 }
@@ -71,32 +71,31 @@ function UserView(props: any) {
  */
 function GuestView(props: any) {
   return (
-    <Page>
-      <Typography variant="h3" paragraph>
+    <div>
+      <h3>
         Welcome to Reroll!
-      </Typography>
-      <Typography variant="body1" paragraph>
+      </h3>
+      <p>
         Reroll is a new in development web app for playing tabletop games with friends.
         There isn't much here yet but there will be some day soon.
-      </Typography>
+      </p>
 
-      <Link href="/about" passHref>
-        <Button title="About" color="secondary" variant="contained">
-          About
-        </Button>
-      </Link>
-
-      <Grid container>
-        <Grid item md={8} sm={12}>
-          <Typography variant="body1">
-            Azure Web App Test!
-          </Typography>
-        </Grid>
-        <Grid item md={4} sm={12}>
-          <AuthenticationCard session={props.session} setSession={props.setSession}/>
-        </Grid>
-      </Grid>
-    </Page>
+      <Row>
+        <Col md="8" sm="12">
+          <p>
+            This is some test home page content. Oh look, a button!
+          </p>
+          <Link href="/about" passHref>
+            <Button title="About">
+              About
+            </Button>
+          </Link>
+        </Col>
+        <Col md="4" sm="12">
+          <AuthenticationCard session={props.session} setSession={props.setSession} />
+        </Col>
+      </Row>
+    </div>
   );
 }
 

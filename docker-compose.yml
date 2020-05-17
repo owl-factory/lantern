@@ -2,14 +2,12 @@ version: "2.4"
 services:
   web:
     image: node:12
-    command: bash -c 'yarn install --ignore-optional && yarn dev'
+    command: yarn compose
     ports:
       - 3000:3000
     volumes:
       - ./:/usr/src/app
     working_dir: /usr/src/app
-    env_file:
-     - .env
     networks:
      - reroll-net
 

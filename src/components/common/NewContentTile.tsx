@@ -1,4 +1,4 @@
-import { Typography } from "@material-ui/core";
+import React from "react";
 import { TileWrapper } from "../common/wrappers";
 
 /**
@@ -8,9 +8,9 @@ import { TileWrapper } from "../common/wrappers";
 function NewContentTile(props: any) {
   return (
     <TileWrapper href={props.href}>
-      <Typography variant="h5">
+      <h5>
         + New {props.children}
-      </Typography>
+      </h5>
     </TileWrapper>
   );
 }

@@ -1,7 +1,7 @@
-import {  Grid, Typography } from "@material-ui/core";
-import session from "../../pages/api/session.json";
+import React from "react";
 import NewContentTile from "../common/NewContentTile";
 import { TileWrapper } from "../common/wrappers";
+import { Row } from "react-bootstrap";
 
 /**
  * Renders the character tiles
@@ -15,12 +15,12 @@ function CharacterTiles(props: any) {
   });
 
   if (props.includeNew === true) {
-    const linkAddress: string = "/user/" + session.alias + "/character/new/";
+    const linkAddress: string = "/user/" + "session.alias" + "/character/new/";
     tiles.push(<NewContentTile href={linkAddress}>Character</NewContentTile>);
   }
 
   return (
-    <Grid container>{tiles}</Grid>
+    <Row>{tiles}</Row>
   );
 }
 
@@ -29,15 +29,15 @@ function CharacterTiles(props: any) {
  * @param props
  */
 function CharacterTile(props: any) {
-  const linkAddress: string = "/user/" + session.alias + "/character/" + props.item.alias;
+  const linkAddress: string = "/user/" + "session.alias" + "/character/" + props.item.alias;
   return (
     <TileWrapper href={linkAddress}>
-      <Typography variant="h6">
+      <h6>
         {props.item.name}
-      </Typography>
-      <Typography variant="body1">
+      </h6>
+      <p>
         {props.item.game.length > 0 ? "From" : ""} { props.item.game }
-      </Typography>
+      </p>
     </TileWrapper>
   );
 }

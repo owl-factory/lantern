@@ -1,12 +1,5 @@
-
-import {
-  Table as MuiTable,
-  TableBody as MuiTableBody,
-  TableCell as MuiTableCell,
-  TableHead as MuiTableHead,
-  TableRow,
-} from "@material-ui/core";
 import React from "react";
+import { Table as BSTable } from "react-bootstrap";
 import { def } from "../../helpers/tools";
 import Pagination, {usePageState} from "./Pagination";
 
@@ -17,7 +10,7 @@ export interface ILayoutItem {
   component?: (content: any) => JSX.Element; // A JSX element given content[i] as a content arg
 }
 
-interface ITable {
+interface TableProps {
   count?: number; // Total number of items to use
   perPage?: number; // Total number of items to use per page
   graphqlQuery?: any; // The graphql query to use and modify
@@ -25,14 +18,19 @@ interface ITable {
   layout: ILayoutItem[]; // Instructions for how to write the layout
 }
 
-interface ITableHead {
+interface TableHeadProps {
   layout: ILayoutItem[]; // Instructions for how to write the layout
 }
 
-interface ITableBody {
+interface TableBodyProps {
+  contents: any;
+  offset: number;
+  page: number;
+  perPage: number;
+  layout: any;
 }
 
-interface ITableCell {
+interface TableCellProps {
   children?: any;
   content?: any;
   layoutItem?: ILayoutItem;
@@ -42,7 +40,7 @@ interface ITableCell {
  * Renders the contents of the table cell.
  * @param props see ITableCell
  */
-function renderCellContent(props: ITableCell) {
+function renderCellContent(props: TableCellProps) {
   let cellContent: string | JSX.Element = "";
 
   if (props.layoutItem === undefined || props.content === undefined) {
@@ -62,7 +60,7 @@ function renderCellContent(props: ITableCell) {
  * Renders the table cell, either a static value or a component
  * @param props see ITableCell
  */
-function TableCell(props: ITableCell) {
+function TableCell(props: TableCellProps) {
   let cellContent: JSX.Element | string = "";
 
   if (props.children !== undefined) {
@@ -72,9 +70,9 @@ function TableCell(props: ITableCell) {
   }
 
   return (
-    <MuiTableCell>
+    <td>
       {cellContent}
-    </MuiTableCell>
+    </td>
   );
 }
 
@@ -83,7 +81,7 @@ function TableCell(props: ITableCell) {
  *
  * @param props see ITableBody
  */
-function TableBody(props: any) {
+function TableBody(props: TableBodyProps) {
   const contentArray: any[] = JSON.parse(props.contents);
   const rows: JSX.Element[] = [];
 
@@ -99,13 +97,13 @@ function TableBody(props: any) {
       cells.push(<TableCell key={"row" + i + "-" + layoutItem.title} content={content} layoutItem={layoutItem}/>);
     });
 
-    rows.push(<TableRow key={"row" + i}>{cells}</TableRow>);
+    rows.push(<tr key={"row" + i}>{cells}</tr>);
   }
 
   return (
-    <MuiTableBody>
+    <tbody>
       {rows}
-    </MuiTableBody>
+    </tbody>
   );
 }
 
@@ -113,23 +111,23 @@ function TableBody(props: any) {
  * Renders the head of the table in a consistent manner
  * @param props See ITableHead
  */
-function TableHead(props: ITableHead) {
+function TableHead(props: TableHeadProps) {
   const tableHeadContents: JSX.Element[] = [];
 
   props.layout.forEach((layoutItem: ILayoutItem) => {
     tableHeadContents.push(
-      <MuiTableCell key={"row0-" + layoutItem.title}>
+      <th key={"row0-" + layoutItem.title}>
         { layoutItem.title }
-      </MuiTableCell>,
+      </th>,
     );
   });
 
   return (
-    <MuiTableHead>
-      <TableRow>
+    <thead>
+      <tr>
         { tableHeadContents }
-      </TableRow>
-    </MuiTableHead>
+      </tr>
+    </thead>
   );
 }
 
@@ -137,7 +135,7 @@ function TableHead(props: ITableHead) {
  * Renders a standard table for consistent formating, design, and pagination
  * @param props see ITable
  */
-function Table(props: ITable) {
+function Table(props: TableProps) {
   const perPage = def<number>(props.perPage, 25);
 
   const [contents, setContents] = React.useState(
@@ -148,7 +146,7 @@ function Table(props: ITable) {
 
   return (
     <div>
-      <MuiTable>
+      <BSTable>
         <TableHead layout={props.layout}/>
         <TableBody
           contents={contents}
@@ -157,7 +155,7 @@ function Table(props: ITable) {
           perPage={pageState.perPage}
           offset={pageState.offset}
         />
-      </MuiTable>
+      </BSTable>
 
       <Pagination
         pageState={pageState}

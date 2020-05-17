@@ -1,0 +1,47 @@
+$theme-colors: (
+  "primary": #b33951,
+  "secondary": #91C7B1,
+  "dark": #483d3f,
+  "light": #f9f9ed,
+);
+
+$font-family-sans-serif: 'Muli', sans-serif;
+$body-bg: #fbfbf0;
+$input-bg: $body-bg;
+
+@import "~bootstrap/scss/bootstrap";
+
+.card {
+  @extend .shadow-sm;
+  @extend .bg-light;
+  border-radius: 0.8em;
+}
+
+.btn {
+  @extend .shadow-sm;
+  border-radius: 0.8em;
+}
+
+.form-control {
+  border-radius: 0.8em;
+}
+
+.form-control:focus {
+  border-color: theme-color("secondary");
+  box-shadow: 0 0 2px theme-color("secondary");
+  background-color: lighten($body-bg, 2%)!important;
+}
+
+.form-control:hover {
+  border-color: theme-color("secondary");
+  box-shadow: 0 0 4px theme-color("secondary");
+}
+
+.animate{
+  transition: width 1s ease;
+  width: 250px;
+}
+
+.animate:focus-within {
+  width: 60%;
+}

@@ -1,9 +1,10 @@
-import { Breadcrumbs as MuiBreadcrumbs, Link as MuiLink } from "@material-ui/core";
+import React from "react";
+import { Breadcrumb as BSBreadcrumb } from "react-bootstrap";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { def } from "../../helpers/tools";
 
-interface IBreadcrumb {
+interface BreadcrumbProps {
   skipLevels?: number; // the endpoint to start from
   titles?: string[];
 }
@@ -12,7 +13,7 @@ interface IBreadcrumb {
  * A simple to use breadcrumb component
  * @param props see IBreadcrumb
  */
-function Breadcrumbs(props: IBreadcrumb) {
+function Breadcrumbs(props: BreadcrumbProps) {
   const router = useRouter();
   const skipLevels: number = def<number>(props.skipLevels, 0);
   const titles: string[] = def<string[]>(props.titles, []);
@@ -41,7 +42,7 @@ function Breadcrumbs(props: IBreadcrumb) {
 
       breadcrumbs.push(
         <Link key={"crumb_" + i} href={uri} passHref>
-          <MuiLink color="inherit">{title}</MuiLink>
+          <BSBreadcrumb.Item>{title}</BSBreadcrumb.Item>
         </Link>,
       );
 
@@ -54,9 +55,9 @@ function Breadcrumbs(props: IBreadcrumb) {
   }
 
   return (
-    <MuiBreadcrumbs aria-label="breadcrumb">
+    <BSBreadcrumb>
       { buildCrumbs() }
-    </MuiBreadcrumbs>
+    </BSBreadcrumb>
   );
 }
 

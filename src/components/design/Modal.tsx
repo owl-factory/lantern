@@ -1,33 +1,9 @@
-import {
-  Backdrop as MuiBackdrop,
-  Container,
-  createStyles,
-  Fade as MuiFade,
-  makeStyles,
-  Modal as MuiModal,
-  Theme,
-} from "@material-ui/core";
 import React from "react";
+import { Modal as BSModal } from "react-bootstrap";
 
 // TODO - add flag for "You may have unsaved changes!" before closing
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    modal: {
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    paper: {
-      backgroundColor: theme.palette.background.paper,
-      border: "2px solid #000",
-      boxShadow: theme.shadows[5],
-      padding: theme.spacing(2, 4, 3),
-    },
-  }),
-);
-
-interface IModal {
+interface ModalProps {
   children?: JSX.Element; // The children to place within the modal
   ariaLabeledBy?: string; // Accessibility label
   ariaDescribedBy?: string; // Accessibility description
@@ -40,7 +16,6 @@ interface IModal {
  */
 function registerModal(): [(props: any) => (JSX.Element | null), () => (void)] {
   const [open, setOpen] = React.useState(false);
-  const classes = useStyles();
 
   /**
    * Opens the modal
@@ -65,23 +40,14 @@ function registerModal(): [(props: any) => (JSX.Element | null), () => (void)] {
    * Renders a modal with the given settings and passed props
    * @param props see IModal
    */
-  function Modal(props: IModal): JSX.Element | null {
+  function Modal(props: ModalProps): JSX.Element | null {
     return (
-        <MuiModal
-          aria-describedby={props.ariaDescribedBy}
-          className={classes.modal}
-          open={open}
-          onClose={() => handleClose(props.dirty)}
-          closeAfterTransition
-          BackdropComponent={MuiBackdrop}
-          BackdropProps={{timeout: 500}}
+        <BSModal
+          show={open}
+          onHide={handleClose}
         >
-          <MuiFade in={open}>
-            <Container fixed className={classes.paper}>
-              {props.children}
-            </Container>
-          </MuiFade>
-        </MuiModal>
+          {props.children}
+        </BSModal>
     );
   }
 
