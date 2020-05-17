@@ -4,19 +4,11 @@ import React from "react"
 import Page from "../../../components/design/Page";
 import { NewGameSystemForm } from "../game-system/new";
 
-const GET_POKEMON_INFO = gql`
+const characterQuery = gql`
 {
-  pokemons(first: 150) {
-    id
-    number
-    name,
-    image,
-    evolutions {
-      id,
-      number,
-      name,
-      image
-    }
+  characters {
+    id,
+    name
   }
 }`;
 
@@ -24,18 +16,17 @@ const GET_POKEMON_INFO = gql`
  * A playground for Laura's development so we don't bump into each other <3
  */
 function LauraPlayground() {
-  // const { data, loading, error } = useQuery(GET_POKEMON_INFO);
+  const { data, loading, error } = useQuery(characterQuery);
 
-  function pokemon() {
-    // if (loading) {
-    //   return <div>Loading...</div>;
-    // }
+  function testCharacters() {
+    if (loading) {
+      return <div>Loading...</div>;
+    }
 
-    // if (error) {
-    //   return <div>Error...</div>;
-    // }
-
-    console.log("data");
+    if (error) {
+      return <div>Error...</div>;
+    }
+    return <div>{JSON.stringify(data.characters)}</div>;
   }
 
   return (
@@ -46,8 +37,9 @@ function LauraPlayground() {
       <p>
         Here&apos;s where Laura is going to be doing her testing. &lt;3
       </p>
-      
-      <NewGameSystemForm/>
+      <p>
+        {testCharacters()}
+      </p>
     </Page>
   );
 }

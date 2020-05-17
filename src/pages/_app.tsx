@@ -8,9 +8,12 @@ import { AppProps } from "next/app";
 import Head from "next/head";
 import "./_app.scss";
 import HeaderBar from "../components/design/HeaderBar";
+import { def } from "../helpers/tools";
+
+const apiURL = def<string>(process.env.API_URL, "/api/graphql");
 
 const httpOptions: HttpLink.Options = {
-  uri: "https://graphql-pokemon.now.sh",
+  uri: apiURL,
   fetch,
 };
 
