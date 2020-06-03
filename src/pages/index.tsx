@@ -9,6 +9,8 @@ import campaigns from "./api/campaign/campaign.json";
 import characters from "./api/character/character.json";
 import news from "./api/news/news.json";
 import { Row, Button, Col } from "react-bootstrap";
+import { NextPageContext } from "next";
+import { parseCookies } from "nookies";
 
 /**
  * Renders the index page and one of two subviews
@@ -37,6 +39,7 @@ function Index(props: any) {
   return (
     <Page>
       {userView}
+      {JSON.stringify(props.token)}
       <h4>
         News
       </h4>
@@ -97,6 +100,11 @@ function GuestView(props: any) {
       </Row>
     </div>
   );
+}
+
+Index.getInitialProps = async (ctx: NextPageContext) => {
+  const token = parseCookies(ctx).authToken;
+  return { token }
 }
 
 export default Index;
