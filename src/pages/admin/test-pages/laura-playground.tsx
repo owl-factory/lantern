@@ -10,17 +10,12 @@ import { client } from "../../../helpers/graphql";
 
 const GET_POKEMON_INFO = gql`
 {
-  pokemons(first: 150) {
+  pokemons(first: 9) {
     id
     number
     name,
     image,
-    evolutions {
-      id,
-      number,
-      name,
-      image
-    }
+    
   }
 }`;
 
@@ -28,7 +23,18 @@ const GET_POKEMON_INFO = gql`
  * A playground for Laura's development so we don't bump into each other <3
  */
 function LauraPlayground({pokemon}: any) {
-  
+  const { data, loading, error } = useQuery(GET_POKEMON_INFO);
+  function getOtherPokemon() {
+    if (loading) {
+      return <>Loading...</>;
+    }
+
+    if (error) {
+      return <>Error!</>;
+    }
+
+    return <>{JSON.stringify(data.pokemons)}</>;
+  }
   return (
     <Page>
       <p>
@@ -39,6 +45,9 @@ function LauraPlayground({pokemon}: any) {
       </p>
       <p>
         {JSON.stringify(pokemon)}
+      </p>
+      <p>
+        {getOtherPokemon()}
       </p>
     </Page>
   );
