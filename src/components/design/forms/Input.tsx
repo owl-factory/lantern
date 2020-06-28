@@ -31,7 +31,7 @@ export function Input(props: InputProps) {
     <Form.Control 
       {...field}
       {...props}
-      style={meta.error ? {"border-color": "red"} : {}}
+      style={meta.error && meta.touched ? {"border-color": "red"} : {}}
     />
   );
 }
