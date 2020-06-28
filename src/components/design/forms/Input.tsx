@@ -25,12 +25,13 @@ export interface InputProps extends FieldProps {
  * @param props see IInput
  */
 export function Input(props: InputProps) {
-  const [field] = useField(props);
+  const [field, meta] = useField(props);
 
   return (
     <Form.Control 
       {...field}
       {...props}
+      style={meta.error ? {"border-color": "red"} : {}}
     />
   );
 }
