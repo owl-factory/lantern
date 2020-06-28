@@ -5,7 +5,6 @@ import registerModal from "../../../components/design/Modal";
 import Table from "../../../components/design/tables/Table";
 import Page from "../../../components/design/Page";
 import gamesystemJson from "./gamesystems.json";
-import { NewGameSystemForm } from "./new";
 import { TableBuilder } from "../../../helpers/design/table";
 
 /**
@@ -25,10 +24,10 @@ function GameSystems() {
       <h3>Game Systems</h3>
       <Breadcrumbs skipLevels={1} titles={["Admin", "Game Systems"]}/>
       <Button onClick={openNewSystemModal} >+ Add Game System</Button>
-      <NewGameSystemModal dirty={true}>
+      {/* <NewGameSystemModal dirty={true}>
         <h5 >Add a new Game System</h5>
-        <NewGameSystemForm/>
-      </NewGameSystemModal>
+        <NewGamesystemForm/>
+      </NewGameSystemModal> */}
       <Table {...tableBuilder.renderConfig()} data={gamesystemJson}/>
     </Page>
   );

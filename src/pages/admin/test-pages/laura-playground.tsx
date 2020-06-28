@@ -4,7 +4,7 @@ import { useQuery } from "@apollo/react-hooks";
 import gql from "graphql-tag";
 import React from "react"
 import Page from "../../../components/design/Page";
-import { NewGameSystemForm } from "../game-system/new";
+import { NewGamesystemForm } from "../gamesystems/new";
 import { client } from "../../../helpers/graphql";
 
 
