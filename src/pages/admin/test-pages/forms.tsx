@@ -45,20 +45,22 @@ export function TestForm(props: any) {
         alert(JSON.stringify(values, null, 2));
       }}
     >
-      <Form>
-        <label htmlFor="firstName">First Name</label>
-        <Field name="firstName" type="text"/>
-        <ErrorMessage name="firstName"/>
-        
-        <label htmlFor="lastName">Last Name</label>
-        <Field name="lastName" type="text"/>
-        <ErrorMessage name="lastName"/>
+      {(props: any) => (
+        <Form>
+          <label htmlFor="firstName">First Name</label>
+          <Input aria-label="First Name" name="firstName"/>
+          <ErrorMessage name="firstName"/>
 
-        <label htmlFor="email">Email</label>
-        <Field name="email" type="text"/>
-        <ErrorMessage name="email"/>
+          <label htmlFor="lastName">Last Name</label>
+          <Field name="lastName" type="text"/>
+          <ErrorMessage name="lastName"/>
 
-      </Form>
+          <label htmlFor="email">Email</label>
+          <Field name="email" type="text"/>
+          <ErrorMessage name="email"/>
+
+        </Form>
+      )}
     </Formik>
 
   );
