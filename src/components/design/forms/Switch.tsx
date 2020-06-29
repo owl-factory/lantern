@@ -7,7 +7,6 @@ interface SwitchProps extends FieldProps {
   children?: any;
   disabled?: string;
   name: string;
-  isValid?: boolean;
 }
 
 /**

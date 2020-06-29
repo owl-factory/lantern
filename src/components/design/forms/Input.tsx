@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import React from "react";
 import { Form } from "react-bootstrap"
-import { def, objectKeepFields } from "../../../helpers/tools";
 import { FieldProps } from "./types";
 
 import { useField } from "formik";
+
+type As = "input" | "textarea";
 
 export interface InputProps extends FieldProps {
   // Default input properties
@@ -13,10 +14,10 @@ export interface InputProps extends FieldProps {
   name: string; // The name of the input
   placeholder?: string; // A placeholder value for when the input is empty
   rows?: number; // The number of rows (multiline must be true)
-  type?: string; // The ???
+  type?: string; // The type of input (text, password, datetime, etc.)
 
   // Bootstrap Properties
-  as?: any; // Controls what the input is seen as
+  as?: As; // Controls what the input is seen as
   size?: "sm" | "lg"; // The bootstrap size of the input
 }
 
@@ -25,13 +26,12 @@ export interface InputProps extends FieldProps {
  * @param props see IInput
  */
 export function Input(props: InputProps) {
-  const [field, meta] = useField(props);
+  const [field] = useField(props);
 
   return (
     <Form.Control 
       {...field}
       {...props}
-      style={meta.error && meta.touched ? {"border-color": "red"} : {}}
     />
   );
 }

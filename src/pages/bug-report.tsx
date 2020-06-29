@@ -1,7 +1,9 @@
 import React from "react";
-import {AutoForm, Input, Select, TextArea} from "../components/design/forms/Forms";
+import { Input, Select, TextArea} from "../components/design/forms/Forms";
 import Page from "../components/design/Page";
-import { Card } from "react-bootstrap";
+import { Button, Card, Col, Form, Row } from "react-bootstrap";
+import { Formik, Form as FormikForm } from "formik";
+import * as Yup from "yup";
 
 /**
  * Renders the Bug Report page
@@ -36,11 +38,42 @@ function BugReportForm() {
   ];
 
   return (
-    <AutoForm>
-      <Input id="email" label="Email" name="Email"/>
-      <Select id="bugType" label="Bug Type" name="Bug Type" options={bugOptions} labelKey="name"/>
-      <TextArea id="message" label="What Happened?" name="What Happened?"/>
-    </AutoForm>
+    <Formik
+      initialValues={{}}
+      validationSchema={Yup.object({})}
+      onSubmit={(values: any) => {
+        alert(JSON.stringify(values, null, 2));
+      }}
+    >
+      {(props: any) => 
+        <FormikForm>
+          <Row>
+            <Form.Group as={Col}>
+              <Form.Label>Email</Form.Label>
+              <Input name="Email"/>
+            </Form.Group>
+
+            <Form.Group as={Col}>
+              <Form.Label>Bug Type</Form.Label>
+              <Select name="bugType" options={bugOptions} labelKey="name"/>
+            </Form.Group>
+          </Row>
+
+          <Row>
+            <Form.Group as={Col}>
+              <Form.Label>Message</Form.Label>
+              <TextArea id="message" label="What Happened?" name="What Happened?"/>              
+            </Form.Group>
+          </Row>
+
+          <Row>
+            <Form.Group as={Col}>
+              <Button variant="primary" type="submit">Submit</Button>
+            </Form.Group>
+          </Row>
+        </FormikForm>
+      }
+    </Formik>
   );
 }
 

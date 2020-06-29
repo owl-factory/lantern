@@ -2,17 +2,15 @@ import React from "react";
 import { Form } from "react-bootstrap";
 import { FieldProps } from "./types";
 import { def, objectKeepFields } from "../../../helpers/tools";
-import { useField } from "formik"
+import { useField } from "formik";
 
 interface FormCheckProps extends FieldProps {
   "aria-label"?: string;
   children?: any;
   disabled?: string;
-  isValid?: boolean;
   name: string;
   type: "checkbox" | "radio" | "switch";
 }
-
 
 /**
  * Renders the base checkbox for higher customization
@@ -25,7 +23,7 @@ export function FormCheck(props: FormCheckProps) {
     props, 
     ["checked", "disabled", "isValid", "name", "type"]
   );
-  const [field, meta] = useField({ ...checkboxProps, type: "check" });
+  const [field] = useField({ ...checkboxProps, type: "check" });
   
   return (
     <Form.Check 

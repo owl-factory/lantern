@@ -1,62 +1,41 @@
 import React from "react";
 import { Button, Col, Form, InputGroup, Row } from "react-bootstrap";
 import Breadcrumbs from "../../../components/design/Breadcrumbs";
-import {
-  AutoForm,
-  Input,
-  Multiselect,
-  Select,
-  TextArea,
-  Time,
-} from "../../../components/design/forms/Forms";
+import { Input } from "../../../components/design/forms/Forms";
 import Page from "../../../components/design/Page";
-import { defState } from "../../../helpers/tools";
+import { Formik, Form as FormikForm } from "formik";
+import * as Yup from "yup";
 
 export function NewGameSystemForm(props: any) {
-  const [data, setData] = defState(props.state, props.setState, {
-    name: {nameAgain: "Boop"},
-    key: "",
-  });
-
-  const [formState, setFormState] = defState(props.formState, props.setFormState, {});
-
-  const selectData = [
-    {label: "Dungeons and Dragons 5th Edition", value: "dnd-5e"},
-    {label: "Pathfinder 2", value: "pathfinder2"},
-    {label: "Rainbows", value: "rainbows"},
-  ];
-
-  const checkboxData = [
-    {label: "Dungeons and Dragons 5th Edition", name: "dnd-5e", defaultValue: false},
-    {label: "Pathfinder 2", name: "pathfinder2", defaultValue: true},
-    {label: "Rainbows", name: "rainbows", defaultValue: false},
-  ];
-
-  const errors = {
-    checkboxText: "Error!",
-    name: "Name error",
-    radioTest: "radioTest error",
-    selectTest: "Select errors",
-
-  };
+  
 
   return (
-    <AutoForm data={data} setData={setData} formState={formState} setFormState={setFormState} errors={errors}>
-      <Row>
-        <Form.Group as={Col}>
-          <Form.Label>Test</Form.Label>
-          <InputGroup>
-            <Input name="name.nameAgain" label="System Name" required={true} defaultValue="Test"/>
-          </InputGroup>
-        </Form.Group>
-        <Form.Group as={Col}>
-        <Form.Label>Second Test</Form.Label>
-          <Input name="name.nameAgain" label="System Name" required={true} defaultValue="Test"/>
-        </Form.Group>
-      </Row>
+    <Formik
+      initialValues={{name: {}}}
+      validationSchema={Yup.object({})}
+      onSubmit={(values: any) => {
+        alert(JSON.stringify(values, null, 2));
+      }}
+    >
+      {(props: any) => (
+        <FormikForm>
+          <Row>
+            <Form.Group as={Col}>
+              <Form.Label>Test</Form.Label>
+              <InputGroup>
+                <Input name="name.nested" label="System Name"/>
+              </InputGroup>
+            </Form.Group>
+            <Form.Group as={Col}>
+            <Form.Label>Second Test</Form.Label>
+              <Input name="name.nested" label="System Name"/>
+            </Form.Group>
+          </Row>
 
-      <Button variant="primary">Submit!</Button>
-    </AutoForm>
+          <Button variant="primary" type="submit">Submit!</Button>
+        </FormikForm>
+      )} 
+    </Formik>
   );
 }
 

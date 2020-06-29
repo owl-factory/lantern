@@ -3,14 +3,11 @@ import { FieldProps } from "./types";
 import { FormCheck } from "./FormCheck";
 
 interface RadioButtonProps extends FieldProps {
-  ariaLabel?: string;
-  checked?: any;
+  "aria-label"?: string;
   children?: any;
   disabled?: string;
   name: string;
-  id: string;
-  isValid?: boolean;
-  value?: string;
+  value: string;
 }
 
 export function RadioButton(props: RadioButtonProps) {

@@ -1,10 +1,9 @@
 import React from "react";
-import { Button, Col, Form, InputGroup, Row } from "react-bootstrap";
+import { Button, Col, Form, Row } from "react-bootstrap";
 import {
   Checkbox,
   Date,
   DateTime,
-  AutoForm,
   Input,
   Multiselect,
   RadioButton,
@@ -14,12 +13,11 @@ import {
   Time,
 } from "../../../components/design/forms/Forms";
 import Page from "../../../components/design/Page";
-import { defState } from "../../../helpers/tools";
 
-import { Formik, Field, Form as FormikForm, ErrorMessage, } from "formik";
+import { Formik, Form as FormikForm, ErrorMessage, } from "formik";
 import * as Yup from "yup";
 
-export function TestForm(props: any) {
+export function TestForm() {
   const selectData = [
     {label: "Dungeons and Dragons 5th Edition", value: "dnd-5e"},
     {label: "Pathfinder 2", value: "pathfinder2"},
@@ -44,9 +42,6 @@ export function TestForm(props: any) {
         lastName: Yup.string()
           .max(20, "Must be 20 characters or less")
           .required("Required"),
-        email: Yup.string()
-          .email("Invalid email address")
-          .required("Required")
       })}
       onSubmit={(values: any) => {
         alert(JSON.stringify(values, null, 2));
@@ -87,7 +82,7 @@ export function TestForm(props: any) {
             </Form.Group>
 
             <Form.Group as={Col}>
-              <Multiselect name="selectTest2" label="Multiselect Test" options={selectData} defaultValue={[]}/>
+              <Multiselect name="selectTest2" label="Multiselect Test" options={selectData}/>
             </Form.Group>
           </Row>
 
@@ -97,7 +92,8 @@ export function TestForm(props: any) {
               <Checkbox name="isActive">
                 <Form.Check.Label>Is Active?</Form.Check.Label>
               </Checkbox>
-            
+
+              {props.values.isActive}
               <Checkbox name="isPublished">
                 <Form.Check.Label>Is Published?</Form.Check.Label>
               </Checkbox>
@@ -117,7 +113,7 @@ export function TestForm(props: any) {
             </Form.Group>
           </Row>
 
-          <h2>Switches</h2>
+          <h2>Switches (non-functional)</h2>
           <Row>
             {/* TODO - this doesn't work */}
             <Form.Group as={Col}>
@@ -170,6 +166,12 @@ export function TestForm(props: any) {
               <TextArea name="textarea" rows={2} label="Text Area"/>
             </Form.Group>
           </Row>
+
+          <Row>
+            <Form.Group as={Col}>
+              <Button type="submit">Submit</Button>
+            </Form.Group>
+          </Row>
         </FormikForm>
       )}
     </Formik>
@@ -181,7 +183,6 @@ export function TestForm(props: any) {
  * Renders a the page to create a new game system
  */
 function TestForms() {
-
   return (
     <Page>
       <h1>Test Forms</h1>

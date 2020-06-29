@@ -43,7 +43,7 @@ export function Select(props: SelectProps) {
   const id = def<string>(props.id, props.name);
 
   const selectProps = objectKeepFields(props, ["disabled", "multiple", "name", "required", "size", "value"]);
-  const [field, meta] = useField(props);
+  const [field] = useField(props);
 
   return (
     <Form.Control
