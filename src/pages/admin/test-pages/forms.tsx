@@ -1,5 +1,7 @@
+import { Formik, Form as FormikForm, ErrorMessage, } from "formik";
 import React from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
+import * as Yup from "yup";
 import {
   Checkbox,
   Date,
@@ -14,9 +16,9 @@ import {
 } from "../../../components/design/forms/Forms";
 import Page from "../../../components/design/Page";
 
-import { Formik, Form as FormikForm, ErrorMessage, } from "formik";
-import * as Yup from "yup";
-
+/**
+ * Renders a test form for verifying that all of the functionality and design works as intended
+ */
 export function TestForm() {
   const selectData = [
     {label: "Dungeons and Dragons 5th Edition", value: "dnd-5e"},
@@ -104,11 +106,11 @@ export function TestForm() {
           <Row>
             <Form.Group as={Col}>
               <RadioButton id="base1" name="difficulty" value="easy">
-                <Form.Check.Label>Yes</Form.Check.Label>
+                <Form.Check.Label>Easy</Form.Check.Label>
               </RadioButton>
             
               <RadioButton id="base2" name="difficulty" value="hard">
-                <Form.Check.Label>No</Form.Check.Label>
+                <Form.Check.Label>Hard</Form.Check.Label>
               </RadioButton>
             </Form.Group>
           </Row>
@@ -117,9 +119,7 @@ export function TestForm() {
           <Row>
             {/* TODO - this doesn't work */}
             <Form.Group as={Col}>
-              <Switch name="isAirConditioningOn">
-                <Form.Check.Label>Air Conditioning</Form.Check.Label>
-              </Switch>
+              <Switch name="isAirConditioningOn" label="Air Conditioning"/>
             </Form.Group>
           </Row>
 

@@ -1,8 +1,8 @@
+import { Formik, Form as FormikForm } from "formik";
 import React from "react";
 import { Input, Select, TextArea} from "../components/design/forms/Forms";
 import Page from "../components/design/Page";
 import { Button, Card, Col, Form, Row } from "react-bootstrap";
-import { Formik, Form as FormikForm } from "formik";
 import * as Yup from "yup";
 
 /**

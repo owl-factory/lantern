@@ -1,14 +1,15 @@
+import { Formik, Form as FormikForm } from "formik";
 import React from "react";
 import { Button, Col, Form, InputGroup, Row } from "react-bootstrap";
+import * as Yup from "yup";
 import Breadcrumbs from "../../../components/design/Breadcrumbs";
 import { Input } from "../../../components/design/forms/Forms";
 import Page from "../../../components/design/Page";
-import { Formik, Form as FormikForm } from "formik";
-import * as Yup from "yup";
 
-export function NewGameSystemForm(props: any) {
-  
-
+/**
+ * Renders a form for creating a new gamesystem
+ */
+export function NewGameSystemForm() {
   return (
     <Formik
       initialValues={{name: {}}}
@@ -43,7 +44,6 @@ export function NewGameSystemForm(props: any) {
  * Renders a the page to create a new game system
  */
 function NewGameSystem() {
-
   return (
     <Page>
       <h1>New Game Systems</h1>

@@ -1,12 +1,15 @@
+import { useField } from "formik";
 import React from "react";
-import { FormCheck } from "./FormCheck";
+import { Form } from "react-bootstrap";
 import { FieldProps } from "./types";
+import { def, objectKeepFields } from "../../../helpers/tools";
 
 interface SwitchProps extends FieldProps {
-  ariaLabel?: string;
-  children?: any;
-  disabled?: string;
-  name: string;
+  "aria-label"?: string; // A hidden label for usability
+  children?: any; // Any children, such as a label
+  disabled?: string; // A string value indicates that this switch is disabled
+  label?: string; // The inline label
+  name: string; // The argument name of the switch input
 }
 
 /**
@@ -14,7 +17,20 @@ interface SwitchProps extends FieldProps {
  * @param props See BaseSwitchProps
  */
 export function Switch(props: SwitchProps) {
+  const id = def<string>(props.id, props.name);
+  
+  const switchProps = objectKeepFields(
+    props, 
+    ["disabled", "label", "name"]
+  );
+  const [field] = useField({ ...switchProps, type: "check" });
+
   return (
-    <FormCheck type="switch" {...props}/>
+    <Form.Check 
+      type="switch"
+      id={id}
+      {...switchProps}
+      {...field}
+    />
   );
 }
