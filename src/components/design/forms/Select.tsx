@@ -3,15 +3,13 @@ import React from "react";
 import { FieldProps } from "./types";
 import { def, objectKeepFields } from "../../../helpers/tools";
 import { Form } from "react-bootstrap";
+import { useField } from "formik";
 
 
 interface SelectProps extends FieldProps {
   // Select Properties
   disabled?: boolean; // If this is disabled or not
   name: string; // The name of the select
-  id?: string; // The id of the select 
-  onChange?: (event: object) => void; // The function to use on change
-  onClick?: (event: object) => void; // The function to use on change
   required?: boolean; // If this is required or not
 
   // Bootstrap Select Arguments
@@ -20,7 +18,6 @@ interface SelectProps extends FieldProps {
 
   // Custom Inputs
   children?: any; // User-defined children, if one wants to be handled externally
-  defaultValue?: string | string[]; // The default value to use, if blank
   emptyText?: string; // Text to display if empty option is included
   includeEmpty?: boolean; // Include an empty selection
   labelKey?: string; // The key to use for label inputs
@@ -46,14 +43,13 @@ export function Select(props: SelectProps) {
   const id = def<string>(props.id, props.name);
 
   const selectProps = objectKeepFields(props, ["disabled", "multiple", "name", "required", "size", "value"]);
+  const [field] = useField(props);
 
   return (
     <Form.Control
       as="select"
       {...selectProps}
-      id={id}
-      onChange={props.onChange}
-      onClick={props.onClick}
+      {...field}
     >
       {renderChildren(id, props)}
     </Form.Control>

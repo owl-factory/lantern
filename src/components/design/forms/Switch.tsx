@@ -1,41 +1,36 @@
+import { useField } from "formik";
 import React from "react";
-import { BaseFormCheck, FormCheck } from "./FormCheck";
+import { Form } from "react-bootstrap";
 import { FieldProps } from "./types";
+import { def, objectKeepFields } from "../../../helpers/tools";
 
-interface SharedSwitchProps extends FieldProps {
-  ariaLabel?: string;
-  disabled?: string;
-  name: string;
-  onChange?: (event: any) => (void);
-  isValid?: boolean;
-  checked?: any;
-}
-
-interface BaseSwitchProps extends SharedSwitchProps {
-  children?: any;
-}
-
-interface SwitchProps extends SharedSwitchProps {
-  inline?: boolean;
-  label?: string;
-}
-
-/**
- * Renders a full Switch with labels and such
- * @param props See SwitchProps
- */
-export function Switch(props: SwitchProps) {
-  return (
-    <FormCheck type="switch" {...props}/>
-  );
+interface SwitchProps extends FieldProps {
+  "aria-label"?: string; // A hidden label for usability
+  children?: any; // Any children, such as a label
+  disabled?: string; // A string value indicates that this switch is disabled
+  label?: string; // The inline label
+  name: string; // The argument name of the switch input
 }
 
 /**
  * Renders the base Switch for higher customization
  * @param props See BaseSwitchProps
  */
-export function BaseSwitch(props: BaseSwitchProps) {  
+export function Switch(props: SwitchProps) {
+  const id = def<string>(props.id, props.name);
+  
+  const switchProps = objectKeepFields(
+    props, 
+    ["disabled", "label", "name"]
+  );
+  const [field] = useField({ ...switchProps, type: "check" });
+
   return (
-    <BaseFormCheck type="switch" {...props}/>
+    <Form.Check 
+      type="switch"
+      id={id}
+      {...switchProps}
+      {...field}
+    />
   );
 }

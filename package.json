@@ -18,6 +18,7 @@
     "apollo-link-http": "^1.5.16",
     "bootstrap": "^4.4.1",
     "cross-fetch": "^3.0.4",
+    "formik": "^2.1.4",
     "graphql": "^14.6.0",
     "graphql-tag": "^2.10.3",
     "lodash": "^4.17.15",
@@ -27,7 +28,8 @@
     "react-bootstrap": "^1.0.1",
     "react-dom": "16.12.0",
     "react-icons": "^3.10.0",
-    "saslprep": "^1.0.3"
+    "saslprep": "^1.0.3",
+    "yup": "^0.29.1"
   },
   "devDependencies": {
     "@types/enzyme": "^3.10.3",
@@ -38,6 +40,7 @@
     "@types/node-fetch": "^2.5.5",
     "@types/react": "^16.9.11",
     "@types/react-bootstrap": "^1.0.1",
+    "@types/yup": "^0.29.3",
     "@typescript-eslint/eslint-plugin": "^2.30.0",
     "@typescript-eslint/parser": "^2.30.0",
     "babel-core": "^6.26.3",

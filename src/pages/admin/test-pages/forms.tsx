@@ -1,13 +1,11 @@
+import { Formik, Form as FormikForm, ErrorMessage, } from "formik";
 import React from "react";
-import { Button, Col, Form, InputGroup, Row } from "react-bootstrap";
+import { Button, Col, Form, Row } from "react-bootstrap";
+import * as Yup from "yup";
 import {
-  BaseCheckbox,
-  BaseRadioButton,
-  BaseSwitch,
   Checkbox,
   Date,
   DateTime,
-  AutoForm,
   Input,
   Multiselect,
   RadioButton,
@@ -17,177 +15,167 @@ import {
   Time,
 } from "../../../components/design/forms/Forms";
 import Page from "../../../components/design/Page";
-import { defState } from "../../../helpers/tools";
 
-export function TestForm(props: any) {
-  const [data, setData] = defState(props.state, props.setState, {
-    name: {nameAgain: "Boop"},
-    key: "",
-    radioButtonTest: "Thing"
-  });
-
-  const [formState, setFormState] = defState(props.formState, props.setFormState, {});
-
+/**
+ * Renders a test form for verifying that all of the functionality and design works as intended
+ */
+export function TestForm() {
   const selectData = [
     {label: "Dungeons and Dragons 5th Edition", value: "dnd-5e"},
     {label: "Pathfinder 2", value: "pathfinder2"},
     {label: "Rainbows", value: "rainbows"},
   ];
 
-  const checkboxData = [
-    {label: "Dungeons and Dragons 5th Edition", name: "dnd-5e", defaultValue: false},
-    {label: "Pathfinder 2", name: "pathfinder2", defaultValue: true},
-    {label: "Rainbows", name: "rainbows", defaultValue: false},
-  ];
-
-  const errors = {
-    checkboxText: "Error!",
-    name: "Name error",
-    radioTest: "radioTest error",
-    selectTest: "Select errors",
-
-  };
-
   return (
-    <AutoForm data={data} setData={setData} formState={formState} setFormState={setFormState} errors={errors}>
-      <h2>Text Inputs</h2>
-      <Row>
-        <Form.Group as={Col}>
-          <Form.Label>Test</Form.Label>
-          <InputGroup>
-            <Input name="name.nameAgain" label="System Name" required={true} defaultValue="Test"/>
-          </InputGroup>
-        </Form.Group>
-        <Form.Group as={Col}>
-        <Form.Label>Second Test</Form.Label>
-          <Input name="name.nameAgain" label="System Name" required={true} defaultValue="Test"/>
-        </Form.Group>
-      </Row>
+    <Formik
+      initialValues={{
+        email: "",
+        firstName: "",
+        lastName: "",
+        gamesystem: "",
+        isActive: "",
+        difficulty: "",
+        isAirConditioningOn: "",
+      }}
+      validationSchema={Yup.object ({
+        firstName: Yup.string()
+          .max(15, "Must be 15 characters or less")
+          .required("Required"),
+        lastName: Yup.string()
+          .max(20, "Must be 20 characters or less")
+          .required("Required"),
+      })}
+      onSubmit={(values: any) => {
+        alert(JSON.stringify(values, null, 2));
+      }}
+    >
+      {(props: any) => (
+        <FormikForm>
+          <Row>
+            <Form.Group as={Col}>
+              <Form.Label>First Name</Form.Label>
+              <Input aria-label="First Name" name="firstName"/>
+              <ErrorMessage name="firstName"/>
+            </Form.Group>
 
-      <h2>Select Inputs</h2>
-      <Row>
-        <Form.Group as={Col}>
-          <Form.Label>Select Test</Form.Label>
-          <Select name="selectTest" label="Select Test"  options={selectData} defaultValue="rainbows"/>
-        </Form.Group>
+            <Form.Group as={Col}>
+              <Form.Label>Last Name</Form.Label>
+              <Input aria-label="Last Name" name="lastName"/>
+              <ErrorMessage name="lastName"/>
+            </Form.Group>
+          </Row>
 
-        <Form.Group as={Col}>
-          <Form.Label>Select Test 2</Form.Label>
-          <Select name="selectTest" label="Select Test"  options={selectData} defaultValue="rainbows"/>
-        </Form.Group>
-      </Row>
+          <h2>Select Inputs</h2>
+          <Row>
+            <Form.Group as={Col}>
+              <Form.Label>Game System</Form.Label>
+              <Select name="gamesystem" options={selectData}/>
+            </Form.Group>
 
-      <Row>
-        <Form.Group as={Col}>
-          <Multiselect name="selectTest2" label="Multiselect Test" options={selectData}/>
-        </Form.Group>
+            <Form.Group as={Col}>
+              <Form.Label>Game System</Form.Label>
+              <Select name="gamesystem" options={selectData}/>
+            </Form.Group>
+          </Row>
 
-        <Form.Group as={Col}>
-          <Multiselect name="selectTest2" label="Multiselect Test" options={selectData} defaultValue={[]}/>
-        </Form.Group>
-      </Row>
+          <Row>
+            <Form.Group as={Col}>
+              <Multiselect name="selectTest2" label="Multiselect Test" options={selectData}/>
+            </Form.Group>
 
-      <h2>Checkboxes</h2>
-      <Row>
-        <Form.Group as={Col}>
-          <Checkbox name="checkboxText" label="Checkbox Test v1" />
-          <Checkbox name="checkboxText" label="Matching Checkbox" />
-        </Form.Group>
+            <Form.Group as={Col}>
+              <Multiselect name="selectTest2" label="Multiselect Test" options={selectData}/>
+            </Form.Group>
+          </Row>
 
-        <Form.Group as={Col}>
-          <BaseCheckbox name="basecheckboxText">
-            <Form.Check.Label>Base Checkbox Text</Form.Check.Label>
-          </BaseCheckbox>
-        
-          <BaseCheckbox name="basecheckboxText">
-            <Form.Check.Label>Matching Checkbox</Form.Check.Label>
-          </BaseCheckbox>
-        </Form.Group>
-      </Row>
+          <h2>Checkboxes</h2>
+          <Row>
+            <Form.Group as={Col}>
+              <Checkbox name="isActive">
+                <Form.Check.Label>Is Active?</Form.Check.Label>
+              </Checkbox>
 
-      <h2>Radio Buttons</h2>
-      <Row>
-        <Form.Group as={Col}>
-          <RadioButton id="1" name="radioButtonTest" label="Radio Button Test v1" value="Thing"/>
-          <RadioButton id="2" name="radioButtonTest" label="Another Radio Button" value="Thing2"/>
-        </Form.Group>
+              {props.values.isActive}
+              <Checkbox name="isPublished">
+                <Form.Check.Label>Is Published?</Form.Check.Label>
+              </Checkbox>
+            </Form.Group>
+          </Row>
 
-        <Form.Group as={Col}>
-          <BaseRadioButton id="base1" name="basecheckboxText" value="boopp">
-            <Form.Check.Label>Base Checkbox Text</Form.Check.Label>
-          </BaseRadioButton>
-        
-          <BaseRadioButton id="base2" name="basecheckboxText" value="boop2">
-            <Form.Check.Label>Matching Checkbox</Form.Check.Label>
-          </BaseRadioButton>
-        </Form.Group>
-      </Row>
+          <h2>Radio Buttons</h2>
+          <Row>
+            <Form.Group as={Col}>
+              <RadioButton id="base1" name="difficulty" value="easy">
+                <Form.Check.Label>Easy</Form.Check.Label>
+              </RadioButton>
+            
+              <RadioButton id="base2" name="difficulty" value="hard">
+                <Form.Check.Label>Hard</Form.Check.Label>
+              </RadioButton>
+            </Form.Group>
+          </Row>
 
-      <h2>Switches</h2>
-      <Row>
-        <Form.Group as={Col}>
-          <Switch id="swtich1" name="switchtest" label="Radio Button Test v1"/>
-          <Switch id="swtich2" name="switchtest" label="Another Radio Button"/>
-        </Form.Group>
+          <h2>Switches (non-functional)</h2>
+          <Row>
+            {/* TODO - this doesn't work */}
+            <Form.Group as={Col}>
+              <Switch name="isAirConditioningOn" label="Air Conditioning"/>
+            </Form.Group>
+          </Row>
 
-        {/* TODO - this doesn't work */}
-        <Form.Group as={Col}>
-          <BaseSwitch name="baseswitchText">
-            <Form.Check.Label>Base Checkbox Text</Form.Check.Label>
-          </BaseSwitch>
-        
-          <BaseSwitch name="baseswitchText2">
-            <Form.Check.Label>Matching Checkbox</Form.Check.Label>
-          </BaseSwitch>
-        </Form.Group>
-      </Row>
-      
-      <h2>Dates</h2>
-      <Row>
-        <Form.Group as={Col}>
-          <Date name="dateTest" label="Date Test" />
-        </Form.Group>
+          <h2>Dates</h2>
+          <Row>
+            <Form.Group as={Col}>
+              <Date name="dateTest" label="Date Test" />
+            </Form.Group>
 
-        <Form.Group as={Col}>
-          <Date name="dateTest" label="Date Test" />
-        </Form.Group>
-      </Row>
+            <Form.Group as={Col}>
+              <Date name="dateTest" label="Date Test" />
+            </Form.Group>
+          </Row>
 
-      <h2>Date Time</h2>
-      <Row>
-        <Form.Group as={Col}>
-          <DateTime name="datetime" label="Date Time Test"/>
-        </Form.Group>
+          <h2>Date Time</h2>
+          <Row>
+            <Form.Group as={Col}>
+              <DateTime name="datetime" label="Date Time Test"/>
+            </Form.Group>
 
-        <Form.Group as={Col}>
-          <DateTime name="datetime" label="Date Time Test"/>
-        </Form.Group>
-      </Row>
+            <Form.Group as={Col}>
+              <DateTime name="datetime" label="Date Time Test"/>
+            </Form.Group>
+          </Row>
 
-      <h2>Time</h2>
-      <Row>
-        <Form.Group as={Col}>
-          <Time name="time" label="Time Test"/>
-        </Form.Group>
+          <h2>Time</h2>
+          <Row>
+            <Form.Group as={Col}>
+              <Time name="time" label="Time Test"/>
+            </Form.Group>
 
-        <Form.Group as={Col}>
-          <Time name="time" label="Time Test"/>
-        </Form.Group>
-      </Row>
+            <Form.Group as={Col}>
+              <Time name="time" label="Time Test"/>
+            </Form.Group>
+          </Row>
 
-      <h2>TextArea</h2>
-      <Row>
-        <Form.Group as={Col}>
-          <TextArea name="textarea" rows={2} label="Text Area"/>
-        </Form.Group>
+          <h2>TextArea</h2>
+          <Row>
+            <Form.Group as={Col}>
+              <TextArea name="textarea" rows={2} label="Text Area"/>
+            </Form.Group>
 
-        <Form.Group as={Col}>
-          <TextArea name="textarea" rows={2} label="Text Area"/>
-        </Form.Group>
-      </Row>
+            <Form.Group as={Col}>
+              <TextArea name="textarea" rows={2} label="Text Area"/>
+            </Form.Group>
+          </Row>
 
-      <Button variant="primary">Submit!</Button>  
-    </AutoForm>
+          <Row>
+            <Form.Group as={Col}>
+              <Button type="submit">Submit</Button>
+            </Form.Group>
+          </Row>
+        </FormikForm>
+      )}
+    </Formik>
+
   );
 }
 
@@ -195,7 +183,6 @@ export function TestForm(props: any) {
  * Renders a the page to create a new game system
  */
 function TestForms() {
-
   return (
     <Page>
       <h1>Test Forms</h1>
