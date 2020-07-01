@@ -1,6 +1,5 @@
 import React from "react";
 import { Input, InputProps } from "./Input";
-import { def } from "../../../helpers/tools";
 
 /**
  * An input set up for handling times. Formats the Input function to work properly

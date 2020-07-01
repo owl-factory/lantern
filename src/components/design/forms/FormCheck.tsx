@@ -1,73 +1,42 @@
+import { useField } from "formik";
 import React from "react";
 import { Form } from "react-bootstrap";
 import { FieldProps } from "./types";
 import { def, objectKeepFields } from "../../../helpers/tools";
 
-interface SharedFormCheckProps extends FieldProps {
-  ariaLabel?: string;
-  checked?: any;
-  disabled?: string;
-  isValid?: boolean;
-  name: string;
-  onChange?: (event: any) => (void);
-  type: "checkbox" | "radio" | "switch";
-  value?: string;
-}
-
-interface BaseFormCheckProps extends SharedFormCheckProps {
-  children?: any;
-}
-
-interface FormCheckProps extends SharedFormCheckProps {
-  inline?: boolean;
-  label?: string;
-}
-
-/**
- * Renders a full Checkbox with labels and such
- * @param props See CheckboxProps
- */
-export function FormCheck(props: FormCheckProps) {
-  const id = def<string>(props.id, props.name);
-
-  const checkboxProps = objectKeepFields(
-    props, 
-    ["checked", "disabled", "inline", "isValid", "label", "name", "type", "value"]
-  );
-
-  return (
-    <Form.Check 
-      aria-label={props.ariaLabel}
-      custom
-      id={id}
-      onChange={props.onChange}
-      {...checkboxProps}
-    />
-  );
+interface FormCheckProps extends FieldProps {
+  "aria-label"?: string; // A hidden label for readability
+  children?: any; // Any children to include, such as a label
+  disabled?: string; // Any string value indicates that this is disabled
+  name: string; // The name of the argument for the check input
+  type: "checkbox" | "radio" | "switch"; // Which type of check input we use
+  value?: string; // The value to use for radio buttons
 }
 
 /**
  * Renders the base checkbox for higher customization
  * @param props See BaseCheckboxProps
  */
-export function BaseFormCheck(props: BaseFormCheckProps) {
+export function FormCheck(props: FormCheckProps) {
   const id = def<string>(props.id, props.name);
   
   const checkboxProps = objectKeepFields(
     props, 
-    ["checked", "disabled", "isValid", "name", "type"]
+    ["checked", "disabled", "isValid", "name", "type", "value"]
   );
+  const [field] = useField({ ...checkboxProps, type: props.type });
   
   return (
     <Form.Check 
-      aria-label={props.ariaLabel}
+      aria-label={props["aria-label"]}
       custom
-      id={id}
-      type={props.type}
+        id={id}
+        type={props.type}
     >
-      <Form.Check.Input 
-        onChange={props.onChange}
+      <Form.Check.Input
+        id={id}
         {...checkboxProps}
+        {...field}
       />
       {props.children}
     </Form.Check>
