@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-inferrable-types */
 
-export default class Common {
-  isActive: boolean = true;
-  createdBy: string = "";
+export default interface Common {
+  isActive: boolean;
+  createdBy: string;
   editedBy?: string;
   deletedBy?: string;
-  createdAt: number = Date.now();
+  createdAt: number;
   editedAt?: Date;
   deletedAt?: Date;
 }
