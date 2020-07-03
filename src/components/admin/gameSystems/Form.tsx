@@ -7,7 +7,6 @@ import * as Yup from "yup";
 import { Checkbox, Error, Input, Select, TextArea } from "../../design/forms/Forms";
 
 
-
 function renderCost(isPurchasable: boolean) {
   if(isPurchasable === true) {
     return (
