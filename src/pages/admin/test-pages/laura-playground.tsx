@@ -1,12 +1,9 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable react/prop-types */
-import { useQuery } from "@apollo/react-hooks";
 import gql from "graphql-tag";
 import React from "react"
 import Page from "../../../components/design/Page";
-import { NewGameSystemForm } from "../game-system/new";
-import { client } from "../../../helpers/graphql";
-
+import { pokemonClient } from "../../../helpers/graphql";
 
 const GET_POKEMON_INFO = gql`
 {
@@ -23,18 +20,13 @@ const GET_POKEMON_INFO = gql`
  * A playground for Laura's development so we don't bump into each other <3
  */
 function LauraPlayground({pokemon}: any) {
-  const { data, loading, error } = useQuery(GET_POKEMON_INFO);
-  function getOtherPokemon() {
-    if (loading) {
-      return <>Loading...</>;
-    }
+  const [ pokemonSecond, setPokemonSecond ] = React.useState([])
 
-    if (error) {
-      return <>Error!</>;
-    }
+  pokemonClient.query({query: GET_POKEMON_INFO})
+  .then((results) => {
+    setPokemonSecond(results.data.pokemons);
+  });
 
-    return <>{JSON.stringify(data.pokemons)}</>;
-  }
   return (
     <Page>
       <p>
@@ -47,18 +39,17 @@ function LauraPlayground({pokemon}: any) {
         {JSON.stringify(pokemon)}
       </p>
       <p>
-        {getOtherPokemon()}
+        {JSON.stringify(pokemonSecond)}
       </p>
     </Page>
   );
 }
 
 LauraPlayground.getInitialProps = async () => {
-  const { data, loading } = await client.query({query: GET_POKEMON_INFO});
+  const { data } = await pokemonClient.query({query: GET_POKEMON_INFO});
+  
   return { pokemon: data.pokemons }
 }
-
-// export default Page3;
 
 export function testJest(a: number, b: number) {
   return a + b;
