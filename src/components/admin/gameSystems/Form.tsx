@@ -6,30 +6,7 @@ import { Button, Col, Form, Row } from "react-bootstrap";
 import * as Yup from "yup";
 import { Checkbox, Error, Input, Select, TextArea } from "../../design/forms/Forms";
 
-const fetchThemesGQL = gql`
-{
-  themes() {
-    id,
-    name,
-  }
-}
-`;
 
-function loadThemes() {
-  if (loading) {
-    return [];
-  }
-
-  if (error) {
-    console.log(error);
-    return [];
-  }
-
-  return data.themes;
-
-  // TODO - use an actual graphql call
-  // return //[{name: "Default", id:"default"}];
-}
 
 function renderCost(isPurchasable: boolean) {
   if(isPurchasable === true) {
@@ -67,10 +44,10 @@ interface GamesystemFormProps extends FormProps {
   initialValues: Gamesystem;
 }
 
-export default function GamesystemForm(props: any) {
-  const themes = loadThemes();
+export default function GameSystemForm(props: any) {
   const themeKeys: string[] = [];
-  themes.forEach(theme => {
+
+  props.themes.forEach((theme: any) => {
     themeKeys.push(theme["id"]);
   });
 
@@ -99,7 +76,7 @@ export default function GamesystemForm(props: any) {
         
       })}
     >
-      {(props: any) => (
+      {(formProps: any) => (
         <FormikForm>
           <Row>
             {/* Gamesystem Name */}
@@ -130,7 +107,7 @@ export default function GamesystemForm(props: any) {
               <Row>
                 <Form.Group as={Col}>
                 <Form.Label>Default Theme</Form.Label>
-                  <Select name="defaultThemeID" options={themes} labelKey="name" valueKey="id"/>
+                  <Select name="defaultThemeID" options={props.themes} labelKey="name" valueKey="id"/>
                   <Error name="defaultThemeID"/>
                 </Form.Group>
               </Row>
@@ -144,7 +121,7 @@ export default function GamesystemForm(props: any) {
                 </Form.Group>
               </Row>
 
-              {renderCost(props.values.isPurchasable)}
+              {renderCost(formProps.values.isPurchasable)}
             </Col>
             
           </Row>
