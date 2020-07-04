@@ -3,7 +3,7 @@
 import gql from "graphql-tag";
 import React from "react"
 import Page from "../../../components/design/Page";
-import { pokemonClient } from "../../../helpers/graphql";
+import { pokemonClient } from "../../../helpers/graphql/graphqlClient";
 
 const GET_POKEMON_INFO = gql`
 {

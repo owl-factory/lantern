@@ -2,7 +2,7 @@ import { InMemoryCache, NormalizedCacheObject } from "apollo-cache-inmemory";
 import { HttpLink } from "apollo-link-http";
 import ApolloClient, { OperationVariables, QueryOptions, MutationOptions } from "apollo-client";
 import fetch from "cross-fetch";
-import { def } from "./tools";
+import { def } from "../tools";
 
 // This does not work correctly since sometimes its called from backend and othertimes from frontend
 // Solution: api/env call?
@@ -23,17 +23,20 @@ export const client = new ApolloClient({
 
 client.link = new HttpLink(httpOptions);
 
-export class GraphqlClient {
-  private apiURL: string; // The target url
-  private client: ApolloClient<NormalizedCacheObject>;
+export default class GraphqlClient {
+  private url: string; // The target url
+  private client!: ApolloClient<NormalizedCacheObject>;
   private httpOptions: HttpLink.Options = {}; // Dict containing all information for http requests
   private cache: InMemoryCache = new InMemoryCache();
-  private link: HttpLink;
+  private link!: HttpLink;
 
   private headers: any = {};
 
-  constructor (apiURL: string) {
-    this.apiURL = apiURL;
+  constructor (url: string, headerOptions?: any) {
+    this.url = url;
+    if (headerOptions !== undefined) {
+      this.headers = headerOptions;
+    }
     this.refreshClient();
   }
 
@@ -93,7 +96,7 @@ export class GraphqlClient {
    */
   public refreshClient() {
     this.httpOptions = {
-      uri: this.apiURL,
+      uri: this.url,
       fetch,
       headers: this.headers,
     };
@@ -111,5 +114,3 @@ export class GraphqlClient {
     this.client.link = this.link;
   }
 }
-
-export const pokemonClient = new GraphqlClient("https://graphql-pokemon.now.sh")
