@@ -2,12 +2,25 @@ import { parseCookies } from "nookies";
 import { Session } from "../models/user";
 
 export async function anonLogin(): Promise<Session> {
-  let response = await fetch("/api/user/anonymous-login", { method: "POST" });
+  const response = await fetch("/api/user/anonymous-login", { method: "POST" });
   return await response.json();
 }
 
-export function googleLogin() {
-  
+export async function googleLogin(): Promise<Session> {
+  const response = await fetch("/api/user/google-login", { method: "POST" });
+  return await response.json();
+}
+
+export async function emailLogin(email: string, password: string): Promise<Session> {
+  const response = await fetch("/api/user/email-login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      email,
+      password,
+    })
+  });
+  return await response.json();
 }
 
 export async function getSession(): Promise<Session> {
@@ -19,6 +32,6 @@ export async function getSession(): Promise<Session> {
   }
 }
 
-export function logout() {
-
+export async function logout() {
+  await fetch("/api/user/logout", { method: "POST" });
 }
