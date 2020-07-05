@@ -2,39 +2,23 @@ import React from "react";
 import { Button } from "react-bootstrap";
 import Breadcrumbs from "../../../components/design/Breadcrumbs";
 import registerModal from "../../../components/design/Modal";
-import Table, { ILayoutItem } from "../../../components/design/Table";
+import Table from "../../../components/design/tables/Table";
 import Page from "../../../components/design/Page";
 import gamesystemJson from "./gamesystems.json";
 import { NewGameSystemForm } from "./new";
-
-const tableLayout: ILayoutItem[] = [
-  {
-    title: "",
-    component: (props: any) => <b>{props.content.id}</b>,
-  },
-  {
-    title: "System",
-    key: "system",
-  },
-  {
-    title: "Content",
-    key: "officialContentCount",
-  },
-  {
-    title: "Entities",
-    key: "officialEntityCount",
-  },
-  {
-    title: "Tools",
-    key: "Tools",
-  },
-];
+import { TableBuilder } from "../../../helpers/design/table";
 
 /**
  * Renders the Admin Game Systems page
  */
 function GameSystems() {
   const [NewGameSystemModal, openNewSystemModal] = registerModal();
+  const tableBuilder = new TableBuilder()
+    .addIncrementColumn("")
+    .addDataColumn("Game System", "system")
+    .addDataColumn("Content Count", "officialContentCount")
+    .addDataColumn("Entity Count", "officialEntityCount")
+    .addComponentColumn("Tools", (props: any) => (<></>));
 
   return (
     <Page>
@@ -45,7 +29,7 @@ function GameSystems() {
         <h5 >Add a new Game System</h5>
         <NewGameSystemForm/>
       </NewGameSystemModal>
-      <Table layout={tableLayout} json={JSON.stringify(gamesystemJson)}/>
+      <Table {...tableBuilder.renderConfig()} data={gamesystemJson}/>
     </Page>
   );
 }

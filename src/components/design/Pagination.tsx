@@ -117,21 +117,21 @@ function Pagination(props: PaginationProps) {
     // Render first
     renderedCells.unshift(
       <PaginationCell 
-      className={isDisabled(props.pageState.currentPage, 1)} 
-      key="page_first"
-      pageText="First"
-      targetPage={1}
-      setPage={setPage}/>
+        className={isDisabled(props.pageState.currentPage, 1)} 
+        key="page_first"
+        pageText="First"
+        targetPage={1}
+        setPage={setPage}/>
     );
 
     // Render last
     renderedCells.push(
       <PaginationCell 
-      className={isDisabled(props.pageState.currentPage, maxPage)} 
-      key="page_last"
-      pageText="Last"
-      targetPage={maxPage}
-      setPage={setPage}/>
+        className={isDisabled(props.pageState.currentPage, maxPage)} 
+        key="page_last"
+        pageText="Last"
+        targetPage={maxPage}
+        setPage={setPage}/>
     );
 
     return renderedCells;
