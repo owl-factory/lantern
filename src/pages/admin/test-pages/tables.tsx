@@ -10,7 +10,7 @@ import PaginatedTable from "../../../components/design/tables/PaginatedTable";
  * @param props A data object containing all of the information for a row
  */
 function TestTableActions(props: any) {
-  return <><Link href={"/game-systems/" + props.key + "/edit"} passHref>Edit</Link></>
+  return <><Link href={"/game-systems/" + props.key + "/edit"} passHref><a>Edit</a></Link></>
 }
 
 /**

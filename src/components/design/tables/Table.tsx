@@ -37,7 +37,7 @@ function TableHeader(props: TableHeaderProps) {
     );
   });
 
-  return (<thead>{headers}</thead>);
+  return (<thead><tr>{headers}</tr></thead>);
 }
 
 /**
@@ -49,7 +49,7 @@ function TableBody(props: TableBodyProps) {
   let increment = def<number>(props.startingIncrement, 1); 
 
   props.data.forEach((rowData: any) => {
-    rows.push(<TableRow {...props} data={rowData} increment={increment++}/>);
+    rows.push(<TableRow key={"row-" + increment} {...props} data={rowData} increment={increment++}/>);
   });
   return <tbody>{rows}</tbody>;
 }
@@ -60,20 +60,22 @@ function TableBody(props: TableBodyProps) {
  */
 function TableRow(props: TableRowProps) {
   const row: JSX.Element[] = [];
+  let columnIncrement = 0;
+  let content: JSX.Element | number | string | undefined = undefined;
 
   props.columns.forEach((column: any) => {
     if (column.key !== undefined) {
-      row.push(<td>{props.data[column.key]}</td>);
+      content = props.data[column.key];
 
     } else if (column.component !== undefined) {
-      row.push(<td>{column.component(props.data)}</td>);
+      content = column.component(props.data);
 
     } else if (column.increment === true) {
-      row.push(<td>{props.increment}</td>);
+      content = props.increment;
 
-    } else {
-      row.push(<td></td>);
     }
+
+    row.push(<td key={"cell-" + props.increment + "-" + columnIncrement++}>{content}</td>)
   });
 
   return <tr>{row}</tr>;
