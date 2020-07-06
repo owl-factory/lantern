@@ -1,8 +1,7 @@
 /* eslint-disable react/display-name */
 import React from "react";
-import { Button } from "react-bootstrap";
+import { Button, OverlayTrigger, Tooltip } from "react-bootstrap";
 import Breadcrumbs from "../../../components/design/Breadcrumbs";
-import registerModal from "../../../components/design/Modal";
 import Table from "../../../components/design/tables/Table";
 import Page from "../../../components/design/Page";
 import gamesystemJson from "./gamesystems.json";
@@ -10,20 +9,40 @@ import { TableBuilder } from "../../../helpers/design/table";
 import gql from "graphql-tag";
 import { client } from "../../../helpers/graphql";
 import Link from "next/link";
+import GameSystemModel from "../../../models/database/gameSystems"
+import { MdPageview } from "react-icons/md";
 
-
+function GameSystemTableActions(props: GameSystemModel) {
+  return (
+    <>
+      <Link href={"/admin/game-systems/" + props.key} >
+        <a title="Hello there">
+          <OverlayTrigger
+            placement="bottom"
+            overlay={
+              <Tooltip id="hi">
+                Hel;lo thgere
+              </Tooltip>
+            }
+          >
+        <MdPageview/>
+        </OverlayTrigger>
+        </a>
+      </Link>
+    </>
+  )
+}
 
 /**
  * Renders the Admin Game Systems page
  */
-function GameSystems() {
-  const [NewGameSystemModal, openNewSystemModal] = registerModal();
+function GameSystems({gamesystems}: any) {
   const tableBuilder = new TableBuilder()
     .addIncrementColumn("")
     .addDataColumn("Game System", "system")
     .addDataColumn("Content Count", "officialContentCount")
     .addDataColumn("Entity Count", "officialEntityCount")
-    .addComponentColumn("Tools", (props: any) => (<></>));
+    .addComponentColumn("Actions", GameSystemTableActions);
 
   return (
     <Page>
@@ -32,7 +51,7 @@ function GameSystems() {
       <Link href="/admin/game-systems/new" passHref>
         <Button >+ Add Game System</Button>
       </Link>
-      {/* <Table /> */}
+      <Table {...tableBuilder.renderConfig()} data={gamesystems}/>
     </Page>
   );
 }

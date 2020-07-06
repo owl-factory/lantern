@@ -1,8 +1,9 @@
-import Common from "./common";
+import Common from "./database/model";
 import gql from "graphql-tag";
+import Model from "./database/model";
 
-interface Themes extends Common {
-  name: string;
+interface Themes extends Model {
+  name?: string;
   description?: string;
   isDefaultTheme?: boolean;
   primaryColor?: string;
