@@ -8,7 +8,6 @@ import { Input, InputProps } from "./Input";
  * @param props.name The name of the input
  * @param props.placeholder A placeholder value for when the input is empty
  * @param props.rows The number of rows (multiline must be true)
- * @param props.type The type of input (text, password, datetime, etc.)
  * @param props.as Controls what the input is seen as
  * @param props.size The bootstrap size of the input. 
  */
