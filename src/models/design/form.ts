@@ -42,5 +42,12 @@ export interface CoreInputProps extends FieldProps {
   size?: "sm" | "lg"; // The bootstrap size of the input
 }
 
+export interface CoreFormCheckProps extends FieldProps {
+  "aria-label"?: string; // The usability label
+  children?: any;
+  disabled?: string;
+  name: string;
+}
+
 
 

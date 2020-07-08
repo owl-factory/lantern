@@ -31,15 +31,14 @@ function News(props: NewsProps) {
   const news: JSX.Element[] = [];
 
   props.articles.forEach((article: ArticleItem) => {
-    news.push(<ArticleCard key={article.id} {...article} />);
+    news.push(<ArticleCard key={"article_" + article.id} {...article} />);
   });
 
   return <Row>{news}</Row>;
 }
 
 /**
- * 
- * @param props.key The key identifying this Article Card
+ * Renders a single article
  * @param props.title The title of the article
  * @param props.content An array of strings for each paragraph
  * @param props.postedAt The date this was posted at

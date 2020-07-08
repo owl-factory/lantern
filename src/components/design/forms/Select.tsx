@@ -1,16 +1,14 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import React from "react";
-import { FieldProps } from "./types";
 import { def, objectKeepFields } from "../../../helpers/tools";
 import { Form } from "react-bootstrap";
 import { useField } from "formik";
-
+import { FieldProps } from "../../../models/design/form";
 
 interface SelectProps extends FieldProps {
   // Select Properties
   disabled?: boolean; // If this is disabled or not
   name: string; // The name of the select
-  required?: boolean; // If this is required or not
 
   // Bootstrap Select Arguments
   multiple?: boolean; // True allows for multiple items to be selected
@@ -23,21 +21,20 @@ interface SelectProps extends FieldProps {
   labelKey?: string; // The key to use for label inputs
   options?: object[]; // An array of structs containing the label and value to use
   valueKey?: string; // The key of the value
-
-}
-
-/**
- * 
- * @param props The props to apply to the Select element
- */
-export function Multiselect(props: SelectProps) {
-  // TODO - has issue with a single option remaining
-  return <Select multiple {...props}/>
 }
 
 /**
  * Renders a select element and its options
- * @param props see ISelect
+ * @param props.children Custom select options. TODO - should this be supported?
+ * @param props.disabled Any non-empty string indicats this is disabled
+ * @param props.emptyText Text to render on the empty select option, such as -- Select One --
+ * @param props.includeEmpty Renders the empty select option at the top
+ * @param props.labelKey The key to pull labels from within the option array
+ * @param props.multiple If true, user may select multiple selects
+ * @param props.name The field name of the select
+ * @param props.options An array of structs containing the data to render out into options
+ * @param props.size The size of the select input 
+ * @param props.valueKey The key to pull values from within the options array
  */
 export function Select(props: SelectProps) {
   const id = def<string>(props.id, props.name);
