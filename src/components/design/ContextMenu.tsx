@@ -23,7 +23,6 @@ interface ContextMenuItemProps {
   title: string; // The title of the item
 }
 
-
 /**
  * Renders a single context menu item
  * @param props.action The action to run when clicked. May be a link or another action. Passed the context 
