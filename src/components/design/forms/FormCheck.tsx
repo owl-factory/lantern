@@ -1,8 +1,8 @@
 import { useField } from "formik";
 import React from "react";
 import { Form } from "react-bootstrap";
-import { FieldProps } from "./types";
 import { def, objectKeepFields } from "../../../helpers/tools";
+import { FieldProps } from "../../../models/design/form";
 
 interface FormCheckProps extends FieldProps {
   "aria-label"?: string; // A hidden label for readability
