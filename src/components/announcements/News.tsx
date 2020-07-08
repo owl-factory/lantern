@@ -25,7 +25,7 @@ interface ArticleCardProps extends ArticleItem {
 
 /**
  * Renders a collection of news articles
- * @param props.articles An array of article items to render out
+ * @param {ArticleItem[]} props.articles An array of article items to render out
  */
 function News(props: NewsProps) {
   const news: JSX.Element[] = [];
@@ -39,10 +39,10 @@ function News(props: NewsProps) {
 
 /**
  * Renders a single article
- * @param props.title The title of the article
- * @param props.content An array of strings for each paragraph
- * @param props.postedAt The date this was posted at
- * @param props.author The author of this article
+ * @param {string} props.title The title of the article
+ * @param {string[]} props.content An array of strings for each paragraph
+ * @param {string} props.postedAt The date this was posted at
+ * @param {string} props.author The author of this article
  */
 function ArticleCard(props: ArticleCardProps) {
   const contents: JSX.Element[] = [];

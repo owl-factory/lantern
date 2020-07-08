@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { Dropdown } from "react-bootstrap";
 import { idify, def } from "../../helpers/tools";
 import { ContextMenuActionType, ContextMenuItemType } from "../../models/design/contextMenu";
@@ -9,7 +9,7 @@ type DropType = "up" | "down" | "left" | "right";
 // Props for the ContextMenu component
 interface ContextMenuProps {
   alignRight?: boolean; 
-  children: any;
+  children: ReactNode;
   context: any;
   drop?: DropType;
   items: ContextMenuItemType[];

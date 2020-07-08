@@ -9,7 +9,7 @@ interface PageProps {
  * The page component is used to wrap the content of a page to apply uniform
  * styling such as page margins.
  *
- * @param {ReactNode} children The child elements nested within this element.
+ * @param {ReactNode} props.children The child elements nested within this element.
  * These are passed automatically
  */
 function Page(props: PageProps) {

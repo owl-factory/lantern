@@ -1,4 +1,4 @@
-
+import { ReactNode } from "react";
 
 /**
  * Valid values usable by the Size arguments
@@ -44,7 +44,7 @@ export interface CoreInputProps extends FieldProps {
 
 export interface CoreFormCheckProps extends FieldProps {
   "aria-label"?: string; // The usability label
-  children?: any;
+  children?: ReactNode;
   disabled?: string;
   name: string;
 }

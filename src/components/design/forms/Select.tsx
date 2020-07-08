@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
-import React from "react";
+import React, { ReactNode } from "react";
 import { def, objectKeepFields } from "../../../helpers/tools";
 import { Form } from "react-bootstrap";
 import { useField } from "formik";
@@ -15,7 +15,7 @@ interface SelectProps extends FieldProps {
   size?: "sm" | "lg"; // The size of the select input
 
   // Custom Inputs
-  children?: any; // User-defined children, if one wants to be handled externally
+  children?: ReactNode; // User-defined children, if one wants to be handled externally
   emptyText?: string; // Text to display if empty option is included
   includeEmpty?: boolean; // Include an empty selection
   labelKey?: string; // The key to use for label inputs
@@ -58,13 +58,13 @@ export function Select(props: SelectProps) {
  * @param id The id of the select calling this function
  * @param props The props argument of the select element
  */
-function renderChildren(id: string, props: any) {
+function renderChildren(id: string, props: SelectProps) {
   const options = def<object[]>(props.options, []);
   const labelKey = def<string>(props.labelKey, "label");
   const valueKey = def<string>(props.valueKey, "value");
   const emptyText = def<string>(props.emptyText, "-- Select One --");
 
-  let children: any = [];
+  let children: ReactNode[] = [];
 
   if (props.includeEmpty !== false) {
     children.push(<option value="">{emptyText}</option>);

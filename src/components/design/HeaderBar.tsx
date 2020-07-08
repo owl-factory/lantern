@@ -3,6 +3,9 @@ import { Navbar, Button, InputGroup, Form } from "react-bootstrap";
 import { MdSearch } from "react-icons/md";
 import Link from "next/link";
 
+/**
+ * A standard Header Bar used on every page
+ */
 function HeaderBar() {
   return (
     <Navbar variant="dark" bg="dark" expand="lg" className="justify-content-between">
