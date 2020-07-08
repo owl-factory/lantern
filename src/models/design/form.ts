@@ -42,6 +42,9 @@ export interface CoreInputProps extends FieldProps {
   size?: "sm" | "lg"; // The bootstrap size of the input
 }
 
+/**
+ * The core props shared by Checkboxes, Radio buttons, and Switches
+ */
 export interface CoreFormCheckProps extends FieldProps {
   "aria-label"?: string; // The usability label
   children?: ReactNode;
