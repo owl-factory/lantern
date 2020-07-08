@@ -6,6 +6,9 @@ import { Row, Card, Col } from "react-bootstrap";
  * It is likely to be changed considerably in the future.
  */
 
+ /**
+  * Descibes a hypothetical article object for design purposes
+  */
 interface ArticleItem {
   id: number; // The id of the article item
   title: string; // The title of the article
@@ -14,13 +17,11 @@ interface ArticleItem {
   author: string; // The author of this article
 }
 
-// Props used for the News component
+/**
+ * Describes the props in the News component
+ */
 interface NewsProps {
   articles: ArticleItem[];
-}
-
-interface ArticleCardProps extends ArticleItem {
-  key: string;
 }
 
 /**
@@ -44,7 +45,7 @@ function News(props: NewsProps) {
  * @param {string} props.postedAt The date this was posted at
  * @param {string} props.author The author of this article
  */
-function ArticleCard(props: ArticleCardProps) {
+function ArticleCard(props: ArticleItem) {
   const contents: JSX.Element[] = [];
   let contentKey: number = 0;
 
