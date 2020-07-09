@@ -84,7 +84,12 @@ function ContextMenuLink(props: ContextMenuLinkProps) {
 
   return (
     <Link href={props.href} as={linkAs}>
-    <ContextMenuItem title={props.title} icon={props.icon} action={() => (router.push(linkAs))} context={props.context}/>
+      <ContextMenuItem 
+        title={props.title}
+        icon={props.icon}
+        action={() => {router.push(props.href, linkAs)}}
+        context={props.context}
+      />
     </Link>
   );
 }
