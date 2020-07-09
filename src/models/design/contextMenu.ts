@@ -3,6 +3,9 @@ import { IconType } from "react-icons/lib";
 // The action taken when a context menu item is clicked
 export type ContextMenuActionType = (context: any) => void;
 
+/**
+ * A generic type describing any type of item usable in the ContextMenu component
+ */
 export interface ContextMenuGenericItemType {
   type: "divider" | "header" | "link" | "item"; // Which type of item type this is
   title?: string; // The title to render
@@ -12,7 +15,10 @@ export interface ContextMenuGenericItemType {
   keys?: any; //
 }
 
-export interface ContextMenuLinkItemType {
+/**
+ * A type of Context Menu Item type usable specifically with the Link type
+ */
+export interface ContextMenuLinkType {
   type: "link";
   title: string;
   icon: IconType;
@@ -20,6 +26,9 @@ export interface ContextMenuLinkItemType {
   keys: any;
 }
 
+/**
+ * A type of context menu item type usable specifically with the Item type
+ */
 export interface ContextMenuItemType {
   type: "item";
   title: string;
