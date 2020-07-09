@@ -1,11 +1,39 @@
 import React from "react";
-import { Button } from "react-bootstrap";
+import { Button, ButtonGroup, Dropdown } from "react-bootstrap";
 import Breadcrumbs from "../../../components/design/Breadcrumbs";
 import Table from "../../../components/design/tables/Table";
 import Page from "../../../components/design/Page";
 import gamesystemJson from "./gamesystems.json";
 import { TableBuilder } from "../../../helpers/design/table";
 import Link from "next/link";
+import GameSystemModel from "../../../models/database/gameSystems";
+import ContextMenu from "../../../components/design/ContextMenu";
+import { ContextMenuBuilder } from "../../../helpers/design/contextMenu";
+import { MdBuild } from "react-icons/md";
+
+const gameSystemActions = new ContextMenuBuilder()
+  .addLink("Edit", MdBuild, "/admin/game-systems/[key]/edit")
+
+/**
+ * 
+ * @param props 
+ */
+function GameSystemActions(props: GameSystemModel) {
+  // View, Details, Edit, Modules
+  return (
+    <ContextMenu as={ButtonGroup} context={props} {...gameSystemActions.renderConfig()}>
+      <Link href="/game-systems/[key]" as={`/game-systems/${props.key}`}>
+        <Button>View</Button>
+      </Link>
+
+      <Link href="/admin/game-systems/[key]" as={`/admin/game-systems/${props.key}`}>
+        <Button>Details</Button>
+      </Link>
+
+      <Dropdown.Toggle split id={`dropdown-toggle-${props.key}`}>...</Dropdown.Toggle>
+    </ContextMenu>
+  );
+}
 
 /**
  * Renders the Admin Game Systems page
@@ -13,10 +41,11 @@ import Link from "next/link";
 function GameSystems() {
   const tableBuilder = new TableBuilder()
     .addIncrementColumn("")
-    .addDataColumn("Game System", "system")
-    .addDataColumn("Content Count", "officialContentCount")
-    .addDataColumn("Entity Count", "officialEntityCount")
-    .addComponentColumn("Tools", (props: any) => (<></>));
+    .addDataColumn("Game System", "name")
+    .addDataColumn("Content Count", "contentCount")
+    .addDataColumn("Entity Count", "entityCount")
+    .addDataColumn("Module Count", "moduleCount")
+    .addComponentColumn("Tools", GameSystemActions);
 
   return (
     <Page>

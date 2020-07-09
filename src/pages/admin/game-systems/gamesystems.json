@@ -1,8 +1,18 @@
 [
   {
-    "id": "dnd-5e",
-    "system": "Dungeons & Dragons Fifth Edition",
-    "officialContentCount": 1025,
-    "officialEntityCount": 18
+    "id": "1",
+    "name": "Dungeons & Dragons Fifth Edition",
+    "key": "dnd-5e",
+    "contentCount": 1025,
+    "entityCount": 18,
+    "moduleCount": 15
+  },
+  {
+    "id": "2",
+    "name": "Pathfinder 2",
+    "key": "pf2",
+    "contentCount": 123,
+    "entityCount": 12,
+    "moduleCount": 2
   }
 ]
