@@ -7,7 +7,7 @@ import gamesystemJson from "./gamesystems.json";
 import { TableBuilder } from "../../../helpers/design/table";
 import Link from "next/link";
 import GameSystemModel from "../../../models/database/gameSystems";
-import ContextMenu from "../../../components/design/ContextMenu";
+import ContextMenu from "../../../components/design/contextMenus/ContextMenu";
 import { ContextMenuBuilder } from "../../../helpers/design/contextMenu";
 import { MdBuild, MdInfo, MdPageview, MdBlock } from "react-icons/md";
 import Tooltip from "../../../components/design/Tooltip";

@@ -1,8 +1,8 @@
 /* eslint-disable no-case-declarations */
 import React, { ReactNode } from "react";
 import { Dropdown } from "react-bootstrap";
-import { idify, def } from "../../helpers/tools";
-import { ContextMenuActionType, ContextMenuItemType, ContextMenuLinkType,  ContextMenuGenericItemType } from "../../models/design/contextMenu";
+import { idify, def } from "../../../helpers/tools";
+import { ContextMenuActionType, ContextMenuItemType, ContextMenuLinkType,  ContextMenuGenericItemType } from "../../../models/design/contextMenu";
 import { IconType } from "react-icons/lib";
 import Link from "next/link";
 import { useRouter } from "next/router";
