@@ -6,10 +6,6 @@ import { Button, Col, Form, Row } from "react-bootstrap";
 import * as Yup from "yup";
 import { Checkbox, Error, Input, Select, TextArea } from "../../design/forms/Forms";
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 6f2d687... Fleshes out the GameSystem sections a little more
 
 function renderCost(isPurchasable: boolean) {
   if(isPurchasable === true) {
