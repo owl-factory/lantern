@@ -1,4 +1,4 @@
-import { ContextMenuGenericItemType, ContextMenuActionType } from "../../models/design/contextMenu";
+import { ContextMenuGenericItem, ContextMenuActionType } from "../../models/design/contextMenu";
 import { IconType } from "react-icons/lib";
 import { def } from "../tools";
 
@@ -9,7 +9,7 @@ import { def } from "../tools";
  */
 export class ContextMenuBuilder {
   
-  private items: ContextMenuGenericItemType[] = [];
+  private items: ContextMenuGenericItem[] = [];
 
   /**
    * Adds a divider to the context menu
@@ -58,4 +58,36 @@ export class ContextMenuBuilder {
   public renderConfig() {
     return {items: this.items};
   }
+}
+
+/**
+ * Parses the raw href into a usable url
+ * @param href The raw href potentially containing dynamic variables in the form `[id]`
+ * @param keys An object describing how the keys from the href relate to the context
+ * @param context The context of this menu from which to pull dynamic data
+ */
+export function parseHref(href: string, keys: any, context: any) {
+  let linkAs = href;
+  const hrefKeys = href.match(/\[(.+?)\]/g);
+  
+  // Exit if no keys are found
+  if (hrefKeys === null) {
+    return linkAs;
+  }
+
+  // Goes through each key from the href and pulls the correct value
+  hrefKeys.forEach((hrefKey: any) => {
+    const cleanKey = hrefKey.slice(1, -1 );
+    
+    let value = "";
+    if (cleanKey in keys) {
+      value = context[keys[cleanKey]];
+    } else {
+      value = context[cleanKey];
+    }
+
+    linkAs = linkAs.replace(hrefKey, value);
+  });
+  
+  return linkAs;
 }

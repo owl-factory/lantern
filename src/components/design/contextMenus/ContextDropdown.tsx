@@ -2,80 +2,21 @@
 import React, { ReactNode } from "react";
 import { Dropdown } from "react-bootstrap";
 import { idify, def } from "../../../helpers/tools";
-import { ContextMenuActionType, ContextMenuItemType, ContextMenuLinkType,  ContextMenuGenericItemType } from "../../../models/design/contextMenu";
+import { ContextMenuActionType, ContextMenuItemProps, ContextMenuLinkProps, ContextDropdownProps, DropType, ContextMenuGenericItem, ContextMenuLink, ContextMenuItem } from "../../../models/design/contextMenu";
 import { IconType } from "react-icons/lib";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { parseHref } from "../../../helpers/design/contextMenu";
 
-// The direction to drop the menu
-type DropType = "up" | "down" | "left" | "right";
-
-// Props for the ContextMenu component
-interface ContextMenuProps {
-  as?: any;
-  alignRight?: boolean; 
-  children: ReactNode;
-  context: any;
-  drop?: DropType;
-  items: ContextMenuGenericItemType[];
-}
-
-// Props for the ContextMenuItem component
-interface ContextMenuItemProps {
-  action: ContextMenuActionType; // The action to run when clicked. May be a link or another action. Passed the context
-  context: any; // Any specific context for this contextmenu, such as an object's information from a table
-  icon: IconType; // The icon to display on the right side of the context menu
-  title: string; // The title of the item
-}
-
-interface ContextMenuLinkProps {
-  context: any; // Any specific context for this contextmenu, such as an object's information from a table
-  href: string; 
-  icon: IconType; // The icon to display on the right side of the context menu
-  keys: any;
-  title: string; // The title of the item
-}
 
 /**
- * Parses the raw href into a usable url
- * @param href The raw href potentially containing dynamic variables in the form `[id]`
- * @param keys An object describing how the keys from the href relate to the context
- * @param context The context of this menu from which to pull dynamic data
- */
-function parseHref(href: string, keys: any, context: any) {
-  let linkAs = href;
-  const hrefKeys = href.match(/\[(.+?)\]/g);
-  
-  // Exit if no keys are found
-  if (hrefKeys === null) {
-    return linkAs;
-  }
-
-  // Goes through each key from the href and pulls the correct value
-  hrefKeys.forEach((hrefKey: any) => {
-    const cleanKey = hrefKey.slice(1, -1 );
-    
-    let value = "";
-    if (cleanKey in keys) {
-      value = context[keys[cleanKey]];
-    } else {
-      value = context[cleanKey];
-    }
-
-    linkAs = linkAs.replace(hrefKey, value);
-  });
-  
-  return linkAs;
-}
-
-/**
- * Renders a single context menu item
+ * Renders a single context dropdown item
  * @param props.action The action to run when clicked. May be a link or another action. Passed the context 
  * @param props.context Any specific context for this contextmenu, such as an object's information from a table 
  * @param props.icon The icon to display on the right side of the context menu 
  * @param props.string The title of the item 
  */
-function ContextMenuItem(props: ContextMenuItemProps) {
+function ContextDropdownItem(props: ContextMenuItemProps) {
   return (
     <Dropdown.Item onClick={() => {props.action(props.context)}}>
       {props.title}
@@ -92,12 +33,12 @@ function ContextMenuItem(props: ContextMenuItemProps) {
  * @param props.icon The icon to render on the right side of the context menu
  * @param props.title The title of the content menu item
  */
-function ContextMenuLink(props: ContextMenuLinkProps) {
+function ContextDropdownLink(props: ContextMenuLinkProps) {
   const router = useRouter();
   const linkAs = parseHref(props.href, props.keys, props.context);
 
   return (
-    <ContextMenuItem 
+    <ContextDropdownItem 
       title={props.title}
       icon={props.icon}
       action={() => {router.push(props.href, linkAs)}}
@@ -113,7 +54,7 @@ function ContextMenuLink(props: ContextMenuLinkProps) {
  * @param context The context of this current menu
  * @param keyIndex The index for this menu to use in a key
  */
-function renderContextMenuItem(item: ContextMenuGenericItemType, context: any, keyIndex: number) {
+function renderContextMenuItem(item: ContextMenuGenericItem, context: any, keyIndex: number) {
   const key = `context-menu-item-${keyIndex}`;
 
   switch(item.type) {
@@ -124,12 +65,10 @@ function renderContextMenuItem(item: ContextMenuGenericItemType, context: any, k
       return <Dropdown.Header key={key}>{item.title}</Dropdown.Header>;
 
     case "link":
-      const linkProps = item as unknown as ContextMenuLinkType;
-      return <ContextMenuLink key={key} {...linkProps} context={context}/>
+      return <ContextDropdownLink key={key} {...item as unknown as ContextMenuLink} context={context}/>
     
     case "item":
-      const itemProps = item as unknown as ContextMenuItemType;
-      return <ContextMenuItem key={key} {...itemProps} context={context}/>;
+      return <ContextDropdownItem key={key} {...item as unknown as ContextMenuItem} context={context}/>;
 
     default:
       return <></>;
@@ -144,14 +83,14 @@ function renderContextMenuItem(item: ContextMenuGenericItemType, context: any, k
  * @param props.drop The direction to drop the menu
  * @param props.items The items to render
  */
-export default function ContextMenu(props: ContextMenuProps) {
+export default function ContextDropdown(props: ContextDropdownProps) {
   const menuItems: JSX.Element[] = [];
 
   const alignRight = def<boolean>(props.alignRight, true);
   const drop = def<DropType>(props.drop, "down");
 
   let keyIndex = 0;
-  props.items.forEach((item: ContextMenuGenericItemType) => {
+  props.items.forEach((item: ContextMenuGenericItem) => {
     menuItems.push(renderContextMenuItem(item, props.context, keyIndex++));
   });
 

@@ -2,8 +2,8 @@ import React from "react";
 import Page from "../../../components/design/Page";
 import { ContextMenuBuilder } from "../../../helpers/design/contextMenu";
 import { MdEdit, MdViewList, MdAttachFile, MdClose } from "react-icons/md";
-import ContextMenu from "../../../components/design/contextMenus/ContextMenu";
-import { Dropdown } from "react-bootstrap";
+import ContextButtonGroup from "../../../components/design/contextMenus/ContextButtons";
+import ContextMenuCollection from "../../../components/design/contextMenus/ContextMenuCollection";
 
 // Used to create a generic context type for examples
 interface ContextType {
@@ -28,9 +28,15 @@ export default function TestContextMenu() {
     <Page>
       <h2>Context Menus!</h2>
       <h3>Context Menu</h3>
-      <ContextMenu {...contextMenuBuilder1.renderConfig()} context={context}>
+      {/* <ContextMenu {...contextMenuBuilder1.renderConfig()} context={context}>
         <Dropdown.Toggle id="dropdown-a">Test Me!</Dropdown.Toggle>
-      </ContextMenu>
+      </ContextMenu> */}
+
+      <h3>Context Button Menu</h3>
+      <ContextButtonGroup {...contextMenuBuilder1.renderConfig()} context={context}/>
+
+      <h3>Context Collection</h3>
+      <ContextMenuCollection {...contextMenuBuilder1.renderConfig()} context={context}/>
     </Page>
   )
 }

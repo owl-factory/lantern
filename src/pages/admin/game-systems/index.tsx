@@ -7,12 +7,14 @@ import gamesystemJson from "./gamesystems.json";
 import { TableBuilder } from "../../../helpers/design/table";
 import Link from "next/link";
 import GameSystemModel from "../../../models/database/gameSystems";
-import ContextMenu from "../../../components/design/contextMenus/ContextMenu";
+import ContextDropdown from "../../../components/design/contextMenus/ContextDropdown";
 import { ContextMenuBuilder } from "../../../helpers/design/contextMenu";
 import { MdBuild, MdInfo, MdPageview, MdBlock } from "react-icons/md";
 import Tooltip from "../../../components/design/Tooltip";
 
 const gameSystemActions = new ContextMenuBuilder()
+  .addLink("View", MdPageview, "/game-systems/[key]")
+  .addLink("Details", MdInfo, "/admin/game-systems/[key]")
   .addLink("Edit", MdBuild, "/admin/game-systems/[key]/edit")
   .addItem("Delete", MdBlock, (context: GameSystemModel) => (confirm(`Are you sure you want to delete ${context.name}?`)))
 
@@ -23,7 +25,7 @@ const gameSystemActions = new ContextMenuBuilder()
 function GameSystemActions(props: GameSystemModel) {
   // View, Details, Edit, Modules
   return (
-    <ContextMenu as={ButtonGroup} context={props} {...gameSystemActions.renderConfig()}>
+    <ContextDropdown as={ButtonGroup} context={props} {...gameSystemActions.renderConfig()}>
       <Tooltip title="View">
         <Link href="/game-systems/[key]" as={`/game-systems/${props.key}`}>
           <Button><MdPageview/></Button>
@@ -37,7 +39,7 @@ function GameSystemActions(props: GameSystemModel) {
       </Tooltip>
 
       <Tooltip title="More"><Dropdown.Toggle split id={`dropdown-toggle-${props.key}`}>...</Dropdown.Toggle></Tooltip>
-    </ContextMenu>
+    </ContextDropdown>
   );
 }
 
