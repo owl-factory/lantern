@@ -4,16 +4,26 @@ import { Card, Button, Col, Row } from "react-bootstrap";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Breadcrumbs from "../../../../components/design/Breadcrumbs";
+import GameSystemModel from "../../../../models/database/gameSystems";
+import { NextPageContext } from "next";
+import gql from "graphql-tag";
 
+interface GameSystemProps {
+  gameSystem: GameSystemModel | any; // Change to gamesystem
+}
 
-export default function GameSystem({gameSystem}: any) {
+/**
+ * Renders the information page for the game system
+ * @param gameSystem The gamesystem object pulled from the database
+ */
+export default function GameSystem({gameSystem}: GameSystemProps) {
   const router = useRouter();
   const { key } = router.query;
-  console.log(gameSystem)
+  
   return (
     <Page>
       <h1>{gameSystem.name}</h1>
-      <Breadcrumbs skipLevels={1} titles={["Admin", "Game Systems", gameSystem.name]}/>
+      <Breadcrumbs skipLevels={1} titles={["Admin", "Game Systems", gameSystem.name!]}/>
 
       <Row>
         <Col lg={3} md={4} sm={6} xs={12}>
@@ -110,7 +120,23 @@ export default function GameSystem({gameSystem}: any) {
   );
 }
 
-GameSystem.getInitialProps = async () => {
+GameSystem.getInitialProps = async (ctx: NextPageContext) => {
+  const key = ctx.query.key;
+
+  const query = gql`
+  {
+    gameSystems (key: "${key}") {
+      id,
+      name,
+      description,
+      isPurchasable,
+      cost,
+      theme
+    }
+  }`;
+
+  // const { data, loading } = await client.query({query: query})
+  
 
   return { gameSystem: {
     name: "Dungeons and Dragons 5e",

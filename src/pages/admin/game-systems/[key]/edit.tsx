@@ -2,44 +2,40 @@ import React from "react";
 import Breadcrumbs from "../../../../components/design/Breadcrumbs";
 import GameSystemForm from "../../../../components/admin/gameSystems/Form";
 import Page from "../../../../components/design/Page";
-import { client } from "../../../../helpers/graphql";
 import gql from "graphql-tag";
 import { NextPageContext } from "next";
+import GameSystemModel from "../../../../models/database/gameSystems";
+import ThemeModel from "../../../../models/database/themes";
+import { def } from "../../../../helpers/tools";
 
-export function EditGameSystemForm(props: any) {
-  return <GameSystemForm 
-    initialValues={props.gameSystem}
-    onSubmit={(values: any) => alert(JSON.stringify(values))}
-    themes={props.themes}
-  />;
+interface EditGameSystemProps {
+  gameSystem: GameSystemModel;
+  themes: ThemeModel[];
 }
 
 /**
  * Renders a the page to create a new game system
+ * @param gameSystem The game system to be edited
+ * @param themes The themes to render within the form
  */
-function EditGameSystem({gameSystem, themes}: any) {
+function EditGameSystem({gameSystem, themes}: EditGameSystemProps) {
+  // TODO - handle if gamesystem is empty
+  const name = def<string>(gameSystem.name, "");
   return (
     <Page>
       <h1>Create Game System</h1>
-      <Breadcrumbs skipLevels={1} titles={["Admin", "Game Systems", gameSystem.name, "Edit"]}/>
+      <Breadcrumbs skipLevels={1} titles={["Admin", "Game Systems", name, "Edit"]}/>
 
       <br/>
 
-      <EditGameSystemForm gameSystem={gameSystem} themes={themes}/>
+      <GameSystemForm 
+        initialValues={gameSystem}
+        onSubmit={(values: GameSystemModel) => alert(JSON.stringify(values))}
+        themes={themes}
+      />
     </Page>
   );
 }
-
-const fetchThemesGQL = gql`
-{
-  themes {
-    id,
-    name,
-  }
-}
-`;
-
-
 
 EditGameSystem.getInitialProps = async (ctx: NextPageContext) => {
   const key = ctx.query.key;

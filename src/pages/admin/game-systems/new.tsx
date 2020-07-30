@@ -4,16 +4,36 @@ import GameSystemForm from "../../../components/admin/gameSystems/Form";
 import Page from "../../../components/design/Page";
 import { client } from "../../../helpers/graphql";
 import gql from "graphql-tag";
+import ThemeModel from "../../../models/database/themes";
 
-export function NewGameSystemForm(props: any) {
+/**
+ * @param themes Themes to render within the form's theme dropdown
+ */
+interface GameSystemFormProps {
+  themes: ThemeModel[];
+}
+
+/**
+ * @param themes Themes to render within the form's theme dropdown
+ */
+interface NewGameSystemProps {
+  themes: ThemeModel[];
+}
+
+/**
+ * 
+ * @param props.themes The themes to render within the form's theme dropdown 
+ */
+export function NewGameSystemForm(props: GameSystemFormProps) {
   return <GameSystemForm 
     initialValues={{
+      id: "",
       name: "",
       key: "",
       description: "",
       isPurchasable: false,
       cost: 0.00,
-      theme: null,
+      defaultThemeID: undefined,
     }}
     onSubmit={(values: any) => alert(JSON.stringify(values))}
     themes={props.themes}
@@ -23,7 +43,7 @@ export function NewGameSystemForm(props: any) {
 /**
  * Renders a the page to create a new game system
  */
-function NewGameSystem({themes}: any) {
+function NewGameSystem({themes}: NewGameSystemProps) {
   return (
     <Page>
       <h1>Create Game System</h1>

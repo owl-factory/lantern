@@ -19,8 +19,8 @@ const gameSystemActions = new ContextMenuBuilder()
   .addItem("Delete", MdBlock, (context: GameSystemModel) => (confirm(`Are you sure you want to delete ${context.name}?`)))
 
 /**
- * 
- * @param props 
+ * Renders the actions for the game systems page
+ * @param props A game system object
  */
 function GameSystemActions(props: GameSystemModel) {
   // View, Details, Edit, Modules
@@ -44,9 +44,17 @@ function GameSystemActions(props: GameSystemModel) {
 }
 
 /**
- * Renders the Admin Game Systems page
+ * @param gameSystems A collection of game system objects
  */
-function GameSystems() {
+interface GameSystemsProps {
+  gameSystems: GameSystemModel[];
+}
+
+/**
+ * Renders the Admin Game Systems page
+ * @param gameSystems An array of game systems
+ */
+function GameSystems({gameSystems}: GameSystemsProps) {
   const tableBuilder = new TableBuilder()
     .addIncrementColumn("")
     .addDataColumn("Game System", "name")
@@ -64,14 +72,14 @@ function GameSystems() {
         <h5 >Add a new Game System</h5>
         <NewGamesystemForm/>
       </NewGameSystemModal> */}
-      <Table {...tableBuilder.renderConfig()} data={gamesystemJson}/>
+      <Table {...tableBuilder.renderConfig()} data={gameSystems}/>
     </Page>
   );
 }
 
 GameSystems.getInitialProps = async () => {
   // const { gamesystems } = await client.query({query: getGameSystemQuery(1)})
-  return { gamesystems: gamesystemJson }
+  return { gameSystems: gamesystemJson }
 }
 
 export default GameSystems;

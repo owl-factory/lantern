@@ -53,5 +53,12 @@ export interface CoreFormCheckProps extends FieldProps {
   name: string;
 }
 
-
-
+/**
+ * Shared props across forms using formix
+ * @param initialValues The initial values of the form
+ * @param onSubmit The action to run on submit
+ */
+export interface FormixFormProps<T> {
+  initialValues: T; 
+  onSubmit: (values: T) => void | Promise<T>;
+}

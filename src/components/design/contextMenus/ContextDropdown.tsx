@@ -1,10 +1,8 @@
 /* eslint-disable no-case-declarations */
-import React, { ReactNode } from "react";
+import React from "react";
 import { Dropdown } from "react-bootstrap";
-import { idify, def } from "../../../helpers/tools";
-import { ContextMenuActionType, ContextMenuItemProps, ContextMenuLinkProps, ContextDropdownProps, DropType, ContextMenuGenericItem, ContextMenuLink, ContextMenuItem } from "../../../models/design/contextMenu";
-import { IconType } from "react-icons/lib";
-import Link from "next/link";
+import { def } from "../../../helpers/tools";
+import { ContextMenuItemProps, ContextMenuLinkProps, ContextDropdownProps, DropType, ContextMenuGenericItem, ContextMenuLink, ContextMenuItem } from "../../../models/design/contextMenu";
 import { useRouter } from "next/router";
 import { parseHref } from "../../../helpers/design/contextMenu";
 
@@ -101,5 +99,5 @@ export default function ContextDropdown(props: ContextDropdownProps) {
         {menuItems}
       </Dropdown.Menu>
     </Dropdown>
-  )
+  );
 }

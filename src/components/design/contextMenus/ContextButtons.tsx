@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import { parseHref } from "../../../helpers/design/contextMenu";
 
 /**
- * Default Menus are split buttons created together in a singular group,
+ * Context Menu Buttons are split buttons created together in a singular group,
  * similar to the ContextMenu and utilizing the same functionality
  */
 
@@ -28,7 +28,7 @@ function ContextButtonItem(props: ContextMenuItemProps) {
 }
 
 /**
- * 
+ * Renders the Context Button Item with a link
  * @param props.context The specific context for this item
  * @param props.href The raw href to direct the user to
  * @param props.icon The icon to render with the item

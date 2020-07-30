@@ -1,12 +1,17 @@
-import { useQuery } from "@apollo/react-hooks";
 import { Formik, Form as FormikForm } from "formik";
 import gql from "graphql-tag";
 import React from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import * as Yup from "yup";
 import { Checkbox, Error, Input, Select, TextArea } from "../../design/forms/Forms";
+import GameSystemModel from "../../../models/database/gameSystems";
+import { FormixFormProps } from "../../../models/design/form";
+import ThemeModel from "../../../models/database/themes";
 
-
+/**
+ * Renders the cost input iff the isPurchasable flag is set
+ * @param isPurchasable boolean. True if the cost should be rendered, false if not
+ */
 function renderCost(isPurchasable: boolean) {
   if(isPurchasable === true) {
     return (
@@ -21,32 +26,24 @@ function renderCost(isPurchasable: boolean) {
   }
 }
 
-interface Gamesystem {
-  name: string;
-  key: string;
-  description: string;
-  isUserCreated: boolean;
-  ownerID: string;
-  defaultModuleID: string;
-  isPublished: boolean;
-  isPurchasable: boolean;
-  cost: number;
-  defaultThemeID: string;
+/**
+ * The props used for the GameSystemForm
+ * @param themes An array of themes for a selection
+ */
+interface GameSystemFormProps extends FormixFormProps<GameSystemModel> {
+  themes: ThemeModel[];
 }
 
-interface FormProps {
-  initialValues: any;
-  onSubmit: () => null;
-}
-
-interface GamesystemFormProps extends FormProps {
-  initialValues: Gamesystem;
-}
-
-export default function GameSystemForm(props: any) {
+/**
+ * Renders the game system form with functionality for new and existing game systems
+ * @param initialValues The initial values of the form
+ * @param onSubmit The action to run on submit
+ * @param themes An array of themes for a selection
+ */
+export default function GameSystemForm(props: GameSystemFormProps) {
   const themeKeys: string[] = [];
 
-  props.themes.forEach((theme: any) => {
+  props.themes.forEach((theme: ThemeModel) => {
     themeKeys.push(theme["id"]);
   });
 

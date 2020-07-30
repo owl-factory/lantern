@@ -1,6 +1,6 @@
 import React from "react";
 import { ButtonGroup, Dropdown } from "react-bootstrap";
-import { ContextMenuGenericItem, ContextMenuItem, ContextMenuLink } from "../../../models/design/contextMenu";
+import { ContextMenuGenericItem, ContextDropdownProps } from "../../../models/design/contextMenu";
 import Tooltip from "../Tooltip";
 import ContextDropdown from "./ContextDropdown";
 import ContextButtonGroup, { ContextButtons } from "./ContextButtons";
@@ -13,21 +13,17 @@ function determineSplit() {
   return 2;
 }
 
-function AdditionalMenu(props: any) {
-  if (props.items.length == 0) {
-    return <></>;
-  }
-
-  return (
-    <Tooltip title="More">
-      <Dropdown.Toggle split id={`dropdown-toggle-${props.context.  key}`}>...</Dropdown.Toggle>
-    </Tooltip>
-  );
+interface ContextMenuCollectionProps {
+  context: unknown;
+  items: ContextMenuGenericItem[];
 }
 
-
-
-export default function ContextMenuCollection(props: any) {
+/**
+ * Renders a context menu collection
+ * @param props.context The context of of the collection 
+ * @param props.items Items defining the layout of the Context menus 
+ */
+export default function ContextMenuCollection(props: ContextMenuCollectionProps) {
   const split = determineSplit();
   let buttonItems: ContextMenuGenericItem[] = [];
   let dropdownItems: ContextMenuGenericItem[] = [];
@@ -55,8 +51,8 @@ export default function ContextMenuCollection(props: any) {
   return (
     <ContextDropdown 
       as={ButtonGroup}
-      context={props.context}
       {...props}
+      context={props.context}
     >
       {contextButtons}
       <Tooltip title="More">
