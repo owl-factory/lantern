@@ -21,7 +21,7 @@ interface NewGameSystemProps {
 }
 
 /**
- * 
+ * Renders a new game system form
  * @param props.themes The themes to render within the form's theme dropdown 
  */
 export function NewGameSystemForm(props: GameSystemFormProps) {
@@ -42,6 +42,7 @@ export function NewGameSystemForm(props: GameSystemFormProps) {
 
 /**
  * Renders a the page to create a new game system
+ * @param themes The themes to render within the new game system form
  */
 function NewGameSystem({themes}: NewGameSystemProps) {
   return (
