@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
+import { useField } from "formik";
 import React from "react";
 import { Form } from "react-bootstrap"
-
-import { useField } from "formik";
 import { CoreInputProps } from "../../../models/design/form";
 
 // The type describing valid inputs for Input's as field
@@ -13,7 +12,6 @@ interface InputProps extends CoreInputProps {
   rows?: number; // The number of rows (as must be textarea)
   type?: string; // The type of input (text, password, datetime, etc.)
 }
-
 
 /**
  * Renders out a grid-based input block
@@ -40,6 +38,7 @@ export function Input(props: InputProps) {
     <Form.Control 
       {...field}
       {...props}
+      autoComplete={props.autoComplete === undefined ? "off" : props.autoComplete }
     />
   );
 }

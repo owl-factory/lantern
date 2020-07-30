@@ -35,6 +35,7 @@ export interface FieldProps extends SharedColumnProps {
  */
 export interface CoreInputProps extends FieldProps {
   "aria-label"?: string; // The usability label
+  autoComplete?: string; // Whether an input autocompletes or not. By default, "off". Set "on" for autocomplete
   disabled?: boolean; // If an input is disabled or not
   name: string; // The name of the input
   placeholder?: string; // A placeholder value for when the input is empty
@@ -52,5 +53,12 @@ export interface CoreFormCheckProps extends FieldProps {
   name: string;
 }
 
-
-
+/**
+ * Shared props across forms using formix
+ * @param initialValues The initial values of the form
+ * @param onSubmit The action to run on submit
+ */
+export interface FormixFormProps<T> {
+  initialValues: T; 
+  onSubmit: (values: T) => void | Promise<T>;
+}

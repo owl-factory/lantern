@@ -1,4 +1,6 @@
-import { ContextMenuItemType, ContextMenuActionType } from "../../models/design/contextMenu";
+import { ContextMenuGenericItem, ContextMenuActionType } from "../../models/design/contextMenu";
+import { IconType } from "react-icons/lib";
+import { def } from "../tools";
 
 /**
  * Builds out the configuration for a context menu
@@ -6,13 +8,14 @@ import { ContextMenuItemType, ContextMenuActionType } from "../../models/design/
  *  two versions of the context menu, one per desktop and mobile
  */
 export class ContextMenuBuilder {
-  private items: ContextMenuItemType[] = [];
+  
+  private items: ContextMenuGenericItem[] = [];
 
   /**
    * Adds a divider to the context menu
    */
   public addDivider() {
-    this.items.push({divider: true})
+    this.items.push({type: "divider"})
     return this;
   }
 
@@ -21,7 +24,20 @@ export class ContextMenuBuilder {
    * @param title The title of the header
    */
   public addHeader(title: string) {
-    this.items.push({header: true, title})
+    this.items.push({type: "header", title})
+    return this;
+  }
+
+  /**
+   * Creates an item with a built-in link for Next
+   * @param title {string} The title of the link
+   * @param icon {IconType} The icon to display
+   * @param href {string} The href to use in the Link object
+   * @param keys {object} An object with keys in the href and values for the variable in context
+   */
+  public addLink(title: string, icon: IconType, href: string, keys?: any) {
+    keys = def<any>(keys, {});
+    this.items.push({type: "link", title, icon, href, keys});
     return this;
   }
 
@@ -31,8 +47,8 @@ export class ContextMenuBuilder {
    * @param icon The icon to render on the right of the context menu item
    * @param action The action to run when clicking the context menu item
    */
-  public addItem(title: string, icon: JSX.Element, action: ContextMenuActionType) {
-    this.items.push({title, icon, action});
+  public addItem(title: string, icon: IconType, action: ContextMenuActionType) {
+    this.items.push({type: "item", title, icon, action});
     return this;
   }
 
@@ -42,4 +58,36 @@ export class ContextMenuBuilder {
   public renderConfig() {
     return {items: this.items};
   }
+}
+
+/**
+ * Parses the raw href into a usable url
+ * @param href The raw href potentially containing dynamic variables in the form `[id]`
+ * @param keys An object describing how the keys from the href relate to the context
+ * @param context The context of this menu from which to pull dynamic data
+ */
+export function parseHref(href: string, keys: any, context: any) {
+  let linkAs = href;
+  const hrefKeys = href.match(/\[(.+?)\]/g);
+  
+  // Exit if no keys are found
+  if (hrefKeys === null) {
+    return linkAs;
+  }
+
+  // Goes through each key from the href and pulls the correct value
+  hrefKeys.forEach((hrefKey: any) => {
+    const cleanKey = hrefKey.slice(1, -1 );
+    
+    let value = "";
+    if (cleanKey in keys) {
+      value = context[keys[cleanKey]];
+    } else {
+      value = context[cleanKey];
+    }
+
+    linkAs = linkAs.replace(hrefKey, value);
+  });
+  
+  return linkAs;
 }

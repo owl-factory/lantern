@@ -11,7 +11,7 @@ export default function Miscellaneous() {
     <Page>
       <h2>Miscellaneous Testing</h2>
       <h3>Tooltips</h3>
-      <Tooltip text="Click this button for more information"><Button>Hi!</Button></Tooltip>
+      <Tooltip title="Click this button for more information"><Button>Hi!</Button></Tooltip>
     </Page>
   );
 }
