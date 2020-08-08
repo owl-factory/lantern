@@ -52,7 +52,6 @@ function LoginForm(props: any) {
   const [pass, setPass] = useState("");
 
   function emailLogin() {
-    console.log("TEST");
     fetch("/api/account/email-login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
