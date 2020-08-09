@@ -1,6 +1,6 @@
 import React from "react";
 import Table from "../../../components/design/tables/Table";
-import { TableBuilder } from "../../../helpers/design/table";
+import { TableBuilder } from "../../../utilities/design/table";
 import Page from "../../../components/design/Page";
 import Link from "next/link";
 import PaginatedTable from "../../../components/design/tables/PaginatedTable";

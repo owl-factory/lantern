@@ -4,11 +4,11 @@ import Breadcrumbs from "../../../components/design/Breadcrumbs";
 import Table from "../../../components/design/tables/Table";
 import Page from "../../../components/design/Page";
 import gamesystemJson from "./gamesystems.json";
-import { TableBuilder } from "../../../helpers/design/table";
+import { TableBuilder } from "../../../utilities/design/table";
 import Link from "next/link";
 import GameSystemModel from "../../../models/database/gameSystems";
 import ContextDropdown from "../../../components/design/contextMenus/ContextDropdown";
-import { ContextMenuBuilder } from "../../../helpers/design/contextMenu";
+import { ContextMenuBuilder } from "../../../utilities/design/contextMenu";
 import { MdBuild, MdInfo, MdPageview, MdBlock } from "react-icons/md";
 import Tooltip from "../../../components/design/Tooltip";
 

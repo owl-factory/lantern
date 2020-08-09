@@ -3,7 +3,7 @@ import { ContextButtonProps, ContextMenuItemProps, ContextMenuLinkProps, Context
 import Tooltip from "../Tooltip";
 import { Button, ButtonGroup } from "react-bootstrap";
 import { useRouter } from "next/router";
-import { parseHref } from "../../../helpers/design/contextMenu";
+import { parseHref } from "../../../utilities/design/contextMenu";
 
 /**
  * Context Menu Buttons are split buttons created together in a singular group,

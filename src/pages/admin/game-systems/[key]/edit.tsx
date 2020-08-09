@@ -6,7 +6,7 @@ import gql from "graphql-tag";
 import { NextPageContext } from "next";
 import GameSystemModel from "../../../../models/database/gameSystems";
 import ThemeModel from "../../../../models/database/themes";
-import { def } from "../../../../helpers/tools";
+import { def } from "../../../../utilities/tools";
 
 interface EditGameSystemProps {
   gameSystem: GameSystemModel;

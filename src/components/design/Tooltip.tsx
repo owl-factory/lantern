@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
 import { Tooltip as BSTooltip, OverlayTrigger } from "react-bootstrap";
-import { def, idify } from "../../helpers/tools";
+import { def, idify } from "../../utilities/tools";
 
 // Where the tooltip will be placed in relation to the children
 type TooltipPlacement = "top" | "bottom" | "left" | "right";

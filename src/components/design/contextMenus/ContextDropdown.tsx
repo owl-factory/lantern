@@ -1,10 +1,10 @@
 /* eslint-disable no-case-declarations */
 import React from "react";
 import { Dropdown } from "react-bootstrap";
-import { def } from "../../../helpers/tools";
+import { def } from "../../../utilities/tools";
 import { ContextMenuItemProps, ContextMenuLinkProps, ContextDropdownProps, DropType, ContextMenuGenericItem, ContextMenuLink, ContextMenuItem } from "../../../models/design/contextMenu";
 import { useRouter } from "next/router";
-import { parseHref } from "../../../helpers/design/contextMenu";
+import { parseHref } from "../../../utilities/design/contextMenu";
 
 
 /**
