@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-inferrable-types */
 import React from "react";
 import { Pagination as BSPagination } from "react-bootstrap";
-import { def, min } from "../../helpers/tools";
+import { def, min } from "../../utilities/tools";
 
 interface PaginationProps {
   pageState: IPageState; // The state of the page to use and update

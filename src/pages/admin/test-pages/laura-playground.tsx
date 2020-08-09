@@ -5,7 +5,7 @@ import gql from "graphql-tag";
 import React from "react"
 import Page from "../../../components/design/Page";
 import { NewGameSystemForm } from "../game-system/new";
-import { client } from "../../../helpers/graphql";
+import { client } from "../../../utilities/graphql";
 
 
 const GET_POKEMON_INFO = gql`

@@ -1,6 +1,6 @@
 import React from "react";
 import { Table as BSTable } from "react-bootstrap";
-import { def } from "../../helpers/tools";
+import { def } from "../../utilities/tools";
 import Pagination, {usePageState} from "./Pagination";
 
 export interface ILayoutItem {

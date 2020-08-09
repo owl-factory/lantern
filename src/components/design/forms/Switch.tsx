@@ -2,7 +2,7 @@ import { useField } from "formik";
 import React from "react";
 import { Form } from "react-bootstrap";
 import { FieldProps } from "./types";
-import { def, objectKeepFields } from "../../../helpers/tools";
+import { def, objectKeepFields } from "../../../utilities/tools";
 
 interface SwitchProps extends FieldProps {
   "aria-label"?: string; // A hidden label for usability

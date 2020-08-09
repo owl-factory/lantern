@@ -2,7 +2,7 @@ import React from "react";
 import { Breadcrumb as BSBreadcrumb } from "react-bootstrap";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { def } from "../../helpers/tools";
+import { def } from "../../utilities/tools";
 
 interface BreadcrumbProps {
   skipLevels?: number; // the endpoint to start from
