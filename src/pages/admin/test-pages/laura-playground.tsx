@@ -3,7 +3,7 @@
 import gql from "graphql-tag";
 import React from "react"
 import Page from "../../../components/design/Page";
-import { pokemonClient } from "../../../helpers/graphql/graphqlClient";
+import pokemonClient from "../../../utilities/graphql/pokemon";
 
 const GET_POKEMON_INFO = gql`
 {
@@ -23,7 +23,7 @@ function LauraPlayground({pokemon}: any) {
   const [ pokemonSecond, setPokemonSecond ] = React.useState([])
 
   pokemonClient.query({query: GET_POKEMON_INFO})
-  .then((results) => {
+  .then((results: any) => {
     setPokemonSecond(results.data.pokemons);
   });
 

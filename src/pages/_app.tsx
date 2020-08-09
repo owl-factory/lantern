@@ -4,7 +4,7 @@ import { AppProps } from "next/app";
 import Head from "next/head";
 import "./_app.scss";
 import HeaderBar from "../components/design/HeaderBar";
-import { client } from "../helpers/graphql";
+import { client } from "../utilities/graphql";
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   return (

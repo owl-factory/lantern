@@ -7,7 +7,6 @@ import {
   Date,
   DateTime,
   Input,
-  Multiselect,
   RadioButton,
   Select,
   Switch,
@@ -80,11 +79,11 @@ export function TestForm() {
 
           <Row>
             <Form.Group as={Col}>
-              <Multiselect name="selectTest2" label="Multiselect Test" options={selectData}/>
+              <Select multiple name="selectTest2" label="Multiselect Test" options={selectData}/>
             </Form.Group>
 
             <Form.Group as={Col}>
-              <Multiselect name="selectTest2" label="Multiselect Test" options={selectData}/>
+              <Select multiple name="selectTest2" label="Multiselect Test" options={selectData}/>
             </Form.Group>
           </Row>
 
@@ -115,9 +114,8 @@ export function TestForm() {
             </Form.Group>
           </Row>
 
-          <h2>Switches (non-functional)</h2>
+          <h2>Switches</h2>
           <Row>
-            {/* TODO - this doesn't work */}
             <Form.Group as={Col}>
               <Switch name="isAirConditioningOn" label="Air Conditioning"/>
             </Form.Group>
