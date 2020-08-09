@@ -1,5 +1,5 @@
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 import News from "../components/announcements/News";
 import AuthenticationCard from "../components/authetication/AuthenticationCard";
 import CampaignTiles from "../components/campaigns/CampaignTiles";
@@ -9,6 +9,7 @@ import campaigns from "./api/campaign/campaign.json";
 import characters from "./api/character/character.json";
 import news from "./api/news/news.json";
 import { Row, Button, Col } from "react-bootstrap";
+import { getSession } from "../utilities/auth";
 
 /**
  * Renders the index page and one of two subviews
@@ -37,6 +38,7 @@ function Index(props: any) {
   return (
     <Page>
       {userView}
+      {JSON.stringify(props.token)}
       <h4>
         News
       </h4>
@@ -70,6 +72,15 @@ function UserView(props: any) {
  * @param props TODO
  */
 function GuestView(props: any) {
+
+  const [test, setTest] = React.useState("");
+
+  useEffect(() => {
+    getSession().then((session) => {
+      setTest(session.accessToken);
+    });
+  }, [])
+
   return (
     <div>
       <h3>
@@ -79,6 +90,8 @@ function GuestView(props: any) {
         Reroll is a new in development web app for playing tabletop games with friends.
         There isn't much here yet but there will be some day soon.
       </p>
+
+      {test}
 
       <Row>
         <Col md="8" sm="12">

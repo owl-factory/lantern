@@ -1,6 +1,6 @@
 import React from "react";
 import Page from "../../../components/design/Page";
-import { ContextMenuBuilder } from "../../../helpers/design/contextMenu";
+import { ContextMenuBuilder } from "../../../utilities/design/contextMenu";
 import { MdEdit, MdViewList, MdAttachFile, MdClose } from "react-icons/md";
 import ContextButtonGroup from "../../../components/design/contextMenus/ContextButtons";
 import ContextMenuCollection from "../../../components/design/contextMenus/ContextMenuCollection";

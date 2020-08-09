@@ -1,6 +1,6 @@
 import React from "react";
 import { Input } from "./Input";
-import { def } from "../../../helpers/tools";
+import { def } from "../../../utilities/tools";
 import { CoreInputProps } from "../../../models/design/form";
 
 interface TextAreaProps extends CoreInputProps {

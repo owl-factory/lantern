@@ -1,7 +1,7 @@
 import { useField } from "formik";
 import React from "react";
 import { Form } from "react-bootstrap";
-import { def, objectKeepFields } from "../../../helpers/tools";
+import { def, objectKeepFields } from "../../../utilities/tools";
 import { CoreFormCheckProps } from "../../../models/design/form";
 
 interface FormCheckProps extends CoreFormCheckProps {
