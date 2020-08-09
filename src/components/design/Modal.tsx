@@ -1,12 +1,10 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { Modal as BSModal } from "react-bootstrap";
 
 // TODO - add flag for "You may have unsaved changes!" before closing
 
 interface ModalProps {
-  children?: JSX.Element; // The children to place within the modal
-  ariaLabeledBy?: string; // Accessibility label
-  ariaDescribedBy?: string; // Accessibility description
+  children?: ReactNode; // The children to place within the modal
   dirty?: boolean; // True if this modal has been touched
 }
 
@@ -38,7 +36,8 @@ function registerModal(): [(props: any) => (JSX.Element | null), () => (void)] {
 
   /**
    * Renders a modal with the given settings and passed props
-   * @param props see IModal
+   * @param props.children The content of the modal to be ren
+   * @param props.dirty Boolean if this modal has been touched
    */
   function Modal(props: ModalProps): JSX.Element | null {
     return (

@@ -9,7 +9,7 @@ import campaigns from "./api/campaign/campaign.json";
 import characters from "./api/character/character.json";
 import news from "./api/news/news.json";
 import { Row, Button, Col } from "react-bootstrap";
-import { getSession } from "../helpers/auth";
+import { getSession } from "../utilities/auth";
 
 /**
  * Renders the index page and one of two subviews

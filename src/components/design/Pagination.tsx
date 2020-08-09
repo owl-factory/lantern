@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-inferrable-types */
 import React from "react";
 import { Pagination as BSPagination } from "react-bootstrap";
-import { def, min } from "../../helpers/tools";
+import { def, min } from "../../utilities/tools";
 
 interface PaginationProps {
   pageState: IPageState; // The state of the page to use and update
@@ -117,21 +117,21 @@ function Pagination(props: PaginationProps) {
     // Render first
     renderedCells.unshift(
       <PaginationCell 
-      className={isDisabled(props.pageState.currentPage, 1)} 
-      key="page_first"
-      pageText="First"
-      targetPage={1}
-      setPage={setPage}/>
+        className={isDisabled(props.pageState.currentPage, 1)} 
+        key="page_first"
+        pageText="First"
+        targetPage={1}
+        setPage={setPage}/>
     );
 
     // Render last
     renderedCells.push(
       <PaginationCell 
-      className={isDisabled(props.pageState.currentPage, maxPage)} 
-      key="page_last"
-      pageText="Last"
-      targetPage={maxPage}
-      setPage={setPage}/>
+        className={isDisabled(props.pageState.currentPage, maxPage)} 
+        key="page_last"
+        pageText="Last"
+        targetPage={maxPage}
+        setPage={setPage}/>
     );
 
     return renderedCells;
