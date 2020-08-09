@@ -5,13 +5,14 @@ import { useRouter } from "next/router";
 import { def } from "../../utilities/tools";
 
 interface BreadcrumbProps {
-  skipLevels?: number; // the endpoint to start from
+  skipLevels?: number;
   titles?: string[];
 }
 
 /**
- * A simple to use breadcrumb component
- * @param props see IBreadcrumb
+ * A simple breadcrumb component that builds out the links from the URL. 
+ * @param props.skipLevels A number indicating how many levels to skip. Default 0
+ * @param props.titles An array of strings for the title of each level
  */
 function Breadcrumbs(props: BreadcrumbProps) {
   const router = useRouter();
