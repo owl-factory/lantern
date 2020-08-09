@@ -23,6 +23,11 @@ export async function emailLogin(email: string, password: string): Promise<Sessi
   return await response.json();
 }
 
+export async function refreshSession(): Promise<Session> {
+  const response = await fetch("/api/user/refresh-login", { method: "POST" });
+  return await response.json();
+}
+
 export async function getSession(): Promise<Session> {
   let cookie = parseCookies().session;
   if (cookie) {
