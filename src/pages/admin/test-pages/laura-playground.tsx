@@ -3,7 +3,7 @@
 import gql from "graphql-tag";
 import React from "react"
 import Page from "../../../components/design/Page";
-import pokemonClient from "../../../utilities/graphql/pokemon";
+import { client } from "../../../utilities/graphql/pokemon";
 
 const GET_POKEMON_INFO = gql`
 {
@@ -22,7 +22,7 @@ const GET_POKEMON_INFO = gql`
 function LauraPlayground({pokemon}: any) {
   const [ pokemonSecond, setPokemonSecond ] = React.useState([])
 
-  pokemonClient.query({query: GET_POKEMON_INFO})
+  client.query({query: GET_POKEMON_INFO})
   .then((results: any) => {
     setPokemonSecond(results.data.pokemons);
   });
@@ -46,7 +46,7 @@ function LauraPlayground({pokemon}: any) {
 }
 
 LauraPlayground.getInitialProps = async () => {
-  const { data } = await pokemonClient.query({query: GET_POKEMON_INFO});
+  const { data } = await client.query({query: GET_POKEMON_INFO});
   
   return { pokemon: data.pokemons }
 }

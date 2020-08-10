@@ -43,15 +43,14 @@ export async function refreshSession(): Promise<Session> {
 }
 
 /**
- * Utility to return current session from a cookie or, if cookie
- * is unavailable attempt to login anonymously and return a session
+ * Utility to return current session from a cookie if available
  */
-export async function getSession(): Promise<Session> {
+export function getSession(): Session | undefined {
   let cookie = parseCookies().session;
   if (cookie) {
-    return JSON.parse(parseCookies().session);
+    return JSON.parse(cookie);
   } else {
-    return await anonLogin();
+    return undefined;
   }
 }
 

@@ -1,7 +1,15 @@
-import GraphqlClient from "./graphqlClient";
+import { ApolloClient, createHttpLink, InMemoryCache } from "@apollo/client";
+
+/** Terminating HTTP link, actually sends the request to the server */ 
+const httpLink = createHttpLink({
+  uri: "https://graphql-pokemon.now.sh",
+  fetch,
+});
 
 /**
  * A test client for use with the publicly available graphql-pokemon endpoint.
  */
-const pokemonClient = new GraphqlClient("https://graphql-pokemon.now.sh")
-export default pokemonClient;
+export const client = new ApolloClient({
+  link: httpLink,
+  cache: new InMemoryCache(),
+});

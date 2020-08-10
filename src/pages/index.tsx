@@ -1,5 +1,5 @@
 import Link from "next/link";
-import React, { useEffect } from "react";
+import React from "react";
 import News from "../components/announcements/News";
 import AuthenticationCard from "../components/authetication/AuthenticationCard";
 import CampaignTiles from "../components/campaigns/CampaignTiles";
@@ -9,7 +9,10 @@ import campaigns from "./api/campaign/campaign.json";
 import characters from "./api/character/character.json";
 import news from "./api/news/news.json";
 import { Row, Button, Col } from "react-bootstrap";
-import { getSession } from "../utilities/auth";
+import { anonLogin } from "../utilities/auth";
+import { client } from "../utilities/graphql/realmClient";
+import gql from "graphql-tag";
+import { Container } from "next/app";
 
 /**
  * Renders the index page and one of two subviews
@@ -75,14 +78,22 @@ function GuestView(props: any) {
 
   const [test, setTest] = React.useState("");
 
-  useEffect(() => {
-    getSession().then((session) => {
-      setTest(session.accessToken);
+  function gqlTest () {
+    const query = gql`
+    {
+      characters {
+        _id
+        name
+      }
+    }
+    `;
+    client.query({query}).then((res) => {
+      setTest(JSON.stringify(res.data));
     });
-  }, [])
+  }
 
   return (
-    <div>
+    <>
       <h3>
         Welcome to Reroll!
       </h3>
@@ -91,7 +102,9 @@ function GuestView(props: any) {
         There isn't much here yet but there will be some day soon.
       </p>
 
-      {test}
+      <Button onClick={() => {anonLogin().then((res) => {console.log("Loged in with token:"+res.accessToken)})}}>Anon Login</Button>
+      <Button onClick={() => {gqlTest()}}>Test GQL</Button>
+      <p>{test}</p>
 
       <Row>
         <Col md="8" sm="12">
@@ -108,7 +121,7 @@ function GuestView(props: any) {
           <AuthenticationCard session={props.session} setSession={props.setSession} />
         </Col>
       </Row>
-    </div>
+    </>
   );
 }
 

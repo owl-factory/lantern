@@ -19,7 +19,7 @@ export default async function EmailLogin(req: NextApiRequest, res: NextApiRespon
   });
 
   const json = await tokenRes.json();
-  const session = createSession(json, res);
+  const session = createSession(json, res, false);
 
   res.status(200).json(session);
 }
