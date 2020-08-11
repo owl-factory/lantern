@@ -8,11 +8,10 @@ import Page from "../components/design/Page";
 import campaigns from "./api/campaign/campaign.json";
 import characters from "./api/character/character.json";
 import news from "./api/news/news.json";
-import { Row, Button, Col } from "react-bootstrap";
+import { Row, Button, Col, Form } from "react-bootstrap";
 import { anonLogin } from "../utilities/auth";
 import { client } from "../utilities/graphql/realmClient";
 import gql from "graphql-tag";
-import { Container } from "next/app";
 
 /**
  * Renders the index page and one of two subviews
@@ -77,6 +76,7 @@ function UserView(props: any) {
 function GuestView(props: any) {
 
   const [test, setTest] = React.useState("");
+  const [name, setName] = React.useState("");
 
   function gqlTest () {
     const query = gql`
@@ -89,6 +89,22 @@ function GuestView(props: any) {
     `;
     client.query({query}).then((res) => {
       setTest(JSON.stringify(res.data));
+    });
+  }
+
+  function gqlInsert() {
+    const mutation = gql`
+    mutation($name: String!) {
+      insertOneCharacter(data: {
+        name: $name
+      }) {
+        _id
+        name
+      }
+    }
+    `
+    client.mutate({mutation, variables: { name }}).then((res) => {
+      console.log(`Added ${name}`);
     });
   }
 
@@ -105,6 +121,11 @@ function GuestView(props: any) {
       <Button onClick={() => {anonLogin().then((res) => {console.log("Loged in with token:"+res.accessToken)})}}>Anon Login</Button>
       <Button onClick={() => {gqlTest()}}>Test GQL</Button>
       <p>{test}</p>
+
+      <Form>
+        <Form.Control onChange={(e) => {setName(e.target.value)}} value={name} />
+        <Button onClick={() => {gqlInsert()}}>Create Character</Button>
+      </Form>
 
       <Row>
         <Col md="8" sm="12">
