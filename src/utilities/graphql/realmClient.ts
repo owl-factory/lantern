@@ -6,7 +6,7 @@ import { getSession, refreshSession } from '../auth';
 
 /** Terminating HTTP link, actually sends the request to the server */ 
 const httpLink = createHttpLink({
-  uri: "https://stitch.mongodb.com/api/client/v2.0/app/reroll-vsvhk/graphql",
+  uri: "https://realm.mongodb.com/api/client/v2.0/app/reroll-vsvhk/graphql",
   fetch,
 });
 
@@ -30,8 +30,8 @@ const authLink = setContext((_, { headers }) => {
  * onError link that will attempt to get a fresh access token and retry
  * a failed request when an Unauthorized error is encountered
  */
-const refreshLink = onError(({ graphQLErrors, networkError, operation, forward }) => {
-  if (graphQLErrors && graphQLErrors[0].message === "Unauthorized") {
+const refreshLink = onError(({ networkError, operation, forward }) => {
+  if (networkError?.message == "Response not successful: Received status code 401") {
     // Let's refresh token through async request
     // Apollo observables are needed to do async inside an onError link
     console.log("Unauthorized, getting refresh token");
@@ -63,6 +63,6 @@ const refreshLink = onError(({ graphQLErrors, networkError, operation, forward }
 /** Global Apollo client */
 export const client = new ApolloClient({
   // Refresh link is first in the chain as you need to set up the error state
-  link: refreshLink.concat(authLink).concat(httpLink),
+  link: authLink.concat(refreshLink).concat(httpLink),
   cache: new InMemoryCache(),
 });
