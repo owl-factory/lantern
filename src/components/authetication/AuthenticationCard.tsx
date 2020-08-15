@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { Card, Button, Form } from "react-bootstrap";
 import { useRouter } from "next/router";
+import { emailLogin } from "../../utilities/auth";
+import LoginForm2 from "./LoginForm";
 
 interface ISetState {
-  setState: (section: object) => void;
+  setState?: (section: object) => void;
 }
 
 /**
@@ -21,22 +23,24 @@ function AuthenticationCard(props: any) {
   let cardBody: JSX.Element = <LoginForm />;
   switch (state.section) {
     case "login":
-      cardBody = <LoginForm setSession={props.setSession} setState={setState} />;
+      cardBody = <LoginForm  />;
       break;
     case "signup":
-      cardBody = <SignUpForm setState={setState} />;
+      cardBody = <SignUpForm  />;
       break;
     case "forgotpassword":
-      cardBody = <ForgotPasswordForm setState={setState} />;
+      cardBody = <ForgotPasswordForm  />;
       break;
     default:
-      cardBody = <LoginForm setState={setState} />;
+      cardBody = <LoginForm  />;
       break;
   }
 
   return (
     <Card>
-      {cardBody}
+      <Card.Body>
+        {cardBody}
+      </Card.Body>
     </Card>
   );
 }
@@ -51,37 +55,31 @@ function LoginForm(props: any) {
   const [user, setUser] = useState("");
   const [pass, setPass] = useState("");
 
-  function emailLogin() {
-    fetch("/api/account/email-login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        username: user,
-        password: pass
-      })
-    }).then(() => {router.push(router.pathname)});
+  function submitLogin() {
+    emailLogin(user, pass)
+      .then(() => {router.push(router.pathname)});
   }
 
   return (
     <Card.Body>
       <h5>Login</h5>
-      <Button variant="secondary"
-        onClick={() => { props.setSession({ "user": { isLoggedIn: true } }); }}
-      >
+      <Button variant="secondary">
         Google Login
       </Button>
 
-      <Form>
+      <LoginForm2/>
+
+      {/* <Form>
         <Form.Label>Username</Form.Label>
         <Form.Control id="username" value={user} onChange={(event) => { setUser(event.target.value) }} />
         <Form.Label>Password</Form.Label>
         <Form.Control id="password" value={pass} onChange={(event) => { setPass(event.target.value) }} />
         <br /><br />
-        <Button color="primary" onClick={emailLogin}>Log In</Button>
+        <Button color="primary" onClick={submitLogin}>Log In</Button>
         <br />
         <SignUpLink setState={props.setState} />
         <ForgotPasswordLink setState={props.setState} />
-      </Form>
+      </Form> */}
     </Card.Body>
   );
 }

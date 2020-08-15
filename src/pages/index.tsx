@@ -21,21 +21,21 @@ import gql from "graphql-tag";
 function Index(props: any) {
 
   // TODO - move the session up to App
-  const [session, setSession] = React.useState({
-    "user": {
-      "isLoggedIn": false,
-      "username": "laura",
-      "displayName": "Laura",
-    },
-  });
+  // const [session, setSession] = React.useState({
+  //   "user": {
+  //     "isLoggedIn": false,
+  //     "username": "laura",
+  //     "displayName": "Laura",
+  //   },
+  // });
 
   // Sets the view for the currenly logged in user
-  let userView: JSX.Element;
-  if (session.user.isLoggedIn) {
-    userView = <UserView session={session} setSession={setSession} />;
-  } else {
-    userView = <GuestView session={session} setSession={setSession} />;
-  }
+  const userView: JSX.Element = <GuestView/>;
+  // if (session.user.isLoggedIn) {
+  //   userView = <UserView />;
+  // } else {
+  //   userView = <GuestView />;
+  // }
 
   return (
     <Page>
@@ -139,7 +139,7 @@ function GuestView(props: any) {
           </Link>
         </Col>
         <Col md="4" sm="12">
-          <AuthenticationCard session={props.session} setSession={props.setSession} />
+          <AuthenticationCard />
         </Col>
       </Row>
     </>

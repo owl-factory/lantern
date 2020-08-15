@@ -46,7 +46,7 @@ export async function refreshSession(): Promise<Session> {
  * Utility to return current session from a cookie if available
  */
 export function getSession(): Session | undefined {
-  let cookie = parseCookies().session;
+  const cookie = parseCookies().session;
   if (cookie) {
     return JSON.parse(cookie);
   } else {
