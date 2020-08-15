@@ -5,7 +5,7 @@ import { emailLogin } from "../../utilities/auth";
 import LoginForm2 from "./LoginForm";
 
 interface ISetState {
-  setState?: (section: object) => void;
+  setState: (section: object) => void;
 }
 
 /**
@@ -23,16 +23,16 @@ function AuthenticationCard(props: any) {
   let cardBody: JSX.Element = <LoginForm />;
   switch (state.section) {
     case "login":
-      cardBody = <LoginForm  />;
+      cardBody = <LoginForm setState={setState} />;
       break;
     case "signup":
-      cardBody = <SignUpForm  />;
+      cardBody = <SignUpForm setState={setState} />;
       break;
     case "forgotpassword":
-      cardBody = <ForgotPasswordForm  />;
+      cardBody = <ForgotPasswordForm setState={setState} />;
       break;
     default:
-      cardBody = <LoginForm  />;
+      cardBody = <LoginForm setState={setState} />;
       break;
   }
 

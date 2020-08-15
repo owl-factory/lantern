@@ -20,7 +20,7 @@ export default async function EmailLogin(req: NextApiRequest, res: NextApiRespon
     })
   });
 
-  let responseObject: unknown = {error: "An unknown error occurred."};
+  let responseObject: any = {error: "An unknown error occurred."};
 
   switch(tokenRes.status) {
     case 200:
