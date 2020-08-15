@@ -1,6 +1,8 @@
+/* eslint-disable no-case-declarations */
 import { NextApiRequest, NextApiResponse } from "next"
 import fetch from "cross-fetch";
 import { createSession } from "../../../utilities/api";
+import { MdArrowDownward } from "react-icons/md";
 
 /**
  * Api endpoint that logs into the realm api using an email
@@ -18,8 +20,17 @@ export default async function EmailLogin(req: NextApiRequest, res: NextApiRespon
     })
   });
 
-  const json = await tokenRes.json();
-  const session = createSession(json, res);
+  let responseObject: any = {error: "An unknown error occurred."};
 
-  res.status(200).json(session);
+  switch(tokenRes.status) {
+    case 200:
+      const json = await tokenRes.json();
+      responseObject = createSession(json, res, false);
+      break;
+    case 401:
+      responseObject.error = "The username/password is incorrect.";
+      break;      
+  }
+
+  res.status(200).json(responseObject);
 }

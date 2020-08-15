@@ -1,5 +1,5 @@
 import Link from "next/link";
-import React, { useEffect } from "react";
+import React from "react";
 import News from "../components/announcements/News";
 import AuthenticationCard from "../components/authetication/AuthenticationCard";
 import CampaignTiles from "../components/campaigns/CampaignTiles";
@@ -8,8 +8,10 @@ import Page from "../components/design/Page";
 import campaigns from "./api/campaign/campaign.json";
 import characters from "./api/character/character.json";
 import news from "./api/news/news.json";
-import { Row, Button, Col } from "react-bootstrap";
-import { getSession } from "../utilities/auth";
+import { Row, Button, Col, Form } from "react-bootstrap";
+import { anonLogin } from "../utilities/auth";
+import { client } from "../utilities/graphql/realmClient";
+import gql from "graphql-tag";
 
 /**
  * Renders the index page and one of two subviews
@@ -18,22 +20,8 @@ import { getSession } from "../utilities/auth";
  */
 function Index(props: any) {
 
-  // TODO - move the session up to App
-  const [session, setSession] = React.useState({
-    "user": {
-      "isLoggedIn": false,
-      "username": "laura",
-      "displayName": "Laura",
-    },
-  });
-
   // Sets the view for the currenly logged in user
-  let userView: JSX.Element;
-  if (session.user.isLoggedIn) {
-    userView = <UserView session={session} setSession={setSession} />;
-  } else {
-    userView = <GuestView session={session} setSession={setSession} />;
-  }
+  const userView: JSX.Element = <GuestView/>;
 
   return (
     <Page>
@@ -74,15 +62,40 @@ function UserView(props: any) {
 function GuestView(props: any) {
 
   const [test, setTest] = React.useState("");
+  const [name, setName] = React.useState("");
 
-  useEffect(() => {
-    getSession().then((session) => {
-      setTest(session.accessToken);
+  function gqlTest () {
+    const query = gql`
+    {
+      characters {
+        _id
+        name
+      }
+    }
+    `;
+    client.query({query}).then((res) => {
+      setTest(JSON.stringify(res.data));
     });
-  }, [])
+  }
+
+  function gqlInsert() {
+    const mutation = gql`
+    mutation($name: String!) {
+      insertOneCharacter(data: {
+        name: $name
+      }) {
+        _id
+        name
+      }
+    }
+    `
+    client.mutate({mutation, variables: { name }}).then((res) => {
+      console.log(`Added ${name}`);
+    });
+  }
 
   return (
-    <div>
+    <>
       <h3>
         Welcome to Reroll!
       </h3>
@@ -91,7 +104,14 @@ function GuestView(props: any) {
         There isn't much here yet but there will be some day soon.
       </p>
 
-      {test}
+      <Button onClick={() => {anonLogin().then((res) => {console.log("Loged in with token:"+res.accessToken)})}}>Anon Login</Button>
+      <Button onClick={() => {gqlTest()}}>Test GQL</Button>
+      <p>{test}</p>
+
+      <Form>
+        <Form.Control onChange={(e) => {setName(e.target.value)}} value={name} />
+        <Button onClick={() => {gqlInsert()}}>Create Character</Button>
+      </Form>
 
       <Row>
         <Col md="8" sm="12">
@@ -105,10 +125,10 @@ function GuestView(props: any) {
           </Link>
         </Col>
         <Col md="4" sm="12">
-          <AuthenticationCard session={props.session} setSession={props.setSession} />
+          <AuthenticationCard />
         </Col>
       </Row>
-    </div>
+    </>
   );
 }
 

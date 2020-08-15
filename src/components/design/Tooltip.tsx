@@ -6,7 +6,7 @@ import { def, idify } from "../../utilities/tools";
 type TooltipPlacement = "top" | "bottom" | "left" | "right";
 
 interface TooltipProps {
-  children: ReactNode; // The children of the overlay trigger
+  children: JSX.Element; // The children of the overlay trigger
   placement?: TooltipPlacement; // Where the tooltip will be place in relation to the children
   title: string; // The text of the tooltip
 }
@@ -23,6 +23,8 @@ export default function Tooltip(props: TooltipProps) {
     <OverlayTrigger
       placement={placement}
       overlay={<BSTooltip id={"tooltip-" + idify(props.title)}>{props.title}</BSTooltip>}
-    >{props.children}</OverlayTrigger>    
+    >
+      {props.children}
+    </OverlayTrigger>    
   )
 }

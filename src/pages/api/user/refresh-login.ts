@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next"
 import fetch from "cross-fetch";
-import { parseCookies } from "nookies";
+import { parseCookies, setCookie } from "nookies";
 import { Session } from "../../../models/user";
 
 /**
@@ -22,6 +22,11 @@ export default async function RefreshLogin(req: NextApiRequest, res: NextApiResp
   const json = await tokenRes.json();
   const session: Session = JSON.parse(cookies.session);
   session.accessToken = json.access_token;
+
+  setCookie({ res }, "session", JSON.stringify(session), {
+    maxAge: 60 * 60 * 24 * 30,
+    path: '/'
+  })
 
   res.status(200).json(session);
 }

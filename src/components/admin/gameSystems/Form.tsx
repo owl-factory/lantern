@@ -64,9 +64,9 @@ export default function GameSystemForm(props: GameSystemFormProps) {
           .required("Required")
           .oneOf(themeKeys, "Must be a given theme"),
         cost: Yup.number()
-          .test("validCost", "A valid cost must be provided", function (value: number) {
+          .test("validCost", "A valid cost must be provided", function (value: number | null | undefined) {
             if (this.parent.isPurchasable !== true) { return true }
-            if (value < 0) { return false; }
+            if (value && value < 0) { return false; }
             return true;
           })
         

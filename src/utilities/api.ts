@@ -8,9 +8,9 @@ import { NextApiResponse } from "next";
  * @param data data obtained from request body used to make the session object
  * @param res server response object used to set cookies
  */
-export function createSession(data: any, res: NextApiResponse): Session {
+export function createSession(data: any, res: NextApiResponse, isAnon: boolean): Session {
 
-  const session: Session = { accessToken: data.access_token, userId: data.user_id };
+  const session: Session = { accessToken: data.access_token, userId: data.user_id, isAnonymous: isAnon };
 
   setCookie({ res }, "session", JSON.stringify(session), {
     maxAge: 60 * 60 * 24 * 30,
