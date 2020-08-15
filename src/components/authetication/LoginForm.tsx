@@ -6,16 +6,19 @@ import { useRouter } from "next/router";
 import { Col, Form, Row, Button } from "react-bootstrap";
 import { Input } from "../design/forms/Forms";
 
+/** The possible form values */
 interface LoginValues {
   email: string;
   password: string;
 }
 
+/** Initial form values */
 const initialValues = {
   email: "",
   password: ""
 }
 
+/** Validation for the login form */
 const validationSchema = Yup.object({
   email: Yup.string()
     .required("Required"),
@@ -23,6 +26,9 @@ const validationSchema = Yup.object({
     .required("Required"),
 });
 
+/**
+ * Renders the form for logging in
+ */
 export default function LoginForm() {
   const router = useRouter();
   const [errorMessage, setErrorMessage] = React.useState("");

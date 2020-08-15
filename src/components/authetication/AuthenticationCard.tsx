@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, ReactNode } from "react";
 import { Card, Button, Form } from "react-bootstrap";
 import { useRouter } from "next/router";
 import { emailLogin } from "../../utilities/auth";
-import LoginForm2 from "./LoginForm";
+import LoginForm from "./LoginForm";
 
 interface ISetState {
   setState: (section: object) => void;
@@ -20,19 +20,17 @@ function AuthenticationCard(props: any) {
 
   const [state, setState] = useState({ "section": section });
 
-  let cardBody: JSX.Element = <LoginForm />;
+  let cardBody: ReactNode;
   switch (state.section) {
-    case "login":
-      cardBody = <LoginForm setState={setState} />;
-      break;
     case "signup":
       cardBody = <SignUpForm setState={setState} />;
       break;
     case "forgotpassword":
       cardBody = <ForgotPasswordForm setState={setState} />;
       break;
+    case "login":
     default:
-      cardBody = <LoginForm setState={setState} />;
+      cardBody = <LoginSection setState={setState} />;
       break;
   }
 
@@ -49,17 +47,7 @@ function AuthenticationCard(props: any) {
  * Renders the login view
  * @param props Contains the setState function for swapping auth views
  */
-function LoginForm(props: any) {
-
-  const router = useRouter();
-  const [user, setUser] = useState("");
-  const [pass, setPass] = useState("");
-
-  function submitLogin() {
-    emailLogin(user, pass)
-      .then(() => {router.push(router.pathname)});
-  }
-
+function LoginSection(props: any) {
   return (
     <Card.Body>
       <h5>Login</h5>
@@ -67,19 +55,7 @@ function LoginForm(props: any) {
         Google Login
       </Button>
 
-      <LoginForm2/>
-
-      {/* <Form>
-        <Form.Label>Username</Form.Label>
-        <Form.Control id="username" value={user} onChange={(event) => { setUser(event.target.value) }} />
-        <Form.Label>Password</Form.Label>
-        <Form.Control id="password" value={pass} onChange={(event) => { setPass(event.target.value) }} />
-        <br /><br />
-        <Button color="primary" onClick={submitLogin}>Log In</Button>
-        <br />
-        <SignUpLink setState={props.setState} />
-        <ForgotPasswordLink setState={props.setState} />
-      </Form> */}
+      <LoginForm/>
     </Card.Body>
   );
 }

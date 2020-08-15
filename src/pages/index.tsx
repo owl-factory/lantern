@@ -20,22 +20,8 @@ import gql from "graphql-tag";
  */
 function Index(props: any) {
 
-  // TODO - move the session up to App
-  // const [session, setSession] = React.useState({
-  //   "user": {
-  //     "isLoggedIn": false,
-  //     "username": "laura",
-  //     "displayName": "Laura",
-  //   },
-  // });
-
   // Sets the view for the currenly logged in user
   const userView: JSX.Element = <GuestView/>;
-  // if (session.user.isLoggedIn) {
-  //   userView = <UserView />;
-  // } else {
-  //   userView = <GuestView />;
-  // }
 
   return (
     <Page>

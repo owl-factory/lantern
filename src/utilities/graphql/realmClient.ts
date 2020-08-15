@@ -34,7 +34,6 @@ const refreshLink = onError(({ networkError, operation, forward }) => {
   if (networkError?.message == "Response not successful: Received status code 401") {
     // Let's refresh token through async request
     // Apollo observables are needed to do async inside an onError link
-    console.log("Unauthorized, getting refresh token");
     return new Observable(observer => {
       refreshSession().then(refreshResponse => {
         operation.setContext(({ headers = {} }) => ({
