@@ -1,0 +1,6 @@
+{
+  "packages": [ "api", "app", "model" ],
+  "version": "0.2.0",
+  "npmClient": "yarn",
+  "useWorkspaces": true
+}
