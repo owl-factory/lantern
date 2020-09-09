@@ -1,59 +1,12 @@
 {
-  "name": "reroll",
-  "version": "0.1.0",
+  "name": "root",
   "private": true,
   "scripts": {
-    "nodemon": "nodemon --exec yarn dev",
-    "dev": "next dev",
-    "compose": "yarn install && next dev",
-    "build": "next build",
-    "start": "next start",
-    "test": "jest"
-  },
-  "dependencies": {
-    "@apollo/client": "^3.1.3",
-    "@material-ui/core": "^4.6.1",
-    "@material-ui/icons": "^4.5.1",
-    "bootstrap": "^4.4.1",
-    "cross-fetch": "^3.0.4",
-    "formik": "^2.1.4",
-    "graphql": "^14.6.0",
-    "graphql-tag": "^2.10.3",
-    "lodash": "^4.17.19",
-    "next": "9.3.2",
-    "nookies": "^2.3.0",
-    "react": "16.12.0",
-    "react-bootstrap": "^1.0.1",
-    "react-dom": "16.12.0",
-    "react-icons": "^3.10.0",
-    "saslprep": "^1.0.3",
-    "yup": "^0.29.1"
+    "bootstrap": "lerna bootstrap",
+    "dev": "lerna run dev"
   },
   "devDependencies": {
-    "@types/enzyme": "^3.10.3",
-    "@types/enzyme-adapter-react-16": "^1.0.5",
-    "@types/jest": "^24.0.23",
-    "@types/lodash": "^4.14.150",
-    "@types/node": "^12.12.7",
-    "@types/node-fetch": "^2.5.5",
-    "@types/react": "^16.9.11",
-    "@types/react-bootstrap": "^1.0.1",
-    "@types/yup": "^0.29.3",
-    "@typescript-eslint/eslint-plugin": "^2.30.0",
-    "@typescript-eslint/parser": "^2.30.0",
-    "babel-core": "^6.26.3",
-    "babel-jest": "^24.9.0",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-react": "^6.24.1",
-    "enzyme": "^3.10.0",
-    "enzyme-adapter-react-16": "^1.15.1",
-    "eslint": "^6.8.0",
-    "eslint-plugin-react": "^7.19.0",
-    "eslint-plugin-react-hooks": "^3.0.0",
-    "jest": "^24.9.0",
-    "nodemon": "^2.0.3",
-    "sass": "^1.26.5",
-    "ts-jest": "^24.2.0",
-    "typescript": "^3.7.2"
-  }
+    "lerna": "^3.22.1"
+  },
+  "workspaces": [ "api", "app", "model" ]
 }
