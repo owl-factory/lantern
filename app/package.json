@@ -6,6 +6,7 @@
     "dev": "next dev",
     "compose": "yarn install && next dev",
     "build": "next build",
+    "postbuild": "next-on-netlify",
     "start": "next start",
     "test": "jest"
   },
@@ -43,6 +44,7 @@
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.15.1",
     "jest": "^24.9.0",
+    "next-on-netlify": "^2.4.0",
     "sass": "^1.26.5",
     "ts-jest": "^24.2.0",
     "typescript": "^3.7.2"
