@@ -4,6 +4,9 @@
 
 # Build files
 */dist
+*/.next
+*/out_functions
+*/out_publish
 
 # testing
 /coverage

@@ -16,6 +16,7 @@
     "typescript": "~3.4.5"
   },
   "dependencies": {
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.4",
+    "@reroll/model": "0.2.0"
   }
 }
