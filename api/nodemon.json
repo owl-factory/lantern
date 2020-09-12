@@ -1,0 +1,5 @@
+{
+  "verbose": true,
+  "match": ["src/*"],
+  "ignore": ["dist/*"]
+}

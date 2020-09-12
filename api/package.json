@@ -1,5 +1,21 @@
 {
   "name": "@reroll/api",
   "version": "0.2.0",
-  "private": true
+  "main": "dist/index",
+  "types": "dist/index",
+  "files": [
+    "dist"
+  ],
+  "private": true,
+  "scripts": {
+    "dev": "nodemon -V -w src -e ts,tsx -x \"yarn start\"",
+    "start": "tsc && node dist/index.js",
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "typescript": "~3.4.5"
+  },
+  "dependencies": {
+    "nodemon": "^2.0.4"
+  }
 }

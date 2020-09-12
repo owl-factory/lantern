@@ -1,5 +1,20 @@
 {
   "name": "@reroll/model",
   "version": "0.2.0",
-  "private": true
+  "main": "dist/index",
+  "types": "dist/index",
+  "files": [
+    "dist"
+  ],
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "dev": "nodemon -V -w src -e ts,tsx -x \"yarn build\""
+  },
+  "devDependencies": {
+    "typescript": "~3.4.5"
+  },
+  "dependencies": {
+    "nodemon": "^2.0.4"
+  }
 }

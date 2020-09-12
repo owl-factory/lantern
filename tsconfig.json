@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.build.json",
+
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@reroll/api": ["api/src"],
+      "@reroll/app": ["app/src"],
+      "@reroll/model": ["model/src"],
+      "@reroll/*": ["*/src"]
+    }
+  }
+}
