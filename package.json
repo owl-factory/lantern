@@ -8,5 +8,9 @@
   "devDependencies": {
     "lerna": "^3.22.1"
   },
-  "workspaces": [ "api", "app", "model" ]
+  "workspaces": [
+    "api",
+    "app",
+    "model"
+  ]
 }
