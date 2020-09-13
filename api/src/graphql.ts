@@ -20,10 +20,6 @@ const main = async () => {
   // Sets up a graphql server at /graphql
   const app = express();
 
-  /*app.listen({ port: 3001 }, () => {
-    console.log(`🚀 Server ready and listening!`);
-  })*/
-
   app.get("/", async (req, res) => {
     const chars = await CharacterModel.find({})
     res.send(chars);
