@@ -3,7 +3,7 @@ import { fetch } from "cross-fetch";
 
 /** Terminating HTTP link, actually sends the request to the server */ 
 const httpLink = createHttpLink({
-  uri: "http://localhost:3001/graphql",
+  uri: "http://localhost:8888/graphql",
   fetch,
 });
 

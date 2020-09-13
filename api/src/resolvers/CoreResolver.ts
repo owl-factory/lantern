@@ -1,7 +1,6 @@
 import { ReturnModelType } from "@typegoose/typegoose";
 import { Options } from "@reroll/model/src/inputs/Options";
 import { Query } from "mongoose";
-import { UserInputError } from "apollo-server-express";
 import { validate } from "class-validator";
 
 export class CoreResolver {
@@ -49,7 +48,7 @@ export class CoreResolver {
   async updateResolver(_id: string, data: any) {
     const errors = await validate(data);
     if (errors.length > 0) {
-      throw new UserInputError(errors.toString());
+      throw new Error(errors.toString());
     }
 
     // TODO - needs to return updated model
@@ -65,7 +64,7 @@ export class CoreResolver {
   async updateResolvers(data: any, filters?: any) {
     const errors = await validate(data);
     if (errors.length > 0) {
-      throw new UserInputError(errors.toString());
+      throw new Error(errors.toString());
     }
     
     return buildWhere(this.model.updateMany({}, data), filters);
@@ -108,7 +107,7 @@ function buildWhere(query: Query<any>, filters: any): Query<any> {
     // Grab variable
     const filterComponents = filterKey.match(/(\S*)_([^_\s]+)/i);
     if (filterComponents === null) {
-      throw new UserInputError("An invalid filter variable was provided");
+      throw new Error("An invalid filter variable was provided");
     }
     const variableName = filterComponents[1];
     const whereCondition = filterComponents[2];
