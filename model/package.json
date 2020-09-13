@@ -12,9 +12,14 @@
     "dev": "nodemon -V -w src -e ts,tsx -x \"yarn build\""
   },
   "devDependencies": {
-    "typescript": "~3.4.5"
+    "typescript": "3.9.7"
   },
   "dependencies": {
-    "nodemon": "^2.0.4"
+    "@typegoose/typegoose": "^7.3.5",
+    "class-validator": "^0.12.2",
+    "graphql": "^15.3.0",
+    "nodemon": "^2.0.4",
+    "type-graphql": "^1.0.0",
+    "type-graphql-filter": "^0.2.0"
   }
 }

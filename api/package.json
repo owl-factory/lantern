@@ -9,14 +9,20 @@
   "private": true,
   "scripts": {
     "dev": "nodemon -V -w src -e ts,tsx -x \"yarn start\"",
-    "start": "tsc && node dist/index.js",
+    "start": "tsc && node -r dotenv/config dist/index.js",
     "build": "tsc"
   },
   "devDependencies": {
-    "typescript": "~3.4.5"
+    "dotenv": "^8.2.0",
+    "typescript": "3.9.7"
   },
   "dependencies": {
+    "@reroll/model": "0.2.0",
+    "apollo-server-express": "^2.17.0",
+    "express": "^4.17.1",
+    "graphql": "^15.3.0",
+    "mongoose": "^5.10.5",
     "nodemon": "^2.0.4",
-    "@reroll/model": "0.2.0"
+    "type-graphql": "^1.0.0"
   }
 }
