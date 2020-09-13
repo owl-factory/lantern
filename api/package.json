@@ -8,8 +8,8 @@
   ],
   "private": true,
   "scripts": {
-    "dev": "nodemon -V -w src -e ts,tsx -x \"yarn start\"",
-    "start": "tsc && node -r dotenv/config dist/index.js",
+    "dev": "yarn build-all && nodemon -V -w src -e ts,tsx -x \"yarn build && yarn start\"",
+    "start": "netlify dev",
     "build": "tsc",
     "build-all": "lerna run build --scope=@reroll/api --include-dependencies"
   },
@@ -17,6 +17,7 @@
     "@types/express": "^4.17.8",
     "@types/mongoose": "^5.7.36",
     "dotenv": "^8.2.0",
+    "netlify-cli": "^2.62.0",
     "typescript": "~3.4.5"
   },
   "dependencies": {
