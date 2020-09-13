@@ -27,7 +27,7 @@
     "react-icons": "^3.10.0",
     "saslprep": "^1.0.3",
     "yup": "^0.29.1",
-    "@reroll/model": "*"
+    "@reroll/model": "0.2.0"
   },
   "devDependencies": {
     "@types/enzyme": "^3.10.3",
