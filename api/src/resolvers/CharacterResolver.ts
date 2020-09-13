@@ -1,12 +1,9 @@
 import { Resolver, Query, Mutation, Arg, Args } from "type-graphql";
 import { CoreResolver } from "./CoreResolver";
-import { generateFilterType } from "type-graphql-filter";
-import { Character, CharacterModel } from "@reroll/model/dist/documents/Character";
+import { Character, CharacterFilter, CharacterModel } from "@reroll/model/dist/documents/Character";
 import { CharacterInput } from "@reroll/model/dist/inputs/CharacterInput";
 import { Options } from "@reroll/model/dist/inputs/Options";
 import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/documents/Responses";
-
-const filterType: () => new () => {} = generateFilterType(Character);
 
 /**
  * Resolves Character queries
@@ -29,7 +26,7 @@ export class CharacterResolver extends CoreResolver {
    */
   @Query(() => [Character])
   async characters(
-    @Arg("filters", filterType, {nullable: true}) filters?: any,
+    @Arg("filters", CharacterFilter, {nullable: true}) filters?: any,
     @Args() options?: Options
   ): Promise<Character[]> {
     return await super.resolvers(filters, options);
@@ -65,7 +62,7 @@ export class CharacterResolver extends CoreResolver {
   @Mutation(() => UpdateResponse)
   updateCharacters(
     @Arg("data") data: CharacterInput,
-    @Arg("filters", filterType, {nullable: true}) filters?: any
+    @Arg("filters", CharacterFilter, {nullable: true}) filters?: any
   ): Promise<UpdateResponse> {
     return super.updateResolvers(data, filters);
   }
@@ -84,7 +81,7 @@ export class CharacterResolver extends CoreResolver {
    * @param filters The id of the character document to delete
    */
   @Mutation(() => DeleteResponse)
-  async deleteCharacters(@Arg("filters", filterType, {nullable: true}) filters?: any): Promise<DeleteResponse> {
+  async deleteCharacters(@Arg("filters", CharacterFilter, {nullable: true}) filters?: any): Promise<DeleteResponse> {
     return super.deleteResolvers(filters);
   }
 }

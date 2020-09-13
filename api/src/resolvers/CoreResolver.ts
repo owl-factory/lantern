@@ -132,7 +132,7 @@ function buildWhere(query: Query<any>, filters: any): Query<any> {
         query = query.in(filters[filterKey]);
         break;
       case "like": 
-        query = query.regex(filters[filterKey]);
+        query = query.regex(new RegExp(filters[filterKey], "i"));
         break;
       case "gte":
         query = query.gte(filters[filterKey]);

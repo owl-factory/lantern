@@ -1,5 +1,5 @@
 import { ObjectType, Field } from "type-graphql";
-import { Filter } from "type-graphql-filter";
+import { Filter, generateFilterType } from "type-graphql-filter";
 import { prop, getModelForClass } from "@typegoose/typegoose";
 import { stringFilters } from "../filterTypes";
 import { CoreDocument } from "./CoreDocument";
@@ -13,3 +13,4 @@ export class Character extends CoreDocument {
 }
 
 export const CharacterModel = getModelForClass(Character);
+export const CharacterFilter = generateFilterType(Character);
