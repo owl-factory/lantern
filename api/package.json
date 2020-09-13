@@ -20,7 +20,7 @@
     "typescript": "~3.4.5"
   },
   "dependencies": {
-    "@reroll/model": "0.2.0",
+    "@reroll/model": "file: ../model",
     "express": "^4.17.1",
     "mongoose": "^5.10.5",
     "nodemon": "^2.0.4",
