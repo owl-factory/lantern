@@ -1,8 +1,8 @@
 import express from "express";
+import serverless from "serverless-http";
 import { connect, Schema } from "mongoose";
 
 const main = async () => {
-
   // create mongoose connection
   const mongoose = await connect(
     process.env.MONGO_CONNECTION_STRING!, 
@@ -19,14 +19,17 @@ const main = async () => {
   
   // Sets up a graphql server at /graphql
   const app = express();
-  app.listen({ port: 3001 }, () => {
+
+  /*app.listen({ port: 3001 }, () => {
     console.log(`🚀 Server ready and listening!`);
-  })
+  })*/
 
   app.get("/", async (req, res) => {
     const chars = await CharacterModel.find({})
     res.send(chars);
   })
+
+  module.exports.handler = serverless(app);
 };
 
 main().catch((error)=>{

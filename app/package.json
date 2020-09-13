@@ -6,6 +6,7 @@
     "dev": "next dev",
     "compose": "yarn install && next dev",
     "build": "next build",
+    "build-all": "lerna run build --scope=@reroll/app --include-dependencies",
     "postbuild": "next-on-netlify",
     "start": "next start",
     "test": "jest"

@@ -10,7 +10,8 @@
   "scripts": {
     "dev": "nodemon -V -w src -e ts,tsx -x \"yarn start\"",
     "start": "tsc && node -r dotenv/config dist/index.js",
-    "build": "tsc"
+    "build": "tsc",
+    "build-all": "lerna run build --scope=@reroll/api --include-dependencies"
   },
   "devDependencies": {
     "@types/express": "^4.17.8",
@@ -22,6 +23,7 @@
     "@reroll/model": "0.2.0",
     "express": "^4.17.1",
     "mongoose": "^5.10.5",
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.4",
+    "serverless-http": "^2.5.0"
   }
 }
