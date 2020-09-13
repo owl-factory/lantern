@@ -1,33 +1,19 @@
-import express from "express";
-import serverless from "serverless-http";
-import { connect, Schema } from "mongoose";
+const { ApolloServer, gql } = require('apollo-server-lambda');
 
-const main = async () => {
-  // create mongoose connection
-  const mongoose = await connect(
-    process.env.MONGO_CONNECTION_STRING!, 
-    {useNewUrlParser: true, useUnifiedTopology: true}
-  );
-  await mongoose.connection;
+// Construct a schema, using GraphQL schema language
+const typeDefs = gql`
+  type Query {
+    hello: String
+  }
+`;
 
-  const Character = new Schema({
-    name: String
-  })
-  
-  const CharacterModel = mongoose.model("character", Character);
-  
-  
-  // Sets up a graphql server at /graphql
-  const app = express();
-
-  app.get("/", async (req, res) => {
-    const chars = await CharacterModel.find({})
-    res.send(chars);
-  })
-
-  module.exports.handler = serverless(app);
+// Provide resolver functions for your schema fields
+const resolvers = {
+  Query: {
+    hello: () => "Hello world!",
+  },
 };
 
-main().catch((error)=>{
-  console.log(error, 'error');
-})
+const server = new ApolloServer({ typeDefs, resolvers });
+
+exports.handler = server.createHandler();
