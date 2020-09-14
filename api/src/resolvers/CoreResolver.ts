@@ -31,7 +31,7 @@ export class CoreResolver {
    * 
    * @param data The data to save into the model
    */
-  async newResolver(data: any) {
+  async newResolver(data: any, options?: any) {
     const errors = await validate(data);
     if (errors.length > 0) {
       throw new Error(errors.toString());
@@ -45,7 +45,7 @@ export class CoreResolver {
     data.updatedAt = new Date();
     data.updatedBy = getUserID();
 
-    return this.model.create(data);
+    return this.model.create(data, options);
   }
 
   /**
@@ -54,7 +54,7 @@ export class CoreResolver {
    * @param _id The id of the document to update
    * @param data The data to change in the document
    */
-  async updateResolver(_id: string, data: any) {
+  async updateResolver(_id: string, data: any, options?: any) {
     const errors = await validate(data);
     if (errors.length > 0) {
       throw new Error(errors.toString());

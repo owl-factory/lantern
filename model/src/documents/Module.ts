@@ -4,23 +4,18 @@ import { prop, getModelForClass } from "@typegoose/typegoose";
 import { stringFilters, booleanFilters, idFilters } from "../filterTypes";
 import { CoreDocument } from "./CoreDocument";
 
-@ObjectType({ description: "The unifying document for all Game System document types"})
-export class GameSystem extends CoreDocument {
+@ObjectType({ description: "A testing model for characters. This is solely for testing purposes"})
+export class Module extends CoreDocument {
+  
+  @Field()
+  @Filter(idFilters)
+  @prop({ required: true })
+  gameSystemID: string;
+
   @Field()
   @Filter(stringFilters)
   @prop({ default: "", required: true })
   description: string;
-
-  @Field(_type => Boolean)
-  @Filter(booleanFilters)
-  @prop({ default: false, required: true })
-  isUsedCreated: boolean;
-
-  // Will be created by default, need a default module id
-  @Field({ nullable: true })
-  @Filter(idFilters)
-  @prop()
-  defaultModuleID: string;
 
   @Field(_type => Boolean)
   @Filter(booleanFilters)
@@ -32,12 +27,7 @@ export class GameSystem extends CoreDocument {
   @Filter(booleanFilters)
   @prop({ default: false, required: true })
   isPurchasable: boolean;
-
-  @Field()
-  @Filter(idFilters)
-  @prop({ default: false, required: true })
-  defaultThemeID: string;
 }
 
-export const GameSystemModel = getModelForClass(GameSystem);
-export const GameSystemFilter = generateFilterType(GameSystem);
+export const ModuleModel = getModelForClass(Module);
+export const ModuleFilter = generateFilterType(Module);
