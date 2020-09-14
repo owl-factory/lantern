@@ -1,10 +1,9 @@
 import React from "react";
 import { Formik, Form as FormikForm, ErrorMessage, } from "formik";
 import * as Yup from "yup";
-import { emailLogin } from "../../utilities/auth";
-import { useRouter } from "next/router";
 import { Col, Form, Row, Button } from "react-bootstrap";
 import { Input } from "../design/forms/Forms";
+import { useIdentityContext } from "react-netlify-identity";
 
 /** The possible form values */
 interface LoginValues {
@@ -30,23 +29,15 @@ const validationSchema = Yup.object({
  * Renders the form for logging in
  */
 export default function LoginForm() {
-  const router = useRouter();
   const [errorMessage, setErrorMessage] = React.useState("");
+  const identity = useIdentityContext();
 
   /**
    * Submits the form on successful validation
    * @param values The form values
    */
   function onSubmit(values: LoginValues) {
-    emailLogin(values.email, values.password)
-    .then((loginResult) => {
-      if ("error" in loginResult) {
-        setErrorMessage(loginResult["error"]);
-        return;
-      }
-      
-      router.reload();
-    });
+    identity.loginUser(values.email, values.password, true);
   }
 
   return (

@@ -1,36 +1,37 @@
 import React, { useState, ReactNode } from "react";
 import { Card, Button, Form } from "react-bootstrap";
-import { useRouter } from "next/router";
-import { emailLogin } from "../../utilities/auth";
 import LoginForm from "./LoginForm";
+import { useIdentityContext } from "react-netlify-identity";
 
-interface ISetState {
-  setState: (section: object) => void;
+interface AuthenticationCardProps {
+  initialState?: AuthCardSection;
+}
+
+interface AuthCardSectionProps {
+  setSection: React.Dispatch<React.SetStateAction<AuthCardSection>>;
+}
+
+export enum AuthCardSection {
+  login, signup, forgotPassword
 }
 
 /**
  * Renders an authentication card
  * @param props Contains the session
  */
-function AuthenticationCard(props: any) {
-  let section = "login";
-  if (props.section !== undefined) {
-    section = props.section;
-  }
-
-  const [state, setState] = useState({ "section": section });
+function AuthenticationCard(props: AuthenticationCardProps) {
+  const [section, setSection] = useState(props.initialState || AuthCardSection.login);
 
   let cardBody: ReactNode;
-  switch (state.section) {
-    case "signup":
-      cardBody = <SignUpForm setState={setState} />;
+  switch (section) {
+    case AuthCardSection.signup:
+      cardBody = <SignUpSection setSection={setSection} />;
       break;
-    case "forgotpassword":
-      cardBody = <ForgotPasswordForm setState={setState} />;
+    case AuthCardSection.forgotPassword:
+      cardBody = <ForgotPasswordSection setSection={setSection} />;
       break;
-    case "login":
-    default:
-      cardBody = <LoginSection setState={setState} />;
+    case AuthCardSection.login:
+      cardBody = <LoginSection setSection={setSection}/>;
       break;
   }
 
@@ -47,16 +48,19 @@ function AuthenticationCard(props: any) {
  * Renders the login view
  * @param props Contains the setState function for swapping auth views
  */
-function LoginSection(props: any) {
-  return (
-    <Card.Body>
-      <h5>Login</h5>
-      <Button variant="secondary">
-        Google Login
-      </Button>
+function LoginSection(props: AuthCardSectionProps) {
+  const identity = useIdentityContext();
 
+  return (
+    <>
+      <h5>Login</h5>
+      <Button variant="secondary" onClick={() => identity.loginProvider("google")}>
+        Log in with Google
+      </Button>
       <LoginForm/>
-    </Card.Body>
+      <Button onClick={() => props.setSection(AuthCardSection.signup)}>Sign Up</Button>
+      <Button onClick={() => props.setSection(AuthCardSection.forgotPassword)}>Forgot Password</Button>
+    </>
   );
 }
 
@@ -64,29 +68,12 @@ function LoginSection(props: any) {
  * Renders the sign up form view
  * @param props Contains the setState function for swapping auth views
  */
-function SignUpForm(props: any) {
+function SignUpSection(props: AuthCardSectionProps) {
   return (
-    <Card.Body>
+    <>
       <h5>Sign Up</h5>
-
-      <Form>
-        <Form.Label>Username</Form.Label>
-        <Form.Control id="username" />
-        <Form.Label>Email</Form.Label>
-        <Form.Control id="email" />
-        <Form.Label>Password</Form.Label>
-        <Form.Control id="password" />
-        <Form.Label>Confirm Password</Form.Label>
-        <Form.Control id="confirm-password" type="confirm-password" />
-        <br /><br />
-        <Card>
-          <Button type="submit">Sign Up</Button>
-        </Card><br />
-
-        <LoginLink setState={props.setState} />
-        <ForgotPasswordLink setState={props.setState} />
-      </Form>
-    </Card.Body>
+      <Button onClick={() => props.setSection(AuthCardSection.login)}>Back</Button>
+    </>
   );
 }
 
@@ -94,51 +81,12 @@ function SignUpForm(props: any) {
  * Renders the forgot password form
  * @param props Contains the setState function for swapping auth views
  */
-function ForgotPasswordForm(props: any) {
+function ForgotPasswordSection(props: AuthCardSectionProps) {
   return (
-    <Card.Body>
-      <h5>Sign Up</h5>
-
-      <Form.Label>Email</Form.Label>
-      <Form.Control id="email" />
-
-      <br /><br />
-      <Card>
-        <Button type="submit" color="primary">Recover Account</Button>
-      </Card><br />
-      <LoginLink setState={props.setState} />
-      <SignUpLink setState={props.setState} />
-    </Card.Body>
-  );
-}
-
-/**
- * Creates a button to switch to the login view
- * @param props Contains the setState function for swapping auth views
- */
-function LoginLink(props: ISetState) {
-  return (
-    <Button onClick={() => (props.setState({ section: "login" }))}>Log In</Button>
-  );
-}
-
-/**
- * Creates a button to switch to the sign up view
- * @param props Contains the setState function for swapping auth views
- */
-function SignUpLink(props: ISetState) {
-  return (
-    <Button onClick={() => (props.setState({ section: "signup" }))}>Sign Up</Button>
-  );
-}
-
-/**
- * Creates a button to switch to the forgot password view
- * @param props Contains the setState function for swapping auth views
- */
-function ForgotPasswordLink(props: ISetState) {
-  return (
-    <Button onClick={() => (props.setState({ section: "forgotpassword" }))}>Forgot Password</Button>
+    <>
+      <h5>Forgot Password</h5>
+      <Button onClick={() => props.setSection(AuthCardSection.login)}>Back</Button>
+    </>
   );
 }
 

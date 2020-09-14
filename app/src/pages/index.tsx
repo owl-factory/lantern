@@ -12,6 +12,7 @@ import { Row, Button, Col, Form } from "react-bootstrap";
 import { anonLogin } from "../utilities/auth";
 import { client } from "../utilities/graphql/realmClient";
 import gql from "graphql-tag";
+import { useIdentityContext, ReactNetlifyIdentityAPI } from "react-netlify-identity";
 
 /**
  * Renders the index page and one of two subviews
@@ -19,14 +20,12 @@ import gql from "graphql-tag";
  * @param props ...
  */
 function Index(props: any) {
-
   // Sets the view for the currenly logged in user
-  const userView: JSX.Element = <GuestView/>;
+  const identity = useIdentityContext();
 
   return (
     <Page>
-      {userView}
-      {JSON.stringify(props.token)}
+      {(identity.isLoggedIn) ? (<UserView identity={identity} />) : (<GuestView identity={identity} />)}
       <h4>
         News
       </h4>
@@ -35,15 +34,19 @@ function Index(props: any) {
   );
 }
 
+interface UserViewProps {
+  identity: ReactNetlifyIdentityAPI
+}
+
 /**
  * Renders the view for users who are logged in
- * @param props
+ * @param props TODO
  */
-function UserView(props: any) {
+function UserView(props: UserViewProps) {
   return (
     <div>
-      <h3>Welcome back {props.session.user.displayName}!</h3>
-
+      <h3>Welcome back {props.identity.user?.email}!</h3>
+      <Button onClick={() => props.identity.logoutUser()}>Log Out</Button>
       {/* Recent Games */}
       <h4>My Games</h4>
       <CampaignTiles contents={campaigns} includeNew={true} />
@@ -61,39 +64,6 @@ function UserView(props: any) {
  */
 function GuestView(props: any) {
 
-  const [test, setTest] = React.useState("");
-  const [name, setName] = React.useState("");
-
-  function gqlTest () {
-    const query = gql`
-    {
-      characters {
-        _id
-        name
-      }
-    }
-    `;
-    client.query({query}).then((res) => {
-      setTest(JSON.stringify(res.data));
-    });
-  }
-
-  function gqlInsert() {
-    const mutation = gql`
-    mutation($name: String!) {
-      insertOneCharacter(data: {
-        name: $name
-      }) {
-        _id
-        name
-      }
-    }
-    `
-    client.mutate({mutation, variables: { name }}).then((res) => {
-      console.log(`Added ${name}`);
-    });
-  }
-
   return (
     <>
       <h3>
@@ -103,15 +73,6 @@ function GuestView(props: any) {
         Reroll is a new in development web app for playing tabletop games with friends.
         There isn't much here yet but there will be some day soon.
       </p>
-
-      <Button onClick={() => {anonLogin().then((res) => {console.log("Loged in with token:"+res.accessToken)})}}>Anon Login</Button>
-      <Button onClick={() => {gqlTest()}}>Test GQL</Button>
-      <p>{test}</p>
-
-      <Form>
-        <Form.Control onChange={(e) => {setName(e.target.value)}} value={name} />
-        <Button onClick={() => {gqlInsert()}}>Create Character</Button>
-      </Form>
 
       <Row>
         <Col md="8" sm="12">
