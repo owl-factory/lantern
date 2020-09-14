@@ -2,3 +2,8 @@
   command   = "yarn build-all"
   functions = "dist"
   publish   = "public"
+
+[dev]
+  functions = "dist"
+  publish   = "public"
+  autoLaunch = false

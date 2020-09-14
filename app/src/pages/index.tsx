@@ -84,6 +84,12 @@ function GuestView(props: any) {
               About
             </Button>
           </Link>
+
+          <Link href="/characters" passHref>
+            <Button title="Characters">
+              Characters
+            </Button>
+          </Link>
         </Col>
         <Col md="4" sm="12">
           <AuthenticationCard />

@@ -1,19 +1,28 @@
-const { ApolloServer, gql } = require('apollo-server-lambda');
+import "reflect-metadata";
+import { CharacterResolver } from "./resolvers/CharacterResolver";
+import { connect } from "mongoose";
+import { buildSchema } from "type-graphql";
 
-// Construct a schema, using GraphQL schema language
-const typeDefs = gql`
-  type Query {
-    hello: String
-  }
-`;
+const { ApolloServer } = require('apollo-server-lambda');
 
-// Provide resolver functions for your schema fields
-const resolvers = {
-  Query: {
-    hello: () => "Hello world!",
+connect(
+  process.env.MONGO_CONNECTION_STRING!, 
+  {useNewUrlParser: true, useUnifiedTopology: true}
+);
+
+const schema = buildSchema({
+  resolvers: [
+    CharacterResolver
+  ],
+  emitSchemaFile: false,
+  validate: false,
+});
+
+const server = new ApolloServer({ schema });
+
+exports.handler = server.createHandler({
+  cors: {
+    origin: "*",
+    credentials: false,
   },
-};
-
-const server = new ApolloServer({ typeDefs, resolvers });
-
-exports.handler = server.createHandler();
+});
