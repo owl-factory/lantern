@@ -2,6 +2,7 @@ import { ReturnModelType } from "@typegoose/typegoose";
 import { Options } from "@reroll/model/src/inputs/Options";
 import { Query } from "mongoose";
 import { validate } from "class-validator";
+import { getUserID } from "../misc";
 
 export class CoreResolver {
   protected model: ReturnModelType<any>
@@ -36,6 +37,14 @@ export class CoreResolver {
       throw new Error(errors.toString());
     }
 
+    // Updates both so we can track when something was last created and when 
+    // it was last touched easier
+    data.createdAt = new Date();
+    data.createdBy = getUserID();
+
+    data.updatedAt = new Date();
+    data.updatedBy = getUserID();
+
     return this.model.create(data);
   }
 
@@ -50,6 +59,9 @@ export class CoreResolver {
     if (errors.length > 0) {
       throw new Error(errors.toString());
     }
+
+    data.updatedAt = new Date();
+    data.updatedBy = getUserID();
 
     // TODO - needs to return updated model
     return this.model.updateOne({_id}, data);
@@ -66,6 +78,9 @@ export class CoreResolver {
     if (errors.length > 0) {
       throw new Error(errors.toString());
     }
+
+    data.updatedAt = new Date();
+    data.updatedBy = getUserID();
     
     return buildWhere(this.model.updateMany({}, data), filters);
   }
