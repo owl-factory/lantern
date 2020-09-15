@@ -5,13 +5,10 @@ import AuthenticationCard from "../components/authetication/AuthenticationCard";
 import CampaignTiles from "../components/campaigns/CampaignTiles";
 import CharacterTiles from "../components/characters/CharacterTiles";
 import Page from "../components/design/Page";
-import campaigns from "./api/campaign/campaign.json";
-import characters from "./api/character/character.json";
-import news from "./api/news/news.json";
+import campaigns from "../data/campaign/campaign.json";
+import characters from "../data/character/character.json";
+import news from "../data/news/news.json";
 import { Row, Button, Col, Form } from "react-bootstrap";
-import { anonLogin } from "../utilities/auth";
-import { client } from "../utilities/graphql/realmClient";
-import gql from "graphql-tag";
 import { useIdentityContext, ReactNetlifyIdentityAPI } from "react-netlify-identity";
 
 /**
