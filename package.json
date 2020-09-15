@@ -6,10 +6,9 @@
     "build": "lerna run build",
     "start": "lerna run start",
     "dev": "lerna run dev",
-    "copy": "copyfiles api/dist/** app/out_functions/api_graphql"
+    "copy": "cp -r api/dist/* app/out_functions"
   },
   "devDependencies": {
-    "copyfiles": "^2.3.0",
     "lerna": "^3.22.1"
   },
   "workspaces": [
