@@ -5,9 +5,11 @@
     "bootstrap": "lerna bootstrap",
     "build": "lerna run build",
     "start": "lerna run start",
-    "dev": "lerna run dev"
+    "dev": "lerna run dev",
+    "copy": "copyfiles api/dist/** app/out_functions/api_graphql"
   },
   "devDependencies": {
+    "copyfiles": "^2.3.0",
     "lerna": "^3.22.1"
   },
   "workspaces": [
