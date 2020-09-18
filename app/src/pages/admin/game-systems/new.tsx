@@ -2,7 +2,6 @@ import React from "react";
 import Breadcrumbs from "../../../components/design/Breadcrumbs";
 import GameSystemForm from "../../../components/admin/gameSystems/Form";
 import Page from "../../../components/design/Page";
-import { client } from "../../../utilities/graphql/pokemon";
 import gql from "graphql-tag";
 import ThemeModel from "../../../models/database/themes";
 

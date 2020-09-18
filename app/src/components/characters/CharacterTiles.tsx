@@ -15,8 +15,7 @@ function CharacterTiles(props: any) {
   });
 
   if (props.includeNew === true) {
-    const linkAddress: string = "/user/" + "session.alias" + "/character/new/";
-    tiles.push(<NewContentTile href={linkAddress}>Character</NewContentTile>);
+    tiles.push(<NewContentTile href="#">Character</NewContentTile>);
   }
 
   return (
@@ -29,9 +28,8 @@ function CharacterTiles(props: any) {
  * @param props
  */
 function CharacterTile(props: any) {
-  const linkAddress: string = "/user/" + "session.alias" + "/character/" + props.item.alias;
   return (
-    <TileWrapper href={linkAddress}>
+    <TileWrapper href="#">
       <h6>
         {props.item.name}
       </h6>

@@ -15,8 +15,7 @@ function CampaignTiles(props: any) {
   });
 
   if (props.includeNew === true) {
-    const linkAddress: string = "/campaign/new/";
-    tiles.push(<NewContentTile href={linkAddress}>Campaign</NewContentTile>);
+    tiles.push(<NewContentTile href="#">Campaign</NewContentTile>);
   }
 
   return (
@@ -29,9 +28,8 @@ function CampaignTiles(props: any) {
  * @param props
  */
 function CampaignTile(props: any) {
-  const linkAddress: string = "/campaign/" + props.item.alias;
   return (
-    <TileWrapper href={linkAddress}>
+    <TileWrapper href="#">
       <h6>
         {props.item.name}
       </h6>
