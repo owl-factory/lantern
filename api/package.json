@@ -23,7 +23,6 @@
     "@reroll/model": "0.2.0",
     "apollo-server-lambda": "^2.17.0",
     "graphql": "^15.3.0",
-    "mongo": "^0.1.0",
     "mongoose": "^5.10.5",
     "nodemon": "^2.0.4",
     "type-graphql": "^1.0.0"
