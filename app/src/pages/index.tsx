@@ -41,11 +41,10 @@ interface UserViewProps {
  */
 function UserView(props: UserViewProps) {
   const { authedFetch, user } = props.identity;
+
   function testApi() {
     authedFetch.post("/api/auth-test").then((res) => {
-      res.text().then((text: any) => {
-        console.log(text)
-      });
+      console.log(res);
     });
   }
 
