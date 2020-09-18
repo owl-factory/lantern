@@ -18,7 +18,7 @@ export class CharacterResolver extends CoreResolver {
    */
   @Query(() => Character)
   async character(@Arg("_id") _id: string): Promise<Character> {
-    return {"_id": "123", "name": process.env.ENV_VAR_TEST};
+    return super.resolver(_id);
   }
 
   /**
