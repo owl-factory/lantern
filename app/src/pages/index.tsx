@@ -40,9 +40,15 @@ interface UserViewProps {
  * @param props TODO
  */
 function UserView(props: UserViewProps) {
+  const { authedFetch, user } = props.identity;
+  function testApi() {
+    authedFetch.post("/api/auth-test").then((res) => (res.text().then((text: any) => {console.log(text)})
+  }
+
   return (
     <div>
-      <h3>Welcome back {props.identity.user?.email}!</h3>
+      <h3>Welcome back {user?.email}!</h3>
+      <Button onClick={() => testApi()}>Test API</Button>
       <Button onClick={() => props.identity.logoutUser()}>Log Out</Button>
       {/* Recent Games */}
       <h4>My Games</h4>
