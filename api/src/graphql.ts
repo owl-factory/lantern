@@ -18,11 +18,28 @@ const schema = buildSchema({
   validate: false,
 });
 
-const server = new ApolloServer({ schema });
+const server = new ApolloServer({
+  schema,
+  context: ({ event, context }) => {
+    context.callbackWaitsForEmptyEventLoop = false;
+    return {
+      headers: event.headers,
+      functionName: context.functionName,
+      event,
+      context,
+    }
+  },
+});
 
-exports.handler = server.createHandler({
+const apolloHandler = server.createHandler({
   cors: {
     origin: "*",
     credentials: false,
   },
 });
+
+exports.handler = function(event, context, callback) {
+  context.callbackWaitsForEmptyEventLoop = false;
+
+  return apolloHandler(event, context, callback);
+}
