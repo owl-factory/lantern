@@ -43,7 +43,7 @@ function UserView(props: UserViewProps) {
   const { authedFetch, user } = props.identity;
 
   function testApi() {
-    authedFetch.post("/api/auth-test").then((res) => {
+    authedFetch.post(process.env.NEXT_PUBLIC_API_ENDPOINT+"/auth-test").then((res) => {
       console.log(res);
     });
   }
@@ -55,11 +55,8 @@ function UserView(props: UserViewProps) {
       <Button onClick={() => props.identity.logoutUser()}>Log Out</Button>
       {/* Recent Games */}
       <h4>My Games</h4>
-      <CampaignTiles contents={campaigns} includeNew={true} />
-
       {/* Characters */}
       <h4>My Characters</h4>
-      <CharacterTiles contents={characters} includeNew={true} />
     </div>
   );
 }
