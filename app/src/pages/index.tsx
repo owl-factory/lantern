@@ -5,13 +5,10 @@ import AuthenticationCard from "../components/authetication/AuthenticationCard";
 import CampaignTiles from "../components/campaigns/CampaignTiles";
 import CharacterTiles from "../components/characters/CharacterTiles";
 import Page from "../components/design/Page";
-import campaigns from "./api/campaign/campaign.json";
-import characters from "./api/character/character.json";
-import news from "./api/news/news.json";
+import campaigns from "../data/campaign/campaign.json";
+import characters from "../data/character/character.json";
+import news from "../data/news/news.json";
 import { Row, Button, Col, Form } from "react-bootstrap";
-import { anonLogin } from "../utilities/auth";
-import { client } from "../utilities/graphql/realmClient";
-import gql from "graphql-tag";
 import { useIdentityContext, ReactNetlifyIdentityAPI } from "react-netlify-identity";
 
 /**
@@ -43,9 +40,18 @@ interface UserViewProps {
  * @param props TODO
  */
 function UserView(props: UserViewProps) {
+  const { authedFetch, user } = props.identity;
+
+  function testApi() {
+    authedFetch.post("/api/auth-test").then((res) => {
+      console.log(res);
+    });
+  }
+
   return (
     <div>
-      <h3>Welcome back {props.identity.user?.email}!</h3>
+      <h3>Welcome back {user?.email}!</h3>
+      <Button onClick={() => testApi()}>Test API</Button>
       <Button onClick={() => props.identity.logoutUser()}>Log Out</Button>
       {/* Recent Games */}
       <h4>My Games</h4>
