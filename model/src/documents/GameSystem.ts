@@ -6,6 +6,13 @@ import { CoreDocument } from "./CoreDocument";
 
 @ObjectType({ description: "The unifying document for all Game System document types"})
 export class GameSystem extends CoreDocument {
+  // Overrides the original name to require uniqueness
+  @prop({ unique: true })
+  name?: string;
+
+  @prop({ unique: true })
+  alias?: string;
+
   @Field({ nullable: true })
   @Filter(stringFilters)
   @prop({ default: "" })
