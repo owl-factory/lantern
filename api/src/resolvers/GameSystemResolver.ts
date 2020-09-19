@@ -115,4 +115,13 @@ export class GameSystemResolver extends CoreResolver {
   async deleteGameSystems(@Arg("filters", GameSystemFilter, {nullable: true}) filters?: any): Promise<DeleteResponse> {
     return super.deleteResolvers(filters);
   }
+
+  /**
+   * Returns a count of all of the documents matching the given filters
+   * @param filters The filter object to count documents by. Identical to other filters
+   */
+  @Query(() => Number)
+  gameSystemCount(@Arg("filters", GameSystemFilter, {nullable: true}) filters?: any): Promise<number> {
+    return super.resolverCount(filters);
+  }
 }

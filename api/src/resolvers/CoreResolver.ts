@@ -105,6 +105,15 @@ export class CoreResolver {
   deleteResolvers(filters?: any, options?: Options) {
     return buildWhere(this.model.deleteMany({}, options), filters);
   }
+
+  /**
+   * Returns a count for a resolver 
+   * @param filters On object that filters out what should be counted
+   */
+  async resolverCount(filters?: any) {
+    const result = buildWhere(this.model.countDocuments({}), filters);
+    return result;
+  }
 }
 
 /**
