@@ -3,7 +3,7 @@ import { Button, ButtonGroup, Dropdown } from "react-bootstrap";
 import Breadcrumbs from "../../../components/design/Breadcrumbs";
 import Table from "../../../components/design/tables/Table";
 import Page from "../../../components/design/Page";
-import gamesystemJson from "./gamesystems.json";
+import { GameSystem } from "@reroll/model/dist/documents/GameSystem";
 import { TableBuilder } from "../../../utilities/design/table";
 import Link from "next/link";
 import GameSystemModel from "../../../models/database/gameSystems";
@@ -11,34 +11,38 @@ import ContextDropdown from "../../../components/design/contextMenus/ContextDrop
 import { ContextMenuBuilder } from "../../../utilities/design/contextMenu";
 import { MdBuild, MdInfo, MdPageview, MdBlock } from "react-icons/md";
 import Tooltip from "../../../components/design/Tooltip";
+import { client } from "../../../utilities/graphql/apiClient";
+import gql from "graphql-tag";
 
 const gameSystemActions = new ContextMenuBuilder()
   .addLink("View", MdPageview, "/game-systems/[key]")
   .addLink("Details", MdInfo, "/admin/game-systems/[key]")
   .addLink("Edit", MdBuild, "/admin/game-systems/[key]/edit")
-  .addItem("Delete", MdBlock, (context: GameSystemModel) => (confirm(`Are you sure you want to delete ${context.name}?`)))
+  .addItem("Delete", MdBlock, (context: GameSystem) => (confirm(`Are you sure you want to delete ${context.name}?`)))
 
 /**
  * Renders the actions for the game systems page
  * @param props A game system object
  */
-function GameSystemActions(props: GameSystemModel) {
+function GameSystemActions(props: GameSystem) {
   // View, Details, Edit, Modules
+  const urlKey = props.alias || props._id;
+
   return (
     <ContextDropdown as={ButtonGroup} context={props} {...gameSystemActions.renderConfig()}>
       <Tooltip title="View">
-        <Link href="/game-systems/[key]" as={`/game-systems/${props.key}`}>
+        <Link href="/game-systems/[key]" as={`/game-systems/${urlKey}`}>
           <Button><MdPageview/></Button>
         </Link>
       </Tooltip>
 
       <Tooltip title="Details">
-        <Link href="/admin/game-systems/[key]" as={`/admin/game-systems/${props.key}`}>
+        <Link href="/admin/game-systems/[key]" as={`/admin/game-systems/${urlKey}`}>
           <Button><MdInfo/></Button>
         </Link> 
       </Tooltip>
 
-      <Tooltip title="More"><Dropdown.Toggle split id={`dropdown-toggle-${props.key}`}>...</Dropdown.Toggle></Tooltip>
+      <Tooltip title="More"><Dropdown.Toggle split id={`dropdown-toggle-${urlKey}`}>...</Dropdown.Toggle></Tooltip>
     </ContextDropdown>
   );
 }
@@ -58,9 +62,6 @@ function GameSystems({gameSystems}: GameSystemsProps) {
   const tableBuilder = new TableBuilder()
     .addIncrementColumn("")
     .addDataColumn("Game System", "name")
-    .addDataColumn("Content Count", "contentCount")
-    .addDataColumn("Entity Count", "entityCount")
-    .addDataColumn("Module Count", "moduleCount")
     .addComponentColumn("Tools", GameSystemActions);
 
   return (
@@ -77,9 +78,23 @@ function GameSystems({gameSystems}: GameSystemsProps) {
   );
 }
 
+function getGameSystemQuery(page: number = 1, perPage: number = 5) {
+  const skip = (page - 1) * perPage;
+
+  return gql`
+  {
+    gameSystems (skip: ${skip}, limit: ${perPage}) {
+      _id,
+      name,
+      alias
+    }
+  }
+  `;
+}
+
 GameSystems.getInitialProps = async () => {
-  // const { gamesystems } = await client.query({query: getGameSystemQuery(1)})
-  return { gameSystems: gamesystemJson }
+  const gameSystems: GameSystem[] = await (await client.query({query: getGameSystemQuery(1)})).data.gameSystems;
+  return { gameSystems };
 }
 
 export default GameSystems;
