@@ -43,7 +43,7 @@ function UserView(props: UserViewProps) {
   const { authedFetch, user } = props.identity;
 
   function testApi() {
-    authedFetch.post(process.env.NEXT_PUBLIC_API_ENDPOINT+"/auth-test").then((res) => {
+    authedFetch.post("/api/auth-test").then((res) => {
       console.log(res);
     });
   }
