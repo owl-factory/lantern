@@ -16,8 +16,8 @@ export class ModuleResolver extends CoreResolver {
    * Fetches an module document matching the given id
    * @param _id The id of the module document to return
    */
-  @Query(() => Module)
-  async module(@Arg("_id") _id: string): Promise<Module> {
+  @Query(() => Module, {nullable: true})
+  async module(@Arg("_id") _id: string): Promise<Module | null> {
     return super.resolver(_id);
   }
 

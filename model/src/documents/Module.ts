@@ -14,8 +14,8 @@ export class Module extends CoreDocument {
 
   @Field()
   @Filter(stringFilters)
-  @prop({ default: "", required: true })
-  description: string;
+  @prop({ default: ""})
+  description?: string = "";
 
   @Field(_type => Boolean)
   @Filter(booleanFilters)

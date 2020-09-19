@@ -13,7 +13,11 @@ export class CoreResolver {
    * @param _id The id of the model to find
    */
   resolver(_id: string) {
-    return this.model.findById(_id);
+    const result = this.model.findById(_id);
+    if (Array.isArray(result) && result.length) {
+      return result[0];
+    }
+    return null;
   }
 
   /**
@@ -45,7 +49,8 @@ export class CoreResolver {
     data.updatedAt = new Date();
     data.updatedBy = getUserID();
 
-    return this.model.create(data, options);
+    const result = await this.model.create([data], options);
+    return result[0];
   }
 
   /**
@@ -63,7 +68,6 @@ export class CoreResolver {
     data.updatedAt = new Date();
     data.updatedBy = getUserID();
 
-    // TODO - needs to return updated model
     return this.model.updateOne({_id}, data);
   }
 
@@ -105,6 +109,8 @@ export class CoreResolver {
 
 /**
  * Builds and adds a where clause to a query given the filters 
+ * 
+ * TODO - move to a new file?
  * 
  * @param query The query object to add where clauses upon
  * @param filters The filters to convert into a where clause for the query

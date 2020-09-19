@@ -16,8 +16,8 @@ export class CharacterResolver extends CoreResolver {
    * Fetches an character document matching the given id
    * @param _id The id of the character document to return
    */
-  @Query(() => Character)
-  async character(@Arg("_id") _id: string): Promise<Character> {
+  @Query(() => Character, { nullable: true })
+  async character(@Arg("_id") _id: string): Promise<Character | null> {
     return super.resolver(_id);
   }
 

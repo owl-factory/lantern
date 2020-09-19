@@ -18,8 +18,8 @@ export class GameSystemResolver extends CoreResolver {
    * Fetches an gameSystem document matching the given id
    * @param _id The id of the gameSystem document to return
    */
-  @Query(() => GameSystem)
-  async gameSystem(@Arg("_id") _id: string): Promise<GameSystem> {
+  @Query(() => GameSystem, {nullable: true})
+  async gameSystem(@Arg("_id") _id: string): Promise<GameSystem | null> {
     return super.resolver(_id);
   }
 
@@ -35,30 +35,34 @@ export class GameSystemResolver extends CoreResolver {
   }
 
   /**
-   * Creates a new gameSystem document
+   * Creates a new gameSystem document and default module
    * @param data The data object to make into a new gameSystem
    */
   @Mutation(() => GameSystem)
   async newGameSystem(@Arg("data") data: GameSystemInput) {
     const session = await startSession();
-    // let gameSystemDocument = undefined;
-
+    let gameSystemDocument = null;
+    
     try {
-      const gameSystemDocument = await super.newResolver(data, { session: session });
+      session.startTransaction();
+      gameSystemDocument = await super.newResolver(data, { session: session });
+
       const moduleResolver = new ModuleResolver();
       const moduleDocument = await moduleResolver.newModule({
         name: "Standard Rules", 
         gameSystemID: gameSystemDocument._id
       }, { session });
+
       this.updateGameSystem(
         gameSystemDocument._id, 
         { defaultModuleID: moduleDocument._id }, 
         { session }
       );
 
-      session.commitTransaction()
-      return this.gameSystem(gameSystemDocument._id);
+      gameSystemDocument.defaultModuleID = moduleDocument._id;
 
+      session.commitTransaction();
+      return gameSystemDocument;
 
     } catch (error) {
       await session.abortTransaction();

@@ -3,6 +3,7 @@ import { CharacterResolver } from "./resolvers/CharacterResolver";
 import { connect } from "mongoose";
 import { buildSchema } from "type-graphql";
 import { GameSystemResolver } from "./resolvers/GameSystemResolver";
+import { ModuleResolver } from "./resolvers/ModuleResolver";
 
 const { ApolloServer } = require('apollo-server-lambda');
 
@@ -14,7 +15,8 @@ connect(
 const schema = buildSchema({
   resolvers: [
     CharacterResolver,
-    GameSystemResolver
+    GameSystemResolver,
+    ModuleResolver,
   ],
   emitSchemaFile: false,
   validate: false,
