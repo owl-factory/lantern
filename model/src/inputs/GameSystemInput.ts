@@ -7,18 +7,16 @@ export class GameSystemInput extends CoreInput implements Partial<GameSystem>  {
   @Field({ nullable: true })
   description?: string;
 
+  // TODO - auth admin
   @Field({ nullable: true })
-  isUsedCreated?: boolean;
-
-  @Field({ nullable: true })
-  defaultModuleID?: string;
+  isUserCreated?: boolean;
 
   @Field({ nullable: true })
   isPublished?: boolean;
 
   @Field({ nullable: true })
-  isPurchasable?: boolean;
+  defaultThemeID?: string;
 
   @Field({ nullable: true })
-  defaultThemeID?: string;
+  defaultModuleID?: string;
 }

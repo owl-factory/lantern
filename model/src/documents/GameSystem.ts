@@ -6,37 +6,31 @@ import { CoreDocument } from "./CoreDocument";
 
 @ObjectType({ description: "The unifying document for all Game System document types"})
 export class GameSystem extends CoreDocument {
-  @Field()
+  @Field({ nullable: true })
   @Filter(stringFilters)
-  @prop({ default: "", required: true })
-  description: string;
+  @prop({ default: "" })
+  description?: string;
 
-  @Field(_type => Boolean)
+  @Field(_type => Boolean, { defaultValue: true })
+  @Filter(booleanFilters)
+  @prop({ default: true, required: true })
+  isUserCreated?: boolean;
+
+  @Field(_type => Boolean, { defaultValue: false })
   @Filter(booleanFilters)
   @prop({ default: false, required: true })
-  isUsedCreated: boolean;
+  isPublished?: boolean;
 
-  // Will be created by default, need a default module id
+  // Will be created by default, need a default module idd
+  @Field({ nullable: false }) // Optional to send, required to have
+  @Filter(idFilters)
+  @prop({ required: false })
+  defaultModuleID?: string;
+
   @Field({ nullable: true })
   @Filter(idFilters)
   @prop()
-  defaultModuleID: string;
-
-  @Field(_type => Boolean)
-  @Filter(booleanFilters)
-  @prop({ default: false, required: true })
-  isPublished: boolean;
-
-  // Possibly to be removed
-  @Field(_type => Boolean)
-  @Filter(booleanFilters)
-  @prop({ default: false, required: true })
-  isPurchasable: boolean;
-
-  @Field()
-  @Filter(idFilters)
-  @prop({ default: false, required: true })
-  defaultThemeID: string;
+  defaultThemeID?: string;
 }
 
 export const GameSystemModel = getModelForClass(GameSystem);
