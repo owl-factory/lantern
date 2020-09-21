@@ -4,17 +4,14 @@ import { Pagination as BSPagination } from "react-bootstrap";
 import { def, min } from "../../utilities/tools";
 
 interface PaginationProps {
-  pageState: IPageState; // The state of the page to use and update
-  setPageState: (pageState: IPageState) => (void); // Function to update the page state
-  onPageChange?: (pageState: IPageState) => (void); // A callback function
-  useOffset?: boolean; // Indicates whether to set the offset for static page values
+  pageState: PageState; // The state of the page to use and update
+  setPageState: (pageState: PageState) => (void); // Function to update the page state
 }
 
-interface IPageState {
-  currentPage: number; // The current page
+export interface PageState {
+  page: number; // The current page
   perPage: number; // The number of items per page
   totalCount: number; // The total number of items
-  offset: number; // An offset for handling static lists
 }
 
 interface PaginationCellProps {
@@ -27,21 +24,16 @@ interface PaginationCellProps {
 
 /**
  * Builds a state and useState to use for pagination
+ * TODO - remove this
  * @param perPage - number of items per page
  * @param totalCount Total number of items
  */
 export function usePageState(perPage: number = 25, totalCount: number = 181) {
-  return React.useState({currentPage: 1, perPage, totalCount, offset: 0});
+  return React.useState({page: 1, perPage, totalCount, offset: 0});
 }
 
-function isDisabled(
-  currentPage: number,
-  targetPage: number
-) {
-  if (currentPage === targetPage) {
-    return "disabled"
-  }
-  return "";
+function isDisabled(page: number, targetPage: number) {
+  return page === targetPage ? "disabled" : "";
 }
 
 /**
@@ -59,10 +51,9 @@ function PaginationCell(props: PaginationCellProps) {
 
 /**
  * Renders pagination and handles pagination-related actions
- * @param props see IPagination
+ * @param props see PaginationProps
  */
 function Pagination(props: PaginationProps) {
-  const useOffset = def<boolean>(props.useOffset, false);
   const perPage = min(props.pageState.perPage, 1);
   const maxPage = Math.ceil(props.pageState.totalCount / perPage);
 
@@ -71,16 +62,7 @@ function Pagination(props: PaginationProps) {
    * @param page The page to set to
    */
   function setPage(page: number) {
-    let offset: number = 0;
-    if (useOffset === true) {
-      offset = (page - 1) * perPage;
-    }
-    props.setPageState({...props.pageState, currentPage: page, perPage, offset});
-
-    if (props.onPageChange === undefined) {
-      return;
-    }
-    props.onPageChange(props.pageState);
+    props.setPageState({...props.pageState, page: page, perPage});
   }
 
   /**
@@ -95,7 +77,7 @@ function Pagination(props: PaginationProps) {
       <PaginationCell
         key="page_current"
         className="active"
-        targetPage={props.pageState.currentPage}
+        targetPage={props.pageState.page}
         hasLink={false}
         setPage={setPage}
       />,
@@ -103,12 +85,12 @@ function Pagination(props: PaginationProps) {
 
     // Render side pages
     for (let i: number = 1; i < width; i++) {
-      let targetPage: number = props.pageState.currentPage - i;
+      let targetPage: number = props.pageState.page - i;
       if (targetPage > 0) {
         renderedCells.unshift(<PaginationCell key={"page_" + targetPage} targetPage={targetPage} setPage={setPage}/>);
       }
 
-      targetPage = props.pageState.currentPage + i;
+      targetPage = props.pageState.page + i;
       if (targetPage <= maxPage) {
         renderedCells.push(<PaginationCell key={"page_" + targetPage} targetPage={targetPage} setPage={setPage}/>);
       }
@@ -117,7 +99,7 @@ function Pagination(props: PaginationProps) {
     // Render first
     renderedCells.unshift(
       <PaginationCell 
-        className={isDisabled(props.pageState.currentPage, 1)} 
+        className={isDisabled(props.pageState.page, 1)} 
         key="page_first"
         pageText="First"
         targetPage={1}
@@ -127,7 +109,7 @@ function Pagination(props: PaginationProps) {
     // Render last
     renderedCells.push(
       <PaginationCell 
-        className={isDisabled(props.pageState.currentPage, maxPage)} 
+        className={isDisabled(props.pageState.page, maxPage)} 
         key="page_last"
         pageText="Last"
         targetPage={maxPage}

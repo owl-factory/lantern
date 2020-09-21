@@ -13,12 +13,28 @@ import { MdBuild, MdInfo, MdPageview, MdBlock } from "react-icons/md";
 import Tooltip from "../../../components/design/Tooltip";
 import { client } from "../../../utilities/graphql/apiClient";
 import gql from "graphql-tag";
+import Pagination, { PageState } from "../../../components/design/Pagination";
 
+const initialPerPage = 2;
 const gameSystemActions = new ContextMenuBuilder()
   .addLink("View", MdPageview, "/game-systems/[key]")
   .addLink("Details", MdInfo, "/admin/game-systems/[key]")
   .addLink("Edit", MdBuild, "/admin/game-systems/[key]/edit")
   .addItem("Delete", MdBlock, (context: GameSystem) => (confirm(`Are you sure you want to delete ${context.name}?`)))
+
+/**
+ * @param gameSystems A collection of game system objects
+ */
+interface GameSystemsProps {
+  gameSystems: GameSystemModel[];
+  gameSystemCount: number;
+}
+
+const tableBuilder = new TableBuilder()
+  .addIncrementColumn("")
+  .addDataColumn("Game System", "name")
+  .addDataColumn("Alias", "alias")
+  .addComponentColumn("Tools", GameSystemActions);
 
 /**
  * Renders the actions for the game systems page
@@ -48,53 +64,65 @@ function GameSystemActions(props: GameSystem) {
 }
 
 /**
- * @param gameSystems A collection of game system objects
- */
-interface GameSystemsProps {
-  gameSystems: GameSystemModel[];
-}
-
-/**
  * Renders the Admin Game Systems page
  * @param gameSystems An array of game systems
  */
-function GameSystems({gameSystems}: GameSystemsProps) {
-  const tableBuilder = new TableBuilder()
-    .addIncrementColumn("")
-    .addDataColumn("Game System", "name")
-    .addComponentColumn("Tools", GameSystemActions);
+function GameSystems(data: GameSystemsProps) {
+  const [ gameSystemData, setGameSystemData ] = React.useState(data);
+  const [pageState, setPageState] = React.useState({
+    page: 1,
+    perPage: initialPerPage,
+    totalCount: gameSystemData.gameSystemCount
+  });
+
+  async function setPage(newPageState: PageState) {
+    const newGameSystemData = await queryGameSystems(
+      newPageState.page,
+      newPageState.perPage  
+    );
+
+    setGameSystemData(newGameSystemData.data);
+    setPageState({...newPageState, totalCount: newGameSystemData.data.gameSystemCount});
+  }
 
   return (
     <Page>
       <h3>Game Systems</h3>
       <Breadcrumbs skipLevels={1} titles={["Admin", "Game Systems"]}/>
       <Link href="/admin/game-systems/new"><Button >+ Add Game System</Button></Link>
-      {/* <NewGameSystemModal dirty={true}>
-        <h5 >Add a new Game System</h5>
-        <NewGamesystemForm/>
-      </NewGameSystemModal> */}
-      <Table {...tableBuilder.renderConfig()} data={gameSystems}/>
+      <Table {...tableBuilder.renderConfig()} data={gameSystemData.gameSystems}/>
+      {gameSystemData.gameSystemCount}
+      <Pagination pageState={pageState} setPageState={setPage}/>
     </Page>
   );
 }
 
-function getGameSystemQuery(page: number = 1, perPage: number = 5) {
+/**
+ * Queries the game systems 
+ * @param page The current page
+ * @param perPage The number of entries per page
+ */
+async function queryGameSystems(page: number, perPage: number, ) {
   const skip = (page - 1) * perPage;
 
-  return gql`
+  const gameSystemQuery = gql`
   {
     gameSystems (skip: ${skip}, limit: ${perPage}) {
       _id,
       name,
       alias
-    }
+    },
+    gameSystemCount
   }
   `;
+
+  return await client.query({query: gameSystemQuery});
 }
 
 GameSystems.getInitialProps = async () => {
-  const gameSystems: GameSystem[] = await (await client.query({query: getGameSystemQuery(1)})).data.gameSystems;
-  return { gameSystems };
+  const gameSystemData = await queryGameSystems(1, initialPerPage);
+  return gameSystemData.data;
 }
 
 export default GameSystems;
+
