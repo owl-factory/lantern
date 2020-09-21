@@ -5,21 +5,48 @@ import { validate } from "class-validator";
 import { getUserID } from "../misc";
 
 export class CoreResolver {
-  protected model: ReturnModelType<any>
+  protected model: ReturnModelType<any>;
+  protected requiredAliasDependencies: string[] = [];
+
+  resolver(_id: string, aliasDependencies?: any) {
+    // Knock out the ones where we know we have everything
+    // ID only check if we aren't given any dependencies
+    if (isID(_id) && !aliasDependencies) {
+      return this.findById(_id);
+    // Alias search if we don't require any dependencies
+    } else if (!isID(_id) && this.requiredAliasDependencies.length === 0) {
+      return this.findByAlias(_id);
+    }
+
+    // TODO - 
+
+    throw "Alias ependencies not implemented yet";
+  }
 
   /**
    * Finds a single resolver by ID
    * 
    * @param _id The id of the model to find
    */
-  resolver(_id: string) {
-    const result = this.model.findById(_id);
+  findById(_id: string) {
+    return this.model.findById(_id);
+  }
+
+  /**
+   * Finds a single resolver by alias
+   * 
+   * @param alias The id or alias of the model to find
+   * @param filters Any additional filters, such as a parent's ID for 
+   *  non-distinct aliases
+   */
+  async findByAlias(alias: string, filters?: any) {
+    const result = await buildWhere(this.model.find({alias}), filters).limit(1);
     if (Array.isArray(result) && result.length) {
       return result[0];
     }
     return null;
   }
-
+  
   /**
    * Finds up to fifty items matching the filters and the options
    * 
@@ -28,6 +55,15 @@ export class CoreResolver {
    */
   resolvers(filters?: any, options?: Options): Query<any> {
     return buildWhere(this.model.find({}, null, options), filters);
+  }
+
+  /**
+   * Returns a count for a resolver 
+   * @param filters On object that filters out what should be counted
+   */
+  resolverCount(filters?: any) {
+    const result = buildWhere(this.model.countDocuments({}), filters);
+    return result;
   }
 
   /**
@@ -105,15 +141,30 @@ export class CoreResolver {
   deleteResolvers(filters?: any, options?: Options) {
     return buildWhere(this.model.deleteMany({}, options), filters);
   }
+}
 
-  /**
-   * Returns a count for a resolver 
-   * @param filters On object that filters out what should be counted
-   */
-  async resolverCount(filters?: any) {
-    const result = buildWhere(this.model.countDocuments({}), filters);
-    return result;
-  }
+/**
+ * A function for testing of IDs in the event we expand our definition of IDs
+ * @param id The string to check for ID-ness
+ */
+export function isID(id: string) {
+  return id.length === 24
+}
+
+/**
+ * TODO - flesh this out some
+ * @param givenAliasDependencies 
+ * @param requiredAliasDependencies 
+ */
+function hasRequiredDependencies(
+  givenAliasDependencies: any, 
+  requiredAliasDependencies: string[]
+) {
+  let hasAllDependencies = true;
+  requiredAliasDependencies.forEach((requiredDependency: string) => {
+    hasAllDependencies = hasAllDependencies && requiredDependency in givenAliasDependencies;
+  });
+  return hasAllDependencies;
 }
 
 /**

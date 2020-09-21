@@ -33,6 +33,15 @@ export class ModuleResolver extends CoreResolver {
   }
 
   /**
+   * Returns a count of all of the documents matching the given filters
+   * @param filters The filter object to count documents by. Identical to other filters
+   */
+  @Query(() => Number)
+  moduleCount(@Arg("filters", ModuleFilter, {nullable: true}) filters?: any) {
+    return super.resolverCount(filters);
+  }
+
+  /**
    * Creates a new module document
    * @param data The data object to make into a new module
    */
@@ -83,14 +92,5 @@ export class ModuleResolver extends CoreResolver {
   @Mutation(() => DeleteResponse)
   async deleteModules(@Arg("filters", ModuleFilter, {nullable: true}) filters?: any): Promise<DeleteResponse> {
     return super.deleteResolvers(filters);
-  }
-
-  /**
-   * Returns a count of all of the documents matching the given filters
-   * @param filters The filter object to count documents by. Identical to other filters
-   */
-  @Query(() => Number)
-  moduleCount(@Arg("filters", ModuleFilter, {nullable: true}) filters?: any): Promise<number> {
-    return super.resolverCount(filters);
   }
 }

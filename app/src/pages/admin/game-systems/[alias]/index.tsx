@@ -6,19 +6,18 @@ import { useRouter } from "next/router";
 import Breadcrumbs from "../../../../components/design/Breadcrumbs";
 import GameSystemModel from "../../../../models/database/gameSystems";
 import { NextPageContext } from "next";
-import gql from "graphql-tag";
-
-interface GameSystemProps {
-  gameSystem: GameSystemModel | any; // Change to gamesystem
-}
+import gql from "graphql-tag"; 
+import { client } from "../../../../utilities/graphql/apiClient";
+import { GameSystem } from "@reroll/model/dist/documents/GameSystem";
 
 /**
  * Renders the information page for the game system
  * @param gameSystem The gamesystem object pulled from the database
  */
-export default function GameSystem({gameSystem}: GameSystemProps) {
+export default function GameSystemPage({gameSystem, moduleCount}: any) {
   const router = useRouter();
   const { key } = router.query;
+  console.log(moduleCount)
   
   return (
     <Page>
@@ -120,29 +119,26 @@ export default function GameSystem({gameSystem}: GameSystemProps) {
   );
 }
 
-GameSystem.getInitialProps = async (ctx: NextPageContext) => {
-  const key = ctx.query.key;
+GameSystemPage.getInitialProps = async (ctx: NextPageContext) => {
+  const alias = ctx.query.alias;
 
-  const query = gql`
+  const gameSystemQuery = gql`
   {
-    gameSystems (key: "${key}") {
-      id,
+    gameSystem (_id: "${alias}") {
+      _id,
       name,
       description,
-      isPurchasable,
-      cost,
-      theme
+      isPublished
     }
   }`;
 
-  // const { data, loading } = await client.query({query: query})
-  
+  const { data } = await client.query({query: gameSystemQuery});
 
-  return { gameSystem: {
-    name: "Dungeons and Dragons 5e",
-    isPublished: false,
-    contentTypeCount: 11,
-    entityTypeCount: 3,
-    moduleCount: 13,
-  }}
+  const moduleQuery = gql`
+  query {
+    moduleCount (filters: {gameSystemID_eq: "${data.gameSystem._id}"})
+  }`;
+  
+  const moduleData  = await client.query({query: moduleQuery});
+  return {gameSystem: data.gameSystem, moduleCount: moduleData.data.moduleCount};
 }

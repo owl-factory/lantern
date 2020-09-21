@@ -1,5 +1,5 @@
 import { Resolver, Query, Mutation, Arg, Args } from "type-graphql";
-import { CoreResolver } from "./CoreResolver";
+import { CoreResolver, isID } from "./CoreResolver";
 import { GameSystem, GameSystemFilter, GameSystemModel } from "@reroll/model/dist/documents/GameSystem";
 import { GameSystemInput } from "@reroll/model/dist/inputs/GameSystemInput";
 import { Options } from "@reroll/model/dist/inputs/Options";
@@ -15,12 +15,12 @@ export class GameSystemResolver extends CoreResolver {
   protected model = GameSystemModel;
 
   /**
-   * Fetches an gameSystem document matching the given id
-   * @param _id The id of the gameSystem document to return
+   * Fetches a document matching the given id or aliases
+   * @param _id The id or alias of the document to return
    */
-  @Query(() => GameSystem, {nullable: true})
-  async gameSystem(@Arg("_id") _id: string): Promise<GameSystem | null> {
-    return super.resolver(_id);
+  @Query(() => GameSystem, { nullable: true })
+  gameSystem(@Arg("_id") _id: string) {
+    return this.resolver(_id);
   }
 
   /**
@@ -31,7 +31,16 @@ export class GameSystemResolver extends CoreResolver {
     @Arg("filters", GameSystemFilter, {nullable: true}) filters?: any,
     @Args() options?: Options
   ): Promise<GameSystem[]> {
-    return await super.resolvers(filters, options);
+    return super.resolvers(filters, options);
+  }
+
+  /**
+   * Returns a count of all of the documents matching the given filters
+   * @param filters The filter object to count documents by. Identical to other filters
+   */
+  @Query(() => Number)
+  gameSystemCount(@Arg("filters", GameSystemFilter, {nullable: true}) filters?: any) {
+    return super.resolverCount(filters);
   }
 
   /**
@@ -44,6 +53,7 @@ export class GameSystemResolver extends CoreResolver {
     let gameSystemDocument = null;
     
     try {
+      // Starts a transaction to 
       session.startTransaction();
       gameSystemDocument = await super.newResolver(data, { session: session });
 
@@ -114,14 +124,5 @@ export class GameSystemResolver extends CoreResolver {
   @Mutation(() => DeleteResponse)
   async deleteGameSystems(@Arg("filters", GameSystemFilter, {nullable: true}) filters?: any): Promise<DeleteResponse> {
     return super.deleteResolvers(filters);
-  }
-
-  /**
-   * Returns a count of all of the documents matching the given filters
-   * @param filters The filter object to count documents by. Identical to other filters
-   */
-  @Query(() => Number)
-  gameSystemCount(@Arg("filters", GameSystemFilter, {nullable: true}) filters?: any): Promise<number> {
-    return super.resolverCount(filters);
   }
 }

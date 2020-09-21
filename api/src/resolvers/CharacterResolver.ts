@@ -34,6 +34,15 @@ export class CharacterResolver extends CoreResolver {
   }
 
   /**
+   * Returns a count of all of the documents matching the given filters
+   * @param filters The filter object to count documents by. Identical to other filters
+   */
+  @Query(() => Number)
+  characterCount(@Arg("filters", CharacterFilter, {nullable: true}) filters?: any) {
+    return super.resolverCount(filters);
+  }
+
+  /**
    * Creates a new character document
    * @param data The data object to make into a new character
    */
@@ -84,14 +93,5 @@ export class CharacterResolver extends CoreResolver {
   @Mutation(() => DeleteResponse)
   async deleteCharacters(@Arg("filters", CharacterFilter, {nullable: true}) filters?: any): Promise<DeleteResponse> {
     return super.deleteResolvers(filters);
-  }
-
-  /**
-   * Returns a count of all of the documents matching the given filters
-   * @param filters The filter object to count documents by. Identical to other filters
-   */
-  @Query(() => Number)
-  characterCount(@Arg("filters", CharacterFilter, {nullable: true}) filters?: any): Promise<number> {
-    return super.resolverCount(filters);
   }
 }
