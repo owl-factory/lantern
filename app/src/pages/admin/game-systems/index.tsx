@@ -15,7 +15,7 @@ import { client } from "../../../utilities/graphql/apiClient";
 import gql from "graphql-tag";
 import Pagination, { PageState } from "../../../components/design/Pagination";
 
-const initialPerPage = 2;
+const initialPerPage = 10;
 const gameSystemActions = new ContextMenuBuilder()
   .addLink("View", MdPageview, "/game-systems/[key]")
   .addLink("Details", MdInfo, "/admin/game-systems/[key]")
@@ -111,7 +111,7 @@ async function queryGameSystems(page: number, perPage: number, ) {
 
   const gameSystemQuery = gql`
   {
-    gameSystems (skip: ${skip}, limit: ${perPage}, sort: "updatedAt") {
+    gameSystems (skip: ${skip}, limit: ${perPage}, sort: "-updatedAt") {
       _id,
       name,
       alias,
