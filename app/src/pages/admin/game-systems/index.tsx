@@ -34,6 +34,7 @@ const tableBuilder = new TableBuilder()
   .addIncrementColumn("")
   .addDataColumn("Game System", "name")
   .addDataColumn("Alias", "alias")
+  .addDataColumn("Published", "isPublished", (isPublished: boolean) => (isPublished ? "Yes" : "No"))
   .addComponentColumn("Tools", GameSystemActions);
 
 /**
@@ -90,8 +91,11 @@ function GameSystems(data: GameSystemsProps) {
       <h3>Game Systems</h3>
       <Breadcrumbs skipLevels={1} titles={["Admin", "Game Systems"]}/>
       <Link href="/admin/game-systems/new"><Button >+ Add Game System</Button></Link>
-      <Table {...tableBuilder.renderConfig()} data={gameSystemData.gameSystems}/>
-      {gameSystemData.gameSystemCount}
+      <Table 
+        {...tableBuilder.renderConfig()} 
+        data={gameSystemData.gameSystems} 
+        startingIncrement={(pageState.page - 1) * pageState.perPage + 1}
+      />
       <Pagination pageState={pageState} setPageState={setPage}/>
     </Page>
   );
@@ -107,10 +111,12 @@ async function queryGameSystems(page: number, perPage: number, ) {
 
   const gameSystemQuery = gql`
   {
-    gameSystems (skip: ${skip}, limit: ${perPage}) {
+    gameSystems (skip: ${skip}, limit: ${perPage}, sort: "updatedAt") {
       _id,
       name,
-      alias
+      alias,
+      isPublished,
+      updatedAt
     },
     gameSystemCount
   }
