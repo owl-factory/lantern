@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import { parse } from "cookie";
 import { CharacterResolver } from "./resolvers/CharacterResolver";
 import { connect } from "mongoose";
 import { buildSchema } from "type-graphql";
@@ -22,9 +23,11 @@ const server = new ApolloServer({
   schema,
   context: ({ event, context }) => {
     context.callbackWaitsForEmptyEventLoop = false;
+    const cookies = parse(event.headers.cookie);
     return {
       headers: event.headers,
       functionName: context.functionName,
+      cookies,
       event,
       context,
     }

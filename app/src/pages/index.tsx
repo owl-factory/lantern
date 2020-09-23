@@ -10,6 +10,8 @@ import characters from "../data/character/character.json";
 import news from "../data/news/news.json";
 import { Row, Button, Col, Form } from "react-bootstrap";
 import { useIdentityContext, ReactNetlifyIdentityAPI } from "react-netlify-identity";
+import fetch from "cross-fetch";
+import { method } from "lodash";
 
 /**
  * Renders the index page and one of two subviews
@@ -40,11 +42,13 @@ interface UserViewProps {
  * @param props TODO
  */
 function UserView(props: UserViewProps) {
-  const { authedFetch, user } = props.identity;
+  const { user } = props.identity;
 
   function testApi() {
-    authedFetch.post("/api/auth-test").then((res) => {
-      console.log(res);
+    fetch("/api/auth-test", {method: "POST"}).then((res) => {
+      res.json().then((json) => {
+        console.log(json);
+      });
     });
   }
 
