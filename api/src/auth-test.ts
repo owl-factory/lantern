@@ -6,6 +6,6 @@ exports.handler = async function(event, context, callback) {
   const isLoggedIn = !!user;
   callback(null, {
     statusCode: 200,
-    body: JSON.stringify({cookies, user, isLoggedIn})
+    body: JSON.stringify(user)
     });
 }
