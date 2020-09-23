@@ -2,7 +2,7 @@ import "reflect-metadata";
 import { CharacterResolver } from "./resolvers/CharacterResolver";
 import { connect } from "mongoose";
 import { buildSchema } from "type-graphql"
-import { parseToken } from "./utilities/auth";
+import { nfAuthChecker, parseToken } from "./utilities/auth";
 
 const { ApolloServer } = require('apollo-server-lambda');
 
@@ -17,6 +17,7 @@ const schema = buildSchema({
   ],
   emitSchemaFile: false,
   validate: false,
+  authChecker: nfAuthChecker,
 });
 
 const server = new ApolloServer({
@@ -29,6 +30,7 @@ const server = new ApolloServer({
       headers: event.headers,
       functionName: context.functionName,
       token,
+      user: null,
       event,
       context,
     }

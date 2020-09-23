@@ -34,6 +34,20 @@ interface UserViewProps {
   identity: ReactNetlifyIdentityAPI
 }
 
+function testGQL() {
+  const query = gql`
+  {
+    user {
+      _id,
+      name
+    }
+  }
+  `;
+  client.query({query}).then((res) => {
+    console.log(res.data)
+  })
+}
+
 /**
  * Renders the view for users who are logged in
  * @param props TODO
@@ -47,20 +61,6 @@ function UserView(props: UserViewProps) {
         console.log(json);
       });
     });
-  }
-
-  function testGQL() {
-    const query = gql`
-    {
-      user {
-        _id,
-        name
-      }
-    }
-    `;
-    client.query({query}).then((res) => {
-      console.log(res.data)
-    })
   }
 
   return (
@@ -98,6 +98,7 @@ function GuestView(props: any) {
           <p>
             This is some test home page content. Oh look, a button!
           </p>
+          <Button onClick={() => testGQL()}>Test GQL</Button>
           <Link href="/about" passHref>
             <Button title="About">
               About
