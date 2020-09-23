@@ -2,16 +2,13 @@ import Link from "next/link";
 import React from "react";
 import News from "../components/announcements/News";
 import AuthenticationCard from "../components/authetication/AuthenticationCard";
-import CampaignTiles from "../components/campaigns/CampaignTiles";
-import CharacterTiles from "../components/characters/CharacterTiles";
 import Page from "../components/design/Page";
-import campaigns from "../data/campaign/campaign.json";
-import characters from "../data/character/character.json";
 import news from "../data/news/news.json";
 import { Row, Button, Col, Form } from "react-bootstrap";
 import { useIdentityContext, ReactNetlifyIdentityAPI } from "react-netlify-identity";
 import fetch from "cross-fetch";
-import { method } from "lodash";
+import { client } from "../utilities/graphql/apiClient";
+import gql from "graphql-tag";
 
 /**
  * Renders the index page and one of two subviews
@@ -52,10 +49,25 @@ function UserView(props: UserViewProps) {
     });
   }
 
+  function testGQL() {
+    const query = gql`
+    {
+      user {
+        _id,
+        name
+      }
+    }
+    `;
+    client.query({query}).then((res) => {
+      console.log(res.data)
+    })
+  }
+
   return (
     <div>
       <h3>Welcome back {user?.email}!</h3>
       <Button onClick={() => testApi()}>Test API</Button>
+      <Button onClick={() => testGQL()}>Test GQL</Button>
       <Button onClick={() => props.identity.logoutUser()}>Log Out</Button>
       {/* Recent Games */}
       <h4>My Games</h4>

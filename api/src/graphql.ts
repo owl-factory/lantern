@@ -1,8 +1,8 @@
 import "reflect-metadata";
-import { parse } from "cookie";
 import { CharacterResolver } from "./resolvers/CharacterResolver";
 import { connect } from "mongoose";
-import { buildSchema } from "type-graphql";
+import { buildSchema } from "type-graphql"
+import { parseToken } from "./utilities/auth";
 
 const { ApolloServer } = require('apollo-server-lambda');
 
@@ -23,11 +23,12 @@ const server = new ApolloServer({
   schema,
   context: ({ event, context }) => {
     context.callbackWaitsForEmptyEventLoop = false;
-    const cookies = parse(event.headers.cookie);
+    const token = parseToken(event.headers);
+    
     return {
       headers: event.headers,
       functionName: context.functionName,
-      cookies,
+      token,
       event,
       context,
     }

@@ -1,9 +1,8 @@
-import { parse } from "cookie";
-import { authenticate } from "./utilities/auth";
+import { authenticate, parseToken } from "./utilities/auth";
 
 exports.handler = async function(event, context, callback) {
-  const cookies = parse(event.headers.cookie);
-  const user = authenticate(cookies.nf_jwt, cookies.nf_rft);
+  const token = parseToken(event.headers);
+  const user = await authenticate(token);
   const isLoggedIn = !!user;
   callback(null, {
     statusCode: 200,

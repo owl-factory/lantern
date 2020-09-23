@@ -1,9 +1,10 @@
-import { Resolver, Query, Mutation, Arg, Args } from "type-graphql";
+import { Resolver, Query, Mutation, Arg, Args, Ctx } from "type-graphql";
 import { CoreResolver } from "./CoreResolver";
 import { Character, CharacterFilter, CharacterModel } from "@reroll/model/dist/documents/Character";
 import { CharacterInput } from "@reroll/model/dist/inputs/CharacterInput";
 import { Options } from "@reroll/model/dist/inputs/Options";
 import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/documents/Responses";
+import { authenticate } from "../utilities/auth";
 
 /**
  * Resolves Character queries
@@ -19,6 +20,17 @@ export class CharacterResolver extends CoreResolver {
   @Query(() => Character)
   async character(@Arg("_id") _id: string): Promise<Character> {
     return super.resolver(_id);
+  }
+
+  // test resolver
+  @Query(() => Character)
+  async user(@Ctx() ctx): Promise<Character> {
+    if (ctx.token) {
+      const user = await authenticate(ctx.token);
+      return { _id: user.email, name: user.user_metadata.full_name }
+    } else {
+      return { _id: "not logged in", name: "" }
+    }
   }
 
   /**
