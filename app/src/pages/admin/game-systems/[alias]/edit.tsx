@@ -4,12 +4,15 @@ import GameSystemForm from "../../../../components/admin/gameSystems/Form";
 import Page from "../../../../components/design/Page";
 import gql from "graphql-tag";
 import { NextPageContext } from "next";
-import GameSystemModel from "../../../../models/database/gameSystems";
 import ThemeModel from "../../../../models/database/themes";
 import { def } from "../../../../utilities/tools";
+import { client } from "../../../../utilities/graphql/apiClient";
+import { GameSystemInput } from "@reroll/model/dist/inputs/GameSystemInput";
+import { GameSystem } from "@reroll/model/dist/documents/GameSystem";
+import { useRouter } from "next/router";
 
 interface EditGameSystemProps {
-  gameSystem: GameSystemModel;
+  gameSystem: GameSystem;
   themes: ThemeModel[];
 }
 
@@ -19,8 +22,30 @@ interface EditGameSystemProps {
  * @param themes The themes to render within the form
  */
 function EditGameSystem({gameSystem, themes}: EditGameSystemProps) {
+  const router = useRouter();
+
+  
+  function updateGameSystem(values: GameSystemInput) {
+    const updateGameSystem = gql`mutation{
+      updateGameSystem (_id: "${gameSystem._id}", data: {
+        name: "${values.name}",
+        alias: "${values.alias}",
+        description: "${values.description}",
+        defaultThemeID: "${values.defaultThemeID}",
+      }) {
+        ok
+      }
+    }`;
+
+    client.mutate({mutation: updateGameSystem})
+    .then((res: any) => {
+      router.push(`/admin/game-systems/${values.alias}`)
+      console.log("Updated!")
+    })
+  }
+
   // TODO - handle if gamesystem is empty
-  const name = def<string>(gameSystem.name, "");
+  const name = gameSystem.name || "";
   return (
     <Page>
       <h1>Create Game System</h1>
@@ -30,7 +55,8 @@ function EditGameSystem({gameSystem, themes}: EditGameSystemProps) {
 
       <GameSystemForm 
         initialValues={gameSystem}
-        onSubmit={(values: GameSystemModel) => alert(JSON.stringify(values))}
+        onSubmit={
+          (values: GameSystemInput) => updateGameSystem(values)}
         themes={themes}
       />
     </Page>
@@ -38,35 +64,24 @@ function EditGameSystem({gameSystem, themes}: EditGameSystemProps) {
 }
 
 EditGameSystem.getInitialProps = async (ctx: NextPageContext) => {
-  const key = ctx.query.key;
+  const alias = ctx.query.alias;
   
   const query = gql`
-  {
-    gameSystems (key: "${key}") {
-      id,
+  query {
+    gameSystem (_id: "${alias}") {
+      _id,
       name,
+      alias,
       description,
-      isPurchasable,
-      cost,
-      theme
-    },
-    themes {
-      id,
-      name,
+      defaultThemeID
     }
   }`;
 
-  // const { data, loading } = await client.query({query: query})
+  const { data, loading } = await client.query({query: query});
+  
   return { 
     themes: [{"name": "Default", "id": "default"}],
-    gameSystem: {
-      name: "Dungeons and Dragons 5e",
-      key: key,
-      description: "The tabletop game we all love to play!",
-      isPurchasable: false,
-      cost: 0.00,
-      theme: "default",
-    }
+    gameSystem: data.gameSystem
   };
 }
 

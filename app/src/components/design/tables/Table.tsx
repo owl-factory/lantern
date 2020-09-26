@@ -46,7 +46,7 @@ function TableHeader(props: TableHeaderProps) {
  */
 function TableBody(props: TableBodyProps) {
   const rows: JSX.Element[] = [];
-  let increment = def<number>(props.startingIncrement, 1); 
+  let increment = props.startingIncrement || 1; 
 
   props.data.forEach((rowData: any) => {
     rows.push(<TableRow key={"row-" + increment} {...props} data={rowData} increment={increment++}/>);
@@ -66,6 +66,9 @@ function TableRow(props: TableRowProps) {
   props.columns.forEach((column: any) => {
     if (column.key !== undefined) {
       content = props.data[column.key];
+      if (column.modification) {
+        content = column.modification(props.data[column.key]);
+      }
 
     } else if (column.component !== undefined) {
       content = column.component(props.data);
@@ -89,7 +92,11 @@ export default function Table(props: TableProps) {
   return (
     <BSTable>
       <TableHeader columns={props.columns}/>
-      <TableBody columns={props.columns} data={props.data}/>
+      <TableBody
+        columns={props.columns}
+        data={props.data}
+        startingIncrement={props.startingIncrement}
+      />
     </BSTable>
   );
 }

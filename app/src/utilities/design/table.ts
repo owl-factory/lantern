@@ -26,8 +26,8 @@ export class TableBuilder {
    * @param header The header title
    * @param key The key of the data to print
    */
-  public addDataColumn(header: string, key: string) {
-    const newColumn: Column = {header, key};
+  public addDataColumn(header: string, key: string, modification?: (value: any) => string) {
+    const newColumn: Column = {header, key, modification};
     this.columns.push(newColumn);
 
     return this;

@@ -2,19 +2,51 @@ import { ReturnModelType } from "@typegoose/typegoose";
 import { Options } from "@reroll/model/src/inputs/Options";
 import { Query } from "mongoose";
 import { validate } from "class-validator";
+import { getUserID } from "../misc";
 
 export class CoreResolver {
-  protected model: ReturnModelType<any>
+  protected model: ReturnModelType<any>;
+  protected requiredAliasDependencies: string[] = [];
+
+  resolver(_id: string, aliasDependencies?: any) {
+    // Knock out the ones where we know we have everything
+    // ID only check if we aren't given any dependencies
+    if (isID(_id) && !aliasDependencies) {
+      return this.findById(_id);
+    // Alias search if we don't require any dependencies
+    } else if (!isID(_id) && this.requiredAliasDependencies.length === 0) {
+      return this.findByAlias(_id);
+    }
+
+    // TODO - 
+
+    throw "Alias ependencies not implemented yet";
+  }
 
   /**
    * Finds a single resolver by ID
    * 
    * @param _id The id of the model to find
    */
-  resolver(_id: string) {
+  findById(_id: string) {
     return this.model.findById(_id);
   }
 
+  /**
+   * Finds a single resolver by alias
+   * 
+   * @param alias The id or alias of the model to find
+   * @param filters Any additional filters, such as a parent's ID for 
+   *  non-distinct aliases
+   */
+  async findByAlias(alias: string, filters?: any) {
+    const result = await buildWhere(this.model.find({alias}), filters).limit(1);
+    if (Array.isArray(result) && result.length) {
+      return result[0];
+    }
+    return null;
+  }
+  
   /**
    * Finds up to fifty items matching the filters and the options
    * 
@@ -26,17 +58,35 @@ export class CoreResolver {
   }
 
   /**
+   * Returns a count for a resolver 
+   * @param filters On object that filters out what should be counted
+   */
+  resolverCount(filters?: any) {
+    const result = buildWhere(this.model.countDocuments({}), filters);
+    return result;
+  }
+
+  /**
    * Valdiates and creates a new object from the given data
    * 
    * @param data The data to save into the model
    */
-  async newResolver(data: any) {
+  async newResolver(data: any, options?: any) {
     const errors = await validate(data);
     if (errors.length > 0) {
       throw new Error(errors.toString());
     }
 
-    return this.model.create(data);
+    // Updates both so we can track when something was last created and when 
+    // it was last touched easier
+    data.createdAt = new Date();
+    data.createdBy = getUserID();
+
+    data.updatedAt = new Date();
+    data.updatedBy = getUserID();
+
+    const result = await this.model.create([data], options);
+    return result[0];
   }
 
   /**
@@ -45,13 +95,15 @@ export class CoreResolver {
    * @param _id The id of the document to update
    * @param data The data to change in the document
    */
-  async updateResolver(_id: string, data: any) {
+  async updateResolver(_id: string, data: any, options?: any) {
     const errors = await validate(data);
     if (errors.length > 0) {
       throw new Error(errors.toString());
     }
 
-    // TODO - needs to return updated model
+    data.updatedAt = new Date();
+    data.updatedBy = getUserID();
+
     return this.model.updateOne({_id}, data);
   }
 
@@ -66,6 +118,9 @@ export class CoreResolver {
     if (errors.length > 0) {
       throw new Error(errors.toString());
     }
+
+    data.updatedAt = new Date();
+    data.updatedBy = getUserID();
     
     return buildWhere(this.model.updateMany({}, data), filters);
   }
@@ -89,7 +144,33 @@ export class CoreResolver {
 }
 
 /**
+ * A function for testing of IDs in the event we expand our definition of IDs
+ * @param id The string to check for ID-ness
+ */
+export function isID(id: string) {
+  return id.length === 24
+}
+
+/**
+ * TODO - flesh this out some
+ * @param givenAliasDependencies 
+ * @param requiredAliasDependencies 
+ */
+function hasRequiredDependencies(
+  givenAliasDependencies: any, 
+  requiredAliasDependencies: string[]
+) {
+  let hasAllDependencies = true;
+  requiredAliasDependencies.forEach((requiredDependency: string) => {
+    hasAllDependencies = hasAllDependencies && requiredDependency in givenAliasDependencies;
+  });
+  return hasAllDependencies;
+}
+
+/**
  * Builds and adds a where clause to a query given the filters 
+ * 
+ * TODO - move to a new file?
  * 
  * @param query The query object to add where clauses upon
  * @param filters The filters to convert into a where clause for the query

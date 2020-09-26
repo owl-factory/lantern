@@ -17,8 +17,8 @@ export class CharacterResolver extends CoreResolver {
    * Fetches an character document matching the given id
    * @param _id The id of the character document to return
    */
-  @Query(() => Character)
-  async character(@Arg("_id") _id: string): Promise<Character> {
+  @Query(() => Character, { nullable: true })
+  async character(@Arg("_id") _id: string): Promise<Character | null> {
     return super.resolver(_id);
   }
 
@@ -44,7 +44,17 @@ export class CharacterResolver extends CoreResolver {
     @Arg("filters", CharacterFilter, {nullable: true}) filters?: any,
     @Args() options?: Options
   ): Promise<Character[]> {
+    super.resolverCount(filters);
     return await super.resolvers(filters, options);
+  }
+
+  /**
+   * Returns a count of all of the documents matching the given filters
+   * @param filters The filter object to count documents by. Identical to other filters
+   */
+  @Query(() => Number)
+  characterCount(@Arg("filters", CharacterFilter, {nullable: true}) filters?: any) {
+    return super.resolverCount(filters);
   }
 
   /**

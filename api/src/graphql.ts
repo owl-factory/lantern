@@ -1,7 +1,9 @@
 import "reflect-metadata";
 import { CharacterResolver } from "./resolvers/CharacterResolver";
 import { connect } from "mongoose";
-import { buildSchema } from "type-graphql"
+import { buildSchema } from "type-graphql";
+import { GameSystemResolver } from "./resolvers/GameSystemResolver";
+import { ModuleResolver } from "./resolvers/ModuleResolver";
 import { nfAuthChecker, parseToken } from "./utilities/auth";
 
 const { ApolloServer } = require('apollo-server-lambda');
@@ -13,7 +15,9 @@ connect(
 
 const schema = buildSchema({
   resolvers: [
-    CharacterResolver
+    CharacterResolver,
+    GameSystemResolver,
+    ModuleResolver,
   ],
   emitSchemaFile: false,
   validate: false,

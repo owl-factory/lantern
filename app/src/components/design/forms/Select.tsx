@@ -67,7 +67,7 @@ function renderChildren(id: string, props: SelectProps) {
   let children: ReactNode[] = [];
 
   if (props.includeEmpty !== false) {
-    children.push(<option value="">{emptyText}</option>);
+    children.push(<option key={`${id}-1`} value="">{emptyText}</option>);
   }
 
   if (props.children === undefined) {

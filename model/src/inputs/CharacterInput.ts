@@ -1,8 +1,7 @@
 import { Character } from "../documents/Character";
-import { InputType, Field } from "type-graphql";
+import { InputType } from "type-graphql";
+import { CoreInput } from "./CoreInput";
 
 @InputType()
-export class CharacterInput implements Partial<Character> {
-  @Field({ nullable: true })
-  name?: string;
+export class CharacterInput extends CoreInput implements Partial<Character>  {
 }
