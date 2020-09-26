@@ -3,13 +3,10 @@ import { fetch } from "cross-fetch";
 
 /** Terminating HTTP link, actually sends the request to the server */ 
 const httpLink = createHttpLink({
-  uri: "http://localhost:8888/graphql",
+  uri: "/api/graphql",
   fetch,
 });
 
-/**
- * A test client for use with the publicly available graphql-pokemon endpoint.
- */
 export const client = new ApolloClient({
   link: httpLink,
   cache: new InMemoryCache(),

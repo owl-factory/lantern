@@ -3,7 +3,7 @@
   "version": "0.2.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "node dev.js",
     "compose": "yarn install && next dev",
     "build": "next build",
     "build-all": "lerna run build --scope=@reroll/app --include-dependencies",
@@ -45,6 +45,8 @@
     "babel-preset-react": "^6.24.1",
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.15.1",
+    "express": "^4.17.1",
+    "http-proxy-middleware": "^1.0.5",
     "jest": "^24.9.0",
     "next-on-netlify": "^2.4.0",
     "sass": "^1.26.5",

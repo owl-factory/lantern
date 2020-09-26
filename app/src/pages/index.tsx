@@ -55,11 +55,8 @@ function UserView(props: UserViewProps) {
       <Button onClick={() => props.identity.logoutUser()}>Log Out</Button>
       {/* Recent Games */}
       <h4>My Games</h4>
-      <CampaignTiles contents={campaigns} includeNew={true} />
-
       {/* Characters */}
       <h4>My Characters</h4>
-      <CharacterTiles contents={characters} includeNew={true} />
     </div>
   );
 }
