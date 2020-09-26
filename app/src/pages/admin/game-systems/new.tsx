@@ -30,7 +30,7 @@ export function NewGameSystemForm(props: GameSystemFormProps) {
   const router = useRouter();
   return <GameSystemForm 
     initialValues={{
-      name: "Form2",
+      name: "",
       alias: "",
       description: "",
       defaultThemeID: undefined,
