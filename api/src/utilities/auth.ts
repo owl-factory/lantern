@@ -7,22 +7,6 @@ export interface Token {
   refreshToken: string
 }
 
-export const nfAuthChecker: AuthChecker<any> = async ({ root, args, context, info }, roles) => {
-  if (context.token && !context.user) {
-    context.user = await authenticate(context.token);
-  }
-  if (context.user) {
-    for (const role of roles) {
-      if (context.user.app_metadata.roles.includes(role)) {
-        return true;
-      }
-      return false;
-    }
-  } else {
-    return false;
-  }
-};
-
 // TODO set token cookie
 export async function authenticate(token: Token) {
   if (!token) {
@@ -30,11 +14,13 @@ export async function authenticate(token: Token) {
   }
   if (token.accessToken) {
     const user = await getUser(token.accessToken);
-    return user;
+    if (user.code = 401) {
+      var newToken = await getNewToken(token.refreshToken);
+      return await getUser(newToken);
+    }
   } else if (token.refreshToken) {
     var newToken = await getNewToken(token.refreshToken);
-    const user = await getUser(newToken);
-    return user;
+    return await getUser(newToken);
   }
 }
 
@@ -48,6 +34,26 @@ export function parseToken(headers: any) {
   }
   return token;
 }
+
+export async function authorize(context, roles?: string[]) {
+  if (!context.token) return false;
+  if (!context.user) {
+    context.user = await authenticate(context.token);
+  }
+  if (context.user) {
+    if (!roles || roles.length == 0) return true;
+    for (const role of roles) {
+      if (context.user.app_metadata.roles.includes(role)) {
+        return true;
+      }
+    }
+  } 
+  return false;
+}
+
+export const nfAuthChecker: AuthChecker<any> = async ({ root, args, context, info }, roles) => {
+  return authorize(context, roles);
+};
 
 export async function getUser(accessToken: string) {
   const res = await fetch("https://reroll.app/.netlify/identity/user", {

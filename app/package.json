@@ -26,7 +26,7 @@
     "react-bootstrap": "^1.0.1",
     "react-dom": "16.12.0",
     "react-icons": "^3.10.0",
-    "react-netlify-identity": "file:../../react-netlify-identity",
+    "react-netlify-identity": "git+https://github.com/lucyawrey/react-netlify-identity.git",
     "saslprep": "^1.0.3",
     "yup": "^0.29.1"
   },
