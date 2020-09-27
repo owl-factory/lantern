@@ -1,4 +1,4 @@
-import { ObjectType, Field } from "type-graphql";
+import { ObjectType, Field, Int } from "type-graphql";
 import { Filter, generateFilterType } from "type-graphql-filter";
 import { prop, getModelForClass } from "@typegoose/typegoose";
 import { stringFilters, booleanFilters, idFilters } from "../filterTypes";
@@ -18,10 +18,9 @@ export class GameSystem extends CoreDocument {
   @prop({ default: "" })
   description?: string;
 
-  @Field(_type => Boolean, { defaultValue: true })
-  @Filter(booleanFilters)
-  @prop({ default: true, required: true })
-  isUserCreated?: boolean;
+  @Field(() => Int)
+  @prop({ required: true })
+  publishType?: number;
 
   @Field(_type => Boolean, { defaultValue: false })
   @Filter(booleanFilters)
