@@ -1,7 +1,7 @@
 import { ObjectType, Field, Int } from "type-graphql";
 import { Filter, generateFilterType } from "type-graphql-filter";
 import { prop, getModelForClass } from "@typegoose/typegoose";
-import { stringFilters, booleanFilters, idFilters } from "../filterTypes";
+import { stringFilters, booleanFilters, idFilters } from "../models/filterTypes";
 import { CoreDocument } from "./CoreDocument";
 
 /**
@@ -29,7 +29,6 @@ export class Module extends CoreDocument {
   @prop({ default: false, required: true })
   isPublished: boolean;
 
-  // Possibly to be removed
   @Field(_type => Boolean)
   @Filter(booleanFilters)
   @prop({ default: false, required: true })
@@ -42,4 +41,3 @@ export class Module extends CoreDocument {
 }
 
 export const ModuleModel = getModelForClass(Module);
-export const ModuleFilter = generateFilterType(Module);

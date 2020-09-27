@@ -1,14 +1,12 @@
 import { ObjectType, Field, ID } from "type-graphql";
 import { CommonContentType } from "./CommonContentType";
 import { prop, getModelForClass } from "@typegoose/typegoose";
+import { LayoutItem } from "../models/LayoutItem";
 
 class ContentTypeField {
 
 }
 
-class LayoutItem {
-
-}
 
 @ObjectType()
 export class ContentType extends CommonContentType {

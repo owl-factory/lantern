@@ -1,7 +1,7 @@
 import { ObjectType, Field, Int } from "type-graphql";
 import { Filter, generateFilterType } from "type-graphql-filter";
 import { prop, getModelForClass } from "@typegoose/typegoose";
-import { stringFilters, booleanFilters, idFilters } from "../filterTypes";
+import { stringFilters, booleanFilters, idFilters } from "../models/filterTypes";
 import { CoreDocument } from "./CoreDocument";
 
 @ObjectType({ description: "The unifying document for all Game System document types"})
