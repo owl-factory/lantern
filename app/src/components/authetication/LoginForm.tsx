@@ -3,7 +3,6 @@ import { Formik, Form as FormikForm, ErrorMessage, } from "formik";
 import * as Yup from "yup";
 import { Col, Form, Row, Button } from "react-bootstrap";
 import { Input } from "../design/forms/Forms";
-import { useIdentityContext } from "react-netlify-identity";
 
 /** The possible form values */
 interface LoginValues {
@@ -30,21 +29,17 @@ const validationSchema = Yup.object({
  */
 export default function LoginForm() {
   const [errorMessage, setErrorMessage] = React.useState("");
-  const identity = useIdentityContext();
 
   /**
    * Submits the form on successful validation
    * @param values The form values
    */
-  function onSubmit(values: LoginValues) {
-    identity.loginUser(values.email, values.password, true);
-  }
 
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
-      onSubmit={onSubmit}
+      onSubmit={() => {}}
     >
       <FormikForm>
         <Row>

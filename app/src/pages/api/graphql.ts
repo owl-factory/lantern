@@ -4,7 +4,7 @@ import { connect } from "mongoose";
 import { buildSchema } from "type-graphql";
 import { GameSystemResolver } from "../../api/resolvers/GameSystemResolver";
 import { ModuleResolver } from "../../api/resolvers/ModuleResolver";
-import { nfAuthChecker, parseToken } from "../../api/auth";
+import { NextAuthChecker } from "../../api/auth";
 import { ApolloServer } from "apollo-server-micro";
 
 connect(
@@ -20,16 +20,14 @@ const schema: any = buildSchema({
   ],
   emitSchemaFile: false,
   validate: false,
-  authChecker: nfAuthChecker,
+  authChecker: NextAuthChecker,
 });
 
 const server = new ApolloServer({
   schema,
   context: ({req, res}) => {
-    const token = parseToken(req.headers);
     return {
-      token,
-      user: null,
+      session: null,
       req,
       res
     }
