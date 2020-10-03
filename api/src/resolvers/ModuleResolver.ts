@@ -48,6 +48,7 @@ export class ModuleResolver extends CoreResolver {
    */
   @Mutation(() => Module)
   newModule(@Arg("data") data: ModuleInput, options?: any): Promise<Module> {
+    data.publishType = 1;
     return super.newResolver(data, options);
   }
 

@@ -1,11 +1,12 @@
 import { ObjectType, Field, Int } from "type-graphql";
-import { Filter, generateFilterType } from "type-graphql-filter";
+import { Filter } from "type-graphql-filter";
 import { prop, getModelForClass } from "@typegoose/typegoose";
 import { stringFilters, booleanFilters, idFilters } from "../models/filterTypes";
 import { CoreDocument } from "./CoreDocument";
 
 /**
- * The document model for modules within game systems
+ * The model for the Module document. Modules tie together clumps of entities, 
+ * content, campaigns, etc and may be potentially purchased.
  */
 @ObjectType()
 export class Module extends CoreDocument {
