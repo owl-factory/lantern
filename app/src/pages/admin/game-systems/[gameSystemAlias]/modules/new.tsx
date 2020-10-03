@@ -6,7 +6,7 @@ import gql from "graphql-tag";
 import { client } from "../../../../../utilities/graphql/apiClient";
 import { useRouter } from "next/router";
 import ModuleForm from "../../../../../components/admin/modules/Form";
-import ModuleInput from "@reroll/model/dist/inputs/ModuleInput";
+import { ModuleInput } from "@reroll/model/dist/inputs/ModuleInput";
 
 /**
  * Renders a new game system form
@@ -31,7 +31,7 @@ export function NewModuleForm(props: any) {
           alias: "${values.alias}",
           description: "${values.description}",
           isPurchasable: ${values.isPurchasable},
-          cost: ${(values.cost) * 100}
+          cost: ${(values.cost || 0) * 100}
         }) {
           _id,
           alias
