@@ -9,7 +9,7 @@ interface EntityCardProps {
 }
 
 /**
- * Renders a card with a table for entities 
+ * Renders a card with a table for entities
  * @param props.gameSystem The game system of the entities to render
  * @param props.entities The array of entities to render into the card
  */

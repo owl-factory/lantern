@@ -1,9 +1,10 @@
 import React from "react";
-import { ContextButtonProps, ContextMenuItemProps, ContextMenuLinkProps, ContextMenuGenericItem, ContextMenuLink, ContextMenuItem } from "../../../models/design/contextMenu";
+import { ContextButtonProps, ContextMenuItemProps, ContextMenuLinkProps, ContextMenuGenericItem, ContextMenuLink, ContextMenuItem, ButtonConfig } from "../../../models/design/contextMenu";
 import Tooltip from "../Tooltip";
 import { Button, ButtonGroup } from "react-bootstrap";
 import { useRouter } from "next/router";
 import { parseHref } from "../../../utilities/design/contextMenu";
+import Link from "next/link";
 
 /**
  * Context Menu Buttons are split buttons created together in a singular group,
@@ -20,7 +21,10 @@ import { parseHref } from "../../../utilities/design/contextMenu";
 function ContextButtonItem(props: ContextMenuItemProps) {
   return (
     <Tooltip title={props.title}>
-      <Button onClick={() => {props.action(props.context)}}>
+      <Button
+        className={props.buttonConfig.className}
+        onClick={() => {props.action(props.context)}}
+      >
         <props.icon/>
       </Button>
     </Tooltip>
@@ -40,12 +44,13 @@ function ContextButtonLink(props: ContextMenuLinkProps) {
   const linkAs = parseHref(props.href, props.keys, props.context);
 
   return (
-    <ContextButtonItem
-      title={props.title}
-      icon={props.icon}
-      action={() => {router.push(props.href, linkAs)}}
-      context={props.context}
-    />
+    <Tooltip title={props.title}>
+      <Button className={props.buttonConfig.className}>
+        <Link href={props.href} as={linkAs}>
+          <a><props.icon/></a>
+        </Link>
+      </Button>
+    </Tooltip>
   );
 }
 
@@ -56,7 +61,12 @@ function ContextButtonLink(props: ContextMenuLinkProps) {
   * @param context Any appropriate context for this menu
   * @param keyIndex The index used for the key
   */
-function renderDefaultMenuItem(item: ContextMenuGenericItem, context: any, keyIndex: number) {
+function renderDefaultMenuItem(
+  buttonConfig: ButtonConfig,
+  item: ContextMenuGenericItem,
+  context: any,
+  keyIndex: number
+) {
   const key = `context-menu-item-${keyIndex}`;
   
   switch(item.type) {
@@ -66,10 +76,24 @@ function renderDefaultMenuItem(item: ContextMenuGenericItem, context: any, keyIn
       return <></>; // TODO - need to figure out what to do here
     
     case "link":
-      return <ContextButtonLink key={key} {...item as unknown as ContextMenuLink} context={context}/>;
+      return (
+        <ContextButtonLink
+          key={key}
+          buttonConfig={buttonConfig}
+          {...item as unknown as ContextMenuLink}
+          context={context}
+        />
+      );
     
     case "item":
-      return <ContextButtonItem key={key} {...item as unknown as ContextMenuItem} context={context}/>;
+      return (
+        <ContextButtonItem
+          key={key}
+          buttonConfig={buttonConfig}
+          {...item as unknown as ContextMenuItem}
+          context={context}
+        />
+      );
 
     default:
       return <></>;
@@ -78,15 +102,26 @@ function renderDefaultMenuItem(item: ContextMenuGenericItem, context: any, keyIn
 
 /**
  * Renders a group of buttons without a ButtonGroup wrapper
+ * @param props.buttonConfig The configuration for visible buttons
  * @param props.context The context for the buttons
  * @param props.items A list of items to render and their instructions
  */
 export function ContextButtons(props: ContextButtonProps) {
   const defaultMenuItems: JSX.Element[] = [];
   let keyIndex = 0;
+  let counter = 0;
 
   props.items.forEach((item: ContextMenuGenericItem) => {
-    defaultMenuItems.push(renderDefaultMenuItem(item, props.context, keyIndex++));
+    if (counter++ >= props.buttonConfig.width) {
+      return;
+    }
+
+    defaultMenuItems.push(renderDefaultMenuItem(
+      props.buttonConfig, 
+      item, 
+      props.context, 
+      keyIndex++
+    ));
   });
   return <>{defaultMenuItems}</>;
 }
