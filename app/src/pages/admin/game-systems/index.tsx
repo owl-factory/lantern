@@ -128,6 +128,7 @@ async function queryGameSystems(page: number, perPage: number, ) {
 GameSystems.getInitialProps = async () => {
   const gameSystemData = await queryGameSystems(1, initialPerPage);
   return gameSystemData.data;
+  // return {gameSystems: [], gameSystemCount: 0}
 }
 
 export default GameSystems;
