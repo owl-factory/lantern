@@ -7,8 +7,15 @@ import Breadcrumbs from "../../../../components/design/Breadcrumbs";
 import { NextPageContext } from "next";
 import gql from "graphql-tag"; 
 import { client } from "../../../../utilities/graphql/apiClient";
-import { GameSystem } from "@reroll/model/dist/documents/GameSystem";
+import { CampaignCard } from "../../../../components/admin/campaigns/Card";
+import { ModuleCard } from "../../../../components/admin/modules/Card";
+import { ContentCard } from "../../../../components/admin/content/Card";
+import { EntityCard } from "../../../../components/admin/entities/Card";
 
+/**
+ * Publishes a game system
+ * @param _id The id of the gamesystem to publish
+ */
 function publish(_id: string) {
   const publishGameSystem = gql`mutation {
     updateGameSystem(_id: "${_id}", data: {isPublished: true}) {
@@ -26,10 +33,20 @@ function publish(_id: string) {
 /**
  * Renders the information page for the game system
  * @param gameSystem The gamesystem object pulled from the database
+ * @param modules A list of modules ordered by last updated to provide a peek
+ * @param moduleCount The total count of modules that exist within this gamesystem
+ * @param entityCount The total count of entities that exist within this gamesystem
+ * @param contentCount The total count of content that exist within this gamesystem
  */
-export default function GameSystemView({gameSystem, moduleCount, entityCount, contentCount}: any) {
+export default function GameSystemView({
+  gameSystem,
+  modules,
+  moduleCount, 
+  entityCount, 
+  contentCount
+}: any) {
   const router = useRouter();
-  const { alias } = router.query;
+  const alias = router.query.gameSystemAlias;
   
   return (
     <Page>
@@ -121,48 +138,19 @@ export default function GameSystemView({gameSystem, moduleCount, entityCount, co
       
       <hr/>
 
-      <Card>
-        <Card.Header>
-          <>Modules</>
-          <Link href={"/admin/game-systems/" + alias + "/modules/new"}  passHref>
-            <Button size="sm" style={{float:"right"}}>Add Modules</Button>
-          </Link>
-        </Card.Header>
-
-        <Card.Body>
-
-        </Card.Body>
-      </Card>
+      <ModuleCard gameSystem={gameSystem} modules={modules}/>
 
       <hr/>
 
-      <Card>
-        <Card.Header>
-          <>Entities</>
-          <Link href={"/admin/game-systems/" + alias + "/entities/new"}  passHref>
-            <Button size="sm" style={{float:"right"}}>Add Entity</Button>
-          </Link>
-        </Card.Header>
-
-        <Card.Body>
-
-        </Card.Body>
-      </Card>
+      <CampaignCard gameSystem={gameSystem} campaigns={[]}/>
 
       <hr/>
 
-      <Card>
-        <Card.Header>
-          <>Content</>
-          <Link href={"/admin/game-systems/" + alias + "/content/new"}  passHref>
-            <Button size="sm" style={{float:"right"}}>Add Content</Button>
-          </Link>
-        </Card.Header>
+      <EntityCard gameSystem={gameSystem} entities={[]}/>
 
-        <Card.Body>
+      <hr/>
 
-        </Card.Body>
-      </Card>
+      <ContentCard gameSystem={gameSystem} content={[]}/>
 
       <hr/>
 
@@ -192,7 +180,7 @@ export default function GameSystemView({gameSystem, moduleCount, entityCount, co
 }
 
 GameSystemView.getInitialProps = async (ctx: NextPageContext) => {
-  const alias = ctx.query.alias;
+  const alias = ctx.query.gameSystemAlias;
 
   const gameSystemQuery = gql`
   {
@@ -211,12 +199,22 @@ GameSystemView.getInitialProps = async (ctx: NextPageContext) => {
 
   const moduleQuery = gql`
   query {
+    modules (filters: {gameSystemID_eq: "${data.gameSystem._id}"}) {
+      _id,
+      name, 
+      alias,
+      publishType,
+      isPublished,
+      isPurchasable,
+      cost
+    },
     moduleCount (filters: {gameSystemID_eq: "${data.gameSystem._id}"})
   }`;
   
   const moduleData  = await client.query({query: moduleQuery});
   return {
     gameSystem: data.gameSystem, 
+    modules: moduleData.data.modules,
     moduleCount: moduleData.data.moduleCount,
     entityCount: 0,
     contentCount: 0
