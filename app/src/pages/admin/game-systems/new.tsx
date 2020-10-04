@@ -4,6 +4,9 @@ import GameSystemForm from "../../../components/admin/gameSystems/Form";
 import Page from "../../../components/design/Page";
 import gql from "graphql-tag";
 import ThemeModel from "../../../models/database/themes";
+import { GameSystemInput } from "@reroll/model/dist/inputs/GameSystemInput"
+import { client } from "../../../utilities/graphql/apiClient";
+import { useRouter } from "next/router";
 
 /**
  * @param themes Themes to render within the form's theme dropdown
@@ -24,17 +27,39 @@ interface NewGameSystemProps {
  * @param props.themes The themes to render within the form's theme dropdown 
  */
 export function NewGameSystemForm(props: GameSystemFormProps) {
+  const router = useRouter();
   return <GameSystemForm 
     initialValues={{
-      id: "",
       name: "",
-      key: "",
+      alias: "",
       description: "",
-      isPurchasable: false,
-      cost: 0.00,
       defaultThemeID: undefined,
     }}
-    onSubmit={(values: any) => alert(JSON.stringify(values))}
+    onSubmit={(values: GameSystemInput) => {
+      const newGameSystemMutation = gql`
+      mutation {
+        newGameSystem (data: {
+          name: "${values.name}",
+          alias: "${values.alias}",
+          description: "${values.description}",
+          isUserCreated: false,
+          defaultThemeID: "${values.defaultThemeID || ""}"
+        }) {
+          _id,
+          alias
+        }
+      }
+      `;
+      client.mutate({mutation: newGameSystemMutation})
+      .then((res: any, ) => {
+        const key = res.data.newGameSystem.alias || res.data.newGameSystem._id;
+        router.push(`/admin/game-systems/${key}`)
+      })
+      .catch((error: any) => {
+        // TODO - Better error handling
+        console.log(error)
+      });
+    }}
     themes={props.themes}
   />;
 }

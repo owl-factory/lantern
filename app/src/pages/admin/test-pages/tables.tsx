@@ -3,7 +3,6 @@ import Table from "../../../components/design/tables/Table";
 import { TableBuilder } from "../../../utilities/design/table";
 import Page from "../../../components/design/Page";
 import Link from "next/link";
-import PaginatedTable from "../../../components/design/tables/PaginatedTable";
 
 /**
  * Renders links and other actions for a row of data
@@ -48,7 +47,6 @@ export default function TableTesting() {
       <Table {...tableBuilder.renderConfig()} data={tableData}/>
       <hr/>
       <h2>Paginated Table Testing</h2>
-      <PaginatedTable {...tableBuilder.renderConfig()} data={tableData}/>
 
     </Page>
   );
