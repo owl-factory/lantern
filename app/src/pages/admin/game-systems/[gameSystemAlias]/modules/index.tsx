@@ -77,7 +77,7 @@ export default function ModulesIndex({ gameSystem, initialModules, moduleCount }
         skipLevels={1} 
         titles={["Admin", "Game Systems", gameSystem.name, "Modules"]}
       />
-      <ModuleTable modules={modules} pageState={pageState}/>
+      <ModuleTable gameSystem={gameSystem} modules={modules} pageState={pageState}/>
       <Pagination pageState={pageState} setPageState={setPage}/>
     </Page>
   );
@@ -89,7 +89,8 @@ ModulesIndex.getInitialProps = async (ctx: NextPageContext) => {
   const query = gql`query {
     gameSystem (_id: "${alias}") {
       _id,
-      name
+      name,
+      alias
     }
   }`;
 

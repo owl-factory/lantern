@@ -1,11 +1,11 @@
 import React from "react";
 import { Table as BSTable } from "react-bootstrap"
-import { def } from "../../../utilities/tools";
 import { Column } from "../../../models/design/table";
 
 interface TableProps {
   columns: Column[]; // The column configuration
   data: any[]; // An array of data to render
+  globalData?: any;
   startingIncrement?: number; // The number to begin incrementation on
 }
 
@@ -16,12 +16,14 @@ interface TableHeaderProps {
 interface TableBodyProps {
   columns: Column[]; // The column configuration
   data: any[]; // An array of data to render
+  globalData?: any;
   startingIncrement?: number; // The number to begin incrementation on
 }
 
 interface TableRowProps {
   columns: Column[]; // The column configuration
   data: any; // The object with data to render
+  globalData?: any;
   increment: number; // The current row increment
 }
 
@@ -71,7 +73,7 @@ function TableRow(props: TableRowProps) {
       }
 
     } else if (column.component !== undefined) {
-      content = column.component(props.data);
+      content = column.component(props.data, props.globalData);
 
     } else if (column.increment === true) {
       content = props.increment;
@@ -95,6 +97,7 @@ export default function Table(props: TableProps) {
       <TableBody
         columns={props.columns}
         data={props.data}
+        globalData={props.globalData}
         startingIncrement={props.startingIncrement}
       />
     </BSTable>
