@@ -6,15 +6,15 @@ import gql from "graphql-tag";
 import { GameSystemInput } from "@reroll/model/dist/inputs/GameSystemInput"
 import { client } from "../../../utilities/graphql/apiClient";
 import { useRouter } from "next/router";
-import CommonContentTypeForm from "../../../components/admin/commonContentTypes/Form";
+import CommonEntityTypeForm from "../../../components/admin/commonEntityTypes/Form";
 
 /**
  * Renders a new game system form
  * @param props.themes The themes to render within the form's theme dropdown 
  */
-export function NewCommonContentTypeForm() {
+export function NewCommonEntityTypeForm() {
   const router = useRouter();
-  return <CommonContentTypeForm 
+  return <CommonEntityTypeForm 
     initialValues={{
       name: "",
       alias: ""
@@ -22,7 +22,7 @@ export function NewCommonContentTypeForm() {
     onSubmit={(values: GameSystemInput) => {
       const newGameSystemMutation = gql`
       mutation {
-        newCommonContentType (data: {
+        newCommonEntityType (data: {
           name: "${values.name}",
           alias: "${values.alias}",
           description: "${values.description}"
@@ -34,8 +34,8 @@ export function NewCommonContentTypeForm() {
       `;
       client.mutate({mutation: newGameSystemMutation})
       .then((res: any, ) => {
-        const key = res.data.newCommonContentType.alias || res.data.newGamenewCommonContentTypeystem._id;
-        router.push(`/admin/content-types/${key}`)
+        const key = res.data.newCommonEntityType.alias || res.data.newGamenewCommonEntityTypeystem._id;
+        router.push(`/admin/entity-types/${key}`)
       })
       .catch((error: any) => {
         // TODO - Better error handling
@@ -49,21 +49,21 @@ export function NewCommonContentTypeForm() {
  * Renders a the page to create a new game system
  * @param themes The themes to render within the new game system form
  */
-function NewCommonContentType() {
+function NewCommonEntityType() {
   return (
     <Page>
-      <h1>Create Common Content Type</h1>
+      <h1>Create Common Entity Type</h1>
       <Breadcrumbs skipLevels={1} titles={[
         "Admin",
-        "Content Types",
-        "Create Common Content Type"
+        "Entity Types",
+        "Create Common Entity Type"
       ]}/>
 
       <br/>
 
-      <NewCommonContentTypeForm/>
+      <NewCommonEntityTypeForm/>
     </Page>
   );
 }
 
-export default NewCommonContentType;
+export default NewCommonEntityType;

@@ -7,6 +7,7 @@ import { ModuleResolver } from "./resolvers/ModuleResolver";
 import { nfAuthChecker, parseToken } from "./utilities/auth";
 import { ContentResolver } from "./resolvers/ContentResolver";
 import { CommonContentTypeResolver } from "./resolvers/CommonContentType";
+import { CommonEntityTypeResolver } from "./resolvers/CommonEntityType";
 
 const { ApolloServer } = require('apollo-server-lambda');
 
@@ -19,6 +20,7 @@ const schema = buildSchema({
   resolvers: [
     CharacterResolver,
     CommonContentTypeResolver,
+    CommonEntityTypeResolver,
     ContentResolver,
     GameSystemResolver,
     ModuleResolver,
