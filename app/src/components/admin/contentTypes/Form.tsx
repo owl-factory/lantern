@@ -2,7 +2,7 @@ import { Formik, Form as FormikForm } from "formik";
 import React from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import * as Yup from "yup";
-import { Error, Input, TextArea, Select } from "../../design/forms/Forms";
+import { Error, Input, TextArea, Select, Checkbox } from "../../design/forms/Forms";
 import { FormixFormProps } from "../../../models/design/form";
 import { ContentTypeInput } from "@reroll/model/dist/inputs/ContentTypeInput";
 import { CommonContentType } from "@reroll/model/dist/documents/CommonContentType";
@@ -61,14 +61,21 @@ export default function ContentTypeForm(props: ContentTypeFormProps) {
 
             <Form.Group as={Col}>
               <Form.Label>Default Theme</Form.Label>
-                <Select 
-                  name="commonContentTypeID"
-                  options={props.commonContentTypes}
-                  labelKey="name"
-                  valueKey="_id"
-                />
-                <Error name="commonContentTypeID"/>
-              </Form.Group>
+              <Select 
+                name="commonContentTypeID"
+                options={props.commonContentTypes}
+                labelKey="name"
+                valueKey="_id"
+              />
+              <Error name="commonContentTypeID"/>
+            </Form.Group>
+
+              {/* Is Purchasable */}
+            <Form.Group as={Col}>
+              <Checkbox name="isTypeOnly">
+                <Form.Check.Label>Is Type Only?</Form.Check.Label>
+              </Checkbox>
+            </Form.Group>
           </Row>
 
           <Row>

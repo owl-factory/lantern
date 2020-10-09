@@ -6,21 +6,21 @@ import { getUserID } from "../misc";
 
 export class CoreResolver {
   protected model: ReturnModelType<any>;
-  protected requiredAliasDependencies: string[] = [];
 
-  resolver(_id: string, aliasDependencies?: any) {
-    // Knock out the ones where we know we have everything
-    // ID only check if we aren't given any dependencies
-    if (isID(_id) && !aliasDependencies) {
-      return this.findById(_id);
-    // Alias search if we don't require any dependencies
-    } else if (!isID(_id) && this.requiredAliasDependencies.length === 0) {
-      return this.findByAlias(_id);
+  resolver(_id: string, filters: any = {}) {
+    for(const filter in filters) {
+      if (!filters[filter] ) {
+        delete filters[filter];
+      }
     }
 
-    // TODO - 
+    if (isID(_id)) {
+      filters._id_eq = _id;
+    } else {
+      filters.alias_eq = _id;
+    }
 
-    throw "Alias ependencies not implemented yet";
+    return buildWhere(this.model.findOne({}, null), filters);
   }
 
   /**

@@ -19,7 +19,8 @@ export function NewContentTypeForm({ commonContentTypes, gameSystem }: any) {
     commonContentTypes={commonContentTypes}
     initialValues={{
       name: "",
-      alias: ""
+      alias: "",
+      isTypeOnly: false
     }}
     onSubmit={(values: ContentTypeInput) => {
       const newContentTypeMutation = gql`
@@ -29,6 +30,7 @@ export function NewContentTypeForm({ commonContentTypes, gameSystem }: any) {
           alias: "${values.alias}",
           gameSystemID: "${gameSystem._id}",
           commonContentTypeID: "${values.commonContentTypeID}",
+          isTypeOnly: "${values.isTypeOnly}",
           description: "${values.description}"
         }) {
           _id,

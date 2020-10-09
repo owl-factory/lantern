@@ -59,6 +59,9 @@ export class ContentTypeInput extends CommonContentTypeInput implements Partial<
   @Field(() => ID, { nullable: true })
   commonContentTypeID?: string;
 
+  @Field(() => Boolean, { nullable: true })
+  isTypeOnly?: boolean;
+
   // TODO - I think this might have to be a JSON string :/
   // That's basically fine, but we can't search for it (easily)
   @Field(() => [ContentTypeFieldInput], { nullable: true })

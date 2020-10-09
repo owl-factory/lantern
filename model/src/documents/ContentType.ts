@@ -68,6 +68,12 @@ export class ContentType extends CommonContentType {
   @prop()
   commonContentTypeID?: string;
 
+  // If true, we do NOT return this while searching. This indicates that this type is used for
+  // entity sheets and nothing else. 
+  @Field(() => Boolean)
+  @prop()
+  isTypeOnly: boolean;
+
   @Field(() => [ContentTypeField])
   @prop({ default: [] })
   fields: ContentTypeField[];

@@ -18,8 +18,12 @@ export class ContentTypeResolver extends CoreResolver {
    * @param _id The id of the contentType document to return
    */
   @Query(() => ContentType, {nullable: true})
-  async contentType(@Arg("_id") _id: string): Promise<ContentType | null> {
-    return super.resolver(_id);
+  async contentType(
+    @Arg("_id") _id: string,
+    @Arg("gameSystemID", { nullable: true }) gameSystemID?: string
+  ): Promise<ContentType | null> {
+    return super.resolver(_id, {gameSystemID_eq: gameSystemID});
+
   }
 
   /**
