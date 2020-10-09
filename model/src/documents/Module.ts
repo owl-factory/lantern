@@ -30,6 +30,13 @@ export class Module extends CoreDocument {
   @prop({ default: false, required: true })
   isPublished: boolean;
 
+  // Used to indicate if this module will have it's content statically rendered
+  // Typically used if free. 
+  // Cannot be a paid module if it is statically rendered
+  @Field(() => Boolean, { defaultValue: false })
+  @prop({ required: true })
+  isStaticallyRendered: boolean;
+
   @Field(_type => Boolean)
   @Filter(booleanFilters)
   @prop({ default: false, required: true })
