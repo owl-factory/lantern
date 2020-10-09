@@ -192,7 +192,13 @@ GameSystemView.getInitialProps = async (ctx: NextPageContext) => {
       isPurchasable,
       cost
     },
-    moduleCount (filters: {gameSystemID_eq: "${data.gameSystem._id}"})
+    moduleCount (filters: {gameSystemID_eq: "${data.gameSystem._id}"}),
+    contentTypes (filters: {gameSystemID_eq: "${data.gameSystem._id}"}) {
+      _id,
+      name,
+      alias
+    },
+    contentTypeCount (filters: {gameSystemID_eq: "${data.gameSystem._id}"})
   }`;
   
   const moduleData  = await client.query({query: moduleQuery});
@@ -200,7 +206,7 @@ GameSystemView.getInitialProps = async (ctx: NextPageContext) => {
     gameSystem: data.gameSystem, 
     modules: moduleData.data.modules,
     moduleCount: moduleData.data.moduleCount,
-    contentTypes: [],
+    contentTypes: moduleData.data.contentTypes,
     entityTypes: [],
     entityCount: 0,
     contentCount: 0
