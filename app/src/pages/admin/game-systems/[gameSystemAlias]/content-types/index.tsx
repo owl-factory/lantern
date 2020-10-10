@@ -8,32 +8,15 @@ import { ContentTypeTable } from "../../../../../components/admin/contentTypes/T
 import { client } from "../../../../../utilities/graphql/apiClient";
 import Page from "../../../../../components/design/Page";
 import Breadcrumbs from "../../../../../components/design/Breadcrumbs";
+import Pagination, { PageState } from "../../../../../components/design/Pagination";
 
 const initialPerPage = 25;
 
-/**
- * Publishes a game system
- * @param _id The id of the gamesystem to publish
- */
-function publish(_id: string) {
-  const publishGameSystem = gql`mutation {
-    updateGameSystem(_id: "${_id}", data: {isPublished: true}) {
-      ok
-    }
-  }`;
-
-  client.mutate({mutation: publishGameSystem})
-  .then((res: any) => {
-    // TODO - need a way to refetch this!
-    console.log("Published!")
-  })
-}
-
 async function fetchContentTypes(
-  gameSystemID: string, 
   page: number, 
-  perPage: number
-) {
+  perPage: number,
+  gameSystemID: string
+  ) {
   const contentTypeQuery = gql`
   query {
     contentTypes (
@@ -43,7 +26,8 @@ async function fetchContentTypes(
     ) {
       _id,
       name,
-      alias
+      alias,
+      isTypeOnly
     },
     contentTypeCount (filters: {gameSystemID_eq: "${gameSystemID}"})
   }`;
@@ -73,7 +57,22 @@ export default function GameSystemView({
     page: 1, 
     perPage: initialPerPage, 
     totalCount: contentTypeCount
-  })
+  });
+
+  /**
+   * Sets the new page and perPage, then pulls new content types to match
+   * @param newPageState The new page state (page, pageCount, etc) changes
+   */
+  async function setPage(newPageState: PageState) {
+    const { data } = await fetchContentTypes(
+      newPageState.page,
+      newPageState.perPage,
+      gameSystem._id
+    );
+  
+    setContentTypes(data.contentTypes);
+    setPageState({...newPageState, totalCount: data.contentTypeCount});
+  }
   
   return (
     <Page>
@@ -83,7 +82,8 @@ export default function GameSystemView({
         titles={["Admin", "Game Systems", gameSystem.name!, "Content Types"]}
       />
 
-      <ContentTypeTable contentTypes={contentTypes} pageState={pageState}/>
+      <ContentTypeTable contentTypes={contentTypes} pageState={pageState} gameSystem={gameSystem}/>
+      <Pagination pageState={pageState} setPageState={setPage}/>
       
     </Page>
   );
@@ -104,9 +104,9 @@ GameSystemView.getInitialProps = async (ctx: NextPageContext) => {
   const { gameSystem } = (await client.query({query: gameSystemQuery}))["data"];
 
   const { contentTypes, contentTypeCount } = await fetchContentTypes(
-    gameSystem._id,
     1,
-    initialPerPage
+    initialPerPage,
+    gameSystem._id
   );
   
   return {

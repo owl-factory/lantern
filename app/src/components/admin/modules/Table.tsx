@@ -16,8 +16,6 @@ const moduleActions = new ContextMenuBuilder()
  * @param props A game system object
  */
 function ModuleActions(data: any, globalData: GameSystem) {
-  console.log(data)
-  // View, Details, Edit, Modules
 
   return (
     <ContextMenu 
