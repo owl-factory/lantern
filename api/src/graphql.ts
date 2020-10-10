@@ -6,9 +6,9 @@ import { GameSystemResolver } from "./resolvers/GameSystemResolver";
 import { ModuleResolver } from "./resolvers/ModuleResolver";
 import { nfAuthChecker, parseToken } from "./utilities/auth";
 import { ContentResolver } from "./resolvers/ContentResolver";
-import { CommonContentTypeResolver } from "./resolvers/CommonContentType";
-import { CommonEntityTypeResolver } from "./resolvers/CommonEntityType";
-import { ContentTypeResolver } from "./resolvers/ContentType";
+import { CommonContentTypeResolver } from "./resolvers/CommonContentTypeResolver";
+import { CommonEntityTypeResolver } from "./resolvers/CommonEntityTypeResolver";
+import { ContentTypeResolver } from "./resolvers/ContentTypeResolver";
 
 const { ApolloServer } = require('apollo-server-lambda');
 

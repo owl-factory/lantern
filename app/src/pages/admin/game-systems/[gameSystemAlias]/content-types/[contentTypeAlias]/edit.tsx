@@ -76,35 +76,30 @@ export default function EditContentType({ commonContentTypes, contentType, gameS
 EditContentType.getInitialProps = async (ctx: NextPageContext) => {
   const { contentTypeAlias, gameSystemAlias } = ctx.query;
   
-  let query = gql`
-  query {
-    gameSystem (_id: "${gameSystemAlias}") {
-      _id,
-      name,
-      alias
-    },
+  let query = gql`query {
     commonContentTypes (sort: "name") {
       _id,
       name,
       alias
-    }
-  }`;
-
-  const { gameSystem, commonContentTypes } = (await client.query({query: query}))["data"];
-  query = gql`query {
-    contentType (_id: "${contentTypeAlias}", gameSystemID: "${gameSystem._id}") {
+    },
+    contentType (_id: "${contentTypeAlias}", gameSystemID: "${gameSystemAlias}") {
       _id, 
       name, 
       alias,
       commonContentTypeID,
       isTypeOnly,
       description
-    }
-
+    },
+    gameSystem (_id: "${gameSystemAlias}") {
+      _id,
+      name,
+      alias
+    },
+    
   }`;
 
-  const { contentType } = (await client.query({query}))["data"];
-
+  const { commonContentTypes, contentType, gameSystem } = (await client.query({query: query}))["data"];
+  
   return { 
     commonContentTypes,
     contentType,

@@ -94,16 +94,7 @@ export default function ContentTypeView({contentType, gameSystem}: any) {
 ContentTypeView.getInitialProps = async (ctx: NextPageContext) => {
   const { gameSystemAlias, contentTypeAlias } = ctx.query;
   let query = gql`query {
-    gameSystem(_id: "${gameSystemAlias}") {
-      _id,
-      name,
-      alias
-    }
-  }`;
-
-  const { gameSystem } = (await client.query({query}))["data"];
-  query = gql`query{
-    contentType(_id: "${contentTypeAlias}") {
+    contentType(_id: "${contentTypeAlias}", gameSystemID: "${gameSystemAlias}") {
       _id,
       name,
       alias,
@@ -118,8 +109,14 @@ ContentTypeView.getInitialProps = async (ctx: NextPageContext) => {
       createdAt,
       updatedAt
     },
+    gameSystem(_id: "${gameSystemAlias}") {
+      _id,
+      name,
+      alias
+    }
   }`;
-  const { contentType } = (await client.query({query}))["data"];
 
+  const { contentType, gameSystem } = (await client.query({query}))["data"];
+  
   return { contentType, gameSystem };
 }

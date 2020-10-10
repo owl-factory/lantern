@@ -7,13 +7,20 @@ import { getUserID } from "../misc";
 export class CoreResolver {
   protected model: ReturnModelType<any>;
 
+  /**
+   * Search for a single document with the given id/alias and additional ids
+   * @param _id The id or alias of the document to find
+   * @param filters A collection of additional IDs provided for non-unique aliases
+   */
   resolver(_id: string, filters: any = {}) {
+    // Removes any empty ids from the filters
     for(const filter in filters) {
       if (!filters[filter] ) {
         delete filters[filter];
       }
     }
 
+    // Determines which filter we should use
     if (isID(_id)) {
       filters._id_eq = _id;
     } else {
@@ -21,30 +28,6 @@ export class CoreResolver {
     }
 
     return buildWhere(this.model.findOne({}, null), filters);
-  }
-
-  /**
-   * Finds a single resolver by ID
-   * 
-   * @param _id The id of the model to find
-   */
-  findById(_id: string) {
-    return this.model.findById(_id);
-  }
-
-  /**
-   * Finds a single resolver by alias
-   * 
-   * @param alias The id or alias of the model to find
-   * @param filters Any additional filters, such as a parent's ID for 
-   *  non-distinct aliases
-   */
-  async findByAlias(alias: string, filters?: any) {
-    const result = await buildWhere(this.model.find({alias}), filters).limit(1);
-    if (Array.isArray(result) && result.length) {
-      return result[0];
-    }
-    return null;
   }
   
   /**
