@@ -60,7 +60,7 @@ export default function ContentTypeForm(props: ContentTypeFormProps) {
             </Form.Group>
 
             <Form.Group as={Col}>
-              <Form.Label>Default Theme</Form.Label>
+              <Form.Label>Common Content Type</Form.Label>
               <Select 
                 name="commonContentTypeID"
                 options={props.commonContentTypes}

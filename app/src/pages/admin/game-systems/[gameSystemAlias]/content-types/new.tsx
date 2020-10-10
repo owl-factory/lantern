@@ -30,7 +30,7 @@ export function NewContentTypeForm({ commonContentTypes, gameSystem }: any) {
           alias: "${values.alias}",
           gameSystemID: "${gameSystem._id}",
           commonContentTypeID: "${values.commonContentTypeID}",
-          isTypeOnly: "${values.isTypeOnly}",
+          isTypeOnly: ${values.isTypeOnly},
           description: "${values.description}"
         }) {
           _id,

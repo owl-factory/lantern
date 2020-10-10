@@ -29,7 +29,11 @@ export function ContentTypeCard(props: EntityCardProps) {
       </Card.Header>
 
       <Card.Body>
-        <ContentTypeTable contentTypes={props.contentTypes} pageState={{page: 1, perPage: 10, totalCount: 10}}/>
+        <ContentTypeTable 
+          contentTypes={props.contentTypes}
+          gameSystem={props.gameSystem}
+          pageState={{page: 1, perPage: 10, totalCount: 10}}
+        />
       </Card.Body>
     </Card>
   )
