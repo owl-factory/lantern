@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Arg, Args } from "type-graphql";
+import { Resolver, Query, Mutation, Arg, Args, Authorized } from "type-graphql";
 import { CoreResolver } from "./CoreResolver";
 import { CommonEntityType, CommonEntityTypeModel } from "@reroll/model/dist/documents/CommonEntityType";
 import { CommonEntityTypeFilter } from "@reroll/model/dist/filters/CommonEntityTypeFilter";
@@ -37,6 +37,7 @@ export class CommonEntityTypeResolver extends CoreResolver {
    * Returns a count of all of the documents matching the given filters
    * @param filters The filter object to count documents by. Identical to other filters
    */
+  @Authorized()
   @Query(() => Number)
   commonEntityTypeCount(@Arg("filters", {nullable: true}) filters?: CommonEntityTypeFilter) {
     return super.resolverCount(filters);
@@ -46,6 +47,7 @@ export class CommonEntityTypeResolver extends CoreResolver {
    * Creates a new commonEntityType document
    * @param data The data object to make into a new commonEntityType
    */
+  @Authorized()
   @Mutation(() => CommonEntityType)
   newCommonEntityType(@Arg("data") data: CommonEntityTypeInput, options?: any): Promise<CommonEntityType> {
     return super.newResolver(data, options);
@@ -56,6 +58,7 @@ export class CommonEntityTypeResolver extends CoreResolver {
    * @param _id The id of the document to update
    * @param data The data to replace in the document
    */
+  @Authorized()
   @Mutation(() => UpdateResponse)
   updateCommonEntityType(
     @Arg("_id") _id: string,
@@ -69,6 +72,7 @@ export class CommonEntityTypeResolver extends CoreResolver {
    * @param data The data to replace in the document
    * @param filters The filters to select the data to replace in the document
    */
+  @Authorized()
   @Mutation(() => UpdateResponse)
   updateCommonEntityTypes(
     @Arg("data") data: CommonEntityTypeInput,
@@ -81,6 +85,7 @@ export class CommonEntityTypeResolver extends CoreResolver {
    * Deletes a single commonEntityType document
    * @param _id The id of the commonEntityType document to delete
    */
+  @Authorized()
   @Mutation(() => DeleteResponse)
   deleteCommonEntityType(@Arg("_id") _id: string): Promise<DeleteResponse> {
     return super.deleteResolver(_id);
@@ -90,6 +95,7 @@ export class CommonEntityTypeResolver extends CoreResolver {
    * Deletes a single commonEntityType document
    * @param filters The id of the commonEntityType document to delete
    */
+  @Authorized()
   @Mutation(() => DeleteResponse)
   async deleteCommonEntityTypes(@Arg("filters", {nullable: true}) filters?: CommonEntityTypeFilter): Promise<DeleteResponse> {
     return super.deleteResolvers(filters);

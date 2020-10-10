@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Arg, Args } from "type-graphql";
+import { Resolver, Query, Mutation, Arg, Args, Authorized } from "type-graphql";
 import { CoreResolver, isID } from "./CoreResolver";
 import { GameSystem, GameSystemFilter, GameSystemModel } from "@reroll/model/dist/documents/GameSystem";
 import { GameSystemInput } from "@reroll/model/dist/inputs/GameSystemInput";
@@ -47,6 +47,7 @@ export class GameSystemResolver extends CoreResolver {
    * Creates a new gameSystem document and default module
    * @param data The data object to make into a new gameSystem
    */
+  @Authorized()
   @Mutation(() => GameSystem)
   async newGameSystem(@Arg("data") data: GameSystemInput) {
     const session = await startSession();
@@ -86,6 +87,7 @@ export class GameSystemResolver extends CoreResolver {
    * @param _id The id of the document to update
    * @param data The data to replace in the document
    */
+  @Authorized()
   @Mutation(() => UpdateResponse)
   updateGameSystem(
     @Arg("_id") _id: string,
@@ -100,6 +102,7 @@ export class GameSystemResolver extends CoreResolver {
    * @param data The data to replace in the document
    * @param filters The filters to select the data to replace in the document
    */
+  @Authorized()
   @Mutation(() => UpdateResponse)
   updateGameSystems(
     @Arg("data") data: GameSystemInput,
@@ -112,6 +115,7 @@ export class GameSystemResolver extends CoreResolver {
    * Deletes a single gameSystem document
    * @param _id The id of the gameSystem document to delete
    */
+  @Authorized()
   @Mutation(() => DeleteResponse)
   deleteGameSystem(@Arg("_id") _id: string): Promise<DeleteResponse> {
     return super.deleteResolver(_id);
@@ -121,6 +125,7 @@ export class GameSystemResolver extends CoreResolver {
    * Deletes a single gameSystem document
    * @param filters The id of the gameSystem document to delete
    */
+  @Authorized()
   @Mutation(() => DeleteResponse)
   async deleteGameSystems(@Arg("filters", GameSystemFilter, {nullable: true}) filters?: any): Promise<DeleteResponse> {
     return super.deleteResolvers(filters);

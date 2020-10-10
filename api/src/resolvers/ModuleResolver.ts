@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Arg, Args } from "type-graphql";
+import { Resolver, Query, Mutation, Arg, Args, Authorized } from "type-graphql";
 import { CoreResolver } from "./CoreResolver";
 import { Module, ModuleModel } from "@reroll/model/dist/documents/Module";
 import { ModuleFilter } from "@reroll/model/dist/filters/ModuleFilter";
@@ -46,6 +46,7 @@ export class ModuleResolver extends CoreResolver {
    * Creates a new module document
    * @param data The data object to make into a new module
    */
+  @Authorized()
   @Mutation(() => Module)
   newModule(@Arg("data") data: ModuleInput, options?: any): Promise<Module> {
     data.publishType = 1;
@@ -57,6 +58,7 @@ export class ModuleResolver extends CoreResolver {
    * @param _id The id of the document to update
    * @param data The data to replace in the document
    */
+  @Authorized()
   @Mutation(() => UpdateResponse)
   updateModule(
     @Arg("_id") _id: string,
@@ -70,6 +72,7 @@ export class ModuleResolver extends CoreResolver {
    * @param data The data to replace in the document
    * @param filters The filters to select the data to replace in the document
    */
+  @Authorized()
   @Mutation(() => UpdateResponse)
   updateModules(
     @Arg("data") data: ModuleInput,
@@ -82,6 +85,7 @@ export class ModuleResolver extends CoreResolver {
    * Deletes a single module document
    * @param _id The id of the module document to delete
    */
+  @Authorized()
   @Mutation(() => DeleteResponse)
   deleteModule(@Arg("_id") _id: string): Promise<DeleteResponse> {
     return super.deleteResolver(_id);
@@ -91,6 +95,7 @@ export class ModuleResolver extends CoreResolver {
    * Deletes a single module document
    * @param filters The id of the module document to delete
    */
+  @Authorized()
   @Mutation(() => DeleteResponse)
   async deleteModules(@Arg("filters", {nullable: true}) filters?: ModuleFilter): Promise<DeleteResponse> {
     return super.deleteResolvers(filters);

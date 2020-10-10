@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Arg, Args } from "type-graphql";
+import { Resolver, Query, Mutation, Arg, Args, Authorized } from "type-graphql";
 import { CoreResolver } from "./CoreResolver";
 import { CommonContentType, CommonContentTypeModel } from "@reroll/model/dist/documents/CommonContentType";
 import { CommonContentTypeFilter } from "@reroll/model/dist/filters/CommonContentTypeFilter";
@@ -46,6 +46,7 @@ export class CommonContentTypeResolver extends CoreResolver {
    * Creates a new commonContentType document
    * @param data The data object to make into a new commonContentType
    */
+  @Authorized()
   @Mutation(() => CommonContentType)
   newCommonContentType(@Arg("data") data: CommonContentTypeInput, options?: any): Promise<CommonContentType> {
     return super.newResolver(data, options);
@@ -56,6 +57,7 @@ export class CommonContentTypeResolver extends CoreResolver {
    * @param _id The id of the document to update
    * @param data The data to replace in the document
    */
+  @Authorized()
   @Mutation(() => UpdateResponse)
   updateCommonContentType(
     @Arg("_id") _id: string,
@@ -69,6 +71,7 @@ export class CommonContentTypeResolver extends CoreResolver {
    * @param data The data to replace in the document
    * @param filters The filters to select the data to replace in the document
    */
+  @Authorized()
   @Mutation(() => UpdateResponse)
   updateCommonContentTypes(
     @Arg("data") data: CommonContentTypeInput,
@@ -81,6 +84,7 @@ export class CommonContentTypeResolver extends CoreResolver {
    * Deletes a single commonContentType document
    * @param _id The id of the commonContentType document to delete
    */
+  @Authorized()
   @Mutation(() => DeleteResponse)
   deleteCommonContentType(@Arg("_id") _id: string): Promise<DeleteResponse> {
     return super.deleteResolver(_id);
@@ -90,6 +94,7 @@ export class CommonContentTypeResolver extends CoreResolver {
    * Deletes a single commonContentType document
    * @param filters The id of the commonContentType document to delete
    */
+  @Authorized()
   @Mutation(() => DeleteResponse)
   async deleteCommonContentTypes(@Arg("filters", {nullable: true}) filters?: CommonContentTypeFilter): Promise<DeleteResponse> {
     return super.deleteResolvers(filters);

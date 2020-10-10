@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Arg, Args } from "type-graphql";
+import { Resolver, Query, Mutation, Arg, Args, Authorized } from "type-graphql";
 import { CoreResolver } from "./CoreResolver";
 import { ContentType, ContentTypeModel } from "@reroll/model/dist/documents/ContentType";
 import { ContentTypeFilter } from "@reroll/model/dist/filters/ContentTypeFilter";
@@ -50,6 +50,7 @@ export class ContentTypeResolver extends CoreResolver {
    * Creates a new contentType document
    * @param data The data object to make into a new contentType
    */
+  @Authorized()
   @Mutation(() => ContentType)
   newContentType(@Arg("data") data: ContentTypeInput, options?: any): Promise<ContentType> {
     return super.newResolver(data, options);
@@ -60,6 +61,7 @@ export class ContentTypeResolver extends CoreResolver {
    * @param _id The id of the document to update
    * @param data The data to replace in the document
    */
+  @Authorized()
   @Mutation(() => UpdateResponse)
   updateContentType(
     @Arg("_id") _id: string,
@@ -73,6 +75,7 @@ export class ContentTypeResolver extends CoreResolver {
    * @param data The data to replace in the document
    * @param filters The filters to select the data to replace in the document
    */
+  @Authorized()
   @Mutation(() => UpdateResponse)
   updateContentTypes(
     @Arg("data") data: ContentTypeInput,
@@ -89,6 +92,7 @@ export class ContentTypeResolver extends CoreResolver {
    * Deletes a single contentType document
    * @param _id The id of the contentType document to delete
    */
+  @Authorized()
   @Mutation(() => DeleteResponse)
   deleteContentType(@Arg("_id") _id: string): Promise<DeleteResponse> {
     return super.deleteResolver(_id);
@@ -98,6 +102,7 @@ export class ContentTypeResolver extends CoreResolver {
    * Deletes a single contentType document
    * @param filters The id of the contentType document to delete
    */
+  @Authorized()
   @Mutation(() => DeleteResponse)
   async deleteContentTypes(@Arg("filters", {nullable: true}) filters?: ContentTypeFilter): Promise<DeleteResponse> {
     return super.deleteResolvers(filters);
