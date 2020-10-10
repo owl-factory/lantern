@@ -3,7 +3,6 @@ import Page from "../../../components/design/Page";
 import { ContextMenuBuilder } from "../../../utilities/design/contextMenu";
 import { MdEdit, MdViewList, MdAttachFile, MdClose } from "react-icons/md";
 import ContextButtonGroup from "../../../components/design/contextMenus/ContextButtons";
-import ContextMenuCollection from "../../../components/design/contextMenus/ContextMenuCollection";
 
 // Used to create a generic context type for examples
 interface ContextType {
@@ -34,9 +33,6 @@ export default function TestContextMenu() {
 
       <h3>Context Button Menu</h3>
       <ContextButtonGroup {...contextMenuBuilder1.renderConfig()} context={context}/>
-
-      <h3>Context Collection</h3>
-      <ContextMenuCollection {...contextMenuBuilder1.renderConfig()} context={context}/>
     </Page>
   )
 }

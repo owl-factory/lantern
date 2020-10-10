@@ -19,10 +19,11 @@ import Link from "next/link";
   * @param props.title The title of this item
   */
 function ContextButtonItem(props: ContextMenuItemProps) {
+  const className = props.buttonConfig ? props.buttonConfig.className || "" : "";
   return (
     <Tooltip title={props.title}>
       <Button
-        className={props.buttonConfig.className}
+        className={className}
         onClick={() => {props.action(props.context)}}
       >
         <props.icon/>
@@ -42,10 +43,11 @@ function ContextButtonItem(props: ContextMenuItemProps) {
 function ContextButtonLink(props: ContextMenuLinkProps) {
   const router = useRouter();
   const linkAs = parseHref(props.href, props.keys, props.context);
+  const className = props.buttonConfig ? props.buttonConfig.className || "" : "";
 
   return (
     <Tooltip title={props.title}>
-      <Button className={props.buttonConfig.className}>
+      <Button className={className}>
         <Link href={props.href} as={linkAs}>
           <a><props.icon/></a>
         </Link>
