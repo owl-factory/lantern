@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Arg, Args } from "type-graphql";
+import { Resolver, Query, Mutation, Arg, Args, Authorized } from "type-graphql";
 import { CoreResolver } from "./CoreResolver";
 import { Content, ContentModel } from "@reroll/model/dist/documents/Content";
 import { ContentFilter } from "@reroll/model/dist/filters/ContentFilter";
@@ -46,6 +46,7 @@ export class ContentResolver extends CoreResolver {
    * Creates a new content document
    * @param data The data object to make into a new content
    */
+  @Authorized()
   @Mutation(() => Content)
   newContent(@Arg("data") data: ContentInput, options?: any): Promise<Content> {
     return super.newResolver(data, options);
@@ -56,6 +57,7 @@ export class ContentResolver extends CoreResolver {
    * @param _id The id of the document to update
    * @param data The data to replace in the document
    */
+  @Authorized()
   @Mutation(() => UpdateResponse)
   updateContent(
     @Arg("_id") _id: string,
@@ -69,6 +71,7 @@ export class ContentResolver extends CoreResolver {
    * @param data The data to replace in the document
    * @param filters The filters to select the data to replace in the document
    */
+  @Authorized()
   @Mutation(() => UpdateResponse)
   updateContents(
     @Arg("data") data: ContentInput,
@@ -81,6 +84,7 @@ export class ContentResolver extends CoreResolver {
    * Deletes a single content document
    * @param _id The id of the content document to delete
    */
+  @Authorized()
   @Mutation(() => DeleteResponse)
   deleteContent(@Arg("_id") _id: string): Promise<DeleteResponse> {
     return super.deleteResolver(_id);
@@ -90,6 +94,7 @@ export class ContentResolver extends CoreResolver {
    * Deletes a single content document
    * @param filters The id of the content document to delete
    */
+  @Authorized()
   @Mutation(() => DeleteResponse)
   async deleteContents(@Arg("filters", {nullable: true}) filters?: ContentFilter): Promise<DeleteResponse> {
     return super.deleteResolvers(filters);

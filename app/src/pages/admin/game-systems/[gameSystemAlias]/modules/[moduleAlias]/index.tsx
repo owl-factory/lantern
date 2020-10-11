@@ -3,7 +3,8 @@ import Breadcrumbs from "../../../../../../components/design/Breadcrumbs";
 import { NextPageContext } from "next";
 import gql from "graphql-tag";
 import { client } from "../../../../../../utilities/graphql/apiClient";
-import { Row, Col, Card } from "react-bootstrap";
+import { Row, Col, Card, Button } from "react-bootstrap";
+import Link from "next/link";
 
 /**
  * Renders the details regarding a module
@@ -17,6 +18,8 @@ export default function ModuleView({
   entityCount,
   contentCount
 }: any) {
+  const gameSystemAlias = gameSystem.alias || gameSystem._id;
+  const moduleAlias = module.alias || module._id;
   return (
     <Page>
       <h1>New {gameSystem.name} Module</h1>
@@ -73,8 +76,34 @@ export default function ModuleView({
             <Card.Body>
               <b>Description:</b> {module.description}<br/>
               <b>Alias:</b> {module.alias}<br/>
+              <b>Is Default Module:</b> 
+              {gameSystem.defaultModuleID === module._id ? " True" : " False"}<br/>
               <b>Created At:</b> {module.createdAt}<br/>
               <b>Last Edited At:</b> {module.updatedAt}
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+
+      <hr/>
+
+      <Row>
+        <Col>
+          {/* Content Types */}
+          <Card>
+            <Card.Header>
+              <>Settings</>
+            </Card.Header>
+            <Card.Body>
+              {/* SET DEFAULT */}
+
+              {/* EDIT */}
+              <Link 
+                href={`/admin/game-systems/${gameSystemAlias}/modules/${moduleAlias}/edit`} 
+                passHref
+              >
+                <Button>Edit</Button>
+              </Link>
             </Card.Body>
           </Card>
         </Col>
@@ -89,7 +118,9 @@ ModuleView.getInitialProps = async (ctx: NextPageContext) => {
   const query = gql`query {
     gameSystem (_id: "${gameSystemAlias}") {
       _id,
-      name
+      name,
+      alias,
+      defaultModuleID
     },
     module (_id: "${moduleAlias}") {
       _id,

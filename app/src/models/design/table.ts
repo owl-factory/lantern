@@ -1,5 +1,5 @@
 // Describes a component function that takes in a row of data and returns an element
-export type TableComponent = (data: any) => (JSX.Element);
+export type TableComponent = (data: any, globalData?: any) => (JSX.Element);
 
 export interface Column {
   header: string; // The header title of the column

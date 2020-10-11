@@ -30,7 +30,11 @@ export function ModuleCard(props: ModuleCardProps) {
       </Card.Header>
 
       <Card.Body>
-        <ModuleTable modules={props.modules} pageState={{page: 1, perPage: 10}}/>
+        <ModuleTable
+          gameSystem={props.gameSystem}
+          modules={props.modules}
+          pageState={{page: 1, perPage: 10}}
+        />
       </Card.Body>
     </Card>
   )

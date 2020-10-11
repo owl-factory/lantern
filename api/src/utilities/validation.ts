@@ -5,6 +5,7 @@ const RESERVED_ALIASES = [
   "admin",
   "index",
   "new",
+  "undefined"
 ];
 export function isAliasReserved(alias: string) {
   return RESERVED_ALIASES.includes(alias);

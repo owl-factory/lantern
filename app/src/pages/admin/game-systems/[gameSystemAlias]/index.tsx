@@ -8,9 +8,11 @@ import { NextPageContext } from "next";
 import gql from "graphql-tag"; 
 import { client } from "../../../../utilities/graphql/apiClient";
 import { CampaignCard } from "../../../../components/admin/campaigns/Card";
+import { EntityTypeCard } from "../../../../components/admin/entityTypes/Card";
 import { ModuleCard } from "../../../../components/admin/modules/Card";
 import { ContentCard } from "../../../../components/admin/content/Card";
 import { EntityCard } from "../../../../components/admin/entities/Card";
+import { ContentTypeCard } from "../../../../components/admin/contentTypes/Card";
 
 /**
  * Publishes a game system
@@ -41,7 +43,9 @@ function publish(_id: string) {
 export default function GameSystemView({
   gameSystem,
   modules,
-  moduleCount, 
+  moduleCount,
+  contentTypes,
+  entityTypes,
   entityCount, 
   contentCount
 }: any) {
@@ -107,32 +111,12 @@ export default function GameSystemView({
       <Row>
         <Col lg={6} md={12}>
           {/* Content Types */}
-          <Card>
-            <Card.Header>
-              <>Content Types</>
-              <Link href={"/admin/game-systems/" + alias + "/content-types/new"}  passHref>
-                <Button size="sm" style={{float:"right"}}>Add Content Type</Button>
-              </Link>
-            </Card.Header>
-            <Card.Body>
-              {/* Table */}
-            </Card.Body>
-          </Card>
+          <ContentTypeCard gameSystem={gameSystem} contentTypes={contentTypes}/>
+
         </Col>
 
         <Col lg={6} md={12}>
-          {/* Entity Types */}
-          <Card>
-            <Card.Header>
-              <>Entity Types</>
-              <Link href={"/admin/game-systems/" + alias + "/entity-types/new"}  passHref>
-                <Button size="sm" style={{float:"right"}}>Add Entity Type</Button>
-              </Link>
-            </Card.Header>
-            <Card.Body>
-              {/* Table */}
-            </Card.Body>
-          </Card>
+          <EntityTypeCard gameSystem={gameSystem} entityTypes={entityTypes}/>
         </Col>
       </Row>
       
@@ -208,7 +192,13 @@ GameSystemView.getInitialProps = async (ctx: NextPageContext) => {
       isPurchasable,
       cost
     },
-    moduleCount (filters: {gameSystemID_eq: "${data.gameSystem._id}"})
+    moduleCount (filters: {gameSystemID_eq: "${data.gameSystem._id}"}),
+    contentTypes (filters: {gameSystemID_eq: "${data.gameSystem._id}"}) {
+      _id,
+      name,
+      alias
+    },
+    contentTypeCount (filters: {gameSystemID_eq: "${data.gameSystem._id}"})
   }`;
   
   const moduleData  = await client.query({query: moduleQuery});
@@ -216,6 +206,8 @@ GameSystemView.getInitialProps = async (ctx: NextPageContext) => {
     gameSystem: data.gameSystem, 
     modules: moduleData.data.modules,
     moduleCount: moduleData.data.moduleCount,
+    contentTypes: moduleData.data.contentTypes,
+    entityTypes: [],
     entityCount: 0,
     contentCount: 0
   };

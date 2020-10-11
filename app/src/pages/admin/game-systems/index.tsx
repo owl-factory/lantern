@@ -10,16 +10,16 @@ import GameSystemModel from "../../../models/database/gameSystems";
 import ContextDropdown from "../../../components/design/contextMenus/ContextDropdown";
 import { ContextMenuBuilder } from "../../../utilities/design/contextMenu";
 import { MdBuild, MdInfo, MdPageview, MdBlock } from "react-icons/md";
-import Tooltip from "../../../components/design/Tooltip";
 import { client } from "../../../utilities/graphql/apiClient";
 import gql from "graphql-tag";
 import Pagination, { PageState } from "../../../components/design/Pagination";
+import ContextMenu from "../../../components/design/contextMenus/ContextMenu";
 
 const initialPerPage = 10;
 const gameSystemActions = new ContextMenuBuilder()
-  .addLink("View", MdPageview, "/game-systems/[key]")
-  .addLink("Details", MdInfo, "/admin/game-systems/[key]")
-  .addLink("Edit", MdBuild, "/admin/game-systems/[key]/edit")
+  .addLink("View", MdPageview, "/game-systems/[alias]")
+  .addLink("Details", MdInfo, "/admin/game-systems/[alias]")
+  .addLink("Edit", MdBuild, "/admin/game-systems/[alias]/edit")
   .addItem("Delete", MdBlock, (context: GameSystem) => (confirm(`Are you sure you want to delete ${context.name}?`)))
 
 /**
@@ -46,21 +46,10 @@ function GameSystemActions(props: GameSystem) {
   const urlKey = props.alias || props._id;
 
   return (
-    <ContextDropdown as={ButtonGroup} context={props} {...gameSystemActions.renderConfig()}>
-      <Tooltip title="View">
-        <Link href="/game-systems/[key]" as={`/game-systems/${urlKey}`}>
-          <Button><MdPageview/></Button>
-        </Link>
-      </Tooltip>
-
-      <Tooltip title="Details">
-        <Link href="/admin/game-systems/[key]" as={`/admin/game-systems/${urlKey}`}>
-          <Button><MdInfo/></Button>
-        </Link> 
-      </Tooltip>
-
-      <Tooltip title="More"><Dropdown.Toggle split id={`dropdown-toggle-${urlKey}`}>...</Dropdown.Toggle></Tooltip>
-    </ContextDropdown>
+    <ContextMenu 
+      context={{name: props.name, alias: props.alias || props._id}} 
+      {...gameSystemActions.renderConfig()}
+    />
   );
 }
 
@@ -90,7 +79,7 @@ function GameSystems(data: GameSystemsProps) {
     <Page>
       <h3>Game Systems</h3>
       <Breadcrumbs skipLevels={1} titles={["Admin", "Game Systems"]}/>
-      <Link href="/admin/game-systems/new"><Button >+ Add Game System</Button></Link>
+      <Button ><Link href="/admin/game-systems/new"><a>+ Add Game System</a></Link></Button>
       <Table 
         {...tableBuilder.renderConfig()} 
         data={gameSystemData.gameSystems} 

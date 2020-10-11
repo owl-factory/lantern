@@ -8,6 +8,7 @@ export class LayoutItem {
   @Field()
   componentKey: string;
 
+  // Not sure what this does. Plan this out again?
   @Field(() => [String])
   variables: string[];
   

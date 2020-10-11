@@ -54,6 +54,7 @@ export interface ContextDropdownProps {
  * Props for the ContextButtons or ContextButtonGroup components
  */
 export interface ContextButtonProps {
+  buttonConfig: ButtonConfig;
   context: any;
   items: ContextMenuGenericItem[]
 }
@@ -61,15 +62,27 @@ export interface ContextButtonProps {
 // Props for the ContextMenuItem component
 export interface ContextMenuItemProps {
   action: ContextMenuActionType; // The action to run when clicked. May be a link or another action. Passed the context
+  buttonConfig?: ButtonConfig;
   context: any; // Any specific context for this contextmenu, such as an object's information from a table
   icon: IconType; // The icon to display on the right side of the context menu
   title: string; // The title of the item
 }
 
 export interface ContextMenuLinkProps {
+  buttonConfig?: ButtonConfig;
   context: any; // Any specific context for this contextmenu, such as an object's information from a table
   href: string; 
   icon: IconType; // The icon to display on the right side of the context menu
   keys: any;
   title: string; // The title of the item
+}
+
+export interface ButtonConfig {
+  className: string;
+  width: number;
+}
+
+export interface ContextMenuBuilderOutput {
+  buttonConfig: ButtonConfig;
+  items: ContextMenuGenericItem[];
 }
