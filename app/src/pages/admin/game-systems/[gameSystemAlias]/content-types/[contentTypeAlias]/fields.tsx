@@ -10,31 +10,111 @@ import Table from "../../../../../../components/design/tables/Table";
 import { ContentTypeField, ContentFieldType } from "@reroll/model/dist/documents/ContentType";
 import * as Yup from "yup";
 import { Form as FormikForm, Formik } from "formik";
-import { Error, Input } from "../../../../../../components/design/forms/Forms";
-
-// TODO - flesh these out
-const fieldTypes = [
-  {key: "text", value: "Text"},
-  {key: "text", value: "Text"},
-  {key: "boolean", value: "True/False"},
-  {key: "options", value: "Select"},
-];
+import { Error, Input, Select } from "../../../../../../components/design/forms/Forms";
+import { ContentFieldTypeEnum, contentFieldTypes } from "@reroll/model/dist/models/ContentFieldTypeEnum";
 
 const tableBuilder = new TableBuilder()
   .addDataColumn("Variable Name", "name")
   .addDataColumn("Type", "type")
   .addDataColumn("Default Value", "default")
-  
 
+function renderGQLArray(array: any[]) {
+  let gqlString = ``;
+  array.forEach(item => {
+    gqlString += `${renderGQL(item)},`
+  });
+  return `[${gqlString}]`;
+}
+
+function renderGQLObject(object: any) {
+  console.log(object)
+  let gqlString = ``;
+  const keys = Object.keys(object);
+  keys.forEach((key: string) => {
+    gqlString += `${key}: ${renderGQL(object[key])},`;
+  });
+
+  return `{${gqlString}}`;
+}
+
+function renderGQL(object: any) {
+  switch (typeof object) {
+    case "string":
+      return `"${object}"`;
+    case "number":
+    case "boolean":
+      return `${object}`;
+    case "object":
+      if (Array.isArray(object)) {
+        return renderGQLArray(object);
+      }
+      return renderGQLObject(object);
+  }
+  // throw new Error("No matching type")
+}
+
+/**
+ * The state of the fields, controlling the functionality of the page
+ */
+interface FieldState {
+  fields: ContentTypeField[]; // Fields of the content type that are being viewed
+  activeField: number | null; // The currently active field, indicated by the array index. Nulls means nothing is displayed
+  newField: boolean; // True if we're editing a new field. 
+  warning: string; // A warning to display. Possibly move to a new state?
+}
+  
+/**
+ * Compares two content type fields to determine which order they belong in sorting
+ * by their variable names
+ * @param a The first content type field to evaluate
+ * @param b The second content type field to evaluate
+ */
+function compareContentTypeFields(a: any, b: any) {
+  if (a.name > b.name) { return 1; }
+  else if (a.name < b.name) { return -1; }
+  return 0;
+}
+
+/**
+ * Renders the form to modify the Content Type Field
+ * @param props 
+ */
 function ContentTypeFieldForm(props: any) {
   if (props.fieldState.activeField === null) { return <><br/></>; };
 
   const field = {...props.fieldState.fields[props.fieldState.activeField]};
 
+  /**
+   * Saves a field to the fields array
+   * @param values The form values of the field to save to the fields collection
+   */
   function saveField(values: any) {
     const newFields = [...props.fieldState.fields];
+    newFields.splice(props.fieldState.activeField, 1, values);
+    newFields.sort(compareContentTypeFields);
+
+    props.setFieldState({
+      ...props.fieldState,
+      activeField: null,
+      fields: newFields,
+      newField: false
+    });
+  }
+
+  /**
+   * Deletes a field
+   * @param formProps Information passed in from the Formix form
+   */
+  function deleteField(formProps: any) {
+    // Confirms that the form should be deleted
+    const name = formProps.values.name;
+    if(!confirm(`Are you sure you want to delete ${name}?`)) {
+      return;
+    }
+
+    // Does the same flow as the save action, without adding the new field back in
+    const newFields = [...props.fieldState.fields];
     newFields.splice(props.fieldState.activeField, 1);
-    newFields.push(values);
     newFields.sort(compareContentTypeFields);
 
     props.setFieldState({
@@ -59,6 +139,7 @@ function ContentTypeFieldForm(props: any) {
     >
       {(formProps: any) => (
         <FormikForm>
+          <Button variant="primary" onClick={() => {deleteField(formProps)}}>Delete</Button>
           <Button variant="primary" type="submit">Save</Button>
 
           <Form.Group>
@@ -70,7 +151,12 @@ function ContentTypeFieldForm(props: any) {
           {/* TODO - make select */}
           <Form.Group>
             <Form.Label>Type</Form.Label>
-            <Input name="type" />
+              <Select 
+                name="type"
+                options={contentFieldTypes}
+                labelKey="name"
+                valueKey="value"
+              />
             <Error name="type"/>
           </Form.Group>
 
@@ -85,7 +171,10 @@ function ContentTypeFieldForm(props: any) {
   );
 }
   
-
+/**
+ * Renders a table containing the Content Type Fields for this specific of Content Type
+ * @param props 
+ */
 function ContentTypeFieldTable(props: any) {
   return (
     <Table
@@ -96,26 +185,13 @@ function ContentTypeFieldTable(props: any) {
   );
 }
 
+
+
 /**
- * Compares two content type fields to determine which order they belong in sorting
- * by their variable names
- * @param a The first content type field to evaluate
- * @param b The second content type field to evaluate
+ * Renders a page that allows for the editing of a content type's fields. 
+ * @param contentType The content type that fields will be edited for
+ * @param gameSystem The game system that this content type belongs to 
  */
-function compareContentTypeFields(a: any, b: any) {
-  if (a.name > b.name) { return 1; }
-  else if (a.name < b.name) { return -1; }
-  console.log("Same name error :(")
-  return 0;
-}
-
-interface FieldState {
-  fields: ContentTypeField[];
-  activeField: number | null;
-  newField: boolean;
-  warning: string;
-}
-
 export default function ContentTypeFields({ contentType, gameSystem }: any) {
   const [ fieldState, setFieldState ] = React.useState<FieldState>({
     fields: contentType.fields, 
@@ -124,34 +200,58 @@ export default function ContentTypeFields({ contentType, gameSystem }: any) {
     warning: ""
   });
 
-  function rowAction(activeField: number | null) {
+  /**
+   * Sets the new active field, allowing for the viewing and editing of data
+   * @param activeField The field to set to the active field
+   */
+  function selectActiveField(activeField: number | null) {
     if (activeField !== null ) { activeField -= 1; };
-    if (fieldState.newField) { return; };
+    if (fieldState.newField) { return; }; // Fail to switch if we're editing a new field
     if (activeField === fieldState.activeField) { return; }
     setFieldState({...fieldState, activeField});
   }
 
+  /**
+   * Creates a new field and sets it to the active field
+   */
   function newField() {
     if (fieldState.newField) {
       setFieldState({
         ...fieldState, 
-        warning: "A new variable is already being edited. Please save before creating a new one"
+        warning: "A new variable is already being edited. Please save before creating a new one."
       });
       return;
     }
 
-    const newField = {
+    const newField: ContentTypeField = {
       name: "_new_variable",
-      type: 0,
+      type: ContentFieldTypeEnum.Text,
       default: ""
     };
     const newFields = [...fieldState.fields];
     newFields.push(newField);
     newFields.sort(compareContentTypeFields);
 
-    // Variables cannot start with _ normally, so we can assert that this will be
+    // Variables cannot start with '_' normally, so we can assert that this will be
     // at the top of this function
     setFieldState({...fieldState, fields: newFields, activeField: 0, newField: true});
+  }
+
+  async function saveFields() {
+    const mutation = gql`mutation {
+      updateContentType (
+        _id: "${contentType._id}",
+        data: { fields: ${renderGQL(fieldState.fields)}}
+      ) {
+        ok, n
+      }
+    }`;
+
+    console.log(mutation)
+
+    const res = await client.mutate({mutation});
+
+    console.log(res)
   }
 
   return (
@@ -170,12 +270,12 @@ export default function ContentTypeFields({ contentType, gameSystem }: any) {
 
       {/* Global Actions */}
       <Button onClick={() => (newField())}>New Field</Button>
-      <Button>Save</Button>
+      <Button onClick={() => (saveFields())}>Save</Button>
 
       <Row>
         <Col xs={8}>
           <ContentTypeFieldTable
-            rowAction={rowAction}
+            rowAction={selectActiveField}
             fields={fieldState.fields}
           />
         </Col>

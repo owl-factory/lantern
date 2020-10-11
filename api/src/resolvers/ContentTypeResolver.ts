@@ -2,7 +2,7 @@ import { Resolver, Query, Mutation, Arg, Args, Authorized } from "type-graphql";
 import { CoreResolver, isID } from "./CoreResolver";
 import { ContentType, ContentTypeModel } from "@reroll/model/dist/documents/ContentType";
 import { ContentTypeFilter } from "@reroll/model/dist/filters/ContentTypeFilter";
-import { ContentTypeInput } from "@reroll/model/dist/inputs/ContentTypeInput";
+import { ContentTypeInput, ContentTypeFieldInput } from "@reroll/model/dist/inputs/ContentTypeInput";
 import { Options } from "@reroll/model/dist/inputs/Options";
 import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/documents/Responses";
 import { GameSystemModel } from "@reroll/model/dist/documents/GameSystem";
@@ -50,7 +50,10 @@ export class ContentTypeResolver extends CoreResolver {
 
     if (!validGameSystem) { return null; };
 
-    return super.resolver(_id, {gameSystemID_eq: gameSystemID});
+    const res = await super.resolver(_id, {gameSystemID_eq: gameSystemID}).exec();
+    console.log(res)
+    console.log(res.fields)
+    return res
 
   }
 
@@ -96,12 +99,17 @@ export class ContentTypeResolver extends CoreResolver {
    * @param _id The id of the document to update
    * @param data The data to replace in the document
    */
-  @Authorized()
+  // @Authorized()
   @Mutation(() => UpdateResponse)
   updateContentType(
     @Arg("_id") _id: string,
     @Arg("data") data: ContentTypeInput
   ): Promise<UpdateResponse> {
+    const keys: string[] = Object.keys(data);
+    if (keys.length > 1){
+      if (keys.includes("fields")) { throw Error("contentType.fields must be set by itself.")};
+    }
+    
     return super.updateResolver(_id, data)
   }
 

@@ -2,11 +2,7 @@ import { ObjectType, Field, ID } from "type-graphql";
 import { CommonContentType } from "./CommonContentType";
 import { prop, getModelForClass } from "@typegoose/typegoose";
 import { LayoutItem } from "../models/LayoutItem";
-
-export enum ContentFieldType {
-  text,
-  boolean,
-}
+import { ContentFieldTypeEnum } from "../models/ContentFieldTypeEnum";
 
 /**
  * An option used in a dropdown
@@ -28,13 +24,13 @@ export class ContentTypeOption {
  */
 @ObjectType()
 export class ContentTypeField {
-  @Field()
+  @Field({ nullable: true })
   @prop({ required: true })
   name: string;
 
   @Field()
   @prop({ required: true })
-  type: ContentFieldType;
+  type: ContentFieldTypeEnum;
 
   @Field({ nullable: true })
   @prop()
@@ -80,7 +76,7 @@ export class ContentType extends CommonContentType {
   isTypeOnly: boolean;
 
   @Field(() => [ContentTypeField])
-  @prop({ default: [] })
+  @prop({ type: ContentTypeField, _id: false})
   fields: ContentTypeField[];
 
   // The layout of the content within the game
