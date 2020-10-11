@@ -3,6 +3,10 @@ import { CommonContentType } from "./CommonContentType";
 import { prop, getModelForClass } from "@typegoose/typegoose";
 import { LayoutItem } from "../models/LayoutItem";
 
+export enum ContentFieldType {
+  text,
+  boolean,
+}
 
 /**
  * An option used in a dropdown
@@ -30,7 +34,7 @@ export class ContentTypeField {
 
   @Field()
   @prop({ required: true })
-  type: string;
+  type: ContentFieldType;
 
   @Field({ nullable: true })
   @prop()
@@ -44,6 +48,7 @@ export class ContentTypeField {
   @Field(() => Boolean, { nullable: true })
   @prop()
   readonly?: boolean; // A flag indicating whether or not this field can continue to be written to
+
 }
 
 // A collection of possible read-only warning types generated on save. 

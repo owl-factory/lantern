@@ -1,5 +1,5 @@
 import { InputType, Field, ID } from "type-graphql";
-import { ContentType, ContentTypeField, ContentTypeOption } from "../documents/ContentType";
+import { ContentType, ContentTypeField, ContentTypeOption, ContentFieldType } from "../documents/ContentType";
 import { CommonContentTypeInput } from "./CommonContentTypeInput";
 import { LayoutItem } from "../models/LayoutItem";
 
@@ -35,7 +35,7 @@ export class ContentTypeFieldInput implements Partial<ContentTypeField>  {
   name: string;
 
   @Field()
-  type: string;
+  type: ContentFieldType;
 
   @Field()
   default: string;
