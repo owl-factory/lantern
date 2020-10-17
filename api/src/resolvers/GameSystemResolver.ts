@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Arg, Args, Authorized } from "type-graphql";
+import { Resolver, Query, Mutation, Arg, Args, Authorized, Ctx } from "type-graphql";
 import { CoreResolver } from "./CoreResolver";
 import { GameSystem, GameSystemFilter, GameSystemModel } from "@reroll/model/dist/documents/GameSystem";
 import { GameSystemInput } from "@reroll/model/dist/inputs/GameSystemInput";
@@ -6,6 +6,7 @@ import { Options } from "@reroll/model/dist/inputs/Options";
 import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/documents/Responses";
 import { startSession } from "mongoose";
 import { ModuleResolver } from "./ModuleResolver";
+import { validatePublishType } from "../utilities/validation";
 
 /**
  * Resolves GameSystem queries
@@ -47,11 +48,17 @@ export class GameSystemResolver extends CoreResolver {
    * Creates a new gameSystem document and default module
    * @param data The data object to make into a new gameSystem
    */
-  @Authorized()
+  // @Authorized()
   @Mutation(() => GameSystem)
-  async newGameSystem(@Arg("data") data: GameSystemInput) {
+  async newGameSystem(
+    @Arg("data") data: GameSystemInput,
+    @Ctx() ctx
+  ) {
     const session = await startSession();
     let gameSystemDocument = null;
+
+    const publishTypeError = validatePublishType(ctx, data.publishType);
+    if (publishTypeError) { throw Error(publishTypeError); ;}
     
     try {
       // Starts a transaction to 
@@ -61,7 +68,8 @@ export class GameSystemResolver extends CoreResolver {
       const moduleResolver = new ModuleResolver();
       const moduleDocument = await moduleResolver.newModule({
         name: "Standard Rules", 
-        gameSystemID: gameSystemDocument._id
+        gameSystemID: gameSystemDocument._id,
+        publishType: data.publishType
       }, { session });
 
       this.updateGameSystem(

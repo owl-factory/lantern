@@ -30,7 +30,7 @@ export class CommonContentTypeResolver extends CoreResolver {
     @Arg("filters", {nullable: true}) filters?: CommonContentTypeFilter,
     @Args() options?: Options
   ): Promise<CommonContentType[]> {
-    return await super.resolvers(filters, options);
+    return super.resolvers(filters, options);
   }
 
   /**

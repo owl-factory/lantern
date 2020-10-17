@@ -59,6 +59,7 @@ export interface CoreFormCheckProps extends FieldProps {
  * @param onSubmit The action to run on submit
  */
 export interface FormixFormProps<T> {
+  errors: any;
   initialValues: T; 
   onSubmit: (values: T) => void | Promise<T>;
 }
