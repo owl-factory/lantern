@@ -80,7 +80,7 @@ export class ContentTypeResolver extends CoreResolver {
    * @param _id The id of the document to update
    * @param data The data to replace in the document
    */
-  // @Authorized()
+  @Authorized()
   @Mutation(() => UpdateResponse)
   updateContentType(
     @Arg("_id") _id: string,
