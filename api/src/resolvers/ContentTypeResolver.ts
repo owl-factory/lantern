@@ -2,9 +2,10 @@ import { Resolver, Query, Mutation, Arg, Args, Authorized } from "type-graphql";
 import { CoreResolver } from "./CoreResolver";
 import { ContentType, ContentTypeModel } from "@reroll/model/dist/documents/ContentType";
 import { ContentTypeFilter } from "@reroll/model/dist/filters/ContentTypeFilter";
-import { ContentTypeInput } from "@reroll/model/dist/inputs/ContentTypeInput";
+import { ContentTypeInput, ContentTypeFieldInput } from "@reroll/model/dist/inputs/ContentTypeInput";
 import { Options } from "@reroll/model/dist/inputs/Options";
 import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/documents/Responses";
+import { fetchGameSystemID } from "../utilities/resolverHelpers";
 
 /**
  * Resolves ContentType queries
@@ -20,9 +21,13 @@ export class ContentTypeResolver extends CoreResolver {
   @Query(() => ContentType, {nullable: true})
   async contentType(
     @Arg("_id") _id: string,
-    @Arg("gameSystemID", { nullable: true }) gameSystemID?: string
+    @Arg("gameSystemID", { nullable: true }) gameSystemAlias?: string
   ): Promise<ContentType | null> {
-    return super.resolver(_id, {gameSystemID_eq: gameSystemID});
+    const [gameSystemID, validGameSystem] = await fetchGameSystemID(gameSystemAlias);
+
+    if (!validGameSystem) { return null; };
+
+    return super.resolver(_id, {gameSystemID_eq: gameSystemID}).exec();
 
   }
 
@@ -34,7 +39,14 @@ export class ContentTypeResolver extends CoreResolver {
     @Arg("filters", {nullable: true}) filters?: ContentTypeFilter,
     @Args() options?: Options
   ): Promise<ContentType[]> {
-    return await super.resolvers(filters, options);
+    if (!filters) { return super.resolvers(filters, options); };
+
+    // Fetches the gameSystemID if it's given
+    const [gameSystemID, validGameSystem] = await fetchGameSystemID(filters.gameSystemID_eq);
+    if (!validGameSystem) { return []; };
+    if (gameSystemID) { filters.gameSystemID_eq = gameSystemID; };
+
+    return super.resolvers(filters, options);
   }
 
   /**
@@ -42,7 +54,14 @@ export class ContentTypeResolver extends CoreResolver {
    * @param filters The filter object to count documents by. Identical to other filters
    */
   @Query(() => Number)
-  contentTypeCount(@Arg("filters", {nullable: true}) filters?: ContentTypeFilter) {
+  async contentTypeCount(@Arg("filters", {nullable: true}) filters?: ContentTypeFilter) {
+    if (!filters) { return super.resolverCount(filters); };
+
+    // Fetches the gameSystemID if it's given
+    const [gameSystemID, validGameSystem] = await fetchGameSystemID(filters.gameSystemID_eq);
+    if (!validGameSystem) { return 0; };
+    if (gameSystemID) { filters.gameSystemID_eq = gameSystemID; };
+
     return super.resolverCount(filters);
   }
 
@@ -67,6 +86,11 @@ export class ContentTypeResolver extends CoreResolver {
     @Arg("_id") _id: string,
     @Arg("data") data: ContentTypeInput
   ): Promise<UpdateResponse> {
+    const keys: string[] = Object.keys(data);
+    if (keys.length > 1){
+      if (keys.includes("fields")) { throw Error("contentType.fields must be set by itself.")};
+    }
+    
     return super.updateResolver(_id, data)
   }
 

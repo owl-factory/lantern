@@ -5,6 +5,7 @@ import { ModuleFilter } from "@reroll/model/dist/filters/ModuleFilter";
 import { ModuleInput } from "@reroll/model/dist/inputs/ModuleInput";
 import { Options } from "@reroll/model/dist/inputs/Options";
 import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/documents/Responses";
+import { fetchGameSystemID } from "../utilities/resolverHelpers";
 
 /**
  * Resolves Module queries
@@ -30,7 +31,14 @@ export class ModuleResolver extends CoreResolver {
     @Arg("filters", {nullable: true}) filters?: ModuleFilter,
     @Args() options?: Options
   ): Promise<Module[]> {
-    return await super.resolvers(filters, options);
+    if (!filters) { return super.resolvers(filters, options); };
+
+    // Fetches the gameSystemID if it's given
+    const [gameSystemID, validGameSystem] = await fetchGameSystemID(filters.gameSystemID_eq);
+    if (!validGameSystem) { return []; };
+    if (gameSystemID) { filters.gameSystemID_eq = gameSystemID; };
+
+    return super.resolvers(filters, options);
   }
 
   /**
@@ -38,7 +46,14 @@ export class ModuleResolver extends CoreResolver {
    * @param filters The filter object to count documents by. Identical to other filters
    */
   @Query(() => Number)
-  moduleCount(@Arg("filters", {nullable: true}) filters?: ModuleFilter) {
+  async moduleCount(@Arg("filters", {nullable: true}) filters?: ModuleFilter) {
+    if (!filters) { return super.resolverCount(filters); };
+
+    // Fetches the gameSystemID if it's given
+    const [gameSystemID, validGameSystem] = await fetchGameSystemID(filters.gameSystemID_eq);
+    if (!validGameSystem) { return 0; };
+    if (gameSystemID) { filters.gameSystemID_eq = gameSystemID; };
+
     return super.resolverCount(filters);
   }
 

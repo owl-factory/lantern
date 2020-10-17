@@ -2,6 +2,7 @@ import { InputType, Field, ID } from "type-graphql";
 import { ContentType, ContentTypeField, ContentTypeOption } from "../documents/ContentType";
 import { CommonContentTypeInput } from "./CommonContentTypeInput";
 import { LayoutItem } from "../models/LayoutItem";
+import { ContentFieldTypeEnum } from "../models/ContentFieldTypeEnum";
 
 
 @InputType() 
@@ -35,7 +36,7 @@ export class ContentTypeFieldInput implements Partial<ContentTypeField>  {
   name: string;
 
   @Field()
-  type: string;
+  type: ContentFieldTypeEnum;
 
   @Field()
   default: string;
@@ -62,8 +63,6 @@ export class ContentTypeInput extends CommonContentTypeInput implements Partial<
   @Field(() => Boolean, { nullable: true })
   isTypeOnly?: boolean;
 
-  // TODO - I think this might have to be a JSON string :/
-  // That's basically fine, but we can't search for it (easily)
   @Field(() => [ContentTypeFieldInput], { nullable: true })
   fields?: ContentTypeFieldInput[]; 
 

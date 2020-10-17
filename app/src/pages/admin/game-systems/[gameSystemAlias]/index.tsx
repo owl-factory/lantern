@@ -166,8 +166,7 @@ export default function GameSystemView({
 GameSystemView.getInitialProps = async (ctx: NextPageContext) => {
   const alias = ctx.query.gameSystemAlias;
 
-  const gameSystemQuery = gql`
-  {
+  const query = gql`query {
     gameSystem (_id: "${alias}") {
       _id,
       name,
@@ -176,14 +175,18 @@ GameSystemView.getInitialProps = async (ctx: NextPageContext) => {
       isPublished,
       createdAt,
       updatedAt,
-    }
-  }`;
-
-  const { data } = await client.query({query: gameSystemQuery});
-
-  const moduleQuery = gql`
-  query {
-    modules (filters: {gameSystemID_eq: "${data.gameSystem._id}"}) {
+    },
+    contentTypeCount (filters: {gameSystemID_eq: "${alias}"})
+    contentTypes (
+      filters: {gameSystemID_eq: "${alias}"},
+      sort: "name"
+    ) {
+      _id,
+      name,
+      alias
+    },
+    moduleCount (filters: {gameSystemID_eq: "${alias}"}),
+    modules (filters: {gameSystemID_eq: "${alias}"}) {
       _id,
       name, 
       alias,
@@ -192,23 +195,13 @@ GameSystemView.getInitialProps = async (ctx: NextPageContext) => {
       isPurchasable,
       cost
     },
-    moduleCount (filters: {gameSystemID_eq: "${data.gameSystem._id}"}),
-    contentTypes (filters: {gameSystemID_eq: "${data.gameSystem._id}"}) {
-      _id,
-      name,
-      alias
-    },
-    contentTypeCount (filters: {gameSystemID_eq: "${data.gameSystem._id}"})
   }`;
-  
-  const moduleData  = await client.query({query: moduleQuery});
+
+  const gqlResponse = await client.query({query});
   return {
-    gameSystem: data.gameSystem, 
-    modules: moduleData.data.modules,
-    moduleCount: moduleData.data.moduleCount,
-    contentTypes: moduleData.data.contentTypes,
-    entityTypes: [],
+    ...gqlResponse.data,
     entityCount: 0,
+    entityTypes: [],
     contentCount: 0
   };
 }

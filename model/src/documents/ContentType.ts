@@ -2,7 +2,7 @@ import { ObjectType, Field, ID } from "type-graphql";
 import { CommonContentType } from "./CommonContentType";
 import { prop, getModelForClass } from "@typegoose/typegoose";
 import { LayoutItem } from "../models/LayoutItem";
-
+import { ContentFieldTypeEnum } from "../models/ContentFieldTypeEnum";
 
 /**
  * An option used in a dropdown
@@ -24,13 +24,13 @@ export class ContentTypeOption {
  */
 @ObjectType()
 export class ContentTypeField {
-  @Field()
+  @Field({ nullable: true })
   @prop({ required: true })
   name: string;
 
   @Field()
   @prop({ required: true })
-  type: string;
+  type: ContentFieldTypeEnum;
 
   @Field({ nullable: true })
   @prop()
@@ -44,6 +44,7 @@ export class ContentTypeField {
   @Field(() => Boolean, { nullable: true })
   @prop()
   readonly?: boolean; // A flag indicating whether or not this field can continue to be written to
+
 }
 
 // A collection of possible read-only warning types generated on save. 
@@ -75,7 +76,7 @@ export class ContentType extends CommonContentType {
   isTypeOnly: boolean;
 
   @Field(() => [ContentTypeField])
-  @prop({ default: [] })
+  @prop({ type: ContentTypeField, _id: false})
   fields: ContentTypeField[];
 
   // The layout of the content within the game

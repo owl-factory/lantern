@@ -92,6 +92,7 @@ export default function GameSystemView({
 GameSystemView.getInitialProps = async (ctx: NextPageContext) => {
   const alias = ctx.query.gameSystemAlias;
 
+  // TODO - can we merge this into the fetchContentType query to save calls?
   const gameSystemQuery = gql`
   {
     gameSystem (_id: "${alias}") {
