@@ -51,8 +51,6 @@ async function queryContentTypes(page: number, perPage: number) {
     commonContentTypeCount
   }`;
 
-  console.log(query);
-
   const { data } = await client.query({query});
 
   return [ data.commonContentTypes,  data.commonContentTypeCount ];

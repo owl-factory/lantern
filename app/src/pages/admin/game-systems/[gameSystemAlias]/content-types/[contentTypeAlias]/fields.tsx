@@ -7,7 +7,7 @@ import { client } from "../../../../../../utilities/graphql/apiClient";
 import { Row, Col, Button, Card, Form } from "react-bootstrap";
 import { TableBuilder } from "../../../../../../utilities/design/table";
 import Table from "../../../../../../components/design/tables/Table";
-import { ContentTypeField, ContentFieldType } from "@reroll/model/dist/documents/ContentType";
+import { ContentTypeField } from "@reroll/model/dist/documents/ContentType";
 import * as Yup from "yup";
 import { Form as FormikForm, Formik } from "formik";
 import { Error, Input, Select } from "../../../../../../components/design/forms/Forms";

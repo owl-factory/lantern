@@ -81,11 +81,11 @@ function TableRow(props: TableRowProps) {
   let columnIncrement = 0;
   let content: JSX.Element | number | string | undefined = undefined;
   let onClick = undefined; 
+  const rowAction = props.rowAction ? props.rowAction : () => {return};
 
-  console.log(props.rowAction)
-  if (props.rowAction !== undefined) {
-    onClick = () => (props.rowAction(props.increment, props.data, props.globalData));
-  }
+  // This might break some stuff. We need to test it because otherwise we have 
+  // issues with "this might not be defined"
+  onClick = () => (rowAction(props.increment, props.data, props.globalData));
 
   props.columns.forEach((column: any) => {
     if (column.key !== undefined) {

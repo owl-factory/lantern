@@ -39,7 +39,6 @@ const tableBuilder = new TableBuilder()
   .addComponentColumn("Tools", ModuleActions);
 
 export default function ModuleTable(props: any) {
-  // console.log(props)
   return <Table 
     {...tableBuilder.renderConfig()} 
     data={props.modules}

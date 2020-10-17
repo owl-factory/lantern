@@ -3,6 +3,7 @@ import { Options } from "@reroll/model/src/inputs/Options";
 import { Query } from "mongoose";
 import { validate } from "class-validator";
 import { getUserID } from "../misc";
+import { isID } from "../utilities/resolverHelpers";
 
 export class CoreResolver {
   protected model: ReturnModelType<any>;
@@ -124,14 +125,6 @@ export class CoreResolver {
   deleteResolvers(filters?: any, options?: Options) {
     return buildWhere(this.model.deleteMany({}, options), filters);
   }
-}
-
-/**
- * A function for testing of IDs in the event we expand our definition of IDs
- * @param id The string to check for ID-ness
- */
-export function isID(id: string) {
-  return id.length === 24
 }
 
 /**

@@ -1,5 +1,5 @@
 import { Resolver, Query, Mutation, Arg, Args, Authorized } from "type-graphql";
-import { CoreResolver, isID } from "./CoreResolver";
+import { CoreResolver } from "./CoreResolver";
 import { GameSystem, GameSystemFilter, GameSystemModel } from "@reroll/model/dist/documents/GameSystem";
 import { GameSystemInput } from "@reroll/model/dist/inputs/GameSystemInput";
 import { Options } from "@reroll/model/dist/inputs/Options";
