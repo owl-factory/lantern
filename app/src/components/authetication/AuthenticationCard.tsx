@@ -52,7 +52,7 @@ function LoginSection(props: AuthCardSectionProps) {
   return (
     <>
       <h5>Login</h5>
-      <Button variant="secondary" onClick={() => signIn()}>
+      <Button variant="secondary" onClick={() => signIn("google")}>
         Log in with Google
       </Button>
       <LoginForm/>

@@ -7,6 +7,8 @@ import { ModuleResolver } from "../../api/resolvers/ModuleResolver";
 import { NextAuthChecker } from "../../api/auth";
 import { ApolloServer } from "apollo-server-micro";
 
+global.fetch = require("cross-fetch");
+
 connect(
   process.env.MONGO_CONNECTION_STRING!, 
   {useNewUrlParser: true, useUnifiedTopology: true}
