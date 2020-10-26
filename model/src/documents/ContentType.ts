@@ -2,7 +2,7 @@ import { ObjectType, Field, ID } from "type-graphql";
 import { CommonContentType } from "./CommonContentType";
 import { prop, getModelForClass } from "@typegoose/typegoose";
 import { LayoutItem } from "../models/LayoutItem";
-import { ContentFieldTypeEnum } from "../models/ContentFieldTypeEnum";
+import { ContentFieldTypeEnum } from "../enums/contentFieldType";
 
 /**
  * An option used in a dropdown

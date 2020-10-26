@@ -2,7 +2,7 @@ import { InputType, Field, ID } from "type-graphql";
 import { ContentType, ContentTypeField, ContentTypeOption } from "../documents/ContentType";
 import { CommonContentTypeInput } from "./CommonContentTypeInput";
 import { LayoutItem } from "../models/LayoutItem";
-import { ContentFieldTypeEnum } from "../models/ContentFieldTypeEnum";
+import { ContentFieldTypeEnum } from "../enums/contentFieldType";
 
 
 @InputType() 
