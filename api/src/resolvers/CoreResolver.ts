@@ -3,48 +3,32 @@ import { Options } from "@reroll/model/src/inputs/Options";
 import { Query } from "mongoose";
 import { validate } from "class-validator";
 import { getUserID } from "../misc";
+import { isID } from "../utilities/resolverHelpers";
 
 export class CoreResolver {
   protected model: ReturnModelType<any>;
-  protected requiredAliasDependencies: string[] = [];
-
-  resolver(_id: string, aliasDependencies?: any) {
-    // Knock out the ones where we know we have everything
-    // ID only check if we aren't given any dependencies
-    if (isID(_id) && !aliasDependencies) {
-      return this.findById(_id);
-    // Alias search if we don't require any dependencies
-    } else if (!isID(_id) && this.requiredAliasDependencies.length === 0) {
-      return this.findByAlias(_id);
-    }
-
-    // TODO - 
-
-    throw "Alias ependencies not implemented yet";
-  }
 
   /**
-   * Finds a single resolver by ID
-   * 
-   * @param _id The id of the model to find
+   * Search for a single document with the given id/alias and additional ids
+   * @param _id The id or alias of the document to find
+   * @param filters A collection of additional IDs provided for non-unique aliases
    */
-  findById(_id: string) {
-    return this.model.findById(_id);
-  }
-
-  /**
-   * Finds a single resolver by alias
-   * 
-   * @param alias The id or alias of the model to find
-   * @param filters Any additional filters, such as a parent's ID for 
-   *  non-distinct aliases
-   */
-  async findByAlias(alias: string, filters?: any) {
-    const result = await buildWhere(this.model.find({alias}), filters).limit(1);
-    if (Array.isArray(result) && result.length) {
-      return result[0];
+  resolver(_id: string, filters: any = {}) {
+    // Removes any empty ids from the filters
+    for(const filter in filters) {
+      if (!filters[filter] ) {
+        delete filters[filter];
+      }
     }
-    return null;
+
+    // Determines which filter we should use
+    if (isID(_id)) {
+      filters._id_eq = _id;
+    } else {
+      filters.alias_eq = _id;
+    }
+
+    return buildWhere(this.model.findOne({}, null), filters);
   }
   
   /**
@@ -141,14 +125,6 @@ export class CoreResolver {
   deleteResolvers(filters?: any, options?: Options) {
     return buildWhere(this.model.deleteMany({}, options), filters);
   }
-}
-
-/**
- * A function for testing of IDs in the event we expand our definition of IDs
- * @param id The string to check for ID-ness
- */
-export function isID(id: string) {
-  return id.length === 24
 }
 
 /**

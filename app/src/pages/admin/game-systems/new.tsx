@@ -28,15 +28,10 @@ interface NewGameSystemProps {
  */
 export function NewGameSystemForm(props: GameSystemFormProps) {
   const router = useRouter();
-  return <GameSystemForm 
-    initialValues={{
-      name: "",
-      alias: "",
-      description: "",
-      defaultThemeID: undefined,
-    }}
-    onSubmit={(values: GameSystemInput) => {
-      const newGameSystemMutation = gql`
+  const [ errors, setErrors ] = React.useState({})
+
+  function onSubmit(values: GameSystemInput) {
+    const newGameSystemMutation = gql`
       mutation {
         newGameSystem (data: {
           name: "${values.name}",
@@ -55,11 +50,27 @@ export function NewGameSystemForm(props: GameSystemFormProps) {
         const key = res.data.newGameSystem.alias || res.data.newGameSystem._id;
         router.push(`/admin/game-systems/${key}`)
       })
-      .catch((error: any) => {
+      .catch((gqlError: any) => {
+        // console.log(Object.keys(gqlError))
+        // console.log(gqlError.graphQLErrors)
+        // console.log(gqlError.message)
+        // console.log(gqlError.extraInfo)
+        setErrors({_global: gqlError.message})
         // TODO - Better error handling
-        console.log(error)
+        console.log(gqlError)
       });
+  }
+
+  return <GameSystemForm
+    errors={errors}
+    initialValues={{
+      name: "",
+      alias: "",
+      description: "",
+      defaultThemeID: undefined,
+      
     }}
+    onSubmit={(values: GameSystemInput) => {onSubmit(values)}}
     themes={props.themes}
   />;
 }

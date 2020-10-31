@@ -61,6 +61,7 @@ export class CharacterResolver extends CoreResolver {
    * Creates a new character document
    * @param data The data object to make into a new character
    */
+  @Authorized()
   @Mutation(() => Character)
   newCharacter(@Arg("data") data: CharacterInput): Promise<Character> {
     return super.newResolver(data);
@@ -71,6 +72,7 @@ export class CharacterResolver extends CoreResolver {
    * @param _id The id of the document to update
    * @param data The data to replace in the document
    */
+  @Authorized()
   @Mutation(() => UpdateResponse)
   updateCharacter(
     @Arg("_id") _id: string,
@@ -80,10 +82,11 @@ export class CharacterResolver extends CoreResolver {
   }
 
   /**
-   * Updates a single character document
+   * Updates multiple character documents
    * @param data The data to replace in the document
    * @param filters The filters to select the data to replace in the document
    */
+  @Authorized()
   @Mutation(() => UpdateResponse)
   updateCharacters(
     @Arg("data") data: CharacterInput,
@@ -96,6 +99,7 @@ export class CharacterResolver extends CoreResolver {
    * Deletes a single character document
    * @param _id The id of the character document to delete
    */
+  @Authorized()
   @Mutation(() => DeleteResponse)
   deleteCharacter(@Arg("_id") _id: string): Promise<DeleteResponse> {
     return super.deleteResolver(_id);
@@ -105,6 +109,7 @@ export class CharacterResolver extends CoreResolver {
    * Deletes a single character document
    * @param filters The id of the character document to delete
    */
+  @Authorized()
   @Mutation(() => DeleteResponse)
   async deleteCharacters(@Arg("filters", CharacterFilter, {nullable: true}) filters?: any): Promise<DeleteResponse> {
     return super.deleteResolvers(filters);

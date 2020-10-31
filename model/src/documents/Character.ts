@@ -1,7 +1,7 @@
 import { ObjectType, Field } from "type-graphql";
 import { Filter, generateFilterType } from "type-graphql-filter";
 import { prop, getModelForClass } from "@typegoose/typegoose";
-import { stringFilters } from "../filterTypes";
+import { stringFilters } from "../models/filterTypes";
 import { CoreDocument } from "./CoreDocument";
 
 @ObjectType({ description: "A testing model for characters. This is solely for testing purposes"})

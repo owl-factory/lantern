@@ -1,4 +1,4 @@
-import { ContextMenuGenericItem, ContextMenuActionType } from "../../models/design/contextMenu";
+import { ContextMenuGenericItem, ContextMenuActionType, ContextMenuBuilderOutput, ButtonConfig } from "../../models/design/contextMenu";
 import { IconType } from "react-icons/lib";
 import { def } from "../tools";
 
@@ -8,7 +8,10 @@ import { def } from "../tools";
  *  two versions of the context menu, one per desktop and mobile
  */
 export class ContextMenuBuilder {
-  
+  private buttonConfig: ButtonConfig = {
+    className: "d-none d-lg-inline",
+    width: 2
+  }
   private items: ContextMenuGenericItem[] = [];
 
   /**
@@ -55,8 +58,11 @@ export class ContextMenuBuilder {
   /**
    * Renders out a configuration for easy use by the context menu component
    */
-  public renderConfig() {
-    return {items: this.items};
+  public renderConfig(): ContextMenuBuilderOutput {
+    return {
+      buttonConfig: this.buttonConfig,  
+      items: this.items
+    };
   }
 }
 
@@ -79,11 +85,12 @@ export function parseHref(href: string, keys: any, context: any) {
   hrefKeys.forEach((hrefKey: any) => {
     const cleanKey = hrefKey.slice(1, -1 );
     
-    let value = "";
+    let value: string = "";
     if (cleanKey in keys) {
       value = context[keys[cleanKey]];
     } else {
-      value = context[cleanKey];
+      value = "undefined";
+      if (context && cleanKey in context) {value = context[cleanKey];}
     }
 
     linkAs = linkAs.replace(hrefKey, value);

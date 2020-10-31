@@ -1,6 +1,6 @@
 import { Field, ID, ObjectType } from "type-graphql";
 import { Filter } from "type-graphql-filter";
-import { dateFilters, idFilters, stringFilters } from "../filterTypes";
+import { dateFilters, idFilters, stringFilters } from "../models/filterTypes";
 import { prop } from "@typegoose/typegoose";
 
 @ObjectType()
