@@ -24,7 +24,10 @@ interface EditGameSystemProps {
 function EditGameSystem({gameSystem, themes}: EditGameSystemProps) {
   const router = useRouter();
 
-  
+  /**
+   * Runs the operation to update 
+   * @param values The updated game system values to update
+   */
   function updateGameSystem(values: GameSystemInput) {
     const updateGameSystem = gql`mutation{
       updateGameSystem (_id: "${gameSystem._id}", data: {
@@ -48,7 +51,7 @@ function EditGameSystem({gameSystem, themes}: EditGameSystemProps) {
   const name = gameSystem.name || "";
   return (
     <Page>
-      <h1>Create Game System</h1>
+      <h1>Update {name}</h1>
       <Breadcrumbs skipLevels={1} titles={["Admin", "Game Systems", name, "Edit"]}/>
 
       <br/>
@@ -64,7 +67,7 @@ function EditGameSystem({gameSystem, themes}: EditGameSystemProps) {
 }
 
 EditGameSystem.getInitialProps = async (ctx: NextPageContext) => {
-  const alias = ctx.query.alias;
+  const alias = ctx.query.gameSystemAlias;
   
   const query = gql`
   query {

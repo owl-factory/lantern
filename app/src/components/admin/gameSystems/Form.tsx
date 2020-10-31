@@ -2,7 +2,7 @@ import { Formik, Form as FormikForm } from "formik";
 import React from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import * as Yup from "yup";
-import { Checkbox, Error, Input, Select, TextArea } from "../../design/forms/Forms";
+import { Error, Input, Select, TextArea } from "../../design/forms/Forms";
 import { GameSystemInput } from "@reroll/model/dist/inputs/GameSystemInput"
 import { FormixFormProps } from "../../../models/design/form";
 import ThemeModel from "../../../models/database/themes";
@@ -17,6 +17,7 @@ interface GameSystemFormProps extends FormixFormProps<GameSystemInput> {
 
 /**
  * Renders the game system form with functionality for new and existing game systems
+ * @param errors The GQL errors 
  * @param initialValues The initial values of the form
  * @param onSubmit The action to run on submit
  * @param themes An array of themes for a selection
@@ -28,8 +29,11 @@ export default function GameSystemForm(props: GameSystemFormProps) {
     themeKeys.push(theme["id"]);
   });
 
+  console.log(props.errors)
+
   return (
-    <Formik 
+    <Formik
+      initialErrors={props.errors}
       initialValues={props.initialValues}
       onSubmit={props.onSubmit}
       validationSchema={Yup.object({
@@ -47,6 +51,8 @@ export default function GameSystemForm(props: GameSystemFormProps) {
     >
       {(formProps: any) => (
         <FormikForm>
+          <Error name="_global"/>
+
           <Row>
             {/* Gamesystem Name */}
             <Form.Group as={Col}>

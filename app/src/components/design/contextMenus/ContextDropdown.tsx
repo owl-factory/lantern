@@ -36,7 +36,8 @@ function ContextDropdownLink(props: ContextMenuLinkProps) {
   const linkAs = parseHref(props.href, props.keys, props.context);
 
   return (
-    <ContextDropdownItem 
+    <ContextDropdownItem
+      buttonConfig={props.buttonConfig}
       title={props.title}
       icon={props.icon}
       action={() => {router.push(props.href, linkAs)}}
@@ -73,6 +74,21 @@ function renderContextMenuItem(item: ContextMenuGenericItem, context: any, keyIn
   }
 }
 
+export function ContextDropdownMenu(props: any) {
+  const menuItems: JSX.Element[] = [];
+
+  let keyIndex = 0;
+  props.items.forEach((item: ContextMenuGenericItem) => {
+    menuItems.push(renderContextMenuItem(item, props.context, keyIndex++));
+  });
+
+  return (
+    <Dropdown.Menu>
+      {menuItems}
+    </Dropdown.Menu>
+  );
+}
+
 /**
  * Renders a context menu
  * @param props.alignRight Align the right sides of the button and the dropdown
@@ -82,22 +98,14 @@ function renderContextMenuItem(item: ContextMenuGenericItem, context: any, keyIn
  * @param props.items The items to render
  */
 export default function ContextDropdown(props: ContextDropdownProps) {
-  const menuItems: JSX.Element[] = [];
 
   const alignRight = def<boolean>(props.alignRight, true);
   const drop = def<DropType>(props.drop, "down");
 
-  let keyIndex = 0;
-  props.items.forEach((item: ContextMenuGenericItem) => {
-    menuItems.push(renderContextMenuItem(item, props.context, keyIndex++));
-  });
-
   return (
     <Dropdown as={props.as} alignRight={alignRight} drop={drop}>
       {props.children}
-      <Dropdown.Menu>
-        {menuItems}
-      </Dropdown.Menu>
+      <ContextDropdownMenu {...props}/>
     </Dropdown>
   );
 }

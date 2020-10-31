@@ -1,10 +1,14 @@
-import { ObjectType, Field } from "type-graphql";
-import { Filter, generateFilterType } from "type-graphql-filter";
+import { ObjectType, Field, Int } from "type-graphql";
+import { Filter } from "type-graphql-filter";
 import { prop, getModelForClass } from "@typegoose/typegoose";
-import { stringFilters, booleanFilters, idFilters } from "../filterTypes";
+import { stringFilters, booleanFilters, idFilters } from "../models/filterTypes";
 import { CoreDocument } from "./CoreDocument";
 
-@ObjectType({ description: "A testing model for characters. This is solely for testing purposes"})
+/**
+ * The model for the Module document. Modules tie together clumps of entities, 
+ * content, campaigns, etc and may be potentially purchased.
+ */
+@ObjectType()
 export class Module extends CoreDocument {
   
   @Field()
@@ -17,17 +21,31 @@ export class Module extends CoreDocument {
   @prop({ default: ""})
   description?: string = "";
 
+  @Field(() => Int)
+  @prop({ required: true })
+  publishType?: number;
+
   @Field(_type => Boolean)
   @Filter(booleanFilters)
   @prop({ default: false, required: true })
   isPublished: boolean;
 
-  // Possibly to be removed
+  // Used to indicate if this module will have it's content statically rendered
+  // Typically used if free. 
+  // Cannot be a paid module if it is statically rendered
+  @Field(() => Boolean, { defaultValue: false })
+  @prop({ required: true })
+  isStaticallyRendered: boolean;
+
   @Field(_type => Boolean)
   @Filter(booleanFilters)
   @prop({ default: false, required: true })
   isPurchasable: boolean;
+
+  // The cost in USD cents
+  @Field(() => Int, { nullable: true })
+  @prop()
+  cost?: number;
 }
 
 export const ModuleModel = getModelForClass(Module);
-export const ModuleFilter = generateFilterType(Module);

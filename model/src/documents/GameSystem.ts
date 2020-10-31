@@ -1,8 +1,9 @@
-import { ObjectType, Field } from "type-graphql";
+import { ObjectType, Field, Int } from "type-graphql";
 import { Filter, generateFilterType } from "type-graphql-filter";
 import { prop, getModelForClass } from "@typegoose/typegoose";
-import { stringFilters, booleanFilters, idFilters } from "../filterTypes";
+import { stringFilters, booleanFilters, idFilters } from "../models/filterTypes";
 import { CoreDocument } from "./CoreDocument";
+import { PublishType } from "../enums/publishType";
 
 @ObjectType({ description: "The unifying document for all Game System document types"})
 export class GameSystem extends CoreDocument {
@@ -18,10 +19,9 @@ export class GameSystem extends CoreDocument {
   @prop({ default: "" })
   description?: string;
 
-  @Field(_type => Boolean, { defaultValue: true })
-  @Filter(booleanFilters)
-  @prop({ default: true, required: true })
-  isUserCreated?: boolean;
+  @Field(() => Int)
+  @prop({ required: true })
+  publishType?: PublishType;
 
   @Field(_type => Boolean, { defaultValue: false })
   @Filter(booleanFilters)

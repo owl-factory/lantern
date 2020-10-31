@@ -20,6 +20,11 @@ $input-bg: $body-bg;
 .btn {
   @extend .shadow-sm;
   border-radius: 0.8em;
+
+  a:link, a:visited, a:hover, a.active, a.focus {
+    color: inherit;
+    text-decoration: none;
+  }
 }
 
 .form-control {
@@ -45,3 +50,4 @@ $input-bg: $body-bg;
 .animate:focus-within {
   width: 60%;
 }
+
