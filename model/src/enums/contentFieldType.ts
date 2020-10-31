@@ -1,7 +1,7 @@
 
 // The enum for getting ContentFieldTypes
 export enum ContentFieldTypeEnum {
-  Text,
+  Text = 0,
   Number,
   Roll,
   Boolean,

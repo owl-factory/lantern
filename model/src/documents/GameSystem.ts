@@ -3,6 +3,7 @@ import { Filter, generateFilterType } from "type-graphql-filter";
 import { prop, getModelForClass } from "@typegoose/typegoose";
 import { stringFilters, booleanFilters, idFilters } from "../models/filterTypes";
 import { CoreDocument } from "./CoreDocument";
+import { PublishType } from "../enums/publishType";
 
 @ObjectType({ description: "The unifying document for all Game System document types"})
 export class GameSystem extends CoreDocument {
@@ -20,7 +21,7 @@ export class GameSystem extends CoreDocument {
 
   @Field(() => Int)
   @prop({ required: true })
-  publishType?: number;
+  publishType?: PublishType;
 
   @Field(_type => Boolean, { defaultValue: false })
   @Filter(booleanFilters)

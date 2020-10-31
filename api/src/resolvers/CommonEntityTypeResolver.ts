@@ -30,7 +30,7 @@ export class CommonEntityTypeResolver extends CoreResolver {
     @Arg("filters", {nullable: true}) filters?: CommonEntityTypeFilter,
     @Args() options?: Options
   ): Promise<CommonEntityType[]> {
-    return await super.resolvers(filters, options);
+    return super.resolvers(filters, options);
   }
 
   /**

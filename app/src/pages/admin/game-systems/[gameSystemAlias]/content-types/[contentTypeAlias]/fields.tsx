@@ -11,7 +11,7 @@ import { ContentTypeField } from "@reroll/model/dist/documents/ContentType";
 import * as Yup from "yup";
 import { Form as FormikForm, Formik } from "formik";
 import { Error, Input, Select } from "../../../../../../components/design/forms/Forms";
-import { ContentFieldTypeEnum, contentFieldTypes } from "@reroll/model/dist/models/ContentFieldTypeEnum";
+import { ContentFieldTypeEnum, contentFieldTypes } from "@reroll/model/dist/enums/contentFieldType";
 
 const tableBuilder = new TableBuilder()
   .addDataColumn("Variable Name", "name")

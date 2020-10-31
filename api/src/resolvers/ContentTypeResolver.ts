@@ -27,7 +27,7 @@ export class ContentTypeResolver extends CoreResolver {
 
     if (!validGameSystem) { return null; };
 
-    return super.resolver(_id, {gameSystemID_eq: gameSystemID}).exec();
+    return super.resolver(_id, {gameSystemID_eq: gameSystemID});
 
   }
 
@@ -42,6 +42,7 @@ export class ContentTypeResolver extends CoreResolver {
     if (!filters) { return super.resolvers(filters, options); };
 
     // Fetches the gameSystemID if it's given
+    // This may be an issue if no gameSystemID_eq is given
     const [gameSystemID, validGameSystem] = await fetchGameSystemID(filters.gameSystemID_eq);
     if (!validGameSystem) { return []; };
     if (gameSystemID) { filters.gameSystemID_eq = gameSystemID; };

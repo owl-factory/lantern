@@ -5,6 +5,7 @@ import { ContentFilter } from "@reroll/model/dist/filters/ContentFilter";
 import { ContentInput } from "@reroll/model/dist/inputs/ContentInput";
 import { Options } from "@reroll/model/dist/inputs/Options";
 import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/documents/Responses";
+import { fetchGameSystemID } from "../utilities/resolverHelpers";
 
 /**
  * Resolves Content queries
@@ -16,21 +17,32 @@ export class ContentResolver extends CoreResolver {
   /**
    * Fetches an content document matching the given id
    * @param _id The id of the content document to return
+   * @param gameSystemAlias The alias or id of the gameSystem that the content belongs to
    */
   @Query(() => Content, {nullable: true})
-  async content(@Arg("_id") _id: string): Promise<Content | null> {
-    return super.resolver(_id);
+  async content(
+    @Arg("_id") _id: string,
+    @Arg("gameSystemAlias") gameSystemAlias?: string
+  ): Promise<Content | null> {
+    const [gameSystemID, validGameSystem] = await fetchGameSystemID(gameSystemAlias);
+
+    if (!validGameSystem) { return null; };
+    
+    return super.resolver(_id, {gameSystemID_eq: gameSystemID});
   }
 
   /**
    * Fetches the content documents matching the filter and options
+   * @param filters Optional filters for finely selecting data
+   * @param options Options affecting how much data and from where it is being returned
    */
   @Query(() => [Content])
   async contents(
     @Arg("filters", {nullable: true}) filters?: ContentFilter,
     @Args() options?: Options
   ): Promise<Content[]> {
-    return await super.resolvers(filters, options);
+    
+    return super.resolvers(filters, options);
   }
 
   /**
