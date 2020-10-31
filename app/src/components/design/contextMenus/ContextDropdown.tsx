@@ -2,7 +2,7 @@
 import React from "react";
 import { Dropdown } from "react-bootstrap";
 import { def } from "../../../utilities/tools";
-import { ContextMenuItemProps, ContextMenuLinkProps, ContextDropdownProps, DropType, ContextMenuGenericItem, ContextMenuLink, ContextMenuItem } from "../../../models/design/contextMenu";
+import { ContextMenuItemProps, ContextMenuLinkProps, ContextDropdownProps, DropType, ContextMenuGenericItem, ContextMenuLink, ContextMenuItem } from "../../../model/design/contextMenu";
 import { useRouter } from "next/router";
 import { parseHref } from "../../../utilities/design/contextMenu";
 

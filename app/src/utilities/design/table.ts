@@ -1,4 +1,4 @@
-import { Column, TableComponent } from "../../models/design/table";
+import { Column, TableComponent } from "../../model/design/table";
 
 /**
  * A class for easily and quickly building configuration data for tables found in /src/components/degign/tables

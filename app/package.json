@@ -20,6 +20,7 @@
     "formik": "^2.1.4",
     "graphql": "^14.6.0",
     "graphql-tag": "^2.10.3",
+    "graphql-type-json": "^0.3.2",
     "lodash": "^4.17.19",
     "mongoose": "^5.10.5",
     "next": "9.3.2",

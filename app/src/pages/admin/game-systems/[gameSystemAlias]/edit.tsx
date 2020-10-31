@@ -4,7 +4,6 @@ import GameSystemForm from "../../../../components/admin/gameSystems/Form";
 import Page from "../../../../components/design/Page";
 import gql from "graphql-tag";
 import { NextPageContext } from "next";
-import ThemeModel from "../../../../models/database/themes";
 import { def } from "../../../../utilities/tools";
 import { client } from "../../../../utilities/graphql/apiClient";
 import { GameSystemInput } from "@reroll/model/dist/inputs/GameSystemInput";
@@ -13,7 +12,7 @@ import { useRouter } from "next/router";
 
 interface EditGameSystemProps {
   gameSystem: GameSystem;
-  themes: ThemeModel[];
+  themes: any[];
 }
 
 /**

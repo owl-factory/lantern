@@ -3,7 +3,7 @@ import { def, objectKeepFields } from "../../../utilities/tools";
 import React, { ReactNode } from "react";
 import { Form } from "react-bootstrap";
 import { useField } from "formik";
-import { FieldProps } from "../../../models/design/form";
+import { FieldProps } from "../../../model/design/form";
 
 interface SelectProps extends FieldProps {
   // Select Properties

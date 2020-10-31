@@ -1,7 +1,7 @@
 import React from "react";
 import { Input } from "./Input";
 import { def } from "../../../utilities/tools";
-import { CoreInputProps } from "../../../models/design/form";
+import { CoreInputProps } from "../../../model/design/form";
 
 interface TextAreaProps extends CoreInputProps {
   rows?: number;

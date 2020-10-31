@@ -1,4 +1,4 @@
-import { ContextMenuGenericItem, ContextMenuActionType, ContextMenuBuilderOutput, ButtonConfig } from "../../models/design/contextMenu";
+import { ContextMenuGenericItem, ContextMenuActionType, ContextMenuBuilderOutput, ButtonConfig } from "../../model/design/contextMenu";
 import { IconType } from "react-icons/lib";
 import { def } from "../tools";
 

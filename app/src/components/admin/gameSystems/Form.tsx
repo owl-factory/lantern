@@ -4,15 +4,14 @@ import { Button, Col, Form, Row } from "react-bootstrap";
 import * as Yup from "yup";
 import { Error, Input, Select, TextArea } from "../../design/forms/Forms";
 import { GameSystemInput } from "@reroll/model/dist/inputs/GameSystemInput"
-import { FormixFormProps } from "../../../models/design/form";
-import ThemeModel from "../../../models/database/themes";
+import { FormixFormProps } from "../../../model/design/form";
 
 /**
  * The props used for the GameSystemForm
  * @param themes An array of themes for a selection
  */
 interface GameSystemFormProps extends FormixFormProps<GameSystemInput> {
-  themes: ThemeModel[];
+  themes: any[];
 }
 
 /**
@@ -25,7 +24,7 @@ interface GameSystemFormProps extends FormixFormProps<GameSystemInput> {
 export default function GameSystemForm(props: GameSystemFormProps) {
   const themeKeys: string[] = [];
 
-  props.themes.forEach((theme: ThemeModel) => {
+  props.themes.forEach((theme: any) => {
     themeKeys.push(theme["id"]);
   });
 

@@ -6,7 +6,6 @@ import Page from "../../../components/design/Page";
 import { GameSystem } from "@reroll/model/dist/documents/GameSystem";
 import { TableBuilder } from "../../../utilities/design/table";
 import Link from "next/link";
-import GameSystemModel from "../../../models/database/gameSystems";
 import ContextDropdown from "../../../components/design/contextMenus/ContextDropdown";
 import { ContextMenuBuilder } from "../../../utilities/design/contextMenu";
 import { MdBuild, MdInfo, MdPageview, MdBlock } from "react-icons/md";
@@ -26,7 +25,7 @@ const gameSystemActions = new ContextMenuBuilder()
  * @param gameSystems A collection of game system objects
  */
 interface GameSystemsProps {
-  gameSystems: GameSystemModel[];
+  gameSystems: GameSystem[];
   gameSystemCount: number;
 }
 

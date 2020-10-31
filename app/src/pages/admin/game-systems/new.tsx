@@ -3,7 +3,6 @@ import Breadcrumbs from "../../../components/design/Breadcrumbs";
 import GameSystemForm from "../../../components/admin/gameSystems/Form";
 import Page from "../../../components/design/Page";
 import gql from "graphql-tag";
-import ThemeModel from "../../../models/database/themes";
 import { GameSystemInput } from "@reroll/model/dist/inputs/GameSystemInput"
 import { client } from "../../../utilities/graphql/apiClient";
 import { useRouter } from "next/router";
@@ -12,14 +11,14 @@ import { useRouter } from "next/router";
  * @param themes Themes to render within the form's theme dropdown
  */
 interface GameSystemFormProps {
-  themes: ThemeModel[];
+  themes: any[];
 }
 
 /**
  * @param themes Themes to render within the form's theme dropdown
  */
 interface NewGameSystemProps {
-  themes: ThemeModel[];
+  themes: any[];
 }
 
 /**

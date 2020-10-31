@@ -3,7 +3,7 @@ import React from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import * as Yup from "yup";
 import { Checkbox, Error, Input, TextArea } from "../../design/forms/Forms";
-import { FormixFormProps } from "../../../models/design/form";
+import { FormixFormProps } from "../../../model/design/form";
 import { ModuleInput } from "@reroll/model/dist/inputs/ModuleInput";
 
 /**

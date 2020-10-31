@@ -4,8 +4,7 @@ import { Button, Col, Form, Row } from "react-bootstrap";
 import * as Yup from "yup";
 import { Error, Input, TextArea } from "../../design/forms/Forms";
 import { GameSystemInput } from "@reroll/model/dist/inputs/GameSystemInput"
-import { FormixFormProps } from "../../../models/design/form";
-import ThemeModel from "../../../models/database/themes";
+import { FormixFormProps } from "../../../model/design/form";
 import { CommonContentTypeInput } from "@reroll/model/dist/inputs/CommonContentTypeInput";
 
 /**
@@ -13,7 +12,7 @@ import { CommonContentTypeInput } from "@reroll/model/dist/inputs/CommonContentT
  * @param themes An array of themes for a selection
  */
 interface GameSystemFormProps extends FormixFormProps<GameSystemInput> {
-  themes: ThemeModel[];
+  themes: any[];
 }
 
 /**

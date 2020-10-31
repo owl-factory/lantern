@@ -1,11 +1,15 @@
 import "reflect-metadata";
-import { CharacterResolver } from "../../api/resolvers/CharacterResolver";
+import { CharacterResolver } from "../../server/resolvers/CharacterResolver";
 import { connect } from "mongoose";
 import { buildSchema } from "type-graphql";
-import { GameSystemResolver } from "../../api/resolvers/GameSystemResolver";
-import { ModuleResolver } from "../../api/resolvers/ModuleResolver";
-import { NextAuthChecker } from "../../api/auth";
+import { GameSystemResolver } from "../../server/resolvers/GameSystemResolver";
+import { ModuleResolver } from "../../server/resolvers/ModuleResolver";
+import { NextAuthChecker } from "../../server/utilities/auth";
 import { ApolloServer } from "apollo-server-micro";
+import { CommonContentTypeResolver } from "../../server/resolvers/CommonContentTypeResolver";
+import { CommonEntityTypeResolver } from "../../server/resolvers/CommonEntityTypeResolver";
+import { ContentResolver } from "../../server/resolvers/ContentResolver";
+import { ContentTypeResolver } from "../../server/resolvers/ContentTypeResolver";
 
 global.fetch = require("cross-fetch");
 
@@ -17,6 +21,10 @@ connect(
 const schema: any = buildSchema({
   resolvers: [
     CharacterResolver,
+    CommonContentTypeResolver,
+    CommonEntityTypeResolver,
+    ContentResolver,
+    ContentTypeResolver,
     GameSystemResolver,
     ModuleResolver,
   ],

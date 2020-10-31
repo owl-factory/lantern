@@ -3,7 +3,6 @@ import React from "react";
 import News from "../components/announcements/News";
 import AuthenticationCard from "../components/authetication/AuthenticationCard";
 import Page from "../components/design/Page";
-import news from "../data/news/news.json";
 import { Row, Button, Col, Form } from "react-bootstrap";
 import { client } from "../utilities/graphql/apiClient";
 import gql from "graphql-tag";
@@ -26,7 +25,6 @@ function Index(props: any) {
       <h4>
         News
       </h4>
-      <News articles={news} />
     </Page>
   );
 }
