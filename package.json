@@ -5,14 +5,12 @@
     "bootstrap": "lerna bootstrap",
     "build": "lerna run build",
     "start": "lerna run start",
-    "dev": "lerna run dev",
-    "copy": "cp -r api/dist/* app/out_functions"
+    "dev": "lerna run dev"
   },
   "devDependencies": {
     "lerna": "^3.22.1"
   },
   "workspaces": [
-    "api",
     "app",
     "model"
   ]
