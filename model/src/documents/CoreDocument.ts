@@ -7,7 +7,7 @@ import { prop } from "@typegoose/typegoose";
 export class CoreDocument {
   @Field(() => ID)
   @Filter(idFilters)
-  _id: string;
+  _id?: string;
 
   @Field({ nullable: true })
   @Filter(stringFilters)
@@ -28,7 +28,7 @@ export class CoreDocument {
   @Field({ nullable: true })
   @Filter(idFilters)
   @prop({ required: true })
-  createdBy?: string = null;
+  createdBy?: string;
 
   @Field(_type => Date, { nullable: true })
   @Filter(dateFilters)

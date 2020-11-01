@@ -1,10 +1,10 @@
 import { Resolver, Query, Mutation, Arg, Args, Authorized } from "type-graphql";
 import { CoreResolver } from "./CoreResolver";
-import { CommonEntityType, CommonEntityTypeModel } from "../../model/documents/CommonEntityType";
-import { CommonEntityTypeFilter } from "../../model/filters/CommonEntityTypeFilter";
-import { CommonEntityTypeInput } from "../../model/inputs/CommonEntityTypeInput";
-import { Options } from "../../model/inputs/Options";
-import { DeleteResponse, UpdateResponse } from "../../model/documents/Responses";
+import { CommonEntityType, CommonEntityTypeModel } from "@reroll/model/dist/documents/CommonEntityType";
+import { CommonEntityTypeFilter } from "@reroll/model/dist/filters/CommonEntityTypeFilter";
+import { CommonEntityTypeInput } from "@reroll/model/dist/inputs/CommonEntityTypeInput";
+import { Options } from "@reroll/model/dist/inputs/Options";
+import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/documents/Responses";
 
 /**
  * Resolves CommonEntityType queries

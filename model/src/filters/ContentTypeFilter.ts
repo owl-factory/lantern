@@ -22,10 +22,10 @@ export class ContentTypeFilter extends CoreFilter {
 
   // isTypeOnly filters
   @Field(() => Boolean, { nullable: true })
-  isTypeOnly_eq: boolean;
+  isTypeOnly_eq?: boolean;
 
   @Field(() => Boolean, { nullable: true })
-  isTypeOnly_neq: boolean;
+  isTypeOnly_neq?: boolean;
 
   // Common Content Type ID
   // TODO - expand on this. Right now it works for checking if a warning is null or not

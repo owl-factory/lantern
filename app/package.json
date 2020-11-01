@@ -18,7 +18,7 @@
     "bootstrap": "^4.4.1",
     "cross-fetch": "^3.0.6",
     "formik": "^2.1.4",
-    "graphql": "^14.6.0",
+    "graphql": "^15.3.0",
     "graphql-tag": "^2.10.3",
     "graphql-type-json": "^0.3.2",
     "lodash": "^4.17.19",

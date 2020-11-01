@@ -23,7 +23,7 @@ const schema: any = buildSchema({
     CharacterResolver,
     CommonContentTypeResolver,
     CommonEntityTypeResolver,
-    ContentResolver,
+    // ContentResolver,
     ContentTypeResolver,
     GameSystemResolver,
     ModuleResolver,

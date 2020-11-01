@@ -1,5 +1,5 @@
 import { ReturnModelType } from "@typegoose/typegoose";
-import { Options } from "../../model/inputs/Options";
+import { Options } from "@reroll/model/dist/inputs/Options";
 import { Query } from "mongoose";
 import { validate } from "class-validator";
 import { getUserID } from "../utilities/misc";

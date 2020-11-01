@@ -1,10 +1,10 @@
 import { Resolver, Query, Mutation, Arg, Args, Authorized } from "type-graphql";
 import { CoreResolver } from "./CoreResolver";
-import { Content, ContentModel } from "../../model/documents/Content";
-import { ContentFilter } from "../../model/filters/ContentFilter";
-import { ContentInput } from "../../model/inputs/ContentInput";
-import { Options } from "../../model/inputs/Options";
-import { DeleteResponse, UpdateResponse } from "../../model/documents/Responses";
+import { Content, ContentModel } from "@reroll/model/dist/documents/Content";
+import { ContentFilter } from "@reroll/model/dist/filters/ContentFilter";
+import { ContentInput } from "@reroll/model/dist/inputs/ContentInput";
+import { Options } from "@reroll/model/dist/inputs/Options";
+import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/documents/Responses";
 import { fetchGameSystemID } from "../utilities/resolverHelpers";
 
 /**

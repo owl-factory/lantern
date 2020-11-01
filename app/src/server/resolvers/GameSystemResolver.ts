@@ -1,9 +1,9 @@
 import { Resolver, Query, Mutation, Arg, Args, Authorized, Ctx } from "type-graphql";
 import { CoreResolver } from "./CoreResolver";
-import { GameSystem, GameSystemFilter, GameSystemModel } from "../../model/documents/GameSystem";
-import { GameSystemInput } from "../../model/inputs/GameSystemInput";
-import { Options } from "../../model/inputs/Options";
-import { DeleteResponse, UpdateResponse } from "../../model/documents/Responses";
+import { GameSystem, GameSystemFilter, GameSystemModel } from "@reroll/model/dist/documents/GameSystem";
+import { GameSystemInput } from "@reroll/model/dist/inputs/GameSystemInput";
+import { Options } from "@reroll/model/dist/inputs/Options";
+import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/documents/Responses";
 import { startSession } from "mongoose";
 import { ModuleResolver } from "./ModuleResolver";
 import { validatePublishType } from "../utilities/validation";
