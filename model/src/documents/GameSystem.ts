@@ -1,7 +1,5 @@
 import { ObjectType, Field, Int } from "type-graphql";
-import { Filter, generateFilterType } from "type-graphql-filter";
 import { prop, getModelForClass } from "@typegoose/typegoose";
-import { stringFilters, booleanFilters, idFilters } from "../models/filterTypes";
 import { CoreDocument } from "./CoreDocument";
 import { PublishType } from "../enums/publishType";
 
@@ -15,7 +13,6 @@ export class GameSystem extends CoreDocument {
   alias?: string;
 
   @Field({ nullable: true })
-  @Filter(stringFilters)
   @prop({ default: "" })
   description?: string;
 
@@ -24,21 +21,17 @@ export class GameSystem extends CoreDocument {
   publishType?: PublishType;
 
   @Field(_type => Boolean, { defaultValue: false })
-  @Filter(booleanFilters)
   @prop({ default: false, required: true })
   isPublished?: boolean;
 
   // Will be created by default, need a default module idd
   @Field({ nullable: false }) // Optional to send, required to have
-  @Filter(idFilters)
   @prop({ required: false })
   defaultModuleID?: string;
 
   @Field({ nullable: true })
-  @Filter(idFilters)
   @prop()
   defaultThemeID?: string;
 }
 
 export const GameSystemModel = getModelForClass(GameSystem);
-export const GameSystemFilter = generateFilterType(GameSystem);

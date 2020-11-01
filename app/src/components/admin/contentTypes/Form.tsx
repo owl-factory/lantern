@@ -25,7 +25,7 @@ export default function ContentTypeForm(props: ContentTypeFormProps) {
   const commonContentTypeKeys: string[] = [];
 
   props.commonContentTypes.forEach((commonContentType: CommonContentType) => {
-    commonContentTypeKeys.push(commonContentType["_id"]);
+    commonContentTypeKeys.push(commonContentType["_id"]!);
   });
 
   return (
