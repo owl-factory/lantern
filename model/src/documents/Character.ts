@@ -9,7 +9,7 @@ export class Character extends CoreDocument {
   @Field()
   @Filter(stringFilters)
   @prop({ required: true })
-  name: string;
+  name?: string;
 }
 
 export const CharacterModel = getModelForClass(Character);

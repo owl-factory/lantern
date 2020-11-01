@@ -2,7 +2,7 @@
 import { useField } from "formik";
 import React from "react";
 import { Form } from "react-bootstrap"
-import { CoreInputProps } from "../../../models/design/form";
+import { CoreInputProps } from "../../../model/design/form";
 
 // The type describing valid inputs for Input's as field
 type As = "input" | "textarea";

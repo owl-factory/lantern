@@ -7,7 +7,7 @@ import { GameSystemModel } from "@reroll/model/dist/documents/GameSystem";
  * @param model The mongoose model to fetch the id for based on the id/alias
  * @param alias The id/alias of the document to find
  */
-async function fetchDocumentID(model: any, alias: string): Promise<[string, boolean]>  {
+async function fetchDocumentID(model: any, alias: string): Promise<[string | undefined, boolean]>  {
   if (alias && !isID(alias)) {
     const document = await model.findOne().where("alias").equals(alias);
     if (!document) {
@@ -26,7 +26,8 @@ async function fetchDocumentID(model: any, alias: string): Promise<[string, bool
  * 
  * @param gameSystemID The id/alias of the gamesystem to find the ID of
  */
-export async function fetchGameSystemID(gameSystemID: string | undefined): Promise<[string, boolean]> {
+export async function fetchGameSystemID(gameSystemID: string | undefined): Promise<[string | undefined, boolean]> {
+  if (!gameSystemID) { return [undefined, false]; }
   return await fetchDocumentID(GameSystemModel, gameSystemID);
 }
 

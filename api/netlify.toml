@@ -1,4 +1,0 @@
-[dev]
-  functions = "dist"
-  publish   = "public"
-  autoLaunch = false

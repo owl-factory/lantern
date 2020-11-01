@@ -11,7 +11,7 @@ import GraphQLJSON from 'graphql-type-json';
 export class Content extends CoreDocument {
   @Field(() => ID)
   @prop({ required: true })
-  gameSystemID: string;
+  gameSystemID?: string;
 
   // The originating content that this is copied from
   @Field(() => ID, { nullable: true })
@@ -20,11 +20,11 @@ export class Content extends CoreDocument {
 
   @Field(() => ID)
   @prop({ required: true })
-  contentTypeID: string;
+  contentTypeID?: string;
 
   @Field(() => [ID], { defaultValue: [] })
   @prop({ default: [] })
-  moduleIDs: string[];
+  moduleIDs?: string[];
 
   @Field(() => Int)
   @prop({ required: true })
@@ -32,7 +32,7 @@ export class Content extends CoreDocument {
 
   @Field(() => Boolean)
   @prop()
-  isPurchasable: boolean;
+  isPurchasable?: boolean;
 
   @Field(() => GraphQLJSON)
   @prop({ default: {}})

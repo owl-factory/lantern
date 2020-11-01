@@ -22,7 +22,7 @@ export function isAliasReserved(alias: string) {
  */
 export function validatePublishType(
   ctx: ContextParamMetadata,
-  publishType: PublishType
+  publishType: PublishType | undefined
 ) {
   // TODO - implement the bulk of this after we get users set
   return "This is a test failure";

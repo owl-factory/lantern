@@ -1,8 +1,8 @@
 import { ReturnModelType } from "@typegoose/typegoose";
-import { Options } from "@reroll/model/src/inputs/Options";
+import { Options } from "@reroll/model/dist/inputs/Options";
 import { Query } from "mongoose";
 import { validate } from "class-validator";
-import { getUserID } from "../misc";
+import { getUserID } from "../utilities/misc";
 import { isID } from "../utilities/resolverHelpers";
 
 export class CoreResolver {

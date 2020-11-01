@@ -4,7 +4,7 @@ import { Character, CharacterFilter, CharacterModel } from "@reroll/model/dist/d
 import { CharacterInput } from "@reroll/model/dist/inputs/CharacterInput";
 import { Options } from "@reroll/model/dist/inputs/Options";
 import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/documents/Responses";
-import { authenticate, authorize } from "../utilities/auth";
+import { authorize } from "../utilities/auth";
 
 /**
  * Resolves Character queries
@@ -25,12 +25,12 @@ export class CharacterResolver extends CoreResolver {
   // test resolver
   // Block entire resolver @Authorized()
   @Query(() => Character)
-  async user(@Ctx() ctx): Promise<Character> {
+  async user(@Ctx() ctx: any): Promise<Character> {
     const authed = await authorize(ctx);
-    const user = ctx.user;
+    const user = ctx.session.user;
     console.log(user)
     if (authed) {
-      return { _id: user.email, name: user.user_metadata.full_name }
+      return { _id: user.email, name: user.name }
     } else {
       return { _id: "oooooooooo", name: "aaaaaaaaaa" }
     }

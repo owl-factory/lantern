@@ -1,5 +1,5 @@
 import React from "react";
-import { ContextButtonProps, ContextMenuItemProps, ContextMenuLinkProps, ContextMenuGenericItem, ContextMenuLink, ContextMenuItem, ButtonConfig } from "../../../models/design/contextMenu";
+import { ContextButtonProps, ContextMenuItemProps, ContextMenuLinkProps, ContextMenuGenericItem, ContextMenuLink, ContextMenuItem, ButtonConfig } from "../../../model/design/contextMenu";
 import Tooltip from "../Tooltip";
 import { Button, ButtonGroup } from "react-bootstrap";
 import { useRouter } from "next/router";

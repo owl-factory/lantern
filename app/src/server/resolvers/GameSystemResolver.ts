@@ -1,12 +1,13 @@
 import { Resolver, Query, Mutation, Arg, Args, Authorized, Ctx } from "type-graphql";
 import { CoreResolver } from "./CoreResolver";
-import { GameSystem, GameSystemFilter, GameSystemModel } from "@reroll/model/dist/documents/GameSystem";
+import { GameSystem, GameSystemModel } from "@reroll/model/dist/documents/GameSystem";
 import { GameSystemInput } from "@reroll/model/dist/inputs/GameSystemInput";
 import { Options } from "@reroll/model/dist/inputs/Options";
 import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/documents/Responses";
 import { startSession } from "mongoose";
 import { ModuleResolver } from "./ModuleResolver";
 import { validatePublishType } from "../utilities/validation";
+import { GameSystemFilter } from "../../../../model/dist/filters/GameSystemFilter";
 
 /**
  * Resolves GameSystem queries
@@ -29,7 +30,7 @@ export class GameSystemResolver extends CoreResolver {
    */
   @Query(() => [GameSystem])
   async gameSystems(
-    @Arg("filters", GameSystemFilter, {nullable: true}) filters?: any,
+    @Arg("filters", {nullable: true}) filters?: GameSystemFilter,
     @Args() options?: Options
   ): Promise<GameSystem[]> {
     return super.resolvers(filters, options);
@@ -40,7 +41,7 @@ export class GameSystemResolver extends CoreResolver {
    * @param filters The filter object to count documents by. Identical to other filters
    */
   @Query(() => Number)
-  gameSystemCount(@Arg("filters", GameSystemFilter, {nullable: true}) filters?: any) {
+  gameSystemCount(@Arg("filters", {nullable: true}) filters?: GameSystemFilter) {
     return super.resolverCount(filters);
   }
 
@@ -52,7 +53,7 @@ export class GameSystemResolver extends CoreResolver {
   @Mutation(() => GameSystem)
   async newGameSystem(
     @Arg("data") data: GameSystemInput,
-    @Ctx() ctx
+    @Ctx() ctx: any
   ) {
     const session = await startSession();
     let gameSystemDocument = null;
@@ -114,7 +115,7 @@ export class GameSystemResolver extends CoreResolver {
   @Mutation(() => UpdateResponse)
   updateGameSystems(
     @Arg("data") data: GameSystemInput,
-    @Arg("filters", GameSystemFilter, {nullable: true}) filters?: any
+    @Arg("filters", {nullable: true}) filters?: GameSystemFilter
   ): Promise<UpdateResponse> {
     return super.updateResolvers(data, filters);
   }
@@ -135,7 +136,7 @@ export class GameSystemResolver extends CoreResolver {
    */
   @Authorized()
   @Mutation(() => DeleteResponse)
-  async deleteGameSystems(@Arg("filters", GameSystemFilter, {nullable: true}) filters?: any): Promise<DeleteResponse> {
+  async deleteGameSystems(@Arg("filters", {nullable: true}) filters?: GameSystemFilter): Promise<DeleteResponse> {
     return super.deleteResolvers(filters);
   }
 }

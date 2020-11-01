@@ -2,7 +2,7 @@ import { useField } from "formik";
 import React from "react";
 import { Form } from "react-bootstrap";
 import { def, objectKeepFields } from "../../../utilities/tools";
-import { CoreFormCheckProps } from "../../../models/design/form";
+import { CoreFormCheckProps } from "../../../model/design/form";
 
 interface FormCheckProps extends CoreFormCheckProps {
   type: "checkbox" | "radio" | "switch"; // Which type of check input we use

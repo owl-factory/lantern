@@ -1,7 +1,7 @@
+import { signIn } from "next-auth/client";
 import React, { useState, ReactNode } from "react";
-import { Card, Button, Form } from "react-bootstrap";
+import { Card, Button } from "react-bootstrap";
 import LoginForm from "./LoginForm";
-import { useIdentityContext } from "react-netlify-identity";
 
 interface AuthenticationCardProps {
   initialState?: AuthCardSection;
@@ -49,12 +49,10 @@ function AuthenticationCard(props: AuthenticationCardProps) {
  * @param props Contains the setState function for swapping auth views
  */
 function LoginSection(props: AuthCardSectionProps) {
-  const identity = useIdentityContext();
-
   return (
     <>
       <h5>Login</h5>
-      <Button variant="secondary" onClick={() => identity.loginProvider("google")}>
+      <Button variant="secondary" onClick={() => signIn("google")}>
         Log in with Google
       </Button>
       <LoginForm/>

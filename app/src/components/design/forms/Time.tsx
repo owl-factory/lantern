@@ -1,6 +1,6 @@
 import React from "react";
 import { Input } from "./Input";
-import { CoreInputProps } from "../../../models/design/form";
+import { CoreInputProps } from "../../../model/design/form";
 
 /**
  * An input set up for handling times. Formats the Input function to work properly

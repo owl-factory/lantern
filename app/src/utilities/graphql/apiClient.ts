@@ -5,10 +5,10 @@ import { fetch } from "cross-fetch";
 
 // We need this madness becasue SSR dislikes relative URIs
 // This might be removed because Lucy's changing things to exist only in Next API
-let uri = "/api/graphql";
-if (process.env.NEXT_PUBLIC_SERVER_URI) {
-  uri = `${process.env.NEXT_PUBLIC_SERVER_URI}/graphql`
-}
+let uri = "http://localhost:3000/api/graphql";
+// if (process.env.NEXT_PUBLIC_SERVER_URI) {
+//   uri = `${process.env.NEXT_PUBLIC_SERVER_URI}/graphql`
+// }
 const httpLink = createHttpLink({
   uri,
   fetch,
