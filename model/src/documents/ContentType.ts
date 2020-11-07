@@ -1,7 +1,6 @@
 import { ObjectType, Field, ID } from "type-graphql";
 import { CommonContentType } from "./CommonContentType";
 import { prop, getModelForClass } from "@typegoose/typegoose";
-import { LayoutItem } from "../models/LayoutItem";
 import { ContentFieldTypeEnum } from "../enums/contentFieldType";
 
 /**
@@ -58,7 +57,9 @@ export class ContentTypeWarnings {
 
 }
 
-
+/**
+ * Describes a type of content within a game system
+ */
 @ObjectType()
 export class ContentType extends CommonContentType {
   @Field(() => ID)
@@ -68,37 +69,6 @@ export class ContentType extends CommonContentType {
   @Field(() => ID, { nullable: true })
   @prop()
   commonContentTypeID?: string;
-
-  // If true, we do NOT return this while searching. This indicates that this type is used for
-  // entity sheets and nothing else. 
-  @Field(() => Boolean)
-  @prop()
-  isTypeOnly: boolean;
-
-  @Field(() => [ContentTypeField])
-  @prop({ type: ContentTypeField, _id: false})
-  fields: ContentTypeField[];
-
-  // The layout of the content within the game
-  // The common spell card sort of layout
-  @Field(_type => [LayoutItem])
-  @prop({ default: [] })
-  gameLayout: LayoutItem[];
-
-  // The layout of the item within the webapp. This is perhaps a more clean version
-  // May be absorbed with game layout into a single layout. 
-  @Field(_type => [LayoutItem])
-  @prop({ default: [] })
-  pageLayout: LayoutItem[];
-
-  // The layout of the item within 
-  @Field(_type => [LayoutItem])
-  @prop({ default: [] })
-  searchLayout: LayoutItem[];
-
-  @Field(() => ContentTypeWarnings, { nullable: true })
-  @prop()
-  warnings?: ContentTypeWarnings;
 }
 
 export const ContentTypeModel = getModelForClass(ContentType);

@@ -1,4 +1,5 @@
 import { GameSystemModel } from "@reroll/model/dist/documents/GameSystem";
+import { Query } from "mongoose";
 
 /**
  * Finds the id of a document given an id or a unique alias, then returns the 
@@ -37,4 +38,78 @@ export async function fetchGameSystemID(gameSystemID: string | undefined): Promi
  */
 export function isID(id: string) {
   return id.length === 24
+}
+
+function applyFilterObject(query: Query<any>, filters: any) {
+  const filterKeys = Object.keys(filters).sort();
+  let lastUsedVariable = "";
+
+  filterKeys.forEach((filterKey: string) => {
+    // Grab variable
+    const filterComponents = filterKey.match(/(\S*)_([^_\s]+)/i);
+    if (filterComponents === null) {
+      throw new Error("An invalid filter variable was provided");
+    }
+    const variableName = filterComponents[1];
+    const whereCondition = filterComponents[2];
+
+    if (lastUsedVariable !== variableName) {
+      lastUsedVariable = variableName;
+      query = query.where(variableName);
+    }
+
+    switch(whereCondition) {
+      case "eq": 
+        query = query.equals(filters[filterKey]);
+        break;
+      case "gt":
+        query = query.gt(filters[filterKey]);
+        break;
+      case "gte":
+        query = query.gte(filters[filterKey]);
+        break;
+      case "in":
+        query = query.in(filters[filterKey]);
+        break;
+      case "like": 
+        query = query.regex(new RegExp(filters[filterKey], "i"));
+        break;
+      case "gte":
+        query = query.gte(filters[filterKey]);
+        break;
+      case "lt":
+        query = query.lt(filters[filterKey]);
+        break;
+      case "lte":
+        query = query.lte(filters[filterKey]);
+        break;
+      case "ne":
+        query = query.ne(filters[filterKey]);
+        break;
+      
+    }
+  });
+
+  return query;
+}
+
+/**
+ * Builds and adds a where clause to a query given the filters 
+ * 
+ * TODO - move to a new file?
+ * 
+ * @param query The query object to add where clauses upon
+ * @param filters The filters to convert into a where clause for the query
+ */
+export function applyFilters(query: Query<any>, filters: any[]): Query<any> {
+  // TODO - modify functionality such that this takes in either an object or an array, with each array splitting
+  // up with an OR
+  // Alternatively, we can use mongoose-adjacent filters which would be GREAT because we don't need processing, 
+  // we can just pass through the array or struct object
+  // Exit early if no filters given
+  if (!filters) {
+    return query;
+  }
+
+  return query;
 }

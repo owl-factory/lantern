@@ -1,15 +1,15 @@
 import "reflect-metadata";
-import { CharacterResolver } from "../../server/resolvers/CharacterResolver";
+import { CharacterResolver } from "../../server/resolvers/Character";
 import { connect } from "mongoose";
 import { buildSchema } from "type-graphql";
-import { GameSystemResolver } from "../../server/resolvers/GameSystemResolver";
-import { ModuleResolver } from "../../server/resolvers/ModuleResolver";
+import { GameSystemResolver } from "../../server/resolvers/GameSystem";
+import { ModuleResolver } from "../../server/resolvers/Module";
 import { NextAuthChecker } from "../../server/utilities/auth";
 import { ApolloServer } from "apollo-server-micro";
-import { CommonContentTypeResolver } from "../../server/resolvers/CommonContentTypeResolver";
-import { CommonEntityTypeResolver } from "../../server/resolvers/CommonEntityTypeResolver";
-import { ContentResolver } from "../../server/resolvers/ContentResolver";
-import { ContentTypeResolver } from "../../server/resolvers/ContentTypeResolver";
+import { CommonContentTypeResolver } from "../../server/resolvers/CommonContentType";
+import { CommonEntityTypeResolver } from "../../server/resolvers/CommonEntityType";
+import { ContentResolver } from "../../server/resolvers/Content";
+import { ContentTypeResolver } from "../../server/resolvers/ContentType";
 
 global.fetch = require("cross-fetch");
 
