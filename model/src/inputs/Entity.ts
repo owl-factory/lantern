@@ -3,13 +3,21 @@ import { Entity } from "../documents";
 import { CoreInput } from "./CoreInput";
 
 /**
- * Describes the fields that the user may add or update in the entity document
+ * Describes the fields that the user may both add or update in the entity document
  */
 @InputType()
 export class EntityInput extends CoreInput implements Partial<Entity> {
   @Field({ nullable: true })
-  gameSystemID?: string;
-
-  @Field({ nullable: true })
   entityTypeID?: string;
 }
+
+/**
+ * Describes the fields that the user may set only when creating the entity document
+ */
+@InputType()
+export class CreateEntityInput extends EntityInput implements Partial<Entity> {
+  @Field({ nullable: true })
+  gameSystemID?: string;
+}
+
+export const UpdateEntityInput = EntityInput;

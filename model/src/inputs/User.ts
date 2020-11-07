@@ -8,3 +8,6 @@ import { CoreInput } from "./CoreInput";
 @InputType()
 export class UserInput extends CoreInput implements Partial<User> {
 }
+
+export const CreateUserInput = UserInput;
+export const UpdateUserInput = UserInput;

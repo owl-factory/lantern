@@ -8,3 +8,6 @@ import { CoreInput } from "./CoreInput";
 @InputType()
 export class OrganizationInput extends CoreInput implements Partial<Organization> {
 }
+
+export const CreateOrganizationInput = OrganizationInput;
+export const UpdateOrganizationInput = OrganizationInput;

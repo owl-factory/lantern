@@ -7,6 +7,15 @@ import { CoreInput } from "./CoreInput";
  */
 @InputType()
 export class EntityLayoutInput extends CoreInput implements Partial<EntityLayout> {
+}
+
+/**
+ * Describes the fields that the user may set only when creating the entity layout document
+ */
+@InputType()
+export class CreateEntityLayoutInput extends CoreInput implements Partial<EntityLayout> {
   @Field({ nullable: true })
   gameSystemID?: string;
 }
+
+export const UpdateEntityLayoutInput = EntityLayoutInput;

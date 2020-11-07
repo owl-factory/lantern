@@ -7,6 +7,15 @@ import { CoreInput } from "./CoreInput";
  */
 @InputType()
 export class CampaignInput extends CoreInput implements Partial<Campaign> {
+}
+
+/**
+ * Describes the fields that the user may set only when creating the campaign document
+ */
+@InputType()
+export class CreateCampaignInput extends CampaignInput implements Partial<Campaign> {
   @Field({ nullable: true })
   gameSystemID?: string;
 }
+
+export const UpdateCampaignInput = CampaignInput;

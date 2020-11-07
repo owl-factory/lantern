@@ -3,13 +3,21 @@ import { Content } from "../documents";
 import { CoreInput } from "./CoreInput";
 
 /**
- * Describes the fields that the user may add or update in the content document
+ * Describes the fields that the user may both add or update in the content document
  */
 @InputType()
-export class ContentInput extends CoreInput implements Partial<Content> {
-  @Field({ nullable: true })
-  gameSystemID?: string;
-
+class ContentInput extends CoreInput implements Partial<Content> {
   @Field({ nullable: true })
   contentTypeID?: string;
 }
+
+/**
+ * Describes the fields that the user may set only when creating the content document
+ */
+@InputType()
+export class CreateContentInput extends ContentInput implements Partial<Content> {
+  @Field({ nullable: true })
+  gameSystemID?: string;
+}
+
+export const UpdateContentInput = ContentInput;
