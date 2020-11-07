@@ -18,4 +18,4 @@ export class CreateEntityLayoutInput extends CoreInput implements Partial<Entity
   gameSystemID?: string;
 }
 
-export const UpdateEntityLayoutInput = EntityLayoutInput;
+export class UpdateEntityLayoutInput extends EntityLayoutInput implements Partial<EntityLayout>{};

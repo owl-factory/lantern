@@ -6,15 +6,15 @@ import { Field, InputType } from "type-graphql";
 @InputType()
 export class StringFilters {
   @Field({ nullable: true })
-  $eq?: string;
+  eq?: string;
 
   @Field({ nullable: true })
-  $neq?: string;
+  neq?: string;
 
   @Field({ nullable: true })
-  $like?: string;
+  like?: string;
 
   // Excludes stuff. Maybe unused?
   @Field({ nullable: true })
-  $unlike?: string;
+  unlike?: string;
 }

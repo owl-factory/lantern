@@ -18,4 +18,4 @@ export class CreateRuleInput extends RuleInput implements Partial<Rule> {
   gameSystemID?: string;
 }
 
-export const UpdateRuleInput = RuleInput;
+export class UpdateRuleInput extends RuleInput implements Partial<Rule>{};

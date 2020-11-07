@@ -6,20 +6,20 @@ import { Field, InputType } from "type-graphql";
 @InputType()
 export class DateFilters {
   @Field(() => Date, { nullable: true })
-  $eq?: Date;
+  eq?: Date;
 
   @Field(() => Date, { nullable: true })
-  $neq?: Date;
+  neq?: Date;
 
   @Field(() => Date, { nullable: true })
-  $gt?: Date;
+  gt?: Date;
 
   @Field(() => Date, { nullable: true })
-  $gte?: Date;
+  gte?: Date;
 
   @Field(() => Date, { nullable: true })
-  $lt?: Date;
+  lt?: Date;
 
   @Field(() => Date, { nullable: true })
-  $lte?: Date;
+  lte?: Date;
 }

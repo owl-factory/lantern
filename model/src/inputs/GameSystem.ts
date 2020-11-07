@@ -9,5 +9,7 @@ import { CoreInput } from "./CoreInput";
 class GameSystemInput extends CoreInput implements Partial<GameSystem> {
 }
 
-export const CreateGameSystemInput = GameSystemInput;
-export const UpdateGameSystemInput = GameSystemInput;
+@InputType()
+export class CreateGameSystemInput extends GameSystemInput implements Partial<GameSystem>{};
+@InputType()
+export class UpdateGameSystemInput extends GameSystemInput implements Partial<GameSystem>{};

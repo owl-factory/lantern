@@ -6,8 +6,8 @@ import { Field, ID, InputType } from "type-graphql";
 @InputType()
 export class IDFilters {
   @Field(() => ID, { nullable: true })
-  $eq?: string;
+  eq?: string;
 
   @Field(() => ID, { nullable: true })
-  $neq?: string;
+  neq?: string;
 }

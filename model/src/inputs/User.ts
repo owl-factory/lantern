@@ -9,5 +9,5 @@ import { CoreInput } from "./CoreInput";
 export class UserInput extends CoreInput implements Partial<User> {
 }
 
-export const CreateUserInput = UserInput;
-export const UpdateUserInput = UserInput;
+export class CreateUserInput extends UserInput implements Partial<User>{};
+export class UpdateUserInput extends UserInput implements Partial<User>{};

@@ -9,5 +9,5 @@ import { CoreInput } from "./CoreInput";
 class CommonContentTypeInput extends CoreInput implements Partial<CommonContentType> {
 }
 
-export const CreateCommonContentTypeInput = CommonContentTypeInput;
-export const UpdateCommonContentTypeInput = CommonContentTypeInput;
+export class CreateCommonContentTypeInput extends CommonContentTypeInput implements Partial<CommonContentType>{};
+export class UpdateCommonContentTypeInput extends CommonContentTypeInput implements Partial<CommonContentType>{};

@@ -19,4 +19,4 @@ export class CreateEntityTypeInput extends EntityTypeInput implements Partial<En
   gameSystemID?: string;
 }
 
-export const UpdateEntityTypeInput = EntityTypeInput;
+export class UpdateEntityTypeInput extends EntityTypeInput implements Partial<EntityType>{};

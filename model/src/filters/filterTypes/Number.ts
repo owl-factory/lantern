@@ -6,20 +6,20 @@ import { Field, InputType } from "type-graphql";
 @InputType()
 export class NumberFilters {
   @Field(() => Number, { nullable: true })
-  $eq?: number;
+  eq?: number;
 
   @Field(() => Number, { nullable: true })
-  $neq?: number;
+  neq?: number;
 
   @Field(() => Number, { nullable: true })
-  $gt?: number;
+  gt?: number;
 
   @Field(() => Number, { nullable: true })
-  $gte?: number;
+  gte?: number;
 
   @Field(() => Number, { nullable: true })
-  $lt?: number;
+  lt?: number;
 
   @Field(() => Number, { nullable: true })
-  $lte?: number;
+  lte?: number;
 }

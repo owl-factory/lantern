@@ -9,5 +9,5 @@ import { CoreInput } from "./CoreInput";
 export class OrganizationInput extends CoreInput implements Partial<Organization> {
 }
 
-export const CreateOrganizationInput = OrganizationInput;
-export const UpdateOrganizationInput = OrganizationInput;
+export class CreateOrganizationInput extends OrganizationInput implements Partial<Organization>{};
+export class UpdateOrganizationInput extends OrganizationInput implements Partial<Organization>{};

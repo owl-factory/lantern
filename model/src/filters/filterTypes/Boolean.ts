@@ -6,8 +6,8 @@ import { Field, InputType } from "type-graphql";
 @InputType()
 export class BooleanFilters {
   @Field(() => Boolean, { nullable: true })
-  $eq?: boolean;
+  eq?: boolean;
 
   @Field(() => Boolean, { nullable: true })
-  $neq?: boolean;
+  neq?: boolean;
 }
