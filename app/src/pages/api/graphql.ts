@@ -2,14 +2,24 @@ import "reflect-metadata";
 import { CharacterResolver } from "../../server/resolvers/Character";
 import { connect } from "mongoose";
 import { buildSchema } from "type-graphql";
-import { GameSystemResolver } from "../../server/resolvers/GameSystem";
-import { ModuleResolver } from "../../server/resolvers/Module";
 import { NextAuthChecker } from "../../server/utilities/auth";
 import { ApolloServer } from "apollo-server-micro";
-import { CommonContentTypeResolver } from "../../server/resolvers/CommonContentType";
-import { CommonEntityTypeResolver } from "../../server/resolvers/CommonEntityType";
-import { ContentResolver } from "../../server/resolvers/Content";
-import { ContentTypeResolver } from "../../server/resolvers/ContentType";
+import {
+  AssetResolver,
+  CampaignResolver,
+  CommonContentTypeResolver,
+  CommonEntityTypeResolver,
+  ContentResolver,
+  ContentTypeResolver,
+  EntityLayoutResolver,
+  EntityResolver,
+  EntityTypeResolver,
+  GameSystemResolver,
+  ModuleResolver,
+  OrganizationResolver,
+  RuleResolver,
+  UserResolver
+} from "../../server/resolvers";
 
 global.fetch = require("cross-fetch");
 
@@ -21,12 +31,20 @@ connect(
 const schema: any = buildSchema({
   resolvers: [
     CharacterResolver,
+    AssetResolver,
+    CampaignResolver,
     CommonContentTypeResolver,
     CommonEntityTypeResolver,
-    // ContentResolver,
+    ContentResolver,
     ContentTypeResolver,
+    EntityResolver,
+    EntityLayoutResolver,
+    EntityTypeResolver,
     GameSystemResolver,
     ModuleResolver,
+    OrganizationResolver,
+    RuleResolver,
+    UserResolver,
   ],
   emitSchemaFile: false,
   validate: false,

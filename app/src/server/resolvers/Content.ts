@@ -1,114 +1,79 @@
-import { Resolver, Query, Mutation, Arg, Args, Authorized } from "type-graphql";
-import { CoreResolver } from "./CoreResolver";
-import { Content, ContentModel } from "@reroll/model/dist/documents/Content";
-import { ContentFilter } from "@reroll/model/dist/filters/ContentFilter";
-import { ContentInput } from "@reroll/model/dist/inputs/ContentInput";
-import { Options } from "@reroll/model/dist/inputs/Options";
+import { Content, ContentModel } from "@reroll/model/dist/documents";
 import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/documents/Responses";
-import { fetchGameSystemID } from "../utilities/resolverHelpers";
+import { ContentFilter } from "@reroll/model/dist/filters";
+import { CreateContentInput, UpdateContentInput } from "@reroll/model/dist/inputs";
+import { Options } from "@reroll/model/dist/inputs/Options";
+import { Query as MongoQuery } from "mongoose";
+import { Arg, Args, Authorized, Int, Mutation, Query, Resolver } from "type-graphql";
+import { CoreResolver } from "./CoreResolver";
 
 /**
- * Resolves Content queries
+ * Resolves content queries
  */
-@Resolver()
+@Resolver(Content)
 export class ContentResolver extends CoreResolver {
   protected model = ContentModel;
 
   /**
-   * Fetches an content document matching the given id
-   * @param _id The id of the content document to return
-   * @param gameSystemAlias The alias or id of the gameSystem that the content belongs to
+   * Fetches a document matching the given id or aliases
+   * @param _id The id or alias of the document to return
    */
-  @Query(() => Content, {nullable: true})
-  async content(
-    @Arg("_id") _id: string,
-    @Arg("gameSystemAlias") gameSystemAlias?: string
-  ): Promise<Content | null> {
-    const [gameSystemID, validGameSystem] = await fetchGameSystemID(gameSystemAlias);
-
-    if (!validGameSystem) { return null; };
-    
-    return super.resolver(_id, {gameSystemID_eq: gameSystemID});
+  @Query(() => Content, { nullable: true })
+  public content(@Arg("_id") _id: string) {
+    return super.findByAlias(_id);
   }
 
   /**
-   * Fetches the content documents matching the filter and options
-   * @param filters Optional filters for finely selecting data
-   * @param options Options affecting how much data and from where it is being returned
+   * Fetches the documents matching the filter and options
    */
   @Query(() => [Content])
-  async contents(
+  public contents(
     @Arg("filters", {nullable: true}) filters?: ContentFilter,
     @Args() options?: Options
-  ): Promise<Content[]> {
-    
-    return super.resolvers(filters, options);
+  ): MongoQuery<Content[]> {
+    return super.findMany(filters, options);
   }
 
   /**
    * Returns a count of all of the documents matching the given filters
    * @param filters The filter object to count documents by. Identical to other filters
    */
-  @Query(() => Number)
-  contentCount(@Arg("filters", {nullable: true}) filters?: ContentFilter) {
-    return super.resolverCount(filters);
+  @Query(() => Int)
+  public contentCount(@Arg("filters", {nullable: true}) filters?: ContentFilter): MongoQuery<number> {
+    return super.findCount(filters);
   }
 
   /**
-   * Creates a new content document
-   * @param data The data object to make into a new content
+   * Inserts a new document into the database
+   * @param data the data to insert into a new document
    */
   @Authorized()
-  @Mutation(() => Content)
-  newContent(@Arg("data") data: ContentInput, options?: any): Promise<Content> {
-    return super.newResolver(data, options);
+  @Mutation()
+  public createContent(@Arg("data") data: CreateContentInput): MongoQuery<Content> {
+    return super.createOne(data);
   }
 
   /**
-   * Updates a single content document
+   * Updates a document with new data. Data not present will not be changed.
    * @param _id The id of the document to update
-   * @param data The data to replace in the document
+   * @param data The new data to upsert into the document
    */
   @Authorized()
   @Mutation(() => UpdateResponse)
-  updateContent(
+  public updateContent(
     @Arg("_id") _id: string,
-    @Arg("data") data: ContentInput
-  ): Promise<UpdateResponse> {
-    return super.updateResolver(_id, data)
+    @Arg("data") data: UpdateContentInput
+  ): MongoQuery<UpdateResponse> {
+    return super.updateOne(_id, data);
   }
 
   /**
-   * Updates a single content document
-   * @param data The data to replace in the document
-   * @param filters The filters to select the data to replace in the document
-   */
-  @Authorized()
-  @Mutation(() => UpdateResponse)
-  updateContents(
-    @Arg("data") data: ContentInput,
-    @Arg("filters", {nullable: true}) filters?: ContentFilter
-  ): Promise<UpdateResponse> {
-    return super.updateResolvers(data, filters);
-  }
-
-  /**
-   * Deletes a single content document
-   * @param _id The id of the content document to delete
+   * Deletes a document
+   * @param _id The id of the document to delete
    */
   @Authorized()
   @Mutation(() => DeleteResponse)
-  deleteContent(@Arg("_id") _id: string): Promise<DeleteResponse> {
-    return super.deleteResolver(_id);
-  }
-
-  /**
-   * Deletes a single content document
-   * @param filters The id of the content document to delete
-   */
-  @Authorized()
-  @Mutation(() => DeleteResponse)
-  async deleteContents(@Arg("filters", {nullable: true}) filters?: ContentFilter): Promise<DeleteResponse> {
-    return super.deleteResolvers(filters);
+  public deleteContent(@Arg("_id") _id: string): MongoQuery<DeleteResponse> {
+    return super.deleteOne(_id);
   }
 }

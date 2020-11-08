@@ -1,102 +1,79 @@
-import { Resolver, Query, Mutation, Arg, Args, Authorized } from "type-graphql";
-import { CoreResolver } from "./CoreResolver";
-import { CommonContentType, CommonContentTypeModel } from "@reroll/model/dist/documents/CommonContentType";
-import { CommonContentTypeFilter } from "@reroll/model/dist/filters/CommonContentTypeFilter";
-import { CommonContentTypeInput } from "@reroll/model/dist/inputs/CommonContentTypeInput";
-import { Options } from "@reroll/model/dist/inputs/Options";
+import { CommonContentType, CommonContentTypeModel } from "@reroll/model/dist/documents";
 import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/documents/Responses";
+import { CommonContentTypeFilter } from "@reroll/model/dist/filters";
+import { CreateCommonContentTypeInput, UpdateCommonContentTypeInput } from "@reroll/model/dist/inputs";
+import { Options } from "@reroll/model/dist/inputs/Options";
+import { Query as MongoQuery } from "mongoose";
+import { Arg, Args, Authorized, Int, Mutation, Query, Resolver } from "type-graphql";
+import { CoreResolver } from "./CoreResolver";
 
 /**
- * Resolves CommonContentType queries
+ * Resolves common content type queries
  */
-@Resolver()
+@Resolver(CommonContentType)
 export class CommonContentTypeResolver extends CoreResolver {
   protected model = CommonContentTypeModel;
 
   /**
-   * Fetches an commonContentType document matching the given id
-   * @param _id The id of the commonContentType document to return
+   * Fetches a document matching the given id or aliases
+   * @param _id The id or alias of the document to return
    */
-  @Query(() => CommonContentType, {nullable: true})
-  async commonContentType(@Arg("_id") _id: string): Promise<CommonContentType | null> {
-    return super.resolver(_id);
+  @Query(() => CommonContentType, { nullable: true })
+  public commonContentType(@Arg("_id") _id: string) {
+    return super.findByAlias(_id);
   }
 
   /**
-   * Fetches the commonContentType documents matching the filter and options
+   * Fetches the documents matching the filter and options
    */
   @Query(() => [CommonContentType])
-  async commonContentTypes(
+  public commonContentTypes(
     @Arg("filters", {nullable: true}) filters?: CommonContentTypeFilter,
     @Args() options?: Options
-  ): Promise<CommonContentType[]> {
-    return super.resolvers(filters, options);
+  ): MongoQuery<CommonContentType[]> {
+    return super.findMany(filters, options);
   }
 
   /**
    * Returns a count of all of the documents matching the given filters
    * @param filters The filter object to count documents by. Identical to other filters
    */
-  @Query(() => Number)
-  commonContentTypeCount(@Arg("filters", {nullable: true}) filters?: CommonContentTypeFilter) {
-    return super.resolverCount(filters);
+  @Query(() => Int)
+  public xxxCount(@Arg("filters", {nullable: true}) filters?: CommonContentTypeFilter): MongoQuery<number> {
+    return super.findCount(filters);
   }
 
   /**
-   * Creates a new commonContentType document
-   * @param data The data object to make into a new commonContentType
+   * Inserts a new document into the database
+   * @param data the data to insert into a new document
    */
   @Authorized()
-  @Mutation(() => CommonContentType)
-  newCommonContentType(@Arg("data") data: CommonContentTypeInput, options?: any): Promise<CommonContentType> {
-    return super.newResolver(data, options);
+  @Mutation()
+  public createCommonContentType(@Arg("data") data: CreateCommonContentTypeInput): MongoQuery<CommonContentType> {
+    return super.createOne(data);
   }
 
   /**
-   * Updates a single commonContentType document
+   * Updates a document with new data. Data not present will not be changed.
    * @param _id The id of the document to update
-   * @param data The data to replace in the document
+   * @param data The new data to upsert into the document
    */
   @Authorized()
   @Mutation(() => UpdateResponse)
-  updateCommonContentType(
+  public updateCommonContentType(
     @Arg("_id") _id: string,
-    @Arg("data") data: CommonContentTypeInput
-  ): Promise<UpdateResponse> {
-    return super.updateResolver(_id, data)
+    @Arg("data") data: UpdateCommonContentTypeInput
+  ): MongoQuery<UpdateResponse> {
+    return super.updateOne(_id, data);
   }
 
   /**
-   * Updates a single commonContentType document
-   * @param data The data to replace in the document
-   * @param filters The filters to select the data to replace in the document
-   */
-  @Authorized()
-  @Mutation(() => UpdateResponse)
-  updateCommonContentTypes(
-    @Arg("data") data: CommonContentTypeInput,
-    @Arg("filters", {nullable: true}) filters?: CommonContentTypeFilter
-  ): Promise<UpdateResponse> {
-    return super.updateResolvers(data, filters);
-  }
-
-  /**
-   * Deletes a single commonContentType document
-   * @param _id The id of the commonContentType document to delete
+   * Deletes a document
+   * @param _id The id of the document to delete
    */
   @Authorized()
   @Mutation(() => DeleteResponse)
-  deleteCommonContentType(@Arg("_id") _id: string): Promise<DeleteResponse> {
-    return super.deleteResolver(_id);
-  }
-
-  /**
-   * Deletes a single commonContentType document
-   * @param filters The id of the commonContentType document to delete
-   */
-  @Authorized()
-  @Mutation(() => DeleteResponse)
-  async deleteCommonContentTypes(@Arg("filters", {nullable: true}) filters?: CommonContentTypeFilter): Promise<DeleteResponse> {
-    return super.deleteResolvers(filters);
+  public deleteCommonContentType(@Arg("_id") _id: string): MongoQuery<DeleteResponse> {
+    return super.deleteOne(_id);
   }
 }

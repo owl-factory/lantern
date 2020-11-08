@@ -1,36 +1,36 @@
-import { ContentType, ContentTypeModel } from "@reroll/model/dist/documents";
+import { Campaign, CampaignModel } from "@reroll/model/dist/documents";
 import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/documents/Responses";
-import { ContentTypeFilter } from "@reroll/model/dist/filters";
-import { CreateContentTypeInput, UpdateContentTypeInput } from "@reroll/model/dist/inputs";
+import { CampaignFilter } from "@reroll/model/dist/filters";
+import { CreateCampaignInput, UpdateCampaignInput } from "@reroll/model/dist/inputs";
 import { Options } from "@reroll/model/dist/inputs/Options";
 import { Query as MongoQuery } from "mongoose";
 import { Arg, Args, Authorized, Int, Mutation, Query, Resolver } from "type-graphql";
 import { CoreResolver } from "./CoreResolver";
 
 /**
- * Resolves content type queries
+ * Resolves campaign queries
  */
-@Resolver(ContentType)
-export class ContentTypeResolver extends CoreResolver {
-  protected model = ContentTypeModel;
+@Resolver(Campaign)
+export class CampaignResolver extends CoreResolver {
+  protected model = CampaignModel;
 
   /**
    * Fetches a document matching the given id or aliases
    * @param _id The id or alias of the document to return
    */
-  @Query(() => ContentType, { nullable: true })
-  public contentType(@Arg("_id") _id: string) {
+  @Query(() => Campaign, { nullable: true })
+  public campaign(@Arg("_id") _id: string) {
     return super.findByAlias(_id);
   }
 
   /**
    * Fetches the documents matching the filter and options
    */
-  @Query(() => [ContentType])
-  public contentTypes(
-    @Arg("filters", {nullable: true}) filters?: ContentTypeFilter,
+  @Query(() => [Campaign])
+  public campaigns(
+    @Arg("filters", {nullable: true}) filters?: CampaignFilter,
     @Args() options?: Options
-  ): MongoQuery<ContentType[]> {
+  ): MongoQuery<Campaign[]> {
     return super.findMany(filters, options);
   }
 
@@ -39,7 +39,7 @@ export class ContentTypeResolver extends CoreResolver {
    * @param filters The filter object to count documents by. Identical to other filters
    */
   @Query(() => Int)
-  public contentTypeCount(@Arg("filters", {nullable: true}) filters?: ContentTypeFilter): MongoQuery<number> {
+  public campaignCount(@Arg("filters", {nullable: true}) filters?: CampaignFilter): MongoQuery<number> {
     return super.findCount(filters);
   }
 
@@ -49,7 +49,7 @@ export class ContentTypeResolver extends CoreResolver {
    */
   @Authorized()
   @Mutation()
-  public createContentType(@Arg("data") data: CreateContentTypeInput): MongoQuery<ContentType> {
+  public createCampaign(@Arg("data") data: CreateCampaignInput): MongoQuery<Campaign> {
     return super.createOne(data);
   }
 
@@ -60,9 +60,9 @@ export class ContentTypeResolver extends CoreResolver {
    */
   @Authorized()
   @Mutation(() => UpdateResponse)
-  public updateContentType(
+  public updateCampaign(
     @Arg("_id") _id: string,
-    @Arg("data") data: UpdateContentTypeInput
+    @Arg("data") data: UpdateCampaignInput
   ): MongoQuery<UpdateResponse> {
     return super.updateOne(_id, data);
   }
@@ -73,7 +73,7 @@ export class ContentTypeResolver extends CoreResolver {
    */
   @Authorized()
   @Mutation(() => DeleteResponse)
-  public deleteContentType(@Arg("_id") _id: string): MongoQuery<DeleteResponse> {
+  public deleteCampaign(@Arg("_id") _id: string): MongoQuery<DeleteResponse> {
     return super.deleteOne(_id);
   }
 }

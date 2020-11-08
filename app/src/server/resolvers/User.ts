@@ -1,36 +1,36 @@
-import { ContentType, ContentTypeModel } from "@reroll/model/dist/documents";
+import { User, UserModel } from "@reroll/model/dist/documents";
 import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/documents/Responses";
-import { ContentTypeFilter } from "@reroll/model/dist/filters";
-import { CreateContentTypeInput, UpdateContentTypeInput } from "@reroll/model/dist/inputs";
+import { UserFilter } from "@reroll/model/dist/filters";
+import { CreateUserInput, UpdateUserInput } from "@reroll/model/dist/inputs";
 import { Options } from "@reroll/model/dist/inputs/Options";
 import { Query as MongoQuery } from "mongoose";
 import { Arg, Args, Authorized, Int, Mutation, Query, Resolver } from "type-graphql";
 import { CoreResolver } from "./CoreResolver";
 
 /**
- * Resolves content type queries
+ * Resolves user queries
  */
-@Resolver(ContentType)
-export class ContentTypeResolver extends CoreResolver {
-  protected model = ContentTypeModel;
+@Resolver(User)
+export class UserResolver extends CoreResolver {
+  protected model = UserModel;
 
   /**
    * Fetches a document matching the given id or aliases
    * @param _id The id or alias of the document to return
    */
-  @Query(() => ContentType, { nullable: true })
-  public contentType(@Arg("_id") _id: string) {
+  @Query(() => User, { nullable: true })
+  public user(@Arg("_id") _id: string) {
     return super.findByAlias(_id);
   }
 
   /**
    * Fetches the documents matching the filter and options
    */
-  @Query(() => [ContentType])
-  public contentTypes(
-    @Arg("filters", {nullable: true}) filters?: ContentTypeFilter,
+  @Query(() => [User])
+  public users(
+    @Arg("filters", {nullable: true}) filters?: UserFilter,
     @Args() options?: Options
-  ): MongoQuery<ContentType[]> {
+  ): MongoQuery<User[]> {
     return super.findMany(filters, options);
   }
 
@@ -39,7 +39,7 @@ export class ContentTypeResolver extends CoreResolver {
    * @param filters The filter object to count documents by. Identical to other filters
    */
   @Query(() => Int)
-  public contentTypeCount(@Arg("filters", {nullable: true}) filters?: ContentTypeFilter): MongoQuery<number> {
+  public userCount(@Arg("filters", {nullable: true}) filters?: UserFilter): MongoQuery<number> {
     return super.findCount(filters);
   }
 
@@ -49,7 +49,7 @@ export class ContentTypeResolver extends CoreResolver {
    */
   @Authorized()
   @Mutation()
-  public createContentType(@Arg("data") data: CreateContentTypeInput): MongoQuery<ContentType> {
+  public createUser(@Arg("data") data: CreateUserInput): MongoQuery<User> {
     return super.createOne(data);
   }
 
@@ -60,9 +60,9 @@ export class ContentTypeResolver extends CoreResolver {
    */
   @Authorized()
   @Mutation(() => UpdateResponse)
-  public updateContentType(
+  public updateUser(
     @Arg("_id") _id: string,
-    @Arg("data") data: UpdateContentTypeInput
+    @Arg("data") data: UpdateUserInput
   ): MongoQuery<UpdateResponse> {
     return super.updateOne(_id, data);
   }
@@ -73,7 +73,7 @@ export class ContentTypeResolver extends CoreResolver {
    */
   @Authorized()
   @Mutation(() => DeleteResponse)
-  public deleteContentType(@Arg("_id") _id: string): MongoQuery<DeleteResponse> {
+  public deleteUser(@Arg("_id") _id: string): MongoQuery<DeleteResponse> {
     return super.deleteOne(_id);
   }
 }

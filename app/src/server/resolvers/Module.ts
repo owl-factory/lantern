@@ -1,118 +1,79 @@
-import { Resolver, Query, Mutation, Arg, Args, Authorized } from "type-graphql";
-import { CoreResolver } from "./CoreResolver";
-import { Module, ModuleModel } from "@reroll/model/dist/documents/Module";
-import { ModuleFilter } from "@reroll/model/dist/filters/ModuleFilter";
-import { ModuleInput } from "@reroll/model/dist/inputs/ModuleInput";
-import { Options } from "@reroll/model/dist/inputs/Options";
+import { Module, ModuleModel } from "@reroll/model/dist/documents";
 import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/documents/Responses";
-import { fetchGameSystemID } from "../utilities/resolverHelpers";
+import { ModuleFilter } from "@reroll/model/dist/filters";
+import { CreateModuleInput, UpdateModuleInput } from "@reroll/model/dist/inputs";
+import { Options } from "@reroll/model/dist/inputs/Options";
+import { Query as MongoQuery } from "mongoose";
+import { Arg, Args, Authorized, Int, Mutation, Query, Resolver } from "type-graphql";
+import { CoreResolver } from "./CoreResolver";
 
 /**
- * Resolves Module queries
+ * Resolves module queries
  */
-@Resolver()
+@Resolver(Module)
 export class ModuleResolver extends CoreResolver {
   protected model = ModuleModel;
 
   /**
-   * Fetches an module document matching the given id
-   * @param _id The id of the module document to return
+   * Fetches a document matching the given id or aliases
+   * @param _id The id or alias of the document to return
    */
-  @Query(() => Module, {nullable: true})
-  async module(@Arg("_id") _id: string): Promise<Module | null> {
-    return super.resolver(_id);
+  @Query(() => Module, { nullable: true })
+  public module(@Arg("_id") _id: string) {
+    return super.findByAlias(_id);
   }
 
   /**
-   * Fetches the module documents matching the filter and options
+   * Fetches the documents matching the filter and options
    */
   @Query(() => [Module])
-  async modules(
+  public modules(
     @Arg("filters", {nullable: true}) filters?: ModuleFilter,
     @Args() options?: Options
-  ): Promise<Module[]> {
-    if (!filters) { return super.resolvers(filters, options); };
-
-    // Fetches the gameSystemID if it's given
-    const [gameSystemID, validGameSystem] = await fetchGameSystemID(filters.gameSystemID_eq);
-    if (!validGameSystem) { return []; };
-    if (gameSystemID) { filters.gameSystemID_eq = gameSystemID; };
-
-    return super.resolvers(filters, options);
+  ): MongoQuery<Module[]> {
+    return super.findMany(filters, options);
   }
 
   /**
    * Returns a count of all of the documents matching the given filters
    * @param filters The filter object to count documents by. Identical to other filters
    */
-  @Query(() => Number)
-  async moduleCount(@Arg("filters", {nullable: true}) filters?: ModuleFilter) {
-    if (!filters) { return super.resolverCount(filters); };
-
-    // Fetches the gameSystemID if it's given
-    const [gameSystemID, validGameSystem] = await fetchGameSystemID(filters.gameSystemID_eq);
-    if (!validGameSystem) { return 0; };
-    if (gameSystemID) { filters.gameSystemID_eq = gameSystemID; };
-
-    return super.resolverCount(filters);
+  @Query(() => Int)
+  public moduleCount(@Arg("filters", {nullable: true}) filters?: ModuleFilter): MongoQuery<number> {
+    return super.findCount(filters);
   }
 
   /**
-   * Creates a new module document
-   * @param data The data object to make into a new module
+   * Inserts a new document into the database
+   * @param data the data to insert into a new document
    */
-  @Authorized()
+  // @Authorized()
   @Mutation(() => Module)
-  newModule(@Arg("data") data: ModuleInput, options?: any): Promise<Module> {
-    data.publishType = 1;
-    return super.newResolver(data, options);
+  public async createModule(@Arg("data") data: CreateModuleInput): Promise<Module> {
+    return super.createOne(data);
   }
 
   /**
-   * Updates a single module document
+   * Updates a document with new data. Data not present will not be changed.
    * @param _id The id of the document to update
-   * @param data The data to replace in the document
+   * @param data The new data to upsert into the document
    */
   @Authorized()
   @Mutation(() => UpdateResponse)
-  updateModule(
+  public updateModule(
     @Arg("_id") _id: string,
-    @Arg("data") data: ModuleInput
-  ): Promise<UpdateResponse> {
-    return super.updateResolver(_id, data)
+    @Arg("data") data: UpdateModuleInput
+  ): MongoQuery<UpdateResponse> {
+    return super.updateOne(_id, data);
   }
 
   /**
-   * Updates a single module document
-   * @param data The data to replace in the document
-   * @param filters The filters to select the data to replace in the document
-   */
-  @Authorized()
-  @Mutation(() => UpdateResponse)
-  updateModules(
-    @Arg("data") data: ModuleInput,
-    @Arg("filters", {nullable: true}) filters?: ModuleFilter
-  ): Promise<UpdateResponse> {
-    return super.updateResolvers(data, filters);
-  }
-
-  /**
-   * Deletes a single module document
-   * @param _id The id of the module document to delete
+   * Deletes a document
+   * @param _id The id of the document to delete
    */
   @Authorized()
   @Mutation(() => DeleteResponse)
-  deleteModule(@Arg("_id") _id: string): Promise<DeleteResponse> {
-    return super.deleteResolver(_id);
-  }
-
-  /**
-   * Deletes a single module document
-   * @param filters The id of the module document to delete
-   */
-  @Authorized()
-  @Mutation(() => DeleteResponse)
-  async deleteModules(@Arg("filters", {nullable: true}) filters?: ModuleFilter): Promise<DeleteResponse> {
-    return super.deleteResolvers(filters);
+  public deleteModule(@Arg("_id") _id: string): MongoQuery<DeleteResponse> {
+    return super.deleteOne(_id);
   }
 }

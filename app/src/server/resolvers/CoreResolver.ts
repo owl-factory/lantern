@@ -31,7 +31,7 @@ export class CoreResolver {
    * @param alias The alias or ID of the document to find
    * @param superDocumentAliases The aliases of any owning documents that the target document must belong to
    */
-  protected findByAlias(alias: string, superDocumentAliases?: SuperDocumentAliases): Promise<Query<CoreDocument> | null> {
+  protected findByAlias(alias: string, superDocumentAliases?: SuperDocumentAliases): Promise<Query<any> | null> {
     return this._findByAlias(alias, this.model, superDocumentAliases);
   }
 
@@ -41,7 +41,7 @@ export class CoreResolver {
    * @param filters Filters given to find specific documents
    * @param options General options for modifying results, such as length and how many to skip
    */
-  protected findMany(filters?: CoreFilter, options?: Options): Query<CoreDocument[]> {
+  protected findMany(filters?: CoreFilter, options?: Options): Query<any[]> {
     return applyFilters(this.model.find({}, null, options), filters);
   }
 
@@ -58,7 +58,7 @@ export class CoreResolver {
    * @param data The data to insert into a new document
    * @param options Any additional options to save the data
    */
-  protected async createOne(data: CoreDocument): Query<unknown> {
+  protected async createOne(data: CoreDocument): Query<any> {
     const errors = await validate(data);
     if (errors.length > 0) {
       throw new Error(errors.toString());
@@ -72,7 +72,7 @@ export class CoreResolver {
     data.updatedAt = new Date();
     data.updatedBy = getUserID();
 
-    return this.model.createOne(data);
+    return this.model.create(data);
   }
 
   /**
@@ -113,7 +113,7 @@ export class CoreResolver {
     alias: string, 
     model: ReturnModelType<any>, // Note: also needs to be any
     superDocumentAliases?: any // TODO - properly type this
-  ): Promise<Query<CoreDocument> | null> {
+  ): Promise<Query<any> | null> {
     // The search filters, to be used by the applyFilters function
     const filters: any = {};
 

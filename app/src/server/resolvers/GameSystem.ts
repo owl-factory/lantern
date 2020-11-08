@@ -1,21 +1,14 @@
-import { Resolver, Query, Mutation, Arg, Args, Authorized, Ctx, Int } from "type-graphql";
-import { CoreResolver } from "./CoreResolver";
-import { GameSystem, GameSystemModel } from "@reroll/model/dist/documents/GameSystem";
-import { GameSystemInput } from "@reroll/model/dist/inputs/GameSystemInput";
-import { Options } from "@reroll/model/dist/inputs/Options";
+import { GameSystem, GameSystemModel } from "@reroll/model/dist/documents";
 import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/documents/Responses";
-import { startSession } from "mongoose";
-import { ModuleResolver } from "./ModuleResolver";
-import { validatePublishType } from "../utilities/validation";
-import { GameSystemFilter } from "../../../../model/dist/filters/GameSystemFilter";
+import { GameSystemFilter } from "@reroll/model/dist/filters";
+import { CreateGameSystemInput, UpdateGameSystemInput } from "@reroll/model/dist/inputs";
+import { Options } from "@reroll/model/dist/inputs/Options";
 import { Query as MongoQuery } from "mongoose";
-
-type FilterType = GameSystemFilter;
-type InputType = GameSystemInput;
-const GQLType = GameSystem;
+import { Arg, Args, Authorized, Int, Mutation, Query, Resolver } from "type-graphql";
+import { CoreResolver } from "./CoreResolver";
 
 /**
- * Resolves GameSystem queries
+ * Resolves game system queries
  */
 @Resolver(GameSystem)
 export class GameSystemResolver extends CoreResolver {
@@ -25,7 +18,7 @@ export class GameSystemResolver extends CoreResolver {
    * Fetches a document matching the given id or aliases
    * @param _id The id or alias of the document to return
    */
-  @Query(() => GQLType, { nullable: true })
+  @Query(() => GameSystem, { nullable: true })
   public gameSystem(@Arg("_id") _id: string) {
     return super.findByAlias(_id);
   }
@@ -33,9 +26,9 @@ export class GameSystemResolver extends CoreResolver {
   /**
    * Fetches the documents matching the filter and options
    */
-  @Query(() => [GQLType])
+  @Query(() => [GameSystem])
   public gameSystems(
-    @Arg("filters", {nullable: true}) filters?: FilterType,
+    @Arg("filters", {nullable: true}) filters?: GameSystemFilter,
     @Args() options?: Options
   ): MongoQuery<GameSystem[]> {
     return super.findMany(filters, options);
@@ -46,7 +39,7 @@ export class GameSystemResolver extends CoreResolver {
    * @param filters The filter object to count documents by. Identical to other filters
    */
   @Query(() => Int)
-  public gameSystemCount(@Arg("filters", {nullable: true}) filters?: FilterType): MongoQuery<number> {
+  public gameSystemCount(@Arg("filters", {nullable: true}) filters?: GameSystemFilter): MongoQuery<number> {
     return super.findCount(filters);
   }
 
@@ -54,9 +47,9 @@ export class GameSystemResolver extends CoreResolver {
    * Inserts a new document into the database
    * @param data the data to insert into a new document
    */
-  @Authorized()
-  @Mutation()
-  public createGameSystem(@Arg("data") data: InputType): MongoQuery<any> {
+  // @Authorized()
+  @Mutation(() => GameSystem)
+  public async createGameSystem(@Arg("data") data: CreateGameSystemInput): Promise<GameSystem> {
     return super.createOne(data);
   }
 
@@ -69,7 +62,7 @@ export class GameSystemResolver extends CoreResolver {
   @Mutation(() => UpdateResponse)
   public updateGameSystem(
     @Arg("_id") _id: string,
-    @Arg("data") data: InputType
+    @Arg("data") data: UpdateGameSystemInput
   ): MongoQuery<UpdateResponse> {
     return super.updateOne(_id, data);
   }
@@ -83,7 +76,7 @@ export class GameSystemResolver extends CoreResolver {
   public deleteGameSystem(@Arg("_id") _id: string): MongoQuery<DeleteResponse> {
     return super.deleteOne(_id);
   }
-
+}
   /**
    * Creates a new gameSystem document and default module
    * @param data The data object to make into a new gameSystem
@@ -130,52 +123,4 @@ export class GameSystemResolver extends CoreResolver {
   //   }
   // }
 
-  /**
-   * Updates a single gameSystem document
-   * @param _id The id of the document to update
-   * @param data The data to replace in the document
-   */
-  // @Authorized()
-  // @Mutation(() => UpdateResponse)
-  // updateGameSystem(
-  //   @Arg("_id") _id: string,
-  //   @Arg("data") data: GameSystemInput,
-  //   options?: any
-  // ): Promise<UpdateResponse> {
-  //   return super.updateResolver(_id, data)
-  // }
-
-  /**
-   * Updates a single gameSystem document
-   * @param data The data to replace in the document
-   * @param filters The filters to select the data to replace in the document
-   */
-  // @Authorized()
-  // @Mutation(() => UpdateResponse)
-  // updateGameSystems(
-  //   @Arg("data") data: GameSystemInput,
-  //   @Arg("filters", {nullable: true}) filters?: GameSystemFilter
-  // ): Promise<UpdateResponse> {
-  //   return super.updateResolvers(data, filters);
-  // }
-
-  /**
-   * Deletes a single gameSystem document
-   * @param _id The id of the gameSystem document to delete
-   */
-  // @Authorized()
-  // @Mutation(() => DeleteResponse)
-  // deleteGameSystem(@Arg("_id") _id: string): Promise<DeleteResponse> {
-  //   return super.deleteResolver(_id);
-  // }
-
-  /**
-   * Deletes a single gameSystem document
-   * @param filters The id of the gameSystem document to delete
-   */
-  // @Authorized()
-  // @Mutation(() => DeleteResponse)
-  // async deleteGameSystems(@Arg("filters", {nullable: true}) filters?: GameSystemFilter): Promise<DeleteResponse> {
-  //   return super.deleteResolvers(filters);
-  // }
-}
+// }
