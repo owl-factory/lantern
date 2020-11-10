@@ -18,4 +18,5 @@ export class CreateModuleInput extends ModuleInput implements Partial<Module> {
   gameSystemID?: string;
 }
 
+@InputType()
 export class UpdateModuleInput extends ModuleInput implements Partial<Module>{};

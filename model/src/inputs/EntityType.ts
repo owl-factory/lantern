@@ -14,9 +14,11 @@ class EntityTypeInput extends CoreInput implements Partial<EntityType> {
 /**
  * Describes the fields that the user may set only when creating the entity type document
  */
+@InputType()
 export class CreateEntityTypeInput extends EntityTypeInput implements Partial<EntityType> {
   @Field({ nullable: true })
   gameSystemID?: string;
 }
 
+@InputType()
 export class UpdateEntityTypeInput extends EntityTypeInput implements Partial<EntityType>{};

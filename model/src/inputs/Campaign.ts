@@ -18,4 +18,5 @@ export class CreateCampaignInput extends CampaignInput implements Partial<Campai
   gameSystemID?: string;
 }
 
+@InputType()
 export class UpdateCampaignInput extends CampaignInput implements Partial<Campaign>{};

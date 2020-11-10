@@ -20,4 +20,5 @@ export class CreateContentInput extends ContentInput implements Partial<Content>
   gameSystemID?: string;
 }
 
+@InputType()
 export class UpdateContentInput extends ContentInput implements Partial<Content>{};

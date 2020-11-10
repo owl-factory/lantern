@@ -9,5 +9,7 @@ import { CoreInput } from "./CoreInput";
 class AssetInput extends CoreInput implements Partial<Asset> {
 }
 
+@InputType()
 export class CreateAssetInput extends AssetInput implements Partial<Asset>{};
+@InputType()
 export class UpdateAssetInput extends AssetInput implements Partial<Asset>{};

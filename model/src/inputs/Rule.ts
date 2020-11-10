@@ -18,4 +18,5 @@ export class CreateRuleInput extends RuleInput implements Partial<Rule> {
   gameSystemID?: string;
 }
 
+@InputType()
 export class UpdateRuleInput extends RuleInput implements Partial<Rule>{};

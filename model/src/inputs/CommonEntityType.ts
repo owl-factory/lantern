@@ -9,5 +9,7 @@ import { CoreInput } from "./CoreInput";
 class CommonEntityTypeInput extends CoreInput implements Partial<CommonEntityType> {
 }
 
+@InputType()
 export class CreateCommonEntityTypeInput extends CommonEntityTypeInput implements Partial<CommonEntityType>{};
+@InputType()
 export class UpdateCommonEntityTypeInput extends CommonEntityTypeInput implements Partial<CommonEntityType>{};
