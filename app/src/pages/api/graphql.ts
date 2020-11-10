@@ -1,5 +1,4 @@
 import "reflect-metadata";
-import { CharacterResolver } from "../../server/resolvers/Character";
 import { connect } from "mongoose";
 import { buildSchema } from "type-graphql";
 import { NextAuthChecker } from "../../server/utilities/auth";
@@ -30,7 +29,6 @@ connect(
 
 const schema: any = buildSchema({
   resolvers: [
-    CharacterResolver,
     AssetResolver,
     CampaignResolver,
     CommonContentTypeResolver,
