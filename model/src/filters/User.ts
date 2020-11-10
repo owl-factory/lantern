@@ -7,3 +7,11 @@ import { CoreFilter } from "./CoreFilter";
 @InputType()
 export class UserFilter extends CoreFilter { 
 }
+
+/**
+ * Extends the original filters to have the base filters and any additional or operators
+ */
+@InputType()
+export class UserFilters extends UserFilter {
+  or?: UserFilter[];
+}

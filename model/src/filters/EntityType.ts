@@ -13,3 +13,11 @@ export class EntityTypeFilter extends CoreFilter {
   @Field(() => IDFilters, { nullable: true })
   commonEntityTypeID?: IDFilters;
 }
+
+/**
+ * Extends the original filters to have the base filters and any additional or operators
+ */
+@InputType()
+export class EntityTypeFilters extends EntityTypeFilter {
+  or?: EntityTypeFilter[];
+}

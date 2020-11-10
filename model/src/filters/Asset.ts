@@ -7,3 +7,11 @@ import { CoreFilter } from "./CoreFilter";
 @InputType()
 export class AssetFilter extends CoreFilter { 
 }
+
+/**
+ * Extends the original filters to have the base filters and any additional or operators
+ */
+@InputType()
+export class AssetFilters extends AssetFilter {
+  or?: AssetFilter[];
+}

@@ -5,5 +5,13 @@ import { CoreFilter } from "./CoreFilter";
  * Describes the various filters that may be applied to game system documents for searching
  */
 @InputType()
-export class GameSystemFilter extends CoreFilter { 
+class GameSystemFilter extends CoreFilter { 
+}
+
+/**
+ * Extends the original filters to have the base filters and any additional or operators
+ */
+@InputType()
+export class GameSystemFilters extends GameSystemFilter {
+  or?: GameSystemFilter[];
 }

@@ -10,3 +10,11 @@ export class ModuleFilter extends CoreFilter {
   @Field(() => IDFilters, { nullable: true })
   gameSystemID?: IDFilters;
 }
+
+/**
+ * Extends the original filters to have the base filters and any additional or operators
+ */
+@InputType()
+export class ModuleFilters extends ModuleFilter {
+  or?: ModuleFilter[];
+}

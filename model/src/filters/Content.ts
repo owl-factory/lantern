@@ -13,3 +13,11 @@ export class ContentFilter extends CoreFilter {
   @Field(() => IDFilters, { nullable: true })
   contentTypeID?: IDFilters;
 }
+
+/**
+ * Extends the original filters to have the base filters and any additional or operators
+ */
+@InputType()
+export class ContentFilters extends ContentFilter {
+  or?: ContentFilter[];
+}

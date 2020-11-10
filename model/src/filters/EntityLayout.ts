@@ -10,3 +10,11 @@ export class EntityLayoutFilter extends CoreFilter {
   @Field(() => IDFilters, { nullable: true })
   gameSystemID?: IDFilters;
 }
+
+/**
+ * Extends the original filters to have the base filters and any additional or operators
+ */
+@InputType()
+export class EntityLayoutFilters extends EntityLayoutFilter {
+  or?: EntityLayoutFilter[];
+}
