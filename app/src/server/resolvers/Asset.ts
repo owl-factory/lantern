@@ -1,6 +1,6 @@
 import { Asset, AssetModel } from "@reroll/model/dist/documents";
 import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/documents/Responses";
-import { AssetFilter } from "@reroll/model/dist/filters";
+import { AssetFilters } from "@reroll/model/dist/filters";
 import { CreateAssetInput, UpdateAssetInput } from "@reroll/model/dist/inputs";
 import { Options } from "@reroll/model/dist/inputs/Options";
 import { Query as MongoQuery } from "mongoose";
@@ -28,7 +28,7 @@ export class AssetResolver extends CoreResolver {
    */
   @Query(() => [Asset])
   public assets(
-    @Arg("filters", {nullable: true}) filters?: AssetFilter,
+    @Arg("filters", {nullable: true}) filters?: AssetFilters,
     @Args() options?: Options
   ): MongoQuery<Asset[]> {
     return super.findMany(filters, options);
@@ -39,7 +39,7 @@ export class AssetResolver extends CoreResolver {
    * @param filters The filter object to count documents by. Identical to other filters
    */
   @Query(() => Int)
-  public assetCount(@Arg("filters", {nullable: true}) filters?: AssetFilter): MongoQuery<number> {
+  public assetCount(@Arg("filters", {nullable: true}) filters?: AssetFilters): MongoQuery<number> {
     return super.findCount(filters);
   }
 
@@ -48,7 +48,7 @@ export class AssetResolver extends CoreResolver {
    * @param data the data to insert into a new document
    */
   @Authorized()
-  @Mutation()
+  @Mutation(() => Asset)
   public createAsset(@Arg("data") data: CreateAssetInput): MongoQuery<Asset> {
     return super.createOne(data);
   }

@@ -1,6 +1,6 @@
 import { Rule, RuleModel } from "@reroll/model/dist/documents";
 import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/documents/Responses";
-import { RuleFilter } from "@reroll/model/dist/filters";
+import { RuleFilters } from "@reroll/model/dist/filters";
 import { CreateRuleInput, UpdateRuleInput } from "@reroll/model/dist/inputs";
 import { Options } from "@reroll/model/dist/inputs/Options";
 import { Query as MongoQuery } from "mongoose";
@@ -28,7 +28,7 @@ export class RuleResolver extends CoreResolver {
    */
   @Query(() => [Rule])
   public rules(
-    @Arg("filters", {nullable: true}) filters?: RuleFilter,
+    @Arg("filters", {nullable: true}) filters?: RuleFilters,
     @Args() options?: Options
   ): MongoQuery<Rule[]> {
     return super.findMany(filters, options);
@@ -39,7 +39,7 @@ export class RuleResolver extends CoreResolver {
    * @param filters The filter object to count documents by. Identical to other filters
    */
   @Query(() => Int)
-  public ruleCount(@Arg("filters", {nullable: true}) filters?: RuleFilter): MongoQuery<number> {
+  public ruleCount(@Arg("filters", {nullable: true}) filters?: RuleFilters): MongoQuery<number> {
     return super.findCount(filters);
   }
 
@@ -48,7 +48,7 @@ export class RuleResolver extends CoreResolver {
    * @param data the data to insert into a new document
    */
   @Authorized()
-  @Mutation()
+  @Mutation(() => Rule)
   public createRule(@Arg("data") data: CreateRuleInput): MongoQuery<Rule> {
     return super.createOne(data);
   }

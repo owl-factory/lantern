@@ -1,6 +1,6 @@
 import { EntityLayout, EntityLayoutModel } from "@reroll/model/dist/documents";
 import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/documents/Responses";
-import { EntityLayoutFilter } from "@reroll/model/dist/filters";
+import { EntityLayoutFilters } from "@reroll/model/dist/filters";
 import { CreateEntityLayoutInput, UpdateEntityLayoutInput } from "@reroll/model/dist/inputs";
 import { Options } from "@reroll/model/dist/inputs/Options";
 import { Query as MongoQuery } from "mongoose";
@@ -28,7 +28,7 @@ export class EntityLayoutResolver extends CoreResolver {
    */
   @Query(() => [EntityLayout])
   public entityLayouts(
-    @Arg("filters", {nullable: true}) filters?: EntityLayoutFilter,
+    @Arg("filters", {nullable: true}) filters?: EntityLayoutFilters,
     @Args() options?: Options
   ): MongoQuery<EntityLayout[]> {
     return super.findMany(filters, options);
@@ -39,7 +39,7 @@ export class EntityLayoutResolver extends CoreResolver {
    * @param filters The filter object to count documents by. Identical to other filters
    */
   @Query(() => Int)
-  public entityLayoutCount(@Arg("filters", {nullable: true}) filters?: EntityLayoutFilter): MongoQuery<number> {
+  public entityLayoutCount(@Arg("filters", {nullable: true}) filters?: EntityLayoutFilters): MongoQuery<number> {
     return super.findCount(filters);
   }
 
@@ -48,7 +48,7 @@ export class EntityLayoutResolver extends CoreResolver {
    * @param data the data to insert into a new document
    */
   @Authorized()
-  @Mutation()
+  @Mutation(() => EntityLayout)
   public createEntityLayout(@Arg("data") data: CreateEntityLayoutInput): MongoQuery<EntityLayout> {
     return super.createOne(data);
   }

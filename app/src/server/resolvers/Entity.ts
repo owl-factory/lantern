@@ -1,6 +1,6 @@
 import { Entity, EntityModel } from "@reroll/model/dist/documents";
 import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/documents/Responses";
-import { EntityFilter } from "@reroll/model/dist/filters";
+import { EntityFilters } from "@reroll/model/dist/filters";
 import { CreateEntityInput, UpdateEntityInput } from "@reroll/model/dist/inputs";
 import { Options } from "@reroll/model/dist/inputs/Options";
 import { Query as MongoQuery } from "mongoose";
@@ -28,7 +28,7 @@ export class EntityResolver extends CoreResolver {
    */
   @Query(() => [Entity])
   public entities(
-    @Arg("filters", {nullable: true}) filters?: EntityFilter,
+    @Arg("filters", {nullable: true}) filters?: EntityFilters,
     @Args() options?: Options
   ): MongoQuery<Entity[]> {
     return super.findMany(filters, options);
@@ -39,7 +39,7 @@ export class EntityResolver extends CoreResolver {
    * @param filters The filter object to count documents by. Identical to other filters
    */
   @Query(() => Int)
-  public entityCount(@Arg("filters", {nullable: true}) filters?: EntityFilter): MongoQuery<number> {
+  public entityCount(@Arg("filters", {nullable: true}) filters?: EntityFilters): MongoQuery<number> {
     return super.findCount(filters);
   }
 
@@ -48,7 +48,7 @@ export class EntityResolver extends CoreResolver {
    * @param data the data to insert into a new document
    */
   @Authorized()
-  @Mutation()
+  @Mutation(() => Entity)
   public createEntity(@Arg("data") data: CreateEntityInput): MongoQuery<Entity> {
     return super.createOne(data);
   }

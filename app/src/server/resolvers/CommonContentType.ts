@@ -1,6 +1,6 @@
 import { CommonContentType, CommonContentTypeModel } from "@reroll/model/dist/documents";
 import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/documents/Responses";
-import { CommonContentTypeFilter } from "@reroll/model/dist/filters";
+import { CommonContentTypeFilters } from "@reroll/model/dist/filters";
 import { CreateCommonContentTypeInput, UpdateCommonContentTypeInput } from "@reroll/model/dist/inputs";
 import { Options } from "@reroll/model/dist/inputs/Options";
 import { Query as MongoQuery } from "mongoose";
@@ -28,7 +28,7 @@ export class CommonContentTypeResolver extends CoreResolver {
    */
   @Query(() => [CommonContentType])
   public commonContentTypes(
-    @Arg("filters", {nullable: true}) filters?: CommonContentTypeFilter,
+    @Arg("filters", {nullable: true}) filters?: CommonContentTypeFilters,
     @Args() options?: Options
   ): MongoQuery<CommonContentType[]> {
     return super.findMany(filters, options);
@@ -39,7 +39,7 @@ export class CommonContentTypeResolver extends CoreResolver {
    * @param filters The filter object to count documents by. Identical to other filters
    */
   @Query(() => Int)
-  public xxxCount(@Arg("filters", {nullable: true}) filters?: CommonContentTypeFilter): MongoQuery<number> {
+  public xxxCount(@Arg("filters", {nullable: true}) filters?: CommonContentTypeFilters): MongoQuery<number> {
     return super.findCount(filters);
   }
 
@@ -48,7 +48,7 @@ export class CommonContentTypeResolver extends CoreResolver {
    * @param data the data to insert into a new document
    */
   @Authorized()
-  @Mutation()
+  @Mutation(() => CommonContentType)
   public createCommonContentType(@Arg("data") data: CreateCommonContentTypeInput): MongoQuery<CommonContentType> {
     return super.createOne(data);
   }

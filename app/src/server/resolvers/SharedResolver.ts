@@ -52,7 +52,7 @@ export class SharedResolver extends CoreResolver {
    * @param data the data to insert into a new document
    */
   @Authorized()
-  @Mutation()
+  @Mutation(() => CoreDocument)
   public createXXX(@Arg("data") data: CoreInput): MongoQuery<CoreDocument> {
     return super.createOne(data);
   }

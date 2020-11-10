@@ -1,6 +1,6 @@
 import { User, UserModel } from "@reroll/model/dist/documents";
 import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/documents/Responses";
-import { UserFilter } from "@reroll/model/dist/filters";
+import { UserFilters } from "@reroll/model/dist/filters";
 import { CreateUserInput, UpdateUserInput } from "@reroll/model/dist/inputs";
 import { Options } from "@reroll/model/dist/inputs/Options";
 import { Query as MongoQuery } from "mongoose";
@@ -28,7 +28,7 @@ export class UserResolver extends CoreResolver {
    */
   @Query(() => [User])
   public users(
-    @Arg("filters", {nullable: true}) filters?: UserFilter,
+    @Arg("filters", {nullable: true}) filters?: UserFilters,
     @Args() options?: Options
   ): MongoQuery<User[]> {
     return super.findMany(filters, options);
@@ -39,7 +39,7 @@ export class UserResolver extends CoreResolver {
    * @param filters The filter object to count documents by. Identical to other filters
    */
   @Query(() => Int)
-  public userCount(@Arg("filters", {nullable: true}) filters?: UserFilter): MongoQuery<number> {
+  public userCount(@Arg("filters", {nullable: true}) filters?: UserFilters): MongoQuery<number> {
     return super.findCount(filters);
   }
 
@@ -48,7 +48,7 @@ export class UserResolver extends CoreResolver {
    * @param data the data to insert into a new document
    */
   @Authorized()
-  @Mutation()
+  @Mutation(() => User)
   public createUser(@Arg("data") data: CreateUserInput): MongoQuery<User> {
     return super.createOne(data);
   }

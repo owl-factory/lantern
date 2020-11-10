@@ -1,6 +1,6 @@
 import { EntityType, EntityTypeModel } from "@reroll/model/dist/documents";
 import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/documents/Responses";
-import { EntityTypeFilter } from "@reroll/model/dist/filters";
+import { EntityTypeFilters } from "@reroll/model/dist/filters";
 import { CreateEntityTypeInput, UpdateEntityTypeInput } from "@reroll/model/dist/inputs";
 import { Options } from "@reroll/model/dist/inputs/Options";
 import { Query as MongoQuery } from "mongoose";
@@ -19,7 +19,7 @@ export class EntityTypeResolver extends CoreResolver {
    * @param _id The id or alias of the document to return
    */
   @Query(() => EntityType, { nullable: true })
-  public entity(@Arg("_id") _id: string) {
+  public entityType(@Arg("_id") _id: string) {
     return super.findByAlias(_id);
   }
 
@@ -28,7 +28,7 @@ export class EntityTypeResolver extends CoreResolver {
    */
   @Query(() => [EntityType])
   public entityTypes(
-    @Arg("filters", {nullable: true}) filters?: EntityTypeFilter,
+    @Arg("filters", {nullable: true}) filters?: EntityTypeFilters,
     @Args() options?: Options
   ): MongoQuery<EntityType[]> {
     return super.findMany(filters, options);
@@ -39,7 +39,7 @@ export class EntityTypeResolver extends CoreResolver {
    * @param filters The filter object to count documents by. Identical to other filters
    */
   @Query(() => Int)
-  public entityTypeCount(@Arg("filters", {nullable: true}) filters?: EntityTypeFilter): MongoQuery<number> {
+  public entityTypeCount(@Arg("filters", {nullable: true}) filters?: EntityTypeFilters): MongoQuery<number> {
     return super.findCount(filters);
   }
 
@@ -48,7 +48,7 @@ export class EntityTypeResolver extends CoreResolver {
    * @param data the data to insert into a new document
    */
   @Authorized()
-  @Mutation()
+  @Mutation(() => EntityType)
   public createEntityType(@Arg("data") data: CreateEntityTypeInput): MongoQuery<EntityType> {
     return super.createOne(data);
   }

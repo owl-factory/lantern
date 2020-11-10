@@ -1,6 +1,6 @@
 import { CommonEntityType, CommonEntityTypeModel } from "@reroll/model/dist/documents";
 import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/documents/Responses";
-import { CommonEntityTypeFilter } from "@reroll/model/dist/filters";
+import { CommonEntityTypeFilters } from "@reroll/model/dist/filters";
 import { CreateCommonEntityTypeInput, UpdateCommonEntityTypeInput } from "@reroll/model/dist/inputs";
 import { Options } from "@reroll/model/dist/inputs/Options";
 import { Query as MongoQuery } from "mongoose";
@@ -28,7 +28,7 @@ export class CommonEntityTypeResolver extends CoreResolver {
    */
   @Query(() => [CommonEntityType])
   public commonEntityTypes(
-    @Arg("filters", {nullable: true}) filters?: CommonEntityTypeFilter,
+    @Arg("filters", {nullable: true}) filters?: CommonEntityTypeFilters,
     @Args() options?: Options
   ): MongoQuery<CommonEntityType[]> {
     return super.findMany(filters, options);
@@ -39,7 +39,7 @@ export class CommonEntityTypeResolver extends CoreResolver {
    * @param filters The filter object to count documents by. Identical to other filters
    */
   @Query(() => Int)
-  public commonEntityTypeCount(@Arg("filters", {nullable: true}) filters?: CommonEntityTypeFilter): MongoQuery<number> {
+  public commonEntityTypeCount(@Arg("filters", {nullable: true}) filters?: CommonEntityTypeFilters): MongoQuery<number> {
     return super.findCount(filters);
   }
 
@@ -48,7 +48,7 @@ export class CommonEntityTypeResolver extends CoreResolver {
    * @param data the data to insert into a new document
    */
   @Authorized()
-  @Mutation()
+  @Mutation(() => CommonEntityType)
   public createCommonEntityType(@Arg("data") data: CreateCommonEntityTypeInput): MongoQuery<CommonEntityType> {
     return super.createOne(data);
   }

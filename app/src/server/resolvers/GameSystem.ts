@@ -1,6 +1,6 @@
 import { GameSystem, GameSystemModel } from "@reroll/model/dist/documents";
 import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/documents/Responses";
-import { GameSystemFilter } from "@reroll/model/dist/filters";
+import { GameSystemFilters } from "@reroll/model/dist/filters";
 import { CreateGameSystemInput, UpdateGameSystemInput } from "@reroll/model/dist/inputs";
 import { Options } from "@reroll/model/dist/inputs/Options";
 import { Query as MongoQuery } from "mongoose";
@@ -28,7 +28,7 @@ export class GameSystemResolver extends CoreResolver {
    */
   @Query(() => [GameSystem])
   public gameSystems(
-    @Arg("filters", {nullable: true}) filters?: GameSystemFilter,
+    @Arg("filters", {nullable: true}) filters?: GameSystemFilters,
     @Args() options?: Options
   ): MongoQuery<GameSystem[]> {
     return super.findMany(filters, options);
@@ -39,7 +39,9 @@ export class GameSystemResolver extends CoreResolver {
    * @param filters The filter object to count documents by. Identical to other filters
    */
   @Query(() => Int)
-  public gameSystemCount(@Arg("filters", {nullable: true}) filters?: GameSystemFilter): MongoQuery<number> {
+  public gameSystemCount(
+    @Arg("filters", {nullable: true}) filters?: GameSystemFilters
+  ): MongoQuery<number> {
     return super.findCount(filters);
   }
 
@@ -47,7 +49,7 @@ export class GameSystemResolver extends CoreResolver {
    * Inserts a new document into the database
    * @param data the data to insert into a new document
    */
-  // @Authorized()
+  @Authorized()
   @Mutation(() => GameSystem)
   public async createGameSystem(@Arg("data") data: CreateGameSystemInput): Promise<GameSystem> {
     return super.createOne(data);

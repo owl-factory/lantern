@@ -1,6 +1,6 @@
 import { Module, ModuleModel } from "@reroll/model/dist/documents";
 import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/documents/Responses";
-import { ModuleFilter } from "@reroll/model/dist/filters";
+import { ModuleFilters } from "@reroll/model/dist/filters";
 import { CreateModuleInput, UpdateModuleInput } from "@reroll/model/dist/inputs";
 import { Options } from "@reroll/model/dist/inputs/Options";
 import { Query as MongoQuery } from "mongoose";
@@ -28,7 +28,7 @@ export class ModuleResolver extends CoreResolver {
    */
   @Query(() => [Module])
   public modules(
-    @Arg("filters", {nullable: true}) filters?: ModuleFilter,
+    @Arg("filters", {nullable: true}) filters?: ModuleFilters,
     @Args() options?: Options
   ): MongoQuery<Module[]> {
     return super.findMany(filters, options);
@@ -39,7 +39,7 @@ export class ModuleResolver extends CoreResolver {
    * @param filters The filter object to count documents by. Identical to other filters
    */
   @Query(() => Int)
-  public moduleCount(@Arg("filters", {nullable: true}) filters?: ModuleFilter): MongoQuery<number> {
+  public moduleCount(@Arg("filters", {nullable: true}) filters?: ModuleFilters): MongoQuery<number> {
     return super.findCount(filters);
   }
 

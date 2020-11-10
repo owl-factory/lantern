@@ -1,6 +1,6 @@
 import { Campaign, CampaignModel } from "@reroll/model/dist/documents";
 import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/documents/Responses";
-import { CampaignFilter } from "@reroll/model/dist/filters";
+import { CampaignFilters } from "@reroll/model/dist/filters";
 import { CreateCampaignInput, UpdateCampaignInput } from "@reroll/model/dist/inputs";
 import { Options } from "@reroll/model/dist/inputs/Options";
 import { Query as MongoQuery } from "mongoose";
@@ -28,7 +28,7 @@ export class CampaignResolver extends CoreResolver {
    */
   @Query(() => [Campaign])
   public campaigns(
-    @Arg("filters", {nullable: true}) filters?: CampaignFilter,
+    @Arg("filters", {nullable: true}) filters?: CampaignFilters,
     @Args() options?: Options
   ): MongoQuery<Campaign[]> {
     return super.findMany(filters, options);
@@ -39,7 +39,7 @@ export class CampaignResolver extends CoreResolver {
    * @param filters The filter object to count documents by. Identical to other filters
    */
   @Query(() => Int)
-  public campaignCount(@Arg("filters", {nullable: true}) filters?: CampaignFilter): MongoQuery<number> {
+  public campaignCount(@Arg("filters", {nullable: true}) filters?: CampaignFilters): MongoQuery<number> {
     return super.findCount(filters);
   }
 
@@ -48,7 +48,7 @@ export class CampaignResolver extends CoreResolver {
    * @param data the data to insert into a new document
    */
   @Authorized()
-  @Mutation()
+  @Mutation(() => Campaign)
   public createCampaign(@Arg("data") data: CreateCampaignInput): MongoQuery<Campaign> {
     return super.createOne(data);
   }

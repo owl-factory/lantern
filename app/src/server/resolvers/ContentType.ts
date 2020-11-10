@@ -1,6 +1,6 @@
 import { ContentType, ContentTypeModel } from "@reroll/model/dist/documents";
 import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/documents/Responses";
-import { ContentTypeFilter } from "@reroll/model/dist/filters";
+import { ContentTypeFilters } from "@reroll/model/dist/filters";
 import { CreateContentTypeInput, UpdateContentTypeInput } from "@reroll/model/dist/inputs";
 import { Options } from "@reroll/model/dist/inputs/Options";
 import { Query as MongoQuery } from "mongoose";
@@ -28,7 +28,7 @@ export class ContentTypeResolver extends CoreResolver {
    */
   @Query(() => [ContentType])
   public contentTypes(
-    @Arg("filters", {nullable: true}) filters?: ContentTypeFilter,
+    @Arg("filters", {nullable: true}) filters?: ContentTypeFilters,
     @Args() options?: Options
   ): MongoQuery<ContentType[]> {
     return super.findMany(filters, options);
@@ -39,7 +39,7 @@ export class ContentTypeResolver extends CoreResolver {
    * @param filters The filter object to count documents by. Identical to other filters
    */
   @Query(() => Int)
-  public contentTypeCount(@Arg("filters", {nullable: true}) filters?: ContentTypeFilter): MongoQuery<number> {
+  public contentTypeCount(@Arg("filters", {nullable: true}) filters?: ContentTypeFilters): MongoQuery<number> {
     return super.findCount(filters);
   }
 
@@ -48,7 +48,7 @@ export class ContentTypeResolver extends CoreResolver {
    * @param data the data to insert into a new document
    */
   @Authorized()
-  @Mutation()
+  @Mutation(() => ContentType)
   public createContentType(@Arg("data") data: CreateContentTypeInput): MongoQuery<ContentType> {
     return super.createOne(data);
   }

@@ -3,7 +3,7 @@ import { Options } from "@reroll/model/dist/inputs/Options";
 import { Query } from "mongoose";
 import { validate } from "class-validator";
 import { getUserID } from "../utilities/misc";
-import { applyFilters, isID } from "../utilities/resolverHelpers";
+import { applyFilters, buildFilters, isID } from "../utilities/resolverHelpers";
 import { GameSystemModel } from "@reroll/model/dist/documents/GameSystem";
 import { CoreDocument } from "@reroll/model/dist/documents/CoreDocument";
 import { CoreFilter } from "@reroll/model/dist/filters/CoreFilter";
@@ -41,16 +41,18 @@ export class CoreResolver {
    * @param filters Filters given to find specific documents
    * @param options General options for modifying results, such as length and how many to skip
    */
-  protected findMany(filters?: CoreFilter, options?: Options): Query<any[]> {
-    return applyFilters(this.model.find({}, null, options), filters);
+  protected findMany(filters?: any, options?: Options): Query<any[]> {
+    const mongooseFilters = buildFilters(filters);
+    return this.model.find(mongooseFilters, null, options);
   }
 
   /**
    * Finds the count for the given filters
    * @param filters Filters used for determining what is counted
    */
-  protected findCount(filters?: CoreFilter): Query<number> {
-    return applyFilters(this.model.countDocuments({}), filters);
+  protected findCount(filters?: any): Query<number> {
+    const mongooseFilters = buildFilters(filters);
+    return this.model.countDocuments(mongooseFilters);
   }
 
   /**
@@ -98,6 +100,19 @@ export class CoreResolver {
    */
   protected async deleteOne(_id: string): Query<DeleteResponse> {
     return this.model.deleteOne({_id});
+  }
+
+  private mergeFilters(filter?: any, filters?: any) {
+    // Handle all base cases
+    if (filter && filters) { return undefined; }
+    else if (!filters) { return [filter]; }
+    else if (!filter) { return filters; }
+
+    // Merge filter into all filters
+    filters.forEach((eachFilter: any) => {
+      eachFilter = {...eachFilter, ...filter};
+    });
+    return filters;
   }
 
 

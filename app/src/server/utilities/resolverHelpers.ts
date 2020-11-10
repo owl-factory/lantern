@@ -40,57 +40,53 @@ export function isID(id: string) {
   return id.length === 24
 }
 
-function applyFilterObject(query: Query<any>, filters: any) {
-  const filterKeys = Object.keys(filters).sort();
-  let lastUsedVariable = "";
+/**
+ * A recursive function for handling 
+ */
+export function parseFilter(filterObject: any, baseKey: string = "") {
+  const fieldKeys = Object.keys(filterObject);
+  const parsedFilters: any = {};
 
-  filterKeys.forEach((filterKey: string) => {
-    // Grab variable
-    const filterComponents = filterKey.match(/(\S*)_([^_\s]+)/i);
-    if (filterComponents === null) {
-      throw new Error("An invalid filter variable was provided");
+  fieldKeys.forEach((fieldKey: string) => {
+    if (fieldKey === "or") { return; }
+
+    const field = filterObject[fieldKey];
+    // EQ is a special case
+    const filterKeys = Object.keys(field);
+    if ("eq" in field) {
+      parsedFilters[baseKey + fieldKey] = field.eq;
+      return;
     }
-    const variableName = filterComponents[1];
-    const whereCondition = filterComponents[2];
 
-    if (lastUsedVariable !== variableName) {
-      lastUsedVariable = variableName;
-      query = query.where(variableName);
-    }
 
-    switch(whereCondition) {
-      case "eq": 
-        query = query.equals(filters[filterKey]);
-        break;
-      case "gt":
-        query = query.gt(filters[filterKey]);
-        break;
-      case "gte":
-        query = query.gte(filters[filterKey]);
-        break;
-      case "in":
-        query = query.in(filters[filterKey]);
-        break;
-      case "like": 
-        query = query.regex(new RegExp(filters[filterKey], "i"));
-        break;
-      case "gte":
-        query = query.gte(filters[filterKey]);
-        break;
-      case "lt":
-        query = query.lt(filters[filterKey]);
-        break;
-      case "lte":
-        query = query.lte(filters[filterKey]);
-        break;
-      case "ne":
-        query = query.ne(filters[filterKey]);
-        break;
-      
+    const filterSubobject: any = {};
+    let addFilter = false;
+    filterKeys.forEach((filterKey: string) => {
+      switch(filterKey) {
+        case "neq":
+        case "lte":
+        case "lt":
+        case "gt":
+        case "gte":
+          filterSubobject[`$${filterKey}`] = field[filterKey];
+          addFilter = true;
+          break;
+        default: 
+          // Merge parsed Fields with new parsed fields
+          const subFields = parseFilter(field, `${fieldKey}.`);
+          const subFieldKeys = Object.keys(subFields);
+          subFieldKeys.forEach((subFieldKey: string) => {
+            parsedFilters[subFieldKey] = subFields[subFieldKey];
+          });
+          console.log(subFields)
+          return;
+      }
+    });
+    if (addFilter) {
+      parsedFilters[baseKey + fieldKey] = filterSubobject;
     }
   });
-
-  return query;
+  return parsedFilters;
 }
 
 /**
@@ -99,17 +95,34 @@ function applyFilterObject(query: Query<any>, filters: any) {
  * TODO - move to a new file?
  * 
  * @param query The query object to add where clauses upon
- * @param filters The filters to convert into a where clause for the query
+ * @param filter 
+ * @param filters The filters to convert into an or clause for the query
  */
-export function applyFilters(query: Query<any>, filters: any[]): Query<any> {
-  // TODO - modify functionality such that this takes in either an object or an array, with each array splitting
-  // up with an OR
-  // Alternatively, we can use mongoose-adjacent filters which would be GREAT because we don't need processing, 
-  // we can just pass through the array or struct object
-  // Exit early if no filters given
-  if (!filters) {
-    return query;
+export function buildFilters(filters: any): any {
+  if (!filters) { return {}; }
+  let andFilters: any = undefined;
+  let orFilters: any = undefined;
+
+  if ("or" in filters && filters.or.length) {
+    orFilters = [];
+    filters.or.forEach((filterOr: any) => {
+      orFilters.push(parseFilter(filterOr))
+    });
+    // TODO - build filters
   }
 
-  return query;
+  const filterKeys = Object.keys(filters);
+  // Ensures we have at least one non-or key
+  if (filterKeys.length >= 2 || (filterKeys.length == 1 && !("or" in filters))) {
+    andFilters = parseFilter(filters);
+    // TODO - build filters
+  }
+
+  if (!orFilters) { return andFilters; }
+  if (!andFilters) { return { $or: orFilters }; }
+  
+  return {$and: [
+    andFilters,
+    { $or: orFilters }
+  ]};
 }

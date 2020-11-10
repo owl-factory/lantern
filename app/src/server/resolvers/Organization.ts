@@ -1,6 +1,6 @@
 import { Organization, OrganizationModel } from "@reroll/model/dist/documents";
 import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/documents/Responses";
-import { OrganizationFilter } from "@reroll/model/dist/filters";
+import { OrganizationFilters } from "@reroll/model/dist/filters";
 import { CreateOrganizationInput, UpdateOrganizationInput } from "@reroll/model/dist/inputs";
 import { Options } from "@reroll/model/dist/inputs/Options";
 import { Query as MongoQuery } from "mongoose";
@@ -28,7 +28,7 @@ export class OrganizationResolver extends CoreResolver {
    */
   @Query(() => [Organization])
   public organizations(
-    @Arg("filters", {nullable: true}) filters?: OrganizationFilter,
+    @Arg("filters", {nullable: true}) filters?: OrganizationFilters,
     @Args() options?: Options
   ): MongoQuery<Organization[]> {
     return super.findMany(filters, options);
@@ -39,7 +39,7 @@ export class OrganizationResolver extends CoreResolver {
    * @param filters The filter object to count documents by. Identical to other filters
    */
   @Query(() => Int)
-  public organizationCount(@Arg("filters", {nullable: true}) filters?: OrganizationFilter): MongoQuery<number> {
+  public organizationCount(@Arg("filters", {nullable: true}) filters?: OrganizationFilters): MongoQuery<number> {
     return super.findCount(filters);
   }
 
@@ -48,7 +48,7 @@ export class OrganizationResolver extends CoreResolver {
    * @param data the data to insert into a new document
    */
   @Authorized()
-  @Mutation()
+  @Mutation(() => Organization)
   public createOrganization(@Arg("data") data: CreateOrganizationInput): MongoQuery<Organization> {
     return super.createOne(data);
   }
