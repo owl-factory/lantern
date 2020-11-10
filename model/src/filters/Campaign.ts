@@ -16,5 +16,6 @@ export class CampaignFilter extends CoreFilter {
  */
 @InputType()
 export class CampaignFilters extends CampaignFilter {
+  @Field(() => [CampaignFilter], { nullable: true })
   or?: CampaignFilter[];
 }

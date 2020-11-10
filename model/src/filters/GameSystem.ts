@@ -1,4 +1,4 @@
-import { InputType } from "type-graphql";
+import { Field, InputType } from "type-graphql";
 import { CoreFilter } from "./CoreFilter";
 
 /**
@@ -13,5 +13,6 @@ class GameSystemFilter extends CoreFilter {
  */
 @InputType()
 export class GameSystemFilters extends GameSystemFilter {
+  @Field(() => [GameSystemFilter], { nullable: true })
   or?: GameSystemFilter[];
 }

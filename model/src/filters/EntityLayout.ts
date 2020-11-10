@@ -16,5 +16,6 @@ export class EntityLayoutFilter extends CoreFilter {
  */
 @InputType()
 export class EntityLayoutFilters extends EntityLayoutFilter {
+  @Field(() => [EntityLayoutFilter], { nullable: true })
   or?: EntityLayoutFilter[];
 }

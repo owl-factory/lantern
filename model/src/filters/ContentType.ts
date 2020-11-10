@@ -19,5 +19,6 @@ export class ContentTypeFilter extends CoreFilter {
  */
 @InputType()
 export class ContentTypeFilters extends ContentTypeFilter {
+  @Field(() => [ContentTypeFilter], { nullable: true })
   or?: ContentTypeFilter[];
 }

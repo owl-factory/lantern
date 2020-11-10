@@ -3,7 +3,7 @@ import { Options } from "@reroll/model/dist/inputs/Options";
 import { Query } from "mongoose";
 import { validate } from "class-validator";
 import { getUserID } from "../utilities/misc";
-import { applyFilters, buildFilters, isID } from "../utilities/resolverHelpers";
+import { buildFilters, isID } from "../utilities/resolverHelpers";
 import { GameSystemModel } from "@reroll/model/dist/documents/GameSystem";
 import { CoreDocument } from "@reroll/model/dist/documents/CoreDocument";
 import { CoreFilter } from "@reroll/model/dist/filters/CoreFilter";
@@ -140,7 +140,7 @@ export class CoreResolver {
     }
 
     // Fetch early if we don't need to worry about super document aliases
-    if (!superDocumentAliases) { return applyFilters(model.findOne({}, null), filters); }
+    if (!superDocumentAliases) { return model.findOne(buildFilters(filters), null); }
 
     // Get super document ids
     const superDocuments: string[] = Object.keys(superDocumentAliases);
@@ -165,7 +165,7 @@ export class CoreResolver {
       filters[`${superDocument}_eq`] = superDocumentResult._id;
     }
 
-    return applyFilters(model.findOne({}, null), filters);
+    return model.findOne(buildFilters(filters), null);
   }
 }
 

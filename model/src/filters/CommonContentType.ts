@@ -1,4 +1,4 @@
-import { InputType } from "type-graphql";
+import { Field, InputType } from "type-graphql";
 import { CoreFilter } from "./CoreFilter";
 
 /**
@@ -13,5 +13,6 @@ export class CommonContentTypeFilter extends CoreFilter {
  */
 @InputType()
 export class CommonContentTypeFilters extends CommonContentTypeFilter {
+  @Field(() => [CommonContentTypeFilter], { nullable: true })
   or?: CommonContentTypeFilter[];
 }

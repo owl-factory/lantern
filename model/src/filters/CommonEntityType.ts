@@ -1,4 +1,4 @@
-import { InputType } from "type-graphql";
+import { Field, InputType } from "type-graphql";
 import { CoreFilter } from "./CoreFilter";
 
 /**
@@ -13,5 +13,6 @@ export class CommonEntityTypeFilter extends CoreFilter {
  */
 @InputType()
 export class CommonEntityTypeFilters extends CommonEntityTypeFilter {
+  @Field(() => [CommonEntityTypeFilter], { nullable: true })
   or?: CommonEntityTypeFilter[];
 }

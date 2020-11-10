@@ -1,4 +1,4 @@
-import { InputType } from "type-graphql";
+import { Field, InputType } from "type-graphql";
 import { CoreFilter } from "./CoreFilter";
 
 /**
@@ -13,5 +13,6 @@ export class UserFilter extends CoreFilter {
  */
 @InputType()
 export class UserFilters extends UserFilter {
+  @Field(() => [UserFilter], { nullable: true })
   or?: UserFilter[];
 }

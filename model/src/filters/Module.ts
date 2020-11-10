@@ -16,5 +16,6 @@ export class ModuleFilter extends CoreFilter {
  */
 @InputType()
 export class ModuleFilters extends ModuleFilter {
+  @Field(() => [ModuleFilter], { nullable: true })
   or?: ModuleFilter[];
 }

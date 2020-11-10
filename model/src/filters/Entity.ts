@@ -19,5 +19,6 @@ export class EntityFilter extends CoreFilter {
  */
 @InputType()
 export class EntityFilters extends EntityFilter {
+  @Field(() => [EntityFilter], { nullable: true })
   or?: EntityFilter[];
 }

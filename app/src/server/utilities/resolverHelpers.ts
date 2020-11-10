@@ -41,7 +41,10 @@ export function isID(id: string) {
 }
 
 /**
- * A recursive function for handling 
+ * A recursive function for parsing out nested fields into a single level of Mongoose compatible filters
+ * 
+ * @param filterObject An object that is sent diectly from GQL
+ * @param baseKey The key to prepend to any new filter
  */
 export function parseFilter(filterObject: any, baseKey: string = "") {
   const fieldKeys = Object.keys(filterObject);
@@ -51,13 +54,17 @@ export function parseFilter(filterObject: any, baseKey: string = "") {
     if (fieldKey === "or") { return; }
 
     const field = filterObject[fieldKey];
-    // EQ is a special case
+    // EQ and like are special cases that return strings, not objects
     const filterKeys = Object.keys(field);
     if ("eq" in field) {
       parsedFilters[baseKey + fieldKey] = field.eq;
       return;
     }
 
+    else if ("like" in field) {
+      parsedFilters[baseKey + fieldKey] = new RegExp(field.like, 'i');
+      return;
+    }
 
     const filterSubobject: any = {};
     let addFilter = false;
@@ -78,7 +85,6 @@ export function parseFilter(filterObject: any, baseKey: string = "") {
           subFieldKeys.forEach((subFieldKey: string) => {
             parsedFilters[subFieldKey] = subFields[subFieldKey];
           });
-          console.log(subFields)
           return;
       }
     });
@@ -92,10 +98,6 @@ export function parseFilter(filterObject: any, baseKey: string = "") {
 /**
  * Builds and adds a where clause to a query given the filters 
  * 
- * TODO - move to a new file?
- * 
- * @param query The query object to add where clauses upon
- * @param filter 
  * @param filters The filters to convert into an or clause for the query
  */
 export function buildFilters(filters: any): any {
@@ -108,14 +110,12 @@ export function buildFilters(filters: any): any {
     filters.or.forEach((filterOr: any) => {
       orFilters.push(parseFilter(filterOr))
     });
-    // TODO - build filters
   }
 
   const filterKeys = Object.keys(filters);
   // Ensures we have at least one non-or key
   if (filterKeys.length >= 2 || (filterKeys.length == 1 && !("or" in filters))) {
     andFilters = parseFilter(filters);
-    // TODO - build filters
   }
 
   if (!orFilters) { return andFilters; }

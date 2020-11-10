@@ -16,5 +16,6 @@ export class RuleFilter extends CoreFilter {
  */
 @InputType()
 export class RuleFilters extends RuleFilter {
+  @Field(() => [RuleFilter], { nullable: true })
   or?: RuleFilter[];
 }
