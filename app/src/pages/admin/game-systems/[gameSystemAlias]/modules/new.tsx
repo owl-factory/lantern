@@ -6,7 +6,6 @@ import gql from "graphql-tag";
 import { client } from "../../../../../utilities/graphql/apiClient";
 import { useRouter } from "next/router";
 import ModuleForm from "../../../../../components/admin/modules/Form";
-import { ModuleInput } from "@reroll/model/dist/inputs/ModuleInput";
 
 /**
  * Renders a new game system form
@@ -22,7 +21,7 @@ export function NewModuleForm(props: any) {
       isPurchasable: false,
       cost: 0
     }}
-    onSubmit={(values: ModuleInput) => {
+    onSubmit={(values: any) => {
       const NewModuleMutation = gql`
       mutation {
         newModule (data: {

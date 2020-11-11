@@ -4,14 +4,13 @@ import { Button, Col, Form, Row } from "react-bootstrap";
 import * as Yup from "yup";
 import { Error, Input, TextArea, Select, Checkbox } from "../../design/forms/Forms";
 import { FormixFormProps } from "../../../model/design/form";
-import { ContentTypeInput } from "@reroll/model/dist/inputs/ContentTypeInput";
 import { CommonContentType } from "@reroll/model/dist/documents/CommonContentType";
 
 /**
  * The props used for the GameSystemForm
  * @param themes An array of themes for a selection
  */
-interface ContentTypeFormProps extends FormixFormProps<ContentTypeInput> {
+interface ContentTypeFormProps extends FormixFormProps<any> {
   commonContentTypes: CommonContentType[];
 }
 

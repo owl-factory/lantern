@@ -1,5 +1,5 @@
 import { CommonEntityType, CommonEntityTypeModel } from "@reroll/model/dist/documents";
-import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/documents/Responses";
+import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/models/graphQLResponses";
 import { CommonEntityTypeFilters } from "@reroll/model/dist/filters";
 import { CreateCommonEntityTypeInput, UpdateCommonEntityTypeInput } from "@reroll/model/dist/inputs";
 import { Options } from "@reroll/model/dist/inputs/Options";

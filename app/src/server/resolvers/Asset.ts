@@ -1,5 +1,5 @@
 import { Asset, AssetModel } from "@reroll/model/dist/documents";
-import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/documents/Responses";
+import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/models/graphQLResponses";
 import { AssetFilters } from "@reroll/model/dist/filters";
 import { CreateAssetInput, UpdateAssetInput } from "@reroll/model/dist/inputs";
 import { Options } from "@reroll/model/dist/inputs/Options";

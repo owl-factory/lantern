@@ -1,5 +1,5 @@
 import { Rule, RuleModel } from "@reroll/model/dist/documents";
-import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/documents/Responses";
+import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/models/graphQLResponses";
 import { RuleFilters } from "@reroll/model/dist/filters";
 import { CreateRuleInput, UpdateRuleInput } from "@reroll/model/dist/inputs";
 import { Options } from "@reroll/model/dist/inputs/Options";

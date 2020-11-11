@@ -1,5 +1,5 @@
 import { Campaign, CampaignModel } from "@reroll/model/dist/documents";
-import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/documents/Responses";
+import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/models/graphQLResponses";
 import { CampaignFilters } from "@reroll/model/dist/filters";
 import { CreateCampaignInput, UpdateCampaignInput } from "@reroll/model/dist/inputs";
 import { Options } from "@reroll/model/dist/inputs/Options";

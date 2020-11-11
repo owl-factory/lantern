@@ -1,5 +1,5 @@
 import { GameSystem, GameSystemModel } from "@reroll/model/dist/documents";
-import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/documents/Responses";
+import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/models/graphQLResponses";
 import { GameSystemFilters } from "@reroll/model/dist/filters";
 import { CreateGameSystemInput, UpdateGameSystemInput } from "@reroll/model/dist/inputs";
 import { Options } from "@reroll/model/dist/inputs/Options";

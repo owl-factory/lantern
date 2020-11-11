@@ -4,7 +4,6 @@ import { Button, Col, Form, Row } from "react-bootstrap";
 import * as Yup from "yup";
 import { Checkbox, Error, Input, TextArea } from "../../design/forms/Forms";
 import { FormixFormProps } from "../../../model/design/form";
-import { ModuleInput } from "@reroll/model/dist/inputs/ModuleInput";
 
 /**
  * Renders the cost input iff the isPurchasable flag is set
@@ -30,7 +29,7 @@ function renderCost(isPurchasable: boolean) {
  * @param onSubmit The action to run on submit
  * @param themes An array of themes for a selection
  */
-export default function ModuleForm(props: FormixFormProps<ModuleInput>) {
+export default function ModuleForm(props: FormixFormProps<any>) {
 
   return (
     <Formik 

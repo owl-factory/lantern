@@ -1,5 +1,5 @@
 import { Entity, EntityModel } from "@reroll/model/dist/documents";
-import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/documents/Responses";
+import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/models/graphQLResponses";
 import { EntityFilters } from "@reroll/model/dist/filters";
 import { CreateEntityInput, UpdateEntityInput } from "@reroll/model/dist/inputs";
 import { Options } from "@reroll/model/dist/inputs/Options";

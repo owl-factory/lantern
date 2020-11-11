@@ -1,5 +1,5 @@
 import { Organization, OrganizationModel } from "@reroll/model/dist/documents";
-import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/documents/Responses";
+import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/models/graphQLResponses";
 import { OrganizationFilters } from "@reroll/model/dist/filters";
 import { CreateOrganizationInput, UpdateOrganizationInput } from "@reroll/model/dist/inputs";
 import { Options } from "@reroll/model/dist/inputs/Options";

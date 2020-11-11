@@ -1,5 +1,5 @@
 import { CommonContentType, CommonContentTypeModel } from "@reroll/model/dist/documents";
-import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/documents/Responses";
+import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/models/graphQLResponses";
 import { CommonContentTypeFilters } from "@reroll/model/dist/filters";
 import { CreateCommonContentTypeInput, UpdateCommonContentTypeInput } from "@reroll/model/dist/inputs";
 import { Options } from "@reroll/model/dist/inputs/Options";

@@ -7,7 +7,7 @@ import { buildFilters, isID } from "../utilities/resolverHelpers";
 import { GameSystemModel } from "@reroll/model/dist/documents/GameSystem";
 import { CoreDocument } from "@reroll/model/dist/documents/CoreDocument";
 import { CoreFilter } from "@reroll/model/dist/filters/CoreFilter";
-import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/documents/Responses";
+import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/models/graphQLResponses";
 
 // Contains any aliases that might be passed in to findByAlias for any super document
 // TODO - move to a new file

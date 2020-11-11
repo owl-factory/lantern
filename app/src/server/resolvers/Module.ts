@@ -1,5 +1,5 @@
 import { Module, ModuleModel } from "@reroll/model/dist/documents";
-import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/documents/Responses";
+import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/models/graphQLResponses";
 import { ModuleFilters } from "@reroll/model/dist/filters";
 import { CreateModuleInput, UpdateModuleInput } from "@reroll/model/dist/inputs";
 import { Options } from "@reroll/model/dist/inputs/Options";
