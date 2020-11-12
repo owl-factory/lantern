@@ -11,6 +11,7 @@
 
 # testing
 /coverage
+mongo/data
 
 # next.js
 /app/.next/

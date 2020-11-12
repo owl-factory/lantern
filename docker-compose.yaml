@@ -1,0 +1,16 @@
+version: '3.6'
+services:
+  database:
+    image: mongo:4.2.1-bionic
+    env_file:
+      - ./mongo/mongodb.env
+    ports:
+      - 27017:27017
+    restart: unless-stopped
+    networks: 
+      - reroll
+    volumes:
+      - ./mongo/data:/data/db
+    
+networks:
+  reroll:
