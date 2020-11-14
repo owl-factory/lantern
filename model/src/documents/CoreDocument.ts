@@ -28,7 +28,7 @@ export class CoreDocument {
   createdBy?: string;
 
   // The date time that this document was created
-  @Field(_type => Date, { nullable: true })
+  @Field(() => Date, { nullable: true })
   @prop({ required: true })
   createdAt?: Date = new Date();
 
@@ -38,7 +38,7 @@ export class CoreDocument {
   updatedBy?: string;
 
   // The date time that this document was last updated (also set on create)
-  @Field(_type => Date, { nullable: true })
+  @Field(() => Date, { nullable: true })
   @prop()
   updatedAt?: Date;
 
@@ -48,7 +48,7 @@ export class CoreDocument {
   @prop()
   deletedBy?: string;
 
-  @Field(_type => Date, { nullable: true })
+  @Field(() => Date, { nullable: true })
   @prop()
   deletedAt?: Date;
 }

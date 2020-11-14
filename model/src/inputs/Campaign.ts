@@ -19,4 +19,4 @@ export class CreateCampaignInput extends CampaignInput implements Partial<Campai
 }
 
 @InputType()
-export class UpdateCampaignInput extends CampaignInput implements Partial<Campaign>{};
+export class UpdateCampaignInput extends CampaignInput implements Partial<Campaign>{}

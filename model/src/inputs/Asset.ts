@@ -1,4 +1,4 @@
-import { InputType, Field } from "type-graphql";
+import { InputType } from "type-graphql";
 import { Asset } from "../documents";
 import { CoreInput } from "./CoreInput";
 
@@ -10,6 +10,6 @@ class AssetInput extends CoreInput implements Partial<Asset> {
 }
 
 @InputType()
-export class CreateAssetInput extends AssetInput implements Partial<Asset>{};
+export class CreateAssetInput extends AssetInput implements Partial<Asset>{}
 @InputType()
-export class UpdateAssetInput extends AssetInput implements Partial<Asset>{};
+export class UpdateAssetInput extends AssetInput implements Partial<Asset>{}

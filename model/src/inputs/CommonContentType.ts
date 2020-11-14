@@ -10,6 +10,6 @@ class CommonContentTypeInput extends CoreInput implements Partial<CommonContentT
 }
 
 @InputType()
-export class CreateCommonContentTypeInput extends CommonContentTypeInput implements Partial<CommonContentType>{};
+export class CreateCommonContentTypeInput extends CommonContentTypeInput implements Partial<CommonContentType>{}
 @InputType()
-export class UpdateCommonContentTypeInput extends CommonContentTypeInput implements Partial<CommonContentType>{};
+export class UpdateCommonContentTypeInput extends CommonContentTypeInput implements Partial<CommonContentType>{}

@@ -10,6 +10,6 @@ class CommonEntityTypeInput extends CoreInput implements Partial<CommonEntityTyp
 }
 
 @InputType()
-export class CreateCommonEntityTypeInput extends CommonEntityTypeInput implements Partial<CommonEntityType>{};
+export class CreateCommonEntityTypeInput extends CommonEntityTypeInput implements Partial<CommonEntityType>{}
 @InputType()
-export class UpdateCommonEntityTypeInput extends CommonEntityTypeInput implements Partial<CommonEntityType>{};
+export class UpdateCommonEntityTypeInput extends CommonEntityTypeInput implements Partial<CommonEntityType>{}

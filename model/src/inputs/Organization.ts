@@ -10,6 +10,6 @@ export class OrganizationInput extends CoreInput implements Partial<Organization
 }
 
 @InputType()
-export class CreateOrganizationInput extends OrganizationInput implements Partial<Organization>{};
+export class CreateOrganizationInput extends OrganizationInput implements Partial<Organization>{}
 @InputType()
-export class UpdateOrganizationInput extends OrganizationInput implements Partial<Organization>{};
+export class UpdateOrganizationInput extends OrganizationInput implements Partial<Organization>{}
