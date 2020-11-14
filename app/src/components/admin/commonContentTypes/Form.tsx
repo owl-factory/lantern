@@ -3,15 +3,13 @@ import React from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import * as Yup from "yup";
 import { Error, Input, TextArea } from "../../design/forms/Forms";
-import { GameSystemInput } from "@reroll/model/dist/inputs/GameSystemInput"
 import { FormixFormProps } from "../../../model/design/form";
-import { CommonContentTypeInput } from "@reroll/model/dist/inputs/CommonContentTypeInput";
 
 /**
  * The props used for the GameSystemForm
  * @param themes An array of themes for a selection
  */
-interface GameSystemFormProps extends FormixFormProps<GameSystemInput> {
+interface GameSystemFormProps extends FormixFormProps<any> {
   themes: any[];
 }
 
@@ -21,7 +19,7 @@ interface GameSystemFormProps extends FormixFormProps<GameSystemInput> {
  * @param onSubmit The action to run on submit
  * @param themes An array of themes for a selection
  */
-export default function CommonContentTypeForm(props: FormixFormProps<CommonContentTypeInput>) {
+export default function CommonContentTypeForm(props: FormixFormProps<any>) {
   return (
     <Formik 
       initialValues={props.initialValues}

@@ -5,7 +5,7 @@ import Page from "../../../../components/design/Page";
 import gql from "graphql-tag";
 import { NextPageContext } from "next";
 import { client } from "../../../../utilities/graphql/apiClient";
-import { GameSystemInput } from "@reroll/model/dist/inputs/GameSystemInput";
+import { UpdateGameSystemInput } from "@reroll/model/dist/inputs";
 import { GameSystem } from "@reroll/model/dist/documents/GameSystem";
 import { useRouter } from "next/router";
 
@@ -26,7 +26,7 @@ function EditGameSystem({gameSystem, themes}: EditGameSystemProps) {
    * Runs the operation to update 
    * @param values The updated game system values to update
    */
-  function updateGameSystem(values: GameSystemInput) {
+  function updateGameSystem(values: any) {
     const updateGameSystem = gql`mutation{
       updateGameSystem (_id: "${gameSystem._id}", data: {
         name: "${values.name}",
@@ -57,7 +57,7 @@ function EditGameSystem({gameSystem, themes}: EditGameSystemProps) {
       <GameSystemForm 
         initialValues={gameSystem}
         onSubmit={
-          (values: GameSystemInput) => updateGameSystem(values)}
+          (values: any) => updateGameSystem(values)}
         themes={themes}
       />
     </Page>

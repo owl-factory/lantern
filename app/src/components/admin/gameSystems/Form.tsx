@@ -3,14 +3,13 @@ import React from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import * as Yup from "yup";
 import { Error, Input, Select, TextArea } from "../../design/forms/Forms";
-import { GameSystemInput } from "@reroll/model/dist/inputs/GameSystemInput"
 import { FormixFormProps } from "../../../model/design/form";
 
 /**
  * The props used for the GameSystemForm
  * @param themes An array of themes for a selection
  */
-interface GameSystemFormProps extends FormixFormProps<GameSystemInput> {
+interface GameSystemFormProps extends FormixFormProps<any> {
   themes: any[];
 }
 

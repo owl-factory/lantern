@@ -2,7 +2,6 @@ import React from "react";
 import { useRouter } from "next/router";
 import gql from "graphql-tag";
 import { NextPageContext } from "next";
-import { ContentTypeInput } from "@reroll/model/dist/inputs/ContentTypeInput";
 import { client } from "../../../../../../utilities/graphql/apiClient";
 import ContentTypeForm from "../../../../../../components/admin/contentTypes/Form";
 import Page from "../../../../../../components/design/Page";
@@ -17,7 +16,7 @@ export function EditContentTypeForm({ commonContentTypes, contentType, gameSyste
   return <ContentTypeForm 
     commonContentTypes={commonContentTypes}
     initialValues={contentType}
-    onSubmit={(values: ContentTypeInput) => {
+    onSubmit={(values: any) => {
       const newContentTypeMutation = gql`
       mutation {
         updateContentType (

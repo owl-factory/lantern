@@ -3,7 +3,6 @@ import Breadcrumbs from "../../../components/design/Breadcrumbs";
 import GameSystemForm from "../../../components/admin/gameSystems/Form";
 import Page from "../../../components/design/Page";
 import gql from "graphql-tag";
-import { GameSystemInput } from "@reroll/model/dist/inputs/GameSystemInput"
 import { client } from "../../../utilities/graphql/apiClient";
 import { useRouter } from "next/router";
 import CommonEntityTypeForm from "../../../components/admin/commonEntityTypes/Form";
@@ -19,7 +18,7 @@ export function NewCommonEntityTypeForm() {
       name: "",
       alias: ""
     }}
-    onSubmit={(values: GameSystemInput) => {
+    onSubmit={(values: any) => {
       const newGameSystemMutation = gql`
       mutation {
         newCommonEntityType (data: {
