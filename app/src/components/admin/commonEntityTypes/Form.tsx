@@ -4,7 +4,6 @@ import { Button, Col, Form, Row } from "react-bootstrap";
 import * as Yup from "yup";
 import { Error, Input, TextArea } from "../../design/forms/Forms";
 import { FormixFormProps } from "../../../model/design/form";
-import { CommonEntityTypeInput } from "@reroll/model/dist/inputs/CommonEntityTypeInput";
 
 
 /**
@@ -13,7 +12,7 @@ import { CommonEntityTypeInput } from "@reroll/model/dist/inputs/CommonEntityTyp
  * @param onSubmit The action to run on submit
  * @param themes An array of themes for a selection
  */
-export default function CommonEntityTypeForm(props: FormixFormProps<CommonEntityTypeInput>) {
+export default function CommonEntityTypeForm(props: FormixFormProps<any>) {
   return (
     <Formik 
       initialValues={props.initialValues}

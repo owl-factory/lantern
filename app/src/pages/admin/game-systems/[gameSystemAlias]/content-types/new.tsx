@@ -1,13 +1,11 @@
 import React from "react";
 import { useRouter } from "next/router";
-import { GameSystemInput } from "@reroll/model/dist/inputs/GameSystemInput";
 import gql from "graphql-tag";
 import { client } from "../../../../../utilities/graphql/apiClient";
 import Page from "../../../../../components/design/Page";
 import Breadcrumbs from "../../../../../components/design/Breadcrumbs";
 import { NextPageContext } from "next";
 import ContentTypeForm from "../../../../../components/admin/contentTypes/Form";
-import { ContentTypeInput } from "@reroll/model/dist/inputs/ContentTypeInput";
 
 /**
  * Renders a new game system form
@@ -22,7 +20,7 @@ export function NewContentTypeForm({ commonContentTypes, gameSystem }: any) {
       alias: "",
       isTypeOnly: false
     }}
-    onSubmit={(values: ContentTypeInput) => {
+    onSubmit={(values: any) => {
       const newContentTypeMutation = gql`
       mutation {
         newContentType (data: {

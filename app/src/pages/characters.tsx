@@ -3,7 +3,6 @@ import Page from "../components/design/Page";
 import { Formik, Form as FormikForm } from "formik";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { Input } from "../components/design/forms/Input";
-import { CharacterInput } from "@reroll/model/dist/inputs/CharacterInput";
 import gql from "graphql-tag";
 import { client } from "../utilities/graphql/apiClient";
 
@@ -42,7 +41,7 @@ export default function Characters() {
     <Page>
       <Formik
         initialValues={{}}
-        onSubmit={(values: CharacterInput) => {
+        onSubmit={(values: any) => {
           submit(values)
         }}
       >

@@ -1,7 +1,6 @@
 import React from "react";
 import { useRouter } from "next/router";
 import ModuleForm from "../../../../../../components/admin/modules/Form";
-import { ModuleInput } from "@reroll/model/dist/inputs/ModuleInput";
 import gql from "graphql-tag";
 import { client } from "../../../../../../utilities/graphql/apiClient";
 import Page from "../../../../../../components/design/Page";
@@ -22,7 +21,7 @@ export function EditModuleForm(props: any) {
       isPurchasable: props.module.isPurchasable,
       cost: props.module.cost
     }}
-    onSubmit={(values: ModuleInput) => {
+    onSubmit={(values: any) => {
       const { gameSystemAlias, moduleAlias } = router.query;
 
       const EditModuleMutation = gql`

@@ -1,6 +1,5 @@
 import React from "react";
 import { useRouter } from "next/router";
-import { ModuleInput } from "@reroll/model/dist/inputs/ModuleInput";
 import gql from "graphql-tag";
 import { NextPageContext } from "next";
 import { client } from "../../../../utilities/graphql/apiClient";
@@ -20,7 +19,7 @@ export function EditCommonContentTypeForm(props: any) {
       alias: props.commonContentType.alias,
       description: props.commonContentType.description
     }}
-    onSubmit={(values: ModuleInput) => {
+    onSubmit={(values: any) => {
       const { alias } = router.query;
 
       const EditCommonContentTypeMutation = gql`

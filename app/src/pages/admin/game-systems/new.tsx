@@ -3,7 +3,6 @@ import Breadcrumbs from "../../../components/design/Breadcrumbs";
 import GameSystemForm from "../../../components/admin/gameSystems/Form";
 import Page from "../../../components/design/Page";
 import gql from "graphql-tag";
-import { GameSystemInput } from "@reroll/model/dist/inputs/GameSystemInput"
 import { client } from "../../../utilities/graphql/apiClient";
 import { useRouter } from "next/router";
 
@@ -29,7 +28,7 @@ export function NewGameSystemForm(props: GameSystemFormProps) {
   const router = useRouter();
   const [ errors, setErrors ] = React.useState({})
 
-  function onSubmit(values: GameSystemInput) {
+  function onSubmit(values: any) {
     const newGameSystemMutation = gql`
       mutation {
         newGameSystem (data: {
@@ -69,7 +68,7 @@ export function NewGameSystemForm(props: GameSystemFormProps) {
       defaultThemeID: undefined,
       
     }}
-    onSubmit={(values: GameSystemInput) => {onSubmit(values)}}
+    onSubmit={(values: any) => {onSubmit(values)}}
     themes={props.themes}
   />;
 }
