@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import Table from "../../../components/design/tables/Table";
 import { TableBuilder } from "../../../utilities/design/table";
 import Page from "../../../components/design/Page";
@@ -8,14 +8,14 @@ import Link from "next/link";
  * Renders links and other actions for a row of data
  * @param props A data object containing all of the information for a row
  */
-function TestTableActions(props: any) {
+function TestTableActions(props: {key: string}) {
   return <><Link href={"/game-systems/" + props.key + "/edit"} passHref><a>Edit</a></Link></>
 }
 
 /**
  * Creates a test table for checking that new changes and functionality do not break and work as intended.
  */
-export default function TableTesting() {
+export default function TableTesting(): ReactNode {
   const tableBuilder = new TableBuilder();
   tableBuilder.addIncrementColumn("")
   .addDataColumn("Gamesystem", "name")

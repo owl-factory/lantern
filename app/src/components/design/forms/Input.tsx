@@ -31,7 +31,7 @@ interface InputProps extends CoreInputProps {
  * @param props.lg Width for large screens
  * @param props.xl Width for extra large screens
  */
-export function Input(props: InputProps) {
+export function Input(props: InputProps): JSX.Element {
   const [field] = useField(props);
 
   return (

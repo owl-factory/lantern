@@ -5,10 +5,12 @@ import Page from "../components/design/Page";
 import { Button, Card, Col, Form, Row } from "react-bootstrap";
 import * as Yup from "yup";
 
+// TODO - can we remove this? This is more late phase two kind of deal
+
 /**
  * Renders the Bug Report page
  */
-function BugReport() {
+function BugReport(): JSX.Element {
   return (
     <Page>
       <Card>

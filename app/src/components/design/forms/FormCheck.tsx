@@ -1,7 +1,7 @@
 import { useField } from "formik";
 import React from "react";
 import { Form } from "react-bootstrap";
-import { def, objectKeepFields } from "../../../utilities/tools";
+import { objectKeepFields } from "../../../utilities/tools";
 import { CoreFormCheckProps } from "../../../model/design/form";
 
 interface FormCheckProps extends CoreFormCheckProps {
@@ -24,8 +24,8 @@ interface FormCheckProps extends CoreFormCheckProps {
  * @param props.lg Width for large screens
  * @param props.xl Width for extra large screens
  */
-export function FormCheck(props: FormCheckProps) {
-  const id = def<string>(props.id, props.name);
+export function FormCheck(props: FormCheckProps): JSX.Element {
+  const id = props.id || props.name;
   
   const checkboxProps = objectKeepFields(
     props, 

@@ -18,7 +18,7 @@ import Page from "../../../components/design/Page";
 /**
  * Renders a test form for verifying that all of the functionality and design works as intended
  */
-export function TestForm() {
+export function TestForm(): JSX.Element {
   const selectData = [
     {label: "Dungeons and Dragons 5th Edition", value: "dnd-5e"},
     {label: "Pathfinder 2", value: "pathfinder2"},
@@ -180,7 +180,7 @@ export function TestForm() {
 /**
  * Renders a the page to create a new game system
  */
-function TestForms() {
+function TestForms(): JSX.Element {
   return (
     <Page>
       <h1>Test Forms</h1>

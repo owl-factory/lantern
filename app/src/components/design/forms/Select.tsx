@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
-import { def, objectKeepFields } from "../../../utilities/tools";
+import { objectKeepFields } from "../../../utilities/tools";
 import React, { ReactNode } from "react";
 import { Form } from "react-bootstrap";
 import { useField } from "formik";
@@ -19,7 +19,7 @@ interface SelectProps extends FieldProps {
   emptyText?: string; // Text to display if empty option is included
   includeEmpty?: boolean; // Include an empty selection
   labelKey?: string; // The key to use for label inputs
-  options?: object[]; // An array of structs containing the label and value to use
+  options?: Record<string, unknown>[]; // An array of structs containing the label and value to use
   valueKey?: string; // The key of the value
 }
 
@@ -36,8 +36,8 @@ interface SelectProps extends FieldProps {
  * @param props.size The size of the select input 
  * @param props.valueKey The key to pull values from within the options array
  */
-export function Select(props: SelectProps) {
-  const id = def<string>(props.id, props.name);
+export function Select(props: SelectProps): JSX.Element {
+  const id = props.id || props.name;
 
   const selectProps = objectKeepFields(props, ["disabled", "multiple", "name", "required", "size", "value"]);
   const [field] = useField(props);
@@ -58,11 +58,11 @@ export function Select(props: SelectProps) {
  * @param id The id of the select calling this function
  * @param props The props argument of the select element
  */
-function renderChildren(id: string, props: SelectProps) {
-  const options = def<object[]>(props.options, []);
-  const labelKey = def<string>(props.labelKey, "label");
-  const valueKey = def<string>(props.valueKey, "value");
-  const emptyText = def<string>(props.emptyText, "-- Select One --");
+function renderChildren(id: string, props: SelectProps): JSX.Element {
+  const options = props.options || [];
+  const labelKey = props.labelKey || "label";
+  const valueKey = props.valueKey || "value";
+  const emptyText = props.emptyText || "-- Select One --";
 
   let children: ReactNode[] = [];
 

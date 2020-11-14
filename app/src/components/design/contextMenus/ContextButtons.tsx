@@ -41,7 +41,6 @@ function ContextButtonItem(props: ContextMenuItemProps) {
  * @param props.title The title of the item
  */
 function ContextButtonLink(props: ContextMenuLinkProps) {
-  const router = useRouter();
   const linkAs = parseHref(props.href, props.keys, props.context);
   const className = props.buttonConfig ? props.buttonConfig.className || "" : "";
 
@@ -108,7 +107,7 @@ function renderDefaultMenuItem(
  * @param props.context The context for the buttons
  * @param props.items A list of items to render and their instructions
  */
-export function ContextButtons(props: ContextButtonProps) {
+export function ContextButtons(props: ContextButtonProps): JSX.Element {
   const defaultMenuItems: JSX.Element[] = [];
   let keyIndex = 0;
   let counter = 0;
@@ -133,6 +132,6 @@ export function ContextButtons(props: ContextButtonProps) {
  * @param props.context The context for the buttons
  * @param props.items A list of items to render and their instructions
  */
-export default function ContextButtonGroup(props: ContextButtonProps) {
+export default function ContextButtonGroup(props: ContextButtonProps): JSX.Element {
   return <ButtonGroup><ContextButtons {...props}/></ButtonGroup>
 }

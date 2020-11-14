@@ -1,5 +1,9 @@
 import { Column, TableComponent } from "../../model/design/table";
 
+interface TableBuilderOutput {
+  columns: Column[];
+}
+
 /**
  * A class for easily and quickly building configuration data for tables found in /src/components/degign/tables
  */
@@ -14,7 +18,7 @@ export class TableBuilder {
   public addComponentColumn(
     header: string,
     component: TableComponent
-  ) {
+  ): TableBuilder {
     const newColumn: Column = {header, component};
     this.columns.push(newColumn);
 
@@ -26,7 +30,7 @@ export class TableBuilder {
    * @param header The header title
    * @param key The key of the data to print
    */
-  public addDataColumn(header: string, key: string, modification?: (value: any) => string) {
+  public addDataColumn(header: string, key: string, modification?: (value: unknown) => string): TableBuilder {
     const newColumn: Column = {header, key, modification};
     this.columns.push(newColumn);
 
@@ -37,7 +41,7 @@ export class TableBuilder {
    * Creates column configuration for creating an incrementing column
    * @param header The header title of the increment column
    */
-  public addIncrementColumn(header: string) {
+  public addIncrementColumn(header: string): TableBuilder {
     const newColumn: Column = {header, increment: true};
     this.columns.push(newColumn);
 
@@ -47,7 +51,7 @@ export class TableBuilder {
   /**
    * Returns the configuration from this class
    */
-  public renderConfig() {
+  public renderConfig(): TableBuilderOutput  {
     return { columns: this.columns };
   }
 }

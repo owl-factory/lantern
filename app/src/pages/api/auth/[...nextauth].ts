@@ -2,6 +2,8 @@ import { NextApiRequest, NextApiResponse } from "next";
 import NextAuth from "next-auth";
 import Providers from "next-auth/providers";
 
+// TODO - throw errors for missing env variables
+
 const options = {
   providers: [
     Providers.Google({
@@ -12,4 +14,4 @@ const options = {
   database: process.env.USER_DB_CONNECTION_STRING!
 }
 
-export default (req: NextApiRequest, res: NextApiResponse) => NextAuth(req, res, options);
+export default (req: NextApiRequest, res: NextApiResponse): Promise<void> => NextAuth(req, res, options);

@@ -2,7 +2,6 @@ import React from "react";
 import { Breadcrumb as BSBreadcrumb } from "react-bootstrap";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { def } from "../../utilities/tools";
 
 interface BreadcrumbProps {
   skipLevels?: number;
@@ -14,10 +13,10 @@ interface BreadcrumbProps {
  * @param props.skipLevels A number indicating how many levels to skip. Default 0
  * @param props.titles An array of strings for the title of each level
  */
-function Breadcrumbs(props: BreadcrumbProps) {
+function Breadcrumbs(props: BreadcrumbProps): JSX.Element {
   const router = useRouter();
-  const skipLevels: number = def<number>(props.skipLevels, 0);
-  const titles: string[] = def<string[]>(props.titles, []);
+  const skipLevels: number = props.skipLevels || 0;
+  const titles: string[] = props.titles || [];
 
   /**
    * Builds out the breadcrumb links
@@ -28,7 +27,7 @@ function Breadcrumbs(props: BreadcrumbProps) {
     const breadcrumbs: JSX.Element[] = [];
     let uri = "/";
 
-    for (let i: number = 0; i < crumbs.length; i++) {
+    for (let i = 0; i < crumbs.length; i++) {
       const titleIndex: number = i - skipLevels;
       uri += crumbs[i];
 

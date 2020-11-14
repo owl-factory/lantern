@@ -7,7 +7,7 @@ import { Provider } from "next-auth/client";
 import { ApolloProvider } from "@apollo/client";
 import { client } from "../utilities/graphql/apiClient";
 
-export default function MyApp({ Component, pageProps }: AppProps) {
+export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   return (
     <Provider session={pageProps.session}>
       <ApolloProvider client={client}>

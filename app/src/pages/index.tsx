@@ -1,9 +1,8 @@
 import Link from "next/link";
-import React from "react";
-import News from "../components/announcements/News";
+import React, { ReactNode } from "react";
 import AuthenticationCard from "../components/authetication/AuthenticationCard";
 import Page from "../components/design/Page";
-import { Row, Button, Col, Form } from "react-bootstrap";
+import { Row, Button, Col } from "react-bootstrap";
 import { client } from "../utilities/graphql/apiClient";
 import gql from "graphql-tag";
 import { signOut, useSession } from "next-auth/client";
@@ -13,7 +12,7 @@ import { signOut, useSession } from "next-auth/client";
  *
  * @param props ...
  */
-function Index(props: any) {
+function Index(): ReactNode {
   // Sets the view for the currenly logged in user
   const [ session, loading ] = useSession();
 
@@ -47,7 +46,7 @@ function testGQL() {
  * Renders the view for users who are logged in
  * @param props TODO
  */
-function UserView(props: any) {
+function UserView() {
   return (
     <div>
       <h3>Welcome back!</h3>
@@ -65,7 +64,7 @@ function UserView(props: any) {
  * Renders the view for new visitors or users not logged in
  * @param props TODO
  */
-function GuestView(props: any) {
+function GuestView() {
 
   return (
     <>

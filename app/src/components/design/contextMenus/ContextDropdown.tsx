@@ -1,8 +1,7 @@
 /* eslint-disable no-case-declarations */
 import React from "react";
 import { Dropdown } from "react-bootstrap";
-import { def } from "../../../utilities/tools";
-import { ContextMenuItemProps, ContextMenuLinkProps, ContextDropdownProps, DropType, ContextMenuGenericItem, ContextMenuLink, ContextMenuItem } from "../../../model/design/contextMenu";
+import { ContextMenuItemProps, ContextMenuLinkProps, ContextDropdownProps, ContextMenuGenericItem, ContextMenuLink, ContextMenuItem } from "../../../model/design/contextMenu";
 import { useRouter } from "next/router";
 import { parseHref } from "../../../utilities/design/contextMenu";
 
@@ -74,7 +73,7 @@ function renderContextMenuItem(item: ContextMenuGenericItem, context: any, keyIn
   }
 }
 
-export function ContextDropdownMenu(props: any) {
+export function ContextDropdownMenu(props: any): JSX.Element {
   const menuItems: JSX.Element[] = [];
 
   let keyIndex = 0;
@@ -97,10 +96,10 @@ export function ContextDropdownMenu(props: any) {
  * @param props.drop The direction to drop the menu
  * @param props.items The items to render
  */
-export default function ContextDropdown(props: ContextDropdownProps) {
+export default function ContextDropdown(props: ContextDropdownProps): JSX.Element {
 
-  const alignRight = def<boolean>(props.alignRight, true);
-  const drop = def<DropType>(props.drop, "down");
+  const alignRight = props.alignRight || true;
+  const drop = props.drop || "down";
 
   return (
     <Dropdown as={props.as} alignRight={alignRight} drop={drop}>

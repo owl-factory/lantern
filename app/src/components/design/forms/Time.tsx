@@ -17,7 +17,7 @@ import { CoreInputProps } from "../../../model/design/form";
  * @param props.lg Width for large screens
  * @param props.xl Width for extra large screens
  */
-export function Time(props: CoreInputProps) {
+export function Time(props: CoreInputProps): JSX.Element {
 
   return <Input {...props} type="time"/>;
 }

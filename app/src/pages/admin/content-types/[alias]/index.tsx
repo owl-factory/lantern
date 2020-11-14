@@ -1,36 +1,13 @@
 import React from "react";
 import Page from "../../../../components/design/Page";
-import { Card, Button, Col, Row } from "react-bootstrap";
+import { Card, Button } from "react-bootstrap";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Breadcrumbs from "../../../../components/design/Breadcrumbs";
 import { NextPageContext } from "next";
 import gql from "graphql-tag"; 
 import { client } from "../../../../utilities/graphql/apiClient";
-import { CampaignCard } from "../../../../components/admin/campaigns/Card";
-import { EntityTypeCard } from "../../../../components/admin/entityTypes/Card";
-import { ModuleCard } from "../../../../components/admin/modules/Card";
-import { ContentCard } from "../../../../components/admin/content/Card";
-import { EntityCard } from "../../../../components/admin/entities/Card";
-import { ContentTypeCard } from "../../../../components/admin/contentTypes/Card";
-
-/**
- * Publishes a game system
- * @param _id The id of the gamesystem to publish
- */
-function publish(_id: string) {
-  const publishGameSystem = gql`mutation {
-    updateGameSystem(_id: "${_id}", data: {isPublished: true}) {
-      ok
-    }
-  }`;
-
-  client.mutate({mutation: publishGameSystem})
-  .then((res: any) => {
-    // TODO - need a way to refetch this!
-    console.log("Published!")
-  })
-}
+import { CommonContentType } from "@reroll/model/dist/documents/CommonContentType";
 
 /**
  * Renders the information page for the game system
@@ -40,7 +17,7 @@ function publish(_id: string) {
  * @param entityCount The total count of entities that exist within this gamesystem
  * @param contentCount The total count of content that exist within this gamesystem
  */
-export default function GameSystemView({commonContentType}: any) {
+export default function CommonContentTypeView({commonContentType}: {commonContentType: CommonContentType}): JSX.Element {
   const router = useRouter();
   const alias = router.query.alias;
   
@@ -50,7 +27,7 @@ export default function GameSystemView({commonContentType}: any) {
       <Breadcrumbs skipLevels={1} titles={[
         "Admin",
         "Common Content Type",
-        commonContentType.name!
+        commonContentType.name || ""
       ]}/>
      
       <Card>
@@ -84,7 +61,7 @@ export default function GameSystemView({commonContentType}: any) {
   );
 }
 
-GameSystemView.getInitialProps = async (ctx: NextPageContext) => {
+CommonContentTypeView.getInitialProps = async (ctx: NextPageContext) => {
   const alias = ctx.query.alias;
 
   const commonContentTypeQuery = gql`
@@ -100,7 +77,6 @@ GameSystemView.getInitialProps = async (ctx: NextPageContext) => {
   }`;
 
   const { data } = await client.query({query: commonContentTypeQuery});
-  console.log(data)
   
   return {
     commonContentType: data.commonContentType

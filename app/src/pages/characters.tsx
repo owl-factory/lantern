@@ -7,7 +7,9 @@ import { CharacterInput } from "@reroll/model/dist/inputs/CharacterInput";
 import gql from "graphql-tag";
 import { client } from "../utilities/graphql/apiClient";
 
-export default function Characters() {
+// TODO - can we remove this page??
+
+export default function Characters(): JSX.Element {
   const [characters, setCharacters] = React.useState([]);
 
   async function submit(values: any) {

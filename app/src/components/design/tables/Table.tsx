@@ -2,12 +2,12 @@ import React from "react";
 import { Table as BSTable } from "react-bootstrap"
 import { Column } from "../../../model/design/table";
 
-type RowAction = (index: number, data: any, globalData?: any) => void; 
+type RowAction = (index: number, data: Record<string, unknown>, globalData?: Record<string, unknown>) => void; 
 
 interface TableProps {
   columns: Column[]; // The column configuration
-  data: any[]; // An array of data to render
-  globalData?: any; 
+  data: Record<string, unknown>[]; // An array of data to render
+  globalData?: Record<string, unknown>; 
   // An action that may be applied to the whole row
   rowAction?: RowAction;
   startingIncrement?: number; // The number to begin incrementation on
@@ -19,8 +19,8 @@ interface TableHeaderProps {
 
 interface TableBodyProps {
   columns: Column[]; // The column configuration
-  data: any[]; // An array of data to render
-  globalData?: any; // Any data that is static across all rows
+  data: Record<string, unknown>[]; // An array of data to render
+  globalData?: Record<string, unknown>; // Any data that is static across all rows
   // An action that may be applied to the whole row
   rowAction?: RowAction; 
   startingIncrement?: number; // The number to begin incrementation on
@@ -28,8 +28,8 @@ interface TableBodyProps {
 
 interface TableRowProps {
   columns: Column[]; // The column configuration
-  data: any; // The object with data to render
-  globalData?: any; // Any data that is static across all rows
+  data: Record<string, unknown>; // The object with data to render
+  globalData?: Record<string, unknown>; // Any data that is static across all rows
   // An action that may be applied to the whole row
   rowAction?: RowAction; 
   increment: number; // The current row increment
@@ -58,7 +58,7 @@ function TableBody(props: TableBodyProps) {
   const rows: JSX.Element[] = [];
   let increment = props.startingIncrement || 1; 
 
-  props.data.forEach((rowData: any) => {
+  props.data.forEach((rowData: Record<string, unknown>) => {
     rows.push(
       <TableRow 
         key={"row-" + increment}
@@ -115,7 +115,7 @@ function TableRow(props: TableRowProps) {
  * Renders a table based off of given data and column configuration
  * @param props see TableProps
  */
-export default function Table(props: TableProps) {
+export default function Table(props: TableProps): JSX.Element {
   console.log(props.rowAction)
   return (
     <BSTable>

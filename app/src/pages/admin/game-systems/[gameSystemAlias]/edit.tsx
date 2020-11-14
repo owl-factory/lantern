@@ -4,7 +4,6 @@ import GameSystemForm from "../../../../components/admin/gameSystems/Form";
 import Page from "../../../../components/design/Page";
 import gql from "graphql-tag";
 import { NextPageContext } from "next";
-import { def } from "../../../../utilities/tools";
 import { client } from "../../../../utilities/graphql/apiClient";
 import { GameSystemInput } from "@reroll/model/dist/inputs/GameSystemInput";
 import { GameSystem } from "@reroll/model/dist/documents/GameSystem";

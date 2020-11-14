@@ -20,7 +20,7 @@ interface RadioButtonProps extends CoreFormCheckProps {
  * @param props.lg Width for large screens
  * @param props.xl Width for extra large screens
  */
-export function RadioButton(props: RadioButtonProps) {
+export function RadioButton(props: RadioButtonProps): JSX.Element {
   return (
     <FormCheck type="radio" {...props}/>
   );

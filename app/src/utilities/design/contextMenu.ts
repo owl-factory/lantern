@@ -1,6 +1,5 @@
 import { ContextMenuGenericItem, ContextMenuActionType, ContextMenuBuilderOutput, ButtonConfig } from "../../model/design/contextMenu";
 import { IconType } from "react-icons/lib";
-import { def } from "../tools";
 
 /**
  * Builds out the configuration for a context menu
@@ -17,7 +16,7 @@ export class ContextMenuBuilder {
   /**
    * Adds a divider to the context menu
    */
-  public addDivider() {
+  public addDivider(): ContextMenuBuilder {
     this.items.push({type: "divider"})
     return this;
   }
@@ -26,7 +25,7 @@ export class ContextMenuBuilder {
    * Adds a header to the context menu
    * @param title The title of the header
    */
-  public addHeader(title: string) {
+  public addHeader(title: string): ContextMenuBuilder {
     this.items.push({type: "header", title})
     return this;
   }
@@ -38,8 +37,8 @@ export class ContextMenuBuilder {
    * @param href {string} The href to use in the Link object
    * @param keys {object} An object with keys in the href and values for the variable in context
    */
-  public addLink(title: string, icon: IconType, href: string, keys?: any) {
-    keys = def<any>(keys, {});
+  public addLink(title: string, icon: IconType, href: string, keys?: Record<string, string>): ContextMenuBuilder {
+    keys = keys || {};
     this.items.push({type: "link", title, icon, href, keys});
     return this;
   }
@@ -50,7 +49,7 @@ export class ContextMenuBuilder {
    * @param icon The icon to render on the right of the context menu item
    * @param action The action to run when clicking the context menu item
    */
-  public addItem(title: string, icon: IconType, action: ContextMenuActionType) {
+  public addItem(title: string, icon: IconType, action: ContextMenuActionType): ContextMenuBuilder {
     this.items.push({type: "item", title, icon, action});
     return this;
   }
@@ -72,7 +71,7 @@ export class ContextMenuBuilder {
  * @param keys An object describing how the keys from the href relate to the context
  * @param context The context of this menu from which to pull dynamic data
  */
-export function parseHref(href: string, keys: any, context: any) {
+export function parseHref(href: string, keys: Record<string, string>, context: Record<string, string>): string {
   let linkAs = href;
   const hrefKeys = href.match(/\[(.+?)\]/g);
   
@@ -85,7 +84,7 @@ export function parseHref(href: string, keys: any, context: any) {
   hrefKeys.forEach((hrefKey: any) => {
     const cleanKey = hrefKey.slice(1, -1 );
     
-    let value: string = "";
+    let value = "";
     if (cleanKey in keys) {
       value = context[keys[cleanKey]];
     } else {

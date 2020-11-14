@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-inferrable-types */
 import React from "react";
 import { Pagination as BSPagination } from "react-bootstrap";
-import { def, min } from "../../utilities/tools";
 
 interface PaginationProps {
   pageState: PageState; // The state of the page to use and update
@@ -22,16 +21,6 @@ interface PaginationCellProps {
   hasLink?: boolean; // Whether to have this as a link or a static button (eg for current page)
 }
 
-/**
- * Builds a state and useState to use for pagination
- * TODO - remove this
- * @param perPage - number of items per page
- * @param totalCount Total number of items
- */
-export function usePageState(perPage: number = 25, totalCount: number = 181) {
-  return React.useState({page: 1, perPage, totalCount, offset: 0});
-}
-
 function isDisabled(page: number, targetPage: number) {
   return page === targetPage ? "disabled" : "";
 }
@@ -41,7 +30,7 @@ function isDisabled(page: number, targetPage: number) {
  * @param props See IPaginationCell
  */
 function PaginationCell(props: PaginationCellProps) {
-  const pageText = def<string>(props.pageText, props.targetPage.toString());
+  const pageText = props.pageText || props.targetPage.toString();
   return (
     <BSPagination.Item className={props.className} onClick={() => {props.setPage(props.targetPage);}}>
       {pageText}
@@ -53,8 +42,8 @@ function PaginationCell(props: PaginationCellProps) {
  * Renders pagination and handles pagination-related actions
  * @param props see PaginationProps
  */
-function Pagination(props: PaginationProps) {
-  const perPage = min(props.pageState.perPage, 1);
+function Pagination(props: PaginationProps): JSX.Element {
+  const perPage = (props.pageState.perPage >= 1) ? props.pageState.perPage : 1;
   const maxPage = Math.ceil(props.pageState.totalCount / perPage);
 
   /**

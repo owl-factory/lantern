@@ -1,6 +1,5 @@
 import React from "react";
 import { Input } from "./Input";
-import { def } from "../../../utilities/tools";
 import { CoreInputProps } from "../../../model/design/form";
 
 interface TextAreaProps extends CoreInputProps {
@@ -23,7 +22,7 @@ interface TextAreaProps extends CoreInputProps {
  * @param props.lg Width for large screens
  * @param props.xl Width for extra large screens
  */
-export function TextArea(props: TextAreaProps) {
-  const rows = def<number>(props.rows, 4);
+export function TextArea(props: TextAreaProps): JSX.Element {
+  const rows = props.rows || 4;
   return <Input {...props} as="textarea" rows={rows}/>;
 }

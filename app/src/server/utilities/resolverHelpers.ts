@@ -8,6 +8,7 @@ import { GameSystemModel } from "@reroll/model/dist/documents/GameSystem";
  * @param alias The id/alias of the document to find
  */
 async function fetchDocumentID(model: any, alias: string): Promise<[string | undefined, boolean]>  {
+  // TODO - the model will be replaced with a super type that ors any document type
   if (alias && !isID(alias)) {
     const document = await model.findOne().where("alias").equals(alias);
     if (!document) {
@@ -35,6 +36,6 @@ export async function fetchGameSystemID(gameSystemID: string | undefined): Promi
  * A function for testing of IDs in the event we expand our definition of IDs
  * @param id The string to check for ID-ness
  */
-export function isID(id: string) {
+export function isID(id: string): boolean {
   return id.length === 24
 }
