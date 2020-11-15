@@ -19,7 +19,7 @@ export class AssetResolver extends CoreResolver {
    * @param _id The id or alias of the document to return
    */
   @Query(() => Asset, { nullable: true })
-  public asset(@Arg("_id") _id: string) {
+  public asset(@Arg("_id") _id: string): Promise<MongoQuery<Asset> | null> {
     return super.findByAlias(_id);
   }
 

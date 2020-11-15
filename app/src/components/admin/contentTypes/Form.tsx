@@ -4,13 +4,13 @@ import { Button, Col, Form, Row } from "react-bootstrap";
 import * as Yup from "yup";
 import { Error, Input, TextArea, Select, Checkbox } from "../../design/forms/Forms";
 import { FormixFormProps } from "../../../model/design/form";
-import { CommonContentType } from "@reroll/model/dist/documents/CommonContentType";
+import { CommonContentType } from "@reroll/model/dist/documents";
 
 /**
  * The props used for the GameSystemForm
  * @param themes An array of themes for a selection
  */
-interface ContentTypeFormProps extends FormixFormProps<any> {
+interface ContentTypeFormProps extends FormixFormProps<CommonContentType> {
   commonContentTypes: CommonContentType[];
 }
 
@@ -20,11 +20,11 @@ interface ContentTypeFormProps extends FormixFormProps<any> {
  * @param onSubmit The action to run on submit
  * @param themes An array of themes for a selection
  */
-export default function ContentTypeForm(props: ContentTypeFormProps) {
+export default function ContentTypeForm(props: ContentTypeFormProps): JSX.Element {
   const commonContentTypeKeys: string[] = [];
 
   props.commonContentTypes.forEach((commonContentType: CommonContentType) => {
-    commonContentTypeKeys.push(commonContentType["_id"]!);
+    commonContentTypeKeys.push(commonContentType["_id"] || "undefined");
   });
 
   return (
@@ -41,7 +41,7 @@ export default function ContentTypeForm(props: ContentTypeFormProps) {
           .max(1000, "Maximum of 1000 characters"),  
       })}
     >
-      {(formProps: any) => (
+      {() => (
         <FormikForm>
           <Row>
             {/* Content Type Name */}

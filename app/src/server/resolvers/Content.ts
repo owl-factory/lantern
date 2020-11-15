@@ -19,7 +19,7 @@ export class ContentResolver extends CoreResolver {
    * @param _id The id or alias of the document to return
    */
   @Query(() => Content, { nullable: true })
-  public content(@Arg("_id") _id: string) {
+  public content(@Arg("_id") _id: string): Promise<MongoQuery<Content> | null> {
     return super.findByAlias(_id);
   }
 

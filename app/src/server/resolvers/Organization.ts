@@ -19,7 +19,7 @@ export class OrganizationResolver extends CoreResolver {
    * @param _id The id or alias of the document to return
    */
   @Query(() => Organization, { nullable: true })
-  public organization(@Arg("_id") _id: string) {
+  public organization(@Arg("_id") _id: string): Promise<MongoQuery<Organization> | null> {
     return super.findByAlias(_id);
   }
 

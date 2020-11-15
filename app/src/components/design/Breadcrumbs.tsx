@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 
 interface BreadcrumbProps {
   skipLevels?: number;
-  titles?: string[];
+  titles?: (string | undefined)[];
 }
 
 /**
@@ -16,7 +16,7 @@ interface BreadcrumbProps {
 function Breadcrumbs(props: BreadcrumbProps): JSX.Element {
   const router = useRouter();
   const skipLevels: number = props.skipLevels || 0;
-  const titles: string[] = props.titles || [];
+  const titles: (string | undefined)[] = props.titles || [];
 
   /**
    * Builds out the breadcrumb links
@@ -37,7 +37,7 @@ function Breadcrumbs(props: BreadcrumbProps): JSX.Element {
 
       let title: string = crumbs[i];
       if (titles.length >= titleIndex) {
-        title = titles[titleIndex];
+        title = titles[titleIndex] || "";
       }
 
       breadcrumbs.push(

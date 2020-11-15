@@ -1,8 +1,7 @@
 import React from "react";
-import { ContextButtonProps, ContextMenuItemProps, ContextMenuLinkProps, ContextMenuGenericItem, ContextMenuLink, ContextMenuItem, ButtonConfig } from "../../../model/design/contextMenu";
+import { ContextButtonProps, ContextMenuItemProps, ContextMenuLinkProps, ContextMenuGenericItem, ContextMenuLink, ContextMenuItem, ButtonConfig, ContextMenuContext } from "../../../model/design/contextMenu";
 import Tooltip from "../Tooltip";
 import { Button, ButtonGroup } from "react-bootstrap";
-import { useRouter } from "next/router";
 import { parseHref } from "../../../utilities/design/contextMenu";
 import Link from "next/link";
 
@@ -65,7 +64,7 @@ function ContextButtonLink(props: ContextMenuLinkProps) {
 function renderDefaultMenuItem(
   buttonConfig: ButtonConfig,
   item: ContextMenuGenericItem,
-  context: any,
+  context: ContextMenuContext,
   keyIndex: number
 ) {
   const key = `context-menu-item-${keyIndex}`;

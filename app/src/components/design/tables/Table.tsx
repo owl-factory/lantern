@@ -2,12 +2,12 @@ import React from "react";
 import { Table as BSTable } from "react-bootstrap"
 import { Column } from "../../../model/design/table";
 
-type RowAction = (index: number, data: Record<string, unknown>, globalData?: Record<string, unknown>) => void; 
+type RowAction = (index: number, data: TableDataType, globalData?: TableDataType) => void; 
 
 interface TableProps {
   columns: Column[]; // The column configuration
-  data: Record<string, unknown>[]; // An array of data to render
-  globalData?: Record<string, unknown>; 
+  data: TableDataType[]; // An array of data to render
+  globalData?: TableDataType; 
   // An action that may be applied to the whole row
   rowAction?: RowAction;
   startingIncrement?: number; // The number to begin incrementation on
@@ -19,8 +19,8 @@ interface TableHeaderProps {
 
 interface TableBodyProps {
   columns: Column[]; // The column configuration
-  data: Record<string, unknown>[]; // An array of data to render
-  globalData?: Record<string, unknown>; // Any data that is static across all rows
+  data: TableDataType[]; // An array of data to render
+  globalData?: TableDataType; // Any data that is static across all rows
   // An action that may be applied to the whole row
   rowAction?: RowAction; 
   startingIncrement?: number; // The number to begin incrementation on
@@ -28,8 +28,8 @@ interface TableBodyProps {
 
 interface TableRowProps {
   columns: Column[]; // The column configuration
-  data: Record<string, unknown>; // The object with data to render
-  globalData?: Record<string, unknown>; // Any data that is static across all rows
+  data: TableDataType; // The object with data to render
+  globalData?: TableDataType; // Any data that is static across all rows
   // An action that may be applied to the whole row
   rowAction?: RowAction; 
   increment: number; // The current row increment
@@ -58,7 +58,7 @@ function TableBody(props: TableBodyProps) {
   const rows: JSX.Element[] = [];
   let increment = props.startingIncrement || 1; 
 
-  props.data.forEach((rowData: Record<string, unknown>) => {
+  props.data.forEach((rowData: TableDataType) => {
     rows.push(
       <TableRow 
         key={"row-" + increment}
@@ -87,15 +87,15 @@ function TableRow(props: TableRowProps) {
   // issues with "this might not be defined"
   onClick = () => (rowAction(props.increment, props.data, props.globalData));
 
-  props.columns.forEach((column: any) => {
+  props.columns.forEach((column: Column) => {
     if (column.key !== undefined) {
-      content = props.data[column.key];
+      content = props.data[column.key] as (string | number | JSX.Element | undefined);
       if (column.modification) {
-        content = column.modification(props.data[column.key]);
+        content = column.modification(props.data[column.key] as (string | boolean));
       }
 
     } else if (column.component !== undefined) {
-      content = column.component(props.data, props.globalData);
+      content = column.component( { data: props.data, globalData: props.globalData} );
 
     } else if (column.increment === true) {
       content = props.increment;

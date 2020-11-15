@@ -19,7 +19,7 @@ export class GameSystemResolver extends CoreResolver {
    * @param _id The id or alias of the document to return
    */
   @Query(() => GameSystem, { nullable: true })
-  public gameSystem(@Arg("_id") _id: string) {
+  public gameSystem(@Arg("_id") _id: string): Promise<MongoQuery<GameSystem> | null> {
     return super.findByAlias(_id);
   }
 

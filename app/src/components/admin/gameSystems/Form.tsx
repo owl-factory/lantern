@@ -2,16 +2,16 @@ import { Formik, Form as FormikForm } from "formik";
 import React from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import * as Yup from "yup";
-import { Error, Input, Select, TextArea } from "../../design/forms/Forms";
+import { Error, Input, TextArea } from "../../design/forms/Forms";
 import { FormixFormProps } from "../../../model/design/form";
+import { GameSystem } from "@reroll/model/dist/documents";
 
 /**
  * The props used for the GameSystemForm
  * @param themes An array of themes for a selection
  */
-interface GameSystemFormProps extends FormixFormProps<any> {
-  themes: any[];
-}
+// interface GameSystemFormProps extends FormixFormProps<GameSystem> {
+// }
 
 /**
  * Renders the game system form with functionality for new and existing game systems
@@ -20,15 +20,7 @@ interface GameSystemFormProps extends FormixFormProps<any> {
  * @param onSubmit The action to run on submit
  * @param themes An array of themes for a selection
  */
-export default function GameSystemForm(props: GameSystemFormProps) {
-  const themeKeys: string[] = [];
-
-  props.themes.forEach((theme: any) => {
-    themeKeys.push(theme["id"]);
-  });
-
-  console.log(props.errors)
-
+export default function GameSystemForm(props: FormixFormProps<GameSystem>): JSX.Element {
   return (
     <Formik
       initialErrors={props.errors}
@@ -47,7 +39,7 @@ export default function GameSystemForm(props: GameSystemFormProps) {
         //   .oneOf(themeKeys, "Must be a given theme"),        
       })}
     >
-      {(formProps: any) => (
+      {() => (
         <FormikForm>
           <Error name="_global"/>
 
@@ -78,11 +70,11 @@ export default function GameSystemForm(props: GameSystemFormProps) {
             <Col>
               {/* Default Theme */}
               <Row>
-                <Form.Group as={Col}>
+                {/* <Form.Group as={Col}>
                 <Form.Label>Default Theme</Form.Label>
                   <Select name="defaultThemeID" options={props.themes} labelKey="name" valueKey="id"/>
                   <Error name="defaultThemeID"/>
-                </Form.Group>
+                </Form.Group> */}
               </Row>
             </Col>
             

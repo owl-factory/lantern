@@ -19,7 +19,7 @@ export class EntityLayoutResolver extends CoreResolver {
    * @param _id The id or alias of the document to return
    */
   @Query(() => EntityLayout, { nullable: true })
-  public entityLayout(@Arg("_id") _id: string) {
+  public entityLayout(@Arg("_id") _id: string): Promise<MongoQuery<EntityLayout> | null> {
     return super.findByAlias(_id);
   }
 

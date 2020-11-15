@@ -22,19 +22,24 @@ const contentTypeActions = new ContextMenuBuilder()
   .addLink("Edit Card Layout", MdBuild, "/admin/game-systems/[gameSystemAlias]/content-types/[contentTypeAlias]/card-layout")
   .addLink("Edit Search Layout", MdBuild, "/admin/game-systems/[gameSystemAlias]/content-types/[contentTypeAlias]/search-layout")
 
+interface ContentTypeActionsProps {
+  data: ContentType;
+  globalData: GameSystem;
+}
+
 /**
  * Renders the actions for the game systems page
  * @param props A game system object
  */
-function ContentTypeActions(data: any, globalData: GameSystem) {
+function ContentTypeActions(props: ContentTypeActionsProps) {
   // View, Details, Edit, Modules
 
   return (
     <ContextMenu 
       context={{
-        name: data.name,
-        contentTypeAlias: data.alias || data._id,
-        gameSystemAlias: globalData.alias || globalData._id
+        name: props.data.name,
+        contentTypeAlias: props.data.alias || props.data._id,
+        gameSystemAlias: props.globalData.alias || props.globalData._id
       }} 
       {...contentTypeActions.renderConfig()}
     />
@@ -44,8 +49,8 @@ function ContentTypeActions(data: any, globalData: GameSystem) {
 const tableBuilder = new TableBuilder()
 .addIncrementColumn("")
 .addDataColumn("Content Type", "name")
-.addDataColumn("Alias", "alias", (alias?: string) => (alias ? alias : "--"))
-.addDataColumn("Is Type Only?", "isTypeOnly", (isTypeOnly: boolean) => (isTypeOnly ? "Yes" : "No"))
+.addDataColumn("Alias", "alias", (value: string | boolean) => (value ? value as string : "--"))
+// .addDataColumn("Is Type Only?", "isTypeOnly", (isTypeOnly: boolean) => (isTypeOnly ? "Yes" : "No"))
 .addComponentColumn("Tools", ContentTypeActions);
 
 /**
@@ -53,7 +58,7 @@ const tableBuilder = new TableBuilder()
  * @param props.contentTypes An array of entities of to render into a table
  * @param props.pageState A page state containing page and perPage
  */
-export function ContentTypeTable(props: ContentTypeTableProps) {
+export function ContentTypeTable(props: ContentTypeTableProps): JSX.Element {
   return <Table 
     {...tableBuilder.renderConfig()} 
     data={props.contentTypes} 

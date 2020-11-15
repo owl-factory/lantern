@@ -1,11 +1,11 @@
 import { Card, Button } from "react-bootstrap";
 import Link from "next/link";
-import { GameSystem } from "@reroll/model/dist/documents/GameSystem";
+import { Content, GameSystem } from "@reroll/model/dist/documents";
 import { ContentTable } from "./Table";
 
 interface ContentCardProps {
   gameSystem: GameSystem;
-  content: any; //Content[];
+  content: Content[]; //Content[];
 }
 
 /**
@@ -14,7 +14,7 @@ interface ContentCardProps {
  * @param props.gameSystem The game system this content belongs to
  * @param props.content The array of content to render out into a table
  */
-export function ContentCard(props: ContentCardProps) {
+export function ContentCard(props: ContentCardProps): JSX.Element {
   const gameSystemAlias = props.gameSystem.alias || props.gameSystem._id;
 
   return (
@@ -31,7 +31,7 @@ export function ContentCard(props: ContentCardProps) {
       </Card.Header>
 
       <Card.Body>
-        <ContentTable content={props.content} pageState={{page: 1, perPage: 10, totalCount: 10}}/>
+        <ContentTable contents={props.content} pageState={{page: 1, perPage: 10, totalCount: 10}}/>
       </Card.Body>
     </Card>
   );

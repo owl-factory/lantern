@@ -13,6 +13,11 @@ import ContextMenu from "../../../components/design/contextMenus/ContextMenu";
 import { CommonContentType } from "@reroll/model/dist/documents/CommonContentType";
 import { ContextMenuBuilder } from "../../../utilities/design/contextMenu";
 
+interface CommonContentTypeIndexProps {
+  initialContentTypes: CommonContentType[];
+  contentTypeCount: number;
+}
+
 const initialPerPage = 25;
 const contentTypeActions = new ContextMenuBuilder()
   .addLink("Details", MdInfo, "/admin/content-types/[alias]")
@@ -22,13 +27,12 @@ const contentTypeActions = new ContextMenuBuilder()
  * Renders the actions for the content types table
  * @param props A game system object
  */
-function ContentTypeActions(props: CommonContentType) {
+function ContentTypeActions(props: {data: CommonContentType}) {
   // View, Details, Edit, Modules
-  const urlKey = props.alias || props._id;
 
   return (
     <ContextMenu 
-      context={{name: props.name, alias: props.alias || props._id}} 
+      context={{name: props.data.name, alias: props.data.alias || props.data._id}} 
       {...contentTypeActions.renderConfig()}
     />
   );
@@ -38,7 +42,6 @@ const tableBuilder = new TableBuilder()
 .addIncrementColumn("")
 .addDataColumn("Content Type", "name")
 .addDataColumn("Alias", "alias")
-// .addDataColumn("Published", "isPublished", (isPublished: boolean) => (isPublished ? "Yes" : "No"))
 .addComponentColumn("Tools", ContentTypeActions);
 
 async function queryContentTypes(page: number, perPage: number) {
@@ -61,7 +64,7 @@ async function queryContentTypes(page: number, perPage: number) {
  * @param props.contentTypes An array of entities of to render into a table
  * @param props.pageState A page state containing page and perPage
  */
-export default function CommonContentTypeIndex({ initialContentTypes, contentTypeCount }: any) {
+export default function CommonContentTypeIndex({ initialContentTypes, contentTypeCount }: CommonContentTypeIndexProps): JSX.Element {
   const [ contentTypes, setContentTypes ] = React.useState(initialContentTypes);
   const [ pageState, setPageState ] = React.useState({
     page: 1,
@@ -94,7 +97,7 @@ export default function CommonContentTypeIndex({ initialContentTypes, contentTyp
 
       <Table 
         {...tableBuilder.renderConfig()} 
-        data={contentTypes} 
+        data={contentTypes as Record<string, unknown>[]} 
         startingIncrement={(pageState.page - 1) * pageState.perPage + 1}
       />
       <Pagination pageState={pageState} setPageState={setPage}/>

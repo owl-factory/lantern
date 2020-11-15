@@ -19,7 +19,7 @@ export class EntityResolver extends CoreResolver {
    * @param _id The id or alias of the document to return
    */
   @Query(() => Entity, { nullable: true })
-  public entity(@Arg("_id") _id: string) {
+  public entity(@Arg("_id") _id: string): Promise<MongoQuery<Entity> | null> {
     return super.findByAlias(_id);
   }
 

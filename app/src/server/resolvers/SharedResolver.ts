@@ -23,7 +23,7 @@ export class SharedResolver extends CoreResolver {
    * @param _id The id or alias of the document to return
    */
   @Query(() => CoreDocument, { nullable: true })
-  public xxx(@Arg("_id") _id: string) {
+  public xxx(@Arg("_id") _id: string): Promise<MongoQuery<CoreDocument> | null> {
     return super.findByAlias(_id);
   }
 

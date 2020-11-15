@@ -1,4 +1,4 @@
-import { Formik, Form as FormikForm, ErrorMessage, } from "formik";
+import { Formik, Form as FormikForm, ErrorMessage, FormikProps, } from "formik";
 import React from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import * as Yup from "yup";
@@ -25,17 +25,19 @@ export function TestForm(): JSX.Element {
     {label: "Rainbows", value: "rainbows"},
   ];
 
+  const initialValues = {
+    email: "",
+    firstName: "",
+    lastName: "",
+    gamesystem: "",
+    isActive: "",
+    difficulty: "",
+    isAirConditioningOn: "",
+  }
+
   return (
     <Formik
-      initialValues={{
-        email: "",
-        firstName: "",
-        lastName: "",
-        gamesystem: "",
-        isActive: "",
-        difficulty: "",
-        isAirConditioningOn: "",
-      }}
+      initialValues={initialValues}
       validationSchema={Yup.object ({
         firstName: Yup.string()
           .max(15, "Must be 15 characters or less")
@@ -44,11 +46,11 @@ export function TestForm(): JSX.Element {
           .max(20, "Must be 20 characters or less")
           .required("Required"),
       })}
-      onSubmit={(values: any) => {
+      onSubmit={(values: typeof initialValues) => {
         alert(JSON.stringify(values, null, 2));
       }}
     >
-      {(props: any) => (
+      {(props: FormikProps<typeof initialValues>) => (
         <FormikForm>
           <Row>
             <Form.Group as={Col}>

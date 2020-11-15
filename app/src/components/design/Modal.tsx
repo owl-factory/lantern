@@ -12,7 +12,7 @@ interface ModalProps {
  * Registers a new modal and an open function linked together, allowing for
  * multiple modals to be created and used without interfering with each other.
  */
-function registerModal(): [(props: any) => (JSX.Element | null), () => (void)] {
+function registerModal(): [(props: ModalProps) => (JSX.Element | null), () => (void)] {
   const [open, setOpen] = React.useState(false);
 
   /**

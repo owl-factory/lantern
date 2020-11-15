@@ -1,18 +1,18 @@
 import { Card, Button } from "react-bootstrap";
 import Link from "next/link";
-import { GameSystem } from "@reroll/model/dist/documents/GameSystem";
 import { CampaignTable } from "./Table";
+import { Campaign, GameSystem } from "@reroll/model/dist/documents";
 
 interface CampaignCardProps {
   gameSystem: GameSystem;
-  campaigns: any; // Campaign[];
+  campaigns: Campaign[]; // Campaign[];
 }
 
 /**
  * Renders out a card containing common links and table for campaigns
  * @param props.gameSystem The game system that the campaign card represents
  */
-export function CampaignCard(props: CampaignCardProps) {
+export function CampaignCard(props: CampaignCardProps): JSX.Element {
   const gameSystemAlias = props.gameSystem.alias || props.gameSystem._id;
 
   return (

@@ -10,7 +10,7 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
   ],
   rules: {
+    "no-case-declarations": 0,
     "no-constant-condition": 0,
-    "@typescript-eslint/no-inferrable-types": 0,
   }
 }

@@ -1,4 +1,4 @@
-import { Column, TableComponent } from "../../model/design/table";
+import { Column, TableComponent, TableComponentModification } from "../../model/design/table";
 
 interface TableBuilderOutput {
   columns: Column[];
@@ -30,7 +30,7 @@ export class TableBuilder {
    * @param header The header title
    * @param key The key of the data to print
    */
-  public addDataColumn(header: string, key: string, modification?: (value: unknown) => string): TableBuilder {
+  public addDataColumn(header: string, key: string, modification?: TableComponentModification): TableBuilder {
     const newColumn: Column = {header, key, modification};
     this.columns.push(newColumn);
 

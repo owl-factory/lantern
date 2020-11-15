@@ -19,7 +19,7 @@ export class RuleResolver extends CoreResolver {
    * @param _id The id or alias of the document to return
    */
   @Query(() => Rule, { nullable: true })
-  public rule(@Arg("_id") _id: string) {
+  public rule(@Arg("_id") _id: string): Promise<MongoQuery<Rule> | null> {
     return super.findByAlias(_id);
   }
 

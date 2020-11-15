@@ -1,10 +1,15 @@
 /* eslint-disable no-case-declarations */
 import React from "react";
 import { Dropdown } from "react-bootstrap";
-import { ContextMenuItemProps, ContextMenuLinkProps, ContextDropdownProps, ContextMenuGenericItem, ContextMenuLink, ContextMenuItem } from "../../../model/design/contextMenu";
+import { ContextMenuItemProps, ContextMenuLinkProps, ContextDropdownProps, ContextMenuGenericItem, ContextMenuLink, ContextMenuItem, ContextMenuContext } from "../../../model/design/contextMenu";
 import { useRouter } from "next/router";
 import { parseHref } from "../../../utilities/design/contextMenu";
 
+
+interface ContextDropdownMenuProps {
+  context: ContextMenuContext;
+  items: ContextMenuGenericItem[];
+}
 
 /**
  * Renders a single context dropdown item
@@ -52,7 +57,7 @@ function ContextDropdownLink(props: ContextMenuLinkProps) {
  * @param context The context of this current menu
  * @param keyIndex The index for this menu to use in a key
  */
-function renderContextMenuItem(item: ContextMenuGenericItem, context: any, keyIndex: number) {
+function renderContextMenuItem(item: ContextMenuGenericItem, context: ContextMenuContext, keyIndex: number) {
   const key = `context-menu-item-${keyIndex}`;
 
   switch(item.type) {
@@ -73,7 +78,7 @@ function renderContextMenuItem(item: ContextMenuGenericItem, context: any, keyIn
   }
 }
 
-export function ContextDropdownMenu(props: any): JSX.Element {
+export function ContextDropdownMenu(props: ContextDropdownMenuProps): JSX.Element {
   const menuItems: JSX.Element[] = [];
 
   let keyIndex = 0;

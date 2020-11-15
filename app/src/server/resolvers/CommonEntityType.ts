@@ -19,7 +19,7 @@ export class CommonEntityTypeResolver extends CoreResolver {
    * @param _id The id or alias of the document to return
    */
   @Query(() => CommonEntityType, { nullable: true })
-  public commonEntityType(@Arg("_id") _id: string) {
+  public commonEntityType(@Arg("_id") _id: string): Promise<MongoQuery<CommonEntityType> | null> {
     return super.findByAlias(_id);
   }
 

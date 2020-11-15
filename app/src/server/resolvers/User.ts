@@ -19,7 +19,7 @@ export class UserResolver extends CoreResolver {
    * @param _id The id or alias of the document to return
    */
   @Query(() => User, { nullable: true })
-  public user(@Arg("_id") _id: string) {
+  public user(@Arg("_id") _id: string): Promise<MongoQuery<User> | null> {
     return super.findByAlias(_id);
   }
 

@@ -1,9 +1,10 @@
 import { TableBuilder } from "../../../utilities/design/table";
 import Table from "../../design/tables/Table";
 import { PageState } from "../../design/Pagination";
+import { Entity } from "@reroll/model/dist/documents";
 
 export interface EntityTableProps {
-  entities: any; // entity model TODO
+  entities: Entity[]; // entity model TODO
   pageState: PageState;
 }
 
@@ -20,10 +21,10 @@ const tableBuilder = new TableBuilder()
  * @param props.entities An array of entities of to render into a table
  * @param props.pageState A page state containing page and perPage
  */
-export function EntityTable(props: EntityTableProps) {
+export function EntityTable(props: EntityTableProps): JSX.Element {
   return <Table 
     {...tableBuilder.renderConfig()} 
-    data={props.entities} 
+    data={props.entities as unknown as Record<string, unknown>[]} 
     startingIncrement={(props.pageState.page - 1) * props.pageState.perPage + 1}
   />
 }

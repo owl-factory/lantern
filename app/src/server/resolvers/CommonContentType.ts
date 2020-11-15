@@ -19,7 +19,7 @@ export class CommonContentTypeResolver extends CoreResolver {
    * @param _id The id or alias of the document to return
    */
   @Query(() => CommonContentType, { nullable: true })
-  public commonContentType(@Arg("_id") _id: string) {
+  public commonContentType(@Arg("_id") _id: string): Promise<MongoQuery<CommonContentType> | null> {
     return super.findByAlias(_id);
   }
 

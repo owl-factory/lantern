@@ -81,7 +81,7 @@ export function parseHref(href: string, keys: Record<string, string>, context: R
   }
 
   // Goes through each key from the href and pulls the correct value
-  hrefKeys.forEach((hrefKey: any) => {
+  hrefKeys.forEach((hrefKey: string) => {
     const cleanKey = hrefKey.slice(1, -1 );
     
     let value = "";

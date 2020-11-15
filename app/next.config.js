@@ -1,3 +1,1 @@
-module.exports = {
-    target: 'serverless'
-};
+export const target = 'serverless';

@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
-import { objectKeepFields } from "../../../utilities/tools";
-import React, { ReactNode } from "react";
+import React from "react";
 import { Form } from "react-bootstrap";
 import { useField } from "formik";
 import { FieldProps } from "../../../model/design/form";
+import { GenericDocumentType } from "@reroll/model/dist/documents";
 
 interface SelectProps extends FieldProps {
   // Select Properties
@@ -15,11 +15,11 @@ interface SelectProps extends FieldProps {
   size?: "sm" | "lg"; // The size of the select input
 
   // Custom Inputs
-  children?: ReactNode; // User-defined children, if one wants to be handled externally
+  children?: JSX.Element[]; // User-defined children, if one wants to be handled externally
   emptyText?: string; // Text to display if empty option is included
   includeEmpty?: boolean; // Include an empty selection
   labelKey?: string; // The key to use for label inputs
-  options?: Record<string, unknown>[]; // An array of structs containing the label and value to use
+  options?: (GenericDocumentType | Record<string, unknown>)[]; // An array of structs containing the label and value to use
   valueKey?: string; // The key of the value
 }
 
@@ -39,13 +39,15 @@ interface SelectProps extends FieldProps {
 export function Select(props: SelectProps): JSX.Element {
   const id = props.id || props.name;
 
-  const selectProps = objectKeepFields(props, ["disabled", "multiple", "name", "required", "size", "value"]);
   const [field] = useField(props);
 
   return (
     <Form.Control
       as="select"
-      {...selectProps}
+      disabled={props.disabled}
+      multiple={props.multiple}
+      name={props.name}
+      size={props.size}
       {...field}
     >
       {renderChildren(id, props)}
@@ -58,13 +60,13 @@ export function Select(props: SelectProps): JSX.Element {
  * @param id The id of the select calling this function
  * @param props The props argument of the select element
  */
-function renderChildren(id: string, props: SelectProps): JSX.Element {
+function renderChildren(id: string, props: SelectProps): JSX.Element[] {
   const options = props.options || [];
   const labelKey = props.labelKey || "label";
   const valueKey = props.valueKey || "value";
   const emptyText = props.emptyText || "-- Select One --";
 
-  let children: ReactNode[] = [];
+  let children: JSX.Element[] = [];
 
   if (props.includeEmpty !== false) {
     children.push(<option key={`${id}-1`} value="">{emptyText}</option>);
@@ -72,9 +74,9 @@ function renderChildren(id: string, props: SelectProps): JSX.Element {
 
   if (props.children === undefined) {
     let index = 0;
-    options.forEach((option: any) => {
+    options.forEach((option: Record<string, unknown>) => {
       children.push(
-        <option key={id + "_" + index++} value={option[valueKey]}>{option[labelKey]}</option> , 
+        <option key={id + "_" + index++} value={option[valueKey] as string}>{option[labelKey] as string}</option> , 
       );
     });
   } else {

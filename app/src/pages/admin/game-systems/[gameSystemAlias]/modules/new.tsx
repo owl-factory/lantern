@@ -6,12 +6,16 @@ import gql from "graphql-tag";
 import { client } from "../../../../../utilities/graphql/apiClient";
 import { useRouter } from "next/router";
 import ModuleForm from "../../../../../components/admin/modules/Form";
+import { GameSystem } from "@reroll/model/dist/documents";
+import { FetchError } from "node-fetch";
+import { GraphQLResponse } from "../../../../../types/graphql";
+import { CreateModuleInput } from "@reroll/model/dist/inputs";
 
 /**
  * Renders a new game system form
  * @param props.themes The themes to render within the form's theme dropdown 
  */
-export function NewModuleForm(props: any) {
+export function NewModuleForm(props: {gameSystem: GameSystem}): JSX.Element {
   const router = useRouter();
   return <ModuleForm 
     initialValues={{
@@ -21,16 +25,13 @@ export function NewModuleForm(props: any) {
       isPurchasable: false,
       cost: 0
     }}
-    onSubmit={(values: any) => {
+    onSubmit={(values: CreateModuleInput) => {
       const NewModuleMutation = gql`
       mutation {
         newModule (data: {
           gameSystemID: "${props.gameSystem._id}",
           name: "${values.name}",
-          alias: "${values.alias}",
-          description: "${values.description}",
-          isPurchasable: ${values.isPurchasable},
-          cost: ${(values.cost || 0) * 100}
+          alias: "${values.alias}"
         }) {
           _id,
           alias
@@ -38,12 +39,12 @@ export function NewModuleForm(props: any) {
       }
       `;
       client.mutate({mutation: NewModuleMutation})
-      .then((res: any, ) => {
+      .then((res: GraphQLResponse) => {
         const gameSystemAlias = router.query.gameSystemAlias;
         const key = res.data.newModule.alias || res.data.newModule._id;
         router.push(`/admin/game-systems/${gameSystemAlias}/modules/${key}`)
       })
-      .catch((error: any) => {
+      .catch((error: FetchError) => {
         // TODO - Better error handling
         console.log(error)
       });
@@ -51,11 +52,11 @@ export function NewModuleForm(props: any) {
   />;
 }
 
-export default function NewModule({ gameSystem }: any) {
+export default function NewModule({ gameSystem }: { gameSystem: GameSystem }): JSX.Element {
   return (
     <Page>
       <h1>New {gameSystem.name} Module</h1>
-      <Breadcrumbs skipLevels={1} titles={["Admin", "Game Systems", gameSystem.name, "New Module"]}/>
+      <Breadcrumbs skipLevels={1} titles={["Admin", "Game Systems", gameSystem.name || "", "New Module"]}/>
       <NewModuleForm gameSystem={gameSystem}/>
     </Page>
   )

@@ -19,7 +19,7 @@ export class ModuleResolver extends CoreResolver {
    * @param _id The id or alias of the document to return
    */
   @Query(() => Module, { nullable: true })
-  public module(@Arg("_id") _id: string) {
+  public module(@Arg("_id") _id: string): Promise<MongoQuery<Module> | null> {
     return super.findByAlias(_id);
   }
 

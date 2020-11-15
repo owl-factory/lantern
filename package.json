@@ -4,8 +4,7 @@
   "scripts": {
     "bootstrap": "lerna bootstrap",
     "build": "lerna run build",
-    "lint2": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "lint": "lerna run lint"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
 
   },
   "devDependencies": {

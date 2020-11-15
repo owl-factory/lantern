@@ -1,29 +1,16 @@
 import React from "react";
 import Page from "../../../../components/design/Page";
-import { Card, Button, Col, Row } from "react-bootstrap";
+import { Card, Button } from "react-bootstrap";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Breadcrumbs from "../../../../components/design/Breadcrumbs";
 import { NextPageContext } from "next";
 import gql from "graphql-tag"; 
 import { client } from "../../../../utilities/graphql/apiClient";
+import { CommonEntityType } from "@reroll/model/dist/documents";
 
-/**
- * Publishes a game system
- * @param _id The id of the gamesystem to publish
- */
-function publish(_id: string) {
-  const publishGameSystem = gql`mutation {
-    updateGameSystem(_id: "${_id}", data: {isPublished: true}) {
-      ok
-    }
-  }`;
-
-  client.mutate({mutation: publishGameSystem})
-  .then((res: any) => {
-    // TODO - need a way to refetch this!
-    console.log("Published!")
-  })
+interface CommonEntityTypeViewProps {
+  commonEntityType: CommonEntityType;
 }
 
 /**
@@ -33,7 +20,7 @@ function publish(_id: string) {
  * @param moduleCount The total count of modules that exist within this gamesystem
  * @param entityCount The total count of entity that exist within this gamesystem
  */
-export default function GameSystemView({commonEntityType}: any) {
+export default function CommonEntityTypeView({commonEntityType}: CommonEntityTypeViewProps): JSX.Element {
   const router = useRouter();
   const alias = router.query.alias;
   
@@ -43,7 +30,7 @@ export default function GameSystemView({commonEntityType}: any) {
       <Breadcrumbs skipLevels={1} titles={[
         "Admin",
         "Common Entity Type",
-        commonEntityType.name!
+        commonEntityType.name
       ]}/>
      
       <Card>
@@ -51,7 +38,7 @@ export default function GameSystemView({commonEntityType}: any) {
           <>Details</>
         </Card.Header>
         <Card.Body>
-          <b>Description:</b> {commonEntityType.description}<br/>
+          {/* <b>Description:</b> {commonEntityType.description}<br/> */}
           <b>Alias:</b> {commonEntityType.alias}<br/>
           <b>Created At:</b> {commonEntityType.createdAt}<br/>
           <b>Last Edited At:</b> {commonEntityType.updatedAt}
@@ -77,7 +64,7 @@ export default function GameSystemView({commonEntityType}: any) {
   );
 }
 
-GameSystemView.getInitialProps = async (ctx: NextPageContext) => {
+CommonEntityTypeView.getInitialProps = async (ctx: NextPageContext) => {
   const alias = ctx.query.alias;
 
   const commonEntityTypeQuery = gql`

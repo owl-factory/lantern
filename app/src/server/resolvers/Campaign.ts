@@ -19,7 +19,7 @@ export class CampaignResolver extends CoreResolver {
    * @param _id The id or alias of the document to return
    */
   @Query(() => Campaign, { nullable: true })
-  public campaign(@Arg("_id") _id: string) {
+  public campaign(@Arg("_id") _id: string): Promise<MongoQuery<Campaign> | null> {
     return super.findByAlias(_id);
   }
 

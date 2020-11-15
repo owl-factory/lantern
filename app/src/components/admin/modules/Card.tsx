@@ -14,7 +14,7 @@ interface ModuleCardProps {
  * @param props.gameSystem The game system of the modules
  * @param props.modules The array of modules to render into a table
  */
-export function ModuleCard(props: ModuleCardProps) {
+export function ModuleCard(props: ModuleCardProps): JSX.Element {
   const gameSystemAlias = props.gameSystem.alias || props.gameSystem._id;
 
   return (
@@ -33,7 +33,7 @@ export function ModuleCard(props: ModuleCardProps) {
         <ModuleTable
           gameSystem={props.gameSystem}
           modules={props.modules}
-          pageState={{page: 1, perPage: 10}}
+          pageState={{page: 1, perPage: 10, totalCount: 10}}
         />
       </Card.Body>
     </Card>

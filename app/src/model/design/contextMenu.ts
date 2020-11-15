@@ -1,8 +1,10 @@
 import { IconType } from "react-icons/lib";
 import { ReactNode } from "react";
 
+export type ContextMenuContext = any;
+export type ContextMenuKeys = any;
 // The action taken when a context menu item is clicked
-export type ContextMenuActionType = (context: any) => void;
+export type ContextMenuActionType = (context: ContextMenuContext) => void;
 
 /**
  * A generic type describing any type of item usable in the ContextMenu component
@@ -13,7 +15,7 @@ export interface ContextMenuGenericItem {
   icon?: IconType; // The icon to render in the context menu item
   action?: ContextMenuActionType; // The action to take on click
   href?: string; // An unkeyed href for the <Link> href
-  keys?: any; //
+  keys?: ContextMenuKeys; //
 }
 
 /**
@@ -24,7 +26,7 @@ export interface ContextMenuLink {
   title: string;
   icon: IconType;
   href: string;
-  keys: any;
+  keys: ContextMenuKeys;
 }
 
 /**
@@ -42,10 +44,10 @@ export type DropType = "up" | "down" | "left" | "right";
 
 // Props for the ContextMenu component
 export interface ContextDropdownProps {
-  as?: any;
+  as?: string;
   alignRight?: boolean; 
   children: ReactNode;
-  context: any;
+  context: ContextMenuContext;
   drop?: DropType;
   items: ContextMenuGenericItem[];
 }
@@ -55,7 +57,7 @@ export interface ContextDropdownProps {
  */
 export interface ContextButtonProps {
   buttonConfig: ButtonConfig;
-  context: any;
+  context: ContextMenuContext;
   items: ContextMenuGenericItem[]
 }
 
@@ -63,17 +65,17 @@ export interface ContextButtonProps {
 export interface ContextMenuItemProps {
   action: ContextMenuActionType; // The action to run when clicked. May be a link or another action. Passed the context
   buttonConfig?: ButtonConfig;
-  context: any; // Any specific context for this contextmenu, such as an object's information from a table
+  context: ContextMenuContext; // Any specific context for this contextmenu, such as an object's information from a table
   icon: IconType; // The icon to display on the right side of the context menu
   title: string; // The title of the item
 }
 
 export interface ContextMenuLinkProps {
   buttonConfig?: ButtonConfig;
-  context: any; // Any specific context for this contextmenu, such as an object's information from a table
+  context: ContextMenuContext; // Any specific context for this contextmenu, such as an object's information from a table
   href: string; 
   icon: IconType; // The icon to display on the right side of the context menu
-  keys: any;
+  keys: ContextMenuKeys;
   title: string; // The title of the item
 }
 
