@@ -48,7 +48,7 @@ const tableBuilder = new TableBuilder()
 export default function ModuleTable(props: ModuleTableProps): JSX.Element {
   return <Table 
     {...tableBuilder.renderConfig()} 
-    data={props.modules as unknown as Record<string, unknown>[]}
+    data={props.modules}
     globalData={props.gameSystem as Record<string, unknown>}
     startingIncrement={(props.pageState.page - 1) * props.pageState.perPage + 1}
   />

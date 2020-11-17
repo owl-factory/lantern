@@ -10,7 +10,7 @@ interface PaginationProps {
 export interface PageState {
   page: number; // The current page
   perPage: number; // The number of items per page
-  totalCount: number; // The total number of items
+  totalCount?: number; // The total number of items
 }
 
 interface PaginationCellProps {
@@ -44,7 +44,7 @@ function PaginationCell(props: PaginationCellProps) {
  */
 function Pagination(props: PaginationProps): JSX.Element {
   const perPage = (props.pageState.perPage >= 1) ? props.pageState.perPage : 1;
-  const maxPage = Math.ceil(props.pageState.totalCount / perPage);
+  const maxPage = Math.ceil((props.pageState.totalCount || perPage) / perPage);
 
   /**
    * Sets the page and runs associated actions

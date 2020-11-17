@@ -116,7 +116,6 @@ function TableRow(props: TableRowProps) {
  * @param props see TableProps
  */
 export default function Table(props: TableProps): JSX.Element {
-  console.log(props.rowAction)
   return (
     <BSTable>
       <TableHeader columns={props.columns}/>

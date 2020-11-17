@@ -8,6 +8,7 @@ app/.next/
 app/node_modules/
 app/out_functions/
 app/public/
+app/next.config.js
 
 model/dist/
 model/node_modules/

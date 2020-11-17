@@ -44,7 +44,7 @@ export type DropType = "up" | "down" | "left" | "right";
 
 // Props for the ContextMenu component
 export interface ContextDropdownProps {
-  as?: string;
+  as?: any;
   alignRight?: boolean; 
   children: ReactNode;
   context: ContextMenuContext;

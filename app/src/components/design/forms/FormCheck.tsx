@@ -27,10 +27,13 @@ interface FormCheckProps extends CoreFormCheckProps {
 export function FormCheck(props: FormCheckProps): JSX.Element {
   const id = props.id || props.name;
   
-  const checkboxProps = objectKeepFields(
-    props, 
-    ["checked", "disabled", "name", "type", "value"]
-  );
+  const checkboxProps = {
+    disabled: props.disabled,
+    name: props.name,
+    type: props.type,
+    value: props.value,
+  }
+
   const [field] = useField({ ...checkboxProps, type: props.type });
   
   return (
@@ -42,6 +45,10 @@ export function FormCheck(props: FormCheckProps): JSX.Element {
     >
       <Form.Check.Input
         id={id}
+        disabled={props.disabled}
+        name={props.name}
+        type={props.type}
+        value={props.value}
         {...checkboxProps}
         {...field}
       />
