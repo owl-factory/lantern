@@ -13,8 +13,11 @@ import { ContentTypeResolver } from "../../server/resolvers/ContentTypeResolver"
 
 global.fetch = require("cross-fetch");
 
+let connectionString:any = process.env.MONGO_CONNECTION_STRING;
+if ("__MONGO_URI__" in global) { connectionString = global.__MONGO_URI__; }
+
 connect(
-  process.env.MONGO_CONNECTION_STRING!, 
+  connectionString!, 
   {useNewUrlParser: true, useUnifiedTopology: true}
 );
 
