@@ -29,7 +29,7 @@ export function CampaignCard(props: CampaignCardProps): JSX.Element {
       </Card.Header>
 
       <Card.Body>
-        <CampaignTable campaigns={props.campaigns} pageState={{page: 1, perPage: 10}}/>
+        <CampaignTable campaigns={props.campaigns} pageState={{page: 1, perPage: 10, totalCount: 10}}/>
       </Card.Body>
     </Card>
   );

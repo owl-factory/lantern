@@ -3,9 +3,9 @@ import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/models/graphQ
 import { ModuleFilters } from "@reroll/model/dist/filters";
 import { CreateModuleInput, UpdateModuleInput } from "@reroll/model/dist/inputs";
 import { Options } from "@reroll/model/dist/inputs/Options";
-import { Query as MongoQuery } from "mongoose";
 import { Arg, Args, Authorized, Int, Mutation, Query, Resolver } from "type-graphql";
 import { CoreResolver } from "./CoreResolver";
+import { FindOneResponse, FindManyResponse, FindCountResponse, CreateOneResponse, DeleteOneResponse, UpdateOneResponse } from "../../types/resolvers";
 
 /**
  * Resolves module queries
@@ -19,8 +19,8 @@ export class ModuleResolver extends CoreResolver {
    * @param _id The id or alias of the document to return
    */
   @Query(() => Module, { nullable: true })
-  public module(@Arg("_id") _id: string): Promise<MongoQuery<Module> | null> {
-    return super.findByAlias(_id);
+  public module(@Arg("_id") _id: string): FindOneResponse<Module> {
+    return super.findByAlias(_id) as FindOneResponse<Module>;
   }
 
   /**
@@ -30,8 +30,8 @@ export class ModuleResolver extends CoreResolver {
   public modules(
     @Arg("filters", {nullable: true}) filters?: ModuleFilters,
     @Args() options?: Options
-  ): MongoQuery<Module[]> {
-    return super.findMany(filters, options);
+  ): FindManyResponse<Module> {
+    return super.findMany(filters, options) as FindManyResponse<Module>;
   }
 
   /**
@@ -39,7 +39,7 @@ export class ModuleResolver extends CoreResolver {
    * @param filters The filter object to count documents by. Identical to other filters
    */
   @Query(() => Int)
-  public moduleCount(@Arg("filters", {nullable: true}) filters?: ModuleFilters): MongoQuery<number> {
+  public moduleCount(@Arg("filters", {nullable: true}) filters?: ModuleFilters): FindCountResponse {
     return super.findCount(filters);
   }
 
@@ -49,8 +49,8 @@ export class ModuleResolver extends CoreResolver {
    */
   // @Authorized()
   @Mutation(() => Module)
-  public async createModule(@Arg("data") data: CreateModuleInput): Promise<Module> {
-    return super.createOne(data);
+  public createModule(@Arg("data") data: CreateModuleInput): Promise<CreateOneResponse<Module>> {
+    return super.createOne(data) as Promise<CreateOneResponse<Module>>;
   }
 
   /**
@@ -63,7 +63,7 @@ export class ModuleResolver extends CoreResolver {
   public updateModule(
     @Arg("_id") _id: string,
     @Arg("data") data: UpdateModuleInput
-  ): MongoQuery<UpdateResponse> {
+  ): Promise<UpdateOneResponse> {
     return super.updateOne(_id, data);
   }
 
@@ -73,7 +73,7 @@ export class ModuleResolver extends CoreResolver {
    */
   @Authorized()
   @Mutation(() => DeleteResponse)
-  public deleteModule(@Arg("_id") _id: string): MongoQuery<DeleteResponse> {
+  public deleteModule(@Arg("_id") _id: string): Promise<DeleteOneResponse> {
     return super.deleteOne(_id);
   }
 }

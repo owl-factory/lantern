@@ -86,7 +86,7 @@ export default function ModuleView({
               {/* <b>Description:</b> {module.description}<br/> */}
               <b>Alias:</b> {module.alias}<br/>
               <b>Is Default Module:</b> 
-              {gameSystem.defaultModuleID === module._id ? " True" : " False"}<br/>
+              {/* {gameSystem.defaultModuleID === module._id ? " True" : " False"}<br/> */}
               <b>Created At:</b> {module.createdAt}<br/>
               <b>Last Edited At:</b> {module.updatedAt}
             </Card.Body>

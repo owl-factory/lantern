@@ -1,7 +1,6 @@
 import { useField } from "formik";
 import React from "react";
 import { Form } from "react-bootstrap";
-import { objectKeepFields } from "../../../utilities/tools";
 import { CoreFormCheckProps } from "../../../model/design/form";
 
 /**
@@ -21,17 +20,14 @@ import { CoreFormCheckProps } from "../../../model/design/form";
 export function Switch(props: CoreFormCheckProps): JSX.Element {
   const id = props.id || props.name;
   
-  const switchProps = objectKeepFields(
-    props, 
-    ["disabled", "label", "name"]
-  );
-  const [field] = useField({ ...switchProps, type: "check" });
+  const [field] = useField({name: props.name});
 
   return (
     <Form.Check 
       type="switch"
+      disabled={props.disabled || false}
+      label={props.label}
       id={id}
-      {...switchProps}
       {...field}
     />
   );

@@ -46,7 +46,6 @@ export function Select(props: SelectProps): JSX.Element {
       as="select"
       disabled={props.disabled}
       multiple={props.multiple}
-      name={props.name}
       size={props.size}
       {...field}
     >
@@ -74,9 +73,15 @@ function renderChildren(id: string, props: SelectProps): JSX.Element[] {
 
   if (props.children === undefined) {
     let index = 0;
-    options.forEach((option: Record<string, unknown>) => {
+    options.forEach((option: GenericDocumentType | Record<string, unknown>) => {
+      const typedOption = option as Record<string, unknown>;
       children.push(
-        <option key={id + "_" + index++} value={option[valueKey] as string}>{option[labelKey] as string}</option> , 
+        <option
+          key={id + "_" + index++}
+          value={typedOption[valueKey] as string}
+        >
+          {typedOption[labelKey] as string}
+        </option> , 
       );
     });
   } else {

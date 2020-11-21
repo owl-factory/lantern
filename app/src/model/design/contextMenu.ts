@@ -1,8 +1,8 @@
 import { IconType } from "react-icons/lib";
 import { ReactNode } from "react";
 
-export type ContextMenuContext = any;
-export type ContextMenuKeys = any;
+export type ContextMenuContext = any; // TODO - get better types for these
+export type ContextMenuKeys = any; // TODO - get better types for these
 // The action taken when a context menu item is clicked
 export type ContextMenuActionType = (context: ContextMenuContext) => void;
 
@@ -44,7 +44,7 @@ export type DropType = "up" | "down" | "left" | "right";
 
 // Props for the ContextMenu component
 export interface ContextDropdownProps {
-  as?: any;
+  as?: any; // This is a pain in the butt type. TODO
   alignRight?: boolean; 
   children: ReactNode;
   context: ContextMenuContext;

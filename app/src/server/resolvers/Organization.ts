@@ -3,9 +3,9 @@ import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/models/graphQ
 import { OrganizationFilters } from "@reroll/model/dist/filters";
 import { CreateOrganizationInput, UpdateOrganizationInput } from "@reroll/model/dist/inputs";
 import { Options } from "@reroll/model/dist/inputs/Options";
-import { Query as MongoQuery } from "mongoose";
 import { Arg, Args, Authorized, Int, Mutation, Query, Resolver } from "type-graphql";
 import { CoreResolver } from "./CoreResolver";
+import { FindOneResponse, FindManyResponse, FindCountResponse, CreateOneResponse, UpdateOneResponse, DeleteOneResponse } from "../../types/resolvers";
 
 /**
  * Resolves organization queries
@@ -19,8 +19,8 @@ export class OrganizationResolver extends CoreResolver {
    * @param _id The id or alias of the document to return
    */
   @Query(() => Organization, { nullable: true })
-  public organization(@Arg("_id") _id: string): Promise<MongoQuery<Organization> | null> {
-    return super.findByAlias(_id);
+  public organization(@Arg("_id") _id: string): FindOneResponse<Organization> {
+    return super.findByAlias(_id) as FindOneResponse<Organization>;
   }
 
   /**
@@ -30,8 +30,8 @@ export class OrganizationResolver extends CoreResolver {
   public organizations(
     @Arg("filters", {nullable: true}) filters?: OrganizationFilters,
     @Args() options?: Options
-  ): MongoQuery<Organization[]> {
-    return super.findMany(filters, options);
+  ): FindManyResponse<Organization> {
+    return super.findMany(filters, options) as FindManyResponse<Organization>;
   }
 
   /**
@@ -39,7 +39,7 @@ export class OrganizationResolver extends CoreResolver {
    * @param filters The filter object to count documents by. Identical to other filters
    */
   @Query(() => Int)
-  public organizationCount(@Arg("filters", {nullable: true}) filters?: OrganizationFilters): MongoQuery<number> {
+  public organizationCount(@Arg("filters", {nullable: true}) filters?: OrganizationFilters): FindCountResponse {
     return super.findCount(filters);
   }
 
@@ -49,8 +49,8 @@ export class OrganizationResolver extends CoreResolver {
    */
   @Authorized()
   @Mutation(() => Organization)
-  public createOrganization(@Arg("data") data: CreateOrganizationInput): MongoQuery<Organization> {
-    return super.createOne(data);
+  public createOrganization(@Arg("data") data: CreateOrganizationInput): Promise<CreateOneResponse<Organization>> {
+    return super.createOne(data) as Promise<CreateOneResponse<Organization>>;
   }
 
   /**
@@ -63,7 +63,7 @@ export class OrganizationResolver extends CoreResolver {
   public updateOrganization(
     @Arg("_id") _id: string,
     @Arg("data") data: UpdateOrganizationInput
-  ): MongoQuery<UpdateResponse> {
+  ): Promise<UpdateOneResponse> {
     return super.updateOne(_id, data);
   }
 
@@ -73,7 +73,7 @@ export class OrganizationResolver extends CoreResolver {
    */
   @Authorized()
   @Mutation(() => DeleteResponse)
-  public deleteOrganization(@Arg("_id") _id: string): MongoQuery<DeleteResponse> {
+  public deleteOrganization(@Arg("_id") _id: string): Promise<DeleteOneResponse> {
     return super.deleteOne(_id);
   }
 }

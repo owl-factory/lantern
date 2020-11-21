@@ -3,9 +3,9 @@ import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/models/graphQ
 import { UserFilters } from "@reroll/model/dist/filters";
 import { CreateUserInput, UpdateUserInput } from "@reroll/model/dist/inputs";
 import { Options } from "@reroll/model/dist/inputs/Options";
-import { Query as MongoQuery } from "mongoose";
 import { Arg, Args, Authorized, Int, Mutation, Query, Resolver } from "type-graphql";
 import { CoreResolver } from "./CoreResolver";
+import { FindOneResponse, FindManyResponse, FindCountResponse, CreateOneResponse, UpdateOneResponse, DeleteOneResponse } from "../../types/resolvers";
 
 /**
  * Resolves user queries
@@ -19,8 +19,8 @@ export class UserResolver extends CoreResolver {
    * @param _id The id or alias of the document to return
    */
   @Query(() => User, { nullable: true })
-  public user(@Arg("_id") _id: string): Promise<MongoQuery<User> | null> {
-    return super.findByAlias(_id);
+  public user(@Arg("_id") _id: string): FindOneResponse<User> {
+    return super.findByAlias(_id) as FindOneResponse<User>;
   }
 
   /**
@@ -30,8 +30,8 @@ export class UserResolver extends CoreResolver {
   public users(
     @Arg("filters", {nullable: true}) filters?: UserFilters,
     @Args() options?: Options
-  ): MongoQuery<User[]> {
-    return super.findMany(filters, options);
+  ): FindManyResponse<User> {
+    return super.findMany(filters, options) as FindManyResponse<User>;
   }
 
   /**
@@ -39,7 +39,7 @@ export class UserResolver extends CoreResolver {
    * @param filters The filter object to count documents by. Identical to other filters
    */
   @Query(() => Int)
-  public userCount(@Arg("filters", {nullable: true}) filters?: UserFilters): MongoQuery<number> {
+  public userCount(@Arg("filters", {nullable: true}) filters?: UserFilters): FindCountResponse {
     return super.findCount(filters);
   }
 
@@ -49,8 +49,8 @@ export class UserResolver extends CoreResolver {
    */
   @Authorized()
   @Mutation(() => User)
-  public createUser(@Arg("data") data: CreateUserInput): MongoQuery<User> {
-    return super.createOne(data);
+  public createUser(@Arg("data") data: CreateUserInput): Promise<CreateOneResponse<User>> {
+    return super.createOne(data) as Promise<CreateOneResponse<User>>;
   }
 
   /**
@@ -63,7 +63,7 @@ export class UserResolver extends CoreResolver {
   public updateUser(
     @Arg("_id") _id: string,
     @Arg("data") data: UpdateUserInput
-  ): MongoQuery<UpdateResponse> {
+  ): Promise<UpdateOneResponse> {
     return super.updateOne(_id, data);
   }
 
@@ -73,7 +73,7 @@ export class UserResolver extends CoreResolver {
    */
   @Authorized()
   @Mutation(() => DeleteResponse)
-  public deleteUser(@Arg("_id") _id: string): MongoQuery<DeleteResponse> {
+  public deleteUser(@Arg("_id") _id: string): Promise<DeleteOneResponse> {
     return super.deleteOne(_id);
   }
 }

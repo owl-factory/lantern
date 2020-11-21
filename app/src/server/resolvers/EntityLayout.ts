@@ -3,9 +3,9 @@ import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/models/graphQ
 import { EntityLayoutFilters } from "@reroll/model/dist/filters";
 import { CreateEntityLayoutInput, UpdateEntityLayoutInput } from "@reroll/model/dist/inputs";
 import { Options } from "@reroll/model/dist/inputs/Options";
-import { Query as MongoQuery } from "mongoose";
 import { Arg, Args, Authorized, Int, Mutation, Query, Resolver } from "type-graphql";
 import { CoreResolver } from "./CoreResolver";
+import { FindOneResponse, FindManyResponse, CreateOneResponse, UpdateOneResponse, DeleteOneResponse, FindCountResponse } from "../../types/resolvers";
 
 /**
  * Resolves entity layout queries
@@ -19,8 +19,8 @@ export class EntityLayoutResolver extends CoreResolver {
    * @param _id The id or alias of the document to return
    */
   @Query(() => EntityLayout, { nullable: true })
-  public entityLayout(@Arg("_id") _id: string): Promise<MongoQuery<EntityLayout> | null> {
-    return super.findByAlias(_id);
+  public entityLayout(@Arg("_id") _id: string): FindOneResponse<EntityLayout> {
+    return super.findByAlias(_id) as FindOneResponse<EntityLayout>;
   }
 
   /**
@@ -30,8 +30,8 @@ export class EntityLayoutResolver extends CoreResolver {
   public entityLayouts(
     @Arg("filters", {nullable: true}) filters?: EntityLayoutFilters,
     @Args() options?: Options
-  ): MongoQuery<EntityLayout[]> {
-    return super.findMany(filters, options);
+  ): FindManyResponse<EntityLayout> {
+    return super.findMany(filters, options) as FindManyResponse<EntityLayout>;
   }
 
   /**
@@ -39,7 +39,7 @@ export class EntityLayoutResolver extends CoreResolver {
    * @param filters The filter object to count documents by. Identical to other filters
    */
   @Query(() => Int)
-  public entityLayoutCount(@Arg("filters", {nullable: true}) filters?: EntityLayoutFilters): MongoQuery<number> {
+  public entityLayoutCount(@Arg("filters", {nullable: true}) filters?: EntityLayoutFilters): FindCountResponse {
     return super.findCount(filters);
   }
 
@@ -49,8 +49,8 @@ export class EntityLayoutResolver extends CoreResolver {
    */
   @Authorized()
   @Mutation(() => EntityLayout)
-  public createEntityLayout(@Arg("data") data: CreateEntityLayoutInput): MongoQuery<EntityLayout> {
-    return super.createOne(data);
+  public createEntityLayout(@Arg("data") data: CreateEntityLayoutInput): Promise<CreateOneResponse<EntityLayout>> {
+    return super.createOne(data) as Promise<CreateOneResponse<EntityLayout>>;
   }
 
   /**
@@ -63,7 +63,7 @@ export class EntityLayoutResolver extends CoreResolver {
   public updateEntityLayout(
     @Arg("_id") _id: string,
     @Arg("data") data: UpdateEntityLayoutInput
-  ): MongoQuery<UpdateResponse> {
+  ): Promise<UpdateOneResponse> {
     return super.updateOne(_id, data);
   }
 
@@ -73,7 +73,7 @@ export class EntityLayoutResolver extends CoreResolver {
    */
   @Authorized()
   @Mutation(() => DeleteResponse)
-  public deleteEntityLayout(@Arg("_id") _id: string): MongoQuery<DeleteResponse> {
+  public deleteEntityLayout(@Arg("_id") _id: string): Promise<DeleteOneResponse> {
     return super.deleteOne(_id);
   }
 }

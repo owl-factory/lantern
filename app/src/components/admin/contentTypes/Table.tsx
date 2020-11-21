@@ -6,6 +6,7 @@ import { GameSystem } from "@reroll/model/dist/documents/GameSystem";
 import ContextMenu from "../../design/contextMenus/ContextMenu";
 import { MdPageview, MdInfo, MdBuild } from "react-icons/md";
 import { ContentType } from "@reroll/model/dist/documents/ContentType";
+import { TableComponentProps } from "../../../model/design/table";
 
 export interface ContentTypeTableProps {
   contentTypes: ContentType[];
@@ -22,24 +23,21 @@ const contentTypeActions = new ContextMenuBuilder()
   .addLink("Edit Card Layout", MdBuild, "/admin/game-systems/[gameSystemAlias]/content-types/[contentTypeAlias]/card-layout")
   .addLink("Edit Search Layout", MdBuild, "/admin/game-systems/[gameSystemAlias]/content-types/[contentTypeAlias]/search-layout")
 
-interface ContentTypeActionsProps {
-  data: ContentType;
-  globalData: GameSystem;
-}
-
 /**
  * Renders the actions for the game systems page
  * @param props A game system object
  */
-function ContentTypeActions(props: ContentTypeActionsProps) {
+function ContentTypeActions({ data, globalData }: TableComponentProps) {
   // View, Details, Edit, Modules
+
+  const typedGlobalData = globalData as Record<string, unknown>;
 
   return (
     <ContextMenu 
       context={{
-        name: props.data.name,
-        contentTypeAlias: props.data.alias || props.data._id,
-        gameSystemAlias: props.globalData.alias || props.globalData._id
+        name: data.name,
+        contentTypeAlias: data.alias || data._id,
+        gameSystemAlias: typedGlobalData.alias || typedGlobalData._id
       }} 
       {...contentTypeActions.renderConfig()}
     />

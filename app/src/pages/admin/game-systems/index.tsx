@@ -12,13 +12,7 @@ import { client } from "../../../utilities/graphql/apiClient";
 import gql from "graphql-tag";
 import Pagination, { PageState } from "../../../components/design/Pagination";
 import ContextMenu from "../../../components/design/contextMenus/ContextMenu";
-
-const initialPerPage = 10;
-const gameSystemActions = new ContextMenuBuilder()
-  .addLink("View", MdPageview, "/game-systems/[alias]")
-  .addLink("Details", MdInfo, "/admin/game-systems/[alias]")
-  .addLink("Edit", MdBuild, "/admin/game-systems/[alias]/edit")
-  .addItem("Delete", MdBlock, (context: GameSystem) => (confirm(`Are you sure you want to delete ${context.name}?`)))
+import { TableComponentProps } from "../../../model/design/table";
 
 /**
  * @param gameSystems A collection of game system objects
@@ -27,6 +21,13 @@ interface GameSystemsProps {
   gameSystems: GameSystem[];
   gameSystemCount: number;
 }
+
+const initialPerPage = 10;
+const gameSystemActions = new ContextMenuBuilder()
+  .addLink("View", MdPageview, "/game-systems/[alias]")
+  .addLink("Details", MdInfo, "/admin/game-systems/[alias]")
+  .addLink("Edit", MdBuild, "/admin/game-systems/[alias]/edit")
+  .addItem("Delete", MdBlock, (context: GameSystem) => (confirm(`Are you sure you want to delete ${context.name}?`)))
 
 const tableBuilder = new TableBuilder()
   .addIncrementColumn("")
@@ -39,12 +40,10 @@ const tableBuilder = new TableBuilder()
  * Renders the actions for the game systems page
  * @param props A game system object
  */
-function GameSystemActions(props: GameSystem) {
-  // View, Details, Edit, Modules
-
+function GameSystemActions({ data }: TableComponentProps) {
   return (
     <ContextMenu 
-      context={{name: props.name, alias: props.alias || props._id}} 
+      context={{name: data.name, alias: data.alias || data._id}} 
       {...gameSystemActions.renderConfig()}
     />
   );

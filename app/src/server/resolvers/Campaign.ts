@@ -3,9 +3,9 @@ import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/models/graphQ
 import { CampaignFilters } from "@reroll/model/dist/filters";
 import { CreateCampaignInput, UpdateCampaignInput } from "@reroll/model/dist/inputs";
 import { Options } from "@reroll/model/dist/inputs/Options";
-import { Query as MongoQuery } from "mongoose";
 import { Arg, Args, Authorized, Int, Mutation, Query, Resolver } from "type-graphql";
 import { CoreResolver } from "./CoreResolver";
+import { FindOneResponse, FindManyResponse, FindCountResponse, CreateOneResponse, UpdateOneResponse, DeleteOneResponse } from "../../types/resolvers";
 
 /**
  * Resolves campaign queries
@@ -19,8 +19,8 @@ export class CampaignResolver extends CoreResolver {
    * @param _id The id or alias of the document to return
    */
   @Query(() => Campaign, { nullable: true })
-  public campaign(@Arg("_id") _id: string): Promise<MongoQuery<Campaign> | null> {
-    return super.findByAlias(_id);
+  public campaign(@Arg("_id") _id: string): FindOneResponse<Campaign> {
+    return super.findByAlias(_id) as FindOneResponse<Campaign>;
   }
 
   /**
@@ -30,8 +30,8 @@ export class CampaignResolver extends CoreResolver {
   public campaigns(
     @Arg("filters", {nullable: true}) filters?: CampaignFilters,
     @Args() options?: Options
-  ): MongoQuery<Campaign[]> {
-    return super.findMany(filters, options);
+  ): FindManyResponse<Campaign> {
+    return super.findMany(filters, options) as FindManyResponse<Campaign>;
   }
 
   /**
@@ -39,7 +39,7 @@ export class CampaignResolver extends CoreResolver {
    * @param filters The filter object to count documents by. Identical to other filters
    */
   @Query(() => Int)
-  public campaignCount(@Arg("filters", {nullable: true}) filters?: CampaignFilters): MongoQuery<number> {
+  public campaignCount(@Arg("filters", {nullable: true}) filters?: CampaignFilters): FindCountResponse {
     return super.findCount(filters);
   }
 
@@ -49,8 +49,8 @@ export class CampaignResolver extends CoreResolver {
    */
   @Authorized()
   @Mutation(() => Campaign)
-  public createCampaign(@Arg("data") data: CreateCampaignInput): MongoQuery<Campaign> {
-    return super.createOne(data);
+  public createCampaign(@Arg("data") data: CreateCampaignInput): Promise<CreateOneResponse<Campaign>> {
+    return super.createOne(data) as Promise<CreateOneResponse<Campaign>>;
   }
 
   /**
@@ -63,7 +63,7 @@ export class CampaignResolver extends CoreResolver {
   public updateCampaign(
     @Arg("_id") _id: string,
     @Arg("data") data: UpdateCampaignInput
-  ): MongoQuery<UpdateResponse> {
+  ): Promise<UpdateOneResponse> {
     return super.updateOne(_id, data);
   }
 
@@ -73,7 +73,7 @@ export class CampaignResolver extends CoreResolver {
    */
   @Authorized()
   @Mutation(() => DeleteResponse)
-  public deleteCampaign(@Arg("_id") _id: string): MongoQuery<DeleteResponse> {
+  public deleteCampaign(@Arg("_id") _id: string): Promise<DeleteOneResponse> {
     return super.deleteOne(_id);
   }
 }

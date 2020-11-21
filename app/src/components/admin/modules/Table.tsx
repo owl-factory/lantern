@@ -6,6 +6,7 @@ import { MdPageview, MdInfo, MdBuild } from "react-icons/md";
 import ContextMenu from "../../design/contextMenus/ContextMenu";
 import { GameSystem, Module } from "@reroll/model/dist/documents";
 import { PageState } from "../../design/Pagination";
+import { TableComponentProps } from "../../../model/design/table";
 
 interface ModuleTableProps {
   gameSystem: GameSystem;
@@ -22,14 +23,15 @@ const moduleActions = new ContextMenuBuilder()
  * Renders the actions for the game systems page
  * @param props A game system object
  */
-function ModuleActions(props: {data: Module, globalData: GameSystem}) {
+function ModuleActions({ data, globalData }: TableComponentProps) {
+  const typedGlobalData = globalData as Record<string, unknown>;
 
   return (
     <ContextMenu 
       context={{
-        name: props.data.name,
-        moduleAlias: props.data.alias || props.data._id,
-        gameSystemAlias: props.globalData.alias || props.globalData._id
+        name: data.name,
+        moduleAlias: data.alias || data._id,
+        gameSystemAlias: typedGlobalData.alias || typedGlobalData._id
       }} 
       {...moduleActions.renderConfig()}
     />

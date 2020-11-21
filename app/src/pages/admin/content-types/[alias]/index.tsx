@@ -35,7 +35,7 @@ export default function CommonContentTypeView({commonContentType}: {commonConten
           <>Details</>
         </Card.Header>
         <Card.Body>
-          <b>Description:</b> {commonContentType.description}<br/>
+          {/* <b>Description:</b> {commonContentType.description}<br/> */}
           <b>Alias:</b> {commonContentType.alias}<br/>
           <b>Created At:</b> {commonContentType.createdAt}<br/>
           <b>Last Edited At:</b> {commonContentType.updatedAt}

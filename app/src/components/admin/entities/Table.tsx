@@ -24,7 +24,7 @@ const tableBuilder = new TableBuilder()
 export function EntityTable(props: EntityTableProps): JSX.Element {
   return <Table 
     {...tableBuilder.renderConfig()} 
-    data={props.entities as unknown as Record<string, unknown>[]} 
+    data={props.entities} 
     startingIncrement={(props.pageState.page - 1) * props.pageState.perPage + 1}
   />
 }

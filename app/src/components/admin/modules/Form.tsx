@@ -4,7 +4,7 @@ import { Button, Col, Form, Row } from "react-bootstrap";
 import * as Yup from "yup";
 import { Checkbox, Error, Input, TextArea } from "../../design/forms/Forms";
 import { FormixFormProps } from "../../../model/design/form";
-import { Module } from "@reroll/model/dist/documents";
+import { CreateModuleInput, UpdateModuleInput } from "@reroll/model/dist/inputs";
 
 /**
  * Renders the game system form with functionality for new and existing game systems
@@ -12,7 +12,7 @@ import { Module } from "@reroll/model/dist/documents";
  * @param onSubmit The action to run on submit
  * @param themes An array of themes for a selection
  */
-export default function ModuleForm(props: FormixFormProps<Module>):JSX.Element {
+export default function ModuleForm(props: FormixFormProps<CreateModuleInput | UpdateModuleInput>):JSX.Element {
 
   return (
     <Formik 

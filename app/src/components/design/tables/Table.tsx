@@ -1,6 +1,6 @@
 import React from "react";
 import { Table as BSTable } from "react-bootstrap"
-import { Column } from "../../../model/design/table";
+import { Column, TableDataType } from "../../../model/design/table";
 
 type RowAction = (index: number, data: TableDataType, globalData?: TableDataType) => void; 
 
@@ -86,16 +86,17 @@ function TableRow(props: TableRowProps) {
   // This might break some stuff. We need to test it because otherwise we have 
   // issues with "this might not be defined"
   onClick = () => (rowAction(props.increment, props.data, props.globalData));
+  const typedData = props.data as Record<string, unknown>;
 
   props.columns.forEach((column: Column) => {
     if (column.key !== undefined) {
-      content = props.data[column.key] as (string | number | JSX.Element | undefined);
+      content = typedData[column.key] as (string | number | JSX.Element | undefined);
       if (column.modification) {
-        content = column.modification(props.data[column.key] as (string | boolean));
+        content = column.modification(typedData[column.key] as (string | boolean));
       }
 
     } else if (column.component !== undefined) {
-      content = column.component( { data: props.data, globalData: props.globalData} );
+      content = column.component( { data: props.data as Record<string, unknown>, globalData: props.globalData as Record<string, unknown>} );
 
     } else if (column.increment === true) {
       content = props.increment;

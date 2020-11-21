@@ -20,10 +20,7 @@ export function NewModuleForm(props: {gameSystem: GameSystem}): JSX.Element {
   return <ModuleForm 
     initialValues={{
       name: "",
-      alias: "",
-      description: "",
-      isPurchasable: false,
-      cost: 0
+      alias: ""
     }}
     onSubmit={(values: CreateModuleInput) => {
       const NewModuleMutation = gql`

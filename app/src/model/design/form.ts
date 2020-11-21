@@ -49,7 +49,7 @@ export interface CoreInputProps extends FieldProps {
 export interface CoreFormCheckProps extends FieldProps {
   "aria-label"?: string; // The usability label
   children?: ReactNode;
-  disabled?: string;
+  disabled?: boolean;
   name: string;
 }
 

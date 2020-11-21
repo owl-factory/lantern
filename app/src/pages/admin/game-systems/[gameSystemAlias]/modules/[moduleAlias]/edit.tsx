@@ -76,16 +76,12 @@ EditModule.getInitialProps = async (ctx: NextPageContext) => {
   const query = gql`query {
     gameSystem (_id: "${gameSystemAlias}") {
       _id,
-      name,
-      defaultModuleID
+      name
     },
     module (_id: "${moduleAlias}") {
       _id,
       name,
       alias,
-      description,
-      isPublished,
-      cost,
       createdAt,
       updatedAt
     }

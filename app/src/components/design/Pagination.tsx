@@ -10,7 +10,7 @@ interface PaginationProps {
 export interface PageState {
   page: number; // The current page
   perPage: number; // The number of items per page
-  totalCount?: number; // The total number of items
+  totalCount: number; // The total number of items
 }
 
 interface PaginationCellProps {

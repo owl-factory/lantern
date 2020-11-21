@@ -7,9 +7,9 @@ import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/models/graphQ
 import { CoreFilter } from "@reroll/model/dist/filters";
 import { CoreInput } from "@reroll/model/dist/inputs";
 import { Options } from "@reroll/model/dist/inputs/Options";
-import { Query as MongoQuery } from "mongoose";
 import { Arg, Args, Authorized, Int, Mutation, Query, Resolver } from "type-graphql";
 import { CoreResolver } from "./CoreResolver";
+import { FindOneResponse, FindManyResponse, FindCountResponse, UpdateOneResponse, DeleteOneResponse, CreateOneResponse } from "../../types/resolvers";
 
 /**
  * Resolves xxx queries
@@ -23,8 +23,8 @@ export class SharedResolver extends CoreResolver {
    * @param _id The id or alias of the document to return
    */
   @Query(() => CoreDocument, { nullable: true })
-  public xxx(@Arg("_id") _id: string): Promise<MongoQuery<CoreDocument> | null> {
-    return super.findByAlias(_id);
+  public xxx(@Arg("_id") _id: string): FindOneResponse<CoreDocument> {
+    return super.findByAlias(_id) as FindOneResponse<CoreDocument>;
   }
 
   /**
@@ -34,8 +34,8 @@ export class SharedResolver extends CoreResolver {
   public xxxs(
     @Arg("filters", {nullable: true}) filters?: CoreFilter,
     @Args() options?: Options
-  ): MongoQuery<CoreDocument[]> {
-    return super.findMany(filters, options);
+  ): FindManyResponse<CoreDocument> {
+    return super.findMany(filters, options) as FindManyResponse<CoreDocument>;
   }
 
   /**
@@ -43,7 +43,7 @@ export class SharedResolver extends CoreResolver {
    * @param filters The filter object to count documents by. Identical to other filters
    */
   @Query(() => Int)
-  public xxxCount(@Arg("filters", {nullable: true}) filters?: CoreFilter): MongoQuery<number> {
+  public xxxCount(@Arg("filters", {nullable: true}) filters?: CoreFilter): FindCountResponse {
     return super.findCount(filters);
   }
 
@@ -53,8 +53,8 @@ export class SharedResolver extends CoreResolver {
    */
   @Authorized()
   @Mutation(() => CoreDocument)
-  public createXXX(@Arg("data") data: CoreInput): MongoQuery<CoreDocument> {
-    return super.createOne(data);
+  public createXXX(@Arg("data") data: CoreInput): Promise<CreateOneResponse<CoreDocument>> {
+    return super.createOne(data) as Promise<CreateOneResponse<CoreDocument>>;
   }
 
   /**
@@ -67,7 +67,7 @@ export class SharedResolver extends CoreResolver {
   public updateXXX(
     @Arg("_id") _id: string,
     @Arg("data") data: CoreInput
-  ): MongoQuery<UpdateResponse> {
+  ): Promise<UpdateOneResponse> {
     return super.updateOne(_id, data);
   }
 
@@ -77,7 +77,7 @@ export class SharedResolver extends CoreResolver {
    */
   @Authorized()
   @Mutation(() => DeleteResponse)
-  public deleteXXX(@Arg("_id") _id: string): MongoQuery<DeleteResponse> {
+  public deleteXXX(@Arg("_id") _id: string): Promise<DeleteOneResponse> {
     return super.deleteOne(_id);
   }
 }
