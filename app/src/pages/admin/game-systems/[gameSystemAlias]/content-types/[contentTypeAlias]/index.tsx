@@ -14,7 +14,11 @@ interface ContentTypeViewProps {
   gameSystem: GameSystem;
 }
 
-// TODO - comment
+/**
+ * Renders a view of the current content type
+ * @param contentType The content type to render
+ * @param gameSystem The game system the content type belongs to
+ */
 export default function ContentTypeView({contentType, gameSystem}: ContentTypeViewProps): JSX.Element {
   const router = useRouter();
   const { gameSystemAlias, contentTypeAlias } = router.query;
@@ -40,7 +44,6 @@ export default function ContentTypeView({contentType, gameSystem}: ContentTypeVi
               <>Details</>
             </Card.Header>
             <Card.Body>
-              {/* <b>Description:</b> {contentType.description}<br/> */}
               <b>Alias:</b> {contentType.alias}<br/>
               <b>Created At:</b> {contentType.createdAt}<br/>
               <b>Last Edited At:</b> {contentType.updatedAt}

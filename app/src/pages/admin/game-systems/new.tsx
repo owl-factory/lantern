@@ -37,10 +37,6 @@ export function NewGameSystemForm(): JSX.Element {
         router.push(`/admin/game-systems/${key}`)
       })
       .catch((gqlError: FetchError) => {
-        // console.log(Object.keys(gqlError))
-        // console.log(gqlError.graphQLErrors)
-        // console.log(gqlError.message)
-        // console.log(gqlError.extraInfo)
         setErrors({_global: gqlError.message})
         // TODO - Better error handling
         console.log(gqlError)
@@ -76,8 +72,7 @@ function NewGameSystem(): JSX.Element {
 }
 
 NewGameSystem.getInitialProps = async () => {
-  // const { themes } = await client.query({query: fetchThemesGQL});
-  // return { themes: [{"name": "Default", "id": "default"}]};
+  return;
 }
 
 export default NewGameSystem;

@@ -8,8 +8,7 @@
   "private": true,
   "scripts": {
     "build": "tsc",
-    "dev": "nodemon -V -w src -e ts,tsx -x \"yarn build\"",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+    "dev": "nodemon -V -w src -e ts,tsx -x \"yarn build\""
   },
   "devDependencies": {
     "typescript": "3.9.7"

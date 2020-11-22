@@ -38,7 +38,6 @@ export default function CommonEntityTypeView({commonEntityType}: CommonEntityTyp
           <>Details</>
         </Card.Header>
         <Card.Body>
-          {/* <b>Description:</b> {commonEntityType.description}<br/> */}
           <b>Alias:</b> {commonEntityType.alias}<br/>
           <b>Created At:</b> {commonEntityType.createdAt}<br/>
           <b>Last Edited At:</b> {commonEntityType.updatedAt}
@@ -73,7 +72,6 @@ CommonEntityTypeView.getInitialProps = async (ctx: NextPageContext) => {
       _id,
       name,
       alias,
-      description,
       createdAt,
       updatedAt,
     }

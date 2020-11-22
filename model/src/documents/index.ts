@@ -30,6 +30,10 @@ import { Organization, OrganizationModel } from "./Organization";
 import { Rule, RuleModel } from "./Rule";
 import { User, UserModel } from "./User";
 
+/**
+ * A generic document type for any situation where we might be getting document data but 
+ * we're unsure of the source
+ */
 export type GenericDocumentType = (
   Asset | 
   Campaign | 
@@ -48,6 +52,9 @@ export type GenericDocumentType = (
   User
 );
 
+/**
+ * A generic type for hitting any of the Typegoose models
+ */
 export type GenericModelType = (
   typeof AssetModel | 
   typeof CampaignModel | 

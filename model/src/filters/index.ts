@@ -29,6 +29,9 @@ import { OrganizationFilter, OrganizationFilters } from "./Organization";
 import { RuleFilter, RuleFilters } from "./Rule";
 import { UserFilter, UserFilters } from "./User";
 
+/**
+ * A generic filter type that will cover any filters supplied to GraphQL or inside of an OR
+ */
 export type GenericFilterType = (
   AssetFilter | 
   CampaignFilter | 
@@ -46,6 +49,9 @@ export type GenericFilterType = (
   UserFilter
 );
 
+/**
+ * A generic filters type that will cover any filters supplied to GraphQL, including any Ors. 
+ */
 export type GenericFiltersType = (
   AssetFilters | 
   CampaignFilters | 

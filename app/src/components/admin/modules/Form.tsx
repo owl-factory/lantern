@@ -70,8 +70,6 @@ export default function ModuleForm(props: FormixFormProps<CreateModuleInput | Up
                   </Checkbox>
                 </Form.Group>
               </Row>
-
-              {/* {renderCost(formProps.values.isPurchasable)} */}
             </Col>
             
           </Row>

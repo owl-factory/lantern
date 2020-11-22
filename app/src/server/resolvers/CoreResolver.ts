@@ -151,7 +151,6 @@ export class CoreResolver {
 
       if (!superDocumentResult) { return null; }
       
-      
       filters[`${superDocument}ID`] = { eq: superDocumentResult._id as string };
     }
 

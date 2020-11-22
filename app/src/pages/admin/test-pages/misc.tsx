@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React from "react";
 import Page from "../../../components/design/Page";
 import { Button } from "react-bootstrap";
 import Tooltip from "../../../components/design/Tooltip";
@@ -6,7 +6,7 @@ import Tooltip from "../../../components/design/Tooltip";
 /**
  * A page devoted to miscellaneous component testing
  */
-export default function Miscellaneous(): ReactNode {
+export default function Miscellaneous(): JSX.Element {
   return (
     <Page>
       <h2>Miscellaneous Testing</h2>

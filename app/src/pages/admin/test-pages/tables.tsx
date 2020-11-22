@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React from "react";
 import Table from "../../../components/design/tables/Table";
 import { TableBuilder } from "../../../utilities/design/table";
 import Page from "../../../components/design/Page";
@@ -16,7 +16,7 @@ function TestTableActions({ data }: TableComponentProps) {
 /**
  * Creates a test table for checking that new changes and functionality do not break and work as intended.
  */
-export default function TableTesting(): ReactNode {
+export default function TableTesting(): JSX.Element {
   const tableBuilder = new TableBuilder();
   tableBuilder.addIncrementColumn("")
   .addDataColumn("Gamesystem", "name")

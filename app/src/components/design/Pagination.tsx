@@ -21,6 +21,11 @@ interface PaginationCellProps {
   hasLink?: boolean; // Whether to have this as a link or a static button (eg for current page)
 }
 
+/**
+ * Determines if the page navigation button is disabled
+ * @param page The current page
+ * @param targetPage The target page that the button would take us to
+ */
 function isDisabled(page: number, targetPage: number) {
   return page === targetPage ? "disabled" : "";
 }

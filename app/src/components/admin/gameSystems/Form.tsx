@@ -7,13 +7,6 @@ import { FormixFormProps } from "../../../model/design/form";
 import { GameSystem } from "@reroll/model/dist/documents";
 
 /**
- * The props used for the GameSystemForm
- * @param themes An array of themes for a selection
- */
-// interface GameSystemFormProps extends FormixFormProps<GameSystem> {
-// }
-
-/**
  * Renders the game system form with functionality for new and existing game systems
  * @param errors The GQL errors 
  * @param initialValues The initial values of the form
@@ -33,10 +26,7 @@ export default function GameSystemForm(props: FormixFormProps<GameSystem>): JSX.
         alias: Yup.string()
           .max(20, "Maximum of 20 characters"),
         description: Yup.string()
-          .max(1000, "Maximum of 1000 characters"),
-        // defaultThemeID: Yup.string()
-        //   .required("Required")
-        //   .oneOf(themeKeys, "Must be a given theme"),        
+          .max(1000, "Maximum of 1000 characters"),      
       })}
     >
       {() => (
@@ -66,18 +56,6 @@ export default function GameSystemForm(props: FormixFormProps<GameSystem>): JSX.
               <TextArea name="description" />
               <Error name="description"/>
             </Form.Group>
-
-            <Col>
-              {/* Default Theme */}
-              <Row>
-                {/* <Form.Group as={Col}>
-                <Form.Label>Default Theme</Form.Label>
-                  <Select name="defaultThemeID" options={props.themes} labelKey="name" valueKey="id"/>
-                  <Error name="defaultThemeID"/>
-                </Form.Group> */}
-              </Row>
-            </Col>
-            
           </Row>
 
           <Button variant="primary" type="submit">Submit!</Button>

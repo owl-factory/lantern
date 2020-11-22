@@ -32,7 +32,7 @@ export default function LoginForm(): JSX.Element {
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
-      onSubmit={() => {return}}
+      onSubmit={() => { return; }}
     >
       <FormikForm>
         <Row>
@@ -47,11 +47,6 @@ export default function LoginForm(): JSX.Element {
             <Input type="password" aria-label="Password" name="password"/>
             <ErrorMessage name="password"/>
           </Form.Group>
-        </Row>
-        <Row>
-          <Col>
-            {/* {errorMessage} */}
-          </Col>
         </Row>
         <Row>
           <Form.Group as={Col}>

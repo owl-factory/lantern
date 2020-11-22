@@ -29,8 +29,12 @@ import { CreateOrganizationInput, UpdateOrganizationInput } from "./Organization
 import { CreateRuleInput, UpdateRuleInput } from "./Rule";
 import { CreateUserInput, UpdateUserInput } from "./User";
 
+// A generic input type that can be passed into forms and GraphQL.
 export type GenericInputType = GenericCreateInputType | GenericUpdateInputType;
 
+/**
+ * A generic create input type
+ */
 export type GenericCreateInputType = (
   CreateAssetInput | 
   CreateCampaignInput | 
@@ -48,6 +52,9 @@ export type GenericCreateInputType = (
   CreateUserInput
 );
 
+/**
+ * A generic update input type
+ */
 export type GenericUpdateInputType = (
   UpdateAssetInput | 
   UpdateCampaignInput | 

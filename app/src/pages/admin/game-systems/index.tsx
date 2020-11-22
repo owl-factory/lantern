@@ -33,7 +33,6 @@ const tableBuilder = new TableBuilder()
   .addIncrementColumn("")
   .addDataColumn("Game System", "name")
   .addDataColumn("Alias", "alias")
-  // .addDataColumn("Published", "isPublished", (isPublished: boolean) => (isPublished ? "Yes" : "No"))
   .addComponentColumn("Tools", GameSystemActions);
 
 /**
@@ -113,7 +112,6 @@ async function queryGameSystems(page: number, perPage: number, ) {
 GameSystems.getInitialProps = async () => {
   const gameSystemData = await queryGameSystems(1, initialPerPage);
   return gameSystemData.data;
-  // return {gameSystems: [], gameSystemCount: 0}
 }
 
 export default GameSystems;

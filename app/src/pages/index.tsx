@@ -1,5 +1,5 @@
 import Link from "next/link";
-import React, { ReactNode } from "react";
+import React from "react";
 import AuthenticationCard from "../components/authetication/AuthenticationCard";
 import Page from "../components/design/Page";
 import { Row, Button, Col } from "react-bootstrap";
@@ -12,7 +12,7 @@ import { signOut, useSession } from "next-auth/client";
  *
  * @param props ...
  */
-function Index(): ReactNode {
+function Index(): JSX.Element {
   // Sets the view for the currenly logged in user
   const [ session, loading ] = useSession();
 

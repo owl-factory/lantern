@@ -71,13 +71,6 @@ export default function GameSystemView({
             <p>{contentCount}</p>  
           </Card.Body></Card>
         </Col>
-
-        <Col lg={3} md={4} sm={6} xs={12}>
-          <Card><Card.Body>
-            <>Published?</>
-            {/* <p>{gameSystem.isPublished ? "Yes" : "No"}</p> */}
-          </Card.Body></Card>
-        </Col>
       </Row>
 
       <hr/>
@@ -90,7 +83,6 @@ export default function GameSystemView({
               <>Details</>
             </Card.Header>
             <Card.Body>
-              {/* <b>Description:</b> {gameSystem.description}<br/> */}
               <b>Alias:</b> {gameSystem.alias}<br/>
               <b>Created At:</b> {gameSystem.createdAt}<br/>
               <b>Last Edited At:</b> {gameSystem.updatedAt}
@@ -140,13 +132,7 @@ export default function GameSystemView({
           <Link href={"/admin/game-systems/" + alias + "/edit"}  passHref>
             <Button>Edit</Button>
           </Link>
-{/* 
-          <Button 
-            disabled={gameSystem.isPublished}
-            onClick={() => publish(gameSystem._id)}
-          >
-            Publish{gameSystem.isPublished ? "ed" : ""}
-          </Button> */}
+          
           <Button>Delete</Button>
 
         </Card.Body>

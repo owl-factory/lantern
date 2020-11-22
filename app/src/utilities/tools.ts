@@ -18,24 +18,3 @@ export function min(arg: number, defaultValue: number): number {
   }
   return arg;
 }
-
-/**
- * Saves the desired fields to a new object by deep copying them. Returns a new object with the requested fields
- *
- * @param obj The object to keep fields from
- * @param fields The fields to keep
- */
-export function objectKeepFields(obj: Record<string, unknown>, fields: string[]): Record<string, unknown> {
-  const newObject: Record<string, unknown> = {};
-
-  fields.forEach((field: string) => {
-    // Prevents errors with reading empty field
-    if (!(field in obj)) {
-      return;
-    }
-
-    newObject[field] = obj[field];
-  });
-
-  return newObject;
-}

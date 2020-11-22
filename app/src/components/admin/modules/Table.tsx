@@ -42,9 +42,6 @@ const tableBuilder = new TableBuilder()
   .addDataColumn("Module", "name")
   .addDataColumn("Alias", "alias")
   .addDataColumn("Publish Type", "publishType")
-
-  // .addDataColumn("Published", "isPublished", (isPublished: boolean) => (isPublished ? "Yes" : "No"))
-  // .addDataColumn("Cost", "cost", (cost: number) => (cost ? `$${cost / 100}` : "--"))
   .addComponentColumn("Tools", ModuleActions);
 
 export default function ModuleTable(props: ModuleTableProps): JSX.Element {
