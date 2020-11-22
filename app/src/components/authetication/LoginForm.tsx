@@ -4,12 +4,6 @@ import * as Yup from "yup";
 import { Col, Form, Row, Button } from "react-bootstrap";
 import { Input } from "../design/forms/Forms";
 
-/** The possible form values */
-interface LoginValues {
-  email: string;
-  password: string;
-}
-
 /** Initial form values */
 const initialValues = {
   email: "",
@@ -27,8 +21,7 @@ const validationSchema = Yup.object({
 /**
  * Renders the form for logging in
  */
-export default function LoginForm() {
-  const [errorMessage, setErrorMessage] = React.useState("");
+export default function LoginForm(): JSX.Element {
 
   /**
    * Submits the form on successful validation
@@ -39,7 +32,7 @@ export default function LoginForm() {
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
-      onSubmit={() => {}}
+      onSubmit={() => { return; }}
     >
       <FormikForm>
         <Row>
@@ -54,11 +47,6 @@ export default function LoginForm() {
             <Input type="password" aria-label="Password" name="password"/>
             <ErrorMessage name="password"/>
           </Form.Group>
-        </Row>
-        <Row>
-          <Col>
-            {errorMessage}
-          </Col>
         </Row>
         <Row>
           <Form.Group as={Col}>

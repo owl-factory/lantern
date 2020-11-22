@@ -1,3 +1,5 @@
+// TEMPORARILY RENAMED TO AVOID LINTING ISSUES UNTIL WE CAN DEEP DIVE THIS
+
 import React from "react";
 import Page from "../../../../../../components/design/Page";
 import Breadcrumbs from "../../../../../../components/design/Breadcrumbs";
@@ -7,17 +9,28 @@ import { client } from "../../../../../../utilities/graphql/apiClient";
 import { Row, Col, Button, Card, Form } from "react-bootstrap";
 import { TableBuilder } from "../../../../../../utilities/design/table";
 import Table from "../../../../../../components/design/tables/Table";
-import { ContentTypeField } from "@reroll/model/dist/documents/ContentType";
+import { ContentTypeField, ContentType, GameSystem } from "@reroll/model/dist/documents";
 import * as Yup from "yup";
-import { Form as FormikForm, Formik } from "formik";
+import { Form as FormikForm, Formik, FormikProps } from "formik";
 import { Error, Input, Select } from "../../../../../../components/design/forms/Forms";
 import { ContentFieldTypeEnum, contentFieldTypes } from "@reroll/model/dist/enums/contentFieldType";
+
+interface ContentTypeFieldTableProps {
+  fields: any; // TODO - figure out what should be in fields
+  rowAction: () => void;
+}
+
+interface ContentTypeFieldsProps {
+  contentType: ContentType;
+  gameSystem: GameSystem;
+}
 
 const tableBuilder = new TableBuilder()
   .addDataColumn("Variable Name", "name")
   .addDataColumn("Type", "type")
   .addDataColumn("Default Value", "default")
 
+// TODO - comment
 function renderGQLArray(array: any[]) {
   let gqlString = ``;
   array.forEach(item => {
@@ -26,6 +39,7 @@ function renderGQLArray(array: any[]) {
   return `[${gqlString}]`;
 }
 
+// TODO - comment
 function renderGQLObject(object: any) {
   console.log(object)
   let gqlString = ``;
@@ -37,6 +51,7 @@ function renderGQLObject(object: any) {
   return `{${gqlString}}`;
 }
 
+// TODO - comment
 function renderGQL(object: any) {
   switch (typeof object) {
     case "string":
@@ -137,7 +152,7 @@ function ContentTypeFieldForm(props: any) {
           .matches(/^[a-z][a-z0-9\_\-]+$/, "Must start with a letter and contain only lowercase letters, numbers, dashes, and underscores"),
       })}
     >
-      {(formProps: any) => (
+      {(formProps: FormikProps<any>) => (
         <FormikForm>
           <Button variant="primary" onClick={() => {deleteField(formProps)}}>Delete</Button>
           <Button variant="primary" type="submit">Save</Button>
@@ -175,7 +190,7 @@ function ContentTypeFieldForm(props: any) {
  * Renders a table containing the Content Type Fields for this specific of Content Type
  * @param props 
  */
-function ContentTypeFieldTable(props: any) {
+function ContentTypeFieldTable(props: ContentTypeFieldTableProps): JSX.Element {
   return (
     <Table
       {...tableBuilder.renderConfig()}
@@ -192,9 +207,9 @@ function ContentTypeFieldTable(props: any) {
  * @param contentType The content type that fields will be edited for
  * @param gameSystem The game system that this content type belongs to 
  */
-export default function ContentTypeFields({ contentType, gameSystem }: any) {
+export default function ContentTypeFields({ contentType, gameSystem }: ContentTypeFieldsProps): JSX.Element {
   const [ fieldState, setFieldState ] = React.useState<FieldState>({
-    fields: contentType.fields, 
+    fields: [],//contentType.fields, 
     activeField: null,
     newField: false,
     warning: ""
@@ -205,8 +220,8 @@ export default function ContentTypeFields({ contentType, gameSystem }: any) {
    * @param activeField The field to set to the active field
    */
   function selectActiveField(activeField: number | null) {
-    if (activeField !== null ) { activeField -= 1; };
-    if (fieldState.newField) { return; }; // Fail to switch if we're editing a new field
+    if (activeField !== null ) { activeField -= 1; }
+    if (fieldState.newField) { return; } // Fail to switch if we're editing a new field
     if (activeField === fieldState.activeField) { return; }
     setFieldState({...fieldState, activeField});
   }

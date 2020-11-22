@@ -4,6 +4,7 @@ import { Button, Col, Form, Row } from "react-bootstrap";
 import * as Yup from "yup";
 import { Error, Input, TextArea } from "../../design/forms/Forms";
 import { FormixFormProps } from "../../../model/design/form";
+import { CommonEntityType } from "@reroll/model/dist/documents";
 
 
 /**
@@ -12,7 +13,7 @@ import { FormixFormProps } from "../../../model/design/form";
  * @param onSubmit The action to run on submit
  * @param themes An array of themes for a selection
  */
-export default function CommonEntityTypeForm(props: FormixFormProps<any>) {
+export default function CommonEntityTypeForm(props: FormixFormProps<CommonEntityType>): JSX.Element {
   return (
     <Formik 
       initialValues={props.initialValues}
@@ -27,7 +28,7 @@ export default function CommonEntityTypeForm(props: FormixFormProps<any>) {
           .max(1000, "Maximum of 1000 characters"),  
       })}
     >
-      {(formProps: any) => (
+      {() => (
         <FormikForm>
           <Row>
             {/* Common Entity Type Name */}

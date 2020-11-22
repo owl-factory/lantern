@@ -12,7 +12,7 @@ interface ContextType {
 /**
  * Renders a test page for Context Menus
  */
-export default function TestContextMenu() {
+export default function TestContextMenu(): JSX.Element {
   const contextMenuBuilder1 = new ContextMenuBuilder()
     .addHeader("Testing Dropdown!")
     .addItem("View", MdViewList, (context: ContextType) => {alert("View " + context.name)})

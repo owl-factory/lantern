@@ -10,6 +10,6 @@ export class UserInput extends CoreInput implements Partial<User> {
 }
 
 @InputType()
-export class CreateUserInput extends UserInput implements Partial<User>{};
+export class CreateUserInput extends UserInput implements Partial<User>{}
 @InputType()
-export class UpdateUserInput extends UserInput implements Partial<User>{};
+export class UpdateUserInput extends UserInput implements Partial<User>{}

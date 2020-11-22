@@ -1,7 +1,6 @@
 import { useField } from "formik";
 import React from "react";
 import { Form } from "react-bootstrap";
-import { def, objectKeepFields } from "../../../utilities/tools";
 import { CoreFormCheckProps } from "../../../model/design/form";
 
 interface FormCheckProps extends CoreFormCheckProps {
@@ -24,14 +23,10 @@ interface FormCheckProps extends CoreFormCheckProps {
  * @param props.lg Width for large screens
  * @param props.xl Width for extra large screens
  */
-export function FormCheck(props: FormCheckProps) {
-  const id = def<string>(props.id, props.name);
+export function FormCheck(props: FormCheckProps): JSX.Element {
+  const id = props.id || props.name;
   
-  const checkboxProps = objectKeepFields(
-    props, 
-    ["checked", "disabled", "name", "type", "value"]
-  );
-  const [field] = useField({ ...checkboxProps, type: props.type });
+  const [field] = useField({name: props.name, value: props.value});
   
   return (
     <Form.Check 
@@ -42,7 +37,8 @@ export function FormCheck(props: FormCheckProps) {
     >
       <Form.Check.Input
         id={id}
-        {...checkboxProps}
+        disabled={(props.disabled || false) as boolean}
+        type={props.type as ("checkbox" | "radio" | undefined)}
         {...field}
       />
       {props.children}

@@ -3,9 +3,9 @@ import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/models/graphQ
 import { ContentFilters } from "@reroll/model/dist/filters";
 import { CreateContentInput, UpdateContentInput } from "@reroll/model/dist/inputs";
 import { Options } from "@reroll/model/dist/inputs/Options";
-import { Query as MongoQuery } from "mongoose";
 import { Arg, Args, Authorized, Int, Mutation, Query, Resolver } from "type-graphql";
 import { CoreResolver } from "./CoreResolver";
+import { FindOneResponse, FindManyResponse, FindCountResponse, CreateOneResponse, UpdateOneResponse, DeleteOneResponse } from "../../types/resolvers";
 
 /**
  * Resolves content queries
@@ -19,8 +19,8 @@ export class ContentResolver extends CoreResolver {
    * @param _id The id or alias of the document to return
    */
   @Query(() => Content, { nullable: true })
-  public content(@Arg("_id") _id: string) {
-    return super.findByAlias(_id);
+  public content(@Arg("_id") _id: string): FindOneResponse<Content> {
+    return super.findByAlias(_id) as FindOneResponse<Content>;
   }
 
   /**
@@ -30,8 +30,8 @@ export class ContentResolver extends CoreResolver {
   public contents(
     @Arg("filters", {nullable: true}) filters?: ContentFilters,
     @Args() options?: Options
-  ): MongoQuery<Content[]> {
-    return super.findMany(filters, options);
+  ): FindManyResponse<Content> {
+    return super.findMany(filters, options) as FindManyResponse<Content>;
   }
 
   /**
@@ -39,7 +39,7 @@ export class ContentResolver extends CoreResolver {
    * @param filters The filter object to count documents by. Identical to other filters
    */
   @Query(() => Int)
-  public contentCount(@Arg("filters", {nullable: true}) filters?: ContentFilters): MongoQuery<number> {
+  public contentCount(@Arg("filters", {nullable: true}) filters?: ContentFilters): FindCountResponse {
     return super.findCount(filters);
   }
 
@@ -49,8 +49,8 @@ export class ContentResolver extends CoreResolver {
    */
   @Authorized()
   @Mutation(() => Content)
-  public createContent(@Arg("data") data: CreateContentInput): MongoQuery<Content> {
-    return super.createOne(data);
+  public createContent(@Arg("data") data: CreateContentInput): Promise<CreateOneResponse<Content>> {
+    return super.createOne(data) as Promise<CreateOneResponse<Content>>;
   }
 
   /**
@@ -63,7 +63,7 @@ export class ContentResolver extends CoreResolver {
   public updateContent(
     @Arg("_id") _id: string,
     @Arg("data") data: UpdateContentInput
-  ): MongoQuery<UpdateResponse> {
+  ): Promise<UpdateOneResponse> {
     return super.updateOne(_id, data);
   }
 
@@ -73,7 +73,7 @@ export class ContentResolver extends CoreResolver {
    */
   @Authorized()
   @Mutation(() => DeleteResponse)
-  public deleteContent(@Arg("_id") _id: string): MongoQuery<DeleteResponse> {
+  public deleteContent(@Arg("_id") _id: string): Promise<DeleteOneResponse> {
     return super.deleteOne(_id);
   }
 }

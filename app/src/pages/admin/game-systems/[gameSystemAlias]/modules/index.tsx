@@ -6,16 +6,23 @@ import gql from "graphql-tag";
 import { client } from "../../../../../utilities/graphql/apiClient";
 import ModuleTable from "../../../../../components/admin/modules/Table";
 import Pagination, { PageState } from "../../../../../components/design/Pagination";
+import { GameSystem, Module } from "@reroll/model/dist/documents";
 
 // The initial count per page that we'll be fetching
 const initialPerPage = 25;
+
+interface ModulesIndexProps {
+  gameSystem: GameSystem;
+  initialModules: Module[];
+  moduleCount: number;
+}
 
 /**
  * Queries the game systems 
  * @param page The current page
  * @param perPage The number of entries per page
  */
-async function queryModules(page: number, perPage: number, gameSystemID: number) {
+async function queryModules(page: number, perPage: number, gameSystemID: string) {
   const skip = (page - 1) * perPage;
 
   const moduleQuery = gql`
@@ -48,7 +55,7 @@ async function queryModules(page: number, perPage: number, gameSystemID: number)
  * @param initialModules The initial modules prior to searching.
  * @param moduleCount The total count of modules in the database matching the game system 
  */
-export default function ModulesIndex({ gameSystem, initialModules, moduleCount }: any) {
+export default function ModulesIndex({ gameSystem, initialModules, moduleCount }: ModulesIndexProps): JSX.Element {
   const [modules, setModules] = React.useState(initialModules);
   const [pageState, setPageState] = React.useState({
     page: 1,
@@ -64,7 +71,7 @@ export default function ModulesIndex({ gameSystem, initialModules, moduleCount }
     const newModuleData = await queryModules(
       newPageState.page,
       newPageState.perPage,
-      gameSystem._id
+      gameSystem._id || "null"
     );
   
     setModules(newModuleData.data.modules);

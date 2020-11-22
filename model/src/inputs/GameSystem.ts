@@ -10,6 +10,6 @@ class GameSystemInput extends CoreInput implements Partial<GameSystem> {
 }
 
 @InputType()
-export class CreateGameSystemInput extends GameSystemInput implements Partial<GameSystem>{};
+export class CreateGameSystemInput extends GameSystemInput implements Partial<GameSystem>{}
 @InputType()
-export class UpdateGameSystemInput extends GameSystemInput implements Partial<GameSystem>{};
+export class UpdateGameSystemInput extends GameSystemInput implements Partial<GameSystem>{}

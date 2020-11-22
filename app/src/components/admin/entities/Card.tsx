@@ -2,10 +2,11 @@ import { Card, Button } from "react-bootstrap";
 import Link from "next/link";
 import { EntityTable } from "./Table";
 import { GameSystem } from "@reroll/model/dist/documents/GameSystem";
+import { Entity } from "@reroll/model/dist/documents";
 
 interface EntityCardProps {
   gameSystem: GameSystem;
-  entities: any; //Entity[];
+  entities: Entity[]; //Entity[];
 }
 
 /**
@@ -13,7 +14,7 @@ interface EntityCardProps {
  * @param props.gameSystem The game system of the entities to render
  * @param props.entities The array of entities to render into the card
  */
-export function EntityCard(props: EntityCardProps) {
+export function EntityCard(props: EntityCardProps): JSX.Element {
   const gameSystemAlias = props.gameSystem.alias || props.gameSystem._id;
 
   return (

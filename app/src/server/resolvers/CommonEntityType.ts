@@ -3,9 +3,9 @@ import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/models/graphQ
 import { CommonEntityTypeFilters } from "@reroll/model/dist/filters";
 import { CreateCommonEntityTypeInput, UpdateCommonEntityTypeInput } from "@reroll/model/dist/inputs";
 import { Options } from "@reroll/model/dist/inputs/Options";
-import { Query as MongoQuery } from "mongoose";
 import { Arg, Args, Authorized, Int, Mutation, Query, Resolver } from "type-graphql";
 import { CoreResolver } from "./CoreResolver";
+import { FindOneResponse, FindManyResponse, FindCountResponse, CreateOneResponse, UpdateOneResponse, DeleteOneResponse } from "../../types/resolvers";
 
 /**
  * Resolves common entity type queries
@@ -19,8 +19,8 @@ export class CommonEntityTypeResolver extends CoreResolver {
    * @param _id The id or alias of the document to return
    */
   @Query(() => CommonEntityType, { nullable: true })
-  public commonEntityType(@Arg("_id") _id: string) {
-    return super.findByAlias(_id);
+  public commonEntityType(@Arg("_id") _id: string): FindOneResponse<CommonEntityType> {
+    return super.findByAlias(_id) as FindOneResponse<CommonEntityType>;
   }
 
   /**
@@ -30,8 +30,8 @@ export class CommonEntityTypeResolver extends CoreResolver {
   public commonEntityTypes(
     @Arg("filters", {nullable: true}) filters?: CommonEntityTypeFilters,
     @Args() options?: Options
-  ): MongoQuery<CommonEntityType[]> {
-    return super.findMany(filters, options);
+  ): FindManyResponse<CommonEntityType> {
+    return super.findMany(filters, options) as FindManyResponse<CommonEntityType>;
   }
 
   /**
@@ -39,7 +39,7 @@ export class CommonEntityTypeResolver extends CoreResolver {
    * @param filters The filter object to count documents by. Identical to other filters
    */
   @Query(() => Int)
-  public commonEntityTypeCount(@Arg("filters", {nullable: true}) filters?: CommonEntityTypeFilters): MongoQuery<number> {
+  public commonEntityTypeCount(@Arg("filters", {nullable: true}) filters?: CommonEntityTypeFilters): FindCountResponse {
     return super.findCount(filters);
   }
 
@@ -49,8 +49,8 @@ export class CommonEntityTypeResolver extends CoreResolver {
    */
   @Authorized()
   @Mutation(() => CommonEntityType)
-  public createCommonEntityType(@Arg("data") data: CreateCommonEntityTypeInput): MongoQuery<CommonEntityType> {
-    return super.createOne(data);
+  public createCommonEntityType(@Arg("data") data: CreateCommonEntityTypeInput): Promise<CreateOneResponse<CommonEntityType>> {
+    return super.createOne(data) as Promise<CreateOneResponse<CommonEntityType>>;
   }
 
   /**
@@ -63,7 +63,7 @@ export class CommonEntityTypeResolver extends CoreResolver {
   public updateCommonEntityType(
     @Arg("_id") _id: string,
     @Arg("data") data: UpdateCommonEntityTypeInput
-  ): MongoQuery<UpdateResponse> {
+  ): Promise<UpdateOneResponse> {
     return super.updateOne(_id, data);
   }
 
@@ -73,7 +73,7 @@ export class CommonEntityTypeResolver extends CoreResolver {
    */
   @Authorized()
   @Mutation(() => DeleteResponse)
-  public deleteCommonEntityType(@Arg("_id") _id: string): MongoQuery<DeleteResponse> {
+  public deleteCommonEntityType(@Arg("_id") _id: string): Promise<DeleteOneResponse> {
     return super.deleteOne(_id);
   }
 }

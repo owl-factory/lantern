@@ -19,4 +19,4 @@ export class CreateModuleInput extends ModuleInput implements Partial<Module> {
 }
 
 @InputType()
-export class UpdateModuleInput extends ModuleInput implements Partial<Module>{};
+export class UpdateModuleInput extends ModuleInput implements Partial<Module>{}

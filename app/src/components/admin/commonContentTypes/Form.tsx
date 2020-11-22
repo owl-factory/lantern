@@ -4,14 +4,8 @@ import { Button, Col, Form, Row } from "react-bootstrap";
 import * as Yup from "yup";
 import { Error, Input, TextArea } from "../../design/forms/Forms";
 import { FormixFormProps } from "../../../model/design/form";
+import { CommonContentType } from "@reroll/model/dist/documents";
 
-/**
- * The props used for the GameSystemForm
- * @param themes An array of themes for a selection
- */
-interface GameSystemFormProps extends FormixFormProps<any> {
-  themes: any[];
-}
 
 /**
  * Renders the game system form with functionality for new and existing game systems
@@ -19,7 +13,7 @@ interface GameSystemFormProps extends FormixFormProps<any> {
  * @param onSubmit The action to run on submit
  * @param themes An array of themes for a selection
  */
-export default function CommonContentTypeForm(props: FormixFormProps<any>) {
+export default function CommonContentTypeForm(props: FormixFormProps<CommonContentType>): JSX.Element {
   return (
     <Formik 
       initialValues={props.initialValues}
@@ -34,7 +28,7 @@ export default function CommonContentTypeForm(props: FormixFormProps<any>) {
           .max(1000, "Maximum of 1000 characters"),  
       })}
     >
-      {(formProps: any) => (
+      {() => (
         <FormikForm>
           <Row>
             {/* Gamesystem Name */}

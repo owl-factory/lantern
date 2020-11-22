@@ -21,4 +21,4 @@ export class CreateEntityTypeInput extends EntityTypeInput implements Partial<En
 }
 
 @InputType()
-export class UpdateEntityTypeInput extends EntityTypeInput implements Partial<EntityType>{};
+export class UpdateEntityTypeInput extends EntityTypeInput implements Partial<EntityType>{}

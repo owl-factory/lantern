@@ -10,7 +10,7 @@ interface ErrorProps {
  * Renders an error message using Formik and Bootstrap
  * @param props See ErrorProps
  */
-export function Error(props: ErrorProps) {
+export function Error(props: ErrorProps): JSX.Element {
   return (
     <ErrorMessage name={props.name}>
       {(message: string) => (

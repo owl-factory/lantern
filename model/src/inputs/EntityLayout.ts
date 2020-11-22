@@ -19,4 +19,4 @@ export class CreateEntityLayoutInput extends CoreInput implements Partial<Entity
 }
 
 @InputType()
-export class UpdateEntityLayoutInput extends EntityLayoutInput implements Partial<EntityLayout>{};
+export class UpdateEntityLayoutInput extends EntityLayoutInput implements Partial<EntityLayout>{}

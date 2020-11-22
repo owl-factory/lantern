@@ -3,9 +3,9 @@ import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/models/graphQ
 import { AssetFilters } from "@reroll/model/dist/filters";
 import { CreateAssetInput, UpdateAssetInput } from "@reroll/model/dist/inputs";
 import { Options } from "@reroll/model/dist/inputs/Options";
-import { Query as MongoQuery } from "mongoose";
 import { Arg, Args, Authorized, Int, Mutation, Query, Resolver } from "type-graphql";
 import { CoreResolver } from "./CoreResolver";
+import { FindOneResponse, FindManyResponse, FindCountResponse, CreateOneResponse, UpdateOneResponse, DeleteOneResponse } from "../../types/resolvers";
 
 /**
  * Resolves asset queries
@@ -19,8 +19,8 @@ export class AssetResolver extends CoreResolver {
    * @param _id The id or alias of the document to return
    */
   @Query(() => Asset, { nullable: true })
-  public asset(@Arg("_id") _id: string) {
-    return super.findByAlias(_id);
+  public asset(@Arg("_id") _id: string): FindOneResponse<Asset> {
+    return super.findByAlias(_id) as FindOneResponse<Asset>;
   }
 
   /**
@@ -30,8 +30,8 @@ export class AssetResolver extends CoreResolver {
   public assets(
     @Arg("filters", {nullable: true}) filters?: AssetFilters,
     @Args() options?: Options
-  ): MongoQuery<Asset[]> {
-    return super.findMany(filters, options);
+  ): FindManyResponse<Asset>{
+    return super.findMany(filters, options) as FindManyResponse<Asset>;
   }
 
   /**
@@ -39,7 +39,7 @@ export class AssetResolver extends CoreResolver {
    * @param filters The filter object to count documents by. Identical to other filters
    */
   @Query(() => Int)
-  public assetCount(@Arg("filters", {nullable: true}) filters?: AssetFilters): MongoQuery<number> {
+  public assetCount(@Arg("filters", {nullable: true}) filters?: AssetFilters): FindCountResponse {
     return super.findCount(filters);
   }
 
@@ -49,8 +49,8 @@ export class AssetResolver extends CoreResolver {
    */
   @Authorized()
   @Mutation(() => Asset)
-  public createAsset(@Arg("data") data: CreateAssetInput): MongoQuery<Asset> {
-    return super.createOne(data);
+  public createAsset(@Arg("data") data: CreateAssetInput): Promise<CreateOneResponse<Asset>> {
+    return super.createOne(data) as Promise<CreateOneResponse<Asset>>;
   }
 
   /**
@@ -63,7 +63,7 @@ export class AssetResolver extends CoreResolver {
   public updateAsset(
     @Arg("_id") _id: string,
     @Arg("data") data: UpdateAssetInput
-  ): MongoQuery<UpdateResponse> {
+  ): Promise<UpdateOneResponse> {
     return super.updateOne(_id, data);
   }
 
@@ -73,7 +73,7 @@ export class AssetResolver extends CoreResolver {
    */
   @Authorized()
   @Mutation(() => DeleteResponse)
-  public deleteAsset(@Arg("_id") _id: string): MongoQuery<DeleteResponse> {
+  public deleteAsset(@Arg("_id") _id: string): Promise<DeleteOneResponse> {
     return super.deleteOne(_id);
   }
 }

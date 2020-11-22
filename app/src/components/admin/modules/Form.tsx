@@ -4,24 +4,7 @@ import { Button, Col, Form, Row } from "react-bootstrap";
 import * as Yup from "yup";
 import { Checkbox, Error, Input, TextArea } from "../../design/forms/Forms";
 import { FormixFormProps } from "../../../model/design/form";
-
-/**
- * Renders the cost input iff the isPurchasable flag is set
- * @param isPurchasable boolean. True if the cost should be rendered, false if not
- */
-function renderCost(isPurchasable: boolean) {
-  if(isPurchasable === true) {
-    return (
-      <Row>
-        <Form.Group as={Col}>
-          <Form.Label>Cost</Form.Label>
-          <Input type="number" name="cost" />
-          <Error name="cost"/>
-        </Form.Group>
-      </Row>
-    );
-  }
-}
+import { CreateModuleInput, UpdateModuleInput } from "@reroll/model/dist/inputs";
 
 /**
  * Renders the game system form with functionality for new and existing game systems
@@ -29,7 +12,7 @@ function renderCost(isPurchasable: boolean) {
  * @param onSubmit The action to run on submit
  * @param themes An array of themes for a selection
  */
-export default function ModuleForm(props: FormixFormProps<any>) {
+export default function ModuleForm(props: FormixFormProps<CreateModuleInput | UpdateModuleInput>):JSX.Element {
 
   return (
     <Formik 
@@ -51,7 +34,7 @@ export default function ModuleForm(props: FormixFormProps<any>) {
           }) 
       })}
     >
-      {(formProps: any) => (
+      {() => (
         <FormikForm>
           <Row>
             {/* Gamesystem Name */}
@@ -87,8 +70,6 @@ export default function ModuleForm(props: FormixFormProps<any>) {
                   </Checkbox>
                 </Form.Group>
               </Row>
-
-              {renderCost(formProps.values.isPurchasable)}
             </Col>
             
           </Row>

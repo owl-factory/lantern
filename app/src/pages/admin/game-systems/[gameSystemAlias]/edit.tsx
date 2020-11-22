@@ -4,15 +4,13 @@ import GameSystemForm from "../../../../components/admin/gameSystems/Form";
 import Page from "../../../../components/design/Page";
 import gql from "graphql-tag";
 import { NextPageContext } from "next";
-import { def } from "../../../../utilities/tools";
 import { client } from "../../../../utilities/graphql/apiClient";
-import { UpdateGameSystemInput } from "@reroll/model/dist/inputs";
 import { GameSystem } from "@reroll/model/dist/documents/GameSystem";
 import { useRouter } from "next/router";
+import { UpdateGameSystemInput } from "@reroll/model/dist/inputs";
 
 interface EditGameSystemProps {
   gameSystem: GameSystem;
-  themes: any[];
 }
 
 /**
@@ -20,27 +18,25 @@ interface EditGameSystemProps {
  * @param gameSystem The game system to be edited
  * @param themes The themes to render within the form
  */
-function EditGameSystem({gameSystem, themes}: EditGameSystemProps) {
+function EditGameSystem({gameSystem}: EditGameSystemProps): JSX.Element {
   const router = useRouter();
 
   /**
    * Runs the operation to update 
    * @param values The updated game system values to update
    */
-  function updateGameSystem(values: any) {
+  function updateGameSystem(values: UpdateGameSystemInput) {
     const updateGameSystem = gql`mutation{
       updateGameSystem (_id: "${gameSystem._id}", data: {
         name: "${values.name}",
-        alias: "${values.alias}",
-        description: "${values.description}",
-        defaultThemeID: "${values.defaultThemeID}",
+        alias: "${values.alias}"
       }) {
         ok
       }
     }`;
 
     client.mutate({mutation: updateGameSystem})
-    .then((res: any) => {
+    .then(() => {
       router.push(`/admin/game-systems/${values.alias}`)
       console.log("Updated!")
     })
@@ -58,8 +54,7 @@ function EditGameSystem({gameSystem, themes}: EditGameSystemProps) {
       <GameSystemForm 
         initialValues={gameSystem}
         onSubmit={
-          (values: any) => updateGameSystem(values)}
-        themes={themes}
+          (values: UpdateGameSystemInput) => updateGameSystem(values)}
       />
     </Page>
   );
@@ -79,7 +74,7 @@ EditGameSystem.getInitialProps = async (ctx: NextPageContext) => {
     }
   }`;
 
-  const { data, loading } = await client.query({query: query});
+  const { data } = await client.query({query: query});
   
   return { 
     themes: [{"name": "Default", "id": "default"}],

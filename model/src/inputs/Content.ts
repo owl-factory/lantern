@@ -21,4 +21,4 @@ export class CreateContentInput extends ContentInput implements Partial<Content>
 }
 
 @InputType()
-export class UpdateContentInput extends ContentInput implements Partial<Content>{};
+export class UpdateContentInput extends ContentInput implements Partial<Content>{}

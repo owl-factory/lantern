@@ -8,7 +8,7 @@ interface GameSystemSearchProps {
   gameSystem: GameSystem;
 }
 
-export default function GameSystemSearch({gameSystem}: GameSystemSearchProps ) {
+export default function GameSystemSearch({gameSystem}: GameSystemSearchProps): JSX.Element {
   return (
     <Page>
       <h1>{gameSystem.name}</h1>

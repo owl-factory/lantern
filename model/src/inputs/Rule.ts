@@ -19,4 +19,4 @@ export class CreateRuleInput extends RuleInput implements Partial<Rule> {
 }
 
 @InputType()
-export class UpdateRuleInput extends RuleInput implements Partial<Rule>{};
+export class UpdateRuleInput extends RuleInput implements Partial<Rule>{}

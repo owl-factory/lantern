@@ -19,15 +19,21 @@ import {
   RuleResolver,
   UserResolver
 } from "../../server/resolvers";
+import { GraphQLSchema } from "graphql";
 
 global.fetch = require("cross-fetch");
 
+const connectionString = process.env.MONGO_CONNECTION_STRING || "";
+if (connectionString === "") {
+  throw Error("No Mongo Connection String supplied.");
+}
+
 connect(
-  process.env.MONGO_CONNECTION_STRING!, 
+  connectionString, 
   {useNewUrlParser: true, useUnifiedTopology: true}
 );
 
-const schema: any = buildSchema({
+const schema = buildSchema({
   resolvers: [
     AssetResolver,
     CampaignResolver,
@@ -50,7 +56,7 @@ const schema: any = buildSchema({
 });
 
 const server = new ApolloServer({
-  schema,
+  schema: schema as unknown as GraphQLSchema,
   context: ({req, res}) => {
     return {
       session: null,

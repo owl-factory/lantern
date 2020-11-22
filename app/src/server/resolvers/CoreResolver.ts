@@ -6,8 +6,9 @@ import { getUserID } from "../utilities/misc";
 import { buildFilters, isID } from "../utilities/resolverHelpers";
 import { GameSystemModel } from "@reroll/model/dist/documents/GameSystem";
 import { CoreDocument } from "@reroll/model/dist/documents/CoreDocument";
-import { CoreFilter } from "@reroll/model/dist/filters/CoreFilter";
-import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/models/graphQLResponses";
+import { GenericFiltersType } from "@reroll/model/dist/filters";
+import { GenericDocumentType, GenericModelType } from "@reroll/model/dist/documents";
+import { FindManyResponse, FindOneResponse, CreateOneResponse, FindCountResponse, UpdateOneResponse, DeleteOneResponse } from "../../types/resolvers";
 
 // Contains any aliases that might be passed in to findByAlias for any super document
 // TODO - move to a new file
@@ -15,15 +16,15 @@ interface SuperDocumentAliases {
   gameSystemID?: string;
 }
 
-type possibleSuperDocuments = keyof SuperDocumentAliases;
 
-const superDocumentAliasModels: any = {
+const superDocumentAliasModels: Record<keyof SuperDocumentAliases, GenericModelType> = {
   gameSystemID: GameSystemModel
 }
 
 export class CoreResolver {
   // The Typegoose model for running all core requests
   // NOTE: Needs to be any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   protected model!: ReturnModelType<any>;
 
   /**
@@ -31,7 +32,7 @@ export class CoreResolver {
    * @param alias The alias or ID of the document to find
    * @param superDocumentAliases The aliases of any owning documents that the target document must belong to
    */
-  protected findByAlias(alias: string, superDocumentAliases?: SuperDocumentAliases): Promise<Query<any> | null> {
+  protected findByAlias(alias: string, superDocumentAliases?: SuperDocumentAliases): FindOneResponse<GenericDocumentType> {
     return this._findByAlias(alias, this.model, superDocumentAliases);
   }
 
@@ -41,7 +42,7 @@ export class CoreResolver {
    * @param filters Filters given to find specific documents
    * @param options General options for modifying results, such as length and how many to skip
    */
-  protected findMany(filters?: any, options?: Options): Query<any[]> {
+  protected findMany(filters?: GenericFiltersType, options?: Options): FindManyResponse<GenericDocumentType> {
     const mongooseFilters = buildFilters(filters);
     return this.model.find(mongooseFilters, null, options);
   }
@@ -50,7 +51,7 @@ export class CoreResolver {
    * Finds the count for the given filters
    * @param filters Filters used for determining what is counted
    */
-  protected findCount(filters?: any): Query<number> {
+  protected findCount(filters?: GenericFiltersType): FindCountResponse {
     const mongooseFilters = buildFilters(filters);
     return this.model.countDocuments(mongooseFilters);
   }
@@ -60,7 +61,7 @@ export class CoreResolver {
    * @param data The data to insert into a new document
    * @param options Any additional options to save the data
    */
-  protected async createOne(data: CoreDocument): Query<any> {
+  protected async createOne(data: CoreDocument): Promise<CreateOneResponse<GenericDocumentType>> {
     const errors = await validate(data);
     if (errors.length > 0) {
       throw new Error(errors.toString());
@@ -82,7 +83,7 @@ export class CoreResolver {
    * @param _id The id of the document to update
    * @param data The new data of the document to set
    */
-  protected async updateOne(_id: string, data: CoreDocument): Query<UpdateResponse> {
+  protected async updateOne(_id: string, data: CoreDocument): Promise<UpdateOneResponse> {
     const errors = await validate(data);
     if (errors.length > 0) {
       throw new Error(errors.toString());
@@ -98,21 +99,8 @@ export class CoreResolver {
    * Hard deletes a single document
    * @param _id The id of the document to delete
    */
-  protected async deleteOne(_id: string): Query<DeleteResponse> {
+  protected async deleteOne(_id: string): Promise<DeleteOneResponse> {
     return this.model.deleteOne({_id});
-  }
-
-  private mergeFilters(filter?: any, filters?: any) {
-    // Handle all base cases
-    if (filter && filters) { return undefined; }
-    else if (!filters) { return [filter]; }
-    else if (!filter) { return filters; }
-
-    // Merge filter into all filters
-    filters.forEach((eachFilter: any) => {
-      eachFilter = {...eachFilter, ...filter};
-    });
-    return filters;
   }
 
 
@@ -126,17 +114,18 @@ export class CoreResolver {
    */
   private async _findByAlias(
     alias: string, 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     model: ReturnModelType<any>, // Note: also needs to be any
-    superDocumentAliases?: any // TODO - properly type this
-  ): Promise<Query<any> | null> {
+    superDocumentAliases?: SuperDocumentAliases // TODO - properly type this
+  ): Promise<Query<GenericDocumentType> | null> {
     // The search filters, to be used by the applyFilters function
-    const filters: any = {};
+    const filters: Record<string, unknown> = {};
 
     // Determines which filter we should use for finding by id or alias
     if (isID(alias)) {
-      filters._id_eq = alias;
+      filters._id = { eq: alias };
     } else {
-      filters.alias_eq = alias;
+      filters.alias = { eq: alias };
     }
 
     // Fetch early if we don't need to worry about super document aliases
@@ -147,7 +136,7 @@ export class CoreResolver {
 
     // We use a for loop over for each so we can easily return out
     for (let i = 0; i < superDocuments.length; i++) {
-      const superDocument = superDocuments[i];
+      const superDocument: string = superDocuments[i];
       // Catch case for typescripting
       if (!(superDocument in superDocumentAliases)) { 
         throw Error("Invalid super document alias")
@@ -156,13 +145,13 @@ export class CoreResolver {
       // TODO - this function has weird typing. We need to change the any in the superDocumentAliases
       // and superDocumentAliasModels into specifically typed types
       const superDocumentResult = await this._findByAlias(
-        superDocumentAliases[superDocument],
-        superDocumentAliasModels[superDocument]
+        (superDocumentAliases as Record<string, string>)[superDocument],
+        (superDocumentAliasModels as Record<string, unknown>)[superDocument]
       );
 
       if (!superDocumentResult) { return null; }
-
-      filters[`${superDocument}_eq`] = superDocumentResult._id;
+      
+      filters[`${superDocument}ID`] = { eq: superDocumentResult._id as string };
     }
 
     return model.findOne(buildFilters(filters), null);

@@ -1,6 +1,6 @@
 import { CoreDocument } from "./CoreDocument"
 import { prop, getModelForClass } from "@typegoose/typegoose";
-import { ObjectType, Field, ID, Int } from "type-graphql";
+import { ObjectType, Field, ID } from "type-graphql";
 
 /**
  * A model describing the Content document, which contains the static information

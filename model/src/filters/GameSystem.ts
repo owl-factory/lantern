@@ -5,7 +5,7 @@ import { CoreFilter } from "./CoreFilter";
  * Describes the various filters that may be applied to game system documents for searching
  */
 @InputType()
-class GameSystemFilter extends CoreFilter { 
+export class GameSystemFilter extends CoreFilter { 
 }
 
 /**

@@ -3,7 +3,9 @@
   "private": true,
   "scripts": {
     "bootstrap": "lerna bootstrap",
-    "build": "lerna run build"
+    "build": "lerna run build",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+
   },
   "devDependencies": {
     "lerna": "^3.22.1"

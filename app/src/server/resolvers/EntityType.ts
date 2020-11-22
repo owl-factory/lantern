@@ -3,9 +3,9 @@ import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/models/graphQ
 import { EntityTypeFilters } from "@reroll/model/dist/filters";
 import { CreateEntityTypeInput, UpdateEntityTypeInput } from "@reroll/model/dist/inputs";
 import { Options } from "@reroll/model/dist/inputs/Options";
-import { Query as MongoQuery } from "mongoose";
 import { Arg, Args, Authorized, Int, Mutation, Query, Resolver } from "type-graphql";
 import { CoreResolver } from "./CoreResolver";
+import { FindOneResponse, FindManyResponse, FindCountResponse, CreateOneResponse, UpdateOneResponse, DeleteOneResponse } from "../../types/resolvers";
 
 /**
  * Resolves entity type queries
@@ -19,8 +19,8 @@ export class EntityTypeResolver extends CoreResolver {
    * @param _id The id or alias of the document to return
    */
   @Query(() => EntityType, { nullable: true })
-  public entityType(@Arg("_id") _id: string) {
-    return super.findByAlias(_id);
+  public entityType(@Arg("_id") _id: string): FindOneResponse<EntityType> {
+    return super.findByAlias(_id) as FindOneResponse<EntityType>;
   }
 
   /**
@@ -30,8 +30,8 @@ export class EntityTypeResolver extends CoreResolver {
   public entityTypes(
     @Arg("filters", {nullable: true}) filters?: EntityTypeFilters,
     @Args() options?: Options
-  ): MongoQuery<EntityType[]> {
-    return super.findMany(filters, options);
+  ): FindManyResponse<EntityType> {
+    return super.findMany(filters, options) as FindManyResponse<EntityType>;
   }
 
   /**
@@ -39,7 +39,7 @@ export class EntityTypeResolver extends CoreResolver {
    * @param filters The filter object to count documents by. Identical to other filters
    */
   @Query(() => Int)
-  public entityTypeCount(@Arg("filters", {nullable: true}) filters?: EntityTypeFilters): MongoQuery<number> {
+  public entityTypeCount(@Arg("filters", {nullable: true}) filters?: EntityTypeFilters): FindCountResponse {
     return super.findCount(filters);
   }
 
@@ -49,8 +49,8 @@ export class EntityTypeResolver extends CoreResolver {
    */
   @Authorized()
   @Mutation(() => EntityType)
-  public createEntityType(@Arg("data") data: CreateEntityTypeInput): MongoQuery<EntityType> {
-    return super.createOne(data);
+  public createEntityType(@Arg("data") data: CreateEntityTypeInput): Promise<CreateOneResponse<EntityType>> {
+    return super.createOne(data) as Promise<CreateOneResponse<EntityType>>;
   }
 
   /**
@@ -63,7 +63,7 @@ export class EntityTypeResolver extends CoreResolver {
   public updateEntityType(
     @Arg("_id") _id: string,
     @Arg("data") data: UpdateEntityTypeInput
-  ): MongoQuery<UpdateResponse> {
+  ): Promise<UpdateOneResponse> {
     return super.updateOne(_id, data);
   }
 
@@ -73,7 +73,7 @@ export class EntityTypeResolver extends CoreResolver {
    */
   @Authorized()
   @Mutation(() => DeleteResponse)
-  public deleteEntityType(@Arg("_id") _id: string): MongoQuery<DeleteResponse> {
+  public deleteEntityType(@Arg("_id") _id: string): Promise<DeleteOneResponse> {
     return super.deleteOne(_id);
   }
 }
