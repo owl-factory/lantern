@@ -6,3 +6,4 @@ out_publish/
 
 next.config.js
 jest.config.js
+jest-mongodb-config.js

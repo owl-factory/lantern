@@ -23,7 +23,8 @@
     "strict": true
   },
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "src/tests"
   ],
   "include": [
     "next-env.d.ts",

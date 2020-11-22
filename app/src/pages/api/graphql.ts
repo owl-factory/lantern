@@ -23,8 +23,7 @@ import { GraphQLSchema } from "graphql";
 
 global.fetch = require("cross-fetch");
 
-let connectionString:any = process.env.MONGO_CONNECTION_STRING;
-if ("__MONGO_URI__" in global) { connectionString = global.__MONGO_URI__; }
+const connectionString = process.env.MONGO_CONNECTION_STRING || "";
 
 if (connectionString === "") {
   throw Error("No Mongo Connection String supplied.");
