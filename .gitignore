@@ -10,7 +10,7 @@
 */schema.gql
 
 # testing
-/coverage
+app/coverage
 mongo/data
 
 # next.js
