@@ -1,7 +1,4 @@
 import React from "react";
-import { Card, Button, Col, Row } from "react-bootstrap";
-import Link from "next/link";
-import { useRouter } from "next/router";
 import { NextPageContext } from "next";
 import gql from "graphql-tag"; 
 import { ContentTypeTable } from "../../../../../components/admin/contentTypes/Table";
@@ -9,8 +6,15 @@ import { client } from "../../../../../utilities/graphql/apiClient";
 import Page from "../../../../../components/design/Page";
 import Breadcrumbs from "../../../../../components/design/Breadcrumbs";
 import Pagination, { PageState } from "../../../../../components/design/Pagination";
+import { ContentType, GameSystem } from "@reroll/model/dist/documents";
 
 const initialPerPage = 25;
+
+interface ContentTypeViewProps {
+  gameSystem: GameSystem;
+  initialContentTypes: ContentType[];
+  contentTypeCount: number;
+}
 
 async function fetchContentTypes(
   page: number, 
@@ -44,13 +48,11 @@ async function fetchContentTypes(
  * @param entityCount The total count of entities that exist within this gamesystem
  * @param contentCount The total count of content that exist within this gamesystem
  */
-export default function GameSystemView({
+export default function ContentTypeView({
   gameSystem,
   initialContentTypes,
   contentTypeCount
-}: any) {
-  const router = useRouter();
-  const alias = router.query.gameSystemAlias;
+}: ContentTypeViewProps): JSX.Element {
 
   const [ contentTypes, setContentTypes ] = React.useState(initialContentTypes);
   const [ pageState, setPageState ] = React.useState({
@@ -67,7 +69,7 @@ export default function GameSystemView({
     const { data } = await fetchContentTypes(
       newPageState.page,
       newPageState.perPage,
-      gameSystem._id
+      gameSystem._id || "undefined"
     );
   
     setContentTypes(data.contentTypes);
@@ -79,7 +81,7 @@ export default function GameSystemView({
       <h1>{gameSystem.name}</h1>
       <Breadcrumbs
         skipLevels={1}
-        titles={["Admin", "Game Systems", gameSystem.name!, "Content Types"]}
+        titles={["Admin", "Game Systems", gameSystem.name, "Content Types"]}
       />
 
       <ContentTypeTable contentTypes={contentTypes} pageState={pageState} gameSystem={gameSystem}/>
@@ -89,7 +91,7 @@ export default function GameSystemView({
   );
 }
 
-GameSystemView.getInitialProps = async (ctx: NextPageContext) => {
+ContentTypeView.getInitialProps = async (ctx: NextPageContext) => {
   const alias = ctx.query.gameSystemAlias;
 
   // TODO - can we merge this into the fetchContentType query to save calls?

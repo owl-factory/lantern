@@ -19,7 +19,7 @@ export enum AuthCardSection {
  * Renders an authentication card
  * @param props Contains the session
  */
-function AuthenticationCard(props: AuthenticationCardProps) {
+function AuthenticationCard(props: AuthenticationCardProps): JSX.Element {
   const [section, setSection] = useState(props.initialState || AuthCardSection.login);
 
   let cardBody: ReactNode;

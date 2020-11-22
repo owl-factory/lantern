@@ -4,7 +4,15 @@ import Table from "../../design/tables/Table";
 import { ContextMenuBuilder } from "../../../utilities/design/contextMenu";
 import { MdPageview, MdInfo, MdBuild } from "react-icons/md";
 import ContextMenu from "../../design/contextMenus/ContextMenu";
-import { GameSystem } from "@reroll/model/dist/documents/GameSystem";
+import { GameSystem, Module } from "@reroll/model/dist/documents";
+import { PageState } from "../../design/Pagination";
+import { TableComponentProps } from "../../../model/design/table";
+
+interface ModuleTableProps {
+  gameSystem: GameSystem;
+  modules: Module[];
+  pageState: PageState;
+}
 
 const moduleActions = new ContextMenuBuilder()
   .addLink("View", MdPageview, "/[gameSystemAlias]/modules/[moduleAlias]")
@@ -15,14 +23,15 @@ const moduleActions = new ContextMenuBuilder()
  * Renders the actions for the game systems page
  * @param props A game system object
  */
-function ModuleActions(data: any, globalData: GameSystem) {
+function ModuleActions({ data, globalData }: TableComponentProps) {
+  const typedGlobalData = globalData as Record<string, unknown>;
 
   return (
     <ContextMenu 
       context={{
         name: data.name,
         moduleAlias: data.alias || data._id,
-        gameSystemAlias: globalData.alias || globalData._id
+        gameSystemAlias: typedGlobalData.alias || typedGlobalData._id
       }} 
       {...moduleActions.renderConfig()}
     />
@@ -33,16 +42,13 @@ const tableBuilder = new TableBuilder()
   .addDataColumn("Module", "name")
   .addDataColumn("Alias", "alias")
   .addDataColumn("Publish Type", "publishType")
-
-  .addDataColumn("Published", "isPublished", (isPublished: boolean) => (isPublished ? "Yes" : "No"))
-  .addDataColumn("Cost", "cost", (cost: number) => (cost ? `$${cost / 100}` : "--"))
   .addComponentColumn("Tools", ModuleActions);
 
-export default function ModuleTable(props: any) {
+export default function ModuleTable(props: ModuleTableProps): JSX.Element {
   return <Table 
     {...tableBuilder.renderConfig()} 
     data={props.modules}
-    globalData={props.gameSystem}
+    globalData={props.gameSystem as Record<string, unknown>}
     startingIncrement={(props.pageState.page - 1) * props.pageState.perPage + 1}
   />
 }

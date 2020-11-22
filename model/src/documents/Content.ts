@@ -1,7 +1,6 @@
 import { CoreDocument } from "./CoreDocument"
 import { prop, getModelForClass } from "@typegoose/typegoose";
-import { ObjectType, Field, ID, Int } from "type-graphql";
-import GraphQLJSON from 'graphql-type-json';
+import { ObjectType, Field, ID } from "type-graphql";
 
 /**
  * A model describing the Content document, which contains the static information
@@ -13,30 +12,9 @@ export class Content extends CoreDocument {
   @prop({ required: true })
   gameSystemID?: string;
 
-  // The originating content that this is copied from
-  @Field(() => ID, { nullable: true })
-  @prop()
-  sourceContentID?: string; 
-
   @Field(() => ID)
   @prop({ required: true })
   contentTypeID?: string;
-
-  @Field(() => [ID], { defaultValue: [] })
-  @prop({ default: [] })
-  moduleIDs?: string[];
-
-  @Field(() => Int)
-  @prop({ required: true })
-  publishType?: number;
-
-  @Field(() => Boolean)
-  @prop()
-  isPurchasable?: boolean;
-
-  @Field(() => GraphQLJSON)
-  @prop({ default: {}})
-  data: any;
 }
 
 export const ContentModel = getModelForClass(Content);

@@ -1,37 +1,45 @@
 import React from "react";
 import { useRouter } from "next/router";
-import { GameSystemInput } from "@reroll/model/dist/inputs/GameSystemInput";
 import gql from "graphql-tag";
 import { client } from "../../../../../utilities/graphql/apiClient";
 import Page from "../../../../../components/design/Page";
 import Breadcrumbs from "../../../../../components/design/Breadcrumbs";
 import { NextPageContext } from "next";
 import ContentTypeForm from "../../../../../components/admin/contentTypes/Form";
-import { ContentTypeInput } from "@reroll/model/dist/inputs/ContentTypeInput";
+import { CommonContentType, GameSystem } from "@reroll/model/dist/documents";
+import { CreateContentTypeInput } from "@reroll/model/dist/inputs";
+import { GraphQLResponse } from "../../../../../types/graphql";
+import { FetchError } from "node-fetch";
+
+interface NewContentTypeFormProps {
+  commonContentTypes: CommonContentType[];
+  gameSystem: GameSystem;
+}
+
+interface NewCommonContentTypeProps {
+  commonContentTypes: CommonContentType[];
+  gameSystem: GameSystem;
+}
 
 /**
  * Renders a new game system form
- * @param props.themes The themes to render within the form's theme dropdown 
  */
-export function NewContentTypeForm({ commonContentTypes, gameSystem }: any) {
+export function NewContentTypeForm({ commonContentTypes, gameSystem }: NewContentTypeFormProps): JSX.Element {
   const router = useRouter();
   return <ContentTypeForm 
     commonContentTypes={commonContentTypes}
     initialValues={{
       name: "",
-      alias: "",
-      isTypeOnly: false
+      alias: ""
     }}
-    onSubmit={(values: ContentTypeInput) => {
+    onSubmit={(values: CreateContentTypeInput) => {
       const newContentTypeMutation = gql`
       mutation {
         newContentType (data: {
           name: "${values.name}",
           alias: "${values.alias}",
           gameSystemID: "${gameSystem._id}",
-          commonContentTypeID: "${values.commonContentTypeID}",
-          isTypeOnly: ${values.isTypeOnly},
-          description: "${values.description}"
+          commonContentTypeID: "${values.commonContentTypeID}"
         }) {
           _id,
           alias
@@ -39,12 +47,12 @@ export function NewContentTypeForm({ commonContentTypes, gameSystem }: any) {
       }
       `;
       client.mutate({mutation: newContentTypeMutation})
-      .then((res: any ) => {
+      .then((res: GraphQLResponse ) => {
         const gameSystemAlias = router.query.gameSystemAlias;
         const key = res.data.newContentType.alias || res.data.newContentType._id;
         router.push(`/admin/game-systems/${gameSystemAlias}/content-types/${key}`)
       })
-      .catch((error: any) => {
+      .catch((error: FetchError) => {
         // TODO - Better error handling
         console.log(error)
       });
@@ -55,7 +63,7 @@ export function NewContentTypeForm({ commonContentTypes, gameSystem }: any) {
 /**
  * Renders a the page to create a new game system
  */
-export default function NewCommonContentType({ commonContentTypes, gameSystem }: any) {
+export default function NewCommonContentType({ commonContentTypes, gameSystem }: NewCommonContentTypeProps): JSX.Element {
   return (
     <Page>
       <h1>Create Content Type</h1>
@@ -92,7 +100,7 @@ NewCommonContentType.getInitialProps = async (ctx: NextPageContext) => {
     }
   }`;
 
-  const { data, loading } = await client.query({query: query});
+  const { data } = await client.query({query: query});
   
   return { 
     commonContentTypes: data.commonContentTypes,

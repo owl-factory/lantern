@@ -1,9 +1,10 @@
 import { TableBuilder } from "../../../utilities/design/table";
 import Table from "../../design/tables/Table";
 import { PageState } from "../../design/Pagination";
+import { Campaign } from "@reroll/model/dist/documents";
 
 export interface CampaignTableProps {
-  campaigns: any; // Campaign model TODO
+  campaigns: Campaign[]; // Campaign model TODO
   pageState: PageState;
 }
 
@@ -12,7 +13,7 @@ const tableBuilder = new TableBuilder()
 .addDataColumn("Campaign", "name")
 .addDataColumn("Alias", "alias")
 .addDataColumn("Publish Type", "publishType")
-.addDataColumn("Published", "isPublished", (isPublished: boolean) => (isPublished ? "Yes" : "No"))
+.addDataColumn("Published", "isPublished", (isPublished: unknown) => (isPublished ? "Yes" : "No"))
 // .addComponentColumn("Tools", );
 
 /**
@@ -21,7 +22,7 @@ const tableBuilder = new TableBuilder()
  * @param props.campaigns An array of campaigns to render in a table
  * @param props.pageState The page state with page, perPage, and total count
  */
-export function CampaignTable(props: any) {
+export function CampaignTable(props: CampaignTableProps): JSX.Element {
   return <Table 
     {...tableBuilder.renderConfig()} 
     data={props.campaigns} 

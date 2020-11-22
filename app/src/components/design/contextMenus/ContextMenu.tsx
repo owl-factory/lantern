@@ -1,17 +1,17 @@
-import { ContextMenuBuilderOutput } from "../../../model/design/contextMenu";
+import { ContextMenuBuilderOutput, ContextMenuContext } from "../../../model/design/contextMenu";
 import { ContextDropdownMenu } from "./ContextDropdown";
 import { Dropdown, ButtonGroup } from "react-bootstrap";
 import Tooltip from "../Tooltip";
 import { ContextButtons } from "./ContextButtons";
 
 interface ContextMenuProps extends ContextMenuBuilderOutput {
-  context: any;
+  context: ContextMenuContext;
 }
 
 /**
  * Renders the button for opening a dropdown menu
  */
-function ContextDropdownButton(props: any) {
+function ContextDropdownButton() {
   return (
     <Tooltip title="More">
       <Dropdown.Toggle 
@@ -28,7 +28,7 @@ function ContextDropdownButton(props: any) {
  * Renders the context menu
  * @param props Information for how to render the context buttons and de
  */
-export default function ContextMenu(props: ContextMenuProps) {
+export default function ContextMenu(props: ContextMenuProps): JSX.Element {
   const buttonMenu = <ContextButtons {...props}/>;
   const dropdownMenu = <ContextDropdownMenu {...props}/>;
 

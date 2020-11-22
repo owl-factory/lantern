@@ -1,25 +1,18 @@
 import React from "react";
-import { Button, ButtonGroup, Dropdown } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import Breadcrumbs from "../../../components/design/Breadcrumbs";
 import Table from "../../../components/design/tables/Table";
 import Page from "../../../components/design/Page";
 import { GameSystem } from "@reroll/model/dist/documents/GameSystem";
 import { TableBuilder } from "../../../utilities/design/table";
 import Link from "next/link";
-import ContextDropdown from "../../../components/design/contextMenus/ContextDropdown";
 import { ContextMenuBuilder } from "../../../utilities/design/contextMenu";
 import { MdBuild, MdInfo, MdPageview, MdBlock } from "react-icons/md";
 import { client } from "../../../utilities/graphql/apiClient";
 import gql from "graphql-tag";
 import Pagination, { PageState } from "../../../components/design/Pagination";
 import ContextMenu from "../../../components/design/contextMenus/ContextMenu";
-
-const initialPerPage = 10;
-const gameSystemActions = new ContextMenuBuilder()
-  .addLink("View", MdPageview, "/game-systems/[alias]")
-  .addLink("Details", MdInfo, "/admin/game-systems/[alias]")
-  .addLink("Edit", MdBuild, "/admin/game-systems/[alias]/edit")
-  .addItem("Delete", MdBlock, (context: GameSystem) => (confirm(`Are you sure you want to delete ${context.name}?`)))
+import { TableComponentProps } from "../../../model/design/table";
 
 /**
  * @param gameSystems A collection of game system objects
@@ -29,24 +22,27 @@ interface GameSystemsProps {
   gameSystemCount: number;
 }
 
+const initialPerPage = 10;
+const gameSystemActions = new ContextMenuBuilder()
+  .addLink("View", MdPageview, "/game-systems/[alias]")
+  .addLink("Details", MdInfo, "/admin/game-systems/[alias]")
+  .addLink("Edit", MdBuild, "/admin/game-systems/[alias]/edit")
+  .addItem("Delete", MdBlock, (context: GameSystem) => (confirm(`Are you sure you want to delete ${context.name}?`)))
+
 const tableBuilder = new TableBuilder()
   .addIncrementColumn("")
   .addDataColumn("Game System", "name")
   .addDataColumn("Alias", "alias")
-  .addDataColumn("Published", "isPublished", (isPublished: boolean) => (isPublished ? "Yes" : "No"))
   .addComponentColumn("Tools", GameSystemActions);
 
 /**
  * Renders the actions for the game systems page
  * @param props A game system object
  */
-function GameSystemActions(props: GameSystem) {
-  // View, Details, Edit, Modules
-  const urlKey = props.alias || props._id;
-
+function GameSystemActions({ data }: TableComponentProps) {
   return (
     <ContextMenu 
-      context={{name: props.name, alias: props.alias || props._id}} 
+      context={{name: data.name, alias: data.alias || data._id}} 
       {...gameSystemActions.renderConfig()}
     />
   );
@@ -56,7 +52,7 @@ function GameSystemActions(props: GameSystem) {
  * Renders the Admin Game Systems page
  * @param gameSystems An array of game systems
  */
-function GameSystems(data: GameSystemsProps) {
+function GameSystems(data: GameSystemsProps): JSX.Element {
   const [ gameSystemData, setGameSystemData ] = React.useState(data);
   const [pageState, setPageState] = React.useState({
     page: 1,
@@ -116,7 +112,6 @@ async function queryGameSystems(page: number, perPage: number, ) {
 GameSystems.getInitialProps = async () => {
   const gameSystemData = await queryGameSystems(1, initialPerPage);
   return gameSystemData.data;
-  // return {gameSystems: [], gameSystemCount: 0}
 }
 
 export default GameSystems;

@@ -6,7 +6,7 @@ import Link from "next/link";
 /**
  * A standard Header Bar used on every page
  */
-function HeaderBar() {
+function HeaderBar(): JSX.Element {
   return (
     <Navbar variant="dark" bg="dark" expand="lg" className="justify-content-between">
       <Link href="/" passHref>

@@ -1,13 +1,13 @@
 import React from "react";
 import { Table as BSTable } from "react-bootstrap"
-import { Column } from "../../../model/design/table";
+import { Column, TableDataType } from "../../../model/design/table";
 
-type RowAction = (index: number, data: any, globalData?: any) => void; 
+type RowAction = (index: number, data: TableDataType, globalData?: TableDataType) => void; 
 
 interface TableProps {
   columns: Column[]; // The column configuration
-  data: any[]; // An array of data to render
-  globalData?: any; 
+  data: TableDataType[]; // An array of data to render
+  globalData?: TableDataType; 
   // An action that may be applied to the whole row
   rowAction?: RowAction;
   startingIncrement?: number; // The number to begin incrementation on
@@ -19,8 +19,8 @@ interface TableHeaderProps {
 
 interface TableBodyProps {
   columns: Column[]; // The column configuration
-  data: any[]; // An array of data to render
-  globalData?: any; // Any data that is static across all rows
+  data: TableDataType[]; // An array of data to render
+  globalData?: TableDataType; // Any data that is static across all rows
   // An action that may be applied to the whole row
   rowAction?: RowAction; 
   startingIncrement?: number; // The number to begin incrementation on
@@ -28,8 +28,8 @@ interface TableBodyProps {
 
 interface TableRowProps {
   columns: Column[]; // The column configuration
-  data: any; // The object with data to render
-  globalData?: any; // Any data that is static across all rows
+  data: TableDataType; // The object with data to render
+  globalData?: TableDataType; // Any data that is static across all rows
   // An action that may be applied to the whole row
   rowAction?: RowAction; 
   increment: number; // The current row increment
@@ -58,7 +58,7 @@ function TableBody(props: TableBodyProps) {
   const rows: JSX.Element[] = [];
   let increment = props.startingIncrement || 1; 
 
-  props.data.forEach((rowData: any) => {
+  props.data.forEach((rowData: TableDataType) => {
     rows.push(
       <TableRow 
         key={"row-" + increment}
@@ -86,16 +86,17 @@ function TableRow(props: TableRowProps) {
   // This might break some stuff. We need to test it because otherwise we have 
   // issues with "this might not be defined"
   onClick = () => (rowAction(props.increment, props.data, props.globalData));
+  const typedData = props.data as Record<string, unknown>;
 
-  props.columns.forEach((column: any) => {
+  props.columns.forEach((column: Column) => {
     if (column.key !== undefined) {
-      content = props.data[column.key];
+      content = typedData[column.key] as (string | number | JSX.Element | undefined);
       if (column.modification) {
-        content = column.modification(props.data[column.key]);
+        content = column.modification(typedData[column.key] as (string | boolean));
       }
 
     } else if (column.component !== undefined) {
-      content = column.component(props.data, props.globalData);
+      content = column.component( { data: props.data as Record<string, unknown>, globalData: props.globalData as Record<string, unknown>} );
 
     } else if (column.increment === true) {
       content = props.increment;
@@ -115,8 +116,7 @@ function TableRow(props: TableRowProps) {
  * Renders a table based off of given data and column configuration
  * @param props see TableProps
  */
-export default function Table(props: TableProps) {
-  console.log(props.rowAction)
+export default function Table(props: TableProps): JSX.Element {
   return (
     <BSTable>
       <TableHeader columns={props.columns}/>

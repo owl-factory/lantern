@@ -49,7 +49,7 @@ export interface CoreInputProps extends FieldProps {
 export interface CoreFormCheckProps extends FieldProps {
   "aria-label"?: string; // The usability label
   children?: ReactNode;
-  disabled?: string;
+  disabled?: boolean;
   name: string;
 }
 
@@ -59,7 +59,7 @@ export interface CoreFormCheckProps extends FieldProps {
  * @param onSubmit The action to run on submit
  */
 export interface FormixFormProps<T> {
-  errors?: any;
+  errors?: Record<string, string>;
   initialValues: T; 
   onSubmit: (values: T) => void | Promise<T>;
 }

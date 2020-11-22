@@ -1,26 +1,34 @@
 import React from "react";
 import { useRouter } from "next/router";
-import { ModuleInput } from "@reroll/model/dist/inputs/ModuleInput";
 import gql from "graphql-tag";
 import { NextPageContext } from "next";
 import { client } from "../../../../utilities/graphql/apiClient";
 import Page from "../../../../components/design/Page";
 import Breadcrumbs from "../../../../components/design/Breadcrumbs";
 import CommonEntityTypeForm from "../../../../components/admin/commonEntityTypes/Form";
+import { CommonEntityType } from "@reroll/model/dist/documents";
+import { FetchError } from "node-fetch";
+import { UpdateCommonEntityTypeInput } from "@reroll/model/dist/inputs";
+
+interface EditCommonEntityTypeFormProps {
+  commonEntityType: CommonEntityType;
+}
+
+interface EditCommonEntityTypeProps {
+  commonEntityType: CommonEntityType;
+}
 
 /**
  * Renders a new game system form
- * @param props.themes The themes to render within the form's theme dropdown 
  */
-export function EditCommonEntityTypeForm(props: any) {
+export function EditCommonEntityTypeForm(props: EditCommonEntityTypeFormProps): JSX.Element {
   const router = useRouter();
   return <CommonEntityTypeForm 
     initialValues={{
       name: props.commonEntityType.name,
       alias: props.commonEntityType.alias,
-      description: props.commonEntityType.description
     }}
-    onSubmit={(values: ModuleInput) => {
+    onSubmit={(values: UpdateCommonEntityTypeInput) => {
       const { alias } = router.query;
 
       const EditCommonEntityTypeMutation = gql`
@@ -29,8 +37,7 @@ export function EditCommonEntityTypeForm(props: any) {
           _id: "${props.commonEntityType._id}",
           data: {
             name: "${values.name}",
-            alias: "${values.alias}",
-            description: "${values.description}"
+            alias: "${values.alias}"
           }
         ) {
           ok
@@ -39,10 +46,10 @@ export function EditCommonEntityTypeForm(props: any) {
       `;
       
       client.mutate({mutation: EditCommonEntityTypeMutation})
-      .then((res: any, ) => {
+      .then(( ) => {
         router.push(`/admin/entity-types/${alias}`)
       })
-      .catch((error: any) => {
+      .catch((error: FetchError) => {
         // TODO - Better error handling
         console.log(error)
       });
@@ -50,7 +57,7 @@ export function EditCommonEntityTypeForm(props: any) {
   />;
 }
 
-export default function EditCommonEntityType({ commonEntityType }: any) {
+export default function EditCommonEntityType({ commonEntityType }: EditCommonEntityTypeProps): JSX.Element {
   return (
     <Page>
       <h1>New {commonEntityType.name} Module</h1>

@@ -1,6 +1,6 @@
-import React, { ReactNode } from "react";
+import React from "react";
 import { Tooltip as BSTooltip, OverlayTrigger } from "react-bootstrap";
-import { def, idify } from "../../utilities/tools";
+import { idify } from "../../utilities/tools";
 
 // Where the tooltip will be placed in relation to the children
 type TooltipPlacement = "top" | "bottom" | "left" | "right";
@@ -17,8 +17,8 @@ interface TooltipProps {
  * @param {TooltipPlacement} props.placement Where the tooltip will be place in relation to the children
  * @param {string} props.title The title of the tooltip
  */
-export default function Tooltip(props: TooltipProps) {
-  const placement = def<TooltipPlacement>(props.placement, "top");
+export default function Tooltip(props: TooltipProps): JSX.Element {
+  const placement = props.placement || "top";
   return (
     <OverlayTrigger
       placement={placement}

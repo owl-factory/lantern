@@ -13,23 +13,16 @@ import { ModuleCard } from "../../../../components/admin/modules/Card";
 import { ContentCard } from "../../../../components/admin/content/Card";
 import { EntityCard } from "../../../../components/admin/entities/Card";
 import { ContentTypeCard } from "../../../../components/admin/contentTypes/Card";
+import { ContentType, EntityType, GameSystem, Module } from "@reroll/model/dist/documents";
 
-/**
- * Publishes a game system
- * @param _id The id of the gamesystem to publish
- */
-function publish(_id: string) {
-  const publishGameSystem = gql`mutation {
-    updateGameSystem(_id: "${_id}", data: {isPublished: true}) {
-      ok
-    }
-  }`;
-
-  client.mutate({mutation: publishGameSystem})
-  .then((res: any) => {
-    // TODO - need a way to refetch this!
-    console.log("Published!")
-  })
+interface GameSystemViewProps {
+  gameSystem: GameSystem;
+  modules: Module[];
+  moduleCount: number;
+  contentTypes: ContentType[];
+  entityTypes: EntityType[];
+  entityCount: number;
+  contentCount: number;
 }
 
 /**
@@ -48,14 +41,14 @@ export default function GameSystemView({
   entityTypes,
   entityCount, 
   contentCount
-}: any) {
+}: GameSystemViewProps): JSX.Element {
   const router = useRouter();
   const alias = router.query.gameSystemAlias;
   
   return (
     <Page>
       <h1>{gameSystem.name}</h1>
-      <Breadcrumbs skipLevels={1} titles={["Admin", "Game Systems", gameSystem.name!]}/>
+      <Breadcrumbs skipLevels={1} titles={["Admin", "Game Systems", gameSystem.name]}/>
 
       <Row>
         <Col lg={3} md={4} sm={6} xs={12}>
@@ -78,13 +71,6 @@ export default function GameSystemView({
             <p>{contentCount}</p>  
           </Card.Body></Card>
         </Col>
-
-        <Col lg={3} md={4} sm={6} xs={12}>
-          <Card><Card.Body>
-            <>Published?</>
-            <p>{gameSystem.isPublished ? "Yes" : "No"}</p>  
-          </Card.Body></Card>
-        </Col>
       </Row>
 
       <hr/>
@@ -97,7 +83,6 @@ export default function GameSystemView({
               <>Details</>
             </Card.Header>
             <Card.Body>
-              <b>Description:</b> {gameSystem.description}<br/>
               <b>Alias:</b> {gameSystem.alias}<br/>
               <b>Created At:</b> {gameSystem.createdAt}<br/>
               <b>Last Edited At:</b> {gameSystem.updatedAt}
@@ -147,13 +132,7 @@ export default function GameSystemView({
           <Link href={"/admin/game-systems/" + alias + "/edit"}  passHref>
             <Button>Edit</Button>
           </Link>
-
-          <Button 
-            disabled={gameSystem.isPublished}
-            onClick={() => publish(gameSystem._id)}
-          >
-            Publish{gameSystem.isPublished ? "ed" : ""}
-          </Button>
+          
           <Button>Delete</Button>
 
         </Card.Body>

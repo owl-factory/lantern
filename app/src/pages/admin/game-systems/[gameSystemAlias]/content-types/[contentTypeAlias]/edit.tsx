@@ -2,22 +2,35 @@ import React from "react";
 import { useRouter } from "next/router";
 import gql from "graphql-tag";
 import { NextPageContext } from "next";
-import { ContentTypeInput } from "@reroll/model/dist/inputs/ContentTypeInput";
 import { client } from "../../../../../../utilities/graphql/apiClient";
 import ContentTypeForm from "../../../../../../components/admin/contentTypes/Form";
 import Page from "../../../../../../components/design/Page";
 import Breadcrumbs from "../../../../../../components/design/Breadcrumbs";
+import { ContentType, CommonContentType, GameSystem } from "@reroll/model/dist/documents";
+import { UpdateContentTypeInput } from "@reroll/model/dist/inputs";
+import { FetchError } from "node-fetch";
+
+interface EditContentTypeFormProps {
+  commonContentTypes: CommonContentType[];
+  contentType: ContentType;
+}
+
+interface EditContentTypeProps {
+  commonContentTypes: CommonContentType[];
+  contentType: ContentType;
+  gameSystem: GameSystem;
+}
 
 /**
  * Renders a new game system form
  * @param props.themes The themes to render within the form's theme dropdown 
  */
-export function EditContentTypeForm({ commonContentTypes, contentType, gameSystem }: any) {
+export function EditContentTypeForm({ commonContentTypes, contentType }: EditContentTypeFormProps): JSX.Element {
   const router = useRouter();
   return <ContentTypeForm 
     commonContentTypes={commonContentTypes}
     initialValues={contentType}
-    onSubmit={(values: ContentTypeInput) => {
+    onSubmit={(values: UpdateContentTypeInput) => {
       const newContentTypeMutation = gql`
       mutation {
         updateContentType (
@@ -25,9 +38,7 @@ export function EditContentTypeForm({ commonContentTypes, contentType, gameSyste
           data: {
             name: "${values.name}",
             alias: "${values.alias}",
-            commonContentTypeID: "${values.commonContentTypeID}",
-            isTypeOnly: ${values.isTypeOnly},
-            description: "${values.description}"
+            commonContentTypeID: "${values.commonContentTypeID}"
           }
         ) {
           n,
@@ -36,12 +47,12 @@ export function EditContentTypeForm({ commonContentTypes, contentType, gameSyste
       }
       `;
       client.mutate({mutation: newContentTypeMutation})
-      .then((res: any ) => {
+      .then(() => {
         const gameSystemAlias = router.query.gameSystemAlias;
         const key = values.alias || contentType._id;
         router.push(`/admin/game-systems/${gameSystemAlias}/content-types/${key}`)
       })
-      .catch((error: any) => {
+      .catch((error: FetchError) => {
         // TODO - Better error handling
         console.log(error)
       });
@@ -52,7 +63,7 @@ export function EditContentTypeForm({ commonContentTypes, contentType, gameSyste
 /**
  * Renders a the page to create a new game system
  */
-export default function EditContentType({ commonContentTypes, contentType, gameSystem }: any) {
+export default function EditContentType({ commonContentTypes, contentType, gameSystem }: EditContentTypeProps): JSX.Element {
   return (
     <Page>
       <h1>Edit {contentType.name}</h1>
@@ -67,7 +78,7 @@ export default function EditContentType({ commonContentTypes, contentType, gameS
 
       <br/>
 
-      <EditContentTypeForm commonContentTypes={commonContentTypes} contentType={contentType} gameSystem={gameSystem}/>
+      <EditContentTypeForm commonContentTypes={commonContentTypes} contentType={contentType}/>
     </Page>
   );
 }
@@ -76,7 +87,7 @@ export default function EditContentType({ commonContentTypes, contentType, gameS
 EditContentType.getInitialProps = async (ctx: NextPageContext) => {
   const { contentTypeAlias, gameSystemAlias } = ctx.query;
   
-  let query = gql`query {
+  const query = gql`query {
     commonContentTypes (sort: "name") {
       _id,
       name,

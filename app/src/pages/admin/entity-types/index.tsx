@@ -10,8 +10,13 @@ import { Button } from "react-bootstrap";
 import Link from "next/link";
 import { MdBuild, MdInfo } from "react-icons/md";
 import ContextMenu from "../../../components/design/contextMenus/ContextMenu";
-import { CommonContentType } from "@reroll/model/dist/documents/CommonContentType";
 import { ContextMenuBuilder } from "../../../utilities/design/contextMenu";
+import { CommonEntityType } from "@reroll/model/dist/documents";
+
+interface CommonEntityTypeIndexProps {
+  initialEntityTypes: CommonEntityType[];
+  entityTypeCount: number;
+}
 
 const initialPerPage = 25;
 const entityTypeActions = new ContextMenuBuilder()
@@ -22,13 +27,12 @@ const entityTypeActions = new ContextMenuBuilder()
  * Renders the actions for the content types table
  * @param props A game system object
  */
-function EntityTypeActions(props: CommonContentType) {
+function EntityTypeActions(props: { data: CommonEntityType }) {
   // View, Details, Edit, Modules
-  const urlKey = props.alias || props._id;
 
   return (
     <ContextMenu 
-      context={{name: props.name, alias: props.alias || props._id}} 
+      context={{name: props.data.name, alias: props.data.alias || props.data._id}} 
       {...entityTypeActions.renderConfig()}
     />
   );
@@ -61,7 +65,7 @@ async function queryEntityTypes(page: number, perPage: number) {
  * @param props.entityTypes An array of entity types of to render into a table
  * @param props.pageState A page state containing page and perPage
  */
-export default function CommonEntityTypeIndex({ initialEntityTypes, entityTypeCount }: any) {
+export default function CommonEntityTypeIndex({ initialEntityTypes, entityTypeCount }: CommonEntityTypeIndexProps): JSX.Element {
   const [ contentTypes, setContentTypes ] = React.useState(initialEntityTypes);
   const [ pageState, setPageState ] = React.useState({
     page: 1,
@@ -94,7 +98,7 @@ export default function CommonEntityTypeIndex({ initialEntityTypes, entityTypeCo
 
       <Table 
         {...tableBuilder.renderConfig()} 
-        data={contentTypes} 
+        data={contentTypes as Record<string, unknown>[]} 
         startingIncrement={(pageState.page - 1) * pageState.perPage + 1}
       />
       <Pagination pageState={pageState} setPageState={setPage}/>

@@ -1,31 +1,31 @@
 import React from "react";
 import Breadcrumbs from "../../../components/design/Breadcrumbs";
-import GameSystemForm from "../../../components/admin/gameSystems/Form";
 import Page from "../../../components/design/Page";
 import gql from "graphql-tag";
-import { GameSystemInput } from "@reroll/model/dist/inputs/GameSystemInput"
 import { client } from "../../../utilities/graphql/apiClient";
 import { useRouter } from "next/router";
 import CommonContentTypeForm from "../../../components/admin/commonContentTypes/Form";
+import { CreateContentTypeInput } from "@reroll/model/dist/inputs";
+import { GraphQLResponse } from "../../../types/graphql";
+import { FetchError } from "node-fetch";
 
 /**
  * Renders a new game system form
  * @param props.themes The themes to render within the form's theme dropdown 
  */
-export function NewCommonContentTypeForm() {
+export function NewCommonContentTypeForm(): JSX.Element {
   const router = useRouter();
   return <CommonContentTypeForm 
     initialValues={{
       name: "",
       alias: ""
     }}
-    onSubmit={(values: GameSystemInput) => {
+    onSubmit={(values: CreateContentTypeInput) => {
       const newGameSystemMutation = gql`
       mutation {
         newCommonContentType (data: {
           name: "${values.name}",
-          alias: "${values.alias}",
-          description: "${values.description}"
+          alias: "${values.alias}"
         }) {
           _id,
           alias
@@ -33,11 +33,11 @@ export function NewCommonContentTypeForm() {
       }
       `;
       client.mutate({mutation: newGameSystemMutation})
-      .then((res: any, ) => {
+      .then((res: GraphQLResponse ) => {
         const key = res.data.newCommonContentType.alias || res.data.newGamenewCommonContentTypeystem._id;
         router.push(`/admin/content-types/${key}`)
       })
-      .catch((error: any) => {
+      .catch((error: FetchError) => {
         // TODO - Better error handling
         console.log(error)
       });
@@ -49,7 +49,7 @@ export function NewCommonContentTypeForm() {
  * Renders a the page to create a new game system
  * @param themes The themes to render within the new game system form
  */
-function NewCommonContentType() {
+function NewCommonContentType(): JSX.Element {
   return (
     <Page>
       <h1>Create Common Content Type</h1>

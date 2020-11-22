@@ -1,28 +1,37 @@
 import React from "react";
 import { useRouter } from "next/router";
 import ModuleForm from "../../../../../../components/admin/modules/Form";
-import { ModuleInput } from "@reroll/model/dist/inputs/ModuleInput";
 import gql from "graphql-tag";
 import { client } from "../../../../../../utilities/graphql/apiClient";
 import Page from "../../../../../../components/design/Page";
 import Breadcrumbs from "../../../../../../components/design/Breadcrumbs";
 import { NextPageContext } from "next";
+import { Module, GameSystem } from "@reroll/model/dist/documents";
+import { UpdateModuleInput } from "@reroll/model/dist/inputs";
+import { FetchError } from "node-fetch";
+
+interface EditModuleFormProps {
+  gameSystem: GameSystem;
+  module: Module;
+}
+
+interface EditModuleProps {
+  gameSystem: GameSystem;
+  module: Module
+}
 
 /**
  * Renders a new game system form
  * @param props.themes The themes to render within the form's theme dropdown 
  */
-export function EditModuleForm(props: any) {
+export function EditModuleForm(props: EditModuleFormProps): JSX.Element {
   const router = useRouter();
   return <ModuleForm 
     initialValues={{
       name: props.module.name,
       alias: props.module.alias,
-      description: props.module.description,
-      isPurchasable: props.module.isPurchasable,
-      cost: props.module.cost
     }}
-    onSubmit={(values: ModuleInput) => {
+    onSubmit={(values: UpdateModuleInput) => {
       const { gameSystemAlias, moduleAlias } = router.query;
 
       const EditModuleMutation = gql`
@@ -31,10 +40,7 @@ export function EditModuleForm(props: any) {
           _id: "${props.module._id}",
           data: {
             name: "${values.name}",
-            alias: "${values.alias}",
-            description: "${values.description}",
-            isPurchasable: ${values.isPurchasable || false},
-            cost: ${(values.cost || 0) * 100}
+            alias: "${values.alias}"
           }
         ) {
           ok
@@ -43,10 +49,10 @@ export function EditModuleForm(props: any) {
       `;
       
       client.mutate({mutation: EditModuleMutation})
-      .then((res: any, ) => {
+      .then(( ) => {
         router.push(`/admin/game-systems/${gameSystemAlias}/modules/${moduleAlias}`)
       })
-      .catch((error: any) => {
+      .catch((error: FetchError) => {
         // TODO - Better error handling
         console.log(error)
       });
@@ -54,7 +60,7 @@ export function EditModuleForm(props: any) {
   />;
 }
 
-export default function NewModule({ gameSystem, module }: any) {
+export default function EditModule({ gameSystem, module }: EditModuleProps): JSX.Element {
   return (
     <Page>
       <h1>New {gameSystem.name} Module</h1>
@@ -64,22 +70,18 @@ export default function NewModule({ gameSystem, module }: any) {
   )
 }
 
-NewModule.getInitialProps = async (ctx: NextPageContext) => {
+EditModule.getInitialProps = async (ctx: NextPageContext) => {
   const { gameSystemAlias, moduleAlias } = ctx.query;
 
   const query = gql`query {
     gameSystem (_id: "${gameSystemAlias}") {
       _id,
-      name,
-      defaultModuleID
+      name
     },
     module (_id: "${moduleAlias}") {
       _id,
       name,
       alias,
-      description,
-      isPublished,
-      cost,
       createdAt,
       updatedAt
     }

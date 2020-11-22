@@ -3,41 +3,28 @@ import Breadcrumbs from "../../../components/design/Breadcrumbs";
 import GameSystemForm from "../../../components/admin/gameSystems/Form";
 import Page from "../../../components/design/Page";
 import gql from "graphql-tag";
-import { GameSystemInput } from "@reroll/model/dist/inputs/GameSystemInput"
 import { client } from "../../../utilities/graphql/apiClient";
 import { useRouter } from "next/router";
+import { CreateGameSystemInput } from "@reroll/model/dist/inputs";
+import { FetchError } from "node-fetch";
+import { GraphQLResponse } from "../../../types/graphql";
 
-/**
- * @param themes Themes to render within the form's theme dropdown
- */
-interface GameSystemFormProps {
-  themes: any[];
-}
-
-/**
- * @param themes Themes to render within the form's theme dropdown
- */
-interface NewGameSystemProps {
-  themes: any[];
-}
 
 /**
  * Renders a new game system form
  * @param props.themes The themes to render within the form's theme dropdown 
  */
-export function NewGameSystemForm(props: GameSystemFormProps) {
+export function NewGameSystemForm(): JSX.Element {
   const router = useRouter();
   const [ errors, setErrors ] = React.useState({})
 
-  function onSubmit(values: GameSystemInput) {
+  function onSubmit(values: CreateGameSystemInput) {
     const newGameSystemMutation = gql`
       mutation {
         newGameSystem (data: {
           name: "${values.name}",
           alias: "${values.alias}",
-          description: "${values.description}",
           isUserCreated: false,
-          defaultThemeID: "${values.defaultThemeID || ""}"
         }) {
           _id,
           alias
@@ -45,15 +32,11 @@ export function NewGameSystemForm(props: GameSystemFormProps) {
       }
       `;
       client.mutate({mutation: newGameSystemMutation})
-      .then((res: any, ) => {
+      .then((res: GraphQLResponse ) => {
         const key = res.data.newGameSystem.alias || res.data.newGameSystem._id;
         router.push(`/admin/game-systems/${key}`)
       })
-      .catch((gqlError: any) => {
-        // console.log(Object.keys(gqlError))
-        // console.log(gqlError.graphQLErrors)
-        // console.log(gqlError.message)
-        // console.log(gqlError.extraInfo)
+      .catch((gqlError: FetchError) => {
         setErrors({_global: gqlError.message})
         // TODO - Better error handling
         console.log(gqlError)
@@ -64,13 +47,10 @@ export function NewGameSystemForm(props: GameSystemFormProps) {
     errors={errors}
     initialValues={{
       name: "",
-      alias: "",
-      description: "",
-      defaultThemeID: undefined,
+      alias: ""
       
     }}
-    onSubmit={(values: GameSystemInput) => {onSubmit(values)}}
-    themes={props.themes}
+    onSubmit={(values: CreateGameSystemInput) => {onSubmit(values)}}
   />;
 }
 
@@ -78,7 +58,7 @@ export function NewGameSystemForm(props: GameSystemFormProps) {
  * Renders a the page to create a new game system
  * @param themes The themes to render within the new game system form
  */
-function NewGameSystem({themes}: NewGameSystemProps) {
+function NewGameSystem(): JSX.Element {
   return (
     <Page>
       <h1>Create Game System</h1>
@@ -86,23 +66,13 @@ function NewGameSystem({themes}: NewGameSystemProps) {
 
       <br/>
 
-      <NewGameSystemForm themes={themes}/>
+      <NewGameSystemForm/>
     </Page>
   );
 }
 
-const fetchThemesGQL = gql`
-{
-  themes {
-    id,
-    name,
-  }
-}
-`;
-
 NewGameSystem.getInitialProps = async () => {
-  // const { themes } = await client.query({query: fetchThemesGQL});
-  return { themes: [{"name": "Default", "id": "default"}]};
+  return;
 }
 
 export default NewGameSystem;

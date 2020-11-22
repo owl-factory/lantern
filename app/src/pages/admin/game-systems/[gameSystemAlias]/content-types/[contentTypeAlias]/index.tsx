@@ -7,8 +7,19 @@ import { client } from "../../../../../../utilities/graphql/apiClient";
 import { Row, Col, Card, Button } from "react-bootstrap";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { ContentType, GameSystem } from "@reroll/model/dist/documents";
 
-export default function ContentTypeView({contentType, gameSystem}: any) {
+interface ContentTypeViewProps {
+  contentType: ContentType;
+  gameSystem: GameSystem;
+}
+
+/**
+ * Renders a view of the current content type
+ * @param contentType The content type to render
+ * @param gameSystem The game system the content type belongs to
+ */
+export default function ContentTypeView({contentType, gameSystem}: ContentTypeViewProps): JSX.Element {
   const router = useRouter();
   const { gameSystemAlias, contentTypeAlias } = router.query;
   return (
@@ -19,7 +30,7 @@ export default function ContentTypeView({contentType, gameSystem}: any) {
         titles={[
           "Admin",
           "Game Systems",
-          gameSystem.name!,
+          gameSystem.name,
           "Content Types",
           contentType.name
         ]}
@@ -33,7 +44,6 @@ export default function ContentTypeView({contentType, gameSystem}: any) {
               <>Details</>
             </Card.Header>
             <Card.Body>
-              <b>Description:</b> {contentType.description}<br/>
               <b>Alias:</b> {contentType.alias}<br/>
               <b>Created At:</b> {contentType.createdAt}<br/>
               <b>Last Edited At:</b> {contentType.updatedAt}
@@ -93,7 +103,7 @@ export default function ContentTypeView({contentType, gameSystem}: any) {
 
 ContentTypeView.getInitialProps = async (ctx: NextPageContext) => {
   const { gameSystemAlias, contentTypeAlias } = ctx.query;
-  let query = gql`query {
+  const query = gql`query {
     contentType(_id: "${contentTypeAlias}", gameSystemID: "${gameSystemAlias}") {
       _id,
       name,

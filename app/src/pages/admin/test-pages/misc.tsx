@@ -6,7 +6,7 @@ import Tooltip from "../../../components/design/Tooltip";
 /**
  * A page devoted to miscellaneous component testing
  */
-export default function Miscellaneous() {
+export default function Miscellaneous(): JSX.Element {
   return (
     <Page>
       <h2>Miscellaneous Testing</h2>
