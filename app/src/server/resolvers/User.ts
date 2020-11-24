@@ -3,9 +3,10 @@ import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/models/graphQ
 import { UserFilters } from "@reroll/model/dist/filters";
 import { CreateUserInput, UpdateUserInput } from "@reroll/model/dist/inputs";
 import { Options } from "@reroll/model/dist/inputs/Options";
-import { Arg, Args, Authorized, Int, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Args, Authorized, Ctx, Int, Mutation, Query, Resolver } from "type-graphql";
 import { CoreResolver } from "./CoreResolver";
 import { FindOneResponse, FindManyResponse, FindCountResponse, CreateOneResponse, UpdateOneResponse, DeleteOneResponse } from "../../types/resolvers";
+import { Context } from "../../types/server";
 
 /**
  * Resolves user queries
@@ -19,8 +20,8 @@ export class UserResolver extends CoreResolver {
    * @param _id The id or alias of the document to return
    */
   @Query(() => User, { nullable: true })
-  public user(@Arg("_id") _id: string): FindOneResponse<User> {
-    return super.findByAlias(_id) as FindOneResponse<User>;
+  public user(@Ctx() ctx: Context, @Arg("_id") _id: string): FindOneResponse<User> {
+    return super.findByAlias(ctx, _id) as FindOneResponse<User>;
   }
 
   /**
@@ -28,10 +29,11 @@ export class UserResolver extends CoreResolver {
    */
   @Query(() => [User])
   public users(
+    @Ctx() ctx: Context,
     @Arg("filters", {nullable: true}) filters?: UserFilters,
     @Args() options?: Options
   ): FindManyResponse<User> {
-    return super.findMany(filters, options) as FindManyResponse<User>;
+    return super.findMany(ctx, filters, options) as FindManyResponse<User>;
   }
 
   /**
@@ -39,8 +41,8 @@ export class UserResolver extends CoreResolver {
    * @param filters The filter object to count documents by. Identical to other filters
    */
   @Query(() => Int)
-  public userCount(@Arg("filters", {nullable: true}) filters?: UserFilters): FindCountResponse {
-    return super.findCount(filters);
+  public userCount(@Ctx() ctx: Context, @Arg("filters", {nullable: true}) filters?: UserFilters): FindCountResponse {
+    return super.findCount(ctx, filters);
   }
 
   /**
@@ -49,8 +51,8 @@ export class UserResolver extends CoreResolver {
    */
   @Authorized()
   @Mutation(() => User)
-  public createUser(@Arg("data") data: CreateUserInput): Promise<CreateOneResponse<User>> {
-    return super.createOne(data) as Promise<CreateOneResponse<User>>;
+  public createUser(@Ctx() ctx: Context, @Arg("data") data: CreateUserInput): Promise<CreateOneResponse<User>> {
+    return super.createOne(ctx, data) as Promise<CreateOneResponse<User>>;
   }
 
   /**
@@ -61,10 +63,11 @@ export class UserResolver extends CoreResolver {
   @Authorized()
   @Mutation(() => UpdateResponse)
   public updateUser(
+    @Ctx() ctx: Context,
     @Arg("_id") _id: string,
     @Arg("data") data: UpdateUserInput
   ): Promise<UpdateOneResponse> {
-    return super.updateOne(_id, data);
+    return super.updateOne(ctx, _id, data);
   }
 
   /**
@@ -73,7 +76,7 @@ export class UserResolver extends CoreResolver {
    */
   @Authorized()
   @Mutation(() => DeleteResponse)
-  public deleteUser(@Arg("_id") _id: string): Promise<DeleteOneResponse> {
-    return super.deleteOne(_id);
+  public deleteUser(@Ctx() ctx: Context, @Arg("_id") _id: string): Promise<DeleteOneResponse> {
+    return super.deleteOne(ctx, _id);
   }
 }

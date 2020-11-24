@@ -3,9 +3,10 @@ import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/models/graphQ
 import { GameSystemFilters } from "@reroll/model/dist/filters";
 import { CreateGameSystemInput, UpdateGameSystemInput } from "@reroll/model/dist/inputs";
 import { Options } from "@reroll/model/dist/inputs/Options";
-import { Arg, Args, Authorized, Int, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Args, Authorized, Ctx, Int, Mutation, Query, Resolver } from "type-graphql";
 import { CoreResolver } from "./CoreResolver";
 import { FindOneResponse, FindManyResponse, FindCountResponse, CreateOneResponse, UpdateOneResponse, DeleteOneResponse } from "../../types/resolvers";
+import { Context } from "../../types/server";
 
 /**
  * Resolves game system queries
@@ -19,8 +20,8 @@ export class GameSystemResolver extends CoreResolver {
    * @param _id The id or alias of the document to return
    */
   @Query(() => GameSystem, { nullable: true })
-  public gameSystem(@Arg("_id") _id: string): FindOneResponse<GameSystem> {
-    return super.findByAlias(_id) as FindOneResponse<GameSystem>;
+  public gameSystem(@Ctx() ctx: Context, @Arg("_id") _id: string): FindOneResponse<GameSystem> {
+    return super.findByAlias(ctx, _id) as FindOneResponse<GameSystem>;
   }
 
   /**
@@ -28,10 +29,11 @@ export class GameSystemResolver extends CoreResolver {
    */
   @Query(() => [GameSystem])
   public gameSystems(
+    @Ctx() ctx: Context,
     @Arg("filters", {nullable: true}) filters?: GameSystemFilters,
     @Args() options?: Options
   ): FindManyResponse<GameSystem> {
-    return super.findMany(filters, options) as FindManyResponse<GameSystem>;
+    return super.findMany(ctx, filters, options) as FindManyResponse<GameSystem>;
   }
 
   /**
@@ -40,9 +42,10 @@ export class GameSystemResolver extends CoreResolver {
    */
   @Query(() => Int)
   public gameSystemCount(
+    @Ctx() ctx: Context,
     @Arg("filters", {nullable: true}) filters?: GameSystemFilters
   ): FindCountResponse {
-    return super.findCount(filters);
+    return super.findCount(ctx, filters);
   }
 
   /**
@@ -51,8 +54,8 @@ export class GameSystemResolver extends CoreResolver {
    */
   @Authorized()
   @Mutation(() => GameSystem)
-  public createGameSystem(@Arg("data") data: CreateGameSystemInput): Promise<CreateOneResponse<GameSystem>> {
-    return super.createOne(data) as Promise<CreateOneResponse<GameSystem>>;
+  public createGameSystem(@Ctx() ctx: Context, @Arg("data") data: CreateGameSystemInput): Promise<CreateOneResponse<GameSystem>> {
+    return super.createOne(ctx, data) as Promise<CreateOneResponse<GameSystem>>;
   }
 
   /**
@@ -63,10 +66,11 @@ export class GameSystemResolver extends CoreResolver {
   @Authorized()
   @Mutation(() => UpdateResponse)
   public updateGameSystem(
+    @Ctx() ctx: Context,
     @Arg("_id") _id: string,
     @Arg("data") data: UpdateGameSystemInput
   ): Promise<UpdateOneResponse> {
-    return super.updateOne(_id, data);
+    return super.updateOne(ctx, _id, data);
   }
 
   /**
@@ -75,8 +79,8 @@ export class GameSystemResolver extends CoreResolver {
    */
   @Authorized()
   @Mutation(() => DeleteResponse)
-  public deleteGameSystem(@Arg("_id") _id: string): Promise<DeleteOneResponse> {
-    return super.deleteOne(_id);
+  public deleteGameSystem(@Ctx() ctx: Context, @Arg("_id") _id: string): Promise<DeleteOneResponse> {
+    return super.deleteOne(ctx, _id);
   }
 }
   /**

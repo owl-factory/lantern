@@ -3,9 +3,10 @@ import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/models/graphQ
 import { CommonContentTypeFilters } from "@reroll/model/dist/filters";
 import { CreateCommonContentTypeInput, UpdateCommonContentTypeInput } from "@reroll/model/dist/inputs";
 import { Options } from "@reroll/model/dist/inputs/Options";
-import { Arg, Args, Authorized, Int, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Args, Authorized, Ctx, Int, Mutation, Query, Resolver } from "type-graphql";
 import { CoreResolver } from "./CoreResolver";
 import { FindOneResponse, FindManyResponse, FindCountResponse, CreateOneResponse, UpdateOneResponse, DeleteOneResponse } from "../../types/resolvers";
+import { Context } from "../../types/server";
 
 /**
  * Resolves common content type queries
@@ -19,8 +20,8 @@ export class CommonContentTypeResolver extends CoreResolver {
    * @param _id The id or alias of the document to return
    */
   @Query(() => CommonContentType, { nullable: true })
-  public commonContentType(@Arg("_id") _id: string): FindOneResponse<CommonContentType> {
-    return super.findByAlias(_id) as FindOneResponse<CommonContentType>;
+  public commonContentType(@Ctx() ctx: Context, @Arg("_id") _id: string): FindOneResponse<CommonContentType> {
+    return super.findByAlias(ctx, _id) as FindOneResponse<CommonContentType>;
   }
 
   /**
@@ -28,10 +29,11 @@ export class CommonContentTypeResolver extends CoreResolver {
    */
   @Query(() => [CommonContentType])
   public commonContentTypes(
+    @Ctx() ctx: Context,
     @Arg("filters", {nullable: true}) filters?: CommonContentTypeFilters,
     @Args() options?: Options
   ): FindManyResponse<CommonContentType> {
-    return super.findMany(filters, options) as FindManyResponse<CommonContentType>;
+    return super.findMany(ctx, filters, options) as FindManyResponse<CommonContentType>;
   }
 
   /**
@@ -39,8 +41,8 @@ export class CommonContentTypeResolver extends CoreResolver {
    * @param filters The filter object to count documents by. Identical to other filters
    */
   @Query(() => Int)
-  public xxxCount(@Arg("filters", {nullable: true}) filters?: CommonContentTypeFilters): FindCountResponse {
-    return super.findCount(filters);
+  public commonContentTypeCount(@Ctx() ctx: Context, @Arg("filters", {nullable: true}) filters?: CommonContentTypeFilters): FindCountResponse {
+    return super.findCount(ctx, filters);
   }
 
   /**
@@ -49,8 +51,8 @@ export class CommonContentTypeResolver extends CoreResolver {
    */
   @Authorized()
   @Mutation(() => CommonContentType)
-  public createCommonContentType(@Arg("data") data: CreateCommonContentTypeInput): Promise<CreateOneResponse<CommonContentType>> {
-    return super.createOne(data) as Promise<CreateOneResponse<CommonContentType>>;
+  public createCommonContentType(@Ctx() ctx: Context, @Arg("data") data: CreateCommonContentTypeInput): Promise<CreateOneResponse<CommonContentType>> {
+    return super.createOne(ctx, data) as Promise<CreateOneResponse<CommonContentType>>;
   }
 
   /**
@@ -61,10 +63,11 @@ export class CommonContentTypeResolver extends CoreResolver {
   @Authorized()
   @Mutation(() => UpdateResponse)
   public updateCommonContentType(
+    @Ctx() ctx: Context,
     @Arg("_id") _id: string,
     @Arg("data") data: UpdateCommonContentTypeInput
   ): Promise<UpdateOneResponse> {
-    return super.updateOne(_id, data);
+    return super.updateOne(ctx, _id, data);
   }
 
   /**
@@ -73,7 +76,7 @@ export class CommonContentTypeResolver extends CoreResolver {
    */
   @Authorized()
   @Mutation(() => DeleteResponse)
-  public deleteCommonContentType(@Arg("_id") _id: string): Promise<DeleteOneResponse> {
-    return super.deleteOne(_id);
+  public deleteCommonContentType(@Ctx() ctx: Context, @Arg("_id") _id: string): Promise<DeleteOneResponse> {
+    return super.deleteOne(ctx, _id);
   }
 }

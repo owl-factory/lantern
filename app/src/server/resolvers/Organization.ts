@@ -3,9 +3,10 @@ import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/models/graphQ
 import { OrganizationFilters } from "@reroll/model/dist/filters";
 import { CreateOrganizationInput, UpdateOrganizationInput } from "@reroll/model/dist/inputs";
 import { Options } from "@reroll/model/dist/inputs/Options";
-import { Arg, Args, Authorized, Int, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Args, Authorized, Ctx, Int, Mutation, Query, Resolver } from "type-graphql";
 import { CoreResolver } from "./CoreResolver";
 import { FindOneResponse, FindManyResponse, FindCountResponse, CreateOneResponse, UpdateOneResponse, DeleteOneResponse } from "../../types/resolvers";
+import { Context } from "../../types/server";
 
 /**
  * Resolves organization queries
@@ -19,8 +20,8 @@ export class OrganizationResolver extends CoreResolver {
    * @param _id The id or alias of the document to return
    */
   @Query(() => Organization, { nullable: true })
-  public organization(@Arg("_id") _id: string): FindOneResponse<Organization> {
-    return super.findByAlias(_id) as FindOneResponse<Organization>;
+  public organization(@Ctx() ctx: Context, @Arg("_id") _id: string): FindOneResponse<Organization> {
+    return super.findByAlias(ctx, _id) as FindOneResponse<Organization>;
   }
 
   /**
@@ -28,10 +29,11 @@ export class OrganizationResolver extends CoreResolver {
    */
   @Query(() => [Organization])
   public organizations(
+    @Ctx() ctx: Context,
     @Arg("filters", {nullable: true}) filters?: OrganizationFilters,
     @Args() options?: Options
   ): FindManyResponse<Organization> {
-    return super.findMany(filters, options) as FindManyResponse<Organization>;
+    return super.findMany(ctx, filters, options) as FindManyResponse<Organization>;
   }
 
   /**
@@ -39,8 +41,8 @@ export class OrganizationResolver extends CoreResolver {
    * @param filters The filter object to count documents by. Identical to other filters
    */
   @Query(() => Int)
-  public organizationCount(@Arg("filters", {nullable: true}) filters?: OrganizationFilters): FindCountResponse {
-    return super.findCount(filters);
+  public organizationCount(@Ctx() ctx: Context, @Arg("filters", {nullable: true}) filters?: OrganizationFilters): FindCountResponse {
+    return super.findCount(ctx, filters);
   }
 
   /**
@@ -49,8 +51,8 @@ export class OrganizationResolver extends CoreResolver {
    */
   @Authorized()
   @Mutation(() => Organization)
-  public createOrganization(@Arg("data") data: CreateOrganizationInput): Promise<CreateOneResponse<Organization>> {
-    return super.createOne(data) as Promise<CreateOneResponse<Organization>>;
+  public createOrganization(@Ctx() ctx: Context, @Arg("data") data: CreateOrganizationInput): Promise<CreateOneResponse<Organization>> {
+    return super.createOne(ctx, data) as Promise<CreateOneResponse<Organization>>;
   }
 
   /**
@@ -61,10 +63,11 @@ export class OrganizationResolver extends CoreResolver {
   @Authorized()
   @Mutation(() => UpdateResponse)
   public updateOrganization(
+    @Ctx() ctx: Context,
     @Arg("_id") _id: string,
     @Arg("data") data: UpdateOrganizationInput
   ): Promise<UpdateOneResponse> {
-    return super.updateOne(_id, data);
+    return super.updateOne(ctx, _id, data);
   }
 
   /**
@@ -73,7 +76,7 @@ export class OrganizationResolver extends CoreResolver {
    */
   @Authorized()
   @Mutation(() => DeleteResponse)
-  public deleteOrganization(@Arg("_id") _id: string): Promise<DeleteOneResponse> {
-    return super.deleteOne(_id);
+  public deleteOrganization(@Ctx() ctx: Context, @Arg("_id") _id: string): Promise<DeleteOneResponse> {
+    return super.deleteOne(ctx, _id);
   }
 }

@@ -3,9 +3,10 @@ import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/models/graphQ
 import { ModuleFilters } from "@reroll/model/dist/filters";
 import { CreateModuleInput, UpdateModuleInput } from "@reroll/model/dist/inputs";
 import { Options } from "@reroll/model/dist/inputs/Options";
-import { Arg, Args, Authorized, Int, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Args, Authorized, Ctx, Int, Mutation, Query, Resolver } from "type-graphql";
 import { CoreResolver } from "./CoreResolver";
 import { FindOneResponse, FindManyResponse, FindCountResponse, CreateOneResponse, DeleteOneResponse, UpdateOneResponse } from "../../types/resolvers";
+import { Context } from "../../types/server";
 
 /**
  * Resolves module queries
@@ -19,8 +20,8 @@ export class ModuleResolver extends CoreResolver {
    * @param _id The id or alias of the document to return
    */
   @Query(() => Module, { nullable: true })
-  public module(@Arg("_id") _id: string): FindOneResponse<Module> {
-    return super.findByAlias(_id) as FindOneResponse<Module>;
+  public module(@Ctx() ctx: Context, @Arg("_id") _id: string): FindOneResponse<Module> {
+    return super.findByAlias(ctx, _id) as FindOneResponse<Module>;
   }
 
   /**
@@ -28,10 +29,11 @@ export class ModuleResolver extends CoreResolver {
    */
   @Query(() => [Module])
   public modules(
+    @Ctx() ctx: Context,
     @Arg("filters", {nullable: true}) filters?: ModuleFilters,
     @Args() options?: Options
   ): FindManyResponse<Module> {
-    return super.findMany(filters, options) as FindManyResponse<Module>;
+    return super.findMany(ctx, filters, options) as FindManyResponse<Module>;
   }
 
   /**
@@ -39,8 +41,8 @@ export class ModuleResolver extends CoreResolver {
    * @param filters The filter object to count documents by. Identical to other filters
    */
   @Query(() => Int)
-  public moduleCount(@Arg("filters", {nullable: true}) filters?: ModuleFilters): FindCountResponse {
-    return super.findCount(filters);
+  public moduleCount(@Ctx() ctx: Context, @Arg("filters", {nullable: true}) filters?: ModuleFilters): FindCountResponse {
+    return super.findCount(ctx, filters);
   }
 
   /**
@@ -49,8 +51,8 @@ export class ModuleResolver extends CoreResolver {
    */
   // @Authorized()
   @Mutation(() => Module)
-  public createModule(@Arg("data") data: CreateModuleInput): Promise<CreateOneResponse<Module>> {
-    return super.createOne(data) as Promise<CreateOneResponse<Module>>;
+  public createModule(@Ctx() ctx: Context, @Arg("data") data: CreateModuleInput): Promise<CreateOneResponse<Module>> {
+    return super.createOne(ctx, data) as Promise<CreateOneResponse<Module>>;
   }
 
   /**
@@ -61,10 +63,11 @@ export class ModuleResolver extends CoreResolver {
   @Authorized()
   @Mutation(() => UpdateResponse)
   public updateModule(
+    @Ctx() ctx: Context,
     @Arg("_id") _id: string,
     @Arg("data") data: UpdateModuleInput
   ): Promise<UpdateOneResponse> {
-    return super.updateOne(_id, data);
+    return super.updateOne(ctx, _id, data);
   }
 
   /**
@@ -73,7 +76,7 @@ export class ModuleResolver extends CoreResolver {
    */
   @Authorized()
   @Mutation(() => DeleteResponse)
-  public deleteModule(@Arg("_id") _id: string): Promise<DeleteOneResponse> {
-    return super.deleteOne(_id);
+  public deleteModule(@Ctx() ctx: Context, @Arg("_id") _id: string): Promise<DeleteOneResponse> {
+    return super.deleteOne(ctx, _id);
   }
 }

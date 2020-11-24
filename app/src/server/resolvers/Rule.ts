@@ -3,9 +3,10 @@ import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/models/graphQ
 import { RuleFilters } from "@reroll/model/dist/filters";
 import { CreateRuleInput, UpdateRuleInput } from "@reroll/model/dist/inputs";
 import { Options } from "@reroll/model/dist/inputs/Options";
-import { Arg, Args, Authorized, Int, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Args, Authorized, Ctx, Int, Mutation, Query, Resolver } from "type-graphql";
 import { CoreResolver } from "./CoreResolver";
 import { FindOneResponse, FindManyResponse, FindCountResponse, UpdateOneResponse, DeleteOneResponse, CreateOneResponse } from "../../types/resolvers";
+import { Context } from "../../types/server";
 
 /**
  * Resolves rule queries
@@ -19,8 +20,8 @@ export class RuleResolver extends CoreResolver {
    * @param _id The id or alias of the document to return
    */
   @Query(() => Rule, { nullable: true })
-  public rule(@Arg("_id") _id: string): FindOneResponse<Rule> {
-    return super.findByAlias(_id) as FindOneResponse<Rule>;
+  public rule(@Ctx() ctx: Context, @Arg("_id") _id: string): FindOneResponse<Rule> {
+    return super.findByAlias(ctx, _id) as FindOneResponse<Rule>;
   }
 
   /**
@@ -28,10 +29,11 @@ export class RuleResolver extends CoreResolver {
    */
   @Query(() => [Rule])
   public rules(
+    @Ctx() ctx: Context,
     @Arg("filters", {nullable: true}) filters?: RuleFilters,
     @Args() options?: Options
   ): FindManyResponse<Rule> {
-    return super.findMany(filters, options) as FindManyResponse<Rule>;
+    return super.findMany(ctx, filters, options) as FindManyResponse<Rule>;
   }
 
   /**
@@ -39,8 +41,8 @@ export class RuleResolver extends CoreResolver {
    * @param filters The filter object to count documents by. Identical to other filters
    */
   @Query(() => Int)
-  public ruleCount(@Arg("filters", {nullable: true}) filters?: RuleFilters): FindCountResponse {
-    return super.findCount(filters);
+  public ruleCount(@Ctx() ctx: Context, @Arg("filters", {nullable: true}) filters?: RuleFilters): FindCountResponse {
+    return super.findCount(ctx, filters);
   }
 
   /**
@@ -49,8 +51,8 @@ export class RuleResolver extends CoreResolver {
    */
   @Authorized()
   @Mutation(() => Rule)
-  public createRule(@Arg("data") data: CreateRuleInput): Promise<CreateOneResponse<Rule>> {
-    return super.createOne(data) as Promise<CreateOneResponse<Rule>>;
+  public createRule(@Ctx() ctx: Context, @Arg("data") data: CreateRuleInput): Promise<CreateOneResponse<Rule>> {
+    return super.createOne(ctx, data) as Promise<CreateOneResponse<Rule>>;
   }
 
   /**
@@ -61,10 +63,11 @@ export class RuleResolver extends CoreResolver {
   @Authorized()
   @Mutation(() => UpdateResponse)
   public updateRule(
+    @Ctx() ctx: Context,
     @Arg("_id") _id: string,
     @Arg("data") data: UpdateRuleInput
   ): Promise<UpdateOneResponse> {
-    return super.updateOne(_id, data);
+    return super.updateOne(ctx, _id, data);
   }
 
   /**
@@ -73,7 +76,7 @@ export class RuleResolver extends CoreResolver {
    */
   @Authorized()
   @Mutation(() => DeleteResponse)
-  public deleteRule(@Arg("_id") _id: string): Promise<DeleteOneResponse> {
-    return super.deleteOne(_id);
+  public deleteRule(@Ctx() ctx: Context, @Arg("_id") _id: string): Promise<DeleteOneResponse> {
+    return super.deleteOne(ctx, _id);
   }
 }

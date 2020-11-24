@@ -7,9 +7,10 @@ import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/models/graphQ
 import { CoreFilter } from "@reroll/model/dist/filters";
 import { CoreInput } from "@reroll/model/dist/inputs";
 import { Options } from "@reroll/model/dist/inputs/Options";
-import { Arg, Args, Authorized, Int, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Args, Authorized, Ctx, Int, Mutation, Query, Resolver } from "type-graphql";
 import { CoreResolver } from "./CoreResolver";
 import { FindOneResponse, FindManyResponse, FindCountResponse, UpdateOneResponse, DeleteOneResponse, CreateOneResponse } from "../../types/resolvers";
+import { Context } from "../../types/server";
 
 /**
  * Resolves xxx queries
@@ -23,8 +24,8 @@ export class SharedResolver extends CoreResolver {
    * @param _id The id or alias of the document to return
    */
   @Query(() => CoreDocument, { nullable: true })
-  public xxx(@Arg("_id") _id: string): FindOneResponse<CoreDocument> {
-    return super.findByAlias(_id) as FindOneResponse<CoreDocument>;
+  public xxx(@Ctx() ctx: Context, @Arg("_id") _id: string): FindOneResponse<CoreDocument> {
+    return super.findByAlias(ctx, _id) as FindOneResponse<CoreDocument>;
   }
 
   /**
@@ -32,10 +33,11 @@ export class SharedResolver extends CoreResolver {
    */
   @Query(() => [CoreDocument])
   public xxxs(
+    @Ctx() ctx: Context,
     @Arg("filters", {nullable: true}) filters?: CoreFilter,
     @Args() options?: Options
   ): FindManyResponse<CoreDocument> {
-    return super.findMany(filters, options) as FindManyResponse<CoreDocument>;
+    return super.findMany(ctx, filters, options) as FindManyResponse<CoreDocument>;
   }
 
   /**
@@ -43,8 +45,8 @@ export class SharedResolver extends CoreResolver {
    * @param filters The filter object to count documents by. Identical to other filters
    */
   @Query(() => Int)
-  public xxxCount(@Arg("filters", {nullable: true}) filters?: CoreFilter): FindCountResponse {
-    return super.findCount(filters);
+  public xxxCount(@Ctx() ctx: Context, @Arg("filters", {nullable: true}) filters?: CoreFilter): FindCountResponse {
+    return super.findCount(ctx, filters);
   }
 
   /**
@@ -53,8 +55,8 @@ export class SharedResolver extends CoreResolver {
    */
   @Authorized()
   @Mutation(() => CoreDocument)
-  public createXXX(@Arg("data") data: CoreInput): Promise<CreateOneResponse<CoreDocument>> {
-    return super.createOne(data) as Promise<CreateOneResponse<CoreDocument>>;
+  public createXXX(@Ctx() ctx: Context, @Arg("data") data: CoreInput): Promise<CreateOneResponse<CoreDocument>> {
+    return super.createOne(ctx, data) as Promise<CreateOneResponse<CoreDocument>>;
   }
 
   /**
@@ -65,10 +67,11 @@ export class SharedResolver extends CoreResolver {
   @Authorized()
   @Mutation(() => UpdateResponse)
   public updateXXX(
+    @Ctx() ctx: Context,
     @Arg("_id") _id: string,
     @Arg("data") data: CoreInput
   ): Promise<UpdateOneResponse> {
-    return super.updateOne(_id, data);
+    return super.updateOne(ctx, _id, data);
   }
 
   /**
@@ -77,7 +80,7 @@ export class SharedResolver extends CoreResolver {
    */
   @Authorized()
   @Mutation(() => DeleteResponse)
-  public deleteXXX(@Arg("_id") _id: string): Promise<DeleteOneResponse> {
-    return super.deleteOne(_id);
+  public deleteXXX(@Ctx() ctx: Context, @Arg("_id") _id: string): Promise<DeleteOneResponse> {
+    return super.deleteOne(ctx, _id);
   }
 }

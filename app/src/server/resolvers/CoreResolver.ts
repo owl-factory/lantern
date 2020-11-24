@@ -9,6 +9,7 @@ import { CoreDocument } from "@reroll/model/dist/documents/CoreDocument";
 import { GenericFiltersType } from "@reroll/model/dist/filters";
 import { GenericDocumentType, GenericModelType } from "@reroll/model/dist/documents";
 import { FindManyResponse, FindOneResponse, CreateOneResponse, FindCountResponse, UpdateOneResponse, DeleteOneResponse } from "../../types/resolvers";
+import { Context } from "../../types/server";
 
 // Contains any aliases that might be passed in to findByAlias for any super document
 // TODO - move to a new file
@@ -32,7 +33,7 @@ export class CoreResolver {
    * @param alias The alias or ID of the document to find
    * @param superDocumentAliases The aliases of any owning documents that the target document must belong to
    */
-  protected findByAlias(alias: string, superDocumentAliases?: SuperDocumentAliases): FindOneResponse<GenericDocumentType> {
+  protected findByAlias(ctx: Context, alias: string, superDocumentAliases?: SuperDocumentAliases): FindOneResponse<GenericDocumentType> {
     return this._findByAlias(alias, this.model, superDocumentAliases);
   }
 
@@ -42,7 +43,7 @@ export class CoreResolver {
    * @param filters Filters given to find specific documents
    * @param options General options for modifying results, such as length and how many to skip
    */
-  protected findMany(filters?: GenericFiltersType, options?: Options): FindManyResponse<GenericDocumentType> {
+  protected findMany(ctx: Context, filters?: GenericFiltersType, options?: Options): FindManyResponse<GenericDocumentType> {
     const mongooseFilters = buildFilters(filters);
     return this.model.find(mongooseFilters, null, options);
   }
@@ -51,7 +52,7 @@ export class CoreResolver {
    * Finds the count for the given filters
    * @param filters Filters used for determining what is counted
    */
-  protected findCount(filters?: GenericFiltersType): FindCountResponse {
+  protected findCount(ctx: Context, filters?: GenericFiltersType): FindCountResponse {
     const mongooseFilters = buildFilters(filters);
     return this.model.countDocuments(mongooseFilters);
   }
@@ -61,7 +62,7 @@ export class CoreResolver {
    * @param data The data to insert into a new document
    * @param options Any additional options to save the data
    */
-  protected async createOne(data: CoreDocument): Promise<CreateOneResponse<GenericDocumentType>> {
+  protected async createOne(ctx: Context, data: CoreDocument): Promise<CreateOneResponse<GenericDocumentType>> {
     const errors = await validate(data);
     if (errors.length > 0) {
       throw new Error(errors.toString());
@@ -83,7 +84,7 @@ export class CoreResolver {
    * @param _id The id of the document to update
    * @param data The new data of the document to set
    */
-  protected async updateOne(_id: string, data: CoreDocument): Promise<UpdateOneResponse> {
+  protected async updateOne(ctx: Context, _id: string, data: CoreDocument): Promise<UpdateOneResponse> {
     const errors = await validate(data);
     if (errors.length > 0) {
       throw new Error(errors.toString());
@@ -99,7 +100,7 @@ export class CoreResolver {
    * Hard deletes a single document
    * @param _id The id of the document to delete
    */
-  protected async deleteOne(_id: string): Promise<DeleteOneResponse> {
+  protected async deleteOne(ctx: Context, _id: string): Promise<DeleteOneResponse> {
     return this.model.deleteOne({_id});
   }
 

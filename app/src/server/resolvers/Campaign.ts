@@ -3,9 +3,10 @@ import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/models/graphQ
 import { CampaignFilters } from "@reroll/model/dist/filters";
 import { CreateCampaignInput, UpdateCampaignInput } from "@reroll/model/dist/inputs";
 import { Options } from "@reroll/model/dist/inputs/Options";
-import { Arg, Args, Authorized, Int, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Args, Authorized, Ctx, Int, Mutation, Query, Resolver } from "type-graphql";
 import { CoreResolver } from "./CoreResolver";
 import { FindOneResponse, FindManyResponse, FindCountResponse, CreateOneResponse, UpdateOneResponse, DeleteOneResponse } from "../../types/resolvers";
+import { Context } from "../../types/server";
 
 /**
  * Resolves campaign queries
@@ -19,8 +20,8 @@ export class CampaignResolver extends CoreResolver {
    * @param _id The id or alias of the document to return
    */
   @Query(() => Campaign, { nullable: true })
-  public campaign(@Arg("_id") _id: string): FindOneResponse<Campaign> {
-    return super.findByAlias(_id) as FindOneResponse<Campaign>;
+  public campaign(@Ctx() ctx: Context, @Arg("_id") _id: string): FindOneResponse<Campaign> {
+    return super.findByAlias(ctx, _id) as FindOneResponse<Campaign>;
   }
 
   /**
@@ -28,10 +29,11 @@ export class CampaignResolver extends CoreResolver {
    */
   @Query(() => [Campaign])
   public campaigns(
+    @Ctx() ctx: Context,
     @Arg("filters", {nullable: true}) filters?: CampaignFilters,
     @Args() options?: Options
   ): FindManyResponse<Campaign> {
-    return super.findMany(filters, options) as FindManyResponse<Campaign>;
+    return super.findMany(ctx, filters, options) as FindManyResponse<Campaign>;
   }
 
   /**
@@ -39,8 +41,8 @@ export class CampaignResolver extends CoreResolver {
    * @param filters The filter object to count documents by. Identical to other filters
    */
   @Query(() => Int)
-  public campaignCount(@Arg("filters", {nullable: true}) filters?: CampaignFilters): FindCountResponse {
-    return super.findCount(filters);
+  public campaignCount(@Ctx() ctx: Context, @Arg("filters", {nullable: true}) filters?: CampaignFilters): FindCountResponse {
+    return super.findCount(ctx, filters);
   }
 
   /**
@@ -49,8 +51,8 @@ export class CampaignResolver extends CoreResolver {
    */
   @Authorized()
   @Mutation(() => Campaign)
-  public createCampaign(@Arg("data") data: CreateCampaignInput): Promise<CreateOneResponse<Campaign>> {
-    return super.createOne(data) as Promise<CreateOneResponse<Campaign>>;
+  public createCampaign(@Ctx() ctx: Context, @Arg("data") data: CreateCampaignInput): Promise<CreateOneResponse<Campaign>> {
+    return super.createOne(ctx, data) as Promise<CreateOneResponse<Campaign>>;
   }
 
   /**
@@ -61,10 +63,11 @@ export class CampaignResolver extends CoreResolver {
   @Authorized()
   @Mutation(() => UpdateResponse)
   public updateCampaign(
+    @Ctx() ctx: Context,
     @Arg("_id") _id: string,
     @Arg("data") data: UpdateCampaignInput
   ): Promise<UpdateOneResponse> {
-    return super.updateOne(_id, data);
+    return super.updateOne(ctx, _id, data);
   }
 
   /**
@@ -73,7 +76,7 @@ export class CampaignResolver extends CoreResolver {
    */
   @Authorized()
   @Mutation(() => DeleteResponse)
-  public deleteCampaign(@Arg("_id") _id: string): Promise<DeleteOneResponse> {
-    return super.deleteOne(_id);
+  public deleteCampaign(@Ctx() ctx: Context, @Arg("_id") _id: string): Promise<DeleteOneResponse> {
+    return super.deleteOne(ctx, _id);
   }
 }

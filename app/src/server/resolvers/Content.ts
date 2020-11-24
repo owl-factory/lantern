@@ -3,9 +3,10 @@ import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/models/graphQ
 import { ContentFilters } from "@reroll/model/dist/filters";
 import { CreateContentInput, UpdateContentInput } from "@reroll/model/dist/inputs";
 import { Options } from "@reroll/model/dist/inputs/Options";
-import { Arg, Args, Authorized, Int, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Args, Authorized, Ctx, Int, Mutation, Query, Resolver } from "type-graphql";
 import { CoreResolver } from "./CoreResolver";
 import { FindOneResponse, FindManyResponse, FindCountResponse, CreateOneResponse, UpdateOneResponse, DeleteOneResponse } from "../../types/resolvers";
+import { Context } from "../../types/server";
 
 /**
  * Resolves content queries
@@ -19,8 +20,8 @@ export class ContentResolver extends CoreResolver {
    * @param _id The id or alias of the document to return
    */
   @Query(() => Content, { nullable: true })
-  public content(@Arg("_id") _id: string): FindOneResponse<Content> {
-    return super.findByAlias(_id) as FindOneResponse<Content>;
+  public content(@Ctx() ctx: Context, @Arg("_id") _id: string): FindOneResponse<Content> {
+    return super.findByAlias(ctx, _id) as FindOneResponse<Content>;
   }
 
   /**
@@ -28,10 +29,11 @@ export class ContentResolver extends CoreResolver {
    */
   @Query(() => [Content])
   public contents(
+    @Ctx() ctx: Context,
     @Arg("filters", {nullable: true}) filters?: ContentFilters,
     @Args() options?: Options
   ): FindManyResponse<Content> {
-    return super.findMany(filters, options) as FindManyResponse<Content>;
+    return super.findMany(ctx, filters, options) as FindManyResponse<Content>;
   }
 
   /**
@@ -39,8 +41,8 @@ export class ContentResolver extends CoreResolver {
    * @param filters The filter object to count documents by. Identical to other filters
    */
   @Query(() => Int)
-  public contentCount(@Arg("filters", {nullable: true}) filters?: ContentFilters): FindCountResponse {
-    return super.findCount(filters);
+  public contentCount(@Ctx() ctx: Context, @Arg("filters", {nullable: true}) filters?: ContentFilters): FindCountResponse {
+    return super.findCount(ctx, filters);
   }
 
   /**
@@ -49,8 +51,8 @@ export class ContentResolver extends CoreResolver {
    */
   @Authorized()
   @Mutation(() => Content)
-  public createContent(@Arg("data") data: CreateContentInput): Promise<CreateOneResponse<Content>> {
-    return super.createOne(data) as Promise<CreateOneResponse<Content>>;
+  public createContent(@Ctx() ctx: Context, @Arg("data") data: CreateContentInput): Promise<CreateOneResponse<Content>> {
+    return super.createOne(ctx, data) as Promise<CreateOneResponse<Content>>;
   }
 
   /**
@@ -61,10 +63,11 @@ export class ContentResolver extends CoreResolver {
   @Authorized()
   @Mutation(() => UpdateResponse)
   public updateContent(
+    @Ctx() ctx: Context,
     @Arg("_id") _id: string,
     @Arg("data") data: UpdateContentInput
   ): Promise<UpdateOneResponse> {
-    return super.updateOne(_id, data);
+    return super.updateOne(ctx, _id, data);
   }
 
   /**
@@ -73,7 +76,7 @@ export class ContentResolver extends CoreResolver {
    */
   @Authorized()
   @Mutation(() => DeleteResponse)
-  public deleteContent(@Arg("_id") _id: string): Promise<DeleteOneResponse> {
-    return super.deleteOne(_id);
+  public deleteContent(@Ctx() ctx: Context, @Arg("_id") _id: string): Promise<DeleteOneResponse> {
+    return super.deleteOne(ctx, _id);
   }
 }
