@@ -28,8 +28,8 @@ GameSystemSearch.getInitialProps = async (ctx: NextPageContext) => {
   }`;
 
   const { data } = await client.query({query: query});
-  
+
   return {
-    gameSystem: data.gameSystem
+    gameSystem: data.gameSystem,
   };
-}
+};

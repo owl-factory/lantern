@@ -1,6 +1,6 @@
 import React from "react";
 import { NextPageContext } from "next";
-import gql from "graphql-tag"; 
+import gql from "graphql-tag";
 import { ContentTypeTable } from "../../../../../components/admin/contentTypes/Table";
 import { client } from "../../../../../utilities/graphql/apiClient";
 import Page from "../../../../../components/design/Page";
@@ -17,7 +17,7 @@ interface ContentTypeViewProps {
 }
 
 async function fetchContentTypes(
-  page: number, 
+  page: number,
   perPage: number,
   gameSystemID: string
   ) {
@@ -51,14 +51,14 @@ async function fetchContentTypes(
 export default function ContentTypeView({
   gameSystem,
   initialContentTypes,
-  contentTypeCount
+  contentTypeCount,
 }: ContentTypeViewProps): JSX.Element {
 
   const [ contentTypes, setContentTypes ] = React.useState(initialContentTypes);
   const [ pageState, setPageState ] = React.useState({
-    page: 1, 
-    perPage: initialPerPage, 
-    totalCount: contentTypeCount
+    page: 1,
+    perPage: initialPerPage,
+    totalCount: contentTypeCount,
   });
 
   /**
@@ -71,11 +71,11 @@ export default function ContentTypeView({
       newPageState.perPage,
       gameSystem._id || "undefined"
     );
-  
+
     setContentTypes(data.contentTypes);
     setPageState({...newPageState, totalCount: data.contentTypeCount});
   }
-  
+
   return (
     <Page>
       <h1>{gameSystem.name}</h1>
@@ -86,7 +86,7 @@ export default function ContentTypeView({
 
       <ContentTypeTable contentTypes={contentTypes} pageState={pageState} gameSystem={gameSystem}/>
       <Pagination pageState={pageState} setPageState={setPage}/>
-      
+
     </Page>
   );
 }
@@ -111,10 +111,10 @@ ContentTypeView.getInitialProps = async (ctx: NextPageContext) => {
     initialPerPage,
     gameSystem._id
   );
-  
+
   return {
     gameSystem,
     initialContentTypes: contentTypes,
-    contentTypeCount
+    contentTypeCount,
   };
-}
+};

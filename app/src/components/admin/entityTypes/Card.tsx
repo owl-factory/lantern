@@ -1,4 +1,4 @@
-import { Card, Button } from "react-bootstrap";
+import { Button, Card } from "react-bootstrap";
 import Link from "next/link";
 import { EntityTypeTable } from "./Table";
 import { GameSystem } from "@reroll/model/dist/documents/GameSystem";
@@ -33,5 +33,5 @@ export function EntityTypeCard(props: EntityCardProps): JSX.Element {
         <EntityTypeTable entityTypes={props.entityTypes} pageState={{page: 1, perPage: 10, totalCount: 10}}/>
       </Card.Body>
     </Card>
-  )
+  );
 }

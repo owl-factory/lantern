@@ -1,14 +1,14 @@
 import React from "react";
-import { Formik, Form as FormikForm, ErrorMessage, } from "formik";
+import { ErrorMessage, Formik, Form as FormikForm } from "formik";
 import * as Yup from "yup";
-import { Col, Form, Row, Button } from "react-bootstrap";
+import { Button, Col, Form, Row } from "react-bootstrap";
 import { Input } from "../design/forms/Forms";
 
 /** Initial form values */
 const initialValues = {
   email: "",
-  password: ""
-}
+  password: "",
+};
 
 /** Validation for the login form */
 const validationSchema = Yup.object({
@@ -55,5 +55,5 @@ export default function LoginForm(): JSX.Element {
         </Row>
       </FormikForm>
     </Formik>
-  )
+  );
 }

@@ -21,7 +21,7 @@ interface CommonEntityTypeIndexProps {
 const initialPerPage = 25;
 const entityTypeActions = new ContextMenuBuilder()
   .addLink("Details", MdInfo, "/admin/entity-types/[alias]")
-  .addLink("Edit", MdBuild, "/admin/entity-types/[alias]/edit")
+  .addLink("Edit", MdBuild, "/admin/entity-types/[alias]/edit");
 
 /**
  * Renders the actions for the content types table
@@ -31,8 +31,8 @@ function EntityTypeActions(props: { data: CommonEntityType }) {
   // View, Details, Edit, Modules
 
   return (
-    <ContextMenu 
-      context={{name: props.data.name, alias: props.data.alias || props.data._id}} 
+    <ContextMenu
+      context={{name: props.data.name, alias: props.data.alias || props.data._id}}
       {...entityTypeActions.renderConfig()}
     />
   );
@@ -65,17 +65,19 @@ async function queryEntityTypes(page: number, perPage: number) {
  * @param props.entityTypes An array of entity types of to render into a table
  * @param props.pageState A page state containing page and perPage
  */
-export default function CommonEntityTypeIndex({ initialEntityTypes, entityTypeCount }: CommonEntityTypeIndexProps): JSX.Element {
+export default function CommonEntityTypeIndex(
+  { initialEntityTypes, entityTypeCount }: CommonEntityTypeIndexProps
+): JSX.Element {
   const [ contentTypes, setContentTypes ] = React.useState(initialEntityTypes);
   const [ pageState, setPageState ] = React.useState({
     page: 1,
     perPage: initialPerPage,
-    totalCount: entityTypeCount
+    totalCount: entityTypeCount,
   });
 
   async function setPage(newPageState: PageState) {
     const [ newEntityTypes, newEntityTypeCount ] = await queryEntityTypes(
-      newPageState.page, 
+      newPageState.page,
       newPageState.perPage
     );
 
@@ -96,9 +98,9 @@ export default function CommonEntityTypeIndex({ initialEntityTypes, entityTypeCo
         </Link>
       </Button>
 
-      <Table 
-        {...tableBuilder.renderConfig()} 
-        data={contentTypes as Record<string, unknown>[]} 
+      <Table
+        {...tableBuilder.renderConfig()}
+        data={contentTypes as Record<string, unknown>[]}
         startingIncrement={(pageState.page - 1) * pageState.perPage + 1}
       />
       <Pagination pageState={pageState} setPageState={setPage}/>
@@ -109,8 +111,8 @@ export default function CommonEntityTypeIndex({ initialEntityTypes, entityTypeCo
 
 CommonEntityTypeIndex.getInitialProps = async () => {
   const [ initialEntityTypes, entityTypeCount ] = await queryEntityTypes(1, initialPerPage);
-  return { 
+  return {
     initialEntityTypes,
-    entityTypeCount
+    entityTypeCount,
   };
 };

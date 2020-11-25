@@ -8,7 +8,7 @@ import { GameSystem } from "@reroll/model/dist/documents";
 
 /**
  * Renders the game system form with functionality for new and existing game systems
- * @param errors The GQL errors 
+ * @param errors The GQL errors
  * @param initialValues The initial values of the form
  * @param onSubmit The action to run on submit
  * @param themes An array of themes for a selection
@@ -26,7 +26,7 @@ export default function GameSystemForm(props: FormixFormProps<GameSystem>): JSX.
         alias: Yup.string()
           .max(20, "Maximum of 20 characters"),
         description: Yup.string()
-          .max(1000, "Maximum of 1000 characters"),      
+          .max(1000, "Maximum of 1000 characters"),
       })}
     >
       {() => (
@@ -61,6 +61,6 @@ export default function GameSystemForm(props: FormixFormProps<GameSystem>): JSX.
           <Button variant="primary" type="submit">Submit!</Button>
         </FormikForm>
       )}
-    </Formik> 
+    </Formik>
   );
 }

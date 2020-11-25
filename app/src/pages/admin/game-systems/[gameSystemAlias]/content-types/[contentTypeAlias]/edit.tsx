@@ -6,9 +6,8 @@ import { client } from "../../../../../../utilities/graphql/apiClient";
 import ContentTypeForm from "../../../../../../components/admin/contentTypes/Form";
 import Page from "../../../../../../components/design/Page";
 import Breadcrumbs from "../../../../../../components/design/Breadcrumbs";
-import { ContentType, CommonContentType, GameSystem } from "@reroll/model/dist/documents";
+import { CommonContentType, ContentType, GameSystem } from "@reroll/model/dist/documents";
 import { UpdateContentTypeInput } from "@reroll/model/dist/inputs";
-import { FetchError } from "node-fetch";
 
 interface EditContentTypeFormProps {
   commonContentTypes: CommonContentType[];
@@ -23,11 +22,11 @@ interface EditContentTypeProps {
 
 /**
  * Renders a new game system form
- * @param props.themes The themes to render within the form's theme dropdown 
+ * @param props.themes The themes to render within the form's theme dropdown
  */
 export function EditContentTypeForm({ commonContentTypes, contentType }: EditContentTypeFormProps): JSX.Element {
   const router = useRouter();
-  return <ContentTypeForm 
+  return <ContentTypeForm
     commonContentTypes={commonContentTypes}
     initialValues={contentType}
     onSubmit={(values: UpdateContentTypeInput) => {
@@ -50,11 +49,10 @@ export function EditContentTypeForm({ commonContentTypes, contentType }: EditCon
       .then(() => {
         const gameSystemAlias = router.query.gameSystemAlias;
         const key = values.alias || contentType._id;
-        router.push(`/admin/game-systems/${gameSystemAlias}/content-types/${key}`)
+        router.push(`/admin/game-systems/${gameSystemAlias}/content-types/${key}`);
       })
-      .catch((error: FetchError) => {
+      .catch(() => {
         // TODO - Better error handling
-        console.log(error)
       });
     }}
   />;
@@ -63,7 +61,9 @@ export function EditContentTypeForm({ commonContentTypes, contentType }: EditCon
 /**
  * Renders a the page to create a new game system
  */
-export default function EditContentType({ commonContentTypes, contentType, gameSystem }: EditContentTypeProps): JSX.Element {
+export default function EditContentType(
+  { commonContentTypes, contentType, gameSystem }: EditContentTypeProps
+): JSX.Element {
   return (
     <Page>
       <h1>Edit {contentType.name}</h1>
@@ -73,7 +73,7 @@ export default function EditContentType({ commonContentTypes, contentType, gameS
         gameSystem.name,
         "Content Types",
         contentType.name,
-        "Edit"
+        "Edit",
       ]}/>
 
       <br/>
@@ -86,7 +86,7 @@ export default function EditContentType({ commonContentTypes, contentType, gameS
 
 EditContentType.getInitialProps = async (ctx: NextPageContext) => {
   const { contentTypeAlias, gameSystemAlias } = ctx.query;
-  
+
   const query = gql`query {
     commonContentTypes (sort: "name") {
       _id,
@@ -110,10 +110,10 @@ EditContentType.getInitialProps = async (ctx: NextPageContext) => {
   }`;
 
   const { commonContentTypes, contentType, gameSystem } = (await client.query({query: query}))["data"];
-  
-  return { 
+
+  return {
     commonContentTypes,
     contentType,
-    gameSystem
+    gameSystem,
   };
-}
+};

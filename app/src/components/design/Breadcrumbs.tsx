@@ -9,7 +9,7 @@ interface BreadcrumbProps {
 }
 
 /**
- * A simple breadcrumb component that builds out the links from the URL. 
+ * A simple breadcrumb component that builds out the links from the URL.
  * @param props.skipLevels A number indicating how many levels to skip. Default 0
  * @param props.titles An array of strings for the title of each level
  */

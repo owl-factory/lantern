@@ -11,7 +11,7 @@ export interface EntityTableProps {
 const tableBuilder = new TableBuilder()
 .addIncrementColumn("")
 .addDataColumn("Entity Type", "name")
-.addDataColumn("Alias", "alias")
+.addDataColumn("Alias", "alias");
 // .addDataColumn("Published", "isPublished", (isPublished: boolean) => (isPublished ? "Yes" : "No"))
 // .addComponentColumn("Tools", );
 
@@ -21,9 +21,9 @@ const tableBuilder = new TableBuilder()
  * @param props.pageState A page state containing page and perPage
  */
 export function EntityTypeTable(props: EntityTableProps): JSX.Element {
-  return <Table 
-    {...tableBuilder.renderConfig()} 
-    data={props.entityTypes} 
+  return <Table
+    {...tableBuilder.renderConfig()}
+    data={props.entityTypes}
     startingIncrement={(props.pageState.page - 1) * props.pageState.perPage + 1}
-  />
+  />;
 }

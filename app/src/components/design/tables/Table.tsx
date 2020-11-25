@@ -1,13 +1,13 @@
 import React from "react";
-import { Table as BSTable } from "react-bootstrap"
+import { Table as BSTable } from "react-bootstrap";
 import { Column, TableDataType } from "../../../model/design/table";
 
-type RowAction = (index: number, data: TableDataType, globalData?: TableDataType) => void; 
+type RowAction = (index: number, data: TableDataType, globalData?: TableDataType) => void;
 
 interface TableProps {
   columns: Column[]; // The column configuration
   data: TableDataType[]; // An array of data to render
-  globalData?: TableDataType; 
+  globalData?: TableDataType;
   // An action that may be applied to the whole row
   rowAction?: RowAction;
   startingIncrement?: number; // The number to begin incrementation on
@@ -22,7 +22,7 @@ interface TableBodyProps {
   data: TableDataType[]; // An array of data to render
   globalData?: TableDataType; // Any data that is static across all rows
   // An action that may be applied to the whole row
-  rowAction?: RowAction; 
+  rowAction?: RowAction;
   startingIncrement?: number; // The number to begin incrementation on
 }
 
@@ -31,7 +31,7 @@ interface TableRowProps {
   data: TableDataType; // The object with data to render
   globalData?: TableDataType; // Any data that is static across all rows
   // An action that may be applied to the whole row
-  rowAction?: RowAction; 
+  rowAction?: RowAction;
   increment: number; // The current row increment
 }
 
@@ -56,13 +56,13 @@ function TableHeader(props: TableHeaderProps) {
  */
 function TableBody(props: TableBodyProps) {
   const rows: JSX.Element[] = [];
-  let increment = props.startingIncrement || 1; 
+  let increment = props.startingIncrement || 1;
 
   props.data.forEach((rowData: TableDataType) => {
     rows.push(
-      <TableRow 
+      <TableRow
         key={"row-" + increment}
-        {...props} 
+        {...props}
         data={rowData}
         rowAction={props.rowAction}
         increment={increment++}
@@ -80,10 +80,10 @@ function TableRow(props: TableRowProps) {
   const row: JSX.Element[] = [];
   let columnIncrement = 0;
   let content: JSX.Element | number | string | undefined = undefined;
-  let onClick = undefined; 
-  const rowAction = props.rowAction ? props.rowAction : () => {return};
+  let onClick = undefined;
+  const rowAction = props.rowAction ? props.rowAction : () => {return;};
 
-  // This might break some stuff. We need to test it because otherwise we have 
+  // This might break some stuff. We need to test it because otherwise we have
   // issues with "this might not be defined"
   onClick = () => (rowAction(props.increment, props.data, props.globalData));
   const typedData = props.data as Record<string, unknown>;
@@ -96,17 +96,20 @@ function TableRow(props: TableRowProps) {
       }
 
     } else if (column.component !== undefined) {
-      content = column.component( { data: props.data as Record<string, unknown>, globalData: props.globalData as Record<string, unknown>} );
+      content = column.component({
+        data: props.data as Record<string, unknown>,
+        globalData: props.globalData as Record<string, unknown>,
+      });
 
     } else if (column.increment === true) {
       content = props.increment;
 
     }
 
-    row.push(<td 
+    row.push(<td
       key={"cell-" + props.increment + "-" + columnIncrement++}
-      
-    >{content}</td>)
+
+    >{content}</td>);
   });
 
   return <tr onClick={onClick}>{row}</tr>;

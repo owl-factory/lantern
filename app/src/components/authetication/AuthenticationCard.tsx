@@ -1,6 +1,6 @@
 import { signIn } from "next-auth/client";
-import React, { useState, ReactNode } from "react";
-import { Card, Button } from "react-bootstrap";
+import React, { ReactNode, useState } from "react";
+import { Button, Card } from "react-bootstrap";
 import LoginForm from "./LoginForm";
 
 interface AuthenticationCardProps {

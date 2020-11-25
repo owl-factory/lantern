@@ -7,7 +7,7 @@ import { GameSystem } from "@reroll/model/dist/documents/GameSystem";
 import { TableBuilder } from "../../../utilities/design/table";
 import Link from "next/link";
 import { ContextMenuBuilder } from "../../../utilities/design/contextMenu";
-import { MdBuild, MdInfo, MdPageview, MdBlock } from "react-icons/md";
+import { MdBlock, MdBuild, MdInfo, MdPageview } from "react-icons/md";
 import { client } from "../../../utilities/graphql/apiClient";
 import gql from "graphql-tag";
 import Pagination, { PageState } from "../../../components/design/Pagination";
@@ -27,7 +27,7 @@ const gameSystemActions = new ContextMenuBuilder()
   .addLink("View", MdPageview, "/game-systems/[alias]")
   .addLink("Details", MdInfo, "/admin/game-systems/[alias]")
   .addLink("Edit", MdBuild, "/admin/game-systems/[alias]/edit")
-  .addItem("Delete", MdBlock, (context: GameSystem) => (confirm(`Are you sure you want to delete ${context.name}?`)))
+  .addItem("Delete", MdBlock, (context: GameSystem) => (confirm(`Are you sure you want to delete ${context.name}?`)));
 
 const tableBuilder = new TableBuilder()
   .addIncrementColumn("")
@@ -41,8 +41,8 @@ const tableBuilder = new TableBuilder()
  */
 function GameSystemActions({ data }: TableComponentProps) {
   return (
-    <ContextMenu 
-      context={{name: data.name, alias: data.alias || data._id}} 
+    <ContextMenu
+      context={{name: data.name, alias: data.alias || data._id}}
       {...gameSystemActions.renderConfig()}
     />
   );
@@ -57,13 +57,13 @@ function GameSystems(data: GameSystemsProps): JSX.Element {
   const [pageState, setPageState] = React.useState({
     page: 1,
     perPage: initialPerPage,
-    totalCount: gameSystemData.gameSystemCount
+    totalCount: gameSystemData.gameSystemCount,
   });
 
   async function setPage(newPageState: PageState) {
     const newGameSystemData = await queryGameSystems(
       newPageState.page,
-      newPageState.perPage  
+      newPageState.perPage
     );
 
     setGameSystemData(newGameSystemData.data);
@@ -75,9 +75,9 @@ function GameSystems(data: GameSystemsProps): JSX.Element {
       <h3>Game Systems</h3>
       <Breadcrumbs skipLevels={1} titles={["Admin", "Game Systems"]}/>
       <Button ><Link href="/admin/game-systems/new"><a>+ Add Game System</a></Link></Button>
-      <Table 
-        {...tableBuilder.renderConfig()} 
-        data={gameSystemData.gameSystems} 
+      <Table
+        {...tableBuilder.renderConfig()}
+        data={gameSystemData.gameSystems}
         startingIncrement={(pageState.page - 1) * pageState.perPage + 1}
       />
       <Pagination pageState={pageState} setPageState={setPage}/>
@@ -86,7 +86,7 @@ function GameSystems(data: GameSystemsProps): JSX.Element {
 }
 
 /**
- * Queries the game systems 
+ * Queries the game systems
  * @param page The current page
  * @param perPage The number of entries per page
  */
@@ -112,7 +112,7 @@ async function queryGameSystems(page: number, perPage: number, ) {
 GameSystems.getInitialProps = async () => {
   const gameSystemData = await queryGameSystems(1, initialPerPage);
   return gameSystemData.data;
-}
+};
 
 export default GameSystems;
 

@@ -5,7 +5,14 @@ import { CreateCommonEntityTypeInput, UpdateCommonEntityTypeInput } from "@rerol
 import { Options } from "@reroll/model/dist/inputs/Options";
 import { Arg, Args, Authorized, Int, Mutation, Query, Resolver } from "type-graphql";
 import { CoreResolver } from "./CoreResolver";
-import { FindOneResponse, FindManyResponse, FindCountResponse, CreateOneResponse, UpdateOneResponse, DeleteOneResponse } from "../../types/resolvers";
+import {
+  CreateOneResponse,
+  DeleteOneResponse,
+  FindCountResponse,
+  FindManyResponse,
+  FindOneResponse,
+  UpdateOneResponse,
+} from "../../types/resolvers";
 
 /**
  * Resolves common entity type queries
@@ -49,7 +56,9 @@ export class CommonEntityTypeResolver extends CoreResolver {
    */
   @Authorized()
   @Mutation(() => CommonEntityType)
-  public createCommonEntityType(@Arg("data") data: CreateCommonEntityTypeInput): Promise<CreateOneResponse<CommonEntityType>> {
+  public createCommonEntityType(
+    @Arg("data") data: CreateCommonEntityTypeInput
+  ): Promise<CreateOneResponse<CommonEntityType>> {
     return super.createOne(data) as Promise<CreateOneResponse<CommonEntityType>>;
   }
 

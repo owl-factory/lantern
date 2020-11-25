@@ -2,7 +2,7 @@ import React from "react";
 import { TableBuilder } from "../../../utilities/design/table";
 import Table from "../../design/tables/Table";
 import { ContextMenuBuilder } from "../../../utilities/design/contextMenu";
-import { MdPageview, MdInfo, MdBuild } from "react-icons/md";
+import { MdBuild, MdInfo, MdPageview } from "react-icons/md";
 import ContextMenu from "../../design/contextMenus/ContextMenu";
 import { GameSystem, Module } from "@reroll/model/dist/documents";
 import { PageState } from "../../design/Pagination";
@@ -27,12 +27,12 @@ function ModuleActions({ data, globalData }: TableComponentProps) {
   const typedGlobalData = globalData as Record<string, unknown>;
 
   return (
-    <ContextMenu 
+    <ContextMenu
       context={{
         name: data.name,
         moduleAlias: data.alias || data._id,
-        gameSystemAlias: typedGlobalData.alias || typedGlobalData._id
-      }} 
+        gameSystemAlias: typedGlobalData.alias || typedGlobalData._id,
+      }}
       {...moduleActions.renderConfig()}
     />
   );
@@ -45,10 +45,10 @@ const tableBuilder = new TableBuilder()
   .addComponentColumn("Tools", ModuleActions);
 
 export default function ModuleTable(props: ModuleTableProps): JSX.Element {
-  return <Table 
-    {...tableBuilder.renderConfig()} 
+  return <Table
+    {...tableBuilder.renderConfig()}
     data={props.modules}
     globalData={props.gameSystem as Record<string, unknown>}
     startingIncrement={(props.pageState.page - 1) * props.pageState.perPage + 1}
-  />
+  />;
 }

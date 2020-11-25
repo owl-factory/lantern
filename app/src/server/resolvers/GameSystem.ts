@@ -5,7 +5,14 @@ import { CreateGameSystemInput, UpdateGameSystemInput } from "@reroll/model/dist
 import { Options } from "@reroll/model/dist/inputs/Options";
 import { Arg, Args, Authorized, Int, Mutation, Query, Resolver } from "type-graphql";
 import { CoreResolver } from "./CoreResolver";
-import { FindOneResponse, FindManyResponse, FindCountResponse, CreateOneResponse, UpdateOneResponse, DeleteOneResponse } from "../../types/resolvers";
+import {
+  CreateOneResponse,
+  DeleteOneResponse,
+  FindCountResponse,
+  FindManyResponse,
+  FindOneResponse,
+  UpdateOneResponse,
+} from "../../types/resolvers";
 
 /**
  * Resolves game system queries
@@ -94,22 +101,22 @@ export class GameSystemResolver extends CoreResolver {
 
   //   const publishTypeError = validatePublishType(ctx, data.publishType);
   //   if (publishTypeError) { throw Error(publishTypeError); ;}
-    
+
   //   try {
-  //     // Starts a transaction to 
+  //     // Starts a transaction to
   //     session.startTransaction();
   //     gameSystemDocument = await super.newResolver(data, { session: session });
 
   //     const moduleResolver = new ModuleResolver();
   //     const moduleDocument = await moduleResolver.newModule({
-  //       name: "Standard Rules", 
+  //       name: "Standard Rules",
   //       gameSystemID: gameSystemDocument._id,
   //       publishType: data.publishType
   //     }, { session });
 
   //     this.updateGameSystem(
-  //       gameSystemDocument._id, 
-  //       { defaultModuleID: moduleDocument._id }, 
+  //       gameSystemDocument._id,
+  //       { defaultModuleID: moduleDocument._id },
   //       { session }
   //     );
 

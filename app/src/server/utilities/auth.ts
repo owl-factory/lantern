@@ -1,7 +1,7 @@
 import { getSession } from "next-auth/client";
 import { AuthChecker } from "type-graphql";
 
-// TODO - better typing? Also comment this! @Lucy 
+// TODO - better typing? Also comment this! @Lucy
 // See context typing for resolvers task
 export async function authorize(context: Record<string, unknown>): Promise<boolean> {
   if (context.session) return true;

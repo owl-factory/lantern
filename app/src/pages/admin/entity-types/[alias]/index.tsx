@@ -1,11 +1,11 @@
 import React from "react";
 import Page from "../../../../components/design/Page";
-import { Card, Button } from "react-bootstrap";
+import { Button, Card } from "react-bootstrap";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Breadcrumbs from "../../../../components/design/Breadcrumbs";
 import { NextPageContext } from "next";
-import gql from "graphql-tag"; 
+import gql from "graphql-tag";
 import { client } from "../../../../utilities/graphql/apiClient";
 import { CommonEntityType } from "@reroll/model/dist/documents";
 
@@ -23,16 +23,16 @@ interface CommonEntityTypeViewProps {
 export default function CommonEntityTypeView({commonEntityType}: CommonEntityTypeViewProps): JSX.Element {
   const router = useRouter();
   const alias = router.query.alias;
-  
+
   return (
     <Page>
       <h1>Common Entity Type: {commonEntityType.name}</h1>
       <Breadcrumbs skipLevels={1} titles={[
         "Admin",
         "Common Entity Type",
-        commonEntityType.name
+        commonEntityType.name,
       ]}/>
-     
+
       <Card>
         <Card.Header>
           <>Details</>
@@ -58,7 +58,7 @@ export default function CommonEntityTypeView({commonEntityType}: CommonEntityTyp
 
         </Card.Body>
       </Card>
-      
+
     </Page>
   );
 }
@@ -78,9 +78,8 @@ CommonEntityTypeView.getInitialProps = async (ctx: NextPageContext) => {
   }`;
 
   const { data } = await client.query({query: commonEntityTypeQuery});
-  console.log(data)
-  
+
   return {
-    commonEntityType: data.commonEntityType
+    commonEntityType: data.commonEntityType,
   };
-}
+};

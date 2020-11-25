@@ -15,7 +15,7 @@ interface TextAreaProps extends CoreInputProps {
  * @param props.name The name of the input
  * @param props.placeholder A placeholder value for when the input is empty
  * @param props.rows The number of rows
- * @param props.size The bootstrap size of the input. 
+ * @param props.size The bootstrap size of the input.
  * @param props.xs Width for extra small screens
  * @param props.sm Width for small screens
  * @param props.md Width for extra medium screens

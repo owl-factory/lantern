@@ -1,4 +1,4 @@
-import { InputType, Field } from "type-graphql";
+import { Field, InputType } from "type-graphql";
 import { DateFilters, IDFilters, StringFilters } from "./filterTypes";
 
 @InputType()
@@ -11,7 +11,7 @@ export class CoreFilter {
 
   @Field(() => StringFilters, { nullable: true })
   alias?: StringFilters;
-  
+
   @Field(() => IDFilters, { nullable: true })
   ownedBy?: IDFilters;
 
