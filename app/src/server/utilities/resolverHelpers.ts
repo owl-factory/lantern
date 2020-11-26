@@ -73,7 +73,7 @@ export function parseFilter(filterObject: FilterObjectType, baseKey = ""): Parse
  * @param filters The filters to convert into an or clause for the query
  */
 export function buildFilters(filters?: GenericFiltersType): Record<string, unknown> {
-  if (!filters) { return {}; }
+  if (!filters || Object.keys(filters).length === 0) { return {}; }
   let andFilters: Record<string, unknown> | undefined;
   let orFilters: Record<string, unknown>[] = [];
 
