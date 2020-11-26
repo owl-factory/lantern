@@ -21,6 +21,7 @@ export class SharedResolver extends CoreResolver {
 
   /**
    * Fetches a document matching the given id or aliases
+   * @param ctx The context of the request and response, including the user's session
    * @param _id The id or alias of the document to return
    */
   @Query(() => CoreDocument, { nullable: true })
@@ -30,6 +31,7 @@ export class SharedResolver extends CoreResolver {
 
   /**
    * Fetches the documents matching the filter and options
+   * @param ctx The context of the request and response, including the user's session
    */
   @Query(() => [CoreDocument])
   public xxxs(
@@ -42,6 +44,7 @@ export class SharedResolver extends CoreResolver {
 
   /**
    * Returns a count of all of the documents matching the given filters
+   * @param ctx The context of the request and response, including the user's session
    * @param filters The filter object to count documents by. Identical to other filters
    */
   @Query(() => Int)
@@ -51,6 +54,7 @@ export class SharedResolver extends CoreResolver {
 
   /**
    * Inserts a new document into the database
+   * @param ctx The context of the request and response, including the user's session
    * @param data the data to insert into a new document
    */
   @Authorized()
@@ -61,6 +65,7 @@ export class SharedResolver extends CoreResolver {
 
   /**
    * Updates a document with new data. Data not present will not be changed.
+   * @param ctx The context of the request and response, including the user's session
    * @param _id The id of the document to update
    * @param data The new data to upsert into the document
    */
@@ -76,6 +81,7 @@ export class SharedResolver extends CoreResolver {
 
   /**
    * Deletes a document
+   * @param ctx The context of the request and response, including the user's session
    * @param _id The id of the document to delete
    */
   @Authorized()

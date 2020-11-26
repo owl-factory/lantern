@@ -17,6 +17,7 @@ export class EntityResolver extends CoreResolver {
 
   /**
    * Fetches a document matching the given id or aliases
+   * @param ctx The context of the request and response, including the user's session
    * @param _id The id or alias of the document to return
    */
   @Query(() => Entity, { nullable: true })
@@ -26,6 +27,7 @@ export class EntityResolver extends CoreResolver {
 
   /**
    * Fetches the documents matching the filter and options
+   * @param ctx The context of the request and response, including the user's session
    */
   @Query(() => [Entity])
   public entities(
@@ -38,6 +40,7 @@ export class EntityResolver extends CoreResolver {
 
   /**
    * Returns a count of all of the documents matching the given filters
+   * @param ctx The context of the request and response, including the user's session
    * @param filters The filter object to count documents by. Identical to other filters
    */
   @Query(() => Int)
@@ -47,6 +50,7 @@ export class EntityResolver extends CoreResolver {
 
   /**
    * Inserts a new document into the database
+   * @param ctx The context of the request and response, including the user's session
    * @param data the data to insert into a new document
    */
   @Authorized()
@@ -57,6 +61,7 @@ export class EntityResolver extends CoreResolver {
 
   /**
    * Updates a document with new data. Data not present will not be changed.
+   * @param ctx The context of the request and response, including the user's session
    * @param _id The id of the document to update
    * @param data The new data to upsert into the document
    */
@@ -72,6 +77,7 @@ export class EntityResolver extends CoreResolver {
 
   /**
    * Deletes a document
+   * @param ctx The context of the request and response, including the user's session
    * @param _id The id of the document to delete
    */
   @Authorized()

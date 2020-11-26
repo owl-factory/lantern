@@ -30,6 +30,7 @@ export class CoreResolver {
 
   /**
    * Finds a document by an alias or id and optionally the aliases/ids of other documents
+   * @param ctx The context of the request and response, including the user's session
    * @param alias The alias or ID of the document to find
    * @param superDocumentAliases The aliases of any owning documents that the target document must belong to
    */
@@ -40,6 +41,7 @@ export class CoreResolver {
   /**
    * Finds a collection of documents matching the given filters and options
    * 
+   * @param ctx The context of the request and response, including the user's session
    * @param filters Filters given to find specific documents
    * @param options General options for modifying results, such as length and how many to skip
    */
@@ -50,6 +52,7 @@ export class CoreResolver {
 
   /**
    * Finds the count for the given filters
+   * @param ctx The context of the request and response, including the user's session
    * @param filters Filters used for determining what is counted
    */
   protected findCount(ctx: Context, filters?: GenericFiltersType): FindCountResponse {
@@ -59,6 +62,7 @@ export class CoreResolver {
 
   /**
    * Creates a single new document and inserts it into the database
+   * @param ctx The context of the request and response, including the user's session
    * @param data The data to insert into a new document
    * @param options Any additional options to save the data
    */
@@ -81,6 +85,7 @@ export class CoreResolver {
 
   /**
    * Updates a single document in the database
+   * @param ctx The context of the request and response, including the user's session
    * @param _id The id of the document to update
    * @param data The new data of the document to set
    */
@@ -98,6 +103,7 @@ export class CoreResolver {
 
   /**
    * Hard deletes a single document
+   * @param ctx The context of the request and response, including the user's session
    * @param _id The id of the document to delete
    */
   protected async deleteOne(ctx: Context, _id: string): Promise<DeleteOneResponse> {
