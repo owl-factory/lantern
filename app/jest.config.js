@@ -17,7 +17,7 @@ module.exports = {
         pathRegex: /\.(spec|test)\.ts$/,
         warnOnly: true
       },
-      tsconfig: "jest.tsconfig.json"
+      tsConfig: "jest.tsconfig.json"
     }
   },
   coveragePathIgnorePatterns: [
