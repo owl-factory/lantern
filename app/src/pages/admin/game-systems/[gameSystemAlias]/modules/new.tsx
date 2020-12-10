@@ -7,20 +7,19 @@ import { client } from "../../../../../utilities/graphql/apiClient";
 import { useRouter } from "next/router";
 import ModuleForm from "../../../../../components/admin/modules/Form";
 import { GameSystem } from "@reroll/model/dist/documents";
-import { FetchError } from "node-fetch";
 import { GraphQLResponse } from "../../../../../types/graphql";
 import { CreateModuleInput } from "@reroll/model/dist/inputs";
 
 /**
  * Renders a new game system form
- * @param props.themes The themes to render within the form's theme dropdown 
+ * @param props.themes The themes to render within the form's theme dropdown
  */
 export function NewModuleForm(props: {gameSystem: GameSystem}): JSX.Element {
   const router = useRouter();
-  return <ModuleForm 
+  return <ModuleForm
     initialValues={{
       name: "",
-      alias: ""
+      alias: "",
     }}
     onSubmit={(values: CreateModuleInput) => {
       const NewModuleMutation = gql`
@@ -39,11 +38,10 @@ export function NewModuleForm(props: {gameSystem: GameSystem}): JSX.Element {
       .then((res: GraphQLResponse) => {
         const gameSystemAlias = router.query.gameSystemAlias;
         const key = res.data.newModule.alias || res.data.newModule._id;
-        router.push(`/admin/game-systems/${gameSystemAlias}/modules/${key}`)
+        router.push(`/admin/game-systems/${gameSystemAlias}/modules/${key}`);
       })
-      .catch((error: FetchError) => {
+      .catch(() => {
         // TODO - Better error handling
-        console.log(error)
       });
     }}
   />;
@@ -56,7 +54,7 @@ export default function NewModule({ gameSystem }: { gameSystem: GameSystem }): J
       <Breadcrumbs skipLevels={1} titles={["Admin", "Game Systems", gameSystem.name || "", "New Module"]}/>
       <NewModuleForm gameSystem={gameSystem}/>
     </Page>
-  )
+  );
 }
 
 NewModule.getInitialProps = async (ctx: NextPageContext) => {
@@ -70,7 +68,7 @@ NewModule.getInitialProps = async (ctx: NextPageContext) => {
   }`;
 
   const { data } = await client.query({query: query});
-  return { 
-    gameSystem: data.gameSystem
+  return {
+    gameSystem: data.gameSystem,
   };
-}
+};

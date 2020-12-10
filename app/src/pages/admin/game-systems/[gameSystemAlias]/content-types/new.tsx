@@ -9,7 +9,6 @@ import ContentTypeForm from "../../../../../components/admin/contentTypes/Form";
 import { CommonContentType, GameSystem } from "@reroll/model/dist/documents";
 import { CreateContentTypeInput } from "@reroll/model/dist/inputs";
 import { GraphQLResponse } from "../../../../../types/graphql";
-import { FetchError } from "node-fetch";
 
 interface NewContentTypeFormProps {
   commonContentTypes: CommonContentType[];
@@ -26,11 +25,11 @@ interface NewCommonContentTypeProps {
  */
 export function NewContentTypeForm({ commonContentTypes, gameSystem }: NewContentTypeFormProps): JSX.Element {
   const router = useRouter();
-  return <ContentTypeForm 
+  return <ContentTypeForm
     commonContentTypes={commonContentTypes}
     initialValues={{
       name: "",
-      alias: ""
+      alias: "",
     }}
     onSubmit={(values: CreateContentTypeInput) => {
       const newContentTypeMutation = gql`
@@ -50,11 +49,10 @@ export function NewContentTypeForm({ commonContentTypes, gameSystem }: NewConten
       .then((res: GraphQLResponse ) => {
         const gameSystemAlias = router.query.gameSystemAlias;
         const key = res.data.newContentType.alias || res.data.newContentType._id;
-        router.push(`/admin/game-systems/${gameSystemAlias}/content-types/${key}`)
+        router.push(`/admin/game-systems/${gameSystemAlias}/content-types/${key}`);
       })
-      .catch((error: FetchError) => {
+      .catch(() => {
         // TODO - Better error handling
-        console.log(error)
       });
     }}
   />;
@@ -63,7 +61,9 @@ export function NewContentTypeForm({ commonContentTypes, gameSystem }: NewConten
 /**
  * Renders a the page to create a new game system
  */
-export default function NewCommonContentType({ commonContentTypes, gameSystem }: NewCommonContentTypeProps): JSX.Element {
+export default function NewCommonContentType(
+  {commonContentTypes, gameSystem }: NewCommonContentTypeProps
+): JSX.Element {
   return (
     <Page>
       <h1>Create Content Type</h1>
@@ -72,7 +72,7 @@ export default function NewCommonContentType({ commonContentTypes, gameSystem }:
         "Game Systems",
         gameSystem.name,
         "Content Types",
-        "New"
+        "New",
       ]}/>
 
       <br/>
@@ -85,7 +85,7 @@ export default function NewCommonContentType({ commonContentTypes, gameSystem }:
 
 NewCommonContentType.getInitialProps = async (ctx: NextPageContext) => {
   const alias = ctx.query.gameSystemAlias;
-  
+
   const query = gql`
   query {
     gameSystem (_id: "${alias}") {
@@ -101,9 +101,9 @@ NewCommonContentType.getInitialProps = async (ctx: NextPageContext) => {
   }`;
 
   const { data } = await client.query({query: query});
-  
-  return { 
+
+  return {
     commonContentTypes: data.commonContentTypes,
-    gameSystem: data.gameSystem
+    gameSystem: data.gameSystem,
   };
-}
+};

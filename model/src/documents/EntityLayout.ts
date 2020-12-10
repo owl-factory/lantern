@@ -1,6 +1,6 @@
-import { CoreDocument } from "./CoreDocument"
-import { prop, getModelForClass } from "@typegoose/typegoose";
-import { ObjectType, Field, ID } from "type-graphql";
+import { CoreDocument } from "./CoreDocument";
+import { getModelForClass, prop } from "@typegoose/typegoose";
+import { Field, ID, ObjectType } from "type-graphql";
 
 /**
  * A model describing the layout of entities

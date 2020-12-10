@@ -1,5 +1,14 @@
 import React from "react";
-import { ContextButtonProps, ContextMenuItemProps, ContextMenuLinkProps, ContextMenuGenericItem, ContextMenuLink, ContextMenuItem, ButtonConfig, ContextMenuContext } from "../../../model/design/contextMenu";
+import {
+  ButtonConfig,
+  ContextButtonProps,
+  ContextMenuContext,
+  ContextMenuGenericItem,
+  ContextMenuItem,
+  ContextMenuItemProps,
+  ContextMenuLink,
+  ContextMenuLinkProps,
+} from "../../../model/design/contextMenu";
 import Tooltip from "../Tooltip";
 import { Button, ButtonGroup } from "react-bootstrap";
 import { parseHref } from "../../../utilities/design/contextMenu";
@@ -23,7 +32,7 @@ function ContextButtonItem(props: ContextMenuItemProps) {
     <Tooltip title={props.title}>
       <Button
         className={className}
-        onClick={() => {props.action(props.context)}}
+        onClick={() => {props.action(props.context);}}
       >
         <props.icon/>
       </Button>
@@ -56,7 +65,7 @@ function ContextButtonLink(props: ContextMenuLinkProps) {
 
  /**
   * Renders a default menu item given the type of item it is
-  * 
+  *
   * @param item A description of how to render this particular item
   * @param context Any appropriate context for this menu
   * @param keyIndex The index used for the key
@@ -68,13 +77,13 @@ function renderDefaultMenuItem(
   keyIndex: number
 ) {
   const key = `context-menu-item-${keyIndex}`;
-  
+
   switch(item.type) {
     case "divider":
       return <></>; // TODO - need to figure out what to do here
     case "header":
       return <></>; // TODO - need to figure out what to do here
-    
+
     case "link":
       return (
         <ContextButtonLink
@@ -84,7 +93,7 @@ function renderDefaultMenuItem(
           context={context}
         />
       );
-    
+
     case "item":
       return (
         <ContextButtonItem
@@ -117,9 +126,9 @@ export function ContextButtons(props: ContextButtonProps): JSX.Element {
     }
 
     defaultMenuItems.push(renderDefaultMenuItem(
-      props.buttonConfig, 
-      item, 
-      props.context, 
+      props.buttonConfig,
+      item,
+      props.context,
       keyIndex++
     ));
   });
@@ -132,5 +141,5 @@ export function ContextButtons(props: ContextButtonProps): JSX.Element {
  * @param props.items A list of items to render and their instructions
  */
 export default function ContextButtonGroup(props: ContextButtonProps): JSX.Element {
-  return <ButtonGroup><ContextButtons {...props}/></ButtonGroup>
+  return <ButtonGroup><ContextButtons {...props}/></ButtonGroup>;
 }

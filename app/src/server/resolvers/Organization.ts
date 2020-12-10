@@ -5,7 +5,14 @@ import { CreateOrganizationInput, UpdateOrganizationInput } from "@reroll/model/
 import { Options } from "@reroll/model/dist/inputs/Options";
 import { Arg, Args, Authorized, Int, Mutation, Query, Resolver } from "type-graphql";
 import { CoreResolver } from "./CoreResolver";
-import { FindOneResponse, FindManyResponse, FindCountResponse, CreateOneResponse, UpdateOneResponse, DeleteOneResponse } from "../../types/resolvers";
+import {
+  CreateOneResponse,
+  DeleteOneResponse,
+  FindCountResponse,
+  FindManyResponse,
+  FindOneResponse,
+  UpdateOneResponse,
+} from "../../types/resolvers";
 
 /**
  * Resolves organization queries

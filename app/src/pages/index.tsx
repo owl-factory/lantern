@@ -2,7 +2,7 @@ import Link from "next/link";
 import React from "react";
 import AuthenticationCard from "../components/authetication/AuthenticationCard";
 import Page from "../components/design/Page";
-import { Row, Button, Col } from "react-bootstrap";
+import { Button, Col, Row } from "react-bootstrap";
 import { client } from "../utilities/graphql/apiClient";
 import gql from "graphql-tag";
 import { signOut, useSession } from "next-auth/client";
@@ -38,8 +38,8 @@ function testGQL() {
   }
   `;
   client.query({query}).then((res) => {
-    console.log(res.data)
-  })
+    console.log(res.data);
+  });
 }
 
 /**

@@ -45,7 +45,7 @@ export type DropType = "up" | "down" | "left" | "right";
 // Props for the ContextMenu component
 export interface ContextDropdownProps {
   as?: any; // This is a pain in the butt type. TODO
-  alignRight?: boolean; 
+  alignRight?: boolean;
   children: ReactNode;
   context: ContextMenuContext;
   drop?: DropType;
@@ -65,15 +65,15 @@ export interface ContextButtonProps {
 export interface ContextMenuItemProps {
   action: ContextMenuActionType; // The action to run when clicked. May be a link or another action. Passed the context
   buttonConfig?: ButtonConfig;
-  context: ContextMenuContext; // Any specific context for this contextmenu, such as an object's information from a table
+  context: ContextMenuContext; // Any specific context for this contextmenu such as an object's information from a table
   icon: IconType; // The icon to display on the right side of the context menu
   title: string; // The title of the item
 }
 
 export interface ContextMenuLinkProps {
   buttonConfig?: ButtonConfig;
-  context: ContextMenuContext; // Any specific context for this contextmenu, such as an object's information from a table
-  href: string; 
+  context: ContextMenuContext; // Any specific context for this contextmenu such as an object's information from a table
+  href: string;
   icon: IconType; // The icon to display on the right side of the context menu
   keys: ContextMenuKeys;
   title: string; // The title of the item

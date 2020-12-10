@@ -5,7 +5,7 @@ import { CoreFilter } from "./CoreFilter";
  * Describes the various filters that may be applied to user documents for searching
  */
 @InputType()
-export class UserFilter extends CoreFilter { 
+export class UserFilter extends CoreFilter {
 }
 
 /**

@@ -17,7 +17,7 @@ import {
   ModuleResolver,
   OrganizationResolver,
   RuleResolver,
-  UserResolver
+  UserResolver,
 } from "../../server/resolvers";
 import { GraphQLSchema } from "graphql";
 
@@ -29,7 +29,7 @@ if (connectionString === "") {
 }
 
 connect(
-  connectionString, 
+  connectionString,
   {useNewUrlParser: true, useUnifiedTopology: true}
 );
 
@@ -61,8 +61,8 @@ const server = new ApolloServer({
     return {
       session: null,
       req,
-      res
-    }
+      res,
+    };
   },
 });
 
@@ -72,4 +72,4 @@ export const config = {
   api: {
     bodyParser: false,
   },
-}
+};

@@ -1,15 +1,20 @@
-import { ContextMenuGenericItem, ContextMenuActionType, ContextMenuBuilderOutput, ButtonConfig } from "../../model/design/contextMenu";
+import {
+  ButtonConfig,
+  ContextMenuActionType,
+  ContextMenuBuilderOutput,
+  ContextMenuGenericItem,
+} from "../../model/design/contextMenu";
 import { IconType } from "react-icons/lib";
 
 /**
  * Builds out the configuration for a context menu
- * NOTE - while not apparently terribly useful now, this will be more important when we have 
+ * NOTE - while not apparently terribly useful now, this will be more important when we have
  *  two versions of the context menu, one per desktop and mobile
  */
 export class ContextMenuBuilder {
   private buttonConfig: ButtonConfig = {
     className: "d-none d-lg-inline",
-    width: 2
+    width: 2,
   }
   private items: ContextMenuGenericItem[] = [];
 
@@ -17,7 +22,7 @@ export class ContextMenuBuilder {
    * Adds a divider to the context menu
    */
   public addDivider(): ContextMenuBuilder {
-    this.items.push({type: "divider"})
+    this.items.push({type: "divider"});
     return this;
   }
 
@@ -26,7 +31,7 @@ export class ContextMenuBuilder {
    * @param title The title of the header
    */
   public addHeader(title: string): ContextMenuBuilder {
-    this.items.push({type: "header", title})
+    this.items.push({type: "header", title});
     return this;
   }
 
@@ -59,8 +64,8 @@ export class ContextMenuBuilder {
    */
   public renderConfig(): ContextMenuBuilderOutput {
     return {
-      buttonConfig: this.buttonConfig,  
-      items: this.items
+      buttonConfig: this.buttonConfig,
+      items: this.items,
     };
   }
 }
@@ -74,7 +79,7 @@ export class ContextMenuBuilder {
 export function parseHref(href: string, keys: Record<string, string>, context: Record<string, string>): string {
   let linkAs = href;
   const hrefKeys = href.match(/\[(.+?)\]/g);
-  
+
   // Exit if no keys are found
   if (hrefKeys === null) {
     return linkAs;
@@ -83,7 +88,7 @@ export function parseHref(href: string, keys: Record<string, string>, context: R
   // Goes through each key from the href and pulls the correct value
   hrefKeys.forEach((hrefKey: string) => {
     const cleanKey = hrefKey.slice(1, -1 );
-    
+
     let value = "";
     if (cleanKey in keys) {
       value = context[keys[cleanKey]];
@@ -94,6 +99,6 @@ export function parseHref(href: string, keys: Record<string, string>, context: R
 
     linkAs = linkAs.replace(hrefKey, value);
   });
-  
+
   return linkAs;
 }

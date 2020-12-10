@@ -1,11 +1,11 @@
 import React from "react";
 import Page from "../../../../components/design/Page";
-import { Card, Button } from "react-bootstrap";
+import { Button, Card } from "react-bootstrap";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Breadcrumbs from "../../../../components/design/Breadcrumbs";
 import { NextPageContext } from "next";
-import gql from "graphql-tag"; 
+import gql from "graphql-tag";
 import { client } from "../../../../utilities/graphql/apiClient";
 import { CommonContentType } from "@reroll/model/dist/documents/CommonContentType";
 
@@ -17,19 +17,21 @@ import { CommonContentType } from "@reroll/model/dist/documents/CommonContentTyp
  * @param entityCount The total count of entities that exist within this gamesystem
  * @param contentCount The total count of content that exist within this gamesystem
  */
-export default function CommonContentTypeView({commonContentType}: {commonContentType: CommonContentType}): JSX.Element {
+export default function CommonContentTypeView(
+  {commonContentType}: {commonContentType: CommonContentType}
+): JSX.Element {
   const router = useRouter();
   const alias = router.query.alias;
-  
+
   return (
     <Page>
       <h1>Common Content Type: {commonContentType.name}</h1>
       <Breadcrumbs skipLevels={1} titles={[
         "Admin",
         "Common Content Type",
-        commonContentType.name || ""
+        commonContentType.name || "",
       ]}/>
-     
+
       <Card>
         <Card.Header>
           <>Details</>
@@ -56,7 +58,7 @@ export default function CommonContentTypeView({commonContentType}: {commonConten
 
         </Card.Body>
       </Card>
-      
+
     </Page>
   );
 }
@@ -77,8 +79,8 @@ CommonContentTypeView.getInitialProps = async (ctx: NextPageContext) => {
   }`;
 
   const { data } = await client.query({query: commonContentTypeQuery});
-  
+
   return {
-    commonContentType: data.commonContentType
+    commonContentType: data.commonContentType,
   };
-}
+};

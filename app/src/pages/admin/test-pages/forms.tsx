@@ -1,4 +1,4 @@
-import { Formik, Form as FormikForm, ErrorMessage, FormikProps, } from "formik";
+import { ErrorMessage, Formik, Form as FormikForm, FormikProps } from "formik";
 import React from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import * as Yup from "yup";
@@ -33,7 +33,7 @@ export function TestForm(): JSX.Element {
     isActive: "",
     difficulty: "",
     isAirConditioningOn: "",
-  }
+  };
 
   return (
     <Formik
@@ -109,7 +109,7 @@ export function TestForm(): JSX.Element {
               <RadioButton id="base1" name="difficulty" value="easy">
                 <Form.Check.Label>Easy</Form.Check.Label>
               </RadioButton>
-            
+
               <RadioButton id="base2" name="difficulty" value="hard">
                 <Form.Check.Label>Hard</Form.Check.Label>
               </RadioButton>

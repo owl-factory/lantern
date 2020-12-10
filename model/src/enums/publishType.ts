@@ -12,5 +12,5 @@ export const publishTypeText = [
   "Official",
   "Third-Party",
   "Community",
-  "Private"
-]
+  "Private",
+];

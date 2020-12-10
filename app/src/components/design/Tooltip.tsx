@@ -25,6 +25,6 @@ export default function Tooltip(props: TooltipProps): JSX.Element {
       overlay={<BSTooltip id={"tooltip-" + idify(props.title)}>{props.title}</BSTooltip>}
     >
       {props.children}
-    </OverlayTrigger>    
-  )
+    </OverlayTrigger>
+  );
 }

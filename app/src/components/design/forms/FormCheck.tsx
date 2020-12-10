@@ -25,11 +25,11 @@ interface FormCheckProps extends CoreFormCheckProps {
  */
 export function FormCheck(props: FormCheckProps): JSX.Element {
   const id = props.id || props.name;
-  
+
   const [field] = useField({name: props.name, value: props.value});
-  
+
   return (
-    <Form.Check 
+    <Form.Check
       aria-label={props["aria-label"]}
       custom
       id={id}

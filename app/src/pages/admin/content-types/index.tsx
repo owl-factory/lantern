@@ -21,7 +21,7 @@ interface CommonContentTypeIndexProps {
 const initialPerPage = 25;
 const contentTypeActions = new ContextMenuBuilder()
   .addLink("Details", MdInfo, "/admin/content-types/[alias]")
-  .addLink("Edit", MdBuild, "/admin/content-types/[alias]/edit")
+  .addLink("Edit", MdBuild, "/admin/content-types/[alias]/edit");
 
 /**
  * Renders the actions for the content types table
@@ -31,8 +31,8 @@ function ContentTypeActions(props: {data: CommonContentType}) {
   // View, Details, Edit, Modules
 
   return (
-    <ContextMenu 
-      context={{name: props.data.name, alias: props.data.alias || props.data._id}} 
+    <ContextMenu
+      context={{name: props.data.name, alias: props.data.alias || props.data._id}}
       {...contentTypeActions.renderConfig()}
     />
   );
@@ -64,17 +64,19 @@ async function queryContentTypes(page: number, perPage: number) {
  * @param props.contentTypes An array of entities of to render into a table
  * @param props.pageState A page state containing page and perPage
  */
-export default function CommonContentTypeIndex({ initialContentTypes, contentTypeCount }: CommonContentTypeIndexProps): JSX.Element {
+export default function CommonContentTypeIndex(
+  { initialContentTypes, contentTypeCount }: CommonContentTypeIndexProps
+): JSX.Element {
   const [ contentTypes, setContentTypes ] = React.useState(initialContentTypes);
   const [ pageState, setPageState ] = React.useState({
     page: 1,
     perPage: initialPerPage,
-    totalCount: contentTypeCount
+    totalCount: contentTypeCount,
   });
 
   async function setPage(newPageState: PageState) {
     const [ newContentTypes, newContentCount ] = await queryContentTypes(
-      newPageState.page, 
+      newPageState.page,
       newPageState.perPage
     );
 
@@ -95,9 +97,9 @@ export default function CommonContentTypeIndex({ initialContentTypes, contentTyp
         </Link>
       </Button>
 
-      <Table 
-        {...tableBuilder.renderConfig()} 
-        data={contentTypes as Record<string, unknown>[]} 
+      <Table
+        {...tableBuilder.renderConfig()}
+        data={contentTypes as Record<string, unknown>[]}
         startingIncrement={(pageState.page - 1) * pageState.perPage + 1}
       />
       <Pagination pageState={pageState} setPageState={setPage}/>
@@ -108,8 +110,8 @@ export default function CommonContentTypeIndex({ initialContentTypes, contentTyp
 
 CommonContentTypeIndex.getInitialProps = async () => {
   const [ initialContentTypes, contentTypeCount ] = await queryContentTypes(1, initialPerPage);
-  return { 
+  return {
     initialContentTypes,
-    contentTypeCount
+    contentTypeCount,
   };
 };

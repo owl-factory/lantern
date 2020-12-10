@@ -1,4 +1,4 @@
-import { InputType, Field } from "type-graphql";
+import { Field, InputType } from "type-graphql";
 import { EntityType } from "../documents";
 import { CoreInput } from "./CoreInput";
 

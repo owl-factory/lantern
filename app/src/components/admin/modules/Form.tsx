@@ -15,7 +15,7 @@ import { CreateModuleInput, UpdateModuleInput } from "@reroll/model/dist/inputs"
 export default function ModuleForm(props: FormixFormProps<CreateModuleInput | UpdateModuleInput>):JSX.Element {
 
   return (
-    <Formik 
+    <Formik
       initialValues={props.initialValues}
       onSubmit={props.onSubmit}
       validationSchema={Yup.object({
@@ -25,13 +25,13 @@ export default function ModuleForm(props: FormixFormProps<CreateModuleInput | Up
         alias: Yup.string()
           .max(20, "Maximum of 20 characters"),
         description: Yup.string()
-          .max(1000, "Maximum of 1000 characters"),  
+          .max(1000, "Maximum of 1000 characters"),
         cost: Yup.number()
           .test("validCost", "A valid cost must be provided", function (value: number | null | undefined) {
-            if (this.parent.isPurchasable !== true) { return true }
+            if (this.parent.isPurchasable !== true) { return true; }
             if (value && value < 0) { return false; }
             return true;
-          }) 
+          }),
       })}
     >
       {() => (
@@ -71,12 +71,12 @@ export default function ModuleForm(props: FormixFormProps<CreateModuleInput | Up
                 </Form.Group>
               </Row>
             </Col>
-            
+
           </Row>
 
           <Button variant="primary" type="submit">Submit!</Button>
         </FormikForm>
       )}
-    </Formik> 
+    </Formik>
   );
 }

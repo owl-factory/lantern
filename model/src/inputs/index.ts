@@ -36,8 +36,8 @@ export type GenericInputType = GenericCreateInputType | GenericUpdateInputType;
  * A generic create input type
  */
 export type GenericCreateInputType = (
-  CreateAssetInput | 
-  CreateCampaignInput | 
+  CreateAssetInput |
+  CreateCampaignInput |
   CreateCommonContentTypeInput |
   CreateCommonEntityTypeInput |
   CreateContentInput |
@@ -56,8 +56,8 @@ export type GenericCreateInputType = (
  * A generic update input type
  */
 export type GenericUpdateInputType = (
-  UpdateAssetInput | 
-  UpdateCampaignInput | 
+  UpdateAssetInput |
+  UpdateCampaignInput |
   UpdateCommonContentTypeInput |
   UpdateCommonEntityTypeInput |
   UpdateContentInput |

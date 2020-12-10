@@ -5,7 +5,14 @@ import { CreateCommonContentTypeInput, UpdateCommonContentTypeInput } from "@rer
 import { Options } from "@reroll/model/dist/inputs/Options";
 import { Arg, Args, Authorized, Int, Mutation, Query, Resolver } from "type-graphql";
 import { CoreResolver } from "./CoreResolver";
-import { FindOneResponse, FindManyResponse, FindCountResponse, CreateOneResponse, UpdateOneResponse, DeleteOneResponse } from "../../types/resolvers";
+import {
+  CreateOneResponse,
+  DeleteOneResponse,
+  FindCountResponse,
+  FindManyResponse,
+  FindOneResponse,
+  UpdateOneResponse,
+} from "../../types/resolvers";
 
 /**
  * Resolves common content type queries
@@ -39,7 +46,9 @@ export class CommonContentTypeResolver extends CoreResolver {
    * @param filters The filter object to count documents by. Identical to other filters
    */
   @Query(() => Int)
-  public xxxCount(@Arg("filters", {nullable: true}) filters?: CommonContentTypeFilters): FindCountResponse {
+  public commonContentTypeCount(
+    @Arg("filters", {nullable: true}) filters?: CommonContentTypeFilters
+  ): FindCountResponse {
     return super.findCount(filters);
   }
 
@@ -49,7 +58,9 @@ export class CommonContentTypeResolver extends CoreResolver {
    */
   @Authorized()
   @Mutation(() => CommonContentType)
-  public createCommonContentType(@Arg("data") data: CreateCommonContentTypeInput): Promise<CreateOneResponse<CommonContentType>> {
+  public createCommonContentType(
+    @Arg("data") data: CreateCommonContentTypeInput
+  ): Promise<CreateOneResponse<CommonContentType>> {
     return super.createOne(data) as Promise<CreateOneResponse<CommonContentType>>;
   }
 

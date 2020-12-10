@@ -22,11 +22,11 @@ function EditGameSystem({gameSystem}: EditGameSystemProps): JSX.Element {
   const router = useRouter();
 
   /**
-   * Runs the operation to update 
+   * Runs the operation to update
    * @param values The updated game system values to update
    */
   function updateGameSystem(values: UpdateGameSystemInput) {
-    const updateGameSystem = gql`mutation{
+    const updateGameSystemQuery = gql`mutation{
       updateGameSystem (_id: "${gameSystem._id}", data: {
         name: "${values.name}",
         alias: "${values.alias}"
@@ -35,11 +35,10 @@ function EditGameSystem({gameSystem}: EditGameSystemProps): JSX.Element {
       }
     }`;
 
-    client.mutate({mutation: updateGameSystem})
+    client.mutate({mutation: updateGameSystemQuery})
     .then(() => {
-      router.push(`/admin/game-systems/${values.alias}`)
-      console.log("Updated!")
-    })
+      router.push(`/admin/game-systems/${values.alias}`);
+    });
   }
 
   // TODO - handle if gamesystem is empty
@@ -51,7 +50,7 @@ function EditGameSystem({gameSystem}: EditGameSystemProps): JSX.Element {
 
       <br/>
 
-      <GameSystemForm 
+      <GameSystemForm
         initialValues={gameSystem}
         onSubmit={
           (values: UpdateGameSystemInput) => updateGameSystem(values)}
@@ -62,7 +61,7 @@ function EditGameSystem({gameSystem}: EditGameSystemProps): JSX.Element {
 
 EditGameSystem.getInitialProps = async (ctx: NextPageContext) => {
   const alias = ctx.query.gameSystemAlias;
-  
+
   const query = gql`
   query {
     gameSystem (_id: "${alias}") {
@@ -75,11 +74,11 @@ EditGameSystem.getInitialProps = async (ctx: NextPageContext) => {
   }`;
 
   const { data } = await client.query({query: query});
-  
-  return { 
+
+  return {
     themes: [{"name": "Default", "id": "default"}],
-    gameSystem: data.gameSystem
+    gameSystem: data.gameSystem,
   };
-}
+};
 
 export default EditGameSystem;

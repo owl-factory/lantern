@@ -6,9 +6,8 @@ import { client } from "../../../../../../utilities/graphql/apiClient";
 import Page from "../../../../../../components/design/Page";
 import Breadcrumbs from "../../../../../../components/design/Breadcrumbs";
 import { NextPageContext } from "next";
-import { Module, GameSystem } from "@reroll/model/dist/documents";
+import { GameSystem, Module } from "@reroll/model/dist/documents";
 import { UpdateModuleInput } from "@reroll/model/dist/inputs";
-import { FetchError } from "node-fetch";
 
 interface EditModuleFormProps {
   gameSystem: GameSystem;
@@ -22,11 +21,11 @@ interface EditModuleProps {
 
 /**
  * Renders a new game system form
- * @param props.themes The themes to render within the form's theme dropdown 
+ * @param props.themes The themes to render within the form's theme dropdown
  */
 export function EditModuleForm(props: EditModuleFormProps): JSX.Element {
   const router = useRouter();
-  return <ModuleForm 
+  return <ModuleForm
     initialValues={{
       name: props.module.name,
       alias: props.module.alias,
@@ -47,14 +46,13 @@ export function EditModuleForm(props: EditModuleFormProps): JSX.Element {
         }
       }
       `;
-      
+
       client.mutate({mutation: EditModuleMutation})
       .then(( ) => {
-        router.push(`/admin/game-systems/${gameSystemAlias}/modules/${moduleAlias}`)
+        router.push(`/admin/game-systems/${gameSystemAlias}/modules/${moduleAlias}`);
       })
-      .catch((error: FetchError) => {
+      .catch(() => {
         // TODO - Better error handling
-        console.log(error)
       });
     }}
   />;
@@ -64,10 +62,10 @@ export default function EditModule({ gameSystem, module }: EditModuleProps): JSX
   return (
     <Page>
       <h1>New {gameSystem.name} Module</h1>
-      <Breadcrumbs skipLevels={1} titles={["Admin", "Game Systems", gameSystem.name, "Modules", ]}/>
+      <Breadcrumbs skipLevels={1} titles={["Admin", "Game Systems", gameSystem.name, "Modules" ]}/>
       <EditModuleForm gameSystem={gameSystem} module={module} />
     </Page>
-  )
+  );
 }
 
 EditModule.getInitialProps = async (ctx: NextPageContext) => {
@@ -88,8 +86,8 @@ EditModule.getInitialProps = async (ctx: NextPageContext) => {
   }`;
 
   const { data } = await client.query({query: query});
-  return { 
+  return {
     gameSystem: data.gameSystem,
-    module: data.module
+    module: data.module,
   };
-}
+};

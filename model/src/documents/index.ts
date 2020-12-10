@@ -31,12 +31,12 @@ import { Rule, RuleModel } from "./Rule";
 import { User, UserModel } from "./User";
 
 /**
- * A generic document type for any situation where we might be getting document data but 
+ * A generic document type for any situation where we might be getting document data but
  * we're unsure of the source
  */
 export type GenericDocumentType = (
-  Asset | 
-  Campaign | 
+  Asset |
+  Campaign |
   CommonContentType |
   CommonEntityType |
   Content |
@@ -56,8 +56,8 @@ export type GenericDocumentType = (
  * A generic type for hitting any of the Typegoose models
  */
 export type GenericModelType = (
-  typeof AssetModel | 
-  typeof CampaignModel | 
+  typeof AssetModel |
+  typeof CampaignModel |
   typeof CommonContentTypeModel |
   typeof CommonEntityTypeModel |
   typeof ContentModel |

@@ -92,8 +92,8 @@ function Pagination(props: PaginationProps): JSX.Element {
 
     // Render first
     renderedCells.unshift(
-      <PaginationCell 
-        className={isDisabled(props.pageState.page, 1)} 
+      <PaginationCell
+        className={isDisabled(props.pageState.page, 1)}
         key="page_first"
         pageText="First"
         targetPage={1}
@@ -102,8 +102,8 @@ function Pagination(props: PaginationProps): JSX.Element {
 
     // Render last
     renderedCells.push(
-      <PaginationCell 
-        className={isDisabled(props.pageState.page, maxPage)} 
+      <PaginationCell
+        className={isDisabled(props.pageState.page, maxPage)}
         key="page_last"
         pageText="Last"
         targetPage={maxPage}

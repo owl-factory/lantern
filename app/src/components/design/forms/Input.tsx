@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import { useField } from "formik";
 import React from "react";
-import { Form } from "react-bootstrap"
+import { Form } from "react-bootstrap";
 import { CoreInputProps } from "../../../model/design/form";
 
 // The type describing valid inputs for Input's as field
@@ -23,8 +23,8 @@ interface InputProps extends CoreInputProps {
  * @param props.name The name of the input
  * @param props.placeholder A placeholder value for when the input is empty
  * @param props.rows The number of rows (`as` must be textarea)
- * @param props.type The type of the 
- * @param props.size The bootstrap size of the input. 
+ * @param props.type The type of the
+ * @param props.size The bootstrap size of the input.
  * @param props.xs Width for extra small screens
  * @param props.sm Width for small screens
  * @param props.md Width for extra medium screens
@@ -35,7 +35,7 @@ export function Input(props: InputProps): JSX.Element {
   const [field] = useField(props);
 
   return (
-    <Form.Control 
+    <Form.Control
       {...field}
       {...props}
       autoComplete={props.autoComplete === undefined ? "off" : props.autoComplete }

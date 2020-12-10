@@ -1,4 +1,4 @@
-import { Card, Button } from "react-bootstrap";
+import { Button, Card } from "react-bootstrap";
 import Link from "next/link";
 import { ContentTypeTable } from "./Table";
 import { ContentType, GameSystem } from "@reroll/model/dist/documents";
@@ -29,12 +29,12 @@ export function ContentTypeCard(props: EntityCardProps): JSX.Element {
       </Card.Header>
 
       <Card.Body>
-        <ContentTypeTable 
+        <ContentTypeTable
           contentTypes={props.contentTypes}
           gameSystem={props.gameSystem}
           pageState={{page: 1, perPage: 10, totalCount: 10}}
         />
       </Card.Body>
     </Card>
-  )
+  );
 }

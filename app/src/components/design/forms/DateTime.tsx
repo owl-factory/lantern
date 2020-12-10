@@ -10,7 +10,7 @@ import { CoreInputProps } from "../../../model/design/form";
  * @param props.label The label of the inputs
  * @param props.name The name of the input
  * @param props.placeholder A placeholder value for when the input is empty
- * @param props.size The bootstrap size of the input. 
+ * @param props.size The bootstrap size of the input.
  * @param props.xs Width for extra small screens
  * @param props.sm Width for small screens
  * @param props.md Width for extra medium screens

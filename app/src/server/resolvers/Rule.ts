@@ -5,7 +5,14 @@ import { CreateRuleInput, UpdateRuleInput } from "@reroll/model/dist/inputs";
 import { Options } from "@reroll/model/dist/inputs/Options";
 import { Arg, Args, Authorized, Int, Mutation, Query, Resolver } from "type-graphql";
 import { CoreResolver } from "./CoreResolver";
-import { FindOneResponse, FindManyResponse, FindCountResponse, UpdateOneResponse, DeleteOneResponse, CreateOneResponse } from "../../types/resolvers";
+import {
+  CreateOneResponse,
+  DeleteOneResponse,
+  FindCountResponse,
+  FindManyResponse,
+  FindOneResponse,
+  UpdateOneResponse,
+} from "../../types/resolvers";
 
 /**
  * Resolves rule queries

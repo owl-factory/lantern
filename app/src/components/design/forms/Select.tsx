@@ -19,7 +19,8 @@ interface SelectProps extends FieldProps {
   emptyText?: string; // Text to display if empty option is included
   includeEmpty?: boolean; // Include an empty selection
   labelKey?: string; // The key to use for label inputs
-  options?: (GenericDocumentType | Record<string, unknown>)[]; // An array of structs containing the label and value to use
+  // An array of structs containing the label and value to use
+  options?: (GenericDocumentType | Record<string, unknown>)[];
   valueKey?: string; // The key of the value
 }
 
@@ -33,7 +34,7 @@ interface SelectProps extends FieldProps {
  * @param props.multiple If true, user may select multiple selects
  * @param props.name The field name of the select
  * @param props.options An array of structs containing the data to render out into options
- * @param props.size The size of the select input 
+ * @param props.size The size of the select input
  * @param props.valueKey The key to pull values from within the options array
  */
 export function Select(props: SelectProps): JSX.Element {
@@ -81,7 +82,7 @@ function renderChildren(id: string, props: SelectProps): JSX.Element[] {
           value={typedOption[valueKey] as string}
         >
           {typedOption[labelKey] as string}
-        </option> , 
+        </option> ,
       );
     });
   } else {
