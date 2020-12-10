@@ -24,6 +24,7 @@ import { GraphQLSchema } from "graphql";
 global.fetch = require("cross-fetch");
 
 const connectionString = process.env.MONGO_CONNECTION_STRING || "";
+
 if (connectionString === "") {
   throw Error("No Mongo Connection String supplied.");
 }
