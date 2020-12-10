@@ -20,6 +20,7 @@ import {
   UserResolver,
 } from "../../server/resolvers";
 import { GraphQLSchema } from "graphql";
+import { CharacterResolver } from "../../server/resolvers/Character";
 
 global.fetch = require("cross-fetch");
 
@@ -36,6 +37,7 @@ connect(
 
 const schema = buildSchema({
   resolvers: [
+    CharacterResolver,
     AssetResolver,
     CampaignResolver,
     CommonContentTypeResolver,
