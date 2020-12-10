@@ -1,5 +1,5 @@
 import { ArgsType, Field, Int } from "type-graphql";
-import { Min, Max } from "class-validator";
+import { Max, Min } from "class-validator";
 
 @ArgsType()
 export class Options {

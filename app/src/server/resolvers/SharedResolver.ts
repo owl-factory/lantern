@@ -2,15 +2,22 @@
  * THIS IS A REFERENCE FILE ONLY FOR SAVING THE BASE RESOLVERS. MUST NOT BE USED IN ACTUAL PRODUCTION
  */
 
-import { CoreDocument, AssetModel } from "@reroll/model/dist/documents";
+import { AssetModel, CoreDocument } from "@reroll/model/dist/documents";
 import { DeleteResponse, UpdateResponse } from "@reroll/model/dist/models/graphQLResponses";
 import { CoreFilter } from "@reroll/model/dist/filters";
 import { CoreInput } from "@reroll/model/dist/inputs";
 import { Options } from "@reroll/model/dist/inputs/Options";
 import { Arg, Args, Authorized, Ctx, Int, Mutation, Query, Resolver } from "type-graphql";
 import { CoreResolver } from "./CoreResolver";
-import { FindOneResponse, FindManyResponse, FindCountResponse, UpdateOneResponse, DeleteOneResponse, CreateOneResponse } from "../../types/resolvers";
 import { Context } from "../../types/server";
+import {
+  CreateOneResponse,
+  DeleteOneResponse,
+  FindCountResponse,
+  FindManyResponse,
+  FindOneResponse,
+  UpdateOneResponse,
+} from "../../types/resolvers";
 
 /**
  * Resolves xxx queries

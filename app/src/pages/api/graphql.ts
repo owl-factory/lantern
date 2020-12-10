@@ -17,7 +17,7 @@ import {
   ModuleResolver,
   OrganizationResolver,
   RuleResolver,
-  UserResolver
+  UserResolver,
 } from "../../server/resolvers";
 import { GraphQLSchema } from "graphql";
 import { CharacterResolver } from "../../server/resolvers/Character";
@@ -25,12 +25,13 @@ import { CharacterResolver } from "../../server/resolvers/Character";
 global.fetch = require("cross-fetch");
 
 const connectionString = process.env.MONGO_CONNECTION_STRING || "";
+
 if (connectionString === "") {
   throw Error("No Mongo Connection String supplied.");
 }
 
 connect(
-  connectionString, 
+  connectionString,
   {useNewUrlParser: true, useUnifiedTopology: true}
 );
 
@@ -63,8 +64,8 @@ const server = new ApolloServer({
     return {
       session: null,
       req,
-      res
-    }
+      res,
+    };
   },
 });
 
@@ -74,4 +75,4 @@ export const config = {
   api: {
     bodyParser: false,
   },
-}
+};

@@ -12,11 +12,11 @@ import { GraphQLResponse } from "../../../types/graphql";
 
 /**
  * Renders a new game system form
- * @param props.themes The themes to render within the form's theme dropdown 
+ * @param props.themes The themes to render within the form's theme dropdown
  */
 export function NewGameSystemForm(): JSX.Element {
   const router = useRouter();
-  const [ errors, setErrors ] = React.useState({})
+  const [ errors, setErrors ] = React.useState({});
 
   function onSubmit(values: CreateGameSystemInput) {
     const newGameSystemMutation = gql`
@@ -34,12 +34,10 @@ export function NewGameSystemForm(): JSX.Element {
       client.mutate({mutation: newGameSystemMutation})
       .then((res: GraphQLResponse ) => {
         const key = res.data.newGameSystem.alias || res.data.newGameSystem._id;
-        router.push(`/admin/game-systems/${key}`)
+        router.push(`/admin/game-systems/${key}`);
       })
       .catch((gqlError: FetchError) => {
-        setErrors({_global: gqlError.message})
-        // TODO - Better error handling
-        console.log(gqlError)
+        setErrors({_global: gqlError.message});
       });
   }
 
@@ -47,10 +45,10 @@ export function NewGameSystemForm(): JSX.Element {
     errors={errors}
     initialValues={{
       name: "",
-      alias: ""
-      
+      alias: "",
+
     }}
-    onSubmit={(values: CreateGameSystemInput) => {onSubmit(values)}}
+    onSubmit={(values: CreateGameSystemInput) => {onSubmit(values);}}
   />;
 }
 
@@ -73,6 +71,6 @@ function NewGameSystem(): JSX.Element {
 
 NewGameSystem.getInitialProps = async () => {
   return;
-}
+};
 
 export default NewGameSystem;

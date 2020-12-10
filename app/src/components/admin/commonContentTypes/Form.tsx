@@ -15,7 +15,7 @@ import { CommonContentType } from "@reroll/model/dist/documents";
  */
 export default function CommonContentTypeForm(props: FormixFormProps<CommonContentType>): JSX.Element {
   return (
-    <Formik 
+    <Formik
       initialValues={props.initialValues}
       onSubmit={props.onSubmit}
       validationSchema={Yup.object({
@@ -25,7 +25,7 @@ export default function CommonContentTypeForm(props: FormixFormProps<CommonConte
         alias: Yup.string()
           .max(20, "Maximum of 20 characters"),
         description: Yup.string()
-          .max(1000, "Maximum of 1000 characters"),  
+          .max(1000, "Maximum of 1000 characters"),
       })}
     >
       {() => (
@@ -53,12 +53,12 @@ export default function CommonContentTypeForm(props: FormixFormProps<CommonConte
               <TextArea name="description" />
               <Error name="description"/>
             </Form.Group>
-            
+
           </Row>
 
           <Button variant="primary" type="submit">Save</Button>
         </FormikForm>
       )}
-    </Formik> 
+    </Formik>
   );
 }

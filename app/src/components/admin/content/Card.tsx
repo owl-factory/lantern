@@ -1,4 +1,4 @@
-import { Card, Button } from "react-bootstrap";
+import { Button, Card } from "react-bootstrap";
 import Link from "next/link";
 import { Content, GameSystem } from "@reroll/model/dist/documents";
 import { ContentTable } from "./Table";
@@ -10,7 +10,7 @@ interface ContentCardProps {
 
 /**
  * Renders a card containing the content table
- * 
+ *
  * @param props.gameSystem The game system this content belongs to
  * @param props.content The array of content to render out into a table
  */

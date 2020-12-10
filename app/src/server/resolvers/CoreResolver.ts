@@ -8,8 +8,15 @@ import { GameSystemModel } from "@reroll/model/dist/documents/GameSystem";
 import { CoreDocument } from "@reroll/model/dist/documents/CoreDocument";
 import { GenericFiltersType } from "@reroll/model/dist/filters";
 import { GenericDocumentType, GenericModelType } from "@reroll/model/dist/documents";
-import { FindManyResponse, FindOneResponse, CreateOneResponse, FindCountResponse, UpdateOneResponse, DeleteOneResponse } from "../../types/resolvers";
 import { Context } from "../../types/server";
+import {
+  CreateOneResponse,
+  DeleteOneResponse,
+  FindCountResponse,
+  FindManyResponse,
+  FindOneResponse,
+  UpdateOneResponse,
+} from "../../types/resolvers";
 
 // Contains any aliases that might be passed in to findByAlias for any super document
 // TODO - move to a new file
@@ -19,8 +26,8 @@ interface SuperDocumentAliases {
 
 
 const superDocumentAliasModels: Record<keyof SuperDocumentAliases, GenericModelType> = {
-  gameSystemID: GameSystemModel
-}
+  gameSystemID: GameSystemModel,
+};
 
 export class CoreResolver {
   // The Typegoose model for running all core requests
@@ -40,7 +47,6 @@ export class CoreResolver {
 
   /**
    * Finds a collection of documents matching the given filters and options
-   * 
    * @param ctx The context of the request and response, including the user's session
    * @param filters Filters given to find specific documents
    * @param options General options for modifying results, such as length and how many to skip
@@ -72,7 +78,7 @@ export class CoreResolver {
       throw new Error(errors.toString());
     }
 
-    // Updates both so we can track when something was last created and when 
+    // Updates both so we can track when something was last created and when
     // it was last touched easier
     data.createdAt = new Date();
     data.createdBy = getUserID();
@@ -112,15 +118,15 @@ export class CoreResolver {
 
 
   /**
-   * A recursive function for finding by the alias or id. Recursion is for handling the super documents. 
-   * The recursion should only go two levels deep at any given time. 
-   * 
+   * A recursive function for finding by the alias or id. Recursion is for handling the super documents.
+   * The recursion should only go two levels deep at any given time.
+   *
    * @param alias The alias or ID of the document to find
    * @param model The model to search through for our documents
    * @param superDocumentAliases A possible collection of aliases that may be given for sub-documents
    */
   private async _findByAlias(
-    alias: string, 
+    alias: string,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     model: ReturnModelType<any>, // Note: also needs to be any
     superDocumentAliases?: SuperDocumentAliases // TODO - properly type this
@@ -145,8 +151,8 @@ export class CoreResolver {
     for (let i = 0; i < superDocuments.length; i++) {
       const superDocument: string = superDocuments[i];
       // Catch case for typescripting
-      if (!(superDocument in superDocumentAliases)) { 
-        throw Error("Invalid super document alias")
+      if (!(superDocument in superDocumentAliases)) {
+        throw Error("Invalid super document alias");
       }
 
       // TODO - this function has weird typing. We need to change the any in the superDocumentAliases
@@ -157,7 +163,7 @@ export class CoreResolver {
       );
 
       if (!superDocumentResult) { return null; }
-      
+
       filters[`${superDocument}ID`] = { eq: superDocumentResult._id as string };
     }
 

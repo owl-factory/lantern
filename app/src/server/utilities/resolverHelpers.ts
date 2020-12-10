@@ -1,4 +1,4 @@
-import { GenericFiltersType, GenericFilterType } from "@reroll/model/dist/filters";
+import { GenericFilterType, GenericFiltersType } from "@reroll/model/dist/filters";
 
 type ParsedFilters = Record<string, string | RegExp | Record<string, string | number>>;
 
@@ -7,12 +7,12 @@ type ParsedFilters = Record<string, string | RegExp | Record<string, string | nu
  * @param id The string to check for ID-ness
  */
 export function isID(id: string): boolean {
-  return id.length === 24
+  return id.length === 24;
 }
 
 /**
  * A recursive function for parsing out nested fields into a single level of Mongoose compatible filters
- * 
+ *
  * @param filterObject An object that is sent diectly from GQL
  * @param baseKey The key to prepend to any new filter
  */
@@ -49,7 +49,7 @@ export function parseFilter(filterObject: FilterObjectType, baseKey = ""): Parse
           filterSubobject[`$${filterKey}`] = field[filterKey] as string | number;
           addFilter = true;
           break;
-        default: 
+        default:
 
           // Merge parsed Fields with new parsed fields
           const subFields = parseFilter(field as FilterObjectType, `${fieldKey}.`);
@@ -68,12 +68,12 @@ export function parseFilter(filterObject: FilterObjectType, baseKey = ""): Parse
 }
 
 /**
- * Builds and adds a where clause to a query given the filters 
- * 
+ * Builds and adds a where clause to a query given the filters
+ *
  * @param filters The filters to convert into an or clause for the query
  */
 export function buildFilters(filters?: GenericFiltersType): Record<string, unknown> {
-  if (!filters) { return {}; }
+  if (!filters || Object.keys(filters).length === 0) { return {}; }
   let andFilters: Record<string, unknown> | undefined;
   let orFilters: Record<string, unknown>[] = [];
 
@@ -82,21 +82,21 @@ export function buildFilters(filters?: GenericFiltersType): Record<string, unkno
   if (filters.or.length) {
     orFilters = [];
     filters.or.forEach((filterOr: GenericFilterType) => {
-      orFilters.push(parseFilter(filterOr as FilterObjectType))
+      orFilters.push(parseFilter(filterOr as FilterObjectType));
     });
   }
 
   const filterKeys = Object.keys(filters);
   // Ensures we have at least one non-or key
-  if (filterKeys.length >= 2 || (filterKeys.length == 1 && !("or" in filters))) {
+  if (filterKeys.length >= 2 || (filterKeys.length === 1 && !("or" in filters))) {
     andFilters = parseFilter(filters as FilterObjectType);
   }
 
   if (!orFilters.length && andFilters) { return andFilters; }
   if (!andFilters && orFilters) { return { $or: orFilters }; }
-  
+
   return {$and: [
     andFilters,
-    { $or: orFilters }
+    { $or: orFilters },
   ]};
 }

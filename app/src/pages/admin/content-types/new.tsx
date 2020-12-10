@@ -7,18 +7,17 @@ import { useRouter } from "next/router";
 import CommonContentTypeForm from "../../../components/admin/commonContentTypes/Form";
 import { CreateContentTypeInput } from "@reroll/model/dist/inputs";
 import { GraphQLResponse } from "../../../types/graphql";
-import { FetchError } from "node-fetch";
 
 /**
  * Renders a new game system form
- * @param props.themes The themes to render within the form's theme dropdown 
+ * @param props.themes The themes to render within the form's theme dropdown
  */
 export function NewCommonContentTypeForm(): JSX.Element {
   const router = useRouter();
-  return <CommonContentTypeForm 
+  return <CommonContentTypeForm
     initialValues={{
       name: "",
-      alias: ""
+      alias: "",
     }}
     onSubmit={(values: CreateContentTypeInput) => {
       const newGameSystemMutation = gql`
@@ -35,11 +34,10 @@ export function NewCommonContentTypeForm(): JSX.Element {
       client.mutate({mutation: newGameSystemMutation})
       .then((res: GraphQLResponse ) => {
         const key = res.data.newCommonContentType.alias || res.data.newGamenewCommonContentTypeystem._id;
-        router.push(`/admin/content-types/${key}`)
+        router.push(`/admin/content-types/${key}`);
       })
-      .catch((error: FetchError) => {
+      .catch(() => {
         // TODO - Better error handling
-        console.log(error)
       });
     }}
   />;
@@ -56,7 +54,7 @@ function NewCommonContentType(): JSX.Element {
       <Breadcrumbs skipLevels={1} titles={[
         "Admin",
         "Content Types",
-        "Create Common Content Type"
+        "Create Common Content Type",
       ]}/>
 
       <br/>

@@ -4,7 +4,7 @@ import Breadcrumbs from "../../../../../../components/design/Breadcrumbs";
 import { NextPageContext } from "next";
 import gql from "graphql-tag";
 import { client } from "../../../../../../utilities/graphql/apiClient";
-import { Row, Col, Card, Button } from "react-bootstrap";
+import { Button, Card, Col, Row } from "react-bootstrap";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { ContentType, GameSystem } from "@reroll/model/dist/documents";
@@ -32,7 +32,7 @@ export default function ContentTypeView({contentType, gameSystem}: ContentTypeVi
           "Game Systems",
           gameSystem.name,
           "Content Types",
-          contentType.name
+          contentType.name,
         ]}
       />
 
@@ -65,29 +65,29 @@ export default function ContentTypeView({contentType, gameSystem}: ContentTypeVi
               {/* SET DEFAULT */}
 
               {/* EDIT */}
-              <Link 
-                href={`/admin/game-systems/${gameSystemAlias}/content-types/${contentTypeAlias}/edit`} 
+              <Link
+                href={`/admin/game-systems/${gameSystemAlias}/content-types/${contentTypeAlias}/edit`}
                 passHref
               >
                 <Button>Edit Information</Button>
               </Link>
 
-              <Link 
-                href={`/admin/game-systems/${gameSystemAlias}/content-types/${contentTypeAlias}/fields`} 
+              <Link
+                href={`/admin/game-systems/${gameSystemAlias}/content-types/${contentTypeAlias}/fields`}
                 passHref
               >
                 <Button>Edit Fields</Button>
               </Link>
 
-              <Link 
-                href={`/admin/game-systems/${gameSystemAlias}/content-types/${contentTypeAlias}/card-layout`} 
+              <Link
+                href={`/admin/game-systems/${gameSystemAlias}/content-types/${contentTypeAlias}/card-layout`}
                 passHref
               >
                 <Button>Edit Card Layout</Button>
               </Link>
 
-              <Link 
-                href={`/admin/game-systems/${gameSystemAlias}/content-types/${contentTypeAlias}/search-layout`} 
+              <Link
+                href={`/admin/game-systems/${gameSystemAlias}/content-types/${contentTypeAlias}/search-layout`}
                 passHref
               >
                 <Button>Edit Search Layout</Button>
@@ -96,9 +96,9 @@ export default function ContentTypeView({contentType, gameSystem}: ContentTypeVi
           </Card>
         </Col>
       </Row>
-      
+
     </Page>
-  )
+  );
 }
 
 ContentTypeView.getInitialProps = async (ctx: NextPageContext) => {
@@ -127,6 +127,6 @@ ContentTypeView.getInitialProps = async (ctx: NextPageContext) => {
   }`;
 
   const { contentType, gameSystem } = (await client.query({query}))["data"];
-  
+
   return { contentType, gameSystem };
-}
+};

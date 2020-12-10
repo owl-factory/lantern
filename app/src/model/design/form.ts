@@ -31,7 +31,7 @@ export interface FieldProps extends SharedColumnProps {
 }
 
 /**
- * Core fields used by all inputs. 
+ * Core fields used by all inputs.
  */
 export interface CoreInputProps extends FieldProps {
   "aria-label"?: string; // The usability label
@@ -39,7 +39,7 @@ export interface CoreInputProps extends FieldProps {
   disabled?: boolean; // If an input is disabled or not
   name: string; // The name of the input
   placeholder?: string; // A placeholder value for when the input is empty
-  
+
   size?: "sm" | "lg"; // The bootstrap size of the input
 }
 
@@ -60,6 +60,6 @@ export interface CoreFormCheckProps extends FieldProps {
  */
 export interface FormixFormProps<T> {
   errors?: Record<string, string>;
-  initialValues: T; 
+  initialValues: T;
   onSubmit: (values: T) => void | Promise<T>;
 }

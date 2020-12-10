@@ -18,7 +18,7 @@ interface ModulesIndexProps {
 }
 
 /**
- * Queries the game systems 
+ * Queries the game systems
  * @param page The current page
  * @param perPage The number of entries per page
  */
@@ -50,17 +50,17 @@ async function queryModules(page: number, perPage: number, gameSystemID: string)
 
 /**
  * Renders a searchable (TODO) list of modules for a game system
- * 
+ *
  * @param gameSystem The game system linking the modules together
  * @param initialModules The initial modules prior to searching.
- * @param moduleCount The total count of modules in the database matching the game system 
+ * @param moduleCount The total count of modules in the database matching the game system
  */
 export default function ModulesIndex({ gameSystem, initialModules, moduleCount }: ModulesIndexProps): JSX.Element {
   const [modules, setModules] = React.useState(initialModules);
   const [pageState, setPageState] = React.useState({
     page: 1,
     perPage: initialPerPage,
-    totalCount: moduleCount
+    totalCount: moduleCount,
   });
 
   /**
@@ -73,15 +73,15 @@ export default function ModulesIndex({ gameSystem, initialModules, moduleCount }
       newPageState.perPage,
       gameSystem._id || "null"
     );
-  
+
     setModules(newModuleData.data.modules);
     setPageState({...newPageState, totalCount: newModuleData.data.moduleCount});
   }
   return (
     <Page>
       <h1>{gameSystem.name}</h1>
-      <Breadcrumbs 
-        skipLevels={1} 
+      <Breadcrumbs
+        skipLevels={1}
         titles={["Admin", "Game Systems", gameSystem.name, "Modules"]}
       />
       <ModuleTable gameSystem={gameSystem} modules={modules} pageState={pageState}/>
@@ -104,9 +104,9 @@ ModulesIndex.getInitialProps = async (ctx: NextPageContext) => {
   const { data } = await client.query({query: query});
   const moduleData = await queryModules(1, initialPerPage, data.gameSystem._id);
 
-  return { 
+  return {
     gameSystem: data.gameSystem,
     initialModules: moduleData.data.modules,
     moduleCount: moduleData.data.moduleCount,
   };
-}
+};

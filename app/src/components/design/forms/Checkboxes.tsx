@@ -15,7 +15,7 @@ import { CoreFormCheckProps } from "../../../model/design/form";
  * @param props.lg Width for large screens
  * @param props.xl Width for extra large screens
  */
-export function Checkbox(props: CoreFormCheckProps): JSX.Element {  
+export function Checkbox(props: CoreFormCheckProps): JSX.Element {
   return (
     <FormCheck type="checkbox" {...props}/>
   );

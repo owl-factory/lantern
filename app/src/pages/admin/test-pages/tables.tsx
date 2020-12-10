@@ -10,7 +10,7 @@ import { TableComponentProps } from "../../../model/design/table";
  * @param props A data object containing all of the information for a row
  */
 function TestTableActions({ data }: TableComponentProps) {
-  return <><Link href={"/game-systems/" + data.key + "/edit"} passHref><a>Edit</a></Link></>
+  return <><Link href={"/game-systems/" + data.key + "/edit"} passHref><a>Edit</a></Link></>;
 }
 
 /**
@@ -23,7 +23,7 @@ export default function TableTesting(): JSX.Element {
   .addDataColumn("Content Types", "contentTypeCount")
   .addDataColumn("Entity Types", "entityTypeCount")
   .addDataColumn("Modules", "moduleCount")
-  .addComponentColumn("Actions", TestTableActions)
+  .addComponentColumn("Actions", TestTableActions);
 
   const tableData = [
     {

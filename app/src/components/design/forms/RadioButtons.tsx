@@ -13,7 +13,7 @@ interface RadioButtonProps extends CoreFormCheckProps {
  * @param props.disabled Any non-empty string indicates that this field is disabled
  * @param props.name The field name of the input
  * @param props.id The optional id of this check element
- * @param props.value The value of radio buttons. 
+ * @param props.value The value of radio buttons.
  * @param props.xs Width for extra small screens
  * @param props.sm Width for small screens
  * @param props.md Width for extra medium screens

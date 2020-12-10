@@ -5,8 +5,15 @@ import { CreateCampaignInput, UpdateCampaignInput } from "@reroll/model/dist/inp
 import { Options } from "@reroll/model/dist/inputs/Options";
 import { Arg, Args, Authorized, Ctx, Int, Mutation, Query, Resolver } from "type-graphql";
 import { CoreResolver } from "./CoreResolver";
-import { FindOneResponse, FindManyResponse, FindCountResponse, CreateOneResponse, UpdateOneResponse, DeleteOneResponse } from "../../types/resolvers";
 import { Context } from "../../types/server";
+import {
+  CreateOneResponse,
+  DeleteOneResponse,
+  FindCountResponse,
+  FindManyResponse,
+  FindOneResponse,
+  UpdateOneResponse,
+} from "../../types/resolvers";
 
 /**
  * Resolves campaign queries

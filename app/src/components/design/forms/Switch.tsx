@@ -10,7 +10,7 @@ import { CoreFormCheckProps } from "../../../model/design/form";
  * @param props.disabled Any non-empty string indicates that this field is disabled
  * @param props.name The field name of the input
  * @param props.id The optional id of this check element
- * @param props.value The value of radio buttons. 
+ * @param props.value The value of radio buttons.
  * @param props.xs Width for extra small screens
  * @param props.sm Width for small screens
  * @param props.md Width for extra medium screens
@@ -19,11 +19,11 @@ import { CoreFormCheckProps } from "../../../model/design/form";
  */
 export function Switch(props: CoreFormCheckProps): JSX.Element {
   const id = props.id || props.name;
-  
+
   const [field] = useField({name: props.name});
 
   return (
-    <Form.Check 
+    <Form.Check
       type="switch"
       disabled={props.disabled || false}
       label={props.label}

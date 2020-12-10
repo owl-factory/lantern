@@ -1,4 +1,4 @@
-import { CoreDocument } from "./CoreDocument"
+import { CoreDocument } from "./CoreDocument";
 import { getModelForClass } from "@typegoose/typegoose";
 import { ObjectType } from "type-graphql";
 

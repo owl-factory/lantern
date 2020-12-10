@@ -1,7 +1,15 @@
 /* eslint-disable no-case-declarations */
 import React from "react";
 import { Dropdown } from "react-bootstrap";
-import { ContextMenuItemProps, ContextMenuLinkProps, ContextDropdownProps, ContextMenuGenericItem, ContextMenuLink, ContextMenuItem, ContextMenuContext } from "../../../model/design/contextMenu";
+import {
+  ContextDropdownProps,
+  ContextMenuContext,
+  ContextMenuGenericItem,
+  ContextMenuItem,
+  ContextMenuItemProps,
+  ContextMenuLink,
+  ContextMenuLinkProps,
+} from "../../../model/design/contextMenu";
 import { useRouter } from "next/router";
 import { parseHref } from "../../../utilities/design/contextMenu";
 
@@ -13,18 +21,18 @@ interface ContextDropdownMenuProps {
 
 /**
  * Renders a single context dropdown item
- * @param props.action The action to run when clicked. May be a link or another action. Passed the context 
- * @param props.context Any specific context for this contextmenu, such as an object's information from a table 
- * @param props.icon The icon to display on the right side of the context menu 
- * @param props.string The title of the item 
+ * @param props.action The action to run when clicked. May be a link or another action. Passed the context
+ * @param props.context Any specific context for this contextmenu, such as an object's information from a table
+ * @param props.icon The icon to display on the right side of the context menu
+ * @param props.string The title of the item
  */
 function ContextDropdownItem(props: ContextMenuItemProps) {
   return (
-    <Dropdown.Item onClick={() => {props.action(props.context)}}>
+    <Dropdown.Item onClick={() => {props.action(props.context);}}>
       {props.title}
       <span style={{float: "right"}}><props.icon/></span>
     </Dropdown.Item>
-  )
+  );
 }
 
 /**
@@ -44,7 +52,7 @@ function ContextDropdownLink(props: ContextMenuLinkProps) {
       buttonConfig={props.buttonConfig}
       title={props.title}
       icon={props.icon}
-      action={() => {router.push(props.href, linkAs)}}
+      action={() => {router.push(props.href, linkAs);}}
       context={props.context}
     />
   );
@@ -52,7 +60,7 @@ function ContextDropdownLink(props: ContextMenuLinkProps) {
 
 /**
  * Renders a single context menu item
- * 
+ *
  * @param item A generic item type describing what and how to render an item
  * @param context The context of this current menu
  * @param keyIndex The index for this menu to use in a key
@@ -63,13 +71,13 @@ function renderContextMenuItem(item: ContextMenuGenericItem, context: ContextMen
   switch(item.type) {
     case "divider":
       return <Dropdown.Divider key={key}/>;
-    
+
     case "header":
       return <Dropdown.Header key={key}>{item.title}</Dropdown.Header>;
 
     case "link":
-      return <ContextDropdownLink key={key} {...item as unknown as ContextMenuLink} context={context}/>
-    
+      return <ContextDropdownLink key={key} {...item as unknown as ContextMenuLink} context={context}/>;
+
     case "item":
       return <ContextDropdownItem key={key} {...item as unknown as ContextMenuItem} context={context}/>;
 
