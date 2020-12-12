@@ -7,18 +7,17 @@ import { useRouter } from "next/router";
 import CommonEntityTypeForm from "../../../components/admin/commonEntityTypes/Form";
 import { CreateCommonEntityTypeInput } from "@reroll/model/dist/inputs";
 import { GraphQLResponse } from "../../../types/graphql";
-import { FetchError } from "node-fetch";
 
 /**
  * Renders a new game system form
- * @param props.themes The themes to render within the form's theme dropdown 
+ * @param props.themes The themes to render within the form's theme dropdown
  */
 export function NewCommonEntityTypeForm(): JSX.Element {
   const router = useRouter();
-  return <CommonEntityTypeForm 
+  return <CommonEntityTypeForm
     initialValues={{
       name: "",
-      alias: ""
+      alias: "",
     }}
     onSubmit={(values: CreateCommonEntityTypeInput) => {
       const newGameSystemMutation = gql`
@@ -35,11 +34,10 @@ export function NewCommonEntityTypeForm(): JSX.Element {
       client.mutate({mutation: newGameSystemMutation})
       .then((res: GraphQLResponse ) => {
         const key = res.data.newCommonEntityType.alias || res.data.newGamenewCommonEntityTypeystem._id;
-        router.push(`/admin/entity-types/${key}`)
+        router.push(`/admin/entity-types/${key}`);
       })
-      .catch((error: FetchError) => {
+      .catch(() => {
         // TODO - Better error handling
-        console.log(error)
       });
     }}
   />;
@@ -56,7 +54,7 @@ function NewCommonEntityType(): JSX.Element {
       <Breadcrumbs skipLevels={1} titles={[
         "Admin",
         "Entity Types",
-        "Create Common Entity Type"
+        "Create Common Entity Type",
       ]}/>
 
       <br/>

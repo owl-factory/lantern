@@ -17,9 +17,10 @@ import {
   ModuleResolver,
   OrganizationResolver,
   RuleResolver,
-  UserResolver
+  UserResolver,
 } from "../../server/resolvers";
 import { GraphQLSchema } from "graphql";
+import { CharacterResolver } from "../../server/resolvers/Character";
 
 global.fetch = require("cross-fetch");
 
@@ -30,12 +31,13 @@ if (connectionString === "") {
 }
 
 connect(
-  connectionString, 
+  connectionString,
   {useNewUrlParser: true, useUnifiedTopology: true}
 );
 
 const schema = buildSchema({
   resolvers: [
+    CharacterResolver,
     AssetResolver,
     CampaignResolver,
     CommonContentTypeResolver,
@@ -62,8 +64,8 @@ const server = new ApolloServer({
     return {
       session: null,
       req,
-      res
-    }
+      res,
+    };
   },
 });
 
@@ -73,4 +75,4 @@ export const config = {
   api: {
     bodyParser: false,
   },
-}
+};

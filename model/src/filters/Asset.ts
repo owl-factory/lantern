@@ -5,7 +5,7 @@ import { CoreFilter } from "./CoreFilter";
  * Describes the various filters that may be applied to asset documents for searching
  */
 @InputType()
-export class AssetFilter extends CoreFilter { 
+export class AssetFilter extends CoreFilter {
 }
 
 /**

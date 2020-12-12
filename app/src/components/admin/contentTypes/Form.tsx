@@ -2,7 +2,7 @@ import { Formik, Form as FormikForm } from "formik";
 import React from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import * as Yup from "yup";
-import { Error, Input, TextArea, Select, Checkbox } from "../../design/forms/Forms";
+import { Checkbox, Error, Input, Select, TextArea } from "../../design/forms/Forms";
 import { FormixFormProps } from "../../../model/design/form";
 import { CommonContentType } from "@reroll/model/dist/documents";
 
@@ -28,7 +28,7 @@ export default function ContentTypeForm(props: ContentTypeFormProps): JSX.Elemen
   });
 
   return (
-    <Formik 
+    <Formik
       initialValues={props.initialValues}
       onSubmit={props.onSubmit}
       validationSchema={Yup.object({
@@ -38,7 +38,7 @@ export default function ContentTypeForm(props: ContentTypeFormProps): JSX.Elemen
         alias: Yup.string()
           .max(20, "Maximum of 20 characters"),
         description: Yup.string()
-          .max(1000, "Maximum of 1000 characters"),  
+          .max(1000, "Maximum of 1000 characters"),
       })}
     >
       {() => (
@@ -60,7 +60,7 @@ export default function ContentTypeForm(props: ContentTypeFormProps): JSX.Elemen
 
             <Form.Group as={Col}>
               <Form.Label>Common Content Type</Form.Label>
-              <Select 
+              <Select
                 name="commonContentTypeID"
                 options={props.commonContentTypes}
                 labelKey="name"
@@ -84,12 +84,12 @@ export default function ContentTypeForm(props: ContentTypeFormProps): JSX.Elemen
               <TextArea name="description" />
               <Error name="description"/>
             </Form.Group>
-            
+
           </Row>
 
           <Button variant="primary" type="submit">Save</Button>
         </FormikForm>
       )}
-    </Formik> 
+    </Formik>
   );
 }

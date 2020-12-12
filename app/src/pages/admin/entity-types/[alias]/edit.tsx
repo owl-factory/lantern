@@ -7,7 +7,6 @@ import Page from "../../../../components/design/Page";
 import Breadcrumbs from "../../../../components/design/Breadcrumbs";
 import CommonEntityTypeForm from "../../../../components/admin/commonEntityTypes/Form";
 import { CommonEntityType } from "@reroll/model/dist/documents";
-import { FetchError } from "node-fetch";
 import { UpdateCommonEntityTypeInput } from "@reroll/model/dist/inputs";
 
 interface EditCommonEntityTypeFormProps {
@@ -23,7 +22,7 @@ interface EditCommonEntityTypeProps {
  */
 export function EditCommonEntityTypeForm(props: EditCommonEntityTypeFormProps): JSX.Element {
   const router = useRouter();
-  return <CommonEntityTypeForm 
+  return <CommonEntityTypeForm
     initialValues={{
       name: props.commonEntityType.name,
       alias: props.commonEntityType.alias,
@@ -44,14 +43,13 @@ export function EditCommonEntityTypeForm(props: EditCommonEntityTypeFormProps): 
         }
       }
       `;
-      
+
       client.mutate({mutation: EditCommonEntityTypeMutation})
       .then(( ) => {
-        router.push(`/admin/entity-types/${alias}`)
+        router.push(`/admin/entity-types/${alias}`);
       })
-      .catch((error: FetchError) => {
+      .catch(() => {
         // TODO - Better error handling
-        console.log(error)
       });
     }}
   />;
@@ -64,7 +62,7 @@ export default function EditCommonEntityType({ commonEntityType }: EditCommonEnt
       <Breadcrumbs skipLevels={1} titles={["Admin", "Common Entity Types", commonEntityType.name, "Edit" ]}/>
       <EditCommonEntityTypeForm commonEntityType={commonEntityType} />
     </Page>
-  )
+  );
 }
 
 EditCommonEntityType.getInitialProps = async (ctx: NextPageContext) => {
@@ -80,7 +78,7 @@ EditCommonEntityType.getInitialProps = async (ctx: NextPageContext) => {
   }`;
 
   const { data } = await client.query({query: query});
-  return { 
-    commonEntityType: data.commonEntityType
+  return {
+    commonEntityType: data.commonEntityType,
   };
-}
+};

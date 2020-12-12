@@ -1,6 +1,6 @@
-import { ObjectType, Field, ID } from "type-graphql";
+import { Field, ID, ObjectType } from "type-graphql";
 import { CommonContentType } from "./CommonContentType";
-import { prop, getModelForClass } from "@typegoose/typegoose";
+import { getModelForClass, prop } from "@typegoose/typegoose";
 import { ContentFieldTypeEnum } from "../enums/contentFieldType";
 
 /**
@@ -10,7 +10,7 @@ import { ContentFieldTypeEnum } from "../enums/contentFieldType";
 export class ContentTypeOption {
   @Field()
   @prop({ required: true })
-  key: string; 
+  key: string;
 
   @Field()
   @prop({ required: true })
@@ -34,7 +34,7 @@ export class ContentTypeField {
   @Field({ nullable: true })
   @prop()
   default: string;
-  // Any options used for dropdowns. 
+  // Any options used for dropdowns.
 
   @Field(() => [ContentTypeOption], { nullable: true })
   @prop()
@@ -46,14 +46,14 @@ export class ContentTypeField {
 
 }
 
-// A collection of possible read-only warning types generated on save. 
+// A collection of possible read-only warning types generated on save.
 @ObjectType()
 export class ContentTypeWarnings {
   // Warns that fields exist within the ContentType layouts that do not exist
-  // Such as if levels was created, a level search was added, and then the levels was removed 
+  // Such as if levels was created, a level search was added, and then the levels was removed
   @Field({ nullable: true })
   @prop()
-  fieldMismatchWarning?: string; 
+  fieldMismatchWarning?: string;
 
 }
 

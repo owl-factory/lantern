@@ -1,6 +1,6 @@
 import { ContextMenuBuilderOutput, ContextMenuContext } from "../../../model/design/contextMenu";
 import { ContextDropdownMenu } from "./ContextDropdown";
-import { Dropdown, ButtonGroup } from "react-bootstrap";
+import { ButtonGroup, Dropdown } from "react-bootstrap";
 import Tooltip from "../Tooltip";
 import { ContextButtons } from "./ContextButtons";
 
@@ -14,8 +14,8 @@ interface ContextMenuProps extends ContextMenuBuilderOutput {
 function ContextDropdownButton() {
   return (
     <Tooltip title="More">
-      <Dropdown.Toggle 
-        split 
+      <Dropdown.Toggle
+        split
         id={`dropdown-toggle`}
       >
         ...

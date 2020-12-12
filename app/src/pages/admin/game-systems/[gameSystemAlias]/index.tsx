@@ -1,11 +1,11 @@
 import React from "react";
 import Page from "../../../../components/design/Page";
-import { Card, Button, Col, Row } from "react-bootstrap";
+import { Button, Card, Col, Row } from "react-bootstrap";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Breadcrumbs from "../../../../components/design/Breadcrumbs";
 import { NextPageContext } from "next";
-import gql from "graphql-tag"; 
+import gql from "graphql-tag";
 import { client } from "../../../../utilities/graphql/apiClient";
 import { CampaignCard } from "../../../../components/admin/campaigns/Card";
 import { EntityTypeCard } from "../../../../components/admin/entityTypes/Card";
@@ -39,12 +39,12 @@ export default function GameSystemView({
   moduleCount,
   contentTypes,
   entityTypes,
-  entityCount, 
-  contentCount
+  entityCount,
+  contentCount,
 }: GameSystemViewProps): JSX.Element {
   const router = useRouter();
   const alias = router.query.gameSystemAlias;
-  
+
   return (
     <Page>
       <h1>{gameSystem.name}</h1>
@@ -54,21 +54,21 @@ export default function GameSystemView({
         <Col lg={3} md={4} sm={6} xs={12}>
           <Card><Card.Body>
             <>Modules</>
-            <p>{moduleCount}</p>  
+            <p>{moduleCount}</p>
           </Card.Body></Card>
         </Col>
 
         <Col lg={3} md={4} sm={6} xs={12}>
           <Card><Card.Body>
             <>Entities</>
-            <p>{entityCount}</p>  
+            <p>{entityCount}</p>
           </Card.Body></Card>
         </Col>
 
         <Col lg={3} md={4} sm={6} xs={12}>
           <Card><Card.Body>
             <>Content</>
-            <p>{contentCount}</p>  
+            <p>{contentCount}</p>
           </Card.Body></Card>
         </Col>
       </Row>
@@ -104,7 +104,7 @@ export default function GameSystemView({
           <EntityTypeCard gameSystem={gameSystem} entityTypes={entityTypes}/>
         </Col>
       </Row>
-      
+
       <hr/>
 
       <ModuleCard gameSystem={gameSystem} modules={modules}/>
@@ -132,12 +132,12 @@ export default function GameSystemView({
           <Link href={"/admin/game-systems/" + alias + "/edit"}  passHref>
             <Button>Edit</Button>
           </Link>
-          
+
           <Button>Delete</Button>
 
         </Card.Body>
       </Card>
-      
+
     </Page>
   );
 }
@@ -181,6 +181,6 @@ GameSystemView.getInitialProps = async (ctx: NextPageContext) => {
     ...gqlResponse.data,
     entityCount: 0,
     entityTypes: [],
-    contentCount: 0
+    contentCount: 0,
   };
-}
+};

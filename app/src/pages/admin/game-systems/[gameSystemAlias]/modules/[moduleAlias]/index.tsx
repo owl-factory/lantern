@@ -3,7 +3,7 @@ import Breadcrumbs from "../../../../../../components/design/Breadcrumbs";
 import { NextPageContext } from "next";
 import gql from "graphql-tag";
 import { client } from "../../../../../../utilities/graphql/apiClient";
-import { Row, Col, Card, Button } from "react-bootstrap";
+import { Button, Card, Col, Row } from "react-bootstrap";
 import Link from "next/link";
 import { GameSystem, Module } from "@reroll/model/dist/documents";
 
@@ -20,41 +20,41 @@ interface ModuleViewProps {
  * @param gameSystem The game system the module belongs to
  * @param module The details of the current module
  */
-export default function ModuleView({ 
+export default function ModuleView({
   gameSystem,
   module,
   campaignCount,
   entityCount,
-  contentCount
+  contentCount,
 }: ModuleViewProps): JSX.Element {
   const gameSystemAlias = gameSystem.alias || gameSystem._id;
   const moduleAlias = module.alias || module._id;
   return (
     <Page>
       <h1>New {gameSystem.name} Module</h1>
-      <Breadcrumbs 
-        skipLevels={1} 
+      <Breadcrumbs
+        skipLevels={1}
         titles={["Admin", "Game Systems", gameSystem.name, "Modules", module.name]}
       />
       <Row>
         <Col lg={3} md={4} sm={6} xs={12}>
           <Card><Card.Body>
             <>Campaigns</>
-            <p>{campaignCount}</p>  
+            <p>{campaignCount}</p>
           </Card.Body></Card>
         </Col>
 
         <Col lg={3} md={4} sm={6} xs={12}>
           <Card><Card.Body>
             <>Entities</>
-            <p>{entityCount}</p>  
+            <p>{entityCount}</p>
           </Card.Body></Card>
         </Col>
 
         <Col lg={3} md={4} sm={6} xs={12}>
           <Card><Card.Body>
             <>Content</>
-            <p>{contentCount}</p>  
+            <p>{contentCount}</p>
           </Card.Body></Card>
         </Col>
       </Row>
@@ -70,7 +70,7 @@ export default function ModuleView({
             </Card.Header>
             <Card.Body>
               <b>Alias:</b> {module.alias}<br/>
-              <b>Is Default Module:</b> 
+              <b>Is Default Module:</b>
               <b>Created At:</b> {module.createdAt}<br/>
               <b>Last Edited At:</b> {module.updatedAt}
             </Card.Body>
@@ -91,8 +91,8 @@ export default function ModuleView({
               {/* SET DEFAULT */}
 
               {/* EDIT */}
-              <Link 
-                href={`/admin/game-systems/${gameSystemAlias}/modules/${moduleAlias}/edit`} 
+              <Link
+                href={`/admin/game-systems/${gameSystemAlias}/modules/${moduleAlias}/edit`}
                 passHref
               >
                 <Button>Edit</Button>
@@ -102,7 +102,7 @@ export default function ModuleView({
         </Col>
       </Row>
     </Page>
-  )
+  );
 }
 
 ModuleView.getInitialProps = async (ctx: NextPageContext) => {
@@ -124,11 +124,11 @@ ModuleView.getInitialProps = async (ctx: NextPageContext) => {
   }`;
 
   const { data } = await client.query({query: query});
-  return { 
+  return {
     gameSystem: data.gameSystem,
     module: data.module,
     campaignCount: 0,
     entityCount: 0,
     contentCount: 0,
   };
-}
+};

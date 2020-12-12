@@ -8,7 +8,6 @@ import Breadcrumbs from "../../../../components/design/Breadcrumbs";
 import CommonContentTypeForm from "../../../../components/admin/commonContentTypes/Form";
 import { CommonContentType } from "@reroll/model/dist/documents";
 import { UpdateCommonContentTypeInput } from "@reroll/model/dist/inputs";
-import { FetchError } from "node-fetch";
 
 interface EditCommonContentTypeFormProps {
   commonContentType: CommonContentType;
@@ -20,14 +19,14 @@ interface EditCommonContentTypeProps {
 
 /**
  * Renders a new game system form
- * @param props.themes The themes to render within the form's theme dropdown 
+ * @param props.themes The themes to render within the form's theme dropdown
  */
 export function EditCommonContentTypeForm(props: EditCommonContentTypeFormProps): JSX.Element {
   const router = useRouter();
-  return <CommonContentTypeForm 
+  return <CommonContentTypeForm
     initialValues={{
       name: props.commonContentType.name,
-      alias: props.commonContentType.alias
+      alias: props.commonContentType.alias,
     }}
     onSubmit={(values: UpdateCommonContentTypeInput) => {
       const { alias } = router.query;
@@ -45,14 +44,13 @@ export function EditCommonContentTypeForm(props: EditCommonContentTypeFormProps)
         }
       }
       `;
-      
+
       client.mutate({mutation: EditCommonContentTypeMutation})
       .then(() => {
-        router.push(`/admin/content-types/${alias}`)
+        router.push(`/admin/content-types/${alias}`);
       })
-      .catch((error: FetchError) => {
+      .catch(() => {
         // TODO - Better error handling
-        console.log(error)
       });
     }}
   />;
@@ -65,7 +63,7 @@ export default function EditCommonContentType({ commonContentType }: EditCommonC
       <Breadcrumbs skipLevels={1} titles={["Admin", "Common Content Types", commonContentType.name, "Edit" ]}/>
       <EditCommonContentTypeForm commonContentType={commonContentType} />
     </Page>
-  )
+  );
 }
 
 EditCommonContentType.getInitialProps = async (ctx: NextPageContext) => {
@@ -81,7 +79,7 @@ EditCommonContentType.getInitialProps = async (ctx: NextPageContext) => {
   }`;
 
   const { data } = await client.query({query: query});
-  return { 
-    commonContentType: data.commonContentType
+  return {
+    commonContentType: data.commonContentType,
   };
-}
+};

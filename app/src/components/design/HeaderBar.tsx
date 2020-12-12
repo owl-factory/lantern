@@ -1,5 +1,5 @@
 import React from "react";
-import { Navbar, Button, InputGroup, Form } from "react-bootstrap";
+import { Button, Form, InputGroup, Navbar } from "react-bootstrap";
 import { MdSearch } from "react-icons/md";
 import Link from "next/link";
 
