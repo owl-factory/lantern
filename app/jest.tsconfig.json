@@ -4,6 +4,7 @@
     "target": "esnext",
     "jsx": "react",
     "sourceMap": false,
+    "esModuleInterop": true,
     "experimentalDecorators": true,
     "noImplicitUseStrict": true,
     "removeComments": true,

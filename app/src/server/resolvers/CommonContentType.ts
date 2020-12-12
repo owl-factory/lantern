@@ -39,7 +39,7 @@ export class CommonContentTypeResolver extends CoreResolver {
    * @param filters The filter object to count documents by. Identical to other filters
    */
   @Query(() => Int)
-  public xxxCount(@Arg("filters", {nullable: true}) filters?: CommonContentTypeFilters): FindCountResponse {
+  public commonContentTypeCount(@Arg("filters", {nullable: true}) filters?: CommonContentTypeFilters): FindCountResponse {
     return super.findCount(filters);
   }
 
