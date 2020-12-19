@@ -14,6 +14,7 @@ interface Width {
 
 interface Component {
   type: string;
+  style?: Record<string, string>;
   value?: string;
 }
 
@@ -44,7 +45,10 @@ const layoutTest: Section[] = [
       {type: "checkbox"},
       {type: "text", value: "Inspiration"},
     ] }]}, 
-    {h: 5, contents:[]}, 
+    {h: 5, contents:[ {components: [
+      {type: "numberInput", style: { width: "3em" }},
+      {type: "text", value: "Proficiency"},
+    ] }]}, 
     {h: 15, contents:[]},
     {h: 15, contents:[]} 
   ] },
@@ -56,6 +60,8 @@ function buildComponent(component: Component): JSX.Element {
   switch(component.type) {
     case "checkbox":
       return <input type="checkbox"/>;
+    case "numberInput":
+      return <input type="number" style={component.style} />;
     case "text":
       return <div>{component.value}</div>
   }
