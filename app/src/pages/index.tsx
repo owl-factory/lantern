@@ -6,6 +6,7 @@ import { Button, Col, Row } from "react-bootstrap";
 import { client } from "../utilities/graphql/apiClient";
 import gql from "graphql-tag";
 import { signOut, useSession } from "next-auth/client";
+import DynamicLayout from "../components/layouts/Layouts";
 
 /**
  * Renders the index page and one of two subviews
@@ -24,6 +25,8 @@ function Index(): JSX.Element {
       <h4>
         News
       </h4>
+
+      <DynamicLayout/>
     </Page>
   );
 }
