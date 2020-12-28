@@ -1,6 +1,9 @@
 
 import React from "react";
+import { Formik, Form as FormikForm } from "formik";
 import { Card, Col, Container, Row, Tabs, Tab, Nav } from "react-bootstrap";
+import { Error as FormError, Input } from "../design/forms/Forms";
+import { Entity } from "@reroll/model/dist/documents";
 
 type WidthOptions = 12 | 8 | 6 | 4 | 3 | 2 | 1;
 
@@ -25,6 +28,7 @@ interface Content {
 interface Subsection {
   name?: string;
   description?: string;
+  w?: Width;
   h: number;
   contents: Content[];
 }
@@ -45,56 +49,69 @@ interface Page {
 
 interface DynamicLayout {
   name: string; 
+  defaultPageKey?: string;
   pages: Page[];
+  isStatic: boolean;
 }
 
-const dynamicLayout: DynamicLayout = {
-  name: "Test Layout",
-  pages: [
-    { name: "Character", sections: [
-      { w: { xs: 12 }, h: 10, subsections: [] },
-      { w: { md: 1, xs: 12 }, h: 45, subsections: [] },
-      { w: { md: 3, xs: 12 }, h: 45, subsections: [ 
-        {h: 5, contents:[ {components: [
-          {type: "checkbox"},
-          {type: "text", value: "Inspiration"},
-        ] }]}, 
-        {h: 5, contents:[ {components: [
-          {type: "numberInput", style: { width: "3em" }},
-          {type: "text", value: "Proficiency"},
-        ] }]}, 
-        {h: 15, contents:[]},
-        {h: 15, contents:[]} 
-      ] },
-      { w: { md: 4, xs: 12 }, h: 45, subsections: [] },
-      { w: { md: 4, xs: 12 }, h: 45, subsections: [] },
-    ] },
-    { name: "Spells", sections: [
+// const dynamicLayout: DynamicLayout = {
+//   name: "Test Layout",
+//   pages: [
+//     { name: "Character", sections: [
+//       { w: { xs: 12 }, h: 10, subsections: [] },
+//       { w: { md: 1, xs: 12 }, h: 45, subsections: [] },
+//       { w: { md: 3, xs: 12 }, h: 45, subsections: [ 
+//         {h: 5, contents:[ {components: [
+//           {type: "checkbox"},
+//           {type: "text", value: "Inspiration"},
+//         ] }]}, 
+//         {h: 5, contents:[ {components: [
+//           {type: "numberInput", style: { width: "3em" }},
+//           {type: "text", value: "Proficiency"},
+//         ] }]}, 
+//         {h: 15, contents:[]},
+//         {h: 15, contents:[]} 
+//       ] },
+//       { w: { md: 4, xs: 12 }, h: 45, subsections: [] },
+//       { w: { md: 4, xs: 12 }, h: 45, subsections: [] },
+//     ] },
+//     { name: "Spells", sections: [
 
-    ]}
-  ]
+//     ]}
+//   ]
+// }
+
+// const layoutTest: Section[] = [
+//   { w: { xs: 12 }, h: 10, subsections: [] },
+//   { w: { md: 1, xs: 12 }, h: 45, subsections: [] },
+//   { w: { md: 3, xs: 12 }, h: 45, subsections: [ 
+//     {h: 5, contents:[ {components: [
+//       {type: "checkbox"},
+//       {type: "text", value: "Inspiration"},
+//     ] }]}, 
+//     {h: 5, contents:[ {components: [
+//       {type: "numberInput", style: { width: "3em" }},
+//       {type: "text", value: "Proficiency"},
+//     ] }]}, 
+//     {h: 15, contents:[]},
+//     {h: 15, contents:[]} 
+//   ] },
+//   { w: { md: 4, xs: 12 }, h: 45, subsections: [] },
+//   { w: { md: 4, xs: 12 }, h: 45, subsections: [] },
+// ];
+
+interface DynamicLayoutProps {
+  dynamicLayout: DynamicLayout;
+  entity: Entity;
+  onSubmit?: (values: Record<string, unknown>) => void;
 }
 
-const layoutTest: Section[] = [
-  { w: { xs: 12 }, h: 10, subsections: [] },
-  { w: { md: 1, xs: 12 }, h: 45, subsections: [] },
-  { w: { md: 3, xs: 12 }, h: 45, subsections: [ 
-    {h: 5, contents:[ {components: [
-      {type: "checkbox"},
-      {type: "text", value: "Inspiration"},
-    ] }]}, 
-    {h: 5, contents:[ {components: [
-      {type: "numberInput", style: { width: "3em" }},
-      {type: "text", value: "Proficiency"},
-    ] }]}, 
-    {h: 15, contents:[]},
-    {h: 15, contents:[]} 
-  ] },
-  { w: { md: 4, xs: 12 }, h: 45, subsections: [] },
-  { w: { md: 4, xs: 12 }, h: 45, subsections: [] },
-];
-
-const tmpSubsections = {   
+const tmpSubsections: Record<string, Subsection> = {   
+  name: {h: 2, w: { xs: 12, md: 6 }, contents: [
+    { components: [
+      { type: "input", variable: "name" }
+    ] }
+  ]},
   inspiration: {h: 5, contents:[ {components: [
     {type: "checkbox"},
     {type: "text", value: "Inspiration"},
@@ -110,6 +127,14 @@ function DynamicComponent(props: any): JSX.Element {
   switch(props.component.type) {
     case "checkbox":
       return <input type="checkbox"/>;
+    case "input":
+
+      return (
+        <>
+          <Input name={props.component.variable} />
+          <FormError name={props.component.variable} />
+        </>
+      );
     case "numberInput":
       return <input type="number" style={props.component.style} />;
     case "text":
@@ -131,7 +156,10 @@ function DynamicContent(props: any) {
 
 function DynamicSubsection(props: any) {
   const contents: JSX.Element[] = [];
+  console.log(props.subsection)
   const subsection: Subsection = tmpSubsections[props.subsection];
+
+  if (subsection === undefined) { return <></>; }
   
   subsection.contents.forEach((content: Content) => {
     contents.push(<DynamicContent content={content}/>);
@@ -139,11 +167,13 @@ function DynamicSubsection(props: any) {
 
 
   return (
-    <Card>
-      <Card.Body style={{ minHeight: `${subsection.h}em` }}>
-        {contents}
-      </Card.Body>
-    </Card>
+    <Col {...subsection.w}>
+      <Card >
+        <Card.Body style={{ minHeight: `${subsection.h}em` }}>
+          {contents}
+        </Card.Body>
+      </Card>
+    </Col>
   );
 }
 
@@ -157,7 +187,9 @@ function DynamicSection(props: any) {
     <Col {...props.section.w} style={{padding: "7.5px"}}>
       <Card style={{backgroundColor: "#ffa1a2", minHeight: `${props.section.h}em`} }>
         <Card.Body style={{backgroundColor: "transparent"}}>
-          {subsections}
+          <Row>
+            {subsections}
+          </Row>
         </Card.Body>
       </Card>
     </Col>
@@ -183,6 +215,30 @@ function DynamicPage(props: any) {
         </Row>
       </Container>
     </Tab.Pane>
+  );
+}
+
+/**
+ * 
+ * @param props 
+ */
+function DynamicForm(props: any) {
+  if (props.dynamicLayout.isStatic) { return <>{props.children}</>; }
+  if (props.onSubmit == undefined) { 
+    throw Error("The Dynamic Layout requires an onSubmit action for non-static layouts.")
+  };
+
+  return (
+    <Formik
+      initialValues={props.entity || {}}
+      onSubmit={props.onSubmit}
+    >
+      {() => (
+        <FormikForm>
+          { props.children }
+        </FormikForm>
+      )}
+    </Formik>
   );
 }
 
@@ -231,13 +287,15 @@ function DynamicTabs(props: any) {
  * Renders the dynamic pages for a given layout populated with the specific game's information and 
  * relevant entity variables
  */
-export default function DynamicLayout(props: any) {
+export default function DynamicLayout(props: DynamicLayoutProps) {
   const defaultActiveKey = props.dynamicLayout.defaultPageKey || props.dynamicLayout.pages[0].name;
 
   return (
     <Tab.Container defaultActiveKey={defaultActiveKey}>
       <DynamicTabs dynamicLayout={props.dynamicLayout}/>
-      <DynamicPages dynamicLayout={props.dynamicLayout}/>
+      <DynamicForm dynamicLayout={props.dynamicLayout} entity={props.entity} onSubmit={props.onSubmit}>
+        <DynamicPages dynamicLayout={props.dynamicLayout}/>
+      </DynamicForm>
     </Tab.Container>
   );
 }
