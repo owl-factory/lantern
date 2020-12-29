@@ -2,6 +2,8 @@ import { Field, ID, ObjectType } from "type-graphql";
 import { CommonContentType } from "./CommonContentType";
 import { getModelForClass, prop } from "@typegoose/typegoose";
 import { ContentFieldTypeEnum } from "../enums/contentFieldType";
+import { LayoutAtom } from "./Layouts/DynamicContent";
+import { Layout } from "./Layouts/DynamicLayout";
 
 /**
  * An option used in a dropdown
@@ -57,18 +59,43 @@ export class ContentTypeWarnings {
 
 }
 
+@ObjectType()
+export class ContentTypeLayouts {
+  // The layout that renders the search form
+  @Field(() => Layout)
+  @prop()
+  searchForm: Layout;
+
+  // The layout that renders the items returned in the search form
+  @Field(() => Layout)
+  @prop()
+  searchItems: Layout;
+
+  // The layout that renders the content card used in pages and games
+  @Field(() => Layout)
+  @prop()
+  contentCard: Layout;
+}
+
 /**
  * Describes a type of content within a game system
  */
 @ObjectType()
 export class ContentType extends CommonContentType {
+  // The id of the game system that this content type belongs to
   @Field(() => ID)
   @prop({ required: true })
   gameSystemID: string;
 
+  // The id of the common content type that this content type inherits
   @Field(() => ID, { nullable: true })
   @prop()
   commonContentTypeID?: string;
+
+  // A collection of layouts 
+  @Field(() => ContentTypeLayouts, { nullable: true })
+  @prop()
+  layout?: ContentTypeLayouts;
 }
 
 export const ContentTypeModel = getModelForClass(ContentType);

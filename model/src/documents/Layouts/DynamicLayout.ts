@@ -64,7 +64,7 @@ export class DynamicPage {
  * layout to populate with pre-set or editable variables. 
  */
 @ObjectType()
-export class DynamicLayout extends CoreDocument {
+export class Layout extends CoreDocument {
   // The name of the layout
   @Field()
   @prop({ required: true })
