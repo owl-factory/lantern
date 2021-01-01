@@ -16,9 +16,6 @@
   "dependencies": {
     "@typegoose/typegoose": "^7.3.5",
     "class-validator": "^0.12.2",
-    "graphql": "^15.4.0",
-    "graphql-type-json": "^0.3.2",
-    "nodemon": "^2.0.4",
-    "type-graphql-filter": "^0.2.0"
+    "nodemon": "^2.0.4"
   }
 }

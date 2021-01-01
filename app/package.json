@@ -12,11 +12,9 @@
   },
   "dependencies": {
     "@reroll/model": "0.2.0",
-    "apollo-server-micro": "^2.18.1",
     "bootstrap": "^4.4.1",
     "cross-fetch": "^3.0.6",
     "formik": "^2.1.4",
-    "graphql-type-json": "^0.3.2",
     "mongoose": "^5.10.5",
     "next": "9.3.2",
     "next-auth": "^3.1.0",

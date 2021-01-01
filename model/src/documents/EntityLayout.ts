@@ -1,12 +1,11 @@
 import { CoreDocument } from "./CoreDocument";
 import { getModelForClass, prop } from "@typegoose/typegoose";
-import { Field, ID, ObjectType } from "type-graphql";
 
 /**
  * A model describing the layout of entities
  */
 export class EntityLayout extends CoreDocument {
-    @prop({ required: true })
+  @prop({ required: true })
   gameSystemID?: string;
 }
 
