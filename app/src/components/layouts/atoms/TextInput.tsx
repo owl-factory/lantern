@@ -1,9 +1,17 @@
 import React from "react";
 import { Col, Form } from "react-bootstrap";
 import { Error, Input } from "../../design/forms/Forms";
-import { RenderError } from "../Layouts";
+import { Atom, RenderError } from "../Layouts";
 
-export function TextInput(props: any) {
+interface TextInputProps {
+  atom: Atom;
+}
+
+/**
+ * Renders a text input
+ * @param props 
+ */
+export function TextInput(props: TextInputProps) {
   let errors: string = "";
   const inputName = props.atom.staticValues.inputName || undefined;
   const label = props.atom.staticValues.label || undefined;

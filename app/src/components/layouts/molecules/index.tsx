@@ -1,5 +1,5 @@
 import React from "react";
-import { DynamicAtom } from "../atoms";
+import { DynamicAtom, renderDisplayClasses } from "../atoms";
 import { Atom, Molecule } from "../Layouts";
 import { AccordionMolecule } from "./Accordion";
 
@@ -23,6 +23,7 @@ export function DynamicMolecule(props: MoleculeProps) {
   if (!("atoms" in props.molecule)) { return <DynamicAtom atom={props.molecule}/>; }
 
   const atoms: Atom[] = [];
+  const displayClasses = renderDisplayClasses(props.molecule.display);
   const molecule = props.molecule as Molecule; // Casting here for reusability
   
   molecule.atoms.forEach((atom: Atom) => {
@@ -33,7 +34,7 @@ export function DynamicMolecule(props: MoleculeProps) {
     case MoleculeType.Accordion:
       return <AccordionMolecule molecule={molecule}>{atoms}</AccordionMolecule>;  
     case MoleculeType.Div:
-      return <div>{atoms}</div>;
+      return <div className={displayClasses}>{atoms}</div>;
     default: 
       return <>{atoms}</>;
   }

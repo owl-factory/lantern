@@ -1,14 +1,22 @@
 import React from "react";
-import { Display, RenderError } from "../Layouts";
+import { Atom, Display, RenderError } from "../Layouts";
+import { Action } from "./Action";
 import { MultiselectInput } from "./Multiselect";
 import { Submit } from "./Submit";
+import { TernaryInput } from "./TernaryInput";
 import { TextInput } from "./TextInput";
 
 export enum AtomType {
-  TextInput,
-  SelectInput,
+  Action,
   MultiselectInput,
+  SelectInput,
+  TernaryInput,
+  TextInput,
   Submit,
+}
+
+interface AtomProps {
+  atom: Atom;
 }
 
 export function renderDisplayClasses(display?: Display) {
@@ -22,22 +30,23 @@ export function renderDisplayClasses(display?: Display) {
   return classString;
 }
 
-
-export function DynamicAtom(props: any): JSX.Element {
+/**
+ * Renders a singlular atom
+ * @param props.atom The definition of the atom to render
+ */
+export function DynamicAtom(props: AtomProps): JSX.Element {
   try {
     switch(props.atom.type) {
-      // case "checkbox":
-      //   return <input type="checkbox"/>;
-      case AtomType.TextInput:
-        return <TextInput atom={props.atom}/>;
+      case AtomType.Action:
+        return <Action atom={props.atom}/>;
       case AtomType.MultiselectInput:
         return <MultiselectInput atom={props.atom}/>;
       case AtomType.Submit:
         return <Submit atom={props.atom}/>;
-      // case "numberInput":
-      //   return <input type="number" style={props.component.style} />;
-      // case "text":
-      //   return <div>{props.component.value}</div>
+      case AtomType.TextInput:
+        return <TextInput atom={props.atom}/>;
+      case AtomType.TernaryInput:
+        return <TernaryInput atom={props.atom}/>;
     }
   } catch (error) {
     // Last ditch error catch to prevent the whole sheet from crashing

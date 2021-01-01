@@ -6,9 +6,11 @@ import { Section, Subsection } from "../../../../components/layouts/Layouts";
 import { MoleculeType } from "../../../../components/layouts/molecules";
 import SearchLayout from "../../../../components/layouts/SearchLayout";
 
+type TableLayout = any;
+
 interface SearchType {
   form: Section[];
-  items: Section[];
+  table: TableLayout[];
   subsections: Record<string, Subsection>;
 }
 
@@ -25,7 +27,12 @@ const searchLayout: SearchType = {
       ]
     }
   ],
-  items: [],
+  table: [
+    {
+      w: { xs: 2, sm: 1 },
+      staticValues: {}
+    }
+  ],
   subsections: {
     class_select: { h: 5, w: { xs: 12 }, molecules: [] },
     basic_spell: { h: 3, w: { xs: 12 }, molecules: [{
@@ -65,19 +72,25 @@ const searchLayout: SearchType = {
     },
     {
       type: MoleculeType.Div,
+      display: { xs: "none", md: "block" },
       atoms: [
         {
           type: AtomType.Submit,
-          display: { xs: "none", md: "block" },
           staticValues: {
             label: "Filter Spells"
+          }
+        },
+        {
+          type: AtomType.Action,
+          staticValues: {
+            label: "Reset Filters"
           }
         },
       ]
     }
     
     ] },
-    advanced_filters: { h: 2, w: { xs: 12 }, molecules: [
+    advanced_filters: { h: 2, w: { xs: 12 }, collapse: {}, molecules: [
       {
         type: MoleculeType.Accordion,
         atoms: [
@@ -157,6 +170,15 @@ const searchLayout: SearchType = {
             }
           },
           {
+            type: AtomType.TernaryInput,
+            w: { xs: 12, md: 3 },
+            staticValues: {
+              label: "Conditions",
+              placeholder: "Select Conditions",
+              inputName: "data.conditions"
+            }
+          },
+          {
             type: AtomType.MultiselectInput,
             w: { xs: 12, md: 3 },
             staticValues: {
@@ -210,19 +232,31 @@ const searchLayout: SearchType = {
     ] },
     reset_filters: { h: 1, w: { xs: 12 }, molecules: [
       {
-        type: AtomType.Submit,
+        type: MoleculeType.Div,
         display: { xs: "block", md: "none" },
-        staticValues: {
-            label: "Filter Spells"
-        }
-      },
+        atoms: [
+          {
+            type: AtomType.Submit,
+            staticValues: {
+                label: "Filter Spells"
+            }
+          },
+          {
+            type: AtomType.Action,
+            staticValues: {
+              label: "Reset Filters"
+            }
+          },
+        ]
+      }
+      
     ] },
   },
   // content: {}
 }
 
 const searchData: Content[] = [
-  { name: "Firebolt", data: { level: 0, castijng_time: "1 Action", duration: "24 Hours", range: "30ft"} }
+  { name: "Firebolt", data: { level: 0, casting_time: "1 Action", duration: "24 Hours", range: "30ft"} }
 ]
 
 function onSearch(values: Record<string, string>) {

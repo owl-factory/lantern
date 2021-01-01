@@ -40,8 +40,14 @@ export interface Atom {
 export interface Molecule {
   type: MoleculeType;
   atoms: Atom[];
+  display?: Display;
   staticValues?: Record<string, string>;
   dynamicValues?: Record<string, string>;
+}
+
+export interface Collapse {
+  position: "top" | "bottom",
+  staticValues?: Record<string, string>
 }
 
 export interface Subsection {
@@ -49,6 +55,7 @@ export interface Subsection {
   description?: string;
   w?: Width;
   h: number;
+  collapse?: Collapse;
   molecules: (Molecule | Atom)[];
 }
 
@@ -78,22 +85,6 @@ interface DynamicLayoutProps {
   entity: Entity;
   onSubmit?: (values: Record<string, unknown>) => void;
 }
-
-// const tmpSubsections: Record<string, Subsection> = {   
-//   name: {h: 2, w: { xs: 12, md: 6 }, contents: [
-//     { components: [
-//       { type: "input", variable: "name" }
-//     ] }
-//   ]},
-//   inspiration: {h: 5, contents:[ {components: [
-//     {type: "checkbox"},
-//     {type: "text", value: "Inspiration"},
-//   ] }]}, 
-//   proficiency: {h: 5, contents:[ {components: [
-//     {type: "numberInput", style: { width: "3em" }},
-//     {type: "text", value: "Proficiency"},
-//   ] }]}
-// };
 
 export function RenderError(props: any) {
   return (
