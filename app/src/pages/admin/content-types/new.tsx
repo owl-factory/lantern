@@ -1,11 +1,9 @@
 import React from "react";
 import Breadcrumbs from "../../../components/design/Breadcrumbs";
 import Page from "../../../components/design/Page";
-import { client } from "../../../utilities/graphql/apiClient";
 import { useRouter } from "next/router";
 import CommonContentTypeForm from "../../../components/admin/commonContentTypes/Form";
 import { CreateContentTypeInput } from "@reroll/model/dist/inputs";
-import { GraphQLResponse } from "../../../types/graphql";
 
 /**
  * Renders a new game system form

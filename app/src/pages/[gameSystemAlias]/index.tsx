@@ -1,6 +1,5 @@
 import Page from "../../components/design/Page";
 import { NextPageContext } from "next";
-import { client } from "../../utilities/graphql/apiClient";
 import { GameSystem } from "@reroll/model/dist/documents/GameSystem";
 
 interface GameSystemSearchProps {

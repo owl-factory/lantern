@@ -3,7 +3,6 @@ import Breadcrumbs from "../../../../components/design/Breadcrumbs";
 import GameSystemForm from "../../../../components/admin/gameSystems/Form";
 import Page from "../../../../components/design/Page";
 import { NextPageContext } from "next";
-import { client } from "../../../../utilities/graphql/apiClient";
 import { GameSystem } from "@reroll/model/dist/documents/GameSystem";
 import { useRouter } from "next/router";
 import { UpdateGameSystemInput } from "@reroll/model/dist/inputs";
