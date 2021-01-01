@@ -11,6 +11,7 @@ export enum AtomType {
   MultiselectInput,
   SelectInput,
   TernaryInput,
+  Text,
   TextInput,
   Submit,
 }
