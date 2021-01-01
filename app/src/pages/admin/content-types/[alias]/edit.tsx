@@ -1,8 +1,6 @@
 import React from "react";
 import { useRouter } from "next/router";
-import gql from "graphql-tag";
 import { NextPageContext } from "next";
-import { client } from "../../../../utilities/graphql/apiClient";
 import Page from "../../../../components/design/Page";
 import Breadcrumbs from "../../../../components/design/Breadcrumbs";
 import CommonContentTypeForm from "../../../../components/admin/commonContentTypes/Form";
@@ -30,28 +28,6 @@ export function EditCommonContentTypeForm(props: EditCommonContentTypeFormProps)
     }}
     onSubmit={(values: UpdateCommonContentTypeInput) => {
       const { alias } = router.query;
-
-      const EditCommonContentTypeMutation = gql`
-      mutation {
-        updateCommonContentType (
-          _id: "${props.commonContentType._id}",
-          data: {
-            name: "${values.name}",
-            alias: "${values.alias}"
-          }
-        ) {
-          ok
-        }
-      }
-      `;
-
-      client.mutate({mutation: EditCommonContentTypeMutation})
-      .then(() => {
-        router.push(`/admin/content-types/${alias}`);
-      })
-      .catch(() => {
-        // TODO - Better error handling
-      });
     }}
   />;
 }
@@ -69,17 +45,7 @@ export default function EditCommonContentType({ commonContentType }: EditCommonC
 EditCommonContentType.getInitialProps = async (ctx: NextPageContext) => {
   const { alias } = ctx.query;
 
-  const query = gql`query {
-    commonContentType (_id: "${alias}") {
-      _id,
-      name,
-      alias,
-      description
-    }
-  }`;
-
-  const { data } = await client.query({query: query});
   return {
-    commonContentType: data.commonContentType,
+    commonContentType: {},
   };
 };

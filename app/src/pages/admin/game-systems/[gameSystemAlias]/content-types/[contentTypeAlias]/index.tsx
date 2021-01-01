@@ -2,8 +2,6 @@ import React from "react";
 import Page from "../../../../../../components/design/Page";
 import Breadcrumbs from "../../../../../../components/design/Breadcrumbs";
 import { NextPageContext } from "next";
-import gql from "graphql-tag";
-import { client } from "../../../../../../utilities/graphql/apiClient";
 import { Button, Card, Col, Row } from "react-bootstrap";
 import { useRouter } from "next/router";
 import Link from "next/link";
@@ -103,30 +101,6 @@ export default function ContentTypeView({contentType, gameSystem}: ContentTypeVi
 
 ContentTypeView.getInitialProps = async (ctx: NextPageContext) => {
   const { gameSystemAlias, contentTypeAlias } = ctx.query;
-  const query = gql`query {
-    contentType(_id: "${contentTypeAlias}", gameSystemID: "${gameSystemAlias}") {
-      _id,
-      name,
-      alias,
-      isTypeOnly,
-      description,
-      fields {
-        name,
-        default,
-        type,
-        readonly
-      },
-      createdAt,
-      updatedAt
-    },
-    gameSystem(_id: "${gameSystemAlias}") {
-      _id,
-      name,
-      alias
-    }
-  }`;
 
-  const { contentType, gameSystem } = (await client.query({query}))["data"];
-
-  return { contentType, gameSystem };
+  return { contentType: {}, gameSystem: {} };
 };

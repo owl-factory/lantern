@@ -5,8 +5,6 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import Breadcrumbs from "../../../../components/design/Breadcrumbs";
 import { NextPageContext } from "next";
-import gql from "graphql-tag";
-import { client } from "../../../../utilities/graphql/apiClient";
 import { CommonEntityType } from "@reroll/model/dist/documents";
 
 interface CommonEntityTypeViewProps {
@@ -66,20 +64,7 @@ export default function CommonEntityTypeView({commonEntityType}: CommonEntityTyp
 CommonEntityTypeView.getInitialProps = async (ctx: NextPageContext) => {
   const alias = ctx.query.alias;
 
-  const commonEntityTypeQuery = gql`
-  {
-    commonEntityType (_id: "${alias}") {
-      _id,
-      name,
-      alias,
-      createdAt,
-      updatedAt,
-    }
-  }`;
-
-  const { data } = await client.query({query: commonEntityTypeQuery});
-
   return {
-    commonEntityType: data.commonEntityType,
+    commonEntityType: {},
   };
 };

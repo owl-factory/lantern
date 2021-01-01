@@ -1,8 +1,6 @@
 import React from "react";
 import { NextPageContext } from "next";
-import gql from "graphql-tag";
 import { ContentTypeTable } from "../../../../../components/admin/contentTypes/Table";
-import { client } from "../../../../../utilities/graphql/apiClient";
 import Page from "../../../../../components/design/Page";
 import Breadcrumbs from "../../../../../components/design/Breadcrumbs";
 import Pagination, { PageState } from "../../../../../components/design/Pagination";
@@ -20,23 +18,13 @@ async function fetchContentTypes(
   page: number,
   perPage: number,
   gameSystemID: string
-  ) {
-  const contentTypeQuery = gql`
-  query {
-    contentTypes (
-      filters: {gameSystemID_eq: "${gameSystemID}"},
-      skip: ${(page - 1) * perPage},
-      limit: ${perPage}
-    ) {
-      _id,
-      name,
-      alias,
-      isTypeOnly
-    },
-    contentTypeCount (filters: {gameSystemID_eq: "${gameSystemID}"})
-  }`;
+) {
+  
 
-  return (await client.query({query: contentTypeQuery}))["data"];
+  return {
+    contentTypes: [],
+    contentTypeCount: 0
+  };
 
 }
 
@@ -66,14 +54,14 @@ export default function ContentTypeView({
    * @param newPageState The new page state (page, pageCount, etc) changes
    */
   async function setPage(newPageState: PageState) {
-    const { data } = await fetchContentTypes(
+    const { contentTypes, contentTypeCount } = await fetchContentTypes(
       newPageState.page,
       newPageState.perPage,
       gameSystem._id || "undefined"
     );
 
-    setContentTypes(data.contentTypes);
-    setPageState({...newPageState, totalCount: data.contentTypeCount});
+    setContentTypes(contentTypes);
+    setPageState({...newPageState, totalCount: contentTypeCount});
   }
 
   return (
@@ -95,26 +83,10 @@ ContentTypeView.getInitialProps = async (ctx: NextPageContext) => {
   const alias = ctx.query.gameSystemAlias;
 
   // TODO - can we merge this into the fetchContentType query to save calls?
-  const gameSystemQuery = gql`
-  {
-    gameSystem (_id: "${alias}") {
-      _id,
-      name,
-      alias
-    }
-  }`;
-
-  const { gameSystem } = (await client.query({query: gameSystemQuery}))["data"];
-
-  const { contentTypes, contentTypeCount } = await fetchContentTypes(
-    1,
-    initialPerPage,
-    gameSystem._id
-  );
 
   return {
-    gameSystem,
-    initialContentTypes: contentTypes,
-    contentTypeCount,
+    gameSystem: {},
+    initialContentTypes: [],
+    contentTypeCount: 0,
   };
 };

@@ -1,8 +1,6 @@
 import Page from "../../../../../../components/design/Page";
 import Breadcrumbs from "../../../../../../components/design/Breadcrumbs";
 import { NextPageContext } from "next";
-import gql from "graphql-tag";
-import { client } from "../../../../../../utilities/graphql/apiClient";
 import { Button, Card, Col, Row } from "react-bootstrap";
 import Link from "next/link";
 import { GameSystem, Module } from "@reroll/model/dist/documents";
@@ -108,25 +106,9 @@ export default function ModuleView({
 ModuleView.getInitialProps = async (ctx: NextPageContext) => {
   const { gameSystemAlias, moduleAlias } = ctx.query;
 
-  const query = gql`query {
-    gameSystem (_id: "${gameSystemAlias}") {
-      _id,
-      name,
-      alias
-    },
-    module (_id: "${moduleAlias}") {
-      _id,
-      name,
-      alias,
-      createdAt,
-      updatedAt
-    }
-  }`;
-
-  const { data } = await client.query({query: query});
   return {
-    gameSystem: data.gameSystem,
-    module: data.module,
+    gameSystem: {},
+    module: {},
     campaignCount: 0,
     entityCount: 0,
     contentCount: 0,

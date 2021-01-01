@@ -8,8 +8,6 @@ import { TableBuilder } from "../../../utilities/design/table";
 import Link from "next/link";
 import { ContextMenuBuilder } from "../../../utilities/design/contextMenu";
 import { MdBlock, MdBuild, MdInfo, MdPageview } from "react-icons/md";
-import { client } from "../../../utilities/graphql/apiClient";
-import gql from "graphql-tag";
 import Pagination, { PageState } from "../../../components/design/Pagination";
 import ContextMenu from "../../../components/design/contextMenus/ContextMenu";
 import { TableComponentProps } from "../../../model/design/table";
@@ -66,8 +64,8 @@ function GameSystems(data: GameSystemsProps): JSX.Element {
       newPageState.perPage
     );
 
-    setGameSystemData(newGameSystemData.data);
-    setPageState({...newPageState, totalCount: newGameSystemData.data.gameSystemCount});
+    setGameSystemData(newGameSystemData);
+    setPageState({...newPageState, totalCount: newGameSystemData.gameSystemCount});
   }
 
   return (
@@ -93,25 +91,12 @@ function GameSystems(data: GameSystemsProps): JSX.Element {
 async function queryGameSystems(page: number, perPage: number, ) {
   const skip = (page - 1) * perPage;
 
-  const gameSystemQuery = gql`
-  {
-    gameSystems (skip: ${skip}, limit: ${perPage}, sort: "-updatedAt") {
-      _id,
-      name,
-      alias,
-      isPublished,
-      updatedAt
-    },
-    gameSystemCount
-  }
-  `;
-
-  return await client.query({query: gameSystemQuery});
+  return { gameSystems: [], gameSystemCount: 0 };
 }
 
 GameSystems.getInitialProps = async () => {
   const gameSystemData = await queryGameSystems(1, initialPerPage);
-  return gameSystemData.data;
+  return gameSystemData;
 };
 
 export default GameSystems;

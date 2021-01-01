@@ -2,12 +2,9 @@ import React from "react";
 import Page from "../../../../../components/design/Page";
 import Breadcrumbs from "../../../../../components/design/Breadcrumbs";
 import { NextPageContext } from "next";
-import gql from "graphql-tag";
-import { client } from "../../../../../utilities/graphql/apiClient";
 import { useRouter } from "next/router";
 import ModuleForm from "../../../../../components/admin/modules/Form";
 import { GameSystem } from "@reroll/model/dist/documents";
-import { GraphQLResponse } from "../../../../../types/graphql";
 import { CreateModuleInput } from "@reroll/model/dist/inputs";
 
 /**
@@ -21,29 +18,7 @@ export function NewModuleForm(props: {gameSystem: GameSystem}): JSX.Element {
       name: "",
       alias: "",
     }}
-    onSubmit={(values: CreateModuleInput) => {
-      const NewModuleMutation = gql`
-      mutation {
-        newModule (data: {
-          gameSystemID: "${props.gameSystem._id}",
-          name: "${values.name}",
-          alias: "${values.alias}"
-        }) {
-          _id,
-          alias
-        }
-      }
-      `;
-      client.mutate({mutation: NewModuleMutation})
-      .then((res: GraphQLResponse) => {
-        const gameSystemAlias = router.query.gameSystemAlias;
-        const key = res.data.newModule.alias || res.data.newModule._id;
-        router.push(`/admin/game-systems/${gameSystemAlias}/modules/${key}`);
-      })
-      .catch(() => {
-        // TODO - Better error handling
-      });
-    }}
+    onSubmit={(values: CreateModuleInput) => {}}
   />;
 }
 
@@ -60,15 +35,7 @@ export default function NewModule({ gameSystem }: { gameSystem: GameSystem }): J
 NewModule.getInitialProps = async (ctx: NextPageContext) => {
   const alias = ctx.query.gameSystemAlias;
 
-  const query = gql`query {
-    gameSystem (_id: "${alias}") {
-      _id,
-      name
-    }
-  }`;
-
-  const { data } = await client.query({query: query});
   return {
-    gameSystem: data.gameSystem,
+    gameSystem: {},
   };
 };

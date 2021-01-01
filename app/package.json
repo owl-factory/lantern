@@ -26,7 +26,6 @@
     "react-dom": "16.12.0",
     "react-icons": "^3.10.0",
     "saslprep": "^1.0.3",
-    "type-graphql": "^1.0.0",
     "yup": "^0.29.1"
   },
   "devDependencies": {

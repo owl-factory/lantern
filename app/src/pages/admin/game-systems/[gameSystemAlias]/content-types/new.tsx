@@ -1,14 +1,11 @@
 import React from "react";
 import { useRouter } from "next/router";
-import gql from "graphql-tag";
-import { client } from "../../../../../utilities/graphql/apiClient";
 import Page from "../../../../../components/design/Page";
 import Breadcrumbs from "../../../../../components/design/Breadcrumbs";
 import { NextPageContext } from "next";
 import ContentTypeForm from "../../../../../components/admin/contentTypes/Form";
 import { CommonContentType, GameSystem } from "@reroll/model/dist/documents";
 import { CreateContentTypeInput } from "@reroll/model/dist/inputs";
-import { GraphQLResponse } from "../../../../../types/graphql";
 
 interface NewContentTypeFormProps {
   commonContentTypes: CommonContentType[];
@@ -31,30 +28,7 @@ export function NewContentTypeForm({ commonContentTypes, gameSystem }: NewConten
       name: "",
       alias: "",
     }}
-    onSubmit={(values: CreateContentTypeInput) => {
-      const newContentTypeMutation = gql`
-      mutation {
-        newContentType (data: {
-          name: "${values.name}",
-          alias: "${values.alias}",
-          gameSystemID: "${gameSystem._id}",
-          commonContentTypeID: "${values.commonContentTypeID}"
-        }) {
-          _id,
-          alias
-        }
-      }
-      `;
-      client.mutate({mutation: newContentTypeMutation})
-      .then((res: GraphQLResponse ) => {
-        const gameSystemAlias = router.query.gameSystemAlias;
-        const key = res.data.newContentType.alias || res.data.newContentType._id;
-        router.push(`/admin/game-systems/${gameSystemAlias}/content-types/${key}`);
-      })
-      .catch(() => {
-        // TODO - Better error handling
-      });
-    }}
+    onSubmit={(values: CreateContentTypeInput) => {}}
   />;
 }
 
@@ -86,24 +60,8 @@ export default function NewCommonContentType(
 NewCommonContentType.getInitialProps = async (ctx: NextPageContext) => {
   const alias = ctx.query.gameSystemAlias;
 
-  const query = gql`
-  query {
-    gameSystem (_id: "${alias}") {
-      _id,
-      name,
-      alias
-    },
-    commonContentTypes (sort: "name") {
-      _id,
-      name,
-      alias
-    }
-  }`;
-
-  const { data } = await client.query({query: query});
-
   return {
-    commonContentTypes: data.commonContentTypes,
-    gameSystem: data.gameSystem,
+    commonContentTypes: [],
+    gameSystem: {},
   };
 };

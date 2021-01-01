@@ -1,8 +1,6 @@
 import React from "react";
 import { useRouter } from "next/router";
 import ModuleForm from "../../../../../../components/admin/modules/Form";
-import gql from "graphql-tag";
-import { client } from "../../../../../../utilities/graphql/apiClient";
 import Page from "../../../../../../components/design/Page";
 import Breadcrumbs from "../../../../../../components/design/Breadcrumbs";
 import { NextPageContext } from "next";
@@ -30,31 +28,7 @@ export function EditModuleForm(props: EditModuleFormProps): JSX.Element {
       name: props.module.name,
       alias: props.module.alias,
     }}
-    onSubmit={(values: UpdateModuleInput) => {
-      const { gameSystemAlias, moduleAlias } = router.query;
-
-      const EditModuleMutation = gql`
-      mutation {
-        updateModule (
-          _id: "${props.module._id}",
-          data: {
-            name: "${values.name}",
-            alias: "${values.alias}"
-          }
-        ) {
-          ok
-        }
-      }
-      `;
-
-      client.mutate({mutation: EditModuleMutation})
-      .then(( ) => {
-        router.push(`/admin/game-systems/${gameSystemAlias}/modules/${moduleAlias}`);
-      })
-      .catch(() => {
-        // TODO - Better error handling
-      });
-    }}
+    onSubmit={(values: UpdateModuleInput) => {}}
   />;
 }
 
@@ -71,23 +45,8 @@ export default function EditModule({ gameSystem, module }: EditModuleProps): JSX
 EditModule.getInitialProps = async (ctx: NextPageContext) => {
   const { gameSystemAlias, moduleAlias } = ctx.query;
 
-  const query = gql`query {
-    gameSystem (_id: "${gameSystemAlias}") {
-      _id,
-      name
-    },
-    module (_id: "${moduleAlias}") {
-      _id,
-      name,
-      alias,
-      createdAt,
-      updatedAt
-    }
-  }`;
-
-  const { data } = await client.query({query: query});
   return {
-    gameSystem: data.gameSystem,
-    module: data.module,
+    gameSystem: {},
+    module: {},
   };
 };

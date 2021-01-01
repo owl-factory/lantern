@@ -5,8 +5,6 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import Breadcrumbs from "../../../../components/design/Breadcrumbs";
 import { NextPageContext } from "next";
-import gql from "graphql-tag";
-import { client } from "../../../../utilities/graphql/apiClient";
 import { CampaignCard } from "../../../../components/admin/campaigns/Card";
 import { EntityTypeCard } from "../../../../components/admin/entityTypes/Card";
 import { ModuleCard } from "../../../../components/admin/modules/Card";
@@ -145,40 +143,12 @@ export default function GameSystemView({
 GameSystemView.getInitialProps = async (ctx: NextPageContext) => {
   const alias = ctx.query.gameSystemAlias;
 
-  const query = gql`query {
-    gameSystem (_id: "${alias}") {
-      _id,
-      name,
-      alias,
-      description,
-      isPublished,
-      createdAt,
-      updatedAt,
-    },
-    contentTypeCount (filters: {gameSystemID_eq: "${alias}"})
-    contentTypes (
-      filters: {gameSystemID_eq: "${alias}"},
-      sort: "name"
-    ) {
-      _id,
-      name,
-      alias
-    },
-    moduleCount (filters: {gameSystemID_eq: "${alias}"}),
-    modules (filters: {gameSystemID_eq: "${alias}"}) {
-      _id,
-      name, 
-      alias,
-      publishType,
-      isPublished,
-      isPurchasable,
-      cost
-    },
-  }`;
-
-  const gqlResponse = await client.query({query});
   return {
-    ...gqlResponse.data,
+    gameSystem: {},
+    contentTypeCount: 0,
+    contentTypes: [],
+    moduleCount: 0,
+    modules: [],
     entityCount: 0,
     entityTypes: [],
     contentCount: 0,

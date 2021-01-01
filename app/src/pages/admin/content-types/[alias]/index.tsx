@@ -5,8 +5,6 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import Breadcrumbs from "../../../../components/design/Breadcrumbs";
 import { NextPageContext } from "next";
-import gql from "graphql-tag";
-import { client } from "../../../../utilities/graphql/apiClient";
 import { CommonContentType } from "@reroll/model/dist/documents/CommonContentType";
 
 /**
@@ -66,21 +64,7 @@ export default function CommonContentTypeView(
 CommonContentTypeView.getInitialProps = async (ctx: NextPageContext) => {
   const alias = ctx.query.alias;
 
-  const commonContentTypeQuery = gql`
-  {
-    commonContentType (_id: "${alias}") {
-      _id,
-      name,
-      alias,
-      description,
-      createdAt,
-      updatedAt,
-    }
-  }`;
-
-  const { data } = await client.query({query: commonContentTypeQuery});
-
   return {
-    commonContentType: data.commonContentType,
+    commonContentType: {},
   };
 };

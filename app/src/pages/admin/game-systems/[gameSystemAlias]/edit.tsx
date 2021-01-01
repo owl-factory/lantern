@@ -2,7 +2,6 @@ import React from "react";
 import Breadcrumbs from "../../../../components/design/Breadcrumbs";
 import GameSystemForm from "../../../../components/admin/gameSystems/Form";
 import Page from "../../../../components/design/Page";
-import gql from "graphql-tag";
 import { NextPageContext } from "next";
 import { client } from "../../../../utilities/graphql/apiClient";
 import { GameSystem } from "@reroll/model/dist/documents/GameSystem";
@@ -25,21 +24,7 @@ function EditGameSystem({gameSystem}: EditGameSystemProps): JSX.Element {
    * Runs the operation to update
    * @param values The updated game system values to update
    */
-  function updateGameSystem(values: UpdateGameSystemInput) {
-    const updateGameSystemQuery = gql`mutation{
-      updateGameSystem (_id: "${gameSystem._id}", data: {
-        name: "${values.name}",
-        alias: "${values.alias}"
-      }) {
-        ok
-      }
-    }`;
-
-    client.mutate({mutation: updateGameSystemQuery})
-    .then(() => {
-      router.push(`/admin/game-systems/${values.alias}`);
-    });
-  }
+  function updateGameSystem(values: UpdateGameSystemInput) {}
 
   // TODO - handle if gamesystem is empty
   const name = gameSystem.name || "";
@@ -62,22 +47,9 @@ function EditGameSystem({gameSystem}: EditGameSystemProps): JSX.Element {
 EditGameSystem.getInitialProps = async (ctx: NextPageContext) => {
   const alias = ctx.query.gameSystemAlias;
 
-  const query = gql`
-  query {
-    gameSystem (_id: "${alias}") {
-      _id,
-      name,
-      alias,
-      description,
-      defaultThemeID
-    }
-  }`;
-
-  const { data } = await client.query({query: query});
-
   return {
     themes: [{"name": "Default", "id": "default"}],
-    gameSystem: data.gameSystem,
+    gameSystem: {},
   };
 };
 

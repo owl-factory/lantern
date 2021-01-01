@@ -1,8 +1,6 @@
 import React from "react";
 import { useRouter } from "next/router";
-import gql from "graphql-tag";
 import { NextPageContext } from "next";
-import { client } from "../../../../../../utilities/graphql/apiClient";
 import ContentTypeForm from "../../../../../../components/admin/contentTypes/Form";
 import Page from "../../../../../../components/design/Page";
 import Breadcrumbs from "../../../../../../components/design/Breadcrumbs";
@@ -29,32 +27,7 @@ export function EditContentTypeForm({ commonContentTypes, contentType }: EditCon
   return <ContentTypeForm
     commonContentTypes={commonContentTypes}
     initialValues={contentType}
-    onSubmit={(values: UpdateContentTypeInput) => {
-      const newContentTypeMutation = gql`
-      mutation {
-        updateContentType (
-          _id: "${contentType._id}",
-          data: {
-            name: "${values.name}",
-            alias: "${values.alias}",
-            commonContentTypeID: "${values.commonContentTypeID}"
-          }
-        ) {
-          n,
-          ok
-        }
-      }
-      `;
-      client.mutate({mutation: newContentTypeMutation})
-      .then(() => {
-        const gameSystemAlias = router.query.gameSystemAlias;
-        const key = values.alias || contentType._id;
-        router.push(`/admin/game-systems/${gameSystemAlias}/content-types/${key}`);
-      })
-      .catch(() => {
-        // TODO - Better error handling
-      });
-    }}
+    onSubmit={(values: UpdateContentTypeInput) => {}}
   />;
 }
 
@@ -87,33 +60,9 @@ export default function EditContentType(
 EditContentType.getInitialProps = async (ctx: NextPageContext) => {
   const { contentTypeAlias, gameSystemAlias } = ctx.query;
 
-  const query = gql`query {
-    commonContentTypes (sort: "name") {
-      _id,
-      name,
-      alias
-    },
-    contentType (_id: "${contentTypeAlias}", gameSystemID: "${gameSystemAlias}") {
-      _id, 
-      name, 
-      alias,
-      commonContentTypeID,
-      isTypeOnly,
-      description
-    },
-    gameSystem (_id: "${gameSystemAlias}") {
-      _id,
-      name,
-      alias
-    },
-    
-  }`;
-
-  const { commonContentTypes, contentType, gameSystem } = (await client.query({query: query}))["data"];
-
   return {
-    commonContentTypes,
-    contentType,
-    gameSystem,
+    commonContentTypes: [],
+    contentType: {},
+    gameSystem: {},
   };
 };

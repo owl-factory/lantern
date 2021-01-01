@@ -2,12 +2,8 @@ import React from "react";
 import Breadcrumbs from "../../../components/design/Breadcrumbs";
 import GameSystemForm from "../../../components/admin/gameSystems/Form";
 import Page from "../../../components/design/Page";
-import gql from "graphql-tag";
-import { client } from "../../../utilities/graphql/apiClient";
 import { useRouter } from "next/router";
 import { CreateGameSystemInput } from "@reroll/model/dist/inputs";
-import { FetchError } from "node-fetch";
-import { GraphQLResponse } from "../../../types/graphql";
 
 
 /**
@@ -18,28 +14,7 @@ export function NewGameSystemForm(): JSX.Element {
   const router = useRouter();
   const [ errors, setErrors ] = React.useState({});
 
-  function onSubmit(values: CreateGameSystemInput) {
-    const newGameSystemMutation = gql`
-      mutation {
-        newGameSystem (data: {
-          name: "${values.name}",
-          alias: "${values.alias}",
-          isUserCreated: false,
-        }) {
-          _id,
-          alias
-        }
-      }
-      `;
-      client.mutate({mutation: newGameSystemMutation})
-      .then((res: GraphQLResponse ) => {
-        const key = res.data.newGameSystem.alias || res.data.newGameSystem._id;
-        router.push(`/admin/game-systems/${key}`);
-      })
-      .catch((gqlError: FetchError) => {
-        setErrors({_global: gqlError.message});
-      });
-  }
+  function onSubmit(values: CreateGameSystemInput) {}
 
   return <GameSystemForm
     errors={errors}

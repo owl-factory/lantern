@@ -2,8 +2,6 @@ import React from "react";
 import { TableBuilder } from "../../../utilities/design/table";
 import Page from "../../../components/design/Page";
 import Breadcrumbs from "../../../components/design/Breadcrumbs";
-import gql from "graphql-tag";
-import { client } from "../../../utilities/graphql/apiClient";
 import Table from "../../../components/design/tables/Table";
 import Pagination, { PageState } from "../../../components/design/Pagination";
 import { Button } from "react-bootstrap";
@@ -12,6 +10,7 @@ import { MdBuild, MdInfo } from "react-icons/md";
 import ContextMenu from "../../../components/design/contextMenus/ContextMenu";
 import { CommonContentType } from "@reroll/model/dist/documents/CommonContentType";
 import { ContextMenuBuilder } from "../../../utilities/design/contextMenu";
+import { ContentType } from "@reroll/model/dist/documents";
 
 interface CommonContentTypeIndexProps {
   initialContentTypes: CommonContentType[];
@@ -45,18 +44,8 @@ const tableBuilder = new TableBuilder()
 .addComponentColumn("Tools", ContentTypeActions);
 
 async function queryContentTypes(page: number, perPage: number) {
-  const query = gql`query {
-    commonContentTypes (skip: ${(page - 1) * perPage}, limit: ${perPage}) {
-      _id,
-      name,
-      alias
-    },
-    commonContentTypeCount
-  }`;
-
-  const { data } = await client.query({query});
-
-  return [ data.commonContentTypes,  data.commonContentTypeCount ];
+  
+  return [ [],  0 ];
 }
 
 /**
@@ -80,9 +69,9 @@ export default function CommonContentTypeIndex(
       newPageState.perPage
     );
 
-    newPageState.totalCount = newContentCount;
+    newPageState.totalCount = newContentCount as number;
 
-    setContentTypes(newContentTypes);
+    setContentTypes(newContentTypes as ContentType[]);
     setPageState(newPageState);
   }
 

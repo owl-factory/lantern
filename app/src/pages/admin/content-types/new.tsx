@@ -1,7 +1,6 @@
 import React from "react";
 import Breadcrumbs from "../../../components/design/Breadcrumbs";
 import Page from "../../../components/design/Page";
-import gql from "graphql-tag";
 import { client } from "../../../utilities/graphql/apiClient";
 import { useRouter } from "next/router";
 import CommonContentTypeForm from "../../../components/admin/commonContentTypes/Form";
@@ -20,25 +19,7 @@ export function NewCommonContentTypeForm(): JSX.Element {
       alias: "",
     }}
     onSubmit={(values: CreateContentTypeInput) => {
-      const newGameSystemMutation = gql`
-      mutation {
-        newCommonContentType (data: {
-          name: "${values.name}",
-          alias: "${values.alias}"
-        }) {
-          _id,
-          alias
-        }
-      }
-      `;
-      client.mutate({mutation: newGameSystemMutation})
-      .then((res: GraphQLResponse ) => {
-        const key = res.data.newCommonContentType.alias || res.data.newGamenewCommonContentTypeystem._id;
-        router.push(`/admin/content-types/${key}`);
-      })
-      .catch(() => {
-        // TODO - Better error handling
-      });
+      
     }}
   />;
 }

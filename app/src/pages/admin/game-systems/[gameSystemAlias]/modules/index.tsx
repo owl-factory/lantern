@@ -2,8 +2,6 @@ import React from "react";
 import Page from "../../../../../components/design/Page";
 import Breadcrumbs from "../../../../../components/design/Breadcrumbs";
 import { NextPageContext } from "next";
-import gql from "graphql-tag";
-import { client } from "../../../../../utilities/graphql/apiClient";
 import ModuleTable from "../../../../../components/admin/modules/Table";
 import Pagination, { PageState } from "../../../../../components/design/Pagination";
 import { GameSystem, Module } from "@reroll/model/dist/documents";
@@ -25,27 +23,7 @@ interface ModulesIndexProps {
 async function queryModules(page: number, perPage: number, gameSystemID: string) {
   const skip = (page - 1) * perPage;
 
-  const moduleQuery = gql`
-  {
-    modules (
-      filters: {gameSystemID_eq: "${gameSystemID}"}
-      skip: ${skip},
-      limit: ${perPage},
-      sort: "-updatedAt"
-    ) {
-      _id,
-      name, 
-      alias,
-      publishType,
-      isPublished,
-      isPurchasable,
-      cost
-    },
-    moduleCount (filters: {gameSystemID_eq: "${gameSystemID}"})
-  }
-  `;
-
-  return await client.query({query: moduleQuery});
+  return { modules: [], moduleCount: 0 };
 }
 
 /**
@@ -74,8 +52,8 @@ export default function ModulesIndex({ gameSystem, initialModules, moduleCount }
       gameSystem._id || "null"
     );
 
-    setModules(newModuleData.data.modules);
-    setPageState({...newPageState, totalCount: newModuleData.data.moduleCount});
+    setModules(newModuleData.modules);
+    setPageState({...newPageState, totalCount: newModuleData.moduleCount});
   }
   return (
     <Page>
@@ -93,20 +71,9 @@ export default function ModulesIndex({ gameSystem, initialModules, moduleCount }
 ModulesIndex.getInitialProps = async (ctx: NextPageContext) => {
   const alias = ctx.query.gameSystemAlias;
 
-  const query = gql`query {
-    gameSystem (_id: "${alias}") {
-      _id,
-      name,
-      alias
-    }
-  }`;
-
-  const { data } = await client.query({query: query});
-  const moduleData = await queryModules(1, initialPerPage, data.gameSystem._id);
-
   return {
-    gameSystem: data.gameSystem,
-    initialModules: moduleData.data.modules,
-    moduleCount: moduleData.data.moduleCount,
+    gameSystem: {},
+    initialModules: [],
+    moduleCount: 0,
   };
 };

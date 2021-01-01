@@ -2,8 +2,6 @@ import React from "react";
 import { TableBuilder } from "../../../utilities/design/table";
 import Page from "../../../components/design/Page";
 import Breadcrumbs from "../../../components/design/Breadcrumbs";
-import gql from "graphql-tag";
-import { client } from "../../../utilities/graphql/apiClient";
 import Table from "../../../components/design/tables/Table";
 import Pagination, { PageState } from "../../../components/design/Pagination";
 import { Button } from "react-bootstrap";
@@ -11,7 +9,7 @@ import Link from "next/link";
 import { MdBuild, MdInfo } from "react-icons/md";
 import ContextMenu from "../../../components/design/contextMenus/ContextMenu";
 import { ContextMenuBuilder } from "../../../utilities/design/contextMenu";
-import { CommonEntityType } from "@reroll/model/dist/documents";
+import { CommonEntityType, EntityType } from "@reroll/model/dist/documents";
 
 interface CommonEntityTypeIndexProps {
   initialEntityTypes: CommonEntityType[];
@@ -46,18 +44,7 @@ const tableBuilder = new TableBuilder()
 .addComponentColumn("Tools", EntityTypeActions);
 
 async function queryEntityTypes(page: number, perPage: number) {
-  const query = gql`query {
-    commonEntityTypes (skip: ${(page - 1) * perPage}, limit: ${perPage}) {
-      _id,
-      name,
-      alias
-    },
-    commonEntityTypeCount
-  }`;
-
-  const { data } = await client.query({query});
-
-  return [ data.commonEntityTypes,  data.commonEntityTypeCount ];
+  return [ [],  0 ];
 }
 
 /**
@@ -81,9 +68,9 @@ export default function CommonEntityTypeIndex(
       newPageState.perPage
     );
 
-    newPageState.totalCount = newEntityTypeCount;
+    newPageState.totalCount = newEntityTypeCount as number;
 
-    setContentTypes(newEntityTypes);
+    setContentTypes(newEntityTypes as EntityType[]);
     setPageState(newPageState);
   }
 

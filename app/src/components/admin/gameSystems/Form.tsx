@@ -8,7 +8,7 @@ import { GameSystem } from "@reroll/model/dist/documents";
 
 /**
  * Renders the game system form with functionality for new and existing game systems
- * @param errors The GQL errors
+ * @param errors The errors
  * @param initialValues The initial values of the form
  * @param onSubmit The action to run on submit
  * @param themes An array of themes for a selection

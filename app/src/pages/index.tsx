@@ -3,8 +3,6 @@ import React from "react";
 import AuthenticationCard from "../components/authetication/AuthenticationCard";
 import Page from "../components/design/Page";
 import { Button, Col, Row } from "react-bootstrap";
-import { client } from "../utilities/graphql/apiClient";
-import gql from "graphql-tag";
 import { signOut, useSession } from "next-auth/client";
 
 /**
@@ -28,20 +26,6 @@ function Index(): JSX.Element {
   );
 }
 
-function testGQL() {
-  const query = gql`
-  {
-    user {
-      _id,
-      name
-    }
-  }
-  `;
-  client.query({query}).then((res) => {
-    console.log(res.data);
-  });
-}
-
 /**
  * Renders the view for users who are logged in
  * @param props TODO
@@ -50,7 +34,6 @@ function UserView() {
   return (
     <div>
       <h3>Welcome back!</h3>
-      <Button onClick={() => testGQL()}>Test GQL</Button>
       <Button onClick={() => signOut()}>Log Out</Button>
       {/* Recent Games */}
       <h4>My Games</h4>
@@ -81,7 +64,6 @@ function GuestView() {
           <p>
             This is some test home page content. Oh look, a button!
           </p>
-          <Button onClick={() => testGQL()}>Test GQL</Button>
           <Link href="/about" passHref>
             <Button title="About">
               About
