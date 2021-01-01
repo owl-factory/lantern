@@ -1,13 +1,21 @@
 
 import React from "react";
 import { Formik, Form as FormikForm } from "formik";
-import { Card, Col, Container, Row, Tabs, Tab, Nav } from "react-bootstrap";
-import { Error as FormError, Input } from "../design/forms/Forms";
+import { Card, Col, Container, Row, Tab, Nav, Form, Button } from "react-bootstrap";
+import { Error as FormError, Input, Multiselect } from "../design/forms/Forms";
 import { Entity } from "@reroll/model/dist/documents";
+import { DynamicAtom } from "./Atoms";
+import { DynamicMolecule, MoleculeType } from "./molecules";
+
+export enum AtomType {
+  TextInput,
+  MultiselectInput,
+  Submit,
+}
 
 type WidthOptions = 12 | 8 | 6 | 4 | 3 | 2 | 1;
 
-interface Width {
+export interface Width {
   xs: WidthOptions;
   sm?: WidthOptions;
   md?: WidthOptions;
@@ -15,25 +23,41 @@ interface Width {
   xl?: WidthOptions;
 }
 
-interface Component {
-  type: string;
+type DisplayValues = "none" | "inline" | "inline-block" | "block" | "table" | "table-cell" | "table-row" | "flex" | "inline-flex";
+
+export interface Display {
+  xs?: DisplayValues;
+  sm?: DisplayValues;
+  md?: DisplayValues;
+  lg?: DisplayValues;
+  xl?: DisplayValues;
+}
+
+export interface Atom {
+  type: AtomType;
+  w?: Width;
+  display?: Display;
   style?: Record<string, string>;
-  value?: string;
+  staticValues?: Record<string, string>;
+  dynamicValues?: Record<string, string>;
 }
 
-interface Content {
-  components: Component[];
+export interface Molecule {
+  type: MoleculeType;
+  atoms: Atom[];
+  staticValues?: Record<string, string>;
+  dynamicValues?: Record<string, string>;
 }
 
-interface Subsection {
+export interface Subsection {
   name?: string;
   description?: string;
   w?: Width;
   h: number;
-  contents: Content[];
+  molecules: (Molecule | Atom)[];
 }
 
-interface Section {
+export interface Section {
   name?: string;
   description?: string;
   w: Width;
@@ -106,80 +130,62 @@ interface DynamicLayoutProps {
   onSubmit?: (values: Record<string, unknown>) => void;
 }
 
-const tmpSubsections: Record<string, Subsection> = {   
-  name: {h: 2, w: { xs: 12, md: 6 }, contents: [
-    { components: [
-      { type: "input", variable: "name" }
-    ] }
-  ]},
-  inspiration: {h: 5, contents:[ {components: [
-    {type: "checkbox"},
-    {type: "text", value: "Inspiration"},
-  ] }]}, 
-  proficiency: {h: 5, contents:[ {components: [
-    {type: "numberInput", style: { width: "3em" }},
-    {type: "text", value: "Proficiency"},
-  ] }]}
-};
+// const tmpSubsections: Record<string, Subsection> = {   
+//   name: {h: 2, w: { xs: 12, md: 6 }, contents: [
+//     { components: [
+//       { type: "input", variable: "name" }
+//     ] }
+//   ]},
+//   inspiration: {h: 5, contents:[ {components: [
+//     {type: "checkbox"},
+//     {type: "text", value: "Inspiration"},
+//   ] }]}, 
+//   proficiency: {h: 5, contents:[ {components: [
+//     {type: "numberInput", style: { width: "3em" }},
+//     {type: "text", value: "Proficiency"},
+//   ] }]}
+// };
 
-
-function DynamicComponent(props: any): JSX.Element {
-  switch(props.component.type) {
-    case "checkbox":
-      return <input type="checkbox"/>;
-    case "input":
-
-      return (
-        <>
-          <Input name={props.component.variable} />
-          <FormError name={props.component.variable} />
-        </>
-      );
-    case "numberInput":
-      return <input type="number" style={props.component.style} />;
-    case "text":
-      return <div>{props.component.value}</div>
-  }
-  return <></>;
+export function RenderError(props: any) {
+  return (
+    <Col {...(props.w || {}) } style={{color: "red", fontWeight: "bold"}}>
+      {props.errors}
+    </Col>
+  )
 }
 
+function fetchValue(props: any) {
 
-function DynamicContent(props: any) {
-  const components: JSX.Element[] = [];
-
-  props.content.components.forEach((component: Component) => {
-    components.push(<DynamicComponent component={component}/>);
-  });
-
-  return <>{components}</>;
 }
 
 function DynamicSubsection(props: any) {
   const contents: JSX.Element[] = [];
-  console.log(props.subsection)
-  const subsection: Subsection = tmpSubsections[props.subsection];
 
-  if (subsection === undefined) { return <></>; }
+  if (props.subsection === undefined) { return <></>; }
   
-  subsection.contents.forEach((content: Content) => {
-    contents.push(<DynamicContent content={content}/>);
+  props.subsection.molecules.forEach((molecule: Molecule | Atom) => {
+    contents.push(<DynamicMolecule molecule={molecule}/>);
   });
 
 
   return (
-    <Col {...subsection.w}>
-      <Card >
-        <Card.Body style={{ minHeight: `${subsection.h}em` }}>
-          {contents}
+    <Col {...props.subsection.w}>
+      <Card id={props.subsection.name}>
+        <Card.Body style={{ minHeight: `${props.subsection.h}em` }}>
+          <Row>
+            {contents}
+          </Row>
         </Card.Body>
       </Card>
     </Col>
   );
 }
 
-function DynamicSection(props: any) {
+export function DynamicSection(props: any) {
   const subsections: JSX.Element[] = [];
-  props.section.subsections.forEach((subsection: string) => {
+  props.section.subsections.forEach((subsectionKey: string) => {
+    const subsection = props.subsections[subsectionKey] || "";
+    if (subsection.name === undefined) { subsection.name = subsectionKey };
     subsections.push(<DynamicSubsection subsection={subsection}/>)
   });
 
@@ -222,10 +228,9 @@ function DynamicPage(props: any) {
  * 
  * @param props 
  */
-function DynamicForm(props: any) {
-  if (props.dynamicLayout.isStatic) { return <>{props.children}</>; }
+export function DynamicFormWrapper(props: any) {
   if (props.onSubmit == undefined) { 
-    throw Error("The Dynamic Layout requires an onSubmit action for non-static layouts.")
+    throw Error("This dynamic layout requires an onSubmit action.")
   };
 
   return (
@@ -246,7 +251,7 @@ function DynamicForm(props: any) {
  * Renders all pages for a single dynamic layout. Information about the pages is taken
  * from the props of the full dynamic layout
  */
-function DynamicPages(props: any) {
+export function DynamicPages(props: any) {
   const dynamicPages: JSX.Element[] = [];
 
   props.dynamicLayout.pages.forEach((page: Page) => {
@@ -293,9 +298,10 @@ export default function DynamicLayout(props: DynamicLayoutProps) {
   return (
     <Tab.Container defaultActiveKey={defaultActiveKey}>
       <DynamicTabs dynamicLayout={props.dynamicLayout}/>
-      <DynamicForm dynamicLayout={props.dynamicLayout} entity={props.entity} onSubmit={props.onSubmit}>
+      <DynamicFormWrapper dynamicLayout={props.dynamicLayout} entity={props.entity} onSubmit={props.onSubmit}>
         <DynamicPages dynamicLayout={props.dynamicLayout}/>
-      </DynamicForm>
+      </DynamicFormWrapper>
     </Tab.Container>
   );
 }
+
