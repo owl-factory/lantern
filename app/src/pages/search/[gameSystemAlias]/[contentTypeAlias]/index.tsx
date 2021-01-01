@@ -1,8 +1,8 @@
 import { Content, ContentType, GameSystem } from "@reroll/model/dist/documents";
 import React from "react";
-import { Accordion, Card, Button } from "react-bootstrap";
 import Page from "../../../../components/design/Page";
-import { AtomType, Section, Subsection } from "../../../../components/layouts/Layouts";
+import { AtomType } from "../../../../components/layouts/atoms";
+import { Section, Subsection } from "../../../../components/layouts/Layouts";
 import { MoleculeType } from "../../../../components/layouts/molecules";
 import SearchLayout from "../../../../components/layouts/SearchLayout";
 
@@ -165,6 +165,43 @@ const searchLayout: SearchType = {
               inputName: "data.magic_school"
             }
           },
+          // Multi checkbox? Ternary? 
+          {
+            type: AtomType.SelectInput,
+            w: { xs: 12, md: 3 },
+            staticValues: {
+              label: "Concentration",
+              placeholder: "--",
+              inputName: "data.concentration"
+            }
+          },
+          {
+            type: AtomType.SelectInput,
+            w: { xs: 12, md: 3 },
+            staticValues: {
+              label: "Ritual",
+              placeholder: "--",
+              inputName: "data.ritual"
+            }
+          },
+          {
+            type: AtomType.MultiselectInput,
+            w: { xs: 12, md: 3 },
+            staticValues: {
+              label: "Source Category",
+              placeholder: "--",
+              inputName: "data.source_category"
+            }
+          },
+          {
+            type: AtomType.MultiselectInput,
+            w: { xs: 12, md: 3 },
+            staticValues: {
+              label: "Source",
+              placeholder: "--",
+              inputName: "moduleID"
+            }
+          },
         ],
         staticValues: {
           label: "Advanced Filters"
@@ -185,7 +222,7 @@ const searchLayout: SearchType = {
 }
 
 const searchData: Content[] = [
-  { name: "Firebolt", data: { level: 0, casting_time: "1 Action", duration: "24 Hours", range: "30ft"} }
+  { name: "Firebolt", data: { level: 0, castijng_time: "1 Action", duration: "24 Hours", range: "30ft"} }
 ]
 
 function onSearch(values: Record<string, string>) {

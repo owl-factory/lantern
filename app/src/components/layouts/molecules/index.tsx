@@ -1,6 +1,6 @@
 import React from "react";
-import { DynamicAtom } from "../Atoms";
-import { Atom } from "../Layouts";
+import { DynamicAtom } from "../atoms";
+import { Atom, Molecule } from "../Layouts";
 import { AccordionMolecule } from "./Accordion";
 
 export enum MoleculeType {
@@ -8,20 +8,33 @@ export enum MoleculeType {
   Div,
 }
 
-export function DynamicMolecule(prop: any) {
-  if (!prop.molecule.atoms) { return <DynamicAtom atom={prop.molecule}/>; }
+interface MoleculeProps {
+  molecule: Molecule | Atom;
+}
+
+/**
+ * Renders a single molecule and all of it's atoms or a single atom, depending on 
+ * which one is given. 
+ * @param props.molecule A single molecule or a single atom. 
+ */
+export function DynamicMolecule(props: MoleculeProps) {
+  // Renders a single atom, since atoms will never have subatoms within them
+  // Kind of a weird hack since Javascript doesn't have good typing :(
+  if (!("atoms" in props.molecule)) { return <DynamicAtom atom={props.molecule}/>; }
 
   const atoms: Atom[] = [];
-  let moleculeRender: (props: any) => (JSX.Element);
-  prop.molecule.atoms.forEach((atom: Atom) => {
+  const molecule = props.molecule as Molecule; // Casting here for reusability
+  
+  molecule.atoms.forEach((atom: Atom) => {
     atoms.push(<DynamicAtom atom={atom}/>)
   });
 
-  switch(prop.molecule.type) {
+  switch(molecule.type) {
     case MoleculeType.Accordion:
-      return <AccordionMolecule molecule={prop.molecule}>{atoms}</AccordionMolecule>;  
+      return <AccordionMolecule molecule={molecule}>{atoms}</AccordionMolecule>;  
     case MoleculeType.Div:
       return <div>{atoms}</div>;
+    default: 
+      return <>{atoms}</>;
   }
-  return <>pp{atoms}</>;
 }

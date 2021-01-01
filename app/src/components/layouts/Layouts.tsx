@@ -4,14 +4,9 @@ import { Formik, Form as FormikForm } from "formik";
 import { Card, Col, Container, Row, Tab, Nav, Form, Button } from "react-bootstrap";
 import { Error as FormError, Input, Multiselect } from "../design/forms/Forms";
 import { Entity } from "@reroll/model/dist/documents";
-import { DynamicAtom } from "./Atoms";
 import { DynamicMolecule, MoleculeType } from "./molecules";
+import { AtomType } from "./atoms";
 
-export enum AtomType {
-  TextInput,
-  MultiselectInput,
-  Submit,
-}
 
 type WidthOptions = 12 | 8 | 6 | 4 | 3 | 2 | 1;
 
@@ -77,52 +72,6 @@ interface DynamicLayout {
   pages: Page[];
   isStatic: boolean;
 }
-
-// const dynamicLayout: DynamicLayout = {
-//   name: "Test Layout",
-//   pages: [
-//     { name: "Character", sections: [
-//       { w: { xs: 12 }, h: 10, subsections: [] },
-//       { w: { md: 1, xs: 12 }, h: 45, subsections: [] },
-//       { w: { md: 3, xs: 12 }, h: 45, subsections: [ 
-//         {h: 5, contents:[ {components: [
-//           {type: "checkbox"},
-//           {type: "text", value: "Inspiration"},
-//         ] }]}, 
-//         {h: 5, contents:[ {components: [
-//           {type: "numberInput", style: { width: "3em" }},
-//           {type: "text", value: "Proficiency"},
-//         ] }]}, 
-//         {h: 15, contents:[]},
-//         {h: 15, contents:[]} 
-//       ] },
-//       { w: { md: 4, xs: 12 }, h: 45, subsections: [] },
-//       { w: { md: 4, xs: 12 }, h: 45, subsections: [] },
-//     ] },
-//     { name: "Spells", sections: [
-
-//     ]}
-//   ]
-// }
-
-// const layoutTest: Section[] = [
-//   { w: { xs: 12 }, h: 10, subsections: [] },
-//   { w: { md: 1, xs: 12 }, h: 45, subsections: [] },
-//   { w: { md: 3, xs: 12 }, h: 45, subsections: [ 
-//     {h: 5, contents:[ {components: [
-//       {type: "checkbox"},
-//       {type: "text", value: "Inspiration"},
-//     ] }]}, 
-//     {h: 5, contents:[ {components: [
-//       {type: "numberInput", style: { width: "3em" }},
-//       {type: "text", value: "Proficiency"},
-//     ] }]}, 
-//     {h: 15, contents:[]},
-//     {h: 15, contents:[]} 
-//   ] },
-//   { w: { md: 4, xs: 12 }, h: 45, subsections: [] },
-//   { w: { md: 4, xs: 12 }, h: 45, subsections: [] },
-// ];
 
 interface DynamicLayoutProps {
   dynamicLayout: DynamicLayout;
