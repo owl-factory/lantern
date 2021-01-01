@@ -5,10 +5,8 @@ import { Field, ID, ObjectType } from "type-graphql";
 /**
  * A model describing the layout of entities
  */
-@ObjectType()
 export class EntityLayout extends CoreDocument {
-  @Field(() => ID)
-  @prop({ required: true })
+    @prop({ required: true })
   gameSystemID?: string;
 }
 

@@ -19,7 +19,6 @@
     "graphql": "^15.4.0",
     "graphql-type-json": "^0.3.2",
     "nodemon": "^2.0.4",
-    "type-graphql": "^1.0.0",
     "type-graphql-filter": "^0.2.0"
   }
 }
