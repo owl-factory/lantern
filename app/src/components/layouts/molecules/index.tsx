@@ -10,6 +10,9 @@ export enum MoleculeType {
 
 interface MoleculeProps {
   molecule: Molecule | Atom;
+  data: Record<string, unknown>;
+  staticValues?: Record<string, string>;
+  dynamicValues?: Record<string, string>;
 }
 
 /**
@@ -20,14 +23,14 @@ interface MoleculeProps {
 export function DynamicMolecule(props: MoleculeProps) {
   // Renders a single atom, since atoms will never have subatoms within them
   // Kind of a weird hack since Javascript doesn't have good typing :(
-  if (!("atoms" in props.molecule)) { return <DynamicAtom atom={props.molecule}/>; }
+  if (!("atoms" in props.molecule)) { return <DynamicAtom {...props} atom={props.molecule}/>; }
 
   const atoms: Atom[] = [];
   const displayClasses = renderDisplayClasses(props.molecule.display);
   const molecule = props.molecule as Molecule; // Casting here for reusability
   
   molecule.atoms.forEach((atom: Atom) => {
-    atoms.push(<DynamicAtom atom={atom}/>)
+    atoms.push(<DynamicAtom atom={atom} data={props.data} />)
   });
 
   switch(molecule.type) {

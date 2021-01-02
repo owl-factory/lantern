@@ -1,13 +1,56 @@
 import React from "react";
 import { Atom, Display, RenderError } from "../Layouts";
 import { Action } from "./Action";
+import { LabeledText } from "./LabeledText";
 import { MultiselectInput } from "./Multiselect";
 import { Submit } from "./Submit";
 import { TernaryInput } from "./TernaryInput";
+import { Text } from "./Text";
 import { TextInput } from "./TextInput";
+
+
+/**
+ * Finds the value for a given key in the dynamic or static values
+ * @param key The key of the value, dynamic or static, that we wish to render for
+ * @param props Contains the props of either atom or molecule and the dynamic 
+ *  data to look through. 
+ */
+export function findValue(
+  key: string, 
+  props: any
+) {
+  // Ensures that we're fetching for an atom or a molecule to save an input
+  const atom = props.atom || props.molecule;
+  if (!atom) { return "None1"; }
+
+  // Fetches both dynamic values and static values for readability
+  const dynamicValues = atom.dynamicValues;
+  const staticValues = atom.staticValues;
+
+  // Simple base cases: takes care of static and 
+  if (!dynamicValues || !(key in dynamicValues)) {
+    if (staticValues !== undefined && key in staticValues) {
+      return staticValues[key];
+    }
+    return "None3";
+  }
+
+  let curr = props.data;
+  const keys = dynamicValues[key].split(".");
+  keys.forEach((element: string) => {
+    console.log(curr)
+    console.log(element)
+    if (!curr || !(element in curr)) { return "" };
+    curr = curr[element];
+  });
+
+  if (typeof curr === "string") { return curr; }
+  return "";
+}
 
 export enum AtomType {
   Action,
+  LabeledText,
   MultiselectInput,
   SelectInput,
   TernaryInput,
@@ -18,6 +61,7 @@ export enum AtomType {
 
 interface AtomProps {
   atom: Atom;
+  data: Record<string, unknown>;
 }
 
 export function renderDisplayClasses(display?: Display) {
@@ -36,18 +80,24 @@ export function renderDisplayClasses(display?: Display) {
  * @param props.atom The definition of the atom to render
  */
 export function DynamicAtom(props: AtomProps): JSX.Element {
+  console.log(props)
   try {
     switch(props.atom.type) {
       case AtomType.Action:
-        return <Action atom={props.atom}/>;
+        return <Action {...props}/>;
+      case AtomType.LabeledText:
+        return <LabeledText {...props} />;
       case AtomType.MultiselectInput:
-        return <MultiselectInput atom={props.atom}/>;
+        return <MultiselectInput {...props}/>;
       case AtomType.Submit:
-        return <Submit atom={props.atom}/>;
-      case AtomType.TextInput:
-        return <TextInput atom={props.atom}/>;
+        return <Submit {...props}/>;
       case AtomType.TernaryInput:
-        return <TernaryInput atom={props.atom}/>;
+        return <TernaryInput {...props}/>;
+      case AtomType.Text:
+        return <Text {...props}/>
+      case AtomType.TextInput:
+        return <TextInput {...props}/>;
+      
     }
   } catch (error) {
     // Last ditch error catch to prevent the whole sheet from crashing
