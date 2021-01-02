@@ -1,7 +1,7 @@
 import { TableBuilder } from "../../../utilities/design/table";
 import Table from "../../design/tables/Table";
 import { PageState } from "../../design/Pagination";
-import { Content } from "@reroll/model/dist/documents";
+import { Content } from "../../../types/documents";
 
 export interface ContentTableProps {
   contents: Content[]; // entity model TODO

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import Breadcrumbs from "../../../../components/design/Breadcrumbs";
 import { NextPageContext } from "next";
-import { CommonContentType } from "@reroll/model/dist/documents/CommonContentType";
+import { CommonContentType } from "../../../../types/documents/CommonContentType";
 
 /**
  * Renders the information page for the game system

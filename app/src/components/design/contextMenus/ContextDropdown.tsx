@@ -9,7 +9,7 @@ import {
   ContextMenuItemProps,
   ContextMenuLink,
   ContextMenuLinkProps,
-} from "../../../model/design/contextMenu";
+} from "../../../types/design/contextMenu";
 import { useRouter } from "next/router";
 import { parseHref } from "../../../utilities/design/contextMenu";
 

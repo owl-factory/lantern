@@ -4,7 +4,7 @@ import Breadcrumbs from "../../../../../components/design/Breadcrumbs";
 import { NextPageContext } from "next";
 import ModuleTable from "../../../../../components/admin/modules/Table";
 import Pagination, { PageState } from "../../../../../components/design/Pagination";
-import { GameSystem, Module } from "@reroll/model/dist/documents";
+import { GameSystem, Module } from "../../../../../types/documents";
 
 // The initial count per page that we'll be fetching
 const initialPerPage = 25;

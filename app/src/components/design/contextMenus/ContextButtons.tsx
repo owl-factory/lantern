@@ -8,7 +8,7 @@ import {
   ContextMenuItemProps,
   ContextMenuLink,
   ContextMenuLinkProps,
-} from "../../../model/design/contextMenu";
+} from "../../../types/design/contextMenu";
 import Tooltip from "../Tooltip";
 import { Button, ButtonGroup } from "react-bootstrap";
 import { parseHref } from "../../../utilities/design/contextMenu";

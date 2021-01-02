@@ -1,4 +1,4 @@
-import { GenericDocumentType } from "@reroll/model/dist/documents";
+import { GenericDocumentType } from "../../types/documents";
 
 // Describes a component function that takes in a row of data and returns an element
 export type TableDataType = GenericDocumentType | Record<string, unknown>;

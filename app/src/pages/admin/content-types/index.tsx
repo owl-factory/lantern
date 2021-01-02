@@ -8,9 +8,9 @@ import { Button } from "react-bootstrap";
 import Link from "next/link";
 import { MdBuild, MdInfo } from "react-icons/md";
 import ContextMenu from "../../../components/design/contextMenus/ContextMenu";
-import { CommonContentType } from "@reroll/model/dist/documents/CommonContentType";
+import { CommonContentType } from "../../../types/documents/CommonContentType";
 import { ContextMenuBuilder } from "../../../utilities/design/contextMenu";
-import { ContentType } from "@reroll/model/dist/documents";
+import { ContentType } from "../../../types/documents";
 
 interface CommonContentTypeIndexProps {
   initialContentTypes: CommonContentType[];

@@ -4,8 +4,7 @@ import { NextPageContext } from "next";
 import Page from "../../../../components/design/Page";
 import Breadcrumbs from "../../../../components/design/Breadcrumbs";
 import CommonEntityTypeForm from "../../../../components/admin/commonEntityTypes/Form";
-import { CommonEntityType } from "@reroll/model/dist/documents";
-import { UpdateCommonEntityTypeInput } from "@reroll/model/dist/inputs";
+import { CommonEntityType } from "../../../../types/documents";
 
 interface EditCommonEntityTypeFormProps {
   commonEntityType: CommonEntityType;
@@ -25,7 +24,7 @@ export function EditCommonEntityTypeForm(props: EditCommonEntityTypeFormProps): 
       name: props.commonEntityType.name,
       alias: props.commonEntityType.alias,
     }}
-    onSubmit={(values: UpdateCommonEntityTypeInput) => { }}
+    onSubmit={(values: any) => { }}
   />;
 }
 

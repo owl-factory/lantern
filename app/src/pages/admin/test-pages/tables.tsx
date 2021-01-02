@@ -3,7 +3,7 @@ import Table from "../../../components/design/tables/Table";
 import { TableBuilder } from "../../../utilities/design/table";
 import Page from "../../../components/design/Page";
 import Link from "next/link";
-import { TableComponentProps } from "../../../model/design/table";
+import { TableComponentProps } from "../../../types/design/table";
 
 /**
  * Renders links and other actions for a row of data

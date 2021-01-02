@@ -1,6 +1,6 @@
 import { Button, Card } from "react-bootstrap";
 import Link from "next/link";
-import { Content, GameSystem } from "@reroll/model/dist/documents";
+import { Content, GameSystem } from "../../../types/documents";
 import { ContentTable } from "./Table";
 
 interface ContentCardProps {

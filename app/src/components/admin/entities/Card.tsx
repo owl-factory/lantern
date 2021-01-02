@@ -1,8 +1,8 @@
 import { Button, Card } from "react-bootstrap";
 import Link from "next/link";
 import { EntityTable } from "./Table";
-import { GameSystem } from "@reroll/model/dist/documents/GameSystem";
-import { Entity } from "@reroll/model/dist/documents";
+import { GameSystem } from "../../../types/documents/GameSystem";
+import { Entity } from "../../../types/documents";
 
 interface EntityCardProps {
   gameSystem: GameSystem;

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import Breadcrumbs from "../../../../components/design/Breadcrumbs";
 import { NextPageContext } from "next";
-import { CommonEntityType } from "@reroll/model/dist/documents";
+import { CommonEntityType } from "../../../../types/documents";
 
 interface CommonEntityTypeViewProps {
   commonEntityType: CommonEntityType;

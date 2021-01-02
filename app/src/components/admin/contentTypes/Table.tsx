@@ -2,11 +2,11 @@ import { TableBuilder } from "../../../utilities/design/table";
 import Table from "../../design/tables/Table";
 import { PageState } from "../../design/Pagination";
 import { ContextMenuBuilder } from "../../../utilities/design/contextMenu";
-import { GameSystem } from "@reroll/model/dist/documents/GameSystem";
+import { GameSystem } from "../../../types/documents/GameSystem";
 import ContextMenu from "../../design/contextMenus/ContextMenu";
 import { MdBuild, MdInfo, MdPageview } from "react-icons/md";
-import { ContentType } from "@reroll/model/dist/documents/ContentType";
-import { TableComponentProps } from "../../../model/design/table";
+import { ContentType } from "../../../types/documents/ContentType";
+import { TableComponentProps } from "../../../types/design/table";
 
 export interface ContentTypeTableProps {
   contentTypes: ContentType[];

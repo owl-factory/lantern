@@ -3,8 +3,8 @@ import React from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import * as Yup from "yup";
 import { Error, Input, TextArea } from "../../design/forms/Forms";
-import { FormixFormProps } from "../../../model/design/form";
-import { CommonEntityType } from "@reroll/model/dist/documents";
+import { FormixFormProps } from "../../../types/design/form";
+import { CommonEntityType } from "../../../types/documents";
 
 
 /**

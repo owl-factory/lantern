@@ -3,7 +3,6 @@ import Breadcrumbs from "../../../components/design/Breadcrumbs";
 import Page from "../../../components/design/Page";
 import { useRouter } from "next/router";
 import CommonContentTypeForm from "../../../components/admin/commonContentTypes/Form";
-import { CreateContentTypeInput } from "@reroll/model/dist/inputs";
 
 /**
  * Renders a new game system form
@@ -16,7 +15,7 @@ export function NewCommonContentTypeForm(): JSX.Element {
       name: "",
       alias: "",
     }}
-    onSubmit={(values: CreateContentTypeInput) => {
+    onSubmit={(values: any) => {
       
     }}
   />;

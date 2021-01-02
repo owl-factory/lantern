@@ -4,8 +4,7 @@ import Page from "../../../../../components/design/Page";
 import Breadcrumbs from "../../../../../components/design/Breadcrumbs";
 import { NextPageContext } from "next";
 import ContentTypeForm from "../../../../../components/admin/contentTypes/Form";
-import { CommonContentType, GameSystem } from "@reroll/model/dist/documents";
-import { CreateContentTypeInput } from "@reroll/model/dist/inputs";
+import { CommonContentType, GameSystem } from "../../../../../types/documents";
 
 interface NewContentTypeFormProps {
   commonContentTypes: CommonContentType[];
@@ -28,7 +27,7 @@ export function NewContentTypeForm({ commonContentTypes, gameSystem }: NewConten
       name: "",
       alias: "",
     }}
-    onSubmit={(values: CreateContentTypeInput) => {}}
+    onSubmit={(values: any) => {}}
   />;
 }
 

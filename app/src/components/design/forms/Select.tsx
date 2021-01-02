@@ -2,8 +2,8 @@
 import React from "react";
 import { Form } from "react-bootstrap";
 import { useField } from "formik";
-import { FieldProps } from "../../../model/design/form";
-import { GenericDocumentType } from "@reroll/model/dist/documents";
+import { FieldProps } from "../../../types/design/form";
+import { GenericDocumentType } from "../../../types/documents";
 
 interface SelectProps extends FieldProps {
   // Select Properties

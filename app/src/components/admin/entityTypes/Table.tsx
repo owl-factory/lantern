@@ -1,7 +1,7 @@
 import { TableBuilder } from "../../../utilities/design/table";
 import Table from "../../design/tables/Table";
 import { PageState } from "../../design/Pagination";
-import { EntityType } from "@reroll/model/dist/documents";
+import { EntityType } from "../../../types/documents";
 
 export interface EntityTableProps {
   entityTypes: EntityType[]; // entity model TODO

@@ -1,8 +1,8 @@
 import { Button, Card } from "react-bootstrap";
 import Link from "next/link";
 import ModuleTable from "./Table";
-import { GameSystem } from "@reroll/model/dist/documents/GameSystem";
-import { Module } from "@reroll/model/dist/documents/Module";
+import { GameSystem } from "../../../types/documents/GameSystem";
+import { Module } from "../../../types/documents/Module";
 
 interface ModuleCardProps {
   gameSystem: GameSystem;

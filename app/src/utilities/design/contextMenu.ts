@@ -3,7 +3,7 @@ import {
   ContextMenuActionType,
   ContextMenuBuilderOutput,
   ContextMenuGenericItem,
-} from "../../model/design/contextMenu";
+} from "../../types/design/contextMenu";
 import { IconType } from "react-icons/lib";
 
 /**

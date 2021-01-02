@@ -3,7 +3,6 @@ import Breadcrumbs from "../../../components/design/Breadcrumbs";
 import GameSystemForm from "../../../components/admin/gameSystems/Form";
 import Page from "../../../components/design/Page";
 import { useRouter } from "next/router";
-import { CreateGameSystemInput } from "@reroll/model/dist/inputs";
 
 
 /**
@@ -14,7 +13,7 @@ export function NewGameSystemForm(): JSX.Element {
   const router = useRouter();
   const [ errors, setErrors ] = React.useState({});
 
-  function onSubmit(values: CreateGameSystemInput) {}
+  function onSubmit(values: any) {}
 
   return <GameSystemForm
     errors={errors}
@@ -23,7 +22,7 @@ export function NewGameSystemForm(): JSX.Element {
       alias: "",
 
     }}
-    onSubmit={(values: CreateGameSystemInput) => {onSubmit(values);}}
+    onSubmit={(values: any) => {onSubmit(values);}}
   />;
 }
 

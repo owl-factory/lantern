@@ -3,9 +3,8 @@ import Breadcrumbs from "../../../../components/design/Breadcrumbs";
 import GameSystemForm from "../../../../components/admin/gameSystems/Form";
 import Page from "../../../../components/design/Page";
 import { NextPageContext } from "next";
-import { GameSystem } from "@reroll/model/dist/documents/GameSystem";
+import { GameSystem } from "../../../../types/documents/GameSystem";
 import { useRouter } from "next/router";
-import { UpdateGameSystemInput } from "@reroll/model/dist/inputs";
 
 interface EditGameSystemProps {
   gameSystem: GameSystem;
@@ -23,7 +22,7 @@ function EditGameSystem({gameSystem}: EditGameSystemProps): JSX.Element {
    * Runs the operation to update
    * @param values The updated game system values to update
    */
-  function updateGameSystem(values: UpdateGameSystemInput) {}
+  function updateGameSystem(values: any) {}
 
   // TODO - handle if gamesystem is empty
   const name = gameSystem.name || "";
@@ -37,7 +36,7 @@ function EditGameSystem({gameSystem}: EditGameSystemProps): JSX.Element {
       <GameSystemForm
         initialValues={gameSystem}
         onSubmit={
-          (values: UpdateGameSystemInput) => updateGameSystem(values)}
+          (values: any) => updateGameSystem(values)}
       />
     </Page>
   );

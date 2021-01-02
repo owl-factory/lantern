@@ -9,7 +9,7 @@ import Link from "next/link";
 import { MdBuild, MdInfo } from "react-icons/md";
 import ContextMenu from "../../../components/design/contextMenus/ContextMenu";
 import { ContextMenuBuilder } from "../../../utilities/design/contextMenu";
-import { CommonEntityType, EntityType } from "@reroll/model/dist/documents";
+import { CommonEntityType, EntityType } from "../../../types/documents";
 
 interface CommonEntityTypeIndexProps {
   initialEntityTypes: CommonEntityType[];

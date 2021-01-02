@@ -1,4 +1,4 @@
-import { ContextMenuBuilderOutput, ContextMenuContext } from "../../../model/design/contextMenu";
+import { ContextMenuBuilderOutput, ContextMenuContext } from "../../../types/design/contextMenu";
 import { ContextDropdownMenu } from "./ContextDropdown";
 import { ButtonGroup, Dropdown } from "react-bootstrap";
 import Tooltip from "../Tooltip";

@@ -1,7 +1,7 @@
 import { useField } from "formik";
 import React from "react";
 import { Form } from "react-bootstrap";
-import { CoreFormCheckProps } from "../../../model/design/form";
+import { CoreFormCheckProps } from "../../../types/design/form";
 
 /**
  * Renders the a single switch

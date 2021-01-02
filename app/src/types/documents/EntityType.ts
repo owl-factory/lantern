@@ -7,9 +7,9 @@ import { CommonEntityType } from "./CommonEntityType";
  */
 export class EntityType extends CommonEntityType {
   @prop({ required: true })
-  gameSystemID: string;
+  gameSystemID?: string;
 
   @prop()
-  commonEntityTypeID: string;
+  commonEntityTypeID?: string;
 }
 export const EntityTypeModel = getModelForClass(EntityType);

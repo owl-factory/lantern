@@ -1,4 +1,4 @@
-import { Column, TableComponent, TableComponentModification } from "../../model/design/table";
+import { Column, TableComponent, TableComponentModification } from "../../types/design/table";
 
 interface TableBuilderOutput {
   columns: Column[];

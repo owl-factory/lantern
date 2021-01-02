@@ -4,8 +4,7 @@ import { NextPageContext } from "next";
 import ContentTypeForm from "../../../../../../components/admin/contentTypes/Form";
 import Page from "../../../../../../components/design/Page";
 import Breadcrumbs from "../../../../../../components/design/Breadcrumbs";
-import { CommonContentType, ContentType, GameSystem } from "@reroll/model/dist/documents";
-import { UpdateContentTypeInput } from "@reroll/model/dist/inputs";
+import { CommonContentType, ContentType, GameSystem } from "../../../../../../types/documents";
 
 interface EditContentTypeFormProps {
   commonContentTypes: CommonContentType[];
@@ -27,7 +26,7 @@ export function EditContentTypeForm({ commonContentTypes, contentType }: EditCon
   return <ContentTypeForm
     commonContentTypes={commonContentTypes}
     initialValues={contentType}
-    onSubmit={(values: UpdateContentTypeInput) => {}}
+    onSubmit={(values: any) => {}}
   />;
 }
 

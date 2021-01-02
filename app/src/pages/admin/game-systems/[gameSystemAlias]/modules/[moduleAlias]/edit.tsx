@@ -4,8 +4,7 @@ import ModuleForm from "../../../../../../components/admin/modules/Form";
 import Page from "../../../../../../components/design/Page";
 import Breadcrumbs from "../../../../../../components/design/Breadcrumbs";
 import { NextPageContext } from "next";
-import { GameSystem, Module } from "@reroll/model/dist/documents";
-import { UpdateModuleInput } from "@reroll/model/dist/inputs";
+import { GameSystem, Module } from "../../../../../../types/documents";
 
 interface EditModuleFormProps {
   gameSystem: GameSystem;
@@ -28,7 +27,7 @@ export function EditModuleForm(props: EditModuleFormProps): JSX.Element {
       name: props.module.name,
       alias: props.module.alias,
     }}
-    onSubmit={(values: UpdateModuleInput) => {}}
+    onSubmit={(values: any) => {}}
   />;
 }
 

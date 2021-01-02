@@ -11,7 +11,7 @@ import { ModuleCard } from "../../../../components/admin/modules/Card";
 import { ContentCard } from "../../../../components/admin/content/Card";
 import { EntityCard } from "../../../../components/admin/entities/Card";
 import { ContentTypeCard } from "../../../../components/admin/contentTypes/Card";
-import { ContentType, EntityType, GameSystem, Module } from "@reroll/model/dist/documents";
+import { ContentType, EntityType, GameSystem, Module } from "../../../../types/documents";
 
 interface GameSystemViewProps {
   gameSystem: GameSystem;

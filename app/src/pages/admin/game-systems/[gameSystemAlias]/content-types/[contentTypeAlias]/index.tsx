@@ -5,7 +5,7 @@ import { NextPageContext } from "next";
 import { Button, Card, Col, Row } from "react-bootstrap";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { ContentType, GameSystem } from "@reroll/model/dist/documents";
+import { ContentType, GameSystem } from "../../../../../../types/documents";
 
 interface ContentTypeViewProps {
   contentType: ContentType;

@@ -7,10 +7,10 @@ import { ContentFieldTypeEnum } from "../enums/contentFieldType";
  */
 export class ContentTypeOption {
   @prop({ required: true })
-  key: string;
+  key?: string;
 
   @prop({ required: true })
-  value: string;
+  value?: string;
 }
 
 /**
@@ -19,13 +19,13 @@ export class ContentTypeOption {
  */
 export class ContentTypeField {
   @prop({ required: true })
-  name: string;
+  name?: string;
 
   @prop({ required: true })
-  type: ContentFieldTypeEnum;
+  type?: ContentFieldTypeEnum;
 
   @prop()
-  default: string;
+  default?: string;
   // Any options used for dropdowns.
 
   @prop()
@@ -50,7 +50,7 @@ export class ContentTypeWarnings {
  */
 export class ContentType extends CommonContentType {
   @prop({ required: true })
-  gameSystemID: string;
+  gameSystemID?: string;
 
   @prop()
   commonContentTypeID?: string;

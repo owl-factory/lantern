@@ -3,7 +3,6 @@ import Breadcrumbs from "../../../components/design/Breadcrumbs";
 import Page from "../../../components/design/Page";
 import { useRouter } from "next/router";
 import CommonEntityTypeForm from "../../../components/admin/commonEntityTypes/Form";
-import { CreateCommonEntityTypeInput } from "@reroll/model/dist/inputs";
 
 /**
  * Renders a new game system form
@@ -16,7 +15,7 @@ export function NewCommonEntityTypeForm(): JSX.Element {
       name: "",
       alias: "",
     }}
-    onSubmit={(values: CreateCommonEntityTypeInput) => {}}
+    onSubmit={(values: any) => {}}
   />;
 }
 

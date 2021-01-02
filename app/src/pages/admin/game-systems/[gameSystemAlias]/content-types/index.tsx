@@ -4,7 +4,7 @@ import { ContentTypeTable } from "../../../../../components/admin/contentTypes/T
 import Page from "../../../../../components/design/Page";
 import Breadcrumbs from "../../../../../components/design/Breadcrumbs";
 import Pagination, { PageState } from "../../../../../components/design/Pagination";
-import { ContentType, GameSystem } from "@reroll/model/dist/documents";
+import { ContentType, GameSystem } from "../../../../../types/documents";
 
 const initialPerPage = 25;
 

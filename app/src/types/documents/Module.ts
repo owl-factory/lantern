@@ -7,7 +7,7 @@ import { CoreDocument } from "./CoreDocument";
  */
 export class Module extends CoreDocument {
   @prop({ required: true })
-  gameSystemID: string;
+  gameSystemID?: string;
 }
 
 export const ModuleModel = getModelForClass(Module);

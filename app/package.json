@@ -11,7 +11,7 @@
     "test": "jest --coverage"
   },
   "dependencies": {
-    "@reroll/model": "0.2.0",
+    "@typegoose/typegoose": "^7.4.6",
     "bootstrap": "^4.4.1",
     "cross-fetch": "^3.0.6",
     "formik": "^2.1.4",

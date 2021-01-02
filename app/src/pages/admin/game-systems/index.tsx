@@ -3,14 +3,14 @@ import { Button } from "react-bootstrap";
 import Breadcrumbs from "../../../components/design/Breadcrumbs";
 import Table from "../../../components/design/tables/Table";
 import Page from "../../../components/design/Page";
-import { GameSystem } from "@reroll/model/dist/documents/GameSystem";
+import { GameSystem } from "../../../types/documents/GameSystem";
 import { TableBuilder } from "../../../utilities/design/table";
 import Link from "next/link";
 import { ContextMenuBuilder } from "../../../utilities/design/contextMenu";
 import { MdBlock, MdBuild, MdInfo, MdPageview } from "react-icons/md";
 import Pagination, { PageState } from "../../../components/design/Pagination";
 import ContextMenu from "../../../components/design/contextMenus/ContextMenu";
-import { TableComponentProps } from "../../../model/design/table";
+import { TableComponentProps } from "../../../types/design/table";
 
 /**
  * @param gameSystems A collection of game system objects
@@ -100,4 +100,3 @@ GameSystems.getInitialProps = async () => {
 };
 
 export default GameSystems;
-

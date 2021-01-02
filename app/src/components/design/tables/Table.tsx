@@ -1,6 +1,6 @@
 import React from "react";
 import { Table as BSTable } from "react-bootstrap";
-import { Column, TableDataType } from "../../../model/design/table";
+import { Column, TableDataType } from "../../../types/design/table";
 
 type RowAction = (index: number, data: TableDataType, globalData?: TableDataType) => void;
 

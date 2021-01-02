@@ -3,7 +3,7 @@ import Breadcrumbs from "../../../../../../components/design/Breadcrumbs";
 import { NextPageContext } from "next";
 import { Button, Card, Col, Row } from "react-bootstrap";
 import Link from "next/link";
-import { GameSystem, Module } from "@reroll/model/dist/documents";
+import { GameSystem, Module } from "../../../../../../types/documents";
 
 interface ModuleViewProps {
   gameSystem: GameSystem;

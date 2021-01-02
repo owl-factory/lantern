@@ -4,8 +4,7 @@ import { NextPageContext } from "next";
 import Page from "../../../../components/design/Page";
 import Breadcrumbs from "../../../../components/design/Breadcrumbs";
 import CommonContentTypeForm from "../../../../components/admin/commonContentTypes/Form";
-import { CommonContentType } from "@reroll/model/dist/documents";
-import { UpdateCommonContentTypeInput } from "@reroll/model/dist/inputs";
+import { CommonContentType } from "../../../../types/documents";
 
 interface EditCommonContentTypeFormProps {
   commonContentType: CommonContentType;
@@ -26,7 +25,7 @@ export function EditCommonContentTypeForm(props: EditCommonContentTypeFormProps)
       name: props.commonContentType.name,
       alias: props.commonContentType.alias,
     }}
-    onSubmit={(values: UpdateCommonContentTypeInput) => {
+    onSubmit={(values: any) => {
       const { alias } = router.query;
     }}
   />;

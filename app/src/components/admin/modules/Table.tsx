@@ -4,9 +4,9 @@ import Table from "../../design/tables/Table";
 import { ContextMenuBuilder } from "../../../utilities/design/contextMenu";
 import { MdBuild, MdInfo, MdPageview } from "react-icons/md";
 import ContextMenu from "../../design/contextMenus/ContextMenu";
-import { GameSystem, Module } from "@reroll/model/dist/documents";
+import { GameSystem, Module } from "../../../types/documents";
 import { PageState } from "../../design/Pagination";
-import { TableComponentProps } from "../../../model/design/table";
+import { TableComponentProps } from "../../../types/design/table";
 
 interface ModuleTableProps {
   gameSystem: GameSystem;

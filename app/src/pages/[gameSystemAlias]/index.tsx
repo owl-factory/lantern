@@ -1,6 +1,6 @@
 import Page from "../../components/design/Page";
 import { NextPageContext } from "next";
-import { GameSystem } from "@reroll/model/dist/documents/GameSystem";
+import { GameSystem } from "../../types/documents/GameSystem";
 
 interface GameSystemSearchProps {
   gameSystem: GameSystem;

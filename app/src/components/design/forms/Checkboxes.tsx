@@ -1,6 +1,6 @@
 import React from "react";
 import { FormCheck } from "./FormCheck";
-import { CoreFormCheckProps } from "../../../model/design/form";
+import { CoreFormCheckProps } from "../../../types/design/form";
 
 /**
  * Renders the base checkbox for higher customization

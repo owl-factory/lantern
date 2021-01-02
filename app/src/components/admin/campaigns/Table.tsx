@@ -1,7 +1,7 @@
 import { TableBuilder } from "../../../utilities/design/table";
 import Table from "../../design/tables/Table";
 import { PageState } from "../../design/Pagination";
-import { Campaign } from "@reroll/model/dist/documents";
+import { Campaign } from "../../../types/documents";
 
 export interface CampaignTableProps {
   campaigns: Campaign[]; // Campaign model TODO

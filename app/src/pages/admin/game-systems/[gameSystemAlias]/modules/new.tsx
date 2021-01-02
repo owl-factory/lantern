@@ -4,8 +4,7 @@ import Breadcrumbs from "../../../../../components/design/Breadcrumbs";
 import { NextPageContext } from "next";
 import { useRouter } from "next/router";
 import ModuleForm from "../../../../../components/admin/modules/Form";
-import { GameSystem } from "@reroll/model/dist/documents";
-import { CreateModuleInput } from "@reroll/model/dist/inputs";
+import { GameSystem } from "../../../../../types/documents";
 
 /**
  * Renders a new game system form
@@ -18,7 +17,7 @@ export function NewModuleForm(props: {gameSystem: GameSystem}): JSX.Element {
       name: "",
       alias: "",
     }}
-    onSubmit={(values: CreateModuleInput) => {}}
+    onSubmit={(values: any) => {}}
   />;
 }
 
