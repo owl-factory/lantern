@@ -1,17 +1,60 @@
 {
-  "name": "root",
+  "name": "reroll",
+  "version": "0.3.0",
   "private": true,
   "scripts": {
-    "bootstrap": "lerna bootstrap",
-    "build": "lerna run build",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "test": "lerna run test"
+    "dev": "next dev",
+    "build": "next build",
+    "postbuild": "next-on-netlify",
+    "start": "next start",
+    "test": "jest --coverage"
+  },
+  "dependencies": {
+    "@typegoose/typegoose": "^7.4.6",
+    "bootstrap": "^4.4.1",
+    "cross-fetch": "^3.0.6",
+    "formik": "^2.1.4",
+    "mongoose": "^5.10.5",
+    "next": "9.3.2",
+    "next-auth": "^3.1.0",
+    "next-on-netlify": "^2.6.3",
+    "react": "16.12.0",
+    "react-bootstrap": "^1.0.1",
+    "react-dom": "16.12.0",
+    "react-icons": "^3.10.0",
+    "saslprep": "^1.0.3",
+    "yup": "^0.29.1"
   },
   "devDependencies": {
-    "lerna": "^3.22.1"
-  },
-  "workspaces": [
-    "app",
-    "model"
-  ]
+    "@babel/plugin-proposal-decorators": "^7.10.5",
+    "@babel/preset-typescript": "^7.12.7",
+    "@types/enzyme": "^3.10.3",
+    "@types/enzyme-adapter-react-16": "^1.0.5",
+    "@types/jest": "^24.0.23",
+    "@types/lodash": "^4.14.150",
+    "@types/mongoose": "^5.7.36",
+    "@types/next-auth": "^3.1.8",
+    "@types/node": "^12.12.7",
+    "@types/node-fetch": "^2.5.5",
+    "@types/react": "^16.9.11",
+    "@types/react-test-renderer": "^17.0.0",
+    "@types/yup": "^0.29.3",
+    "@typescript-eslint/eslint-plugin": "^4.7.0",
+    "@typescript-eslint/parser": "^4.7.0",
+    "babel-core": "^6.26.3",
+    "babel-jest": "^24.9.0",
+    "babel-plugin-transform-typescript-metadata": "^0.3.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "enzyme": "^3.10.0",
+    "enzyme-adapter-react-16": "^1.15.5",
+    "eslint": "^7.13.0",
+    "express": "^4.17.1",
+    "http-proxy-middleware": "^1.0.5",
+    "jest": "^24.9.0",
+    "react-test-renderer": "^17.0.1",
+    "sass": "^1.26.5",
+    "ts-jest": "^24.2.0",
+    "typescript": "^4.0.5"
+  }
 }

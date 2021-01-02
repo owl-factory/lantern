@@ -1,10 +1,4 @@
 [build]
   command   = "yarn build"
-  functions = "app/out_functions"
-  publish   = "app/out_publish"
-
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
-  
+  functions = "out_functions"
+  publish   = "out_publish"

@@ -1,19 +1,17 @@
 # dependencies
-/node_modules
-*/node_modules
+node_modules
 
 # Build files
-*/dist
-*/.next
-*/out_functions
-*/out_publish
-*/schema.gql
+dist
+.next
+out_functions
+out_publish
 
 # testing
-app/coverage
+coverage
 
 # next.js
-/app/.next/
+.next
 
 # misc
 .DS_Store
