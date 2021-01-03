@@ -4,29 +4,6 @@ import AuthenticationCard from "../components/authetication/AuthenticationCard";
 import Page from "../components/design/Page";
 import { Button, Col, Row } from "react-bootstrap";
 import { signOut, useSession } from "next-auth/client";
-import DynamicLayout from "../components/layouts/Layouts";
-import { Entity } from "../types/documents";
-
-const dynamicLayout: any = {
-  name: "Test Layout",
-  pages: [
-    { name: "Character", sections: [
-      { w: { xs: 12 }, h: 10, subsections: ["name"] },
-      { w: { md: 1, xs: 12 }, h: 45, subsections: [] },
-      { w: { md: 3, xs: 12 }, h: 45, subsections: ["inspiration", "proficiency"] },
-      { w: { md: 4, xs: 12 }, h: 45, subsections: [] },
-      { w: { md: 4, xs: 12 }, h: 45, subsections: [] },
-    ] },
-    { name: "Spells", sections: [
-
-    ]}
-  ],
-  isStatic: false,
-}
-
-const character: Entity = {
-  name: "Waals O'Caera"
-}
 
 /**
  * Renders the index page and one of two subviews
@@ -45,12 +22,6 @@ function Index(): JSX.Element {
       <h4>
         News
       </h4>
-
-      <DynamicLayout
-        dynamicLayout={dynamicLayout}
-        entity={character}
-        onSubmit={(values: any) => {console.log(values)}}
-      />
     </Page>
   );
 }
