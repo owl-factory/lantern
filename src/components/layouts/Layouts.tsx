@@ -45,7 +45,7 @@ export interface Molecule {
 }
 
 export interface Collapse {
-  position: "top" | "bottom",
+  position?: "top" | "bottom",
   staticValues?: Record<string, string>
 }
 

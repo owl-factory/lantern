@@ -5,7 +5,7 @@ import Page from "../components/design/Page";
 import { Button, Col, Row } from "react-bootstrap";
 import { signOut, useSession } from "next-auth/client";
 import DynamicLayout from "../components/layouts/Layouts";
-import { Entity } from "@reroll/model/dist/documents";
+import { Entity } from "../types/documents";
 
 const dynamicLayout: any = {
   name: "Test Layout",
