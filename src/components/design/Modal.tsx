@@ -16,4 +16,4 @@ export default function Modal(props: ModalProps) {
       {props.children}
     </BSModal>
   );
-};
+}

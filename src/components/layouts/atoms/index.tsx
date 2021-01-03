@@ -28,15 +28,15 @@ export function DynamicAtom(props: AtomProps): JSX.Element {
       case AtomType.TernaryInput:
         return <TernaryInput {...props}/>;
       case AtomType.Text:
-        return <Text {...props}/>
+        return <Text {...props}/>;
       case AtomType.TextInput:
         return <TextInput {...props}/>;
       default:
         return <AtomError w={props.atom.w} errors="An invalid AtomType was given."/>;
-      
+
     }
   } catch (error) {
     // Last ditch error catch to prevent the whole page from crashing
-    return <AtomError w={props.atom.w} errors={error.message}/>
+    return <AtomError w={props.atom.w} errors={error.message}/>;
   }
 }

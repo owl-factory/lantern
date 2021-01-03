@@ -4,7 +4,7 @@ import { findValue } from "../../../utilities/layouts/atoms";
 
 /**
  * Simply renders a spot of text pulled from a static or dynamic source
- * 
+ *
  * @param props.atom The definition of the atom to render
  * @param props.data The dynamic data that may be referenced by the atom
  */

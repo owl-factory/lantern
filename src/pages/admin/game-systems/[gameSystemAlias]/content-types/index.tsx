@@ -19,11 +19,11 @@ async function fetchContentTypes(
   perPage: number,
   gameSystemID: string
 ) {
-  
+
 
   return {
     contentTypes: [],
-    contentTypeCount: 0
+    contentTypeCount: 0,
   };
 
 }

@@ -40,7 +40,7 @@ export type GenericDocumentType = (
   EntityLayout |
   EntityType |
   GameSystem |
-  Module 
+  Module
 );
 
 /**
@@ -56,5 +56,5 @@ export type GenericModelType = (
   typeof EntityLayoutModel |
   typeof EntityTypeModel |
   typeof GameSystemModel |
-  typeof ModuleModel 
+  typeof ModuleModel
 );

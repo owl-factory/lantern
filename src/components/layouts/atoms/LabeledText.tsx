@@ -18,5 +18,5 @@ export function LabeledText(props: AtomProps) {
       <span>{label}</span>&nbsp;
       <span>{text}</span>
     </div>
-  )
+  );
 }

@@ -1,22 +1,27 @@
 
 import React from "react";
 import { Formik, Form as FormikForm } from "formik";
-import { Card, Col, Container, Row, Tab, Nav, Form, Button } from "react-bootstrap";
+import { Button, Card, Col, Container, Form, Nav, Row, Tab } from "react-bootstrap";
 import { Entity } from "../../types/documents";
 import { DynamicMolecule } from "./molecules";
 import { Section } from "../../types/layouts/section";
 import { Atom, Molecule, Page } from "../../types/layouts";
 
+// Props for the base dynamic layout
 interface DynamicLayoutProps {
   entity: Entity;
   onSubmit?: (values: Record<string, unknown>) => void;
 }
 
+/**
+ * Renders the dynamic subsection.
+ * TODO - continue to flesh out
+ */
 function DynamicSubsection(props: any) {
   const contents: JSX.Element[] = [];
 
   if (props.subsection === undefined) { return <></>; }
-  
+
   props.subsection.molecules.forEach((molecule: Molecule | Atom) => {
     contents.push(<DynamicMolecule molecule={molecule} data={props.data}/>);
   });
@@ -35,12 +40,16 @@ function DynamicSubsection(props: any) {
   );
 }
 
+/**
+ * Renders the Dynamic Section.
+ * TODO - remove or clean up in future work?
+ */
 export function DynamicSection(props: any) {
   const subsections: JSX.Element[] = [];
   props.section.subsections.forEach((subsectionKey: string) => {
     const subsection = props.subsections[subsectionKey] || "";
-    if (subsection.name === undefined) { subsection.name = subsectionKey };
-    subsections.push(<DynamicSubsection subsection={subsection}/>)
+    if (subsection.name === undefined) { subsection.name = subsectionKey; }
+    subsections.push(<DynamicSubsection subsection={subsection}/>);
   });
 
   return (
@@ -64,7 +73,7 @@ function DynamicPage(props: any) {
   const sections: JSX.Element[] = [];
 
   props.page.sections.forEach((section: Section) => {
-    sections.push(<DynamicSection section={section}/>)
+    sections.push(<DynamicSection section={section}/>);
   });
 
   return (
@@ -79,13 +88,13 @@ function DynamicPage(props: any) {
 }
 
 /**
- * 
- * @param props 
+ * Wraps the dynamic form with a wrapper
+ * TODO - remove?
  */
 export function DynamicFormWrapper(props: any) {
-  if (props.onSubmit == undefined) { 
-    throw Error("This dynamic layout requires an onSubmit action.")
-  };
+  if (props.onSubmit == undefined) {
+    throw Error("This dynamic layout requires an onSubmit action.");
+  }
 
   return (
     <Formik
@@ -114,12 +123,12 @@ export function DynamicPages(props: any) {
     );
   });
 
-  
+
   return <Tab.Content>{dynamicPages}</Tab.Content>;
 }
 
 /**
- * Renders the tabs for the dynamic layout and it's pages. Renders nothing if there 
+ * Renders the tabs for the dynamic layout and it's pages. Renders nothing if there
  * is only one page
  * @param props.dynamicLayout The core information about the dynamic layout
  */
@@ -143,7 +152,7 @@ function DynamicTabs(props: any) {
 }
 
 /**
- * Renders the dynamic pages for a given layout populated with the specific game's information and 
+ * Renders the dynamic pages for a given layout populated with the specific game's information and
  * relevant entity variables
  */
 export default function DynamicLayout(props: DynamicLayoutProps) {

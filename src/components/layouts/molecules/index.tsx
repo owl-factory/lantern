@@ -6,19 +6,18 @@ import { renderDisplayClasses } from "../../../utilities/layouts/atoms";
 import { DynamicAtom } from "../atoms";
 import { AccordionMolecule } from "./Accordion";
 
-
-
 interface MoleculeProps {
+  // The molecule or atom to render
   molecule: Molecule | Atom;
+
+  // The dynamic data to reference by the molecule or atom
   data: Record<string, unknown>;
-  staticValues?: Record<string, string>;
-  dynamicValues?: Record<string, string>;
 }
 
 /**
- * Renders a single molecule and all of it's atoms or a single atom, depending on 
- * which one is given. 
- * @param props.molecule A single molecule or a single atom. 
+ * Renders a single molecule and all of it's atoms or a single atom, depending on
+ * which one is given.
+ * @param props.molecule A single molecule or a single atom.
  */
 export function DynamicMolecule(props: MoleculeProps) {
   // Renders a single atom, since atoms will never have subatoms within them
@@ -28,17 +27,17 @@ export function DynamicMolecule(props: MoleculeProps) {
   const atoms: Atom[] = [];
   const displayClasses = renderDisplayClasses(props.molecule.display);
   const molecule = props.molecule as Molecule; // Casting here for reusability
-  
+
   molecule.atoms.forEach((atom: Atom) => {
-    atoms.push(<DynamicAtom atom={atom} data={props.data} />)
+    atoms.push(<DynamicAtom atom={atom} data={props.data} />);
   });
 
   switch(molecule.type) {
     case MoleculeType.Accordion:
-      return <AccordionMolecule molecule={molecule}>{atoms}</AccordionMolecule>;  
+      return <AccordionMolecule molecule={molecule}>{atoms}</AccordionMolecule>;
     case MoleculeType.Div:
       return <div className={displayClasses}>{atoms}</div>;
-    default: 
+    default:
       return <>{atoms}</>;
   }
 }

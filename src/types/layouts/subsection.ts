@@ -1,6 +1,6 @@
 import { Atom, Molecule, Width } from ".";
 
-// Describes how to render a single subsection and all of the molecules 
+// Describes how to render a single subsection and all of the molecules
 // and atoms therein
 export interface Subsection {
   // The name of the subsection, if any
@@ -12,7 +12,7 @@ export interface Subsection {
   // section is automatic width
   w?: Width;
 
-  // The preview height of the subsection. 
+  // The preview height of the subsection.
   h: number;
 
   // The molecules or atoms to render

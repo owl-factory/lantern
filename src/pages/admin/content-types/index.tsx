@@ -44,7 +44,7 @@ const tableBuilder = new TableBuilder()
 .addComponentColumn("Tools", ContentTypeActions);
 
 async function queryContentTypes(page: number, perPage: number) {
-  
+
   return [ [],  0 ];
 }
 

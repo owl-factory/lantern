@@ -24,15 +24,15 @@ const searchLayout: SearchType = {
         "class_select",
         "basic_spell",
         "advanced_filters",
-        "reset_filters"
-      ]
-    }
+        "reset_filters",
+      ],
+    },
   ],
   table: [
     {
       w: { xs: 2, sm: 1 },
-      staticValues: {}
-    }
+      staticValues: {},
+    },
   ],
   subsections: {
     class_select: { h: 5, w: { xs: 12 }, molecules: [] },
@@ -41,8 +41,8 @@ const searchLayout: SearchType = {
       staticValues: {
         label: "Spell Name",
         placeholder: "Search Spell Names",
-        inputName: "name"
-      }
+        inputName: "name",
+      },
     },
     {
       type: AtomType.MultiselectInput,
@@ -50,8 +50,8 @@ const searchLayout: SearchType = {
       staticValues: {
         label: "Spell Level",
         placeholder: "Select Spell Levels",
-        inputName: "data.levels"
-      }
+        inputName: "data.levels",
+      },
     },
     {
       type: AtomType.MultiselectInput,
@@ -59,8 +59,8 @@ const searchLayout: SearchType = {
       staticValues: {
         label: "Spell Tags",
         placeholder: "Healing, Utility, etc.",
-        inputName: "data.tags"
-      }
+        inputName: "data.tags",
+      },
     },
     {
       type: AtomType.MultiselectInput,
@@ -68,8 +68,8 @@ const searchLayout: SearchType = {
       staticValues: {
         label: "Casting Time",
         placeholder: "Select Casting Times",
-        inputName: "data.casting_time"
-      }
+        inputName: "data.casting_time",
+      },
     },
     {
       type: MoleculeType.Div,
@@ -78,18 +78,18 @@ const searchLayout: SearchType = {
         {
           type: AtomType.Submit,
           staticValues: {
-            label: "Filter Spells"
-          }
+            label: "Filter Spells",
+          },
         },
         {
           type: AtomType.Action,
           staticValues: {
-            label: "Reset Filters"
-          }
+            label: "Reset Filters",
+          },
         },
-      ]
-    }
-    
+      ],
+    },
+
     ] },
     advanced_filters: { h: 2, w: { xs: 12 }, molecules: [
       {
@@ -102,8 +102,8 @@ const searchLayout: SearchType = {
             staticValues: {
               label: "Spell Level",
               placeholder: "Select Spell Levels",
-              inputName: "data.levels"
-            }
+              inputName: "data.levels",
+            },
           },
           {
             type: AtomType.MultiselectInput,
@@ -112,8 +112,8 @@ const searchLayout: SearchType = {
             staticValues: {
               label: "Spell Tags",
               placeholder: "Healing, Utility, etc.",
-              inputName: "data.tags"
-            }
+              inputName: "data.tags",
+            },
           },
           {
             type: AtomType.MultiselectInput,
@@ -122,8 +122,8 @@ const searchLayout: SearchType = {
             staticValues: {
               label: "Casting Time",
               placeholder: "Select Casting Times",
-              inputName: "data.casting_time"
-            }
+              inputName: "data.casting_time",
+            },
           },
           {
             type: AtomType.MultiselectInput,
@@ -131,8 +131,8 @@ const searchLayout: SearchType = {
             staticValues: {
               label: "Spell School",
               placeholder: "Select Schools of Magic",
-              inputName: "data.magic_school"
-            }
+              inputName: "data.magic_school",
+            },
           },
           {
             type: AtomType.MultiselectInput,
@@ -140,8 +140,8 @@ const searchLayout: SearchType = {
             staticValues: {
               label: "Save Required",
               placeholder: "Select Abilities",
-              inputName: "data.save_required"
-            }
+              inputName: "data.save_required",
+            },
           },
           {
             type: AtomType.MultiselectInput,
@@ -149,8 +149,8 @@ const searchLayout: SearchType = {
             staticValues: {
               label: "Attack Type",
               placeholder: "Melee, Ranged...",
-              inputName: "data.attack_type"
-            }
+              inputName: "data.attack_type",
+            },
           },
           {
             type: AtomType.MultiselectInput,
@@ -158,8 +158,8 @@ const searchLayout: SearchType = {
             staticValues: {
               label: "Damage Type",
               placeholder: "Acid, Bludgeoning, etc.",
-              inputName: "data.damage_type"
-            }
+              inputName: "data.damage_type",
+            },
           },
           {
             type: AtomType.MultiselectInput,
@@ -167,8 +167,8 @@ const searchLayout: SearchType = {
             staticValues: {
               label: "Conditions",
               placeholder: "Select Conditions",
-              inputName: "data.conditions"
-            }
+              inputName: "data.conditions",
+            },
           },
           {
             type: AtomType.TernaryInput,
@@ -176,8 +176,8 @@ const searchLayout: SearchType = {
             staticValues: {
               label: "Conditions",
               placeholder: "Select Conditions",
-              inputName: "data.conditions"
-            }
+              inputName: "data.conditions",
+            },
           },
           {
             type: AtomType.MultiselectInput,
@@ -185,18 +185,18 @@ const searchLayout: SearchType = {
             staticValues: {
               label: "Spell School",
               placeholder: "Select Schools of Magic",
-              inputName: "data.magic_school"
-            }
+              inputName: "data.magic_school",
+            },
           },
-          // Multi checkbox? Ternary? 
+          // Multi checkbox? Ternary?
           {
             type: AtomType.SelectInput,
             w: { xs: 12, md: 3 },
             staticValues: {
               label: "Concentration",
               placeholder: "--",
-              inputName: "data.concentration"
-            }
+              inputName: "data.concentration",
+            },
           },
           {
             type: AtomType.SelectInput,
@@ -204,8 +204,8 @@ const searchLayout: SearchType = {
             staticValues: {
               label: "Ritual",
               placeholder: "--",
-              inputName: "data.ritual"
-            }
+              inputName: "data.ritual",
+            },
           },
           {
             type: AtomType.MultiselectInput,
@@ -213,8 +213,8 @@ const searchLayout: SearchType = {
             staticValues: {
               label: "Source Category",
               placeholder: "--",
-              inputName: "data.source_category"
-            }
+              inputName: "data.source_category",
+            },
           },
           {
             type: AtomType.MultiselectInput,
@@ -222,14 +222,14 @@ const searchLayout: SearchType = {
             staticValues: {
               label: "Source",
               placeholder: "--",
-              inputName: "moduleID"
-            }
+              inputName: "moduleID",
+            },
           },
         ],
         staticValues: {
-          label: "Advanced Filters"
-        }
-      }
+          label: "Advanced Filters",
+        },
+      },
     ] },
     reset_filters: { h: 1, w: { xs: 12 }, molecules: [
       {
@@ -239,26 +239,26 @@ const searchLayout: SearchType = {
           {
             type: AtomType.Submit,
             staticValues: {
-                label: "Filter Spells"
-            }
+                label: "Filter Spells",
+            },
           },
           {
             type: AtomType.Action,
             staticValues: {
-              label: "Reset Filters"
-            }
+              label: "Reset Filters",
+            },
           },
-        ]
-      }
-      
+        ],
+      },
+
     ] },
   },
   // content: {}
-}
+};
 
 const searchData: Content[] = [
-  { name: "Firebolt", data: { level: "0", casting_time: "1 Action", duration: "24 Hours", range: "30ft"} }
-]
+  { name: "Firebolt", data: { level: "0", casting_time: "1 Action", duration: "24 Hours", range: "30ft"} },
+];
 
 function onSearch(values: Record<string, string>) {
   console.log("Search");
@@ -271,8 +271,8 @@ export default function ContentTypeSearch(props: any) {
 
       {/* Search box */}
       {/* <DynamicLayout dynamicLayout=/> */}
-      <SearchLayout searchLayout={searchLayout} onSubmit={onSearch} searchData={searchData}/> 
-      
+      <SearchLayout searchLayout={searchLayout} onSubmit={onSearch} searchData={searchData}/>
+
       {/* Search results */}
 
       {/* Pagination */}
@@ -287,8 +287,8 @@ ContentTypeSearch.getInitialProps = () => {
     gameSystemID: "123123123123123123123123",
     layout: {
       header: [],
-      body: []
-    }
+      body: [],
+    },
   };
   const initialContent: Content[] = [];
   const gameSystem: GameSystem | undefined = undefined;
@@ -299,4 +299,4 @@ ContentTypeSearch.getInitialProps = () => {
     gameSystem,
     contentType,
   };
-}
+};

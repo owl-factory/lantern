@@ -5,7 +5,7 @@ import { useField } from "formik";
 import { FieldProps } from "../../../types/design/form";
 import { GenericDocumentType } from "../../../types/documents";
 
-interface SelectProps extends FieldProps {
+export interface SelectProps extends FieldProps {
   // Select Properties
   disabled?: boolean; // If this is disabled or not
   name: string; // The name of the select

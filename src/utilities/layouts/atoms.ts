@@ -2,13 +2,13 @@ import { Display } from "../../types/layouts";
 
 /**
  * Finds the value for a given key in the dynamic or static values
- * 
+ *
  * @param key The key of the value, dynamic or static, that we wish to render for
- * @param props Contains the props of either atom or molecule and the dynamic 
- *  data to look through. 
+ * @param props Contains the props of either atom or molecule and the dynamic
+ *  data to look through.
  */
 export function findValue(
-  key: string, 
+  key: string,
   props: any
 ) {
   // Ensures that we're fetching for an atom or a molecule to save an input
@@ -19,7 +19,7 @@ export function findValue(
   const dynamicValues = atom.dynamicValues;
   const staticValues = atom.staticValues;
 
-  // Simple base cases: takes care of static and 
+  // Simple base cases: takes care of static and
   if (!dynamicValues || !(key in dynamicValues)) {
     if (staticValues !== undefined && key in staticValues) {
       return staticValues[key];
@@ -27,11 +27,11 @@ export function findValue(
     return "";
   }
 
-  // Dives through the dynamic data to find the value 
+  // Dives through the dynamic data to find the value
   let curr = props.data;
   const keys = dynamicValues[key].split(".");
   keys.forEach((element: string) => {
-    if (!curr || !(element in curr)) { return "" };
+    if (!curr || !(element in curr)) { return ""; }
     curr = curr[element];
   });
 

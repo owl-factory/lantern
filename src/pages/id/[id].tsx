@@ -12,7 +12,7 @@ export default function ID(props: any) {
         rules={props.rules}
       />
     </Page>
-  )
+  );
 }
 
 ID.getInitialProps = () => {
@@ -26,13 +26,13 @@ ID.getInitialProps = () => {
         casting_time: "1 Action",
         level_readable: "cantrip",
         range: "120 feet",
-        school: "evocation"
-      }
+        school: "evocation",
+      },
     },
     contentType: {
       layout: {
         header: [
-          { type: AtomType.Text, dynamicValues: { text: "content.name" } }
+          { type: AtomType.Text, dynamicValues: { text: "content.name" } },
         ],
         body: [
           { type: MoleculeType.Div, atoms: [
@@ -45,9 +45,9 @@ ID.getInitialProps = () => {
           { type: AtomType.LabeledText, dynamicValues: { text: "content.data.duration"}, staticValues: { label: "Duration:"}},
           { type: AtomType.LabeledText, dynamicValues: { text: "content.data.classes_readable"}, staticValues: { label: "Classes:"}},
           { type: AtomType.Text, dynamicValues: { text: "content.description"}},
-        ]
-      }
+        ],
+      },
     },
-    rules: []
-  }
-}
+    rules: [],
+  };
+};

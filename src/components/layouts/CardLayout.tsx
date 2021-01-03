@@ -28,17 +28,17 @@ function CardLayoutHeader(props: CardLayoutChildProps) {
   const headerItems: JSX.Element[] = [];
   props.contentType.layout.header.forEach((molecule: Molecule | Atom) => {
     headerItems.push(
-      <DynamicMolecule 
+      <DynamicMolecule
         molecule={molecule}
         data={props.data}
       />
-    )
+    );
   });
   return (
     <Card.Header>
       {headerItems}
     </Card.Header>
-  )
+  );
 }
 
 /**
@@ -50,11 +50,11 @@ function CardLayoutBody(props: CardLayoutChildProps) {
   const bodyItems: JSX.Element[] = [];
   props.contentType.layout.body.forEach((molecule: Molecule | Atom) => {
     bodyItems.push(
-      <DynamicMolecule 
+      <DynamicMolecule
         molecule={molecule}
         data={props.data}
       />
-    )
+    );
   });
 
   return (
@@ -73,9 +73,9 @@ function CardLayoutBody(props: CardLayoutChildProps) {
  */
 export function CardLayout(props: CardLayoutProps) {
   const data = {
-    content: props.content
+    content: props.content,
   };
-  
+
   return (
     <Card>
       <CardLayoutHeader {...props} data={data}/>

@@ -11,14 +11,14 @@ import { AtomError } from "../atoms/AtomError";
  * @param props.data The dynamic data that may be referenced by the atom
  */
 export function MultiselectInput(props: AtomProps) {
-  let errors: string = "";
+  let errors = "";
 
   // Ensures that we have an input name, since formik breaks without it
-  const inputName = findValue("inputName", props); 
+  const inputName = findValue("inputName", props);
   if (!inputName) { errors += "An input name is required."; }
   if (errors) { return <AtomError w={props.atom.w} errors={errors}/>; }
 
-  // Finds these values after to prevent unneeded usage of 
+  // Finds these values after to prevent unneeded usage of
   const classes = renderDisplayClasses(props.atom.display);
   const label = findValue("label", props);
   const placeholder = findValue("placeholder", props);

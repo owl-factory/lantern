@@ -8,14 +8,14 @@ export interface Atom {
   display?: Display; // The displays at different sizes of the atom
 
   // Any miscellaneous styles that alter the atom appearance
-  style?: Record<string, string>; 
-  
+  style?: Record<string, string>;
+
   // A collection of key-value pairs that contain static text to render
-  staticValues?: Record<string, string>; 
-  
-  // A collection of key-value pairs that instructs where in the dynamic data 
+  staticValues?: Record<string, string>;
+
+  // A collection of key-value pairs that instructs where in the dynamic data
   // the atom may find the value to render
-  dynamicValues?: Record<string, string>; 
+  dynamicValues?: Record<string, string>;
 }
 
 // The type for props used by all atom components

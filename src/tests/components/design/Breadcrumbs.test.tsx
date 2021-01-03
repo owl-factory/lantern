@@ -10,35 +10,35 @@ describe('Breadcrumb rendering', () => {
     const router = {
       push,
       pathname: "/admin/game-systems/[gameSystemAlias]/modules/[moduleAlias]",
-      asPath: "/admin/game-systems/dnd-5e/modules/srd"
+      asPath: "/admin/game-systems/dnd-5e/modules/srd",
     };
     const tree = renderer.create(
       <WithTestRouter router={router}>
-        <Breadcrumbs 
-          skipLevels={1} 
+        <Breadcrumbs
+          skipLevels={1}
           titles={["Game Systems", "Dungeons & Dragons, 5e", "Modules", "SRD"]}
         />
       </WithTestRouter>
     ).toJSON();
-  
-    
-    expect(tree).toMatchSnapshot()
+
+
+    expect(tree).toMatchSnapshot();
   });
 
   it('renders correctly with no arguments', () => {
     const router = {
       push,
       pathname: "/admin/game-systems/[gameSystemAlias]/modules/[moduleAlias]",
-      asPath: "/admin/game-systems/dnd-5e/modules/srd"
+      asPath: "/admin/game-systems/dnd-5e/modules/srd",
     };
     const tree = renderer.create(
       <WithTestRouter router={router}>
         <Breadcrumbs />
       </WithTestRouter>
     ).toJSON();
-  
-    
-    expect(tree).toMatchSnapshot()
+
+
+    expect(tree).toMatchSnapshot();
   });
 });
 

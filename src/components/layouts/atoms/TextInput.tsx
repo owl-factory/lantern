@@ -12,9 +12,9 @@ import { AtomError } from "./AtomError";
  * @param props.data The dynamic data that may be referenced by the atom
  */
 export function TextInput(props: AtomProps) {
-  let errors: string = "";
-  
-  // Ensures that inputName value is present as this will break 
+  let errors = "";
+
+  // Ensures that inputName value is present as this will break
   // TODO - can we have this as a shared function?
   const inputName = findValue("inputName", props);
   if (!inputName) { errors += "An input name is required."; }
@@ -26,8 +26,8 @@ export function TextInput(props: AtomProps) {
   return (
     <Form.Group as={Col} {...(props.atom.w || {})}>
       { label ? <Form.Label>{label}</Form.Label> : null }
-      <Input 
-        name={inputName} 
+      <Input
+        name={inputName}
         placeholder={placeholder}
       />
       <Error name={inputName} />
