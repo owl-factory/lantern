@@ -1,12 +1,12 @@
 import React from "react";
-import { DynamicAtom, renderDisplayClasses } from "../atoms";
-import { Atom, Molecule } from "../Layouts";
+import { MoleculeType } from "../../../types/enums";
+import { Atom } from "../../../types/layouts";
+import { Molecule } from "../../../types/layouts/molecule";
+import { renderDisplayClasses } from "../../../utilities/layouts/atoms";
+import { DynamicAtom } from "../atoms";
 import { AccordionMolecule } from "./Accordion";
 
-export enum MoleculeType {
-  Accordion,
-  Div,
-}
+
 
 interface MoleculeProps {
   molecule: Molecule | Atom;

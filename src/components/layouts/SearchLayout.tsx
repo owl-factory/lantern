@@ -1,7 +1,12 @@
 import React from "react";
 import { Tab } from "react-bootstrap";
-import { DynamicFormWrapper, DynamicSection, Section } from "./Layouts";
+import { Section } from "../../types/layouts";
+import { DynamicFormWrapper, DynamicSection } from "./Layouts";
 
+/**
+ * Renders the search layout. 
+ * TODO - finish this at a later point. This is merely a placeholder
+ */
 export default function SearchLayout(props: any) {
   const sections: JSX.Element[] = [];
   let index = 0;

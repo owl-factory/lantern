@@ -1,7 +1,16 @@
 import React from "react";
-import { findValue } from ".";
+import { AtomProps } from "../../../types/layouts/atom";
+import { findValue } from "../../../utilities/layouts/atoms";
 
-export function Text(props: any) {
+/**
+ * Simply renders a spot of text pulled from a static or dynamic source
+ * 
+ * @param props.atom The definition of the atom to render
+ * @param props.data The dynamic data that may be referenced by the atom
+ */
+export function Text(props: AtomProps) {
   const text = findValue("text", props);
-  return (<span>{text}</span>)
+  return (
+    <span>{text}</span>
+  );
 }

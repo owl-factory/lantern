@@ -3,98 +3,13 @@ import React from "react";
 import { Formik, Form as FormikForm } from "formik";
 import { Card, Col, Container, Row, Tab, Nav, Form, Button } from "react-bootstrap";
 import { Entity } from "../../types/documents";
-import { DynamicMolecule, MoleculeType } from "./molecules";
-import { AtomType } from "./atoms";
-
-
-type WidthOptions = 12 | 8 | 6 | 4 | 3 | 2 | 1;
-
-export interface Width {
-  xs: WidthOptions;
-  sm?: WidthOptions;
-  md?: WidthOptions;
-  lg?: WidthOptions;
-  xl?: WidthOptions;
-}
-
-type DisplayValues = "none" | "inline" | "inline-block" | "block" | "table" | "table-cell" | "table-row" | "flex" | "inline-flex";
-
-export interface Display {
-  xs?: DisplayValues;
-  sm?: DisplayValues;
-  md?: DisplayValues;
-  lg?: DisplayValues;
-  xl?: DisplayValues;
-}
-
-export interface Atom {
-  type: AtomType;
-  w?: Width;
-  display?: Display;
-  style?: Record<string, string>;
-  staticValues?: Record<string, string>;
-  dynamicValues?: Record<string, string>;
-}
-
-export interface Molecule {
-  type: MoleculeType;
-  atoms: Atom[];
-  display?: Display;
-  staticValues?: Record<string, string>;
-  dynamicValues?: Record<string, string>;
-}
-
-export interface Collapse {
-  position?: "top" | "bottom",
-  staticValues?: Record<string, string>
-}
-
-export interface Subsection {
-  name?: string;
-  description?: string;
-  w?: Width;
-  h: number;
-  collapse?: Collapse;
-  molecules: (Molecule | Atom)[];
-}
-
-export interface Section {
-  name?: string;
-  description?: string;
-  w: Width;
-  h: number;
-  subsections: string[];
-}
-
-interface Page {
-  name?: string;
-  description?: string;
-  sections: Section[];
-}
-
-interface DynamicLayout {
-  name: string; 
-  defaultPageKey?: string;
-  pages: Page[];
-  isStatic: boolean;
-}
+import { DynamicMolecule } from "./molecules";
+import { Section } from "../../types/layouts/section";
+import { Atom, Molecule, Page } from "../../types/layouts";
 
 interface DynamicLayoutProps {
-  dynamicLayout: DynamicLayout;
   entity: Entity;
   onSubmit?: (values: Record<string, unknown>) => void;
-}
-
-export function RenderError(props: any) {
-  return (
-    <Col {...(props.w || {}) } style={{color: "red", fontWeight: "bold"}}>
-      {props.errors}
-    </Col>
-  )
-}
-
-function fetchValue(props: any) {
-
 }
 
 function DynamicSubsection(props: any) {
@@ -232,14 +147,14 @@ function DynamicTabs(props: any) {
  * relevant entity variables
  */
 export default function DynamicLayout(props: DynamicLayoutProps) {
-  const defaultActiveKey = props.dynamicLayout.defaultPageKey || props.dynamicLayout.pages[0].name;
+  // const defaultActiveKey = props.dynamicLayout.defaultPageKey || props.dynamicLayout.pages[0].name;
 
   return (
-    <Tab.Container defaultActiveKey={defaultActiveKey}>
-      <DynamicTabs dynamicLayout={props.dynamicLayout}/>
+    <Tab.Container defaultActiveKey={"defaultActiveKey"}>
+      {/* <DynamicTabs dynamicLayout={props.dynamicLayout}/>
       <DynamicFormWrapper dynamicLayout={props.dynamicLayout} entity={props.entity} onSubmit={props.onSubmit}>
         <DynamicPages dynamicLayout={props.dynamicLayout}/>
-      </DynamicFormWrapper>
+      </DynamicFormWrapper> */}
     </Tab.Container>
   );
 }

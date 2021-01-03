@@ -1,12 +1,15 @@
 import React from "react";
-import { findValue } from ".";
-import { Atom } from "../Layouts";
+import { AtomProps } from "../../../types/layouts/atom";
+import { findValue } from "../../../utilities/layouts/atoms";
 
-interface ActionProps {
-  atom: Atom;
-}
-
-export function Action(props: ActionProps) {
+/**
+ * Renders an action to perform. 
+ * TODO - This may get removed?
+ *
+ * @param props.atom The definition of the atom to render
+ * @param props.data The dynamic data that may be referenced by the atom
+ */
+export function Action(props: AtomProps) {
   const action = () => { console.log("Action click!"); }
   const label = findValue("label", props);
   return (

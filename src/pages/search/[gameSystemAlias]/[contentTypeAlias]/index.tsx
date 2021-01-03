@@ -1,10 +1,11 @@
 import { Content, ContentType, GameSystem } from "../../../../types/documents";
 import React from "react";
 import Page from "../../../../components/design/Page";
-import { AtomType } from "../../../../components/layouts/atoms";
-import { Section, Subsection } from "../../../../components/layouts/Layouts";
-import { MoleculeType } from "../../../../components/layouts/molecules";
 import SearchLayout from "../../../../components/layouts/SearchLayout";
+import { AtomType } from "../../../../types/enums/atomType";
+import { MoleculeType } from "../../../../types/enums";
+import { Subsection } from "../../../../types/layouts/subsection";
+import { Section } from "../../../../types/layouts/section";
 
 type TableLayout = any;
 
@@ -90,7 +91,7 @@ const searchLayout: SearchType = {
     }
     
     ] },
-    advanced_filters: { h: 2, w: { xs: 12 }, collapse: {}, molecules: [
+    advanced_filters: { h: 2, w: { xs: 12 }, molecules: [
       {
         type: MoleculeType.Accordion,
         atoms: [
@@ -284,7 +285,10 @@ ContentTypeSearch.getInitialProps = () => {
   const contentType: ContentType = {
     name: "Spells",
     gameSystemID: "123123123123123123123123",
-    
+    layout: {
+      header: [],
+      body: []
+    }
   };
   const initialContent: Content[] = [];
   const gameSystem: GameSystem | undefined = undefined;

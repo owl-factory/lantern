@@ -1,6 +1,7 @@
 import { CommonContentType } from "./CommonContentType";
 import { getModelForClass, prop } from "@typegoose/typegoose";
 import { ContentFieldTypeEnum } from "../enums/contentFieldType";
+import { Atom, Molecule } from "../layouts";
 
 /**
  * An option used in a dropdown
@@ -55,6 +56,11 @@ export class ContentType extends CommonContentType {
 
   @prop()
   commonContentTypeID?: string;
+
+  layout!: {
+    header: ( Atom | Molecule )[],
+    body: ( Atom | Molecule )[],
+  }
 
 }
 

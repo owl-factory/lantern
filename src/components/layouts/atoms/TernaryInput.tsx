@@ -1,13 +1,9 @@
 import React from "react";
 import { Button } from "react-bootstrap";
-import { Atom } from "../Layouts";
+import { AtomProps } from "../../../types/layouts/atom";
 
-interface TernaryInputProps {
-  atom: Atom;
-}
-
-export function TernaryInput(props: TernaryInputProps) {
+export function TernaryInput(props: AtomProps) {
   return (
     <Button>Hi</Button>
-  )
+  );
 }
