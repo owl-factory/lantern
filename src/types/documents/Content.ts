@@ -11,6 +11,10 @@ export class Content extends CoreDocument {
 
   @prop({ required: true })
   contentTypeID?: string;
+
+  @prop({ required: true })
+  data!: Record<string, string>;
 }
+
 
 export const ContentModel = getModelForClass(Content);

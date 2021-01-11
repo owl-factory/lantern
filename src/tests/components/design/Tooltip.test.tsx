@@ -6,7 +6,7 @@ describe('renders Tooltip', () => {
   it('renders correctly', () => {
     const tree = renderer.create(
       <Tooltip title="Test Tooltip"><b>Hover Me!</b></Tooltip>
-    ).toJSON()
-    expect(tree).toMatchSnapshot()
+    ).toJSON();
+    expect(tree).toMatchSnapshot();
   });
 });

@@ -9,14 +9,14 @@ interface TestRouterProps {
 }
 
 /**
- * WithTestRouter is a wrapper around any component or page that uses Next/Router's 
- * useRouter() hook. Since we're not running this in a browser, we need to fake it 
- * with this little number. Pass in the expected router object with push, pathname, 
- * and asPath specified. 
- * 
+ * WithTestRouter is a wrapper around any component or page that uses Next/Router's
+ * useRouter() hook. Since we're not running this in a browser, we need to fake it
+ * with this little number. Pass in the expected router object with push, pathname,
+ * and asPath specified.
+ *
  * References the withTestRouter function seen here: https://w11i.me/next-js-userouter-testing
  * Though it has been modified to actually work
- * 
+ *
  * @param props.children The component/page with useRouter() inside of it
  * @param props.router A partial router object to create a dummy router object
  */
@@ -36,8 +36,8 @@ export function WithTestRouter(props: TestRouterProps) {
     events = {
       on: () => null,
       off: () => null,
-      emit: () => null
-    }
+      emit: () => null,
+    },
   } = props.router || {};
 
   return (
@@ -54,7 +54,7 @@ export function WithTestRouter(props: TestRouterProps) {
         prefetch,
         beforePopState,
         isFallback,
-        events
+        events,
       }}
     >
       {props.children}

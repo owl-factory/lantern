@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "postbuild": "next-on-netlify",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "start": "next start",
     "test": "jest --coverage"
   },

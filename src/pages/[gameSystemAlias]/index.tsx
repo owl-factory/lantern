@@ -16,7 +16,7 @@ export default function GameSystemSearch({gameSystem}: GameSystemSearchProps): J
 
 GameSystemSearch.getInitialProps = async (ctx: NextPageContext) => {
   const alias = ctx.query.gameSystemAlias;
- 
+
   return {
     gameSystem: {},
   };

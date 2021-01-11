@@ -16,7 +16,7 @@ export function NewCommonContentTypeForm(): JSX.Element {
       alias: "",
     }}
     onSubmit={(values: any) => {
-      
+
     }}
   />;
 }
