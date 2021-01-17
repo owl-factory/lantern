@@ -5,11 +5,9 @@ import { databaseSetup } from "../../../../utilities/mongo";
 export default async function AdminOrganizations(req: NextApiRequest, res: NextApiResponse) {
   try {
     databaseSetup();
-    const organizations = await OrganizationResolver.findMany(req.body.filters, req.body.options);
-    const organizationCount = await OrganizationResolver.findCount(req.body.filters);
+    const organization = await OrganizationResolver.findOne(req.query.id as string);
     res.status(200).json({
-      organizations,
-      organizationCount
+      organization
     });
   } catch (e) {
     console.log(e)

@@ -2,6 +2,7 @@ import { Form, Formik } from "formik";
 import { useRouter } from "next/router";
 import React from "react";
 import { Button, Card, Col, FormGroup, FormLabel, Row } from "react-bootstrap";
+import { MdPageview } from "react-icons/md";
 import { ErrorMessage, Input } from "../../../components/design/forms/Forms";
 import Modal from "../../../components/design/Modal";
 import Page from "../../../components/design/Page";
@@ -22,10 +23,23 @@ interface OrganizationSearchProps {
   setFilters: (filters: Record<string, string>) => void;
 }
 
+function OrganizationOptions(props: any) {
+  console.log(props)
+  const router = useRouter();
+
+  const view = () => {router.push("/admin/organizations/" + props.data._id)};
+  return (
+    <>
+      <MdPageview onClick={view}/>
+    </>
+  )
+}
+
 // Builds the context for the organizations table
 const tableBuilder = new TableBuilder()
   .addIncrementColumn("")
-  .addDataColumn("Organization", "name", { sortable: true });
+  .addDataColumn("Organization", "name", { sortable: true })
+  .addComponentColumn("Options", OrganizationOptions);
 
 /**
  * Renders the Create Organization form
