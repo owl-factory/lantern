@@ -8,15 +8,36 @@ import Page from "../../../components/design/Page";
 import Pagination, { PageState } from "../../../components/design/Pagination";
 import Table from "../../../components/design/tables/Table";
 import { TableBuilder } from "../../../utilities/design/table";
+import { formatOptions } from "../../../utilities/options";
 import request from "../../../utilities/request";
+
+// Props used for the create organization modal
+interface CreateOrganizationModalProps {
+  handleClose: () => void;
+  modal: boolean;
+}
+
+// Props used for the Organization Search component
+interface OrganizationSearchProps {
+  setFilters: (filters: Record<string, string>) => void;
+}
+
+// Builds the context for the organizations table
+const tableBuilder = new TableBuilder()
+  .addIncrementColumn("")
+  .addDataColumn("Organization", "name", { sortable: true });
 
 /**
  * Renders the Create Organization form
  */
-function CreateOrganizationForm(props: any) {
+function CreateOrganizationForm() {
   const router = useRouter();
   const [ errors, setErrors ] = React.useState({});
 
+  /**
+   * Validates the data, then saves it to the database
+   * @param values The form values to save to the database
+   */
   async function onSubmit(values: Record<string, string>) {
     const response = await request.post("/api/admin/organizations/new", values);
     if (response.errors) {
@@ -58,7 +79,7 @@ function CreateOrganizationForm(props: any) {
  * @param props.modal A boolean whether the modal is open or not
  * @param props.handleClose A function that handles closing the modal
  */
-function CreateOrganizationModal(props: any) {
+function CreateOrganizationModal(props: CreateOrganizationModalProps) {
   return (
     <Modal open={props.modal} handleClose={props.handleClose}>
       <Card>
@@ -73,29 +94,24 @@ function CreateOrganizationModal(props: any) {
 
 /**
  * Renders the form that allows for filtering and searching of organizations
- * @param props 
+ * @param setFilters The function to set the filters from the search and send the request
  */
-function OrganizationSearch(props: any) {
+function OrganizationSearch(props: OrganizationSearchProps) {
   const [ errors, setErrors ] = React.useState({});
-
-  function onSubmit(values: Record<string, string>) {
-    props.setFilters({ search: values });
-
-  }
 
   return (
     <Formik
       initialErrors={ errors }
       initialValues={ { name: "" } } // Need to ensure these are kept when changing pages
-      onSubmit={onSubmit}
+      onSubmit={props.setFilters}
     >
       {() => (
         <Form>
           <Row>
-            <FormGroup as={Col} xs={12} lg={6}>
+          <FormGroup as={Col} xs={12} lg={6}>
               <FormLabel>Organization Name</FormLabel>
-              <Input name="name" placeholder="Search..."/>
-              <ErrorMessage name="name"/>
+              <Input name="name.like" placeholder="Search..."/>
+              <ErrorMessage name="name.like"/>
             </FormGroup>
           </Row>
 
@@ -106,28 +122,11 @@ function OrganizationSearch(props: any) {
   );
 }
 
-interface SearchFilters {
-  pageState: PageState;
-  search: Record<string, string>
-}
-
-interface PartialSearchFilters {
-  pageState?: PageState;
-  search?: Record<string, string>
-}
-
-
-
-const tableBuilder = new TableBuilder()
-.addIncrementColumn("")
-.addDataColumn("Organization", "name", { sortable: true })
-
 /**
  * Renders The admin page for managing organizations
  * @param props.organizations An initial array of organizations to display in a table
  */
 export default function Organizations(props: any) {
-  const [ modal, setModal ] = React.useState(false);
   const [ filters, setFilters ] = React.useState({} as Record<string, string>);
   const [ pageState, setPageState ] = React.useState({
     page: 1, 
@@ -137,20 +136,31 @@ export default function Organizations(props: any) {
   const [ sortBy, setSortBy ] = React.useState("");
 
   const [ organizations, setOrganizations ] = React.useState(props.organizations);
-  const [ errors, setErrors ] = React.useState("");
+  const [ modal, setModal ] = React.useState(false);
 
+  /**
+   * Handles closing the modal
+   */
   function handleClose() { setModal(false); }
 
+  /**
+   * Fetches organizations from the API based on the given filters
+   * @param newFilters The filters to search by
+   * @param newPageState the page state for filtering
+   * @param newSortBy The key to sort by
+   */
   async function fetchOrganizations(
     newFilters: Record<string, string>,
     newPageState: PageState,
     newSortBy: string
   ) {
+    const options = formatOptions(newPageState, newSortBy);
     const results = await request.post("/api/admin/organizations", {
       filters: newFilters,
-      pageState: newPageState,
-      sortBy: newSortBy,
+      options
     });
+
+    if (results.error) { return; }
     console.log(results)
     setOrganizations(results.organizations);
     if (pageState.totalCount != results.organizationCount) { 
@@ -159,19 +169,27 @@ export default function Organizations(props: any) {
   }
 
   /**
-   * 
-   * @param newFilters A partial new filter that updates the current selection of 
+   * Fetches new organizations and sets the new filters
+   * @param newFilters New filters for searching organizations
    */
   async function setNewFilters(newFilters: Record<string, string>) {
     await fetchOrganizations(newFilters, pageState, sortBy);
     setFilters(newFilters);
   }
 
+  /**
+   * Fetches organizations from changes in the page state
+   * @param newPageState The new page state to find organizations
+   */
   async function setPage(newPageState: PageState) {
     await fetchOrganizations(filters, newPageState, sortBy);
     setPageState(newPageState);
   }
 
+  /**
+   * Fetches the organizations based on changes in the sorting
+   * @param newSortBy The new key to sort by
+   */
   async function setNewSortBy(newSortBy: string) {
     await fetchOrganizations(filters, pageState, newSortBy);
     setSortBy(newSortBy);
@@ -180,26 +198,24 @@ export default function Organizations(props: any) {
   return (
     <Page>
       <h1>Organizations</h1>
+
       {/* Create Organization */}
       <Button onClick={() => {setModal(true)}}>New Organization</Button>
 
       {/* Search */}
-      <OrganizationSearch 
-        setOrganizations={setOrganizations}
-        setFilters={setNewFilters}
-      />
+      <OrganizationSearch setFilters={setNewFilters}/>
 
       {/* Organization Table */}
       <Table
         {...tableBuilder.renderConfig()}
         data={organizations}
+        sortBy={sortBy}
         setSortBy={setNewSortBy}
         startingIncrement={(pageState.page - 1) * pageState.perPage + 1}
       />
 
       {/* Pagination */}
       <Pagination pageState={pageState} setPageState={setPage}/>
-
 
       {/* Modal */}
       <CreateOrganizationModal modal={modal} handleClose={handleClose}/>

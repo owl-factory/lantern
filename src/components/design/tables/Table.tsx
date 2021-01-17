@@ -12,12 +12,14 @@ interface TableProps {
   // An action that may be applied to the whole row
   rowAction?: RowAction;
   startingIncrement?: number; // The number to begin incrementation on
+  sortBy?: string;
   setSortBy?: (sortBy: string) => void;
 }
 
 interface TableHeaderProps {
   columns: Column[]; // The column configuration
-  setSortBy: (sortBy: string) => void;
+  lastSortBy: string; // The last sorted by column
+  setSortBy: (sortBy: string) => void; // The function to set the sorted key
 }
 
 interface TableBodyProps {
@@ -135,20 +137,18 @@ function TableRow(props: TableRowProps) {
  * Renders a table based off of given data and column configuration
  * @param props see TableProps
  */
-export default function Table(props: TableProps): JSX.Element {
-  const [lastSortBy, setLastSortBy] = React.useState("");
-  
+export default function Table(props: TableProps): JSX.Element {  
   function setSortBy(sortBy: string) {
-    if (sortBy == lastSortBy) { sortBy = "-" + sortBy; }
-    setLastSortBy(sortBy);
-    if (props.setSortBy) { props.setSortBy(sortBy); }
+    if (!props.setSortBy) { return; }
+    if (sortBy == props.sortBy) { sortBy = "-" + sortBy; }
+    props.setSortBy(sortBy);
   }
   
   return (
     <BSTable>
       <TableHeader 
         columns={props.columns}
-        lastSortBy={lastSortBy}
+        lastSortBy={props.sortBy || ""}
         setSortBy={setSortBy}
       />
       <TableBody
