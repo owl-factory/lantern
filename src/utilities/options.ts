@@ -1,13 +1,18 @@
 import { PageState } from "../components/design/Pagination";
-import { Options } from "../types/inputs/options";
+import { Options, SortByObject, SortByType } from "../types/inputs/options";
 
-function formatSort(sortBy: string | Record<string, (1 | -1)>) {
+/**
+ * Formats a sort by string or object, if needed
+ * @param sortBy The sort by string or object to format, if needed
+ */
+function formatSort(sortBy: SortByType) {
+  // Base cases. Skips empty sortBy string, and does not format sortBy objects
   if (sortBy === "") { return undefined; }
   if (typeof sortBy !== "string") {
     return sortBy;
   }
 
-  const sort: Record<string, (1 | -1)> = {};
+  const sort: SortByObject = {};
 
   let key = sortBy;
   let value = 1;
@@ -25,7 +30,7 @@ function formatSort(sortBy: string | Record<string, (1 | -1)>) {
  */
 export function formatOptions(
   pageState: PageState, 
-  sortBy: string | Record<string, (1 | -1)>
+  sortBy: SortByType
 ): Options {
   const options: Options = { skip: 0, limit: 1 };
   options.limit = pageState.perPage;
