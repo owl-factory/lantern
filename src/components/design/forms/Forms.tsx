@@ -1,7 +1,7 @@
 export { Checkbox } from "./Checkboxes";
 export { Date } from "./Date";
 export { DateTime } from "./DateTime";
-export { Error } from "./Error";
+export * from "./ErrorMessage";
 export { Input } from "./Input";
 export { Multiselect } from "./Multiselect";
 export { RadioButton } from "./RadioButtons";

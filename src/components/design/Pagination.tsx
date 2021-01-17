@@ -49,7 +49,8 @@ function PaginationCell(props: PaginationCellProps) {
  */
 function Pagination(props: PaginationProps): JSX.Element {
   const perPage = (props.pageState.perPage >= 1) ? props.pageState.perPage : 1;
-  const maxPage = Math.ceil((props.pageState.totalCount) / perPage);
+  let maxPage = Math.ceil((props.pageState.totalCount) / perPage);
+  if (maxPage == 0) { maxPage = 1; } // Prevents issues with zero items
 
   /**
    * Sets the page and runs associated actions

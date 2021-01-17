@@ -15,10 +15,7 @@ export class TableBuilder {
    * @param header The header title at the top of the table
    * @param component The component to render. It will be passed the row data
    */
-  public addComponentColumn(
-    header: string,
-    component: TableComponent
-  ): TableBuilder {
+  public addComponentColumn(header: string, component: TableComponent): TableBuilder {
     const newColumn: Column = {header, component};
     this.columns.push(newColumn);
 
@@ -30,8 +27,21 @@ export class TableBuilder {
    * @param header The header title
    * @param key The key of the data to print
    */
-  public addDataColumn(header: string, key: string, modification?: TableComponentModification): TableBuilder {
-    const newColumn: Column = {header, key, modification};
+  public addDataColumn(
+    header: string,
+    key: string,
+    options?: {
+      modification?: TableComponentModification,
+      sortable?: boolean
+    }
+  ): TableBuilder {
+    if (!options) { options = {}; }
+    const newColumn: Column = {
+      header,
+      key,
+      modification: options.modification,
+      sortable: options.sortable || false,
+    };
     this.columns.push(newColumn);
 
     return this;

@@ -9,4 +9,4 @@ export class Campaign extends CoreDocument {
   gameSystemID?: string;
 }
 
-export const CampaignModel = getModelForClass(Campaign);
+export const CampaignModel = null // getModelForClass(Campaign);

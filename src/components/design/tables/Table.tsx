@@ -1,5 +1,6 @@
 import React from "react";
 import { Table as BSTable } from "react-bootstrap";
+import { MdUnfoldMore, MdExpandLess, MdExpandMore } from "react-icons/md";
 import { Column, TableDataType } from "../../../types/design/table";
 
 type RowAction = (index: number, data: TableDataType, globalData?: TableDataType) => void;
@@ -11,10 +12,12 @@ interface TableProps {
   // An action that may be applied to the whole row
   rowAction?: RowAction;
   startingIncrement?: number; // The number to begin incrementation on
+  setSortBy?: (sortBy: string) => void;
 }
 
 interface TableHeaderProps {
   columns: Column[]; // The column configuration
+  setSortBy: (sortBy: string) => void;
 }
 
 interface TableBodyProps {
@@ -42,8 +45,21 @@ interface TableRowProps {
 function TableHeader(props: TableHeaderProps) {
   const headers: JSX.Element[] = [];
   props.columns.forEach((column: Column) => {
+    let icon = undefined;
+    let onClick = () => {};
+    if (column.sortable) {
+      const key = column.key || ""
+      onClick = () => props.setSortBy(key);
+      icon = <MdUnfoldMore/>
+
+      if (key === props.lastSortBy) { icon = <MdExpandLess/> }
+      else if ("-" + key === props.lastSortBy) { icon = <MdExpandMore/> }
+    }
+    
     headers.push(
-      <th key={"row0-" + column.header}>{column.header}</th>
+      <th key={"row0-" + column.header} onClick={onClick}>
+        {column.header}{icon}
+      </th>
     );
   });
 
@@ -120,9 +136,21 @@ function TableRow(props: TableRowProps) {
  * @param props see TableProps
  */
 export default function Table(props: TableProps): JSX.Element {
+  const [lastSortBy, setLastSortBy] = React.useState("");
+  
+  function setSortBy(sortBy: string) {
+    if (sortBy == lastSortBy) { sortBy = "-" + sortBy; }
+    setLastSortBy(sortBy);
+    if (props.setSortBy) { props.setSortBy(sortBy); }
+  }
+  
   return (
     <BSTable>
-      <TableHeader columns={props.columns}/>
+      <TableHeader 
+        columns={props.columns}
+        lastSortBy={lastSortBy}
+        setSortBy={setSortBy}
+      />
       <TableBody
         columns={props.columns}
         data={props.data}
