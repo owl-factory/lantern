@@ -2,7 +2,7 @@ import { Formik, Form as FormikForm } from "formik";
 import React from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import * as Yup from "yup";
-import { Checkbox, Error, Input, Select, TextArea } from "../../design/forms/Forms";
+import { Checkbox, ErrorMessage, Input, Select, TextArea } from "../../design/forms/Forms";
 import { FormixFormProps } from "../../../types/design/form";
 import { CommonContentType } from "../../../types/documents";
 
@@ -48,14 +48,14 @@ export default function ContentTypeForm(props: ContentTypeFormProps): JSX.Elemen
             <Form.Group as={Col}>
               <Form.Label>Content Type</Form.Label>
               <Input name="name" />
-              <Error name="name"/>
+              <ErrorMessage name="name"/>
             </Form.Group>
 
             {/* URL Key */}
             <Form.Group as={Col}>
               <Form.Label>URL Alias</Form.Label>
               <Input name="alias"/>
-              <Error name="alias"/>
+              <ErrorMessage name="alias"/>
             </Form.Group>
 
             <Form.Group as={Col}>
@@ -66,7 +66,7 @@ export default function ContentTypeForm(props: ContentTypeFormProps): JSX.Elemen
                 labelKey="name"
                 valueKey="_id"
               />
-              <Error name="commonContentTypeID"/>
+              <ErrorMessage name="commonContentTypeID"/>
             </Form.Group>
 
               {/* Is Purchasable */}
@@ -82,7 +82,7 @@ export default function ContentTypeForm(props: ContentTypeFormProps): JSX.Elemen
               {/* Description */}
               <Form.Label>Description</Form.Label>
               <TextArea name="description" />
-              <Error name="description"/>
+              <ErrorMessage name="description"/>
             </Form.Group>
 
           </Row>

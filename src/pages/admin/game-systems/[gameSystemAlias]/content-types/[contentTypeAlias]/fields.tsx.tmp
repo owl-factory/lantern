@@ -160,7 +160,7 @@ function ContentTypeFieldForm(props: any) {
           <Form.Group>
             <Form.Label>Variable Name</Form.Label>
             <Input name="name" />
-            <Error name="name"/>
+            <ErrorMessage name="name"/>
           </Form.Group>
 
           {/* TODO - make select */}
@@ -172,13 +172,13 @@ function ContentTypeFieldForm(props: any) {
                 labelKey="name"
                 valueKey="value"
               />
-            <Error name="type"/>
+            <ErrorMessage name="type"/>
           </Form.Group>
 
           <Form.Group>
             <Form.Label>Default Value</Form.Label>
             <Input name="default" />
-            <Error name="default"/>
+            <ErrorMessage name="default"/>
           </Form.Group>
         </FormikForm>
       )}

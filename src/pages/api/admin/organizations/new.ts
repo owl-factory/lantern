@@ -2,7 +2,11 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { OrganizationResolver } from "../../../../server/resolvers/OrganizationResolver";
 import { databaseSetup } from "../../../../utilities/mongo";
 
-
+/**
+ * Creates a new organization
+ * @param req The incoming request
+ * @param res The outgoing response
+ */
 export default async function AdminOrganizations(req: NextApiRequest, res: NextApiResponse) {
   try {
     databaseSetup();

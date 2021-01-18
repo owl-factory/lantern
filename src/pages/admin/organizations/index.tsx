@@ -23,8 +23,12 @@ interface OrganizationSearchProps {
   setFilters: (filters: Record<string, string>) => void;
 }
 
+/**
+ * Renders actions that may be taken by the user
+ * @param data The individual data for the row 
+ * @param globalData Any global data for the entire table
+ */
 function OrganizationOptions(props: any) {
-  console.log(props)
   const router = useRouter();
 
   const view = () => {router.push("/admin/organizations/" + props.data._id)};

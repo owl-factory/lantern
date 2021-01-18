@@ -1,5 +1,3 @@
-import { GenericFilterType, GenericFiltersType } from "@reroll/model/dist/filters";
-
 type ParsedFilters = Record<string, string | RegExp | Record<string, string | number>>;
 
 /**
@@ -72,7 +70,7 @@ export function parseFilter(filterObject: FilterObjectType, baseKey = ""): Parse
  *
  * @param filters The filters to convert into an or clause for the query
  */
-export function buildFilters(filters?: GenericFiltersType): Record<string, unknown> {
+export function buildFilters(filters?: any): Record<string, unknown> {
   if (!filters || Object.keys(filters).length === 0) { return {}; }
   let andFilters: Record<string, unknown> | undefined;
   let orFilters: Record<string, unknown>[] = [];
@@ -81,7 +79,7 @@ export function buildFilters(filters?: GenericFiltersType): Record<string, unkno
   filters.or = filters.or || [];
   if (filters.or.length) {
     orFilters = [];
-    filters.or.forEach((filterOr: GenericFilterType) => {
+    filters.or.forEach((filterOr: any) => {
       orFilters.push(parseFilter(filterOr as FilterObjectType));
     });
   }

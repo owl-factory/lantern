@@ -2,6 +2,11 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { OrganizationResolver } from "../../../../server/resolvers/OrganizationResolver";
 import { databaseSetup } from "../../../../utilities/mongo";
 
+/**
+ * Fetches a specific organization from the Organization resolver
+ * @param req The incoming request
+ * @param res The outgoing response
+ */
 export default async function AdminOrganizations(req: NextApiRequest, res: NextApiResponse) {
   try {
     databaseSetup();
@@ -10,7 +15,6 @@ export default async function AdminOrganizations(req: NextApiRequest, res: NextA
       organization
     });
   } catch (e) {
-    console.log(e)
     res.status(500).json({error: e})
   }
 }

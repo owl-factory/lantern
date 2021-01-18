@@ -2,7 +2,7 @@ import React from "react";
 import { Col, Form } from "react-bootstrap";
 import { AtomProps } from "../../../types/layouts/atom";
 import { findValue } from "../../../utilities/layouts/atoms";
-import { Error, Input } from "../../design/forms/Forms";
+import { ErrorMessage, Input } from "../../design/forms/Forms";
 import { AtomError } from "./AtomError";
 
 /**
@@ -30,7 +30,7 @@ export function TextInput(props: AtomProps) {
         name={inputName}
         placeholder={placeholder}
       />
-      <Error name={inputName} />
+      <ErrorMessage name={inputName} />
     </Form.Group>
   );
 }

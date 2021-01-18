@@ -13,12 +13,16 @@ interface SuperDocumentAliases {
   gameSystemID?: string;
 }
 
+// The aliases to super document models.
 const superDocumentAliasModels: Record<keyof SuperDocumentAliases, GenericModelType> = {
   gameSystemID: GameSystemModel,
 };
 
+/**
+ * The core functionality for fetching, creating, updating, and deleting data. 
+ */
 export default class CoreResolver {
-  public static model: ReturnModelType<any>;
+  public static model: ReturnModelType<any>; // The mongoose model for fetching data
 
   /**
    * Finds a document by an alias or id and optionally the aliases/ids of other documents
@@ -29,8 +33,6 @@ export default class CoreResolver {
   public static findOne(alias: string, superDocumentAliases?: SuperDocumentAliases, ctx?: Context): FindOneResponse<GenericDocumentType> {
     return this._findByAlias(alias, this.model, superDocumentAliases);
   }
-
-  
 
   /**
    * Finds a collection of documents matching the given filters and options

@@ -12,8 +12,8 @@ interface TableProps {
   // An action that may be applied to the whole row
   rowAction?: RowAction;
   startingIncrement?: number; // The number to begin incrementation on
-  sortBy?: string;
-  setSortBy?: (sortBy: string) => void;
+  sortBy?: string; // The current key that this table is sorting by
+  setSortBy?: (sortBy: string) => void; // The function that sets the key to sort by
 }
 
 interface TableHeaderProps {
@@ -46,16 +46,21 @@ interface TableRowProps {
  */
 function TableHeader(props: TableHeaderProps) {
   const headers: JSX.Element[] = [];
-  props.columns.forEach((column: Column) => {
-    let icon = undefined;
-    let onClick = () => {};
-    if (column.sortable) {
-      const key = column.key || ""
-      onClick = () => props.setSortBy(key);
-      icon = <MdUnfoldMore/>
 
-      if (key === props.lastSortBy) { icon = <MdExpandLess/> }
-      else if ("-" + key === props.lastSortBy) { icon = <MdExpandMore/> }
+  // Adds each of the headers
+  props.columns.forEach((column: Column) => {
+    let icon = undefined; // The icon to place next to the title
+    let onClick = () => {}; // The function to run when clicking the title
+
+    // Sets icon and onClick functions if sorting is enabled for the column
+    if (column.sortable) {
+      const key = column.key || "";
+      onClick = () => props.setSortBy(key);
+      icon = <MdUnfoldMore/>;
+
+      // Sets icons if we're already sorting this column
+      if (key === props.lastSortBy) { icon = <MdExpandLess/>; }
+      else if ("-" + key === props.lastSortBy) { icon = <MdExpandMore/>; }
     }
     
     headers.push(
@@ -138,6 +143,11 @@ function TableRow(props: TableRowProps) {
  * @param props see TableProps
  */
 export default function Table(props: TableProps): JSX.Element {  
+  /**
+   * Sets the key to sort by given the key we want to sort by and what 
+   * we were previously sorting by
+   * @param sortBy The key that we want to sort by
+   */
   function setSortBy(sortBy: string) {
     if (!props.setSortBy) { return; }
     if (sortBy == props.sortBy) { sortBy = "-" + sortBy; }

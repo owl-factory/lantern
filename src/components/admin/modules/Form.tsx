@@ -2,7 +2,7 @@ import { Formik, Form as FormikForm } from "formik";
 import React from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import * as Yup from "yup";
-import { Checkbox, Error, Input, TextArea } from "../../design/forms/Forms";
+import { Checkbox, ErrorMessage, Input, TextArea } from "../../design/forms/Forms";
 import { FormixFormProps } from "../../../types/design/form";
 
 /**
@@ -40,14 +40,14 @@ export default function ModuleForm(props: FormixFormProps<any>):JSX.Element {
             <Form.Group as={Col}>
               <Form.Label>Module Name</Form.Label>
               <Input name="name" />
-              <Error name="name"/>
+              <ErrorMessage name="name"/>
             </Form.Group>
 
             {/* URL Key */}
             <Form.Group as={Col}>
               <Form.Label>URL Alias</Form.Label>
               <Input name="alias"/>
-              <Error name="alias"/>
+              <ErrorMessage name="alias"/>
             </Form.Group>
           </Row>
 
@@ -56,7 +56,7 @@ export default function ModuleForm(props: FormixFormProps<any>):JSX.Element {
               {/* Description */}
               <Form.Label>Description</Form.Label>
               <TextArea name="description" />
-              <Error name="description"/>
+              <ErrorMessage name="description"/>
             </Form.Group>
 
             <Col>
