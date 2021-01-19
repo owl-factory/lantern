@@ -83,6 +83,15 @@ export default class CoreResolver {
   }
 
   /**
+   * Hard deletes a single document
+   * @param ctx The context of the request and response, including the user's session
+   * @param _id The id of the document to delete
+   */
+  public static async deleteOne(_id: string, ctx?: Context): Promise<any> {
+    return this.model.deleteOne({_id});
+  }
+
+  /**
    * A recursive function for finding by the alias or id. Recursion is for handling the super documents.
    * The recursion should only go two levels deep at any given time.
    *

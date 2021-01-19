@@ -1,20 +1,31 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { OrganizationResolver } from "../../../../server/resolvers/OrganizationResolver";
-import { databaseSetup } from "../../../../utilities/mongo";
+import HTTPHandler from "../../../../server/response/Response";
 
 /**
  * Fetches a specific organization from the Organization resolver
  * @param req The incoming request
  * @param res The outgoing response
  */
+async function getOrganization(req: NextApiRequest, res: NextApiResponse) {
+  const organization = await OrganizationResolver.findOne(req.query.id as string);
+  res.status(200).json({
+    organization
+  });
+}
+
+async function deleteOrganization(req: NextApiRequest, res: NextApiResponse) {
+  const deleteResponse = await OrganizationResolver.deleteOne(req.query.id as string);
+  res.status(200).json({
+    deleteResponse
+  });
+}
+
 export default async function AdminOrganizations(req: NextApiRequest, res: NextApiResponse) {
-  try {
-    databaseSetup();
-    const organization = await OrganizationResolver.findOne(req.query.id as string);
-    res.status(200).json({
-      organization
-    });
-  } catch (e) {
-    res.status(500).json({error: e})
-  }
+  const handler = new HTTPHandler(req, res);
+  handler.GET = getOrganization;
+  handler.DELETE = deleteOrganization;
+  await handler.handle();
+
+  res.status(500);
 }
