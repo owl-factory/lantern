@@ -1,5 +1,6 @@
 import React from "react";
 import { Table as BSTable } from "react-bootstrap";
+import { MdUnfoldMore, MdExpandLess, MdExpandMore } from "react-icons/md";
 import { Column, TableDataType } from "../../../types/design/table";
 
 type RowAction = (index: number, data: TableDataType, globalData?: TableDataType) => void;
@@ -11,10 +12,14 @@ interface TableProps {
   // An action that may be applied to the whole row
   rowAction?: RowAction;
   startingIncrement?: number; // The number to begin incrementation on
+  sortBy?: string; // The current key that this table is sorting by
+  setSortBy?: (sortBy: string) => void; // The function that sets the key to sort by
 }
 
 interface TableHeaderProps {
   columns: Column[]; // The column configuration
+  lastSortBy: string; // The last sorted by column
+  setSortBy: (sortBy: string) => void; // The function to set the sorted key
 }
 
 interface TableBodyProps {
@@ -41,9 +46,27 @@ interface TableRowProps {
  */
 function TableHeader(props: TableHeaderProps) {
   const headers: JSX.Element[] = [];
+
+  // Adds each of the headers
   props.columns.forEach((column: Column) => {
+    let icon = undefined; // The icon to place next to the title
+    let onClick = () => {}; // The function to run when clicking the title
+
+    // Sets icon and onClick functions if sorting is enabled for the column
+    if (column.sortable) {
+      const key = column.key || "";
+      onClick = () => props.setSortBy(key);
+      icon = <MdUnfoldMore/>;
+
+      // Sets icons if we're already sorting this column
+      if (key === props.lastSortBy) { icon = <MdExpandLess/>; }
+      else if ("-" + key === props.lastSortBy) { icon = <MdExpandMore/>; }
+    }
+    
     headers.push(
-      <th key={"row0-" + column.header}>{column.header}</th>
+      <th key={"row0-" + column.header} onClick={onClick}>
+        {column.header}{icon}
+      </th>
     );
   });
 
@@ -119,10 +142,25 @@ function TableRow(props: TableRowProps) {
  * Renders a table based off of given data and column configuration
  * @param props see TableProps
  */
-export default function Table(props: TableProps): JSX.Element {
+export default function Table(props: TableProps): JSX.Element {  
+  /**
+   * Sets the key to sort by given the key we want to sort by and what 
+   * we were previously sorting by
+   * @param sortBy The key that we want to sort by
+   */
+  function setSortBy(sortBy: string) {
+    if (!props.setSortBy) { return; }
+    if (sortBy == props.sortBy) { sortBy = "-" + sortBy; }
+    props.setSortBy(sortBy);
+  }
+  
   return (
     <BSTable>
-      <TableHeader columns={props.columns}/>
+      <TableHeader 
+        columns={props.columns}
+        lastSortBy={props.sortBy || ""}
+        setSortBy={setSortBy}
+      />
       <TableBody
         columns={props.columns}
         data={props.data}

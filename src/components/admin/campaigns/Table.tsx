@@ -13,7 +13,7 @@ const tableBuilder = new TableBuilder()
 .addDataColumn("Campaign", "name")
 .addDataColumn("Alias", "alias")
 .addDataColumn("Publish Type", "publishType")
-.addDataColumn("Published", "isPublished", (isPublished: unknown) => (isPublished ? "Yes" : "No"));
+.addDataColumn("Published", "isPublished", { modification: (isPublished: unknown) => (isPublished ? "Yes" : "No") });
 // .addComponentColumn("Tools", );
 
 /**

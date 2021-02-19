@@ -1,4 +1,4 @@
-import { ErrorMessage } from "formik";
+import { ErrorMessage as FormikErrorMessage } from "formik";
 import React from "react";
 import { Alert } from "react-bootstrap";
 
@@ -10,12 +10,12 @@ interface ErrorProps {
  * Renders an error message using Formik and Bootstrap
  * @param props See ErrorProps
  */
-export function Error(props: ErrorProps): JSX.Element {
+export function ErrorMessage(props: ErrorProps): JSX.Element {
   return (
-    <ErrorMessage name={props.name}>
+    <FormikErrorMessage name={props.name}>
       {(message: string) => (
         <Alert variant="danger">{message}</Alert>
       )}
-    </ErrorMessage>
+    </FormikErrorMessage>
   );
 }

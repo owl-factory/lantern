@@ -13,9 +13,10 @@
   "dependencies": {
     "@typegoose/typegoose": "^7.4.6",
     "bootstrap": "^4.4.1",
+    "class-validator": "^0.13.1",
     "cross-fetch": "^3.0.6",
     "formik": "^2.1.4",
-    "mongoose": "^5.10.5",
+    "mongoose": "5.10.18",
     "next": "9.3.2",
     "next-auth": "^3.1.0",
     "next-on-netlify": "2.4.0",

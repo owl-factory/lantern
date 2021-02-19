@@ -17,4 +17,5 @@ export interface Column {
   modification?: TableComponentModification; // A modification to apply to the value of key
   component?: TableComponent; // A custom component to print using the row data
   increment?: boolean; // True if this column should increment
+  sortable?: boolean; // Indicates if this column is sortable or not
 }

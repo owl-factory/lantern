@@ -2,7 +2,7 @@ import { Formik, Form as FormikForm } from "formik";
 import React from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import * as Yup from "yup";
-import { Error, Input, TextArea } from "../../design/forms/Forms";
+import { ErrorMessage, Input, TextArea } from "../../design/forms/Forms";
 import { FormixFormProps } from "../../../types/design/form";
 import { GameSystem } from "../../../types/documents";
 
@@ -31,21 +31,21 @@ export default function GameSystemForm(props: FormixFormProps<GameSystem>): JSX.
     >
       {() => (
         <FormikForm>
-          <Error name="_global"/>
+          <ErrorMessage name="_global"/>
 
           <Row>
             {/* Gamesystem Name */}
             <Form.Group as={Col}>
               <Form.Label>Game System Name</Form.Label>
               <Input name="name" />
-              <Error name="name"/>
+              <ErrorMessage name="name"/>
             </Form.Group>
 
             {/* URL Key */}
             <Form.Group as={Col}>
               <Form.Label>URL Alias</Form.Label>
               <Input name="alias"/>
-              <Error name="alias"/>
+              <ErrorMessage name="alias"/>
             </Form.Group>
           </Row>
 
@@ -54,7 +54,7 @@ export default function GameSystemForm(props: FormixFormProps<GameSystem>): JSX.
               {/* Description */}
               <Form.Label>Description</Form.Label>
               <TextArea name="description" />
-              <Error name="description"/>
+              <ErrorMessage name="description"/>
             </Form.Group>
           </Row>
 

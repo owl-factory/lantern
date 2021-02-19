@@ -2,7 +2,7 @@ import { Formik, Form as FormikForm } from "formik";
 import React from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import * as Yup from "yup";
-import { Error, Input, TextArea } from "../../design/forms/Forms";
+import { ErrorMessage, Input, TextArea } from "../../design/forms/Forms";
 import { FormixFormProps } from "../../../types/design/form";
 import { CommonContentType } from "../../../types/documents";
 
@@ -35,14 +35,14 @@ export default function CommonContentTypeForm(props: FormixFormProps<CommonConte
             <Form.Group as={Col}>
               <Form.Label>Common Content Type</Form.Label>
               <Input name="name" />
-              <Error name="name"/>
+              <ErrorMessage name="name"/>
             </Form.Group>
 
             {/* URL Key */}
             <Form.Group as={Col}>
               <Form.Label>URL Alias</Form.Label>
               <Input name="alias"/>
-              <Error name="alias"/>
+              <ErrorMessage name="alias"/>
             </Form.Group>
           </Row>
 
@@ -51,7 +51,7 @@ export default function CommonContentTypeForm(props: FormixFormProps<CommonConte
               {/* Description */}
               <Form.Label>Description</Form.Label>
               <TextArea name="description" />
-              <Error name="description"/>
+              <ErrorMessage name="description"/>
             </Form.Group>
 
           </Row>

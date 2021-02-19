@@ -55,7 +55,7 @@ function ContentTypeActions({ data, globalData }: TableComponentProps) {
 const tableBuilder = new TableBuilder()
 .addIncrementColumn("")
 .addDataColumn("Content Type", "name")
-.addDataColumn("Alias", "alias", (value: string | boolean) => (value ? value as string : "--"))
+.addDataColumn("Alias", "alias", { modification: (value: string | boolean) => (value ? value as string : "--")})
 // .addDataColumn("Is Type Only?", "isTypeOnly", (isTypeOnly: boolean) => (isTypeOnly ? "Yes" : "No"))
 .addComponentColumn("Tools", ContentTypeActions);
 
