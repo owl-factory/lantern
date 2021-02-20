@@ -1,7 +1,7 @@
 import { ReturnModelType } from "@typegoose/typegoose";
 import { validate } from "class-validator";
 import { Query } from "mongoose";
-import { CoreDocument, GameSystemModel, GenericDocumentType, GenericModelType } from "../../types/documents";
+import { CoreDocument, RulesetModel, GenericDocumentType, GenericModelType } from "../../types/documents";
 import { Options } from "../../types/inputs/options";
 import { CreateOneResponse, FindCountResponse, FindManyResponse, FindOneResponse } from "../../types/resolvers";
 import { Context } from "../../types/server";
@@ -10,12 +10,12 @@ import { buildFilters, isID } from "../utilities/resolvers";
 // Contains any aliases that might be passed in to findByAlias for any super document
 // TODO - move to a new file
 interface SuperDocumentAliases {
-  gameSystemID?: string;
+  rulesetID?: string;
 }
 
 // The aliases to super document models.
 const superDocumentAliasModels: Record<keyof SuperDocumentAliases, GenericModelType> = {
-  gameSystemID: GameSystemModel,
+  rulesetID: RulesetModel,
 };
 
 /**
@@ -30,7 +30,11 @@ export default class CoreResolver {
    * @param alias The alias or ID of the document to find
    * @param superDocumentAliases The aliases of any owning documents that the target document must belong to
    */
-  public static findOne(alias: string, superDocumentAliases?: SuperDocumentAliases, ctx?: Context): FindOneResponse<GenericDocumentType> {
+  public static findOne(
+    alias: string,
+    superDocumentAliases?: SuperDocumentAliases,
+    ctx?: Context
+  ): FindOneResponse<GenericDocumentType> {
     return this._findByAlias(alias, this.model, superDocumentAliases);
   }
 

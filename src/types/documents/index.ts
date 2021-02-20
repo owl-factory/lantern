@@ -8,7 +8,7 @@ export * from "./CoreDocument";
 export * from "./Entity";
 export * from "./EntityLayout";
 export * from "./EntityType";
-export * from "./GameSystem";
+export * from "./Ruleset";
 export * from "./Module";
 export * from "./Organization";
 export * from "./User";
@@ -22,7 +22,7 @@ import { CoreDocument } from "./CoreDocument";
 import { Entity, EntityModel } from "./Entity";
 import { EntityLayout, EntityLayoutModel } from "./EntityLayout";
 import { EntityType, EntityTypeModel } from "./EntityType";
-import { GameSystem, GameSystemModel } from "./GameSystem";
+import { Ruleset, RulesetModel } from "./Ruleset";
 import { Module, ModuleModel } from "./Module";
 
 /**
@@ -39,7 +39,7 @@ export type GenericDocumentType = (
   Entity |
   EntityLayout |
   EntityType |
-  GameSystem |
+  Ruleset |
   Module
 );
 
@@ -55,6 +55,6 @@ export type GenericModelType = (
   typeof EntityModel |
   typeof EntityLayoutModel |
   typeof EntityTypeModel |
-  typeof GameSystemModel |
+  typeof RulesetModel |
   typeof ModuleModel
 );

@@ -69,7 +69,7 @@ function CardLayoutBody(props: CardLayoutChildProps) {
  *
  * @param props.content The specific content that we're rendering
  * @param props.contentType The type of content that we're rendering. Contains the layout
- * @param props.rules Any additional data that is global for the gamesystem
+ * @param props.rules Any additional data that is global for the ruleset
  */
 export function CardLayout(props: CardLayoutProps) {
   const data = {

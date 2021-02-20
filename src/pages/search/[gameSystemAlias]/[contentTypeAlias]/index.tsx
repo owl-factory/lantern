@@ -1,4 +1,4 @@
-import { Content, ContentType, GameSystem } from "../../../../types/documents";
+import { Content, ContentType, Ruleset } from "../../../../types/documents";
 import React from "react";
 import Page from "../../../../components/design/Page";
 import SearchLayout from "../../../../components/layouts/SearchLayout";
@@ -284,19 +284,19 @@ ContentTypeSearch.getInitialProps = () => {
   const contentCount = 0;
   const contentType: ContentType = {
     name: "Spells",
-    gameSystemID: "123123123123123123123123",
+    rulesetID: "123123123123123123123123",
     layout: {
       header: [],
       body: [],
     },
   };
   const initialContent: Content[] = [];
-  const gameSystem: GameSystem | undefined = undefined;
+  const ruleset: Ruleset | undefined = undefined;
 
   return {
     contentCount,
     initialContent,
-    gameSystem,
+    ruleset,
     contentType,
   };
 };
