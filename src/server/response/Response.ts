@@ -19,7 +19,7 @@ export default class HTTPHandler {
     this.res = res;
   }
 
-  public async handle() {
+  public async handle(): Promise<void> {
     const responseJson = {
       content: {},
       message: "",
@@ -46,5 +46,14 @@ export default class HTTPHandler {
       responseJson.message = `An unexpected error occured. If this continues occuring,
         please contact our staff!`;
     }
+  }
+
+  protected returnSuccess(data: Record<string, unknown>): void {
+    const responseBody = {
+      success: true,
+      data: data,
+      message: "",
+    };
+    this.res.status(200).json(responseBody);
   }
 }

@@ -52,9 +52,11 @@ export function toURLParams(data?: Record<string, string>) {
  */
 async function get(
   url: string,
-  data?: Record<string, string>,
+  data?: string | string[][] | Record<string, string> | URLSearchParams | undefined,
   requestInit: RequestInit = defaultRequestInit
 ) {
+  const myUrl = new URLSearchParams(data).toString()
+  console.log(myUrl)
   requestInit.method = "GET";
   // TODO - convert data to url params
   const urlParams = toURLParams(data);

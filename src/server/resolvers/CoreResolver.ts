@@ -45,9 +45,7 @@ export default class CoreResolver {
    * @param options General options for modifying results, such as length and how many to skip
    */
   public static findMany(filters?: any, options?: Options, ctx?: Context): FindManyResponse<GenericDocumentType> {
-    console.log(options)
     const mongooseFilters = buildFilters(filters);
-    console.log(mongooseFilters)
     return this.model.find(mongooseFilters, null, options);
   }
 
