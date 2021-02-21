@@ -15,8 +15,13 @@ async function getRuleset(this: HTTPHandler, req: NextApiRequest) {
   });
 }
 
+/**
+ * Deletes a single ruleset
+ * @param this The handler class calling this function
+ * @param req The request to delete in the server
+ */
 async function deleteRuleset(this: HTTPHandler, req: NextApiRequest) {
-  const result = await RulesetResolver.deleteOne(req.body._id);
+  const result = await RulesetResolver.deleteOne(req.query.id as string);
   this.returnSuccess({ result });
 }
 

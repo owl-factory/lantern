@@ -27,6 +27,7 @@ interface FetchRulesetData {
 }
 
 const initialPerPage = 10; // The initial limit of items per page
+const initialSortBy = "name";
 
 /**
  * Queries rulesets
@@ -37,18 +38,18 @@ const initialPerPage = 10; // The initial limit of items per page
 async function queryRulesets(
   page: number,
   perPage: number,
-  filters?: Record<string, string>
+  sortBy: string,
+  filters?: Record<string, unknown>
 ): Promise<FetchRulesetData> {
   const body = { filters, options: {
     limit: perPage,
     skip: (page - 1) * perPage,
+    sort: sortBy,
   }};
   const res = await request.post<FetchRulesetData>("/api/rulesets", body);
   if (res.success) { return res.data; }
   return { rulesets: [], rulesetCount: 0 };
 }
-
-
 
 /**
  * Renders the form to create a new game system.
@@ -124,6 +125,34 @@ function RulesetModal({ handleClose, modal }: { handleClose: () => void, modal: 
   );
 }
 
+function RulesetFilter(
+  { filters, setFilters }: {
+    filters: Record<string, unknown>,
+    setFilters: (values: any) => (void)
+  }
+) {
+  return (
+    <Formik
+      initialValues={ filters as Record<string, string> }
+      onSubmit={async (values) => { await setFilters(values); }}
+    >
+      {() => (
+        <Form>
+          {/* Just name for now */}
+          <Row>
+            <FormGroup as={Col} xs={12} lg={6}>
+              <FormLabel>Ruleset Name</FormLabel>
+              <Input name="name.like"/>
+            </FormGroup>
+          </Row>
+
+          <Button type="submit">Search!</Button>
+        </Form>
+      )}
+    </Formik>
+  );
+}
+
 /**
  * Renders out the base Ruleset page.
  * @param initialRulesets The initial group of rulesets to render in the table
@@ -131,7 +160,9 @@ function RulesetModal({ handleClose, modal }: { handleClose: () => void, modal: 
  */
 export default function Rulesets({ initialRulesets, rulesetCount }: RulesetProps): JSX.Element {
   const [ rulesets, setRulesets ] = React.useState(initialRulesets);
+  const [ filters, setFilters ] = React.useState({ name: {like : "" }} as Record<string, unknown>);
   const [ modal, setModal ] = React.useState(false); // Boolean for rendering the modal
+  const [ sortBy, setSortByHook ] = React.useState(initialSortBy);
   function handleClose() { setModal(false); } // Handles closing the modal
 
   // Page state for rendering the pagination
@@ -145,14 +176,50 @@ export default function Rulesets({ initialRulesets, rulesetCount }: RulesetProps
    * Runs the actions needed to change the page state
    * @param newPageState The new page state to fetch when changing page
    */
+  async function setNewFilters(newFilters: Record<string, unknown>) {
+    const newRulesetData = await queryRulesets(
+      1,
+      pageState.perPage,
+      sortBy,
+      newFilters,
+    );
+
+    setRulesets(newRulesetData.rulesets);
+    setFilters(newFilters);
+    setPageState({...pageState, page: 1, totalCount: newRulesetData.rulesetCount});
+  }
+
+  /**
+   * Runs the actions needed to change the page state
+   * @param newPageState The new page state to fetch when changing page
+   */
   async function setPage(newPageState: PageState) {
     const newRulesetData = await queryRulesets(
       newPageState.page,
-      newPageState.perPage
+      newPageState.perPage,
+      sortBy,
+      filters,
     );
 
     setRulesets(newRulesetData.rulesets);
     setPageState({...newPageState, totalCount: newRulesetData.rulesetCount});
+  }
+
+  /**
+   * Sets a new string to sort by and fetches the data again
+   * @param newSortBy The new string to sort by
+   */
+  async function setSortBy(newSortBy: string) {
+    const newRulesetData = await queryRulesets(
+      pageState.page,
+      pageState.perPage,
+      newSortBy,
+      filters,
+    );
+
+    setRulesets(newRulesetData.rulesets);
+    setPageState({...pageState, totalCount: newRulesetData.rulesetCount});
+    setSortByHook(newSortBy);
   }
 
   /**
@@ -165,6 +232,15 @@ export default function Rulesets({ initialRulesets, rulesetCount }: RulesetProps
         `/api/rulesets/${context._id}`, {}
       );
       // Do something?
+      const newRulesetData = await queryRulesets(
+        pageState.page,
+        pageState.perPage,
+        sortBy,
+        filters,
+      );
+
+      setRulesets(newRulesetData.rulesets);
+      setPageState({...pageState, totalCount: newRulesetData.rulesetCount});
     }
   }
 
@@ -177,7 +253,7 @@ export default function Rulesets({ initialRulesets, rulesetCount }: RulesetProps
   // Builds the table columns
   const tableBuilder = new TableBuilder()
     .addIncrementColumn("")
-    .addDataColumn("Ruleset", "name")
+    .addDataColumn("Ruleset", "name", { sortable: true })
     .addComponentColumn("Tools", RulesetActions);
 
   /**
@@ -200,11 +276,14 @@ export default function Rulesets({ initialRulesets, rulesetCount }: RulesetProps
       <Button onClick={() => { setModal(true); }}>New Ruleset</Button>
       <RulesetModal modal={modal} handleClose={handleClose}/>
       {/* Search & Filters */}
+      <RulesetFilter filters={filters} setFilters={setNewFilters} />
       {/* Table */}
       <Table
         {...tableBuilder.renderConfig()}
         data={rulesets}
         startingIncrement={(pageState.page - 1) * pageState.perPage + 1}
+        sortBy={sortBy}
+        setSortBy={setSortBy}
       />
       <Pagination pageState={pageState} setPageState={setPage}/>
     </Page>
@@ -212,6 +291,8 @@ export default function Rulesets({ initialRulesets, rulesetCount }: RulesetProps
 }
 
 Rulesets.getInitialProps = async () => {
-  const res = await request.post<FetchRulesetData>("/api/rulesets", { options: { limit: initialPerPage } } );
+  const res = await request.post<FetchRulesetData>(
+    "/api/rulesets", { options: { limit: initialPerPage, sort: initialSortBy } }
+  );
   return { initialRulesets: res.data.rulesets, rulesetCount: res.data.rulesetCount };
 };
