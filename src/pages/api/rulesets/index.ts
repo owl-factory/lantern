@@ -1,18 +1,14 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { RulesetResolver } from "../../../server/resolvers/RulesetResolver";
 import HTTPHandler from "../../../server/response/Response";
-import { URL } from "url";
 
 /**
  * Fetches a subset of all matching rulesets and the total count of rulesets matching the filters
  * @param this The Handler class calling this function
  * @param req The request to the server
  */
-async function getRulesets(this: HTTPHandler, req: NextApiRequest) {
-  console.log(req.query)
-  // const testURL = new URL(req.url as string);
-  // console.log(testURL.searchParams)
-  const rulesets = await RulesetResolver.findMany();
+async function fetchRulesets(this: HTTPHandler, req: NextApiRequest) {
+  const rulesets = await RulesetResolver.findMany(req.body.filter, req.body.options);
   const rulesetCount = await RulesetResolver.findCount(req.body.filter);
   this.returnSuccess({
     rulesets: rulesets,
@@ -37,7 +33,7 @@ async function createRuleset(this: HTTPHandler, req: NextApiRequest) {
  */
 export default async function rulesetsEndpoint(req: NextApiRequest, res: NextApiResponse): Promise<void> {
   const handler = new HTTPHandler(req, res);
-  handler.GET = getRulesets;
-  handler.POST = createRuleset;
+  handler.POST = fetchRulesets;
+  handler.PUT = createRuleset;
   await handler.handle();
 }

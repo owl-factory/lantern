@@ -1,12 +1,11 @@
-import { Formik, Form } from "formik";
+import { Form, Formik } from "formik";
 import React from "react";
 import { Button, Card, Col, FormGroup, FormLabel, Row } from "react-bootstrap";
 import Modal from "../../components/design/Modal";
 import Page from "../../components/design/Page";
-// import * as Yup from "yup";
-import { ErrorMessage, Input, Select } from "../../components/design/forms/Forms";
+import { ErrorMessage, Input } from "../../components/design/forms/Forms";
 import request from "../../utilities/request";
-import { MdPageview, MdInfo, MdBuild, MdBlock } from "react-icons/md";
+import {  MdBlock, MdBuild, MdInfo } from "react-icons/md";
 import ContextMenu from "../../components/design/contextMenus/ContextMenu";
 import { TableComponentProps } from "../../types/design/table";
 import { ContextMenuBuilder } from "../../utilities/design/contextMenu";
@@ -14,41 +13,79 @@ import { TableBuilder } from "../../utilities/design/table";
 import { Ruleset } from "../../types/documents";
 import Table from "../../components/design/tables/Table";
 import Pagination, { PageState } from "../../components/design/Pagination";
-import { Options } from "../../types/inputs/options";
+import { useRouter } from "next/router";
+import * as Yup from "yup";
+
+interface RulesetProps {
+  initialRulesets: Ruleset[];
+  rulesetCount: number;
+}
+
+interface FetchRulesetData {
+  rulesets: Ruleset[];
+  rulesetCount: number;
+}
+
+const initialPerPage = 10; // The initial limit of items per page
+
+/**
+ * Queries rulesets
+ * @param page The target page
+ * @param perPage The maximum number of items per page
+ * @param filters Any additional filters for filtering content
+ */
+async function queryRulesets(
+  page: number,
+  perPage: number,
+  filters?: Record<string, string>
+): Promise<FetchRulesetData> {
+  const body = { filters, options: {
+    limit: perPage,
+    skip: (page - 1) * perPage,
+  }};
+  const res = await request.post<FetchRulesetData>("/api/rulesets", body);
+  if (res.success) { return res.data; }
+  return { rulesets: [], rulesetCount: 0 };
+}
+
 
 
 /**
  * Renders the form to create a new game system.
  */
 function CreateRulesetForm() {
-  const [ errors, setErrors ] = React.useState({name: "Oh hai error"});
+  const router = useRouter();
 
   /**
    * Runs the submit action of the create game system form and handles
    * the success and failure results
+   *
    * @param values The values from the form to submit
    */
   async function onSubmit(values: Record<string, string>) {
-    const response = await request.post(
+    const response = await request.put<{ ruleset: Ruleset }>(
       "/api/rulesets",
       values
     );
-    console.log(response);
-    
+    if (!response.success) {
+      alert(response.message);
+      return;
+    }
+
+    const href = `/rulesets/${response.data.ruleset._id}`;
+    router.push(href);
   }
 
   return (
     <Formik
-      initialErrors={ errors }
-      initialValues={ {} }
+      initialErrors={ {} }
+      initialValues={ { name: "" } }
       onSubmit={onSubmit}
-      // validationSchema={Yup.object({
-      //   name: Yup.string()
-      //     .required("Required")
-      //     .max(100, "Maximum of 100 characters"),
-      //   alias: Yup.string()
-      //     .max(20, "Maximum of 20 characters"),
-      // })}
+      validationSchema={Yup.object({
+        name: Yup.string()
+          .required("Required")
+          .max(100, "Maximum of 100 characters"),
+      })}
     >
       {() => (
         <Form>
@@ -68,11 +105,17 @@ function CreateRulesetForm() {
   );
 }
 
+/**
+ * Renders a modal for the Rulesets Page to create a new ruleset
+ *
+ * @param handleClose The function that handles closing the modal
+ * @param modal Boolean. Show the modal if true.
+ */
 function RulesetModal({ handleClose, modal }: { handleClose: () => void, modal: boolean }) {
   return (
     <Modal open={modal} handleClose={handleClose}>
       <Card>
-        <Card.Header>Create a New Rule Set</Card.Header>
+        <Card.Header>Create a New Ruleset</Card.Header>
         <Card.Body>
           <CreateRulesetForm/>
         </Card.Body>
@@ -81,47 +124,27 @@ function RulesetModal({ handleClose, modal }: { handleClose: () => void, modal: 
   );
 }
 
-const initialPerPage = 1;
-const gameSystemActions = new ContextMenuBuilder()
-  .addLink("Details", MdInfo, "/rulesets/[alias]")
-  .addLink("Edit", MdBuild, "/rulesets/[alias]/edit")
-  .addItem("Delete", MdBlock, (context: Ruleset) => (confirm(`Are you sure you want to delete ${context.name}?`)));
-
-const tableBuilder = new TableBuilder()
-  .addIncrementColumn("")
-  .addDataColumn("Ruleset", "name")
-  .addComponentColumn("Tools", RulesetActions);
-
 /**
- * Renders the actions for the game systems page
- * @param props A game system object
+ * Renders out the base Ruleset page.
+ * @param initialRulesets The initial group of rulesets to render in the table
+ * @param rulesetCount The initial count of rulesets retrievable
  */
-function RulesetActions({ data }: TableComponentProps) {
-  return (
-    <ContextMenu
-      context={{name: data.name, alias: data.alias || data._id}}
-      {...gameSystemActions.renderConfig()}
-    />
-  );
-}
-
-async function queryRulesets(page: number, perPage: number, filters?: Record<string, string>) {
-  const res = await request.get("/api/rulesets", filters || {});
-  if (res.success) { return res.data; }
-  return { rulesets: [], rulesetCount: 0 };
-}
-
-export default function Rulesets({ initialRulesets, rulesetCount }: any): JSX.Element {
+export default function Rulesets({ initialRulesets, rulesetCount }: RulesetProps): JSX.Element {
   const [ rulesets, setRulesets ] = React.useState(initialRulesets);
-  const [ modal, setModal ] = React.useState(false);
-  function handleClose() { setModal(false); }
+  const [ modal, setModal ] = React.useState(false); // Boolean for rendering the modal
+  function handleClose() { setModal(false); } // Handles closing the modal
 
+  // Page state for rendering the pagination
   const [pageState, setPageState] = React.useState({
     page: 1,
     perPage: initialPerPage,
     totalCount: rulesetCount,
   });
 
+  /**
+   * Runs the actions needed to change the page state
+   * @param newPageState The new page state to fetch when changing page
+   */
   async function setPage(newPageState: PageState) {
     const newRulesetData = await queryRulesets(
       newPageState.page,
@@ -132,6 +155,43 @@ export default function Rulesets({ initialRulesets, rulesetCount }: any): JSX.El
     setPageState({...newPageState, totalCount: newRulesetData.rulesetCount});
   }
 
+  /**
+   * Runs the action to delete the ruleset
+   * @param context The context for rendering information
+   */
+  async function deleteRuleset(context: Ruleset) {
+    if (confirm(`Are you sure you want to delete ${context.name}?`)) {
+      await request.delete<FetchRulesetData>(
+        `/api/rulesets/${context._id}`, {}
+      );
+      // Do something?
+    }
+  }
+
+  // Adds actions for the table builder
+  const rulesetActions = new ContextMenuBuilder()
+    .addLink("Details", MdInfo, "/rulesets/[alias]")
+    .addLink("Edit", MdBuild, "/rulesets/[alias]/edit")
+    .addItem("Delete", MdBlock, (context: Ruleset) => (deleteRuleset(context)));
+
+  // Builds the table columns
+  const tableBuilder = new TableBuilder()
+    .addIncrementColumn("")
+    .addDataColumn("Ruleset", "name")
+    .addComponentColumn("Tools", RulesetActions);
+
+  /**
+   * Renders the actions for the rulesets page
+   * @param data A ruleset object
+   */
+  function RulesetActions({ data }: TableComponentProps) {
+    return (
+      <ContextMenu
+        context={{_id: data._id, name: data.name, alias: data.alias || data._id}}
+        {...rulesetActions.renderConfig()}
+      />
+    );
+  }
 
   return (
     <Page>
@@ -152,6 +212,6 @@ export default function Rulesets({ initialRulesets, rulesetCount }: any): JSX.El
 }
 
 Rulesets.getInitialProps = async () => {
-  const res = await request.get("/api/rulesets", { options: { limit: 1 }} );
+  const res = await request.post<FetchRulesetData>("/api/rulesets", { options: { limit: initialPerPage } } );
   return { initialRulesets: res.data.rulesets, rulesetCount: res.data.rulesetCount };
 };
