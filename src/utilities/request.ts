@@ -1,16 +1,17 @@
 import fetch from "cross-fetch";
+import { ServerResponse } from "../types/utilities/response";
 
-// The default request initialization. 
+// The default request initialization.
 const defaultRequestInit: RequestInit = {
   mode: "cors",
   cache: "no-cache",
   credentials: "same-origin",
   headers: {
-    "Content-Type": "application/json"
+    "Content-Type": "application/json",
   },
   redirect: "follow",
-  referrerPolicy: "no-referrer"
-}
+  referrerPolicy: "no-referrer",
+};
 
 // TODO - load in from env variable
 const thisDomain = "http://localhost:3000";
@@ -21,7 +22,7 @@ const thisDomain = "http://localhost:3000";
  * @param url The url to format properly
  */
 function formatURL(url: string) {
-  if (url.charAt(0) === "/") { return thisDomain + url }
+  if (url.charAt(0) === "/") { return thisDomain + url; }
   return url;
 }
 
@@ -29,7 +30,7 @@ function formatURL(url: string) {
  * Converts an object into URI parameters
  * @param data The data object to convert into URI parameters
  */
-export function toURLParams(data?: Record<string, string>) {
+export function toURLParams(data?: Record<string, string | unknown>): string {
   if (!data) { return ""; }
 
   let urlParams = "?";
@@ -50,40 +51,100 @@ export function toURLParams(data?: Record<string, string>) {
  * @param url The url of the API to request
  * @param requestInit  The request instructions
  */
-async function get(
+async function get<T>(
   url: string,
   data?: Record<string, string>,
   requestInit: RequestInit = defaultRequestInit
-) {
+): Promise<ServerResponse<T>> {
   requestInit.method = "GET";
   // TODO - convert data to url params
   const urlParams = toURLParams(data);
-  console.log(urlParams)
   const response = await fetch(formatURL(url) + urlParams, requestInit);
   return response.json(); // parses JSON response into native JavaScript objects
 }
 
 /**
- * Runs a standard get request
+ * Runs a standard post request
  * @param url The url of the API to request
  * @param data The data to send through the Post request
  * @param requestInit  The request instructions
  */
-async function post(
+async function post<T>(
   url: string,
   data: Record<string, unknown>,
   requestInit: RequestInit = defaultRequestInit
-) {
+): Promise<ServerResponse<T>> {
   requestInit.method = "POST";
-  requestInit.body = JSON.stringify(data);
+  return postlike(url, data, requestInit);
+}
 
+/**
+ * Runs a standard put request
+ * @param url The url of the API to request
+ * @param data The data to send through the Post request
+ * @param requestInit  The request instructions
+ */
+async function put<T>(
+  url: string,
+  data: Record<string, unknown>,
+  requestInit: RequestInit = defaultRequestInit
+): Promise<ServerResponse<T>> {
+  requestInit.method = "PUT";
+  return postlike(url, data, requestInit);
+}
+
+/**
+ * Runs a standard put request
+ * @param url The url of the API to request
+ * @param data The data to send through the Post request
+ * @param requestInit  The request instructions
+ */
+async function patch<T>(
+  url: string,
+  data: Record<string, unknown>,
+  requestInit: RequestInit = defaultRequestInit
+): Promise<ServerResponse<T>> {
+  requestInit.method = "PATCH";
+  return postlike(url, data, requestInit);
+}
+
+/**
+ * Runs a standard put request
+ * @param url The url of the API to request
+ * @param data The data to send through the Post request
+ * @param requestInit  The request instructions
+ */
+async function del<T>(
+  url: string,
+  data: Record<string, unknown>,
+  requestInit: RequestInit = defaultRequestInit
+): Promise<ServerResponse<T>> {
+  requestInit.method = "DELETE";
+  return postlike(url, data, requestInit);
+}
+
+/**
+ * A standard postlike request, sending an object with a specific REST method
+ * @param url The url of the API to request
+ * @param data The data to send through the Post request
+ * @param requestInit  The request instructions
+ */
+async function postlike<T>(
+  url: string,
+  data: Record<string, unknown>,
+  requestInit: RequestInit = defaultRequestInit
+):Promise<ServerResponse<T>> {
+  requestInit.body = JSON.stringify(data);
   const response = await fetch(formatURL(url), requestInit);
   return response.json(); // parses JSON response into native JavaScript objects
 }
 
 const request = {
   get,
-  post
-}
+  post,
+  put,
+  patch,
+  delete: del,
+};
 
 export default request;
