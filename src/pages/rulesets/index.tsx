@@ -15,6 +15,7 @@ import Table from "../../components/design/tables/Table";
 import Pagination, { PageState } from "../../components/design/Pagination";
 import { useRouter } from "next/router";
 import * as Yup from "yup";
+import { SuperTable } from "../../components/SuperTable";
 
 interface RulesetProps {
   initialRulesets: Ruleset[];
@@ -36,10 +37,10 @@ const initialSortBy = "name";
  * @param filters Any additional filters for filtering content
  */
 async function queryRulesets(
+  filters: Record<string, unknown> = {},
   page: number,
   perPage: number,
   sortBy: string,
-  filters?: Record<string, unknown>
 ): Promise<FetchRulesetData> {
   const body = { filters, options: {
     limit: perPage,
@@ -125,31 +126,11 @@ function RulesetModal({ handleClose, modal }: { handleClose: () => void, modal: 
   );
 }
 
-function RulesetFilter(
-  { filters, setFilters }: {
-    filters: Record<string, unknown>,
-    setFilters: (values: any) => (void)
-  }
-) {
+function RulesetFilter() {
   return (
-    <Formik
-      initialValues={ filters as Record<string, string> }
-      onSubmit={async (values) => { await setFilters(values); }}
-    >
-      {() => (
-        <Form>
-          {/* Just name for now */}
-          <Row>
-            <FormGroup as={Col} xs={12} lg={6}>
-              <FormLabel>Ruleset Name</FormLabel>
-              <Input name="name.like"/>
-            </FormGroup>
-          </Row>
-
-          <Button type="submit">Search!</Button>
-        </Form>
-      )}
-    </Formik>
+    <>
+      Hi
+    </>
   );
 }
 
@@ -276,16 +257,27 @@ export default function Rulesets({ initialRulesets, rulesetCount }: RulesetProps
       <Button onClick={() => { setModal(true); }}>New Ruleset</Button>
       <RulesetModal modal={modal} handleClose={handleClose}/>
       {/* Search & Filters */}
-      <RulesetFilter filters={filters} setFilters={setNewFilters} />
+      {/* <RulesetFilter filters={filters} setFilters={setNewFilters} /> */}
       {/* Table */}
-      <Table
+      {/* <Table
         {...tableBuilder.renderConfig()}
         data={rulesets}
         startingIncrement={(pageState.page - 1) * pageState.perPage + 1}
         sortBy={sortBy}
         setSortBy={setSortBy}
       />
-      <Pagination pageState={pageState} setPageState={setPage}/>
+      <Pagination pageState={pageState} setPageState={setPage}/> */}
+      <SuperTable
+        tableBuilder={tableBuilder}
+        content={initialRulesets}
+        contentCount={rulesetCount}
+        fetchContent={queryRulesets}
+        filters={{ name: {like: "" } }}
+        FilterContent={RulesetFilter}
+        perPage={25}
+        sort="name"
+
+      />
     </Page>
   );
 }
