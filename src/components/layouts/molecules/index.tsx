@@ -41,3 +41,5 @@ export function DynamicMolecule(props: MoleculeProps) {
       return <>{atoms}</>;
   }
 }
+
+export * from "./Accordion";

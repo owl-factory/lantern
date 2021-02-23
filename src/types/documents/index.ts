@@ -10,8 +10,8 @@ import { Content, ContentModel } from "./Content";
 import { ContentType, ContentTypeModel } from "./ContentType";
 import { Entity, EntityModel } from "./Entity";
 import { CoreDocument } from "./CoreDocument";
-import { Organization, OrganizationModel } from "./Organization";
-import { Ruleset, RulesetModel } from "./Ruleset";
+import { OrganizationDoc, OrganizationModel } from "./Organization";
+import { RulesetDoc, RulesetModel } from "./Ruleset";
 
 /**
  * A generic document type for any situation where we might be getting document data but
@@ -22,8 +22,8 @@ export type GenericDocumentType = (
   ContentType |
   Entity |
   CoreDocument |
-  Organization |
-  Ruleset
+  OrganizationDoc |
+  RulesetDoc
 );
 
 /**

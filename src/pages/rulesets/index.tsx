@@ -7,23 +7,20 @@ import { ErrorMessage, Input } from "../../components/design/forms/Forms";
 import request from "../../utilities/request";
 import {  MdBlock, MdBuild, MdInfo } from "react-icons/md";
 import ContextMenu from "../../components/design/contextMenus/ContextMenu";
-import { TableComponentProps } from "../../types/design/table";
 import { ContextMenuBuilder } from "../../utilities/design/contextMenu";
 import { TableBuilder } from "../../utilities/design/table";
-import { Ruleset } from "../../types/documents";
-import Table from "../../components/design/tables/Table";
-import Pagination, { PageState } from "../../components/design/Pagination";
+import { RulesetDoc, TableComponentProps } from "../../types";
 import { useRouter } from "next/router";
 import * as Yup from "yup";
 import { SuperTable } from "../../components/SuperTable";
 
 interface RulesetProps {
-  initialRulesets: Ruleset[];
+  initialRulesets: RulesetDoc[];
   rulesetCount: number;
 }
 
 interface FetchRulesetData {
-  rulesets: Ruleset[];
+  rulesets: RulesetDoc[];
   rulesetCount: number;
 }
 
@@ -65,7 +62,7 @@ function CreateRulesetForm() {
    * @param values The values from the form to submit
    */
   async function onSubmit(values: Record<string, string>) {
-    const response = await request.put<{ ruleset: Ruleset }>(
+    const response = await request.put<{ ruleset: RulesetDoc }>(
       "/api/rulesets",
       values
     );
@@ -146,82 +143,17 @@ export default function Rulesets({ initialRulesets, rulesetCount }: RulesetProps
   const [ sortBy, setSortByHook ] = React.useState(initialSortBy);
   function handleClose() { setModal(false); } // Handles closing the modal
 
-  // Page state for rendering the pagination
-  const [pageState, setPageState] = React.useState({
-    page: 1,
-    perPage: initialPerPage,
-    totalCount: rulesetCount,
-  });
-
-  /**
-   * Runs the actions needed to change the page state
-   * @param newPageState The new page state to fetch when changing page
-   */
-  async function setNewFilters(newFilters: Record<string, unknown>) {
-    const newRulesetData = await queryRulesets(
-      1,
-      pageState.perPage,
-      sortBy,
-      newFilters,
-    );
-
-    setRulesets(newRulesetData.rulesets);
-    setFilters(newFilters);
-    setPageState({...pageState, page: 1, totalCount: newRulesetData.rulesetCount});
-  }
-
-  /**
-   * Runs the actions needed to change the page state
-   * @param newPageState The new page state to fetch when changing page
-   */
-  async function setPage(newPageState: PageState) {
-    const newRulesetData = await queryRulesets(
-      newPageState.page,
-      newPageState.perPage,
-      sortBy,
-      filters,
-    );
-
-    setRulesets(newRulesetData.rulesets);
-    setPageState({...newPageState, totalCount: newRulesetData.rulesetCount});
-  }
-
-  /**
-   * Sets a new string to sort by and fetches the data again
-   * @param newSortBy The new string to sort by
-   */
-  async function setSortBy(newSortBy: string) {
-    const newRulesetData = await queryRulesets(
-      pageState.page,
-      pageState.perPage,
-      newSortBy,
-      filters,
-    );
-
-    setRulesets(newRulesetData.rulesets);
-    setPageState({...pageState, totalCount: newRulesetData.rulesetCount});
-    setSortByHook(newSortBy);
-  }
-
   /**
    * Runs the action to delete the ruleset
    * @param context The context for rendering information
    */
-  async function deleteRuleset(context: Ruleset) {
+  async function deleteRuleset(context: RulesetDoc) {
     if (confirm(`Are you sure you want to delete ${context.name}?`)) {
       await request.delete<FetchRulesetData>(
         `/api/rulesets/${context._id}`, {}
       );
       // Do something?
-      const newRulesetData = await queryRulesets(
-        pageState.page,
-        pageState.perPage,
-        sortBy,
-        filters,
-      );
-
-      setRulesets(newRulesetData.rulesets);
-      setPageState({...pageState, totalCount: newRulesetData.rulesetCount});
+      // TODO - trigger reload downstream
     }
   }
 
@@ -229,7 +161,7 @@ export default function Rulesets({ initialRulesets, rulesetCount }: RulesetProps
   const rulesetActions = new ContextMenuBuilder()
     .addLink("Details", MdInfo, "/rulesets/[alias]")
     .addLink("Edit", MdBuild, "/rulesets/[alias]/edit")
-    .addItem("Delete", MdBlock, (context: Ruleset) => (deleteRuleset(context)));
+    .addItem("Delete", MdBlock, (context: RulesetDoc) => (deleteRuleset(context)));
 
   // Builds the table columns
   const tableBuilder = new TableBuilder()
