@@ -9,6 +9,13 @@ interface FilterProps {
   FilterContent: () => JSX.Element;
 }
 
+interface updateState {
+  filters: Record<string, unknown>;
+  page: number;
+  perPage: number;
+  sort: string;
+}
+
 /**
  * Renders the Filter section of the Super Table
  * @param filters The form containing the filters to initially render
@@ -25,14 +32,15 @@ function FilterSection({ filters, updateAll, FilterContent}: FilterProps) {
         <Form>
           <FilterContent />
 
-          <button className="btn" type="submit">Search!</button>
+          <button className="btn btn-seconary">Reset</button>
+          <button className="btn btn-primary" type="submit">Search!</button>
         </Form>
       )}
     </Formik>
   );
 }
 
-export function SuperTable(props: any) {
+export function SuperTable(props: any): JSX.Element {
   const [ content, setContent ] = React.useState(props.content);
   const [ filters, setFilters ] = React.useState(props.initialFilters || {});
   const [ pageState, setPageState ] = React.useState({
@@ -51,7 +59,7 @@ export function SuperTable(props: any) {
    * Fetches new content with changing filters and parameters.
    * @param newState An object containing any new information to fetch and save
    */
-  async function updateAll(newState: any) {
+  async function updateAll(newState: updateState) {
     const newContent = await props.fetchContent(
       newState.filters || filters,
       newState.perPage || pageState.perPage,
@@ -59,17 +67,18 @@ export function SuperTable(props: any) {
       newState.sort || sort,
     );
 
-    setContent(newContent.content);
+
+    setContent(newContent[props.contentKey]);
     if (newState.filters) {
       setFilters(newState.filters);
-      setPageState({...pageState, page: 1, totalCount: newContent.count});
+      setPageState({...pageState, page: 1, totalCount: newContent[props.countKey]});
     }
     if (newState.page || newState.perPage) {
       setPageState({
         ...pageState,
         page: newState.page || pageState.page,
         perPage: newState.perPage || pageState.perPage,
-        totalCount: newContent.count,
+        totalCount: newContent[props.countKey],
       });
     }
     if (newState.sort) { setSort(newState.sort); }

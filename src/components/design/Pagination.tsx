@@ -7,6 +7,7 @@ interface PaginationProps {
   setPageState: (pageState: PageState) => (void); // Function to update the page state
 }
 
+// TODO - move to types!
 export interface PageState {
   page: number; // The current page
   perPage: number; // The number of items per page
@@ -50,7 +51,7 @@ function PaginationCell(props: PaginationCellProps) {
 function Pagination(props: PaginationProps): JSX.Element {
   const perPage = (props.pageState.perPage >= 1) ? props.pageState.perPage : 1;
   let maxPage = Math.ceil((props.pageState.totalCount) / perPage);
-  if (maxPage == 0) { maxPage = 1; } // Prevents issues with zero items
+  if (maxPage === 0) { maxPage = 1; } // Prevents issues with zero items
 
   /**
    * Sets the page and runs associated actions

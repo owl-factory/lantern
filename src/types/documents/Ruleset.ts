@@ -1,8 +1,8 @@
 import { Severity, getModelForClass, modelOptions } from "@typegoose/typegoose";
 import { CoreDocument } from "./CoreDocument";
 
-@modelOptions({ options: { allowMixed: Severity.ALLOW } } )
+@modelOptions({ schemaOptions: { collection: "rulesets" }, options: { allowMixed: Severity.ALLOW } } )
 export class RulesetDoc extends CoreDocument {
 }
 
-export const RulesetModel = getModelForClass(RulesetDoc);
+export const RulesetModel = getModelForClass(RulesetDoc, {schemaOptions: { collection: "rulesets" } });

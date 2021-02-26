@@ -14,11 +14,13 @@ import { useRouter } from "next/router";
 import * as Yup from "yup";
 import { SuperTable } from "../../components/SuperTable";
 
+// The props for the RulesetPage
 interface RulesetProps {
   initialRulesets: RulesetDoc[];
   rulesetCount: number;
 }
 
+// The expected data packet response from the server for fetching rulesets
 interface FetchRulesetData {
   rulesets: RulesetDoc[];
   rulesetCount: number;
@@ -35,13 +37,13 @@ const initialSortBy = "name";
  */
 async function queryRulesets(
   filters: Record<string, unknown> = {},
-  page: number,
-  perPage: number,
+  limit: number,
+  skip: number,
   sortBy: string,
 ): Promise<FetchRulesetData> {
   const body = { filters, options: {
-    limit: perPage,
-    skip: (page - 1) * perPage,
+    limit: limit,
+    skip: skip,
     sort: sortBy,
   }};
   const res = await request.post<FetchRulesetData>("/api/rulesets", body);
@@ -126,7 +128,7 @@ function RulesetModal({ handleClose, modal }: { handleClose: () => void, modal: 
 function RulesetFilter() {
   return (
     <>
-      Hi
+      <Input name="name.like"/>
     </>
   );
 }
@@ -137,10 +139,7 @@ function RulesetFilter() {
  * @param rulesetCount The initial count of rulesets retrievable
  */
 export default function Rulesets({ initialRulesets, rulesetCount }: RulesetProps): JSX.Element {
-  const [ rulesets, setRulesets ] = React.useState(initialRulesets);
-  const [ filters, setFilters ] = React.useState({ name: {like : "" }} as Record<string, unknown>);
   const [ modal, setModal ] = React.useState(false); // Boolean for rendering the modal
-  const [ sortBy, setSortByHook ] = React.useState(initialSortBy);
   function handleClose() { setModal(false); } // Handles closing the modal
 
   /**
@@ -188,17 +187,6 @@ export default function Rulesets({ initialRulesets, rulesetCount }: RulesetProps
       {/* Create Ruleset */}
       <Button onClick={() => { setModal(true); }}>New Ruleset</Button>
       <RulesetModal modal={modal} handleClose={handleClose}/>
-      {/* Search & Filters */}
-      {/* <RulesetFilter filters={filters} setFilters={setNewFilters} /> */}
-      {/* Table */}
-      {/* <Table
-        {...tableBuilder.renderConfig()}
-        data={rulesets}
-        startingIncrement={(pageState.page - 1) * pageState.perPage + 1}
-        sortBy={sortBy}
-        setSortBy={setSortBy}
-      />
-      <Pagination pageState={pageState} setPageState={setPage}/> */}
       <SuperTable
         tableBuilder={tableBuilder}
         content={initialRulesets}
@@ -206,9 +194,10 @@ export default function Rulesets({ initialRulesets, rulesetCount }: RulesetProps
         fetchContent={queryRulesets}
         filters={{ name: {like: "" } }}
         FilterContent={RulesetFilter}
-        perPage={25}
+        perPage={initialPerPage}
         sort="name"
-
+        contentKey="rulesets"
+        countKey="rulesetCount"
       />
     </Page>
   );
