@@ -12,7 +12,7 @@ import { TableBuilder } from "../../utilities/design/table";
 import { RulesetDoc, TableComponentProps } from "../../types";
 import { useRouter } from "next/router";
 import * as Yup from "yup";
-import { SuperTable } from "../../components/SuperTable";
+import { IndexTable } from "../../components/design/tables/IndexTable";
 
 // The props for the RulesetPage
 interface RulesetProps {
@@ -40,15 +40,15 @@ async function queryRulesets(
   limit: number,
   skip: number,
   sortBy: string,
-): Promise<FetchRulesetData> {
+): Promise<unknown> {
   const body = { filters, options: {
     limit: limit,
     skip: skip,
     sort: sortBy,
   }};
   const res = await request.post<FetchRulesetData>("/api/rulesets", body);
-  if (res.success) { return res.data; }
-  return { rulesets: [], rulesetCount: 0 };
+  if (res.success) { return { content: res.data.rulesets, count: res.data.rulesetCount }; }
+  return { content: [], contentCount: 0 };
 }
 
 /**
@@ -187,7 +187,8 @@ export default function Rulesets({ initialRulesets, rulesetCount }: RulesetProps
       {/* Create Ruleset */}
       <Button onClick={() => { setModal(true); }}>New Ruleset</Button>
       <RulesetModal modal={modal} handleClose={handleClose}/>
-      <SuperTable
+      <br/><br/>
+      <IndexTable
         tableBuilder={tableBuilder}
         content={initialRulesets}
         contentCount={rulesetCount}
@@ -198,7 +199,9 @@ export default function Rulesets({ initialRulesets, rulesetCount }: RulesetProps
         sort="name"
         contentKey="rulesets"
         countKey="rulesetCount"
-      />
+      >
+        <RulesetFilter/>
+      </IndexTable>
     </Page>
   );
 }
