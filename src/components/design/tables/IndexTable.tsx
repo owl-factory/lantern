@@ -13,11 +13,12 @@ interface newFilterState {
   sort?: string;
 }
 
-interface fetchContentResponse {
+// TODO - move to a type
+export interface fetchContentResponse {
   // The new content fetched from the DB
   content: Record<string, unknown>[];
   // The total count of content records available
-  contentCount: number;
+  count: number;
 }
 
 // The function typing for fetching new content
@@ -26,7 +27,7 @@ type fetchContentFunction = (
   limit: number,
   skip: number,
   sortBy: string
-) => (fetchContentResponse)
+) => (Promise<fetchContentResponse>)
 
 // The props for the IndexTable
 interface IndexTableProps {
@@ -85,14 +86,14 @@ export function IndexTable(props: IndexTableProps): JSX.Element {
     // Sets new IndexTable filters if they were updated
     if (newState.filters) {
       setFilters(newState.filters);
-      setPageState({...pageState, page: 1, totalCount: newContent.contentCount});
+      setPageState({...pageState, page: 1, totalCount: newContent.count});
     }
     if (newState.page || newState.perPage) {
       setPageState({
         ...pageState,
         page: newState.page || pageState.page,
         perPage: newState.perPage || pageState.perPage,
-        totalCount: newContent.contentCount,
+        totalCount: newContent.count,
       });
     }
     if (newState.sort) { setSort(newState.sort); }

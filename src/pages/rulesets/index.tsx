@@ -12,7 +12,7 @@ import { TableBuilder } from "../../utilities/design/table";
 import { RulesetDoc, TableComponentProps } from "../../types";
 import { useRouter } from "next/router";
 import * as Yup from "yup";
-import { IndexTable } from "../../components";
+import { fetchContentResponse, IndexTable } from "../../components";
 
 // The props for the RulesetPage
 interface RulesetProps {
@@ -40,15 +40,15 @@ async function queryRulesets(
   limit: number,
   skip: number,
   sortBy: string,
-): Promise<unknown> {
+): Promise<fetchContentResponse> {
   const body = { filters, options: {
     limit: limit,
     skip: skip,
     sort: sortBy,
   }};
-  const res = await request.post<unknown>("/api/rulesets", body);
+  const res = await request.post<any>("/api/rulesets", body);
   if (res.success) { return { content: res.data.rulesets, count: res.data.rulesetCount }; }
-  return { content: [], contentCount: 0 };
+  return { content: [], count: 0 };
 }
 
 /**
@@ -148,7 +148,7 @@ export default function Rulesets({ initialRulesets, rulesetCount }: RulesetProps
    */
   async function deleteRuleset(context: RulesetDoc) {
     if (confirm(`Are you sure you want to delete ${context.name}?`)) {
-      await request.delete<FetchRulesetData>(
+      await request.delete<any>(
         `/api/rulesets/${context._id}`, {}
       );
       // Do something?
@@ -194,11 +194,8 @@ export default function Rulesets({ initialRulesets, rulesetCount }: RulesetProps
         contentCount={rulesetCount}
         fetchContent={queryRulesets}
         filters={{ name: {like: "" } }}
-        FilterContent={RulesetFilter}
-        perPage={initialPerPage}
+        limit={initialPerPage}
         sort="name"
-        contentKey="rulesets"
-        countKey="rulesetCount"
       >
         <RulesetFilter/>
       </IndexTable>

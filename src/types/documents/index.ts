@@ -10,6 +10,7 @@ import { Content, ContentModel } from "./Content";
 import { ContentType, ContentTypeModel } from "./ContentType";
 import { Entity, EntityModel } from "./Entity";
 import { CoreDocument } from "./CoreDocument";
+import { ModuleDoc, ModuleModel } from "./Module";
 import { OrganizationDoc, OrganizationModel } from "./Organization";
 import { RulesetDoc, RulesetModel } from "./Ruleset";
 
@@ -22,6 +23,7 @@ export type GenericDocumentType = (
   ContentType |
   Entity |
   CoreDocument |
+  ModuleDoc |
   OrganizationDoc |
   RulesetDoc
 );
@@ -33,6 +35,7 @@ export type GenericModelType = (
   typeof ContentModel |
   typeof ContentTypeModel |
   typeof EntityModel |
+  typeof ModuleModel |
   typeof OrganizationModel |
   typeof RulesetModel
 );
