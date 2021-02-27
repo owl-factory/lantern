@@ -139,12 +139,12 @@ async function postlike<T>(
   return response.json(); // parses JSON response into native JavaScript objects
 }
 
-const request = {
+export const request = {
   get,
   post,
   put,
   patch,
   delete: del,
 };
-
+export const rest = request;
 export default request;

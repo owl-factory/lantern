@@ -12,7 +12,7 @@ import { TableBuilder } from "../../utilities/design/table";
 import { RulesetDoc, TableComponentProps } from "../../types";
 import { useRouter } from "next/router";
 import * as Yup from "yup";
-import { IndexTable } from "../../components/design/tables/IndexTable";
+import { IndexTable } from "../../components";
 
 // The props for the RulesetPage
 interface RulesetProps {
@@ -21,7 +21,7 @@ interface RulesetProps {
 }
 
 // The expected data packet response from the server for fetching rulesets
-interface FetchRulesetData {
+interface FetchRulesetsData {
   rulesets: RulesetDoc[];
   rulesetCount: number;
 }
@@ -46,7 +46,7 @@ async function queryRulesets(
     skip: skip,
     sort: sortBy,
   }};
-  const res = await request.post<FetchRulesetData>("/api/rulesets", body);
+  const res = await request.post<unknown>("/api/rulesets", body);
   if (res.success) { return { content: res.data.rulesets, count: res.data.rulesetCount }; }
   return { content: [], contentCount: 0 };
 }
@@ -207,7 +207,7 @@ export default function Rulesets({ initialRulesets, rulesetCount }: RulesetProps
 }
 
 Rulesets.getInitialProps = async () => {
-  const res = await request.post<FetchRulesetData>(
+  const res = await request.post<FetchRulesetsData>(
     "/api/rulesets", { options: { limit: initialPerPage, sort: initialSortBy } }
   );
   return { initialRulesets: res.data.rulesets, rulesetCount: res.data.rulesetCount };

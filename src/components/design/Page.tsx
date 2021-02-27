@@ -12,7 +12,7 @@ interface PageProps {
  * @param {ReactNode} props.children The child elements nested within this element.
  * These are passed automatically
  */
-function Page(props: PageProps): JSX.Element {
+export function Page(props: PageProps): JSX.Element {
   return (
     <Container className="mt-3">
       {props.children}

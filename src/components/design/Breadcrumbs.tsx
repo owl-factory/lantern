@@ -13,7 +13,7 @@ interface BreadcrumbProps {
  * @param props.skipLevels A number indicating how many levels to skip. Default 0
  * @param props.titles An array of strings for the title of each level
  */
-function Breadcrumbs(props: BreadcrumbProps): JSX.Element {
+export function Breadcrumbs(props: BreadcrumbProps): JSX.Element {
   const router = useRouter();
   const skipLevels: number = props.skipLevels || 0;
   const titles: (string | undefined)[] = props.titles || [];
