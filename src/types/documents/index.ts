@@ -7,7 +7,7 @@ export * from "./Organization";
 export * from "./Ruleset";
 
 import { Content, ContentModel } from "./Content";
-import { ContentType, ContentTypeModel } from "./ContentType";
+import { ContentTypeDoc, ContentTypeModel } from "./ContentType";
 import { Entity, EntityModel } from "./Entity";
 import { CoreDocument } from "./CoreDocument";
 import { ModuleDoc, ModuleModel } from "./Module";
@@ -20,7 +20,7 @@ import { RulesetDoc, RulesetModel } from "./Ruleset";
  */
 export type GenericDocumentType = (
   Content |
-  ContentType |
+  ContentTypeDoc |
   Entity |
   CoreDocument |
   ModuleDoc |

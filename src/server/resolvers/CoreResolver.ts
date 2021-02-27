@@ -67,23 +67,26 @@ export default class CoreResolver {
    * @param data The data to insert into a new document
    * @param options Any additional options to save the data
    */
-  public static async createOne(data: CoreDocument, ctx?: Context): Promise<CreateOneResponse<GenericDocumentType>> {
-    const errors = await validate(data);
+  public static async createOne(
+    input: Record<string, unknown>,
+    ctx?: Context
+  ): Promise<CreateOneResponse<GenericDocumentType>> {
+    const errors = await validate(input);
     if (errors.length > 0) {
       throw new Error(errors.toString());
     }
 
     // Updates both so we can track when something was last created and when
     // it was last touched easier
-    data.createdAt = new Date();
-    data.createdBy = "1";
+    input.createdAt = new Date();
+    input.createdBy = "1";
     // data.createdBy = getUserID();
 
-    data.updatedAt = new Date();
-    data.updatedBy = "1";
+    input.updatedAt = new Date();
+    input.updatedBy = "1";
     // data.updatedBy = getUserID();
 
-    return this.model.create(data);
+    return this.model.create(input);
   }
 
   /**
@@ -92,7 +95,7 @@ export default class CoreResolver {
    * @param _id The id of the document to update
    * @param data The new data of the document to set
    */
-  public static async updateOne(_id: string, data: CoreDocument, ctx: Context): Promise<UpdateOneResponse> {
+  public static async updateOne(_id: string, data: Record<string, unknown>, ctx?: Context): Promise<UpdateOneResponse> {
     const errors = await validate(data);
     if (errors.length > 0) {
       throw new Error(errors.toString());

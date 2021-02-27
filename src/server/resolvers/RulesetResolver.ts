@@ -3,7 +3,6 @@ import {
   CreateModuleInput,
   CreateOneResponse,
   CreateRulesetInput,
-  GenericDocumentType,
   RulesetDoc,
   RulesetModel
 } from "../../types";
@@ -23,7 +22,7 @@ export class RulesetResolver extends CoreResolver {
    * @param options Any additional options to save the data
    */
   public static async createOne(
-    input: CreateRulesetInput,
+    input: Record<string, unknown>,
     ctx?: Context
   ): Promise<CreateOneResponse<RulesetDoc>> {
     let rulesetID = "";
@@ -38,7 +37,7 @@ export class RulesetResolver extends CoreResolver {
       const module = await ModuleResolver.createOne({
         name: "Core Rules",
         rulesetID: rulesetID,
-      } as CreateModuleInput, ctx);
+      }, ctx);
       moduleID = module._id as string;
 
       // Set ruleset's default module
@@ -51,5 +50,19 @@ export class RulesetResolver extends CoreResolver {
       if (moduleID.length === 24) { await ModuleResolver.deleteOne(rulesetID); }
       throw e;
     }
+  }
+
+  /**
+   * Deletes a single ruleset and it's associated default module
+   * @param _id The id of the ruleset to delete
+   * @param ctx The context 
+   */
+  public static async deleteOne(_id: string, ctx?: Context): Promise<any> {
+    // TODO - this is gonna be a hecking big function if we need to delete everything
+
+    // INitial delete
+    const ruleset = (await super.findOne(_id)) as RulesetDoc;
+    await ModuleResolver.deleteOne(ruleset.defaultModuleID as string);
+    await super.deleteOne(_id);
   }
 }

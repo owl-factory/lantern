@@ -28,7 +28,7 @@ function ContextDropdownButton() {
  * Renders the context menu
  * @param props Information for how to render the context buttons and de
  */
-export default function ContextMenu(props: ContextMenuProps): JSX.Element {
+export function ContextMenu(props: ContextMenuProps): JSX.Element {
   const buttonMenu = <ContextButtons {...props}/>;
   const dropdownMenu = <ContextDropdownMenu {...props}/>;
 
@@ -43,3 +43,5 @@ export default function ContextMenu(props: ContextMenuProps): JSX.Element {
     </Dropdown>
   );
 }
+
+export default ContextMenu;

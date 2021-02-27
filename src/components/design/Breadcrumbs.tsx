@@ -25,7 +25,7 @@ export function Breadcrumbs(props: BreadcrumbProps): JSX.Element {
     // TODO - BUG where trailing / causes extra slash to appear in breadcrumbs
     const crumbs = router.asPath.split("/");
     const breadcrumbs: JSX.Element[] = [];
-    let uri = "/";
+    let uri = "";
 
     for (let i = 0; i < crumbs.length; i++) {
       const titleIndex: number = i - skipLevels;

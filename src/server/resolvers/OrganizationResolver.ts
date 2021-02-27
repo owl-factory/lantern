@@ -10,11 +10,11 @@ export class OrganizationResolver extends CoreResolver {
 
   /**
    * Overrides the create one function of the Core Resolver
-   * @param data The data to save to the database
+   * @param input The data to save to the database
    * @param ctx The context of the request being sent
    */
-  public static createOne(data: CoreDocument, ctx?: Context) {
+  public static createOne(input: Record<string, unknown>, ctx?: Context) {
     // TODO - Does name already exist?
-    return super.createOne(data, ctx);
+    return super.createOne(input, ctx);
   }
 }

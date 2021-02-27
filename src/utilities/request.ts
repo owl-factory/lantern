@@ -56,10 +56,11 @@ async function get<T>(
   data?: Record<string, string>,
   requestInit: RequestInit = defaultRequestInit
 ): Promise<ServerResponse<T>> {
+  requestInit.body = undefined;
   requestInit.method = "GET";
   // TODO - convert data to url params
   const urlParams = toURLParams(data);
-  const response = await fetch(formatURL(url) + urlParams, requestInit);
+  const response = await fetch(formatURL(url + urlParams), requestInit);
   return response.json(); // parses JSON response into native JavaScript objects
 }
 
