@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { RulesetResolver } from "../../../server/resolvers/RulesetResolver";
-import HTTPHandler from "../../../server/response/Response";
+import { RulesetResolver } from "../../../../server/resolvers/RulesetResolver";
+import HTTPHandler from "../../../../server/response/Response";
 
 /**
  * Fetches all rulesets

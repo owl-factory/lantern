@@ -4,7 +4,7 @@ import { databaseSetup } from "../../utilities/mongo";
 type RequestFunction = (req: NextApiRequest, res: NextApiResponse) => void;
 type PossibleMethods = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
-export default class HTTPHandler {
+export class HTTPHandler {
   public GET?: RequestFunction;
   public POST?: RequestFunction;
   public PUT?: RequestFunction;
@@ -57,3 +57,4 @@ export default class HTTPHandler {
     this.res.status(200).json(responseBody);
   }
 }
+export default HTTPHandler;

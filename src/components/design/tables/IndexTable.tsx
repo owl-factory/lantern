@@ -31,7 +31,7 @@ type fetchContentFunction = (
 
 // The props for the IndexTable
 interface IndexTableProps {
-  children: JSX.Element;
+  children?: JSX.Element;
   content: Record<string, unknown>[] | GenericDocumentType[];
   contentCount: number;
   fetchContent: fetchContentFunction;
@@ -101,24 +101,26 @@ export function IndexTable(props: IndexTableProps): JSX.Element {
 
   return (
     <>
-      <Formik
-        initialValues={ filters as Record<string, string> }
-        onSubmit={async (values) => { await updateContent({ filters: values }); }}
-      >
-        {({ resetForm }) => (
-          <Form>
-            {props.children}
-            <br/>
-            <button
-              className="btn btn-seconary"
-              onClick={() => {resetForm(props.filters); updateContent({filters: props.filters});}}
-            >
-              Reset
-            </button>
-            <button className="btn btn-primary" type="submit">Search!</button>
-          </Form>
-        )}
-      </Formik>
+      { () => { props.children ?
+        <Formik
+          initialValues={ filters as Record<string, string> }
+          onSubmit={async (values) => { await updateContent({ filters: values }); }}
+        >
+          {({ resetForm }) => (
+            <Form>
+              {props.children}
+              <br/>
+              <button
+                className="btn btn-seconary"
+                onClick={() => {resetForm(props.filters); updateContent({filters: props.filters});}}
+              >
+                Reset
+              </button>
+              <button className="btn btn-primary" type="submit">Search!</button>
+            </Form>
+          )}
+        </Formik> : <></>;
+      }}
       <br/>
       <Table
         {...props.tableBuilder.renderConfig()}

@@ -7,7 +7,7 @@ interface ModalProps {
   handleClose: () => (void);
 }
 
-export default function Modal(props: ModalProps) {
+export function Modal(props: ModalProps) {
   return (
     <BSModal
       show={props.open}
@@ -17,3 +17,4 @@ export default function Modal(props: ModalProps) {
     </BSModal>
   );
 }
+export default Modal;
