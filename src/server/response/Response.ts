@@ -56,5 +56,14 @@ export class HTTPHandler {
     };
     this.res.status(200).json(responseBody);
   }
+
+  protected returnError(code: number, message: string): void {
+    const responseBody = {
+      success: true,
+      data: {},
+      message,
+    };
+    this.res.status(code).json(responseBody);
+  }
 }
 export default HTTPHandler;

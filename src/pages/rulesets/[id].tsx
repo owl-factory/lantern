@@ -41,8 +41,8 @@ async function deleteContentType(context: ContentTypeDoc): Promise<void> {
 
 // Adds actions for the table builder
 const contentTypeActions = new ContextMenuBuilder()
-.addLink("Details", MdInfo, "/rulesets/[alias]")
-.addLink("Edit", MdBuild, "/rulesets/[alias]/edit")
+.addLink("Details", MdInfo, "/content-types/[alias]")
+.addLink("Edit", MdBuild, "/content-types/[alias]/edit")
 .addItem("Delete", MdBlock, (context: ContentTypeDoc) => (deleteContentType(context)));
 
 // Builds the table columns
@@ -64,6 +64,9 @@ function ContentTypeActions({ data }: TableComponentProps) {
   );
 }
 
+/**
+ * Renders a form to create new content types
+ */
 function NewContentTypeForm(): JSX.Element {
   const router = useRouter();
   const rulesetID = router.query.id;

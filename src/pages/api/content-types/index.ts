@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { ContentTypeResolver } from "../../../../../server";
-import HTTPHandler from "../../../../../server/response/Response";
+import { ContentTypeResolver } from "../../../server";
+import HTTPHandler from "../../../server/response/Response";
 
 /**
  * Creates a new content type
