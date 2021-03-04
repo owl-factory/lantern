@@ -1,4 +1,4 @@
-import { ModuleModel } from "../../types/documents/Module";
+import { ModuleModel } from "..";
 import CoreResolver from "./CoreResolver";
 
 /**

@@ -1,5 +1,5 @@
 import { CoreDocument } from "./CoreDocument";
-import { getModelForClass, prop } from "@typegoose/typegoose";
+import { prop } from "@typegoose/typegoose";
 
 /**
  * A model describing the Content document, which contains the static information
@@ -17,4 +17,3 @@ export class Content extends CoreDocument {
 }
 
 
-export const ContentModel = getModelForClass(Content);

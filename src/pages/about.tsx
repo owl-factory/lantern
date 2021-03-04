@@ -3,6 +3,7 @@ import Page from "../components/design/Page";
 import Link from "next/link";
 import { Button } from "react-bootstrap";
 
+
 function About(): JSX.Element {
   return (
     <Page>

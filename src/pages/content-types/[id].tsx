@@ -1,8 +1,9 @@
+import { Form, Formik } from "formik";
 import { NextPageContext } from "next";
 import React from "react";
 import { Page } from "../../components";
 import { Fields } from "../../components/reroll/rulesets/Fields";
-import { ContentTypeDoc, RulesetDoc } from "../../types";
+import { ContentTypeDoc, ContentTypeField, RulesetDoc } from "../../types";
 import { rest } from "../../utilities";
 
 interface ContentTypePageProps {
@@ -10,21 +11,51 @@ interface ContentTypePageProps {
   ruleset: RulesetDoc;
 }
 
-
-
 export function ContentTypePageProps({ initialContentType, ruleset }: ContentTypePageProps): JSX.Element {
-  const [ contentType, setContentType ] = React.useState(initialContentType);
-  const [ fields, setFields ] = React.useState(initialContentType.fields || {
-    test: { name: "Test", key: "test", type: 0 },
+  const [ isUpdated, setIsUpdated ] = React.useState(false);
+  const [ contentType, _setContentType ] = React.useState(initialContentType);
+  const [ fields, _setFields ] = React.useState(initialContentType.fields || {
+    name: { name: "Name", key: "name", type: 0 },
   });
+
+  /**
+   * Sets the fields. Marks the content type as updated if not already
+   * @param fields The fields to update
+   */
+  function setFields(newFields: Record<string, ContentTypeField>) {
+    if (!isUpdated) { setIsUpdated(true); }
+    _setFields(newFields);
+  }
+
+  /**
+   * Saves the content type and all related data to the database
+   * @param values The base content type to save to the database
+   */
+  function saveAll(values: ContentTypeDoc) {
+    values.fields = fields;
+
+    setIsUpdated(false);
+  }
 
   return (
     <Page>
-      <h1>{contentType.name}</h1>
-      <a href={`/rulesets/${ruleset._id}`}>&lt; {ruleset.name}</a>
+      <Formik initialValues={contentType} onSubmit={saveAll}>
+        {() => (
+        <Form>
+          <h1>
+            {contentType.name}
+            <button
+              type="submit"
+              className={`btn btn-primary float-right ${isUpdated ? "" : "disabled"}`}
+            >Save</button>
+          </h1>
+          <a href={`/rulesets/${ruleset._id}`}>&lt; {ruleset.name}</a>
 
-      <br/><br/>
-      <Fields fields={fields} setFields={setFields}/>
+          <br/><br/>
+          <Fields fields={fields} setFields={setFields}/>
+        </Form>
+        )}
+      </Formik>
     </Page>
   );
 }

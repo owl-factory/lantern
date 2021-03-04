@@ -1,6 +1,6 @@
 import { CommonContentType } from "./CommonContentType";
-import { getModelForClass, prop } from "@typegoose/typegoose";
-import { ContentFieldTypeEnum } from "../enums/contentFieldType";
+import { prop } from "@typegoose/typegoose";
+import { FieldTypeEnum } from "../enums/contentFieldType";
 import { Atom, Molecule } from "../layouts";
 
 /**
@@ -23,7 +23,7 @@ export class ContentTypeField {
   name?: string;
 
   @prop({ required: true })
-  type?: ContentFieldTypeEnum;
+  type?: FieldTypeEnum;
 
   @prop()
   default?: string;
@@ -64,4 +64,3 @@ export class ContentTypeDoc extends CommonContentType {
 
 }
 
-export const ContentTypeModel = getModelForClass(ContentTypeDoc);

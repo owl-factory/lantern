@@ -1,7 +1,8 @@
 import { ReturnModelType } from "@typegoose/typegoose";
 import { validate } from "class-validator";
 import { Query } from "mongoose";
-import { CoreDocument, GenericDocumentType, GenericModelType, RulesetModel } from "../../types/documents";
+import { GenericModelType, RulesetModel } from "..";
+import { GenericDocumentType } from "../../types/documents";
 import { Options } from "../../types/inputs/options";
 import { CreateOneResponse, FindCountResponse, FindManyResponse, FindOneResponse } from "../../types/resolvers";
 import { Context } from "../../types/server";

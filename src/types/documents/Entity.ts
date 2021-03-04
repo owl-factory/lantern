@@ -1,5 +1,5 @@
 import { CoreDocument } from "./CoreDocument";
-import { getModelForClass, prop } from "@typegoose/typegoose";
+import { prop } from "@typegoose/typegoose";
 
 /**
  * Describes a piece of content with dynamic and editable data, such as a character or NPC
@@ -12,4 +12,3 @@ export class Entity extends CoreDocument {
   entityTypeID?: string;
 }
 
-export const EntityModel = getModelForClass(Entity);

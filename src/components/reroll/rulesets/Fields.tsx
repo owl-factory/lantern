@@ -3,9 +3,11 @@ import React from "react";
 import { Table } from "react-bootstrap";
 import { MdBlock, MdBuild } from "react-icons/md";
 import { Col, ContextMenu, Row } from "../..";
+import { fieldTypes, FieldTypeEnum } from "../../../types";
 import { ContextMenuBuilder } from "../../../utilities";
 import { Input } from "../../design";
 
+// TODO
 type FieldType = any;
 
 // The props for the Fields tool
@@ -14,6 +16,11 @@ interface FieldsProps {
   setFields: (fields: Record<string, FieldType>) => void;
 }
 
+/**
+ * Renders the Fields tool for creating and editing fields
+ * @param props.fields The object of fields to render
+ * @param props.setFields The function to update the fields object
+ */
 export function Fields(props: FieldsProps): JSX.Element {
   const [ activeField, setActiveField ] = React.useState("");
 
@@ -25,45 +32,61 @@ export function Fields(props: FieldsProps): JSX.Element {
     setActiveField(key);
   }
 
+  /**
+   * Deletes an item from the fields object
+   * @param key The key to delete from the fields object
+   */
   function deleteField(key: string) {
+    if (!(key in props.fields)) {
+      console.warn(`The key '${key}' does not exist. No change made.`);
+      return;
+    }
+
     const newFields = {...props.fields};
     delete newFields[key];
     props.setFields(newFields);
     return;
   }
 
+  /**
+   * Adds a new field to the object
+   */
   function newField() {
     const newFields = {
       ...props.fields,
-      __new__: { name: "", key: "", type: 0 }
+      __new__: { name: "", key: "", type: 0 },
     };
 
     props.setFields(newFields);
     setActiveField("__new__");
   }
 
+  /**
+   * Updates a single field within the fields object. Deletes an old key if different
+   * @param values The values of the field to update within the fields object
+   */
   function updateField(values: FieldType) {
     const newFields = {...props.fields};
+
+    // Ensures we don't have leftover data
     if (values.key !== activeField) { delete newFields[activeField as string]; }
 
     newFields[values.key] = values;
     props.setFields(newFields);
     setActive("");
-
-    return;
   }
 
   // Adds actions for the table builder
   const fieldActions = new ContextMenuBuilder()
-  .addItem("Edit", MdBuild, (context: any) => {setActive(context.key)})
-  .addItem("Delete", MdBlock, (context: any) => (deleteField(context.key))); 
+  .addItem("Edit", MdBuild, (context: FieldType) => {setActive(context.key);})
+  .addItem("Delete", MdBlock, (context: FieldType) => (deleteField(context.key)));
 
-  function FieldListItem({ field }) {
+  function FieldListItem({ field }: { field: FieldType }) {
     return (
       <tr>
         <td>{field.key}</td>
         <td>{field.name}</td>
-        <td>{field.type}</td>
+        <td>{fieldTypes[field.type].name}</td>
         <td>
           <ContextMenu
             context={field}
@@ -78,6 +101,7 @@ export function Fields(props: FieldsProps): JSX.Element {
     if (activeField === "") { return null; }
     const initialValues = props.fields[activeField];
 
+    // TODO - need validation
     return (
       <Formik
         initialValues={initialValues}
@@ -94,8 +118,11 @@ export function Fields(props: FieldsProps): JSX.Element {
     );
   }
 
+  /**
+   * Renders out the list of all given fields
+   */
   function FieldList() {
-    const fieldListRows: any = [];
+    const fieldListRows: JSX.Element[] = [];
     const fieldKeys = Object.keys(props.fields).sort();
     fieldKeys.forEach((fieldKey: string) => {
       const field = props.fields[fieldKey];

@@ -1,4 +1,4 @@
-import { CoreDocument, OrganizationModel } from "../../types/documents";
+import { OrganizationModel } from "..";
 import { Context } from "../../types/server";
 import CoreResolver from "./CoreResolver";
 
