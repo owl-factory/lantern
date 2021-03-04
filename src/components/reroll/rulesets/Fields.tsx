@@ -5,7 +5,7 @@ import { MdBlock, MdBuild } from "react-icons/md";
 import { Col, ContextMenu, Row } from "../..";
 import { fieldTypes, FieldTypeEnum } from "../../../types";
 import { ContextMenuBuilder } from "../../../utilities";
-import { Input } from "../../design";
+import { FloatingLabel, Input, Select } from "../../design";
 
 // TODO
 type FieldType = any;
@@ -97,6 +97,9 @@ export function Fields(props: FieldsProps): JSX.Element {
     );
   }
 
+  /**
+   * Renders the form to create or edit a field.
+   */
   function FieldForm() {
     if (activeField === "") { return null; }
     const initialValues = props.fields[activeField];
@@ -109,8 +112,11 @@ export function Fields(props: FieldsProps): JSX.Element {
       >
         {() => (
           <Form>
-            <Input name="name"/>
+            <FloatingLabel for="name" label="Field Name">
+              <Input id="name" name="name"/>
+            </FloatingLabel>
             <Input name="key"/>
+            <Select name="type" options={fieldTypes} labelKey="name" valueKey="value"/>
             <button type="submit" className="btn btn-primary">Save</button>
           </Form>
         )}
@@ -126,7 +132,7 @@ export function Fields(props: FieldsProps): JSX.Element {
     const fieldKeys = Object.keys(props.fields).sort();
     fieldKeys.forEach((fieldKey: string) => {
       const field = props.fields[fieldKey];
-      fieldListRows.push(<FieldListItem field={field}/>);
+      fieldListRows.push(<FieldListItem key={field.key} field={field}/>);
     });
 
     return (

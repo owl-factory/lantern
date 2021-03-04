@@ -50,12 +50,12 @@ export function ContentTypePageProps({ initialContentType, ruleset }: ContentTyp
             >Save</button>
           </h1>
           <a href={`/rulesets/${ruleset._id}`}>&lt; {ruleset.name}</a>
-
-          <br/><br/>
-          <Fields fields={fields} setFields={setFields}/>
         </Form>
         )}
       </Formik>
+
+      <br/><br/>
+      <Fields fields={fields} setFields={setFields}/>
     </Page>
   );
 }
