@@ -78,6 +78,7 @@ function NewContentTypeForm(): JSX.Element {
    * @param values The values from the form to submit
    */
   async function onSubmit(values: Record<string, string>) {
+    values.rulesetID = rulesetID as string;
     const response = await rest.put<{ contentType: ContentTypeDoc }>(
       `/api/content-types`,
       values
@@ -87,7 +88,7 @@ function NewContentTypeForm(): JSX.Element {
       return;
     }
 
-    const href = `/rulesets/${rulesetID}/content-types/${response.data.contentType._id}`;
+    const href = `/content-types/${response.data.contentType._id}`;
     router.push(href);
   }
 

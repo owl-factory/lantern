@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { ContentTypeResolver } from "../../../server";
 import HTTPHandler from "../../../server/response/Response";
+import { FieldTypeEnum } from "../../../types";
 
 /**
  * Creates a new content type
@@ -8,7 +9,9 @@ import HTTPHandler from "../../../server/response/Response";
  * @param req The request to the server
  */
 async function createContentType(this: HTTPHandler, req: NextApiRequest) {
-  const contentType = await ContentTypeResolver.createOne({...req.body, rulesetID: req.query.id});
+  const body = req.body;
+  body.fields = { name: { name: "Name", key: "name", type: FieldTypeEnum.Text }};
+  const contentType = await ContentTypeResolver.createOne(body);
   this.returnSuccess({ contentType });
 }
 

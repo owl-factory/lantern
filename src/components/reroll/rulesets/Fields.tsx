@@ -32,6 +32,20 @@ export function Fields(props: FieldsProps): JSX.Element {
     setActiveField(key);
   }
 
+  function cleanRestrictedFields() {
+    const newFields = {...props.fields};
+    let touched = false;
+
+    // TODO - make a loop if 2+
+    if ("__new__" in newFields) { delete newFields["__new__"]; touched = true; }
+    if (touched) { props.setFields(newFields); }
+  }
+
+  function cancelField() {
+    cleanRestrictedFields();
+    setActive("");
+  }
+
   /**
    * Deletes an item from the fields object
    * @param key The key to delete from the fields object
@@ -87,6 +101,7 @@ export function Fields(props: FieldsProps): JSX.Element {
         <td>{field.key}</td>
         <td>{field.name}</td>
         <td>{fieldTypes[field.type].name}</td>
+        <td>{field.readOnly ? "Yes" : "No"}</td>
         <td>
           <ContextMenu
             context={field}
@@ -115,8 +130,13 @@ export function Fields(props: FieldsProps): JSX.Element {
             <FloatingLabel for="name" label="Field Name">
               <Input id="name" name="name"/>
             </FloatingLabel>
-            <Input name="key"/>
-            <Select name="type" options={fieldTypes} labelKey="name" valueKey="value"/>
+            <FloatingLabel for="key" label="Variable Key">
+              <Input id="key" name="key"/>
+            </FloatingLabel>
+            <FloatingLabel for="type" label="Variable Type">
+              <Select id="type" name="type" options={fieldTypes} labelKey="name" valueKey="value"/>
+            </FloatingLabel>
+            <button type="button" className="btn btn-primary" onClick={cancelField}>Cancel</button>
             <button type="submit" className="btn btn-primary">Save</button>
           </Form>
         )}
@@ -142,6 +162,7 @@ export function Fields(props: FieldsProps): JSX.Element {
             <th>Key</th>
             <th>Field Name</th>
             <th>Type</th>
+            <th>Read Only?</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -156,7 +177,7 @@ export function Fields(props: FieldsProps): JSX.Element {
     <>
       <h2>
         Fields
-        <button className="btn btn-primary float-right" onClick={newField}>
+        <button className="btn btn-primary float-end" onClick={newField}>
           New
         </button>
       </h2>

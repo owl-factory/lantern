@@ -7,6 +7,7 @@ export * from "./CoreDocument";
 export * from "./Module";
 export * from "./Organization";
 export * from "./Ruleset";
+export * from "./misc";
 
 import { Content } from "./Content";
 import { ContentTypeDoc } from "./ContentType";

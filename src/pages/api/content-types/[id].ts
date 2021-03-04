@@ -20,7 +20,7 @@ async function fetchContentType(this: HTTPHandler, req: NextApiRequest) {
  */
 async function updateContentType(this: HTTPHandler, req: NextApiRequest) {
   const result = await ContentTypeResolver.updateOne(
-    req.query.contentTypeID as string,
+    req.query.id as string,
     req.body
   );
   this.returnSuccess(result);

@@ -72,11 +72,13 @@ export default class CoreResolver {
     input: Record<string, unknown>,
     ctx?: Context
   ): Promise<CreateOneResponse<GenericDocumentType>> {
+    console.log("Hi")
     const errors = await validate(input);
     if (errors.length > 0) {
+      console.log(errors)
       throw new Error(errors.toString());
     }
-
+    console.log("Validate finishes")
     // Updates both so we can track when something was last created and when
     // it was last touched easier
     input.createdAt = new Date();
@@ -86,7 +88,7 @@ export default class CoreResolver {
     input.updatedAt = new Date();
     input.updatedBy = "1";
     // data.updatedBy = getUserID();
-
+    console.log(input)
     return this.model.create(input);
   }
 

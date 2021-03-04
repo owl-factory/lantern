@@ -3,7 +3,7 @@ import { NextPageContext } from "next";
 import React from "react";
 import { Page } from "../../components";
 import { Fields } from "../../components/reroll/rulesets/Fields";
-import { ContentTypeDoc, ContentTypeField, RulesetDoc } from "../../types";
+import { ContentTypeDoc, FieldType, RulesetDoc } from "../../types";
 import { rest } from "../../utilities";
 
 interface ContentTypePageProps {
@@ -14,15 +14,13 @@ interface ContentTypePageProps {
 export function ContentTypePageProps({ initialContentType, ruleset }: ContentTypePageProps): JSX.Element {
   const [ isUpdated, setIsUpdated ] = React.useState(false);
   const [ contentType, _setContentType ] = React.useState(initialContentType);
-  const [ fields, _setFields ] = React.useState(initialContentType.fields || {
-    name: { name: "Name", key: "name", type: 0 },
-  });
+  const [ fields, _setFields ] = React.useState(initialContentType.fields || {});
 
   /**
    * Sets the fields. Marks the content type as updated if not already
    * @param fields The fields to update
    */
-  function setFields(newFields: Record<string, ContentTypeField>) {
+  function setFields(newFields: Record<string, FieldType>) {
     if (!isUpdated) { setIsUpdated(true); }
     _setFields(newFields);
   }
@@ -33,6 +31,10 @@ export function ContentTypePageProps({ initialContentType, ruleset }: ContentTyp
    */
   function saveAll(values: ContentTypeDoc) {
     values.fields = fields;
+    rest.patch(
+      `/api/content-types/${initialContentType._id}`,
+      values as unknown as Record<string, unknown>
+    );
 
     setIsUpdated(false);
   }
@@ -46,7 +48,7 @@ export function ContentTypePageProps({ initialContentType, ruleset }: ContentTyp
             {contentType.name}
             <button
               type="submit"
-              className={`btn btn-primary float-right ${isUpdated ? "" : "disabled"}`}
+              className={`btn btn-primary float-end ${isUpdated ? "" : "disabled"}`}
             >Save</button>
           </h1>
           <a href={`/rulesets/${ruleset._id}`}>&lt; {ruleset.name}</a>
