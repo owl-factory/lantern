@@ -35,7 +35,7 @@ const initialContentTypeSort = "name";
  */
 async function deleteContentType(context: ContentTypeDoc): Promise<void> {
   if (confirm(`Are you sure you want to delete ${context.name}?`)) {
-    await rest.delete(`/api/rulesets/${context.rulesetID}/content-types/${context._id}`, {});
+    await rest.delete(`/api/content-types/${context._id}`, {});
   }
 }
 
@@ -79,7 +79,7 @@ function NewContentTypeForm(): JSX.Element {
    */
   async function onSubmit(values: Record<string, string>) {
     const response = await rest.put<{ contentType: ContentTypeDoc }>(
-      `/api/rulesets/${rulesetID}/content-types`,
+      `/api/content-types`,
       values
     );
     if (!response.success) {

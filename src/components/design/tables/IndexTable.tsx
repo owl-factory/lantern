@@ -99,28 +99,33 @@ export function IndexTable(props: IndexTableProps): JSX.Element {
     if (newState.sort) { setSort(newState.sort); }
   }
 
+  let form = <></>;
+  if (props.children) {
+    form = (
+      <Formik
+        initialValues={ filters as Record<string, string> }
+        onSubmit={async (values) => { await updateContent({ filters: values }); }}
+      >
+        {({ resetForm }) => (
+          <Form>
+            {props.children}
+            <br/>
+            <button
+              className="btn btn-seconary"
+              onClick={() => {resetForm(props.filters); updateContent({filters: props.filters});}}
+            >
+              Reset
+            </button>
+            <button className="btn btn-primary" type="submit">Search!</button>
+          </Form>
+        )}
+      </Formik>
+    );
+  }
+
   return (
     <>
-      { () => { props.children ?
-        <Formik
-          initialValues={ filters as Record<string, string> }
-          onSubmit={async (values) => { await updateContent({ filters: values }); }}
-        >
-          {({ resetForm }) => (
-            <Form>
-              {props.children}
-              <br/>
-              <button
-                className="btn btn-seconary"
-                onClick={() => {resetForm(props.filters); updateContent({filters: props.filters});}}
-              >
-                Reset
-              </button>
-              <button className="btn btn-primary" type="submit">Search!</button>
-            </Form>
-          )}
-        </Formik> : <></>;
-      }}
+      {form}
       <br/>
       <Table
         {...props.tableBuilder.renderConfig()}

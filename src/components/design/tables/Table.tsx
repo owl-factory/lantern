@@ -62,7 +62,7 @@ function TableHeader(props: TableHeaderProps) {
       if (key === props.lastSortBy) { icon = <MdExpandLess/>; }
       else if ("-" + key === props.lastSortBy) { icon = <MdExpandMore/>; }
     }
-    
+
     headers.push(
       <th key={"row0-" + column.header} onClick={onClick}>
         {column.header}{icon}
@@ -92,6 +92,17 @@ function TableBody(props: TableBodyProps) {
       />
     );
   });
+  if (rows.length === 0) {
+    return (
+      <tbody>
+        <tr>
+          <td colSpan={props.columns.length}>
+            It doesn't look like there's anything here.
+          </td>
+        </tr>
+      </tbody>
+    );
+  }
   return <tbody>{rows}</tbody>;
 }
 
@@ -150,13 +161,13 @@ export default function Table(props: TableProps): JSX.Element {
    */
   function setSortBy(sortBy: string) {
     if (!props.setSortBy) { return; }
-    if (sortBy == props.sortBy) { sortBy = "-" + sortBy; }
+    if (sortBy === props.sortBy) { sortBy = "-" + sortBy; }
     props.setSortBy(sortBy);
   }
-  
+
   return (
     <BSTable>
-      <TableHeader 
+      <TableHeader
         columns={props.columns}
         lastSortBy={props.sortBy || ""}
         setSortBy={setSortBy}

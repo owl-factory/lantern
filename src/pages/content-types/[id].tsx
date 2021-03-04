@@ -1,6 +1,7 @@
 import { NextPageContext } from "next";
 import React from "react";
 import { Page } from "../../components";
+import { Fields } from "../../components/reroll/rulesets/Fields";
 import { ContentTypeDoc, RulesetDoc } from "../../types";
 import { rest } from "../../utilities";
 
@@ -9,8 +10,13 @@ interface ContentTypePageProps {
   ruleset: RulesetDoc;
 }
 
+
+
 export function ContentTypePageProps({ initialContentType, ruleset }: ContentTypePageProps): JSX.Element {
   const [ contentType, setContentType ] = React.useState(initialContentType);
+  const [ fields, setFields ] = React.useState(initialContentType.fields || {
+    test: { name: "Test", key: "test", type: 0 },
+  });
 
   return (
     <Page>
@@ -18,7 +24,7 @@ export function ContentTypePageProps({ initialContentType, ruleset }: ContentTyp
       <a href={`/rulesets/${ruleset._id}`}>&lt; {ruleset.name}</a>
 
       <br/><br/>
-      <h2>Fields</h2>
+      <Fields fields={fields} setFields={setFields}/>
     </Page>
   );
 }

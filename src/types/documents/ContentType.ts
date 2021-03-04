@@ -52,7 +52,10 @@ export class ContentTypeWarnings {
  */
 export class ContentTypeDoc extends CommonContentType {
   @prop({ required: true })
-  rulesetID?: string;
+  rulesetID!: string;
+
+  @prop({default: {}})
+  fields?: Record<string, ContentTypeField>;
 
   layout?: {
     header: ( Atom | Molecule )[],
