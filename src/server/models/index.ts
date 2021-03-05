@@ -11,7 +11,7 @@ import {
 
 export const CommonContentTypeModel = getModelForClass(CommonContentType);
 export const ContentModel = getModelForClass(Content);
-export const ContentTypeModel = getModelForClass(ContentTypeDoc);
+export const ContentTypeModel = getModelForClass(ContentTypeDoc, {schemaOptions: { collection: "contentTypes" } });
 export const EntityModel = getModelForClass(Entity);
 export const ModuleModel = getModelForClass(ModuleDoc, {schemaOptions: { collection: "modules" } });
 export const OrganizationModel = getModelForClass(OrganizationDoc);

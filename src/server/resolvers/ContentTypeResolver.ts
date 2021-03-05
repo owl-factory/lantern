@@ -1,5 +1,5 @@
-import CoreResolver from "./CoreResolver";
-import {  ContentTypeModel } from "..";
+import { CoreResolver } from "./CoreResolver";
+import { ContentTypeModel } from "..";
 
 /**
  * The resolver for CRUD operations on the ContentType model.

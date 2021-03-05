@@ -1,5 +1,5 @@
 import { ModuleModel } from "..";
-import CoreResolver from "./CoreResolver";
+import { CoreResolver } from "./CoreResolver";
 
 /**
  * The resolver for CRUD operations on the Module model.

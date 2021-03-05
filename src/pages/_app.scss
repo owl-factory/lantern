@@ -51,3 +51,29 @@ $input-bg: $body-bg;
   width: 60%;
 }
 
+.toolbox {
+  position: fixed;
+  top: 0;
+  
+  height: 100%;
+  width: 20em;
+  background-color: blue;
+
+  &.open {
+    right: 0;
+  }
+
+  &.closed {
+    right: -20em;
+  }
+
+  .toolbox-arrow {
+    position: relative;
+    height: 5em;
+    width: 1em;
+    top: 5em;
+    left: -1em;
+
+    background-color: green;
+  }
+}

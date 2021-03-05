@@ -22,8 +22,8 @@ async function fetchRulesets(this: HTTPHandler, req: NextApiRequest) {
  * @param req The request to the server
  */
 async function createRuleset(this: HTTPHandler, req: NextApiRequest) {
-  const ruleset = await RulesetResolver.createOne(req.body);
-  this.returnSuccess({ ruleset });
+  // const ruleset = await RulesetResolver.createOne(req.body);
+  // this.returnSuccess({ ruleset });
 }
 
 /**
@@ -33,6 +33,7 @@ async function createRuleset(this: HTTPHandler, req: NextApiRequest) {
  */
 export default async function rulesetsEndpoint(req: NextApiRequest, res: NextApiResponse): Promise<void> {
   const handler = new HTTPHandler(req, res);
+  handler.GET = fetchRulesets;
   handler.POST = fetchRulesets;
   handler.PUT = createRuleset;
   await handler.handle();

@@ -43,8 +43,10 @@ export class HTTPHandler {
       await (this[method] as RequestFunction)(this.req, this.res);
 
     } catch (e) {
-      responseJson.message = `An unexpected error occured. If this continues occuring,
-        please contact our staff!`;
+      this.returnError(
+        500,
+        `An unexpected error occured. If this continues occuring, please contact our staff!`
+      );
     }
   }
 

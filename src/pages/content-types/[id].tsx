@@ -1,7 +1,7 @@
 import { Form, Formik } from "formik";
 import { NextPageContext } from "next";
 import React from "react";
-import { Page } from "../../components";
+import { LayoutBuilder, Page } from "../../components";
 import { Fields } from "../../components/reroll/rulesets/Fields";
 import { ContentTypeDoc, FieldType, RulesetDoc } from "../../types";
 import { rest } from "../../utilities";
@@ -15,6 +15,12 @@ export function ContentTypePageProps({ initialContentType, ruleset }: ContentTyp
   const [ isUpdated, setIsUpdated ] = React.useState(false);
   const [ contentType, _setContentType ] = React.useState(initialContentType);
   const [ fields, _setFields ] = React.useState(initialContentType.fields || {});
+  const [ layout, _setLayout ] = React.useState(initialContentType.layout || []);
+
+  function setLayout(newLayout: any) {
+    if (!isUpdated) { setIsUpdated(true); }
+    _setLayout(newLayout);
+  }
 
   /**
    * Sets the fields. Marks the content type as updated if not already
@@ -58,6 +64,10 @@ export function ContentTypePageProps({ initialContentType, ruleset }: ContentTyp
 
       <br/><br/>
       <Fields fields={fields} setFields={setFields}/>
+      <br/>
+      <LayoutBuilder>
+        <p>Hi</p>
+      </LayoutBuilder>
     </Page>
   );
 }

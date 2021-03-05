@@ -24,7 +24,7 @@ const superDocumentAliasModels: Record<keyof SuperDocumentAliases, GenericModelT
 /**
  * The core functionality for fetching, creating, updating, and deleting data. 
  */
-export default class CoreResolver {
+export class CoreResolver {
   public static model: ReturnModelType<any>; // The mongoose model for fetching data
 
   /**

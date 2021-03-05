@@ -1,6 +1,7 @@
 export * from "./contextMenus";
 export * from "./forms";
 export * from "./tables";
+export * from "./toolbox";
 export * from "./Breadcrumbs";
 export * from "./HeaderBar";
 export * from "./Modal";
