@@ -1,4 +1,5 @@
 import { Form, Formik } from "formik";
+import { update } from "lodash";
 import React from "react";
 import { Table } from "react-bootstrap";
 import { MdBlock, MdBuild } from "react-icons/md";
@@ -23,6 +24,7 @@ interface FieldsProps {
  */
 export function Fields(props: FieldsProps): JSX.Element {
   const [ activeField, setActiveField ] = React.useState("");
+  const [ options, setOptions ] = React.useState([]);
 
   /**
    * Sets the new active field for editing
@@ -30,6 +32,11 @@ export function Fields(props: FieldsProps): JSX.Element {
    */
   function setActive(key: string) {
     setActiveField(key);
+    if ( key in props.fields && props.fields[key].type === FieldTypeEnum.Options) {
+      setOptions(props.fields[key].options || []);
+      return;
+    }
+    setOptions([]);
   }
 
   function cleanRestrictedFields() {
@@ -75,6 +82,28 @@ export function Fields(props: FieldsProps): JSX.Element {
     setActiveField("__new__");
   }
 
+  function addOption() {
+    const option = { name: "", value: "" };
+    const newOptions = [ ...options ];
+    newOptions.push(option);
+    setOptions(newOptions);
+  }
+
+  function deleteOption(index: number) {
+    const newOptions = [ ...options ];
+    newOptions.splice(index, 1);
+    setOptions(newOptions);
+  }
+
+  function updateOption(index: number, e: any) {
+    const newOptions = [ ...options ];
+    const newOption = newOptions[index];
+    newOption[e.target.name] = e.target.value;
+    newOptions.splice(index, 1, newOption);
+    console.log(newOptions)
+    setOptions(newOptions);
+  }
+
   /**
    * Updates a single field within the fields object. Deletes an old key if different
    * @param values The values of the field to update within the fields object
@@ -113,10 +142,45 @@ export function Fields(props: FieldsProps): JSX.Element {
   }
 
   function FieldOptions(): JSX.Element {
+    const fieldOptions: JSX.Element[] = [];
+
+    options.forEach((option: Record<string, string>, index: number) => {
+      fieldOptions.push(
+        // <Formik
+        //   initialValues={ option }
+        //   onSubmit={ (values) => updateOption(index, values) }
+        // >
+        //   {({submitForm}) => (
+          <tr key={index}>
+            <td><Input name={`options.${index}.name`}/></td>
+            <td>{option.value}</td>
+            <td><button onClick={() => deleteOption(index)}>X</button></td>
+          </tr>
+        //   )}
+        // </Formik>
+      );
+    });
+
     return (
-      <>
-        Hi
-      </>
+      <div className="field-options">
+        <h5>Options</h5>
+        <button className="btn btn-primary" type="button" onClick={addOption}>
+          Add
+        </button>
+        <Table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Value</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {fieldOptions}
+          </tbody>
+        </Table>
+        <br/>
+      </div>
     );
   }
 
@@ -125,7 +189,6 @@ export function Fields(props: FieldsProps): JSX.Element {
    */
   function FieldForm() {
     if (activeField === "") { return null; }
-    console.log('hi')
     const initialValues = props.fields[activeField];
 
     // TODO - need validation
