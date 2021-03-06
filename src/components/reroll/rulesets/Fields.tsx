@@ -125,7 +125,7 @@ export function Fields(props: FieldsProps): JSX.Element {
     function addOption() {
       const option = { name: "", value: "" };
       const newOptions = [ ...options ];
-      newOptions.push(option);
+      newOptions.push(option as never);
       setOptions(newOptions);
     }
 
@@ -136,7 +136,7 @@ export function Fields(props: FieldsProps): JSX.Element {
     }
 
     // function updateOption(index: number, e: any) {
-      
+
     // }
 
     options.forEach((option: Record<string, string>, index: number) => {

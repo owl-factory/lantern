@@ -65,7 +65,7 @@ export function ContentTypePageProps({ initialContentType, ruleset }: ContentTyp
       <br/><br/>
       <Fields fields={fields} setFields={setFields}/>
       <br/>
-      <LayoutBuilder>
+      <LayoutBuilder layout={[]} setLayout={(layout2: any) => (null)}>
         <p>Hi</p>
       </LayoutBuilder>
     </Page>

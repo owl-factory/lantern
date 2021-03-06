@@ -11,12 +11,15 @@ export function Toolbox(props: ToolboxProps): JSX.Element {
 
 
   return (
-    <div 
+    <div
       className={`toolbox ${props.open ? "open" : "closed"}`}
       onMouseEnter={() => props.setOpen(true)}
       onMouseLeave={() => props.setOpen(false)}
     >
       <div className="toolbox-arrow" onClick={() => props.setOpen(!props.open)}/>
+      <div className="toolbox-content">
+        {props.children}
+      </div>
     </div>
   );
 }
