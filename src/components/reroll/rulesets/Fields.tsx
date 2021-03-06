@@ -84,10 +84,10 @@ export function Fields(props: FieldsProps): JSX.Element {
 
     // Ensures we don't have leftover data
     if (values.key !== activeField) { delete newFields[activeField as string]; }
-
+    // if (typeof values.type === "number") { values.type = parseInt(values.type, 10); }
     newFields[values.key] = values;
-    props.setFields(newFields);
     setActive("");
+    props.setFields(newFields);
   }
 
   // Adds actions for the table builder
@@ -112,11 +112,20 @@ export function Fields(props: FieldsProps): JSX.Element {
     );
   }
 
+  function FieldOptions(): JSX.Element {
+    return (
+      <>
+        Hi
+      </>
+    );
+  }
+
   /**
    * Renders the form to create or edit a field.
    */
   function FieldForm() {
     if (activeField === "") { return null; }
+    console.log('hi')
     const initialValues = props.fields[activeField];
 
     // TODO - need validation
@@ -125,7 +134,7 @@ export function Fields(props: FieldsProps): JSX.Element {
         initialValues={initialValues}
         onSubmit={updateField}
       >
-        {() => (
+        {({ values }) => (
           <Form>
             <FloatingLabel for="name" label="Field Name">
               <Input id="name" name="name"/>
@@ -136,6 +145,9 @@ export function Fields(props: FieldsProps): JSX.Element {
             <FloatingLabel for="type" label="Variable Type">
               <Select id="type" name="type" options={fieldTypes} labelKey="name" valueKey="value"/>
             </FloatingLabel>
+            {(values.type === FieldTypeEnum.Options.toString()) ? (
+              <FieldOptions/>
+            ): null }
             <button type="button" className="btn btn-primary" onClick={cancelField}>Cancel</button>
             <button type="submit" className="btn btn-primary">Save</button>
           </Form>
