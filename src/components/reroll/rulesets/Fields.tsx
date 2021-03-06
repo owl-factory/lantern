@@ -24,7 +24,6 @@ interface FieldsProps {
  */
 export function Fields(props: FieldsProps): JSX.Element {
   const [ activeField, setActiveField ] = React.useState("");
-  const [ options, setOptions ] = React.useState([]);
 
   /**
    * Sets the new active field for editing
@@ -33,10 +32,10 @@ export function Fields(props: FieldsProps): JSX.Element {
   function setActive(key: string) {
     setActiveField(key);
     if ( key in props.fields && props.fields[key].type === FieldTypeEnum.Options) {
-      setOptions(props.fields[key].options || []);
+      // setOptions(props.fields[key].options || []);
       return;
     }
-    setOptions([]);
+    // setOptions([]);
   }
 
   function cleanRestrictedFields() {
@@ -82,28 +81,6 @@ export function Fields(props: FieldsProps): JSX.Element {
     setActiveField("__new__");
   }
 
-  function addOption() {
-    const option = { name: "", value: "" };
-    const newOptions = [ ...options ];
-    newOptions.push(option);
-    setOptions(newOptions);
-  }
-
-  function deleteOption(index: number) {
-    const newOptions = [ ...options ];
-    newOptions.splice(index, 1);
-    setOptions(newOptions);
-  }
-
-  function updateOption(index: number, e: any) {
-    const newOptions = [ ...options ];
-    const newOption = newOptions[index];
-    newOption[e.target.name] = e.target.value;
-    newOptions.splice(index, 1, newOption);
-    console.log(newOptions)
-    setOptions(newOptions);
-  }
-
   /**
    * Updates a single field within the fields object. Deletes an old key if different
    * @param values The values of the field to update within the fields object
@@ -143,6 +120,24 @@ export function Fields(props: FieldsProps): JSX.Element {
 
   function FieldOptions(): JSX.Element {
     const fieldOptions: JSX.Element[] = [];
+    const [options, setOptions] = React.useState([]);
+
+    function addOption() {
+      const option = { name: "", value: "" };
+      const newOptions = [ ...options ];
+      newOptions.push(option);
+      setOptions(newOptions);
+    }
+
+    function deleteOption(index: number) {
+      const newOptions = [ ...options ];
+      newOptions.splice(index, 1);
+      setOptions(newOptions);
+    }
+
+    // function updateOption(index: number, e: any) {
+      
+    // }
 
     options.forEach((option: Record<string, string>, index: number) => {
       fieldOptions.push(
@@ -152,9 +147,9 @@ export function Fields(props: FieldsProps): JSX.Element {
         // >
         //   {({submitForm}) => (
           <tr key={index}>
-            <td><Input name={`options.${index}.name`}/></td>
+            {/* <td><Input defaultValue=/></td>
             <td>{option.value}</td>
-            <td><button onClick={() => deleteOption(index)}>X</button></td>
+            <td><button onClick={() => deleteOption(index)}>X</button></td> */}
           </tr>
         //   )}
         // </Formik>
