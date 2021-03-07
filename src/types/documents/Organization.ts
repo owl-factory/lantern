@@ -1,10 +1,11 @@
 import { CoreDocument } from "./CoreDocument";
-import { getModelForClass } from "@typegoose/typegoose";
+import { Severity, getModelForClass, modelOptions } from "@typegoose/typegoose";
 
 /**
  * Describes an organization that may own official or third-party content
  */
-export class Organization extends CoreDocument {
+@modelOptions({ schemaOptions: { collection: "organizations" }, options: { allowMixed: Severity.ALLOW } } )
+export class OrganizationDoc extends CoreDocument {
 }
 
-export const OrganizationModel = getModelForClass(Organization);
+export const OrganizationModel = getModelForClass(OrganizationDoc);

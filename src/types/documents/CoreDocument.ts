@@ -2,7 +2,7 @@ import { prop } from "@typegoose/typegoose";
 
 export class CoreDocument {
   // The ID of the document
-  _id?: string;
+  _id!: string;
 
   // The name of the document
   @prop()

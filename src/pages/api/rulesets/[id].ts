@@ -8,11 +8,8 @@ import HTTPHandler from "../../../server/response/Response";
  * @param req The request to the server
  */
 async function getRuleset(this: HTTPHandler, req: NextApiRequest) {
-  const rulesets = await RulesetResolver.findMany(req.body.filter, req.body.options);
-  this.returnSuccess({
-    rulesets: rulesets,
-    rulesetCount: 1,
-  });
+  const ruleset = await RulesetResolver.findOne(req.query.id as string);
+  this.returnSuccess({ ruleset: ruleset });
 }
 
 /**

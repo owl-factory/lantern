@@ -1,4 +1,4 @@
-import { Content, ContentType } from "../../types/documents";
+import { Content, ContentTypeDoc } from "../../types";
 import React from "react";
 import { Card } from "react-bootstrap";
 import { DynamicMolecule } from "./molecules";
@@ -7,13 +7,13 @@ import { Atom, Molecule } from "../../types/layouts";
 // The props for the base Card Layout
 interface CardLayoutProps {
   content: Content;
-  contentType: ContentType;
+  contentType: ContentTypeDoc;
   rules: any;
 }
 
 // The props for the Card Layout Header and Body.
 interface CardLayoutChildProps {
-  contentType: ContentType;
+  contentType: ContentTypeDoc;
   data: {
     content: Content;
   }
@@ -26,7 +26,7 @@ interface CardLayoutChildProps {
  */
 function CardLayoutHeader(props: CardLayoutChildProps) {
   const headerItems: JSX.Element[] = [];
-  props.contentType.layout.header.forEach((molecule: Molecule | Atom) => {
+  props.contentType.layout?.header.forEach((molecule: Molecule | Atom) => {
     headerItems.push(
       <DynamicMolecule
         molecule={molecule}
@@ -48,7 +48,7 @@ function CardLayoutHeader(props: CardLayoutChildProps) {
  */
 function CardLayoutBody(props: CardLayoutChildProps) {
   const bodyItems: JSX.Element[] = [];
-  props.contentType.layout.body.forEach((molecule: Molecule | Atom) => {
+  props.contentType.layout?.body.forEach((molecule: Molecule | Atom) => {
     bodyItems.push(
       <DynamicMolecule
         molecule={molecule}

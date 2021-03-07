@@ -29,7 +29,7 @@ function formatSort(sortBy: SortByType) {
  * @param sortBy The key that we're sorting by or a pre-compiled dictionary to sort
  */
 export function formatOptions(
-  pageState: PageState, 
+  pageState: PageState,
   sortBy: SortByType
 ): Options {
   const options: Options = { skip: 0, limit: 1 };

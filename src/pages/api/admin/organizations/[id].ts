@@ -1,7 +1,8 @@
+// TODO - update with proper responses && comment
+
 import { NextApiRequest, NextApiResponse } from "next";
 import { OrganizationResolver } from "../../../../server/resolvers/OrganizationResolver";
 import HTTPHandler from "../../../../server/response/Response";
-import unhandled from "../../../../server/utilities/unhandled";
 
 /**
  * Fetches a specific organization from the Organization resolver
@@ -27,5 +28,4 @@ export default async function AdminOrganizations(req: NextApiRequest, res: NextA
   handler.GET = getOrganization;
   handler.DELETE = deleteOrganization;
   await handler.handle();
-  unhandled(res);
 }

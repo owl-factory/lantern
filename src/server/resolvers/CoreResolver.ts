@@ -1,11 +1,13 @@
 import { ReturnModelType } from "@typegoose/typegoose";
 import { validate } from "class-validator";
 import { Query } from "mongoose";
-import { CoreDocument, RulesetModel, GenericDocumentType, GenericModelType } from "../../types/documents";
+import { CoreDocument, GenericDocumentType, GenericModelType, RulesetModel } from "../../types/documents";
 import { Options } from "../../types/inputs/options";
 import { CreateOneResponse, FindCountResponse, FindManyResponse, FindOneResponse } from "../../types/resolvers";
 import { Context } from "../../types/server";
 import { buildFilters, isID } from "../utilities/resolvers";
+
+type UpdateOneResponse = any;
 
 // Contains any aliases that might be passed in to findByAlias for any super document
 // TODO - move to a new file
@@ -65,23 +67,44 @@ export default class CoreResolver {
    * @param data The data to insert into a new document
    * @param options Any additional options to save the data
    */
-  public static async createOne(data: CoreDocument, ctx?: Context): Promise<CreateOneResponse<GenericDocumentType>> {
-    const errors = await validate(data);
+  public static async createOne(
+    input: Record<string, unknown>,
+    ctx?: Context
+  ): Promise<CreateOneResponse<GenericDocumentType>> {
+    const errors = await validate(input);
     if (errors.length > 0) {
       throw new Error(errors.toString());
     }
 
     // Updates both so we can track when something was last created and when
     // it was last touched easier
-    data.createdAt = new Date();
-    data.createdBy = "1";
+    input.createdAt = new Date();
+    input.createdBy = "1";
     // data.createdBy = getUserID();
+
+    input.updatedAt = new Date();
+    input.updatedBy = "1";
+    // data.updatedBy = getUserID();
+
+    return this.model.create(input);
+  }
+
+  /**
+   * Updates a single document in the database
+   * @param ctx The context of the request and response, including the user's session
+   * @param _id The id of the document to update
+   * @param data The new data of the document to set
+   */
+  public static async updateOne(_id: string, data: Record<string, unknown>, ctx?: Context): Promise<UpdateOneResponse> {
+    const errors = await validate(data);
+    if (errors.length > 0) {
+      throw new Error(errors.toString());
+    }
 
     data.updatedAt = new Date();
     data.updatedBy = "1";
-    // data.updatedBy = getUserID();
 
-    return this.model.create(data);
+    return this.model.updateOne({_id}, data);
   }
 
   /**

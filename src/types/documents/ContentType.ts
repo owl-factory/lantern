@@ -50,18 +50,15 @@ export class ContentTypeWarnings {
 /**
  * Describes a type of content within a game system
  */
-export class ContentType extends CommonContentType {
+export class ContentTypeDoc extends CommonContentType {
   @prop({ required: true })
-  gameSystemID?: string;
+  rulesetID?: string;
 
-  @prop()
-  commonContentTypeID?: string;
-
-  layout!: {
+  layout?: {
     header: ( Atom | Molecule )[],
     body: ( Atom | Molecule )[],
   }
 
 }
 
-export const ContentTypeModel = getModelForClass(ContentType);
+export const ContentTypeModel = getModelForClass(ContentTypeDoc);

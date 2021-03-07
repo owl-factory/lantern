@@ -1,4 +1,4 @@
-import { Min, Max } from "class-validator";
+import { Max, Min } from "class-validator";
 
 export type SortByObject = Record<string, (1 | -1)>
 export type SortByType = string | SortByObject

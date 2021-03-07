@@ -7,11 +7,12 @@ export * from "./Organization";
 export * from "./Ruleset";
 
 import { Content, ContentModel } from "./Content";
-import { ContentType, ContentTypeModel } from "./ContentType";
+import { ContentTypeDoc, ContentTypeModel } from "./ContentType";
 import { Entity, EntityModel } from "./Entity";
 import { CoreDocument } from "./CoreDocument";
-import { Organization, OrganizationModel } from "./Organization";
-import { Ruleset, RulesetModel } from "./Ruleset";
+import { ModuleDoc, ModuleModel } from "./Module";
+import { OrganizationDoc, OrganizationModel } from "./Organization";
+import { RulesetDoc, RulesetModel } from "./Ruleset";
 
 /**
  * A generic document type for any situation where we might be getting document data but
@@ -19,11 +20,12 @@ import { Ruleset, RulesetModel } from "./Ruleset";
  */
 export type GenericDocumentType = (
   Content |
-  ContentType |
+  ContentTypeDoc |
   Entity |
   CoreDocument |
-  Organization |
-  Ruleset
+  ModuleDoc |
+  OrganizationDoc |
+  RulesetDoc
 );
 
 /**
@@ -33,6 +35,7 @@ export type GenericModelType = (
   typeof ContentModel |
   typeof ContentTypeModel |
   typeof EntityModel |
+  typeof ModuleModel |
   typeof OrganizationModel |
   typeof RulesetModel
 );

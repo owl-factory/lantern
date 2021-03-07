@@ -7,22 +7,22 @@ import { ErrorMessage, Input } from "../../components/design/forms/Forms";
 import request from "../../utilities/request";
 import {  MdBlock, MdBuild, MdInfo } from "react-icons/md";
 import ContextMenu from "../../components/design/contextMenus/ContextMenu";
-import { TableComponentProps } from "../../types/design/table";
 import { ContextMenuBuilder } from "../../utilities/design/contextMenu";
 import { TableBuilder } from "../../utilities/design/table";
-import { Ruleset } from "../../types/documents";
-import Table from "../../components/design/tables/Table";
-import Pagination, { PageState } from "../../components/design/Pagination";
+import { RulesetDoc, TableComponentProps } from "../../types";
 import { useRouter } from "next/router";
 import * as Yup from "yup";
+import { fetchContentResponse, IndexTable } from "../../components";
 
+// The props for the RulesetPage
 interface RulesetProps {
-  initialRulesets: Ruleset[];
+  initialRulesets: RulesetDoc[];
   rulesetCount: number;
 }
 
-interface FetchRulesetData {
-  rulesets: Ruleset[];
+// The expected data packet response from the server for fetching rulesets
+interface FetchRulesetsData {
+  rulesets: RulesetDoc[];
   rulesetCount: number;
 }
 
@@ -36,19 +36,19 @@ const initialSortBy = "name";
  * @param filters Any additional filters for filtering content
  */
 async function queryRulesets(
-  page: number,
-  perPage: number,
+  filters: Record<string, unknown> = {},
+  limit: number,
+  skip: number,
   sortBy: string,
-  filters?: Record<string, unknown>
-): Promise<FetchRulesetData> {
+): Promise<fetchContentResponse> {
   const body = { filters, options: {
-    limit: perPage,
-    skip: (page - 1) * perPage,
+    limit: limit,
+    skip: skip,
     sort: sortBy,
   }};
-  const res = await request.post<FetchRulesetData>("/api/rulesets", body);
-  if (res.success) { return res.data; }
-  return { rulesets: [], rulesetCount: 0 };
+  const res = await request.post<any>("/api/rulesets", body);
+  if (res.success) { return { content: res.data.rulesets, count: res.data.rulesetCount }; }
+  return { content: [], count: 0 };
 }
 
 /**
@@ -64,7 +64,7 @@ function CreateRulesetForm() {
    * @param values The values from the form to submit
    */
   async function onSubmit(values: Record<string, string>) {
-    const response = await request.put<{ ruleset: Ruleset }>(
+    const response = await request.put<{ ruleset: RulesetDoc }>(
       "/api/rulesets",
       values
     );
@@ -125,31 +125,11 @@ function RulesetModal({ handleClose, modal }: { handleClose: () => void, modal: 
   );
 }
 
-function RulesetFilter(
-  { filters, setFilters }: {
-    filters: Record<string, unknown>,
-    setFilters: (values: any) => (void)
-  }
-) {
+function RulesetFilter() {
   return (
-    <Formik
-      initialValues={ filters as Record<string, string> }
-      onSubmit={async (values) => { await setFilters(values); }}
-    >
-      {() => (
-        <Form>
-          {/* Just name for now */}
-          <Row>
-            <FormGroup as={Col} xs={12} lg={6}>
-              <FormLabel>Ruleset Name</FormLabel>
-              <Input name="name.like"/>
-            </FormGroup>
-          </Row>
-
-          <Button type="submit">Search!</Button>
-        </Form>
-      )}
-    </Formik>
+    <>
+      <Input name="name.like"/>
+    </>
   );
 }
 
@@ -159,88 +139,20 @@ function RulesetFilter(
  * @param rulesetCount The initial count of rulesets retrievable
  */
 export default function Rulesets({ initialRulesets, rulesetCount }: RulesetProps): JSX.Element {
-  const [ rulesets, setRulesets ] = React.useState(initialRulesets);
-  const [ filters, setFilters ] = React.useState({ name: {like : "" }} as Record<string, unknown>);
   const [ modal, setModal ] = React.useState(false); // Boolean for rendering the modal
-  const [ sortBy, setSortByHook ] = React.useState(initialSortBy);
   function handleClose() { setModal(false); } // Handles closing the modal
-
-  // Page state for rendering the pagination
-  const [pageState, setPageState] = React.useState({
-    page: 1,
-    perPage: initialPerPage,
-    totalCount: rulesetCount,
-  });
-
-  /**
-   * Runs the actions needed to change the page state
-   * @param newPageState The new page state to fetch when changing page
-   */
-  async function setNewFilters(newFilters: Record<string, unknown>) {
-    const newRulesetData = await queryRulesets(
-      1,
-      pageState.perPage,
-      sortBy,
-      newFilters,
-    );
-
-    setRulesets(newRulesetData.rulesets);
-    setFilters(newFilters);
-    setPageState({...pageState, page: 1, totalCount: newRulesetData.rulesetCount});
-  }
-
-  /**
-   * Runs the actions needed to change the page state
-   * @param newPageState The new page state to fetch when changing page
-   */
-  async function setPage(newPageState: PageState) {
-    const newRulesetData = await queryRulesets(
-      newPageState.page,
-      newPageState.perPage,
-      sortBy,
-      filters,
-    );
-
-    setRulesets(newRulesetData.rulesets);
-    setPageState({...newPageState, totalCount: newRulesetData.rulesetCount});
-  }
-
-  /**
-   * Sets a new string to sort by and fetches the data again
-   * @param newSortBy The new string to sort by
-   */
-  async function setSortBy(newSortBy: string) {
-    const newRulesetData = await queryRulesets(
-      pageState.page,
-      pageState.perPage,
-      newSortBy,
-      filters,
-    );
-
-    setRulesets(newRulesetData.rulesets);
-    setPageState({...pageState, totalCount: newRulesetData.rulesetCount});
-    setSortByHook(newSortBy);
-  }
 
   /**
    * Runs the action to delete the ruleset
    * @param context The context for rendering information
    */
-  async function deleteRuleset(context: Ruleset) {
+  async function deleteRuleset(context: RulesetDoc) {
     if (confirm(`Are you sure you want to delete ${context.name}?`)) {
-      await request.delete<FetchRulesetData>(
+      await request.delete<any>(
         `/api/rulesets/${context._id}`, {}
       );
       // Do something?
-      const newRulesetData = await queryRulesets(
-        pageState.page,
-        pageState.perPage,
-        sortBy,
-        filters,
-      );
-
-      setRulesets(newRulesetData.rulesets);
-      setPageState({...pageState, totalCount: newRulesetData.rulesetCount});
+      // TODO - trigger reload downstream
     }
   }
 
@@ -248,7 +160,7 @@ export default function Rulesets({ initialRulesets, rulesetCount }: RulesetProps
   const rulesetActions = new ContextMenuBuilder()
     .addLink("Details", MdInfo, "/rulesets/[alias]")
     .addLink("Edit", MdBuild, "/rulesets/[alias]/edit")
-    .addItem("Delete", MdBlock, (context: Ruleset) => (deleteRuleset(context)));
+    .addItem("Delete", MdBlock, (context: RulesetDoc) => (deleteRuleset(context)));
 
   // Builds the table columns
   const tableBuilder = new TableBuilder()
@@ -275,23 +187,24 @@ export default function Rulesets({ initialRulesets, rulesetCount }: RulesetProps
       {/* Create Ruleset */}
       <Button onClick={() => { setModal(true); }}>New Ruleset</Button>
       <RulesetModal modal={modal} handleClose={handleClose}/>
-      {/* Search & Filters */}
-      <RulesetFilter filters={filters} setFilters={setNewFilters} />
-      {/* Table */}
-      <Table
-        {...tableBuilder.renderConfig()}
-        data={rulesets}
-        startingIncrement={(pageState.page - 1) * pageState.perPage + 1}
-        sortBy={sortBy}
-        setSortBy={setSortBy}
-      />
-      <Pagination pageState={pageState} setPageState={setPage}/>
+      <br/><br/>
+      <IndexTable
+        tableBuilder={tableBuilder}
+        content={initialRulesets}
+        contentCount={rulesetCount}
+        fetchContent={queryRulesets}
+        filters={{ name: {like: "" } }}
+        limit={initialPerPage}
+        sort="name"
+      >
+        <RulesetFilter/>
+      </IndexTable>
     </Page>
   );
 }
 
 Rulesets.getInitialProps = async () => {
-  const res = await request.post<FetchRulesetData>(
+  const res = await request.post<FetchRulesetsData>(
     "/api/rulesets", { options: { limit: initialPerPage, sort: initialSortBy } }
   );
   return { initialRulesets: res.data.rulesets, rulesetCount: res.data.rulesetCount };
