@@ -1,3 +1,5 @@
+@use "sass:map";
+
 $theme-colors: (
   "primary": #b33951,
   "secondary": #91C7B1,
@@ -51,3 +53,46 @@ $input-bg: $body-bg;
   width: 60%;
 }
 
+.toolbox {
+  position: fixed;
+  top: 0;
+  
+  height: 100%;
+  width: 20em;
+  background-color: map.get($theme-colors, "light");
+  border-style: solid;
+  border-width: 1px;
+  border-color: map.get($theme-colors, "dark");
+
+  &.open {
+    right: 0;
+  }
+
+  &.closed {
+    right: -20em;
+  }
+
+  .toolbox-arrow {
+    position: relative;
+    height: 5em;
+    width: 1em;
+    top: 5em;
+    left: -1em;
+
+    background-color: green;
+  }
+}
+
+.layout-toolbox {
+  .trash {
+    position: absolute;
+    bottom: 0;
+    width: 18em;
+    height: 4em;
+
+    margin: 1em;
+    padding: 1em;
+    border-style: dashed;
+    border-radius: 5px;
+  }
+}

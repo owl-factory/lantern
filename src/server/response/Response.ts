@@ -4,7 +4,7 @@ import { databaseSetup } from "../../utilities/mongo";
 type RequestFunction = (req: NextApiRequest, res: NextApiResponse) => void;
 type PossibleMethods = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
-export default class HTTPHandler {
+export class HTTPHandler {
   public GET?: RequestFunction;
   public POST?: RequestFunction;
   public PUT?: RequestFunction;
@@ -43,8 +43,10 @@ export default class HTTPHandler {
       await (this[method] as RequestFunction)(this.req, this.res);
 
     } catch (e) {
-      responseJson.message = `An unexpected error occured. If this continues occuring,
-        please contact our staff!`;
+      this.returnError(
+        500,
+        `An unexpected error occured. If this continues occuring, please contact our staff!`
+      );
     }
   }
 
@@ -56,4 +58,14 @@ export default class HTTPHandler {
     };
     this.res.status(200).json(responseBody);
   }
+
+  protected returnError(code: number, message: string): void {
+    const responseBody = {
+      success: true,
+      data: {},
+      message,
+    };
+    this.res.status(code).json(responseBody);
+  }
 }
+export default HTTPHandler;

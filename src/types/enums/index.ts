@@ -1,4 +1,4 @@
 export * from "./atomType";
-export * from "./contentFieldType";
+export * from "./fieldType";
 export * from "./moleculeType";
 export * from "./publishType";

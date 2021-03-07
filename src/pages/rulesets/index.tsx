@@ -12,7 +12,7 @@ import { TableBuilder } from "../../utilities/design/table";
 import { RulesetDoc, TableComponentProps } from "../../types";
 import { useRouter } from "next/router";
 import * as Yup from "yup";
-import { fetchContentResponse, IndexTable } from "../../components";
+import { IndexTable, fetchContentResponse } from "../../components";
 
 // The props for the RulesetPage
 interface RulesetProps {

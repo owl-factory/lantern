@@ -1,18 +1,21 @@
 
+export * from "./CommonContentType";
 export * from "./Content";
 export * from "./ContentType";
 export * from "./Entity";
 export * from "./CoreDocument";
+export * from "./Module";
 export * from "./Organization";
 export * from "./Ruleset";
+export * from "./misc";
 
-import { Content, ContentModel } from "./Content";
-import { ContentTypeDoc, ContentTypeModel } from "./ContentType";
-import { Entity, EntityModel } from "./Entity";
+import { Content } from "./Content";
+import { ContentTypeDoc } from "./ContentType";
+import { Entity } from "./Entity";
 import { CoreDocument } from "./CoreDocument";
-import { ModuleDoc, ModuleModel } from "./Module";
-import { OrganizationDoc, OrganizationModel } from "./Organization";
-import { RulesetDoc, RulesetModel } from "./Ruleset";
+import { ModuleDoc } from "./Module";
+import { OrganizationDoc } from "./Organization";
+import { RulesetDoc } from "./Ruleset";
 
 /**
  * A generic document type for any situation where we might be getting document data but
@@ -26,16 +29,4 @@ export type GenericDocumentType = (
   ModuleDoc |
   OrganizationDoc |
   RulesetDoc
-);
-
-/**
- * A generic type for hitting any of the Typegoose models
- */
-export type GenericModelType = (
-  typeof ContentModel |
-  typeof ContentTypeModel |
-  typeof EntityModel |
-  typeof ModuleModel |
-  typeof OrganizationModel |
-  typeof RulesetModel
 );

@@ -1,7 +1,8 @@
 import { ReturnModelType } from "@typegoose/typegoose";
 import { validate } from "class-validator";
 import { Query } from "mongoose";
-import { CoreDocument, GenericDocumentType, GenericModelType, RulesetModel } from "../../types/documents";
+import { GenericModelType, RulesetModel } from "..";
+import { GenericDocumentType } from "../../types/documents";
 import { Options } from "../../types/inputs/options";
 import { CreateOneResponse, FindCountResponse, FindManyResponse, FindOneResponse } from "../../types/resolvers";
 import { Context } from "../../types/server";
@@ -23,7 +24,7 @@ const superDocumentAliasModels: Record<keyof SuperDocumentAliases, GenericModelT
 /**
  * The core functionality for fetching, creating, updating, and deleting data. 
  */
-export default class CoreResolver {
+export class CoreResolver {
   public static model: ReturnModelType<any>; // The mongoose model for fetching data
 
   /**
@@ -71,11 +72,13 @@ export default class CoreResolver {
     input: Record<string, unknown>,
     ctx?: Context
   ): Promise<CreateOneResponse<GenericDocumentType>> {
+    console.log("Hi")
     const errors = await validate(input);
     if (errors.length > 0) {
+      console.log(errors)
       throw new Error(errors.toString());
     }
-
+    console.log("Validate finishes")
     // Updates both so we can track when something was last created and when
     // it was last touched easier
     input.createdAt = new Date();
@@ -85,7 +88,7 @@ export default class CoreResolver {
     input.updatedAt = new Date();
     input.updatedBy = "1";
     // data.updatedBy = getUserID();
-
+    console.log(input)
     return this.model.create(input);
   }
 

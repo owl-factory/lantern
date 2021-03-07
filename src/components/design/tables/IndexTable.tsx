@@ -31,7 +31,7 @@ type fetchContentFunction = (
 
 // The props for the IndexTable
 interface IndexTableProps {
-  children: JSX.Element;
+  children?: JSX.Element;
   content: Record<string, unknown>[] | GenericDocumentType[];
   contentCount: number;
   fetchContent: fetchContentFunction;
@@ -99,8 +99,9 @@ export function IndexTable(props: IndexTableProps): JSX.Element {
     if (newState.sort) { setSort(newState.sort); }
   }
 
-  return (
-    <>
+  let form = <></>;
+  if (props.children) {
+    form = (
       <Formik
         initialValues={ filters as Record<string, string> }
         onSubmit={async (values) => { await updateContent({ filters: values }); }}
@@ -119,6 +120,12 @@ export function IndexTable(props: IndexTableProps): JSX.Element {
           </Form>
         )}
       </Formik>
+    );
+  }
+
+  return (
+    <>
+      {form}
       <br/>
       <Table
         {...props.tableBuilder.renderConfig()}

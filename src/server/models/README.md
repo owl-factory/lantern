@@ -1,0 +1,2 @@
+# Server Models
+These are the typegoose models for our various Document models defined in `/types/documents`. They were originally in the same files, but due to issues that occured when Documents were referenced on the frontend and instantiated the Typegoose models, they were moved to this section. 

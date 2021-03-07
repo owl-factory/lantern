@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-inferrable-types */
 import React from "react";
 import { Pagination as BSPagination } from "react-bootstrap";
 
@@ -66,7 +65,7 @@ function Pagination(props: PaginationProps): JSX.Element {
    */
   function renderCells() {
     const renderedCells: JSX.Element[] = [];
-    const width: number = 3;
+    const width = 3;
 
     // Render current page
     renderedCells.push(
@@ -80,7 +79,7 @@ function Pagination(props: PaginationProps): JSX.Element {
     );
 
     // Render side pages
-    for (let i: number = 1; i < width; i++) {
+    for (let i = 1; i < width; i++) {
       let targetPage: number = props.pageState.page - i;
       if (targetPage > 0) {
         renderedCells.unshift(<PaginationCell key={"page_" + targetPage} targetPage={targetPage} setPage={setPage}/>);
@@ -117,10 +116,13 @@ function Pagination(props: PaginationProps): JSX.Element {
 
   const cells = renderCells();
 
-  return (
-    <BSPagination>
-      {cells}
-    </BSPagination>
+  return ((maxPage > 1) ?
+    (
+      <BSPagination>
+        {cells}
+      </BSPagination>
+    ):
+    <></>
   );
 }
 

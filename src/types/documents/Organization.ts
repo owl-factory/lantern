@@ -8,4 +8,3 @@ import { Severity, getModelForClass, modelOptions } from "@typegoose/typegoose";
 export class OrganizationDoc extends CoreDocument {
 }
 
-export const OrganizationModel = getModelForClass(OrganizationDoc);

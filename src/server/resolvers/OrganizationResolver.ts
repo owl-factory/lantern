@@ -1,9 +1,9 @@
-import { CoreDocument, OrganizationModel } from "../../types/documents";
+import { OrganizationModel } from "..";
 import { Context } from "../../types/server";
-import CoreResolver from "./CoreResolver";
+import { CoreResolver } from "./CoreResolver";
 
 /**
- * The resolver for CRUD operations on the Organization model. 
+ * The resolver for CRUD operations on the Organization model.
  */
 export class OrganizationResolver extends CoreResolver {
   public static model = OrganizationModel;

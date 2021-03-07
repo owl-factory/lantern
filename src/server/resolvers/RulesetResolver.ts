@@ -1,13 +1,11 @@
 import {
   Context,
-  CreateModuleInput,
   CreateOneResponse,
-  CreateRulesetInput,
   RulesetDoc,
-  RulesetModel
 } from "../../types";
-import CoreResolver from "./CoreResolver";
 import { ModuleResolver } from "./ModuleResolver";
+import { RulesetModel } from "..";
+import { CoreResolver } from "./CoreResolver";
 
 /**
  * The resolver for CRUD operations on the Ruleset model.
