@@ -2,7 +2,6 @@ import React from "react";
 import { NextRouter } from "next/router";
 import { RouterContext } from "next/dist/next-server/lib/router-context";
 
-
 interface TestRouterProps {
   children: React.ReactElement;
   router: Partial<NextRouter>;
@@ -20,44 +19,44 @@ interface TestRouterProps {
  * @param props.children The component/page with useRouter() inside of it
  * @param props.router A partial router object to create a dummy router object
  */
-export function WithTestRouter(props: TestRouterProps) {
-  const {
-    route = "",
-    pathname = "",
-    query = {},
-    asPath = "",
-    push = async () => true,
-    replace = async () => true,
-    reload = () => null,
-    back = () => null,
-    prefetch = async () => undefined,
-    beforePopState = () => null,
-    isFallback = false,
-    events = {
-      on: () => null,
-      off: () => null,
-      emit: () => null,
-    },
-  } = props.router || {};
+// export function WithTestRouter(props: TestRouterProps) {
+//   const {
+//     route = "",
+//     pathname = "",
+//     query = {},
+//     asPath = "",
+//     push = async () => true,
+//     replace = async () => true,
+//     reload = () => null,
+//     back = () => null,
+//     prefetch = async () => undefined,
+//     beforePopState = () => null,
+//     isFallback = false,
+//     events = {
+//       on: () => null,
+//       off: () => null,
+//       emit: () => null,
+//     },
+//   } = props.router || {};
 
-  return (
-    <RouterContext.Provider
-      value={{
-        route,
-        pathname,
-        query,
-        asPath,
-        push,
-        replace,
-        reload,
-        back,
-        prefetch,
-        beforePopState,
-        isFallback,
-        events,
-      }}
-    >
-      {props.children}
-    </RouterContext.Provider>
-  );
-}
+//   return (
+//     <RouterContext.Provider
+//       value={{
+//         route,
+//         pathname,
+//         query,
+//         asPath,
+//         push,
+//         replace,
+//         reload,
+//         back,
+//         prefetch,
+//         beforePopState,
+//         isFallback,
+//         events,
+//       }}
+//     >
+//       {props.children}
+//     </RouterContext.Provider>
+//   );
+// }
