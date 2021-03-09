@@ -2,9 +2,11 @@ import React from "react";
 import Peer from "peerjs";
 import { io } from "socket.io-client";
 
-function RenderUsers({users}: {users: Record<string, unknown>}): JSX.Element {
+function Streams({users}: {users: Record<string, MediaStream | undefined>}): JSX.Element {
   const list = Object.keys(users);
+  const videos:JSX.Element[] = []
   
+
   return (
     <>
       { list }
@@ -12,40 +14,72 @@ function RenderUsers({users}: {users: Record<string, unknown>}): JSX.Element {
   );
 }
 
-export function Play(): JSX.Element {
+export function Play() {
   const tableID = "1234";
   const [ myID, setMyID ] = React.useState("-1");
-  const [ users, setUsers ] = React.useState<Record<string, unknown>>({});
+  const [ peer ] = React.useState(new Peer(undefined));
+  const [ socket ] = React.useState(io("192.168.0.195:3001"));
+  const [ myStream, setMyStream ] = React.useState<MediaStream | undefined>(undefined);
+  const [ users, setUsers ] = React.useState<Record<string, MediaStream | undefined>>({});
 
+  /**
+   * 
+   * @param oldUsers The old users 
+   * @param id 
+   * @param stream 
+   */
   function addUser(id: string, stream?: MediaStream) {
     const newUsers = { ...users };
-    console.log({ ...users })
-    console.log(newUsers)
     newUsers[id] = stream;
+    console.log(newUsers)
+    console.log(id)
     setUsers(newUsers);
   }
 
-  React.useEffect(() => {
-    // Opens socket for us to connect to the table
-    const socket = io("192.168.0.195:3001");
-    const peer = new Peer(undefined);
+  function connectToNewUser(userID: string) {
+    addUser(userID);
 
+    if (!myStream) { return; }
+    const call = peer.call(userID, myStream);
+    // call.on(`stream`, ());
+    // call.on(`close`, () => {
+
+    // });
+  }
+
+  function removeUser(userID) {
+    // const newUsers = { ...users }
+  }
+
+  // RELOAD ON USERS
+  React.useEffect(() => {
     // Fires when we connect to the Peer (signal) server
     peer.on(`open`, (id: string) => {
       console.log("Peer Open");
       socket.emit(`join-table`, tableID, id);
+      navigator.mediaDevices.getUserMedia({ video: true })
+      .then((stream: MediaStream) => {
+        addUser(id, stream);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
       setMyID(id);
-      addUser(id);
     });
 
-    socket.on(`user-connected`, (id: string) => {
-      console.log("New user", id)
-      addUser(id);
+    // Handles when a user joins the table
+    socket.on(`user-connected`, (userID: string) => {
+      console.log("User connected", userID);
+      connectToNewUser(userID);
     });
 
-  }, []);
+    peer.on(`call`, call => {
+      console.log(call);
+      call.answer(myStream);
+    });
+  }, [users]);
 
-  return <p><RenderUsers users={users}/></p>;
+  return <p><Streams users={users}/></p>;
 }
 export default Play;
 
