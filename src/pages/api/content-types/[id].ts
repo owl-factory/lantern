@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { ContentTypeResolver } from "../../../server";
 import HTTPHandler from "../../../server/response/Response";
+import { createEndpoint } from "../../../server/utilities/handlers";
 
 /**
  * Fetches a single content type
@@ -36,15 +37,4 @@ async function deleteContentType(this: HTTPHandler, req: NextApiRequest) {
   this.returnSuccess(result);
 }
 
-/**
- * Handles the results endpoint
- * @param req The request to the server
- * @param res The result from the server to be sent back
- */
-export default async function rulesetsEndpoint(req: NextApiRequest, res: NextApiResponse): Promise<void> {
-  const handler = new HTTPHandler(req, res);
-  handler.GET = fetchContentType;
-  handler.PATCH = updateContentType;
-  handler.DELETE = deleteContentType;
-  await handler.handle();
-}
+export default createEndpoint({GET: fetchContentType, PATCH: updateContentType, DELETE: deleteContentType});
