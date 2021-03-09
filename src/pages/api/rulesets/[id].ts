@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { RulesetResolver } from "../../../server/resolvers/RulesetResolver";
 import HTTPHandler from "../../../server/response/Response";
+import { createEndpoint } from "../../../server/utilities/handlers";
 
 /**
  * Fetches all rulesets
@@ -22,14 +23,5 @@ async function deleteRuleset(this: HTTPHandler, req: NextApiRequest) {
   this.returnSuccess({ result });
 }
 
-/**
- * Handles the results endpoint
- * @param req The request to the server
- * @param res The result from the server to be sent back
- */
-export default async function rulesetsEndpoint(req: NextApiRequest, res: NextApiResponse): Promise<void> {
-  const handler = new HTTPHandler(req, res);
-  handler.GET = getRuleset;
-  handler.DELETE = deleteRuleset;
-  await handler.handle();
-}
+export default createEndpoint({ GET: getRuleset, DELETE: deleteRuleset });
+

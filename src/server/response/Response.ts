@@ -1,8 +1,15 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { databaseSetup } from "../../utilities/mongo";
+import { Session } from "next-auth/client";
 
 type RequestFunction = (req: NextApiRequest, res: NextApiResponse) => void;
 type PossibleMethods = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+
+export interface Context {
+  req: NextApiRequest;
+  res: NextApiResponse;
+  session: Session | null;
+}
 
 export class HTTPHandler {
   public GET?: RequestFunction;
@@ -13,10 +20,12 @@ export class HTTPHandler {
 
   private req: NextApiRequest;
   private res: NextApiResponse;
+  public ctx: Context;
 
   constructor(req: NextApiRequest, res: NextApiResponse) {
     this.req = req;
     this.res = res;
+    this.ctx = { req, res, session: null };
   }
 
   public async handle(): Promise<void> {
@@ -42,15 +51,22 @@ export class HTTPHandler {
 
       await (this[method] as RequestFunction)(this.req, this.res);
 
-    } catch (e) {
-      this.returnError(
-        500,
-        `An unexpected error occured. If this continues occuring, please contact our staff!`
-      );
+    } catch (error) {
+      if (error.code && error.message) {
+        this.returnError(
+          error.code,
+          error.message
+        );
+      } else {
+        this.returnError(
+          500,
+          `An unexpected error occured. If this continues occuring, please contact our staff!`
+        );
+      }
     }
   }
 
-  protected returnSuccess(data: Record<string, unknown>): void {
+  public returnSuccess(data: Record<string, unknown>): void {
     const responseBody = {
       success: true,
       data: data,
@@ -59,9 +75,9 @@ export class HTTPHandler {
     this.res.status(200).json(responseBody);
   }
 
-  protected returnError(code: number, message: string): void {
+  public returnError(code: number, message: string): void {
     const responseBody = {
-      success: true,
+      success: false,
       data: {},
       message,
     };
