@@ -6,12 +6,17 @@ const Play = dynamic(
   { loading: () => <p>...</p>, ssr: false},
 );
 
+const table = {
+  _id: "1234",
+  ownerID: "321",
+};
 
-export default function PlayPage() {
+const user = {
+  _id: "0987",
+};
+
+export default function PlayPage(): JSX.Element {
   return (
-    <>
-      Hi,
-      <Play/>
-    </>
+    <Play table={table} user={user}/>
   );
 }

@@ -1,205 +1,151 @@
 import React from "react";
-import Peer from "peerjs";
+import Peer, { DataConnection } from "peerjs";
+import { TableDoc, UserDoc } from "../../../types";
+import { Chat } from "./Chat";
 import { io } from "socket.io-client";
 
-function Streams({users}: {users: Record<string, MediaStream | undefined>}): JSX.Element {
-  const list = Object.keys(users);
-  const videos:JSX.Element[] = []
-  
+interface PlayProps {
+  table: TableDoc;
+  user: UserDoc;
+}
+
+type Channels = Record<string, DataConnection>;
+
+const socket = io("192.168.0.195:3001");
+const peer = new Peer(undefined,{
+  host: '192.168.0.195',
+  port: 3002,
+  path: '/myapp',
+});
+
+function _connectToPlayer(peerID: string, channels: Channels, setChannels: any, handleData: any) {
+  console.log(`Connecting to ${peerID}`);
+  const newChannels = { ...channels };
+  newChannels[peerID] = peer.connect(peerID);
+  newChannels[peerID].on(`data`, (data: any) => handleData(data));
+  setChannels(newChannels);
+}
+
+/**
+ * Disconnects the current player from the given peer ID
+ * @param peerID The peer ID that we are disconnecting from
+ */
+function _disconnectFromPlayer(peerID: string, channels: Channels, setChannels: any) {
+  const oldChannels = { ...channels };
+  if (!oldChannels[peerID]) { return; }
+  delete oldChannels[peerID];
+  setChannels(oldChannels);
+
+}
+
+function _handleData(data: any, gameState: any, setGameState: any) {
+  const newGameState = { ...gameState };
+  console.log(data)
+
+  if ("count" in data) {
+    newGameState.count = data.count;
+  }
+
+  if ("message" in data) {
+    newGameState.messages.push(data.message);
+  }
+
+  setGameState(newGameState);
+}
+
+function _joinTable(tableID: string, newPeerChannel: (connection: DataConnection) => void) {
+  console.log(`Joining table`);
+  socket.emit(`join-table`, tableID, peer.id);
+
+  peer.on(`connection`, (connection: DataConnection) => {
+    newPeerChannel(connection);
+  });
+}
+
+/**
+ * The function to run on the creation of a new data connection
+ * @param channel The new data connection
+ * @param oldChannels The old collection of data connections
+ * @param setChannels Updates the channels to use the new channels
+ */
+function _newPeerChannel(channel: DataConnection, oldChannels: Channels, setChannels: any, handleData: any) {
+  console.log(`Recieved connection`);
+  const newChannels = { ...oldChannels };
+  newChannels[channel.peer] = channel;
+  console.log(newChannels)
+  console.log(channel)
+  newChannels[channel.peer].on(`data`, (data: any) => handleData(data));
+
+  setChannels(newChannels);
+}
+
+
+/**
+ * Renders out the playspace and server functionality
+ */
+export function Play(props: PlayProps) {
+  // The current host of the game. Tracks who is the current source of truth and
+  // who updates should be sent to
+  const [ host, setHost ] = React.useState<string | undefined>(undefined);
+  const [ channels, setChannels ] = React.useState<Channels>({});
+  const [ gameState, setGameState ] = React.useState({ count: 0, messages: [] })
+
+  const connectToPlayer = (peerID: string) => { _connectToPlayer(peerID, channels, setChannels, handleData); };
+  const disconnectFromPlayer = (peerID: string) => { _disconnectFromPlayer(peerID, channels, setChannels)}
+  const handleData = (data: any) => { _handleData(data, gameState, setGameState)}
+  const joinTable = () => { _joinTable(props.table._id, newPeerChannel); };
+  const newPeerChannel = (channel: DataConnection) => { _newPeerChannel(channel, channels, setChannels, handleData); };
+
+  // /**
+  //  * Logic that forces the current player as the host.
+  //  */
+  // function assumeHost() {
+  //   if (host === peer.id) { console.warn(`You already are the current host`); return; }
+  //   socket.emit(`assume-host`, props.table._id, peer.id);
+  //   setHost(peer.id);
+  // }
+
+  function test() {
+    const channelKeys = Object.keys(channels);
+    channelKeys.forEach((key: string) => {
+      const channel = channels[key];
+      channel.send({ count: gameState.count + 1 });
+    });
+    setGameState({...gameState, count: gameState.count + 1 })
+  }
+
+
+  // ON LOAD
+  React.useEffect(() => {
+    // Current player is connected to the Peer server
+    peer.on(`open`, () => {
+      joinTable();
+    });
+
+    socket.on(`player-joined`, (peerID: string) => {
+      connectToPlayer(peerID);
+    });
+
+    socket.on(`player-disconnected`, (peerID: string) => {
+      disconnectFromPlayer(peerID);
+    });
+
+    return () => {socket.disconnect(); peer.disconnect();};
+  }, []);
 
   return (
-    <>
-      { list }
-    </>
+    <div>
+      Hello!<br/>
+      My ID is: {peer.id}<br/>
+      {/* <button onClick={assumeHost}>Assume Host</button><br/> */}
+      I am {peer.id === host ? "" : "not "} the current host!<br/>
+      {/* <Chat peer={peer} host={host}/> */}
+      Count: {gameState.count}
+      <button onClick={test}>Test</button>
+      <Chat channels={channels} data={gameState} setGameState={setGameState}/>
+      {/* <Counter channels={channels.count}/> */}
+    </div>
   );
 }
 
-export function Play() {
-  const tableID = "1234";
-  const [ myID, setMyID ] = React.useState("-1");
-  const [ peer ] = React.useState(new Peer(undefined));
-  const [ socket ] = React.useState(io("192.168.0.195:3001"));
-  const [ myStream, setMyStream ] = React.useState<MediaStream | undefined>(undefined);
-  const [ users, setUsers ] = React.useState<Record<string, MediaStream | undefined>>({});
-
-  /**
-   * 
-   * @param oldUsers The old users 
-   * @param id 
-   * @param stream 
-   */
-  function addUser(id: string, stream?: MediaStream) {
-    const newUsers = { ...users };
-    newUsers[id] = stream;
-    console.log(newUsers)
-    console.log(id)
-    setUsers(newUsers);
-  }
-
-  function connectToNewUser(userID: string) {
-    addUser(userID);
-
-    if (!myStream) { return; }
-    const call = peer.call(userID, myStream);
-    // call.on(`stream`, ());
-    // call.on(`close`, () => {
-
-    // });
-  }
-
-  function removeUser(userID) {
-    // const newUsers = { ...users }
-  }
-
-  // RELOAD ON USERS
-  React.useEffect(() => {
-    // Fires when we connect to the Peer (signal) server
-    peer.on(`open`, (id: string) => {
-      console.log("Peer Open");
-      socket.emit(`join-table`, tableID, id);
-      navigator.mediaDevices.getUserMedia({ video: true })
-      .then((stream: MediaStream) => {
-        addUser(id, stream);
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-      setMyID(id);
-    });
-
-    // Handles when a user joins the table
-    socket.on(`user-connected`, (userID: string) => {
-      console.log("User connected", userID);
-      connectToNewUser(userID);
-    });
-
-    peer.on(`call`, call => {
-      console.log(call);
-      call.answer(myStream);
-    });
-  }, [users]);
-
-  return <p><Streams users={users}/></p>;
-}
 export default Play;
-
-// function loadUserMedia(success: (stream: MediaStream) => void ): void {
-//   function hasUserMedia() {
-//     return !!(
-//       navigator.getUserMedia || (navigator as any).webkitGetUserMedia || 
-//         (navigator as any).mozGetUserMedia
-//     );
-//   }
-
-//   if (hasUserMedia()) { 
-//     navigator.getUserMedia = (
-//       navigator.getUserMedia || (navigator as any).webkitGetUserMedia || 
-//     (navigator as any).mozGetUserMedia
-//     );
-
-//     //enabling video and audio channels
-//     navigator.getUserMedia(
-//       { video: true, audio: true },
-//       (stream) => success(stream),
-//       (err) => (console.log(err))
-//     );
-//   }
-// }
-
-
-
-// /**
-//  * Runs the game server and all of that
-//  */
-// export function Play(): JSX.Element {
-//   const [ myUserID, setUserID ] = React.useState("");
-//   const [ isLoaded, setIsLoaded ] = React.useState(false);
-//   const [ count, setCount ] = React.useState(0);
-//   const [ users, setUsers ] = React.useState<Record<string, unknown>>({});
-
-//   const tableID = "1234";
-  
-//   function newUser(id: string, stream?: MediaStream) {
-//     const newUsers = { ...users };
-//     newUsers[id] = stream;
-//     setUsers(newUsers);
-//   }
-
-
-
-//   React.useEffect(() => {
-//     // Opens a socket
-//     const socket = io("http://192.168.0.195:3001");
-//     const peer = new Peer(undefined); // Connect to default peerjs
-
-
-//     socket.on(`user-connected`, (userID: string) => {
-//       console.log("User connected", userID);
-//       newUser(userID);
-//     });
-
-//     // Actions to take when a user disconnects
-//     socket.on(`user-disconnected`, (userID: string) => {
-//       console.log(`user-disconnected: ${userID}`);
-//     });
-
-//     async function test() { 
-//       // Loads in the Peer, as this must be client-side only
-//       // const Peer = (await import("peerjs")).default;
-
-//       // Joins the Table when the peer connection is open
-//       peer.on(`open`, (id: string) => {
-//         console.log("Peer open")
-//         socket.emit(`join-table`, tableID, id);
-//         newUser(id);
-//       });
-
-//       // Start by running in the navigator since we need the stream for these actions
-//       // navigator.mediaDevices.getUserMedia({ video: true }).then( (stream: MediaStream) => {
-//       //   addVideoStream(stream);
-
-//       //   // Actions to run when the client is called by another user
-//       //   peer.on(`call`, call => {
-//       //     call.answer(stream);
-//       //   });
-
-//       //   // Actions to run when a new user connects to the room
-        
-//       // })
-//       // .catch( (err) => {
-//       //   console.log(err)
-//       // });
-
-      
-//     }
-//     test();
-//   }, []);
-
-  
-
-//   function inc() {
-//     setCount(count + 1);
-//   }
-
-//   function listUsers() {
-//     let userList = ``;
-//     const keys = Object.keys(users);
-//     keys.forEach((key: string) => {
-//       if (userList !== ``) { userList += `, `; }
-//       userList += key;
-//     });
-
-//     return userList;
-//   }
-
-//   return (
-//     <div>
-//       {isLoaded ? "We have loaded!" : "We are not loaded"}
-//       { count }
-//       <button onClick={inc}>Inc</button>
-//       <br/>
-//       <div>My user id: {myUserID}</div><br/>
-//       <div>Active Users: {listUsers()}</div>
-//     </div>
-//   );
-// }
