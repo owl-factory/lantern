@@ -1,5 +1,8 @@
+import { setGlobalOptions } from "@typegoose/typegoose";
 import Peer, { DataConnection } from "peerjs";
+import React, {useContext, useReducer} from 'react';
 import { Socket, io } from "socket.io-client";
+import { GameState, GameStateContext } from "../../components/reroll/play/GameStateProvider";
 
 export class GameServer {
   debug = true;
@@ -18,11 +21,12 @@ export class GameServer {
   tableID!: string;
   channels: Record<string, DataConnection> = {};
 
-  gameState!: any;
-  setGameState!: any;
+  gameState: GameState;
+  gameDispatch: React.Dispatch<any>;
 
-
-  constructor() {
+  constructor(gameState: GameState, gameDispatch: React.Dispatch<any>) {
+    this.gameState = gameState;
+    this.gameDispatch = gameDispatch;
     this.socketAddress = "192.168.0.195:3001";
     this.peerID = undefined;
     this.peerConfig = {
@@ -58,22 +62,6 @@ export class GameServer {
     });
   }
 
-  public handleData(data: any) {
-    this.log(`Do stuff with the data!`)
-    console.log(data)
-    console.log(this.gameState)
-
-    if ("count" in data) {
-      this.gameState.count = data.count;
-    }
-
-    if ("message" in data) {
-      this.gameState.messages.push(data.message);
-    }
-
-    this.setGameState(this.gameState);
-  }
-
   protected joinTable(): void {
     this.log(`Joining table ${this.tableID} as ${this.peer.id}`);
     this.socket.emit(`join-table`, this.tableID, this.peer.id);
@@ -90,7 +78,7 @@ export class GameServer {
       this.log(`Recieving connection from ${channel.peer}`);
       this.channels[channel.peer] = channel;
 
-      this.channels[channel.peer].on(`data`, (data:any) => (this.handleData(data)));
+      this.channels[channel.peer].on(`data`, (data:any) => (this.gameDispatch(data)));
     });
   }
 
@@ -98,7 +86,7 @@ export class GameServer {
     this.log(`Connecting to new player ${peerID}`)
     this.channels[peerID] = this.peer.connect(peerID);
 
-    this.channels[peerID].on(`data`, (data:any) => (this.handleData(data)));
+    this.channels[peerID].on(`data`, (data:any) => (this.gameDispatch(data)));
   }
 
   protected disconnectFromPlayer(peerID: string): void {
@@ -114,4 +102,3 @@ export class GameServer {
     console.log(message, optionalParams);
   }
 }
-

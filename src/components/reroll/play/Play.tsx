@@ -1,9 +1,9 @@
-import React from "react";
-import Peer, { DataConnection } from "peerjs";
+import React, { useContext } from "react";
+import { DataConnection } from "peerjs";
 import { TableDoc, UserDoc } from "../../../types";
 import { Chat } from "./Chat";
-import { io } from "socket.io-client";
 import { GameServer } from "../../../client/sockets";
+import { GameStateProvider, GameStateContext } from "../../../components/reroll/play/GameStateProvider";
 
 interface PlayProps {
   table: TableDoc;
@@ -11,76 +11,14 @@ interface PlayProps {
 }
 
 type Channels = Record<string, DataConnection>;
-const gameServer = new GameServer();
 
-// const socket = io("192.168.0.195:3001");
-// const peer = new Peer(undefined,{
-//   host: '192.168.0.195',
-//   port: 3002,
-//   path: '/myapp',
-// });
-
-function _connectToPlayer(peerID: string, channels: Channels, setChannels: any, handleData: any) {
-  // console.log(`Connecting to ${peerID}`);
-  // const newChannels = { ...channels };
-  // newChannels[peerID] = peer.connect(peerID);
-  // newChannels[peerID].on(`data`, (data: any) => handleData(data));
-  // setChannels(newChannels);
+function PlayWrapper(props: PlayProps) {
+  return (
+    <GameStateProvider>
+      <Play {...props}/>
+    </GameStateProvider>
+  );
 }
-
-/**
- * Disconnects the current player from the given peer ID
- * @param peerID The peer ID that we are disconnecting from
- */
-function _disconnectFromPlayer(peerID: string, channels: Channels, setChannels: any) {
-  // const oldChannels = { ...channels };
-  // if (!oldChannels[peerID]) { return; }
-  // delete oldChannels[peerID];
-  // setChannels(oldChannels);
-
-}
-
-function _handleData(data: any, gameState: any, setGameState: any) {
-  const newGameState = { ...gameState };
-  console.log(data)
-
-  if ("count" in data) {
-    newGameState.count = data.count;
-  }
-
-  if ("message" in data) {
-    newGameState.messages.push(data.message);
-  }
-
-  // setGameState(newGameState);
-}
-
-function _joinTable(tableID: string, newPeerChannel: (connection: DataConnection) => void) {
-  console.log(`Joining table`);
-  // socket.emit(`join-table`, tableID, peer.id);
-
-  // peer.on(`connection`, (connection: DataConnection) => {
-  //   newPeerChannel(connection);
-  // });
-}
-
-/**
- * The function to run on the creation of a new data connection
- * @param channel The new data connection
- * @param oldChannels The old collection of data connections
- * @param setChannels Updates the channels to use the new channels
- */
-function _newPeerChannel(channel: DataConnection, oldChannels: Channels, setChannels: any, handleData: any) {
-  console.log(`Recieved connection`);
-  const newChannels = { ...oldChannels };
-  newChannels[channel.peer] = channel;
-  console.log(newChannels)
-  console.log(channel)
-  newChannels[channel.peer].on(`data`, (data: any) => handleData(data));
-
-  setChannels(newChannels);
-}
-
 
 /**
  * Renders out the playspace and server functionality
@@ -89,19 +27,9 @@ export function Play(props: PlayProps) {
   // The current host of the game. Tracks who is the current source of truth and
   // who updates should be sent to
   const [ host, setHost ] = React.useState<string | undefined>(undefined);
-  const [ gameState, setGameState ] = React.useState({ count: 0, messages: [] })
   const [ channels, setChannels ] = React.useState({});
-  const connectToPlayer = (peerID: string) => { _connectToPlayer(peerID, channels, setChannels, handleData); };
-  const disconnectFromPlayer = (peerID: string) => { _disconnectFromPlayer(peerID, channels, setChannels)}
-  const handleData = (data: any) => { _handleData(data, gameState, setGameState)}
-  const joinTable = () => { _joinTable(props.table._id, newPeerChannel); };
-  const newPeerChannel = (channel: DataConnection) => { _newPeerChannel(channel, channels, setChannels, handleData); };
-
-  function saveData(data: any) {
-    console.log("Hi")
-    console.log(data)
-    setGameState(data);
-  }
+  const [ gameState, gameDispatch ] = useContext(GameStateContext);
+  const gameServer = new GameServer(gameState, gameDispatch);
 
   // /**
   //  * Logic that forces the current player as the host.
@@ -113,22 +41,13 @@ export function Play(props: PlayProps) {
   // }
 
   function test() {
-    gameServer.sendToAll({ count: gameState.count + 1});
-    setGameState({...gameState, count: gameState.count + 1 });
+    const dispatch = { type: "set count", data: gameState.count + 1 };
+    gameDispatch(dispatch);
+    gameServer.sendToAll(dispatch);
   }
-
-  React.useEffect(() => {
-    console.log(gameState)
-    gameServer.gameState = gameState;
-    gameServer.setGameState = saveData;
-
-    // gameServer.setGameState = setGameState;
-  }, [ gameState ]);
-
 
   // ON LOAD
   React.useEffect(() => {
-    gameServer.setGameState = saveData;
     gameServer.connect(props.table._id);
 
     // Current player is connected to the Peer server
@@ -156,10 +75,10 @@ export function Play(props: PlayProps) {
       {/* <Chat peer={peer} host={host}/> */}
       Count: {gameState.count}
       <button onClick={test}>Test</button>
-      <Chat channels={channels} data={gameState} setGameState={setGameState}/>
+      {/*<Chat channels={channels} />*/}
       {/* <Counter channels={channels.count}/> */}
     </div>
   );
 }
 
-export default Play;
+export default PlayWrapper;

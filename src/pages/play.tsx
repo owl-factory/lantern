@@ -3,7 +3,7 @@ import dynamic from "next/dynamic";
 
 const Play = dynamic(
   () => import('../components/reroll/play/Play'),
-  { loading: () => <p>...</p>, ssr: false},
+  { loading: () => <h1>...</h1>, ssr: false},
 );
 
 const table = {
