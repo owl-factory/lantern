@@ -10,8 +10,6 @@ interface PlayProps {
   user: UserDoc;
 }
 
-type Channels = Record<string, DataConnection>;
-
 function PlayWrapper(props: PlayProps) {
   return (
     <GameStateProvider>
@@ -19,6 +17,9 @@ function PlayWrapper(props: PlayProps) {
     </GameStateProvider>
   );
 }
+
+const gameServer = new GameServer();
+
 
 /**
  * Renders out the playspace and server functionality
@@ -29,7 +30,6 @@ export function Play(props: PlayProps) {
   const [ host, setHost ] = React.useState<string | undefined>(undefined);
   const [ channels, setChannels ] = React.useState({});
   const [ gameState, gameDispatch ] = useContext(GameStateContext);
-  const gameServer = new GameServer(gameState, gameDispatch);
 
   // /**
   //  * Logic that forces the current player as the host.
@@ -42,28 +42,15 @@ export function Play(props: PlayProps) {
 
   function test() {
     const dispatch = { type: "set count", data: gameState.count + 1 };
-    gameDispatch(dispatch);
     gameServer.sendToAll(dispatch);
+    gameDispatch(dispatch);
   }
 
   // ON LOAD
   React.useEffect(() => {
+    gameServer.gameState = gameState;
+    gameServer.gameDispatch = gameDispatch;
     gameServer.connect(props.table._id);
-
-    // Current player is connected to the Peer server
-    // peer.on(`open`, () => {
-    //   joinTable();
-    // });
-
-    // socket.on(`player-joined`, (peerID: string) => {
-    //   connectToPlayer(peerID);
-    // });
-
-    // socket.on(`player-disconnected`, (peerID: string) => {
-    //   disconnectFromPlayer(peerID);
-    // });
-
-    // return () => {socket.disconnect(); peer.disconnect();};
   }, []);
 
   return (
