@@ -19,6 +19,11 @@ const gameState: GameState = { count: 0, messages: [] };
 
 const GameStateContext = createContext<GameStateContextType | null>(null);
 
+/**
+ * Updates the gamestate from the given action
+ * @param state The previous game state
+ * @param action The action taken with data and type
+ */
 function gameStateReducer(state: GameState, action: Action) {
   switch (action.type) {
     case "set count":
@@ -26,7 +31,7 @@ function gameStateReducer(state: GameState, action: Action) {
     case "set server":
       return { ...state, server: action.data };
     case "add message":
-      let messages = state.messages;
+      const messages = state.messages;
       messages.push(action.data);
       return { ...state, messages };
     default:
@@ -34,15 +39,22 @@ function gameStateReducer(state: GameState, action: Action) {
   }
 }
 
-export function GameStateProvider({ children }: any) {
+/**
+ * Wraps the children in a game state context provider
+ * @param children The children to give the GameStateContext wrapper
+ */
+export function GameStateProvider({ children }: any): JSX.Element {
   const [state, dispatch] = useReducer(gameStateReducer, gameState);
   return <GameStateContext.Provider value={[ state, dispatch ]}>{children}</GameStateContext.Provider>;
-};
+}
 
+/**
+ * Grabs the game state context for the user
+ */
 export function useGameState() {
   const ctx = useContext(GameStateContext);
-  if (ctx == null) {
-    throw new Error("No GameStateProvider is available to this component.") 
+  if (ctx === null) {
+    throw new Error("No GameStateProvider is available to this component.");
   } else {
     return ctx;
   }
