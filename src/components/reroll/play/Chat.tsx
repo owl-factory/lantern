@@ -1,19 +1,11 @@
 import { Form, Formik } from "formik";
 import React from "react";
 import { Input, TextArea } from "../..";
+import { useGameState } from "./GameStateProvider";
 
 export interface MessageType {
   author: string;
   text: string;
-}
-
-interface ChatProps {
- 
-
-}
-
-export function addMessage() {
-
 }
 
 function Message({ message }: { message: MessageType }) {
@@ -26,23 +18,20 @@ function Message({ message }: { message: MessageType }) {
   )
 }
 
-export function Chat(props: any) {
-  function sendMessage(values: any) {
-    const newState = { ...props.data };
-    newState.messages.push(values);
-    const keys = Object.keys(props.channels);
-    keys.forEach((key:string) => {
-      console.log(key)
-      const channel = props.channels[key];
-      channel.send({message: values});
-    });
-    props.setGameState(newState);
+export function Chat() {
+  const [ gameState, gameDispatch ] = useGameState();
+
+  function sendMessage(values: MessageType) {
+    const dispatch = { type: "add message", data: values };
+    gameState.server?.sendToAll(dispatch);
+    gameDispatch(dispatch);
   }
 
   const messageBlock: JSX.Element[] = [];
-  props.data.messages.forEach((message: MessageType, index: number) => {
+  gameState.messages.forEach((message: MessageType, index: number) => {
     messageBlock.push(<Message message={message} key={index}/>);
   });
+
   return (
     <div>
       <h2> Chat</h2>

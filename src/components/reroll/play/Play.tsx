@@ -2,8 +2,8 @@ import React, { useContext } from "react";
 import { DataConnection } from "peerjs";
 import { TableDoc, UserDoc } from "../../../types";
 import { Chat } from "./Chat";
-import { GameServer } from "../../../client/sockets";
-import { GameStateProvider, GameStateContext } from "../../../components/reroll/play/GameStateProvider";
+import { GameServer } from "../../../client/sockets/GameServer";
+import { GameStateProvider, useGameState } from "../../../components/reroll/play/GameStateProvider";
 
 interface PlayProps {
   table: TableDoc;
@@ -20,7 +20,6 @@ function PlayWrapper(props: PlayProps) {
 
 const gameServer = new GameServer();
 
-
 /**
  * Renders out the playspace and server functionality
  */
@@ -29,7 +28,7 @@ export function Play(props: PlayProps) {
   // who updates should be sent to
   const [ host, setHost ] = React.useState<string | undefined>(undefined);
   const [ channels, setChannels ] = React.useState({});
-  const [ gameState, gameDispatch ] = useContext(GameStateContext);
+  const [ gameState, gameDispatch ] = useGameState();
 
   // /**
   //  * Logic that forces the current player as the host.
@@ -62,7 +61,7 @@ export function Play(props: PlayProps) {
       {/* <Chat peer={peer} host={host}/> */}
       Count: {gameState.count}
       <button onClick={test}>Test</button>
-      {/*<Chat channels={channels} />*/}
+      <Chat />
       {/* <Counter channels={channels.count}/> */}
     </div>
   );

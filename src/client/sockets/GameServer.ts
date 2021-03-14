@@ -2,7 +2,7 @@ import { setGlobalOptions } from "@typegoose/typegoose";
 import Peer, { DataConnection } from "peerjs";
 import React, {useContext, useReducer} from 'react';
 import { Socket, io } from "socket.io-client";
-import { GameState, GameStateContext } from "../../components/reroll/play/GameStateProvider";
+import { GameState } from "../../components/reroll/play/GameStateProvider";
 
 export class GameServer {
   debug = false;
@@ -25,8 +25,6 @@ export class GameServer {
   gameDispatch!: React.Dispatch<any>;
 
   constructor() {
-    // this.gameState = gameState;
-    // this.gameDispatch = gameDispatch;
     this.socketAddress = "192.168.0.195:3001";
     this.peerID = undefined;
     this.peerConfig = {
@@ -48,8 +46,8 @@ export class GameServer {
       this.peer.on(`open`, () => {
         this.log(`Peer successfully connected`);
         this.isPeerReady = true;
-
         this.joinTable();
+        this.gameDispatch({ type: "set server", data: this });
       });
     });
   }
@@ -95,7 +93,6 @@ export class GameServer {
     this.channels[peerID].on(`data`, (data:any) => {
       this.log(this.channels)
       this.gameDispatch(data)
-
     });
   }
 
