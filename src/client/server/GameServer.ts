@@ -3,6 +3,9 @@ import React from 'react';
 import { Socket, io } from "socket.io-client";
 import { GameState } from "../../components/reroll/play/GameStateProvider";
 
+/**
+ * All of the game server functionality
+ */
 export class GameServer {
   debug = false; // True to post debug information
 
@@ -18,10 +21,10 @@ export class GameServer {
   isSocketReady = false; // If the socket has been connected
 
   tableID!: string; // The ID of the table server to connect to
-  // The peerID indexed object containing the channels connected to them
-  channels: Record<string, DataConnection> = {}; 
 
-  serverState: any = {}; //
+  // The peerID indexed object containing the channels connected to them
+  channels: Record<string, DataConnection> = {};
+
   gameState!: GameState; // The React-updated game state that refreshes the DOM
   gameDispatch!: React.Dispatch<any>; // Updates the gameState
 
@@ -54,8 +57,8 @@ export class GameServer {
       this.peer.on(`open`, () => {
         this.log(`Peer successfully connected`);
         this.isPeerReady = true;
-
         this.joinTable();
+        this.gameDispatch({ type: "set server", data: this });
       });
     });
     // TODO - add error handling
@@ -66,7 +69,7 @@ export class GameServer {
    * @param data The data to send to all people
    */
   public sendToAll(data: any): void {
-    this.log(`Send to all`)
+    this.log(`Send to all`);
     const keys = Object.keys(this.channels);
     keys.forEach((key: string) => {
       const channel = this.channels[key];
@@ -110,7 +113,7 @@ export class GameServer {
    * @param peerID The ID of the new peer to connect to
    */
   protected connectToPlayer(peerID: string): void {
-    this.log(`Connecting to new player ${peerID}`);
+    this.log(`Connecting to new player ${peerID}`)
     this.channels[peerID] = this.peer.connect(peerID);
 
     this.channels[peerID].on(`data`, (data:any) => {
