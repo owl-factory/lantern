@@ -14,7 +14,7 @@ function Index(): JSX.Element {
   // Sets the view for the currenly logged in user
   const [ session, loading ] = useSession();
 
-  if (loading) return <></>;
+  if (loading) return <>Loading...</>;
 
   return (
     <Page>

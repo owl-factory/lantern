@@ -18,11 +18,14 @@
     "mongoose": "5.10.18",
     "next": "^10.0.8",
     "next-auth": "^3.11.2",
+    "peerjs": "^1.3.1",
     "react": "17.0.1",
     "react-bootstrap": "^1.0.1",
     "react-dom": "^16.12.0",
     "react-icons": "^3.10.0",
     "saslprep": "^1.0.3",
+    "socket.io": "^3.1.2",
+    "socket.io-client": "^3.1.2",
     "yup": "^0.29.1"
   },
   "devDependencies": {
