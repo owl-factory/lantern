@@ -1,8 +1,17 @@
-import { setGlobalOptions } from "@typegoose/typegoose";
+import { makeAutoObservable } from "mobx";
 import Peer, { DataConnection } from "peerjs";
-import React, {useContext, useReducer} from 'react';
 import { Socket, io } from "socket.io-client";
-import { GameState } from "../../components/reroll/play/GameStateProvider";
+import { MessageType } from "../../components/reroll/play/Chat";
+
+export interface Action {
+  type: string;
+  data: any;
+}
+
+export interface GameState {
+  count: number;
+  messages: MessageType[];
+}
 
 export class GameServer {
   debug = false;
@@ -21,10 +30,10 @@ export class GameServer {
   tableID!: string;
   channels: Record<string, DataConnection> = {};
 
-  gameState!: GameState;
-  gameDispatch!: React.Dispatch<any>;
+  gameState: GameState;
 
   constructor() {
+    this.gameState = { count: 0, messages: [] };
     this.socketAddress = "192.168.0.195:3001";
     this.peerID = undefined;
     this.peerConfig = {
@@ -32,6 +41,7 @@ export class GameServer {
       port: 3002,
       path: '/myapp',
     };
+    makeAutoObservable(this);
   }
 
   public connect(tableID: string): void {
@@ -47,7 +57,6 @@ export class GameServer {
         this.log(`Peer successfully connected`);
         this.isPeerReady = true;
         this.joinTable();
-        this.gameDispatch({ type: "set server", data: this });
       });
     });
   }
@@ -61,6 +70,23 @@ export class GameServer {
       channel.send(data);
     });
     this.log(this.channels)
+  }
+
+  /**
+  * Updates the game state from the given action
+  * @param state The previous game state
+  * @param action The action taken with data and type
+  */
+  public dispatch(action: Action) {
+    console.log(action)
+    switch (action.type) {
+      case "set count":
+        this.gameState.count = action.data;
+        break;
+      case "add message":
+        this.gameState.messages.push(action.data);
+        break;
+    }
   }
 
   protected joinTable(): void {
@@ -81,7 +107,7 @@ export class GameServer {
 
       this.channels[channel.peer].on(`data`, (data:any) => {
         this.log(this.channels);
-        this.gameDispatch(data)
+        this.dispatch(data)
       });
     });
   }
@@ -92,7 +118,7 @@ export class GameServer {
 
     this.channels[peerID].on(`data`, (data:any) => {
       this.log(this.channels)
-      this.gameDispatch(data)
+      this.dispatch(data)
     });
   }
 
