@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import { TableDoc, UserDoc } from "../../../types";
 import { Chat } from "./Chat";
 import { GameServer } from "../../../client";
@@ -9,7 +9,7 @@ interface PlayProps {
   user: UserDoc;
 }
 
-function PlayWrapper(props: PlayProps) {
+function PlayWrapper(props: PlayProps): JSX.Element {
   return (
     <GameStateProvider>
       <Play {...props}/>

@@ -7,7 +7,7 @@ import { GameState } from "../../components/reroll/play/GameStateProvider";
  * All of the game server functionality
  */
 export class GameServer {
-  debug = false; // True to post debug information
+  debug = true; // True to post debug information
 
   peerID?: string; // This user's starting peer ID
   peerConfig: any; // The configuration for connecting to the peer.
@@ -25,8 +25,11 @@ export class GameServer {
   // The peerID indexed object containing the channels connected to them
   channels: Record<string, DataConnection> = {};
 
+  
   gameState!: GameState; // The React-updated game state that refreshes the DOM
   gameDispatch!: React.Dispatch<any>; // Updates the gameState
+
+  activePlayers = 0; // The number of active players in the game
 
   /**
    * Sets the default information for the socket and peer connection
@@ -78,6 +81,15 @@ export class GameServer {
   }
 
   /**
+   * The actions to run when assuming the role of host for the game server
+   */
+  protected assumeHost(): void {
+    this.log(`Look at me. I'm the host now`);
+    this.socket.emit(`assume-host`, this.tableID, this.peer.id);
+    this.gameState.host = this.peer.id;
+  }
+
+  /**
    * Handles joining a table and establishing all functionality required for
    * interacting within this server
    */
@@ -86,12 +98,41 @@ export class GameServer {
     this.socket.emit(`join-table`, this.tableID, this.peer.id);
 
     // Catches the event of a player joining the server (`join-table`)
-    this.socket.on(`player-joined`, (peerID: string) => {
+    this.socket.on(`player-joined`, (peerID: string, playerCount: number) => {
+      this.log(`Player count: ${playerCount}`);
+      this.activePlayers = playerCount;
       this.connectToPlayer(peerID);
     });
 
+    // Handles the response from the socket server with our join information
+    this.socket.on(`i-joined`, (playerCount: number) => {
+      this.log(`Player count: ${playerCount}`);
+      this.activePlayers = playerCount;
+      this.log(`Joined table. ${playerCount - 1} other players present`);
+      if (playerCount === 1) {
+        this.assumeHost();
+      }
+      this.checkIfReady();
+    });
+
+    // Recognizes the new host
+    this.socket.on(`new-host`, (peerID: string) => {
+      this.log(`${peerID} is the new host`)
+      this.gameState.host = peerID;
+    });
+
+    this.socket.on(`player-ready`, (peerID: string) => {
+      this.log(`${peerID} is ready`);
+      if (this.peer.id === peerID || this.peer.id !== this.gameState.host) {
+        return;
+      }
+
+      });
+
     // Catches the event of a socket disconnecting (`disconnect`)
-    this.socket.on(`player-disconnected`, (peerID: string) => {
+    this.socket.on(`player-disconnected`, (peerID: string, playerCount: number) => {
+      this.activePlayers = playerCount;
+      // TODO - Remove from host queue or assume host
       this.disconnectFromPlayer(peerID);
     });
 
@@ -100,12 +141,26 @@ export class GameServer {
       this.log(`Recieving connection from ${channel.peer}`);
       this.channels[channel.peer] = channel;
 
+      // If we have all active connections required, then we inform the
+      // other players that we are ready to play
+      this.checkIfReady();
+
       // Handles receiving data through the channel
       this.channels[channel.peer].on(`data`, (data:any) => {
         this.log(this.channels);
         this.gameDispatch(data);
       });
     });
+
+    this.checkIfReady();
+  }
+
+  protected checkIfReady() {
+    this.log(`Checking if ready`);
+    if (Object.keys(this.channels).length === (this.activePlayers - 1)) {
+      this.log(`I am ready to play`);
+      this.socket.emit(`ready`, this.tableID, this.peer.id);
+    }
   }
 
   /**
@@ -119,6 +174,14 @@ export class GameServer {
     this.channels[peerID].on(`data`, (data:any) => {
       this.log(this.channels);
       this.gameDispatch(data);
+    });
+
+    if (this.peer.id !== this.gameState.host) { return; }
+    this.log("test")
+    this.channels[peerID].on(`open`, () => {
+      this.log(`Sending gamestate to new player`)
+      console.log(this.gameState)
+      this.channels[peerID].send({data: this.gameState, type: "full gamestate"});
     });
   }
 
