@@ -1,11 +1,16 @@
 import { Form, Formik } from "formik";
+import { observer } from "mobx-react-lite";
 import React from "react";
 import { Input, TextArea } from "../..";
-import { useGameState } from "./GameStateProvider";
+import { GameServer } from "../../../client/sockets/GameServer";
 
 export interface MessageType {
   author: string;
   text: string;
+}
+
+export interface ChatProps {
+  server: GameServer;
 }
 
 function Message({ message }: { message: MessageType }) {
@@ -18,17 +23,16 @@ function Message({ message }: { message: MessageType }) {
   )
 }
 
-export function Chat() {
-  const [ gameState, gameDispatch ] = useGameState();
-
+export const Chat = observer((props: ChatProps) => {
+  const { server } = props;
   function sendMessage(values: MessageType) {
     const dispatch = { type: "add message", data: values };
-    gameState.server?.sendToAll(dispatch);
-    gameDispatch(dispatch);
+    server?.sendToAll(dispatch);
+    server.dispatch(dispatch);
   }
 
   const messageBlock: JSX.Element[] = [];
-  gameState.messages.forEach((message: MessageType, index: number) => {
+  server.gameState.messages.forEach((message: MessageType, index: number) => {
     messageBlock.push(<Message message={message} key={index}/>);
   });
 
@@ -51,4 +55,4 @@ export function Chat() {
       </Formik>
     </div>
   );
-}
+});

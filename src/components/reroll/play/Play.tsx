@@ -1,20 +1,13 @@
 import React from "react";
 import { TableDoc, UserDoc } from "../../../types";
 import { Chat } from "./Chat";
+
 import { GameServer } from "../../../client";
-import { GameStateProvider, useGameState } from "../../../components/reroll/play/GameStateProvider";
+import { observer } from "mobx-react-lite";
 
 interface PlayProps {
   table: TableDoc;
   user: UserDoc;
-}
-
-function PlayWrapper(props: PlayProps): JSX.Element {
-  return (
-    <GameStateProvider>
-      <Play {...props}/>
-    </GameStateProvider>
-  );
 }
 
 const gameServer = new GameServer();
@@ -22,19 +15,16 @@ const gameServer = new GameServer();
 /**
  * Renders out the playspace and server functionality
  */
-export function Play(props: PlayProps): JSX.Element {
-  const [ gameState, gameDispatch ] = useGameState();
+export const Play = observer((props: PlayProps) => {
 
   function test() {
-    const dispatch = { type: "set count", data: gameState.count + 1 };
+    const dispatch = { type: "set count", data: gameServer.gameState.count + 1 };
     gameServer.sendToAll(dispatch);
-    gameDispatch(dispatch);
+    gameServer.dispatch(dispatch);
   }
 
   // ON LOAD
   React.useEffect(() => {
-    gameServer.gameState = gameState;
-    gameServer.gameDispatch = gameDispatch;
     gameServer.connect(props.table._id);
   }, []);
 
@@ -47,6 +37,6 @@ export function Play(props: PlayProps): JSX.Element {
       <Chat />
     </div>
   );
-}
+});
 
-export default PlayWrapper;
+export default Play;
