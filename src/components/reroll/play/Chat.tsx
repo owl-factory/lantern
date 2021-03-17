@@ -2,7 +2,7 @@ import { Form, Formik } from "formik";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { Input, TextArea } from "../..";
-import { GameServer } from "../../../client/sockets/GameServer";
+import { GameServer } from "../../../client";
 
 export interface MessageType {
   author: string;
@@ -28,7 +28,6 @@ export const Chat = observer((props: ChatProps) => {
   function sendMessage(values: MessageType) {
     const dispatch = { type: "add message", data: values };
     server?.sendToAll(dispatch);
-    server.dispatch(dispatch);
   }
 
   const messageBlock: JSX.Element[] = [];
@@ -50,7 +49,6 @@ export const Chat = observer((props: ChatProps) => {
           <TextArea name="text"/>
           <button type="submit">Submit</button>
         </Form>
-      
       )}
       </Formik>
     </div>

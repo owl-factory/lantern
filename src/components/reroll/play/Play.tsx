@@ -11,6 +11,12 @@ interface PlayProps {
 }
 
 const gameServer = new GameServer();
+gameServer.gameState = {
+  count: 0,
+  messages: [],
+  activePlayers: 0,
+  hostQueue: [],
+};
 
 /**
  * Renders out the playspace and server functionality
@@ -23,6 +29,12 @@ export const Play = observer((props: PlayProps) => {
     gameServer.dispatch(dispatch);
   }
 
+  function printQueue() {
+    gameServer.gameState.hostQueue.forEach((hostItem: any) => {
+      console.log(hostItem.peerID)
+    });
+  }
+
   // ON LOAD
   React.useEffect(() => {
     gameServer.connect(props.table._id);
@@ -31,10 +43,12 @@ export const Play = observer((props: PlayProps) => {
   return (
     <div>
       Hello!<br/>
+      Game ID: {gameServer.peer ? gameServer.peer.id : "..."}<br/>
 
-      Count: {gameState.count}
+      Count: {gameServer.gameState.count}
       <button onClick={test}>Test</button>
-      <Chat />
+      <button onClick={printQueue}>See Queue</button>
+      <Chat server={gameServer} />
     </div>
   );
 });
