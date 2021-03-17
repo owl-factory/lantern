@@ -132,7 +132,7 @@ export class CoreResolver {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     model: ReturnModelType<any>, // Note: also needs to be any
     superDocumentAliases?: SuperDocumentAliases // TODO - properly type this
-  ): Promise<Query<GenericDocumentType> | null> {
+  ): Promise<Query<GenericDocumentType, any> | null> {
     // The search filters, to be used by the applyFilters function
     const filters: Record<string, unknown> = {};
 

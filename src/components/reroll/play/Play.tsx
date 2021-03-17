@@ -1,21 +1,12 @@
-import React, { useContext } from "react";
-import { DataConnection } from "peerjs";
+import React from "react";
 import { TableDoc, UserDoc } from "../../../types";
 import { Chat } from "./Chat";
 import { GameServer } from "../../../client/sockets/GameServer";
-import { GameStateProvider, useGameState } from "../../../components/reroll/play/GameStateProvider";
+import { observer } from "mobx-react-lite";
 
 interface PlayProps {
   table: TableDoc;
   user: UserDoc;
-}
-
-function PlayWrapper(props: PlayProps) {
-  return (
-    <GameStateProvider>
-      <Play {...props}/>
-    </GameStateProvider>
-  );
 }
 
 const gameServer = new GameServer();
@@ -23,32 +14,16 @@ const gameServer = new GameServer();
 /**
  * Renders out the playspace and server functionality
  */
-export function Play(props: PlayProps) {
-  // The current host of the game. Tracks who is the current source of truth and
-  // who updates should be sent to
-  const [ host, setHost ] = React.useState<string | undefined>(undefined);
-  const [ channels, setChannels ] = React.useState({});
-  const [ gameState, gameDispatch ] = useGameState();
-
-  // /**
-  //  * Logic that forces the current player as the host.
-  //  */
-  // function assumeHost() {
-  //   if (host === peer.id) { console.warn(`You already are the current host`); return; }
-  //   socket.emit(`assume-host`, props.table._id, peer.id);
-  //   setHost(peer.id);
-  // }
+export const Play = observer((props: PlayProps) => {
 
   function test() {
-    const dispatch = { type: "set count", data: gameState.count + 1 };
+    const dispatch = { type: "set count", data: gameServer.gameState.count + 1 };
     gameServer.sendToAll(dispatch);
-    gameDispatch(dispatch);
+    gameServer.dispatch(dispatch);
   }
 
   // ON LOAD
   React.useEffect(() => {
-    gameServer.gameState = gameState;
-    gameServer.gameDispatch = gameDispatch;
     gameServer.connect(props.table._id);
   }, []);
 
@@ -59,12 +34,12 @@ export function Play(props: PlayProps) {
       {/* <button onClick={assumeHost}>Assume Host</button><br/> */}
       {/* I am {peer.id === host ? "" : "not "} the current host!<br/> */}
       {/* <Chat peer={peer} host={host}/> */}
-      Count: {gameState.count}
+      Count: {gameServer.gameState.count}
       <button onClick={test}>Test</button>
-      <Chat />
+      <Chat server={gameServer} />
       {/* <Counter channels={channels.count}/> */}
     </div>
   );
-}
+});
 
-export default PlayWrapper;
+export default Play;
