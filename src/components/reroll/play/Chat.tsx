@@ -20,7 +20,7 @@ function Message({ message }: { message: MessageType }) {
       {message.text}
       <hr/>
     </>
-  )
+  );
 }
 
 export const Chat = observer((props: ChatProps) => {

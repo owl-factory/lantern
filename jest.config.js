@@ -8,16 +8,16 @@ module.exports = {
     "^.+\\.tsx?$": "ts-jest"
   },
   testMatch: [
-    "**/*.(test|spec).(ts|tsx)"
+    "**/*.(test|spec).(ts)"
   ],
   globals: {
     "ts-jest": {
       babelConfig: true,
       diagnostics: {
-        pathRegex: /\.(spec|test)\.ts$/,
+        exclude: /\.(spec|test)\.ts$/,
         warnOnly: true
       },
-      tsConfig: "jest.tsconfig.json"
+      tsconfig: "jest.tsconfig.json"
     }
   },
   coveragePathIgnorePatterns: [
