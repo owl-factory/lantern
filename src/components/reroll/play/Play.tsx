@@ -1,5 +1,5 @@
 import React from "react";
-import { TableDoc, UserDoc } from "../../../types";
+import { TableDoc, UserProfileDoc } from "../../../types";
 import { Chat } from "./Chat";
 
 import { GameServer } from "../../../client";
@@ -7,7 +7,7 @@ import { observer } from "mobx-react-lite";
 
 interface PlayProps {
   table: TableDoc;
-  user: UserDoc;
+  user: UserProfileDoc;
 }
 
 const gameServer = new GameServer();
