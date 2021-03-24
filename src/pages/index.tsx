@@ -1,9 +1,11 @@
 import Link from "next/link";
 import React from "react";
 import AuthenticationCard from "../components/authetication/AuthenticationCard";
-import Page from "../components/design/Page";
+
 import { Button, Col, Row } from "react-bootstrap";
 import { signOut, useSession } from "next-auth/client";
+import { Page } from "compenents";
+// import { Page } from "components";
 
 /**
  * Renders the index page and one of two subviews

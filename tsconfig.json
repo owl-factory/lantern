@@ -20,7 +20,13 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "strict": true
+    "strict": true,
+    "baseUrl": ".",
+    "paths": {
+      "compenents": ["src/components"],
+      "compenents/*": ["src/components/*"]
+      // "type-graphql": ["node_modules/type-graphql/dist/browser-shim.ts"]
+    }
   },
   "exclude": [
     "node_modules",

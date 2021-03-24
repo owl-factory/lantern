@@ -6,12 +6,19 @@ import {
 import { ModuleResolver } from "./ModuleResolver";
 import { RulesetModel } from "..";
 import { CoreResolver } from "./CoreResolver";
+import { Query, Resolver } from "type-graphql";
 
 /**
  * The resolver for CRUD operations on the Ruleset model.
  */
+@Resolver()
 export class RulesetResolver extends CoreResolver {
   public static model = RulesetModel;
+
+  @Query(() => [RulesetDoc])
+  public static async test2(): any {
+    return this.findMany();
+  }
 
   /**
    * Creates a single new document and inserts it into the database
