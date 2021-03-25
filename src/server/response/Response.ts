@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { databaseSetup } from "../../utilities/mongo";
-import { Session } from "next-auth/client";
+import { Session } from "next-auth";
 
 type RequestFunction = (req: NextApiRequest, res: NextApiResponse) => void;
 type PossibleMethods = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";

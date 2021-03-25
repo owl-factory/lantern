@@ -5,7 +5,14 @@ import { RulesetDoc, UserProfileDoc } from "../../../../types";
 
 async function getRulesets(this: HTTPHandler, req: NextApiRequest): Promise<void> {
   const data: Record<string, RulesetDoc[]> = { myRulesets: [], rulesets: [] };
-  
+  const user = authenticateUser(this);
+
+  console.log(user);
+  this.returnSuccess({
+    myRulesets: [],
+    initialRulesets: [],
+    rulesetCount: 0,
+  });
 }
 
 /**

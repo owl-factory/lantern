@@ -1,10 +1,10 @@
+import "reflect-metadata";
 import React from "react";
 import { AppProps } from "next/app";
 import Head from "next/head";
 import "./_app.scss";
 import HeaderBar from "../components/design/HeaderBar";
 import { Provider } from "next-auth/client";
-// import 'bootstrap/dist/js/bootstrap.min.js'
 
 
 export default function MyApp({ Component , pageProps }: AppProps): JSX.Element {

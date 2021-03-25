@@ -14,7 +14,7 @@ export default function NewTable(): JSX.Element {
   async function createTable(values: any) {
     const res = await rest.put("/api/pages/tables/new", values);
     if (res.success) {
-      
+      console.log(res);
     }
   }
   
@@ -41,4 +41,6 @@ export default function NewTable(): JSX.Element {
 
 NewTable.getInitialProps = async () => {
   const res = await rest.get("/api/pages/tables/new");
+
+  return { myRulesets: [], initialRulesets: [], rulesetCount: 0 };
 };
