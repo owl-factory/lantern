@@ -22,8 +22,8 @@ import { ApolloServer } from "apollo-server-micro";
 // } from "../../server/resolvers";
 import { GraphQLSchema } from "graphql";
 import { Query, Resolver } from "type-graphql";
-import { RulesetDoc } from "src/types";
-import { RulesetResolver } from "src/server";
+import { RulesetDoc } from "types";
+import { RulesetResolver } from "server";
 // import { CharacterResolver } from "../../server/resolvers/Character";
 
 global.fetch = require("cross-fetch");

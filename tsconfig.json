@@ -23,9 +23,16 @@
     "strict": true,
     "baseUrl": ".",
     "paths": {
+      "client": ["src/client"],
+      "client/*": ["src/client/*"],
       "compenents": ["src/components"],
-      "compenents/*": ["src/components/*"]
-      // "type-graphql": ["node_modules/type-graphql/dist/browser-shim.ts"]
+      "compenents/*": ["src/components/*"],
+      "server": ["src/server"],
+      "server/*": ["src/server/*"],
+      "types": ["src/types"],
+      "types/*": ["src/types/*"],
+      "utilities": ["src/utilities"],
+      "utilities/*": ["src/utilities/*"],
     }
   },
   "exclude": [

@@ -2,7 +2,7 @@ import { ReturnModelType } from "@typegoose/typegoose";
 import { validate } from "class-validator";
 import { Query } from "mongoose";
 import { GenericModelType, RulesetModel } from "..";
-import { GenericDocumentType } from "../../types/documents";
+import { GenericDocumentType, RulesetDoc } from "../../types/documents";
 import { Options } from "../../types/inputs/options";
 import { CreateOneResponse, FindCountResponse, FindManyResponse, FindOneResponse } from "../../types/resolvers";
 import { Context } from "../../types/server";
@@ -132,7 +132,7 @@ export class CoreResolver {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     model: ReturnModelType<any>, // Note: also needs to be any
     superDocumentAliases?: SuperDocumentAliases // TODO - properly type this
-  ): Promise<Query<GenericDocumentType, any> | null> {
+  ): Promise<Query<GenericDocumentType> | null> {
     // The search filters, to be used by the applyFilters function
     const filters: Record<string, unknown> = {};
 
