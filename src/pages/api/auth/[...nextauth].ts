@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import NextAuth from "next-auth";
 import Adapters from "next-auth/adapters";
 import Providers from "next-auth/providers";
-import { User, UserSchema } from "../../../types/nextauth"
+import { User, UserSchema } from "../../../types/nextauth";
 
 if (!process.env.GOOGLE_ID) { throw Error("GOOGLE_ID required for authentication");}
 if (!process.env.GOOGLE_SECRET) { throw Error("GOOGLE_SECRET required for authentication");}

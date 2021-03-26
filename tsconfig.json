@@ -25,8 +25,8 @@
     "paths": {
       "client": ["src/client"],
       "client/*": ["src/client/*"],
-      "compenents": ["src/components"],
-      "compenents/*": ["src/components/*"],
+      "components": ["src/components"],
+      "components/*": ["src/components/*"],
       "server": ["src/server"],
       "server/*": ["src/server/*"],
       "types": ["src/types"],

@@ -1,5 +1,6 @@
-import { prop } from "@typegoose/typegoose";
+import { Ref, prop } from "@typegoose/typegoose";
 import { Field, ID, ObjectType } from "src/utilities";
+import { UserProfileDoc } from "types";
 
 @ObjectType()
 export class CoreDocument {
@@ -18,18 +19,18 @@ export class CoreDocument {
   alias?: string;
 
   // Present only if we set an owner. Will be present for most documents
-  @Field({ nullable: true })
-  @prop()
-  ownedBy?: string;
+  @Field(() => UserProfileDoc, { nullable: true })
+  @prop({ ref: `userprofiles`})
+  ownedBy?: Ref<UserProfileDoc>;
 
   // The id of the user who created this document
   @Field({ nullable: true })
-  @prop({ required: true })
+  @prop({ required: false })
   createdBy?: string;
 
   // The date time that this document was created
   @Field({ nullable: true })
-  @prop({ required: true })
+  @prop({ required: false })
   createdAt?: Date = new Date();
 
   // The id of the user who last updated this document (set on create)
@@ -52,3 +53,4 @@ export class CoreDocument {
   @prop()
   deletedAt?: Date;
 }
+console.log("CoreDocument")

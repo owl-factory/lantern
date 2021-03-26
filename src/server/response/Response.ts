@@ -1,15 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
+import { Context } from "types";
 import { databaseSetup } from "../../utilities/mongo";
-import { Session } from "next-auth";
 
 type RequestFunction = (req: NextApiRequest, res: NextApiResponse) => void;
 type PossibleMethods = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
-
-export interface Context {
-  req: NextApiRequest;
-  res: NextApiResponse;
-  session: Session | null;
-}
 
 export class HTTPHandler {
   public GET?: RequestFunction;

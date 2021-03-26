@@ -4,35 +4,16 @@ import { authenticateUser } from "../../../../server/utilities/auth";
 import { RulesetDoc, UserProfileDoc } from "../../../../types";
 
 async function getRulesets(this: HTTPHandler, req: NextApiRequest): Promise<void> {
-  const data: Record<string, RulesetDoc[]> = { myRulesets: [], rulesets: [] };
-  const user = authenticateUser(this);
-
-  console.log(user);
+  console.log("HI!")
+  // const data: Record<string, RulesetDoc[]> = { myRulesets: [], rulesets: [] };
+  // const user = authenticateUser(this);
+  // TODO - add publishSource / type (official, etc) filter
+  const rulesets = await RulesetResolver.findMany();
+  const rulesetCount = await RulesetResolver.findCount();
   this.returnSuccess({
     myRulesets: [],
-    initialRulesets: [],
-    rulesetCount: 0,
-  });
-}
-
-/**
- * Fetches all information for rendering the individual ruleset page
- * @param this The Handler class calling this function
- * @param req The request to the server
- */
-async function getRulesetPage(this: HTTPHandler, req: NextApiRequest): Promise<void> {
-  const ruleset = await RulesetResolver.findOne(req.query.id as string);
-  const contentTypeFilters = {
-    ...(req.body.contentType.filters || {}),
-    rulesetID: { eq: req.query.id },
-  };
-  const contentTypes = await ContentTypeResolver.findMany(contentTypeFilters, req.body.contentType.options);
-  const contentTypeCount = await ContentTypeResolver.findCount(contentTypeFilters);
-
-  this.returnSuccess({
-    contentTypes: contentTypes,
-    contentTypeCount: contentTypeCount,
-    ruleset: ruleset,
+    initialRulesets: rulesets,
+    rulesetCount: rulesetCount,
   });
 }
 
@@ -43,6 +24,6 @@ async function getRulesetPage(this: HTTPHandler, req: NextApiRequest): Promise<v
  */
 export default async function rulesetsEndpoint(req: NextApiRequest, res: NextApiResponse): Promise<void> {
   const handler = new HTTPHandler(req, res);
-  handler.POST = getRulesetPage;
+  handler.GET = getRulesets;
   await handler.handle();
 }

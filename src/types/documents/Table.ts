@@ -1,17 +1,19 @@
-import { Severity, modelOptions, prop } from "@typegoose/typegoose";
+import { Ref, Severity, modelOptions, prop } from "@typegoose/typegoose";
+import { CampaignDoc } from "./Campaign";
 import { CoreDocument } from "./CoreDocument";
 
 @modelOptions({ schemaOptions: { collection: "tables" }, options: { allowMixed: Severity.ALLOW } } )
 export class TableDoc extends CoreDocument {
-  // The owner of the table. Eventually transferable
-  @prop()
-  ownerID!: string;
+  @prop({ ref: "campaigns" })
+  activeCampaign?: Ref<CampaignDoc>;
 
   // The campaigns played at this table
-  @prop()
-  campaignIDs?: string[];
+  // TODO - change to refs?
+  @prop({ default: [] })
+  campaigns?: string[];
 
   // All players in this game
-  @prop()
-  playerIDs?: string[];
+  // TODO - change to refs?
+  @prop({ default: [] })
+  players?: string[];
 }
