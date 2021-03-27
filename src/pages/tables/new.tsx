@@ -3,13 +3,18 @@ import { useSession } from "next-auth/client";
 import { Button, Input, Page, Select } from "components";
 import { Form, Formik } from "formik";
 import { rest } from "../../utilities";
-import { RulesetDoc } from "types";
+import { CampaignDoc, RulesetDoc, TableDoc } from "types";
 import { useRouter } from "next/router";
 
 interface RestResponse<T> {
   success: boolean;
   message: string;
   data: T;
+}
+
+interface CreateTableResponse {
+  table: TableDoc;
+  campaign: CampaignDoc;
 }
 
 interface NewTableProps {
@@ -26,11 +31,11 @@ export default function NewTable(props: NewTableProps): JSX.Element {
   }
 
   async function createTable(values: any) {
-    const res = await rest.put("/api/tables", values);
-    console.log(res)
+    const res: RestResponse<CreateTableResponse> = await rest.put("/api/tables", values);
+
     if (res.success) {
       const href = `/tables/${res.data.table._id}`;
-    router.push(href);
+      router.push(href);
     }
   }
 

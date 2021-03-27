@@ -13,7 +13,7 @@ export class OrganizationResolver extends CoreResolver {
    * @param input The data to save to the database
    * @param ctx The context of the request being sent
    */
-  public static createOne(input: Record<string, unknown>, ctx?: Context) {
+  public static createOne(input: Record<string, unknown>, ctx: Context) {
     // TODO - Does name already exist?
     return super.createOne(input, ctx);
   }

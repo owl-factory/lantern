@@ -10,13 +10,8 @@ import { createEndpoint } from "../../../server/utilities/handlers";
  */
 async function createTable(this: HTTPHandler, req: NextApiRequest) {
   await authenticateUser(this);
-  const data = await TableResolver.createOne(req.body, this.ctx);
-  // const campaign = await CampaignResolver.createOne({
-  //   ...req.body,
-  //   tableID: table._id,
-  // });
-  // TableResolver.updateOne({});
-  this.returnSuccess(data);
+  const table = await TableResolver.createOne(req.body, this.ctx);
+  this.returnSuccess({ table });
 }
 
 export default createEndpoint({PUT: createTable});

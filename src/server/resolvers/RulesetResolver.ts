@@ -39,7 +39,7 @@ export class RulesetResolver extends CoreResolver {
    */
   public static async createOne(
     input: Record<string, unknown>,
-    ctx?: Context
+    ctx: Context
   ): Promise<CreateOneResponse<RulesetDoc>> {
     let rulesetID = "";
     let moduleID = "";

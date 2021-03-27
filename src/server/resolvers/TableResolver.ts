@@ -23,7 +23,7 @@ export class TableResolver extends CoreResolver {
   public static async createOne(
     input: Record<string, unknown>,
     ctx: Context
-  )//: Promise<CreateOneResponse<RulesetDoc>>
+  ): Promise<CreateOneResponse<RulesetDoc>>
    {
     let tableID = "";
     let campaignID = "";
@@ -60,7 +60,7 @@ export class TableResolver extends CoreResolver {
     //   // Set ruleset's default module
     //   await super.updateOne(rulesetID, { defaultModuleID: moduleID }, ctx);
 
-    return { table, campaign };
+    return table;
 
     } catch( e ) {
       if (tableID.length === 24) { await super.deleteOne(tableID); }
