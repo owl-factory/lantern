@@ -6,7 +6,7 @@ import { Button, Col, Row } from "react-bootstrap";
 import { signOut, useSession } from "next-auth/client";
 import { Input, Page } from "components";
 import { rest } from "utilities";
-import { CampaignDoc } from "types";
+import { CampaignDoc, ServerResponse } from "types";
 import { Form, Formik } from "formik";
 
 /**
@@ -89,7 +89,7 @@ function UserView() {
 
   React.useEffect(() => {
     rest.get(`/api/pages`)
-    .then((res) => {
+    .then((res: any) => {
       console.log(res.data)
       setMe(res.data.me);
       setCampaigns(res.data.campaigns);

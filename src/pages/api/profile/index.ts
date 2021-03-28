@@ -3,7 +3,7 @@ import { authenticateUser, UserProfileLogic } from "server";
 import { RulesetResolver } from "../../../server/resolvers/RulesetResolver";
 import HTTPHandler from "../../../server/response/Response";
 import { createEndpoint } from "../../../server/utilities/handlers";
-s
+
 /**
  * Creates a single new ruleset
  * @param this The Handler class calling this function
