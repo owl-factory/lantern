@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextApiRequest } from "next";
 import { TableResolver, authenticateUser } from "server";
 import HTTPHandler from "../../../server/response/Response";
 import { createEndpoint } from "../../../server/utilities/handlers";

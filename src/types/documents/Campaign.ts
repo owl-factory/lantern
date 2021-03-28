@@ -18,4 +18,8 @@ export class CampaignDoc extends CoreDocument {
   // TODO - change to ref?
   @prop({ default: [] })
   players?: string[];
+
+  // The date last played
+  @prop({ default: new Date()})
+  lastPlayed?: Date;
 }

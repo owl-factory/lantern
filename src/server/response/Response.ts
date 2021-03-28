@@ -52,6 +52,7 @@ export class HTTPHandler {
           error.message
         );
       } else {
+        console.error(error)
         this.returnError(
           500,
           `An unexpected error occured. If this continues occuring, please contact our staff!`

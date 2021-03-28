@@ -10,12 +10,12 @@ export class CoreDocument {
 
   // The name of the document
   @Field({ nullable: true })
-  @prop()
+  @prop({ maxlength: 255 })
   name?: string;
 
   // An alias (potential pulled from the name) that can be used in the URL for reference and access
   @Field({ nullable: true })
-  @prop()
+  @prop({ maxlength: 20 })
   alias?: string;
 
   // Present only if we set an owner. Will be present for most documents
@@ -29,9 +29,9 @@ export class CoreDocument {
   createdBy?: string;
 
   // The date time that this document was created
-  @Field({ nullable: true })
+  @Field({ default: new Date() })
   @prop({ required: false })
-  createdAt?: Date = new Date();
+  createdAt?: Date;
 
   // The id of the user who last updated this document (set on create)
   @Field({ nullable: true })
@@ -39,7 +39,7 @@ export class CoreDocument {
   updatedBy?: string;
 
   // The date time that this document was last updated (also set on create)
-  @Field({ nullable: true })
+  @Field({ default: new Date() })
   @prop()
   updatedAt?: Date;
 

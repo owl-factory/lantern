@@ -21,7 +21,7 @@ export const ModuleModel = getModelForClass(ModuleDoc, {schemaOptions: { collect
 export const OrganizationModel = getModelForClass(OrganizationDoc);
 export const RulesetModel = getModelForClass(RulesetDoc, {schemaOptions: { collection: "rulesets" } });
 export const TableModel = getModelForClass(TableDoc, {schemaOptions: { collection: "tables" } });
-export const UserProfileModel = getModelForClass(UserProfileDoc, {schemaOptions: { collection: "rulesets" } });
+export const UserProfileModel = getModelForClass(UserProfileDoc, {schemaOptions: { collection: "userProfiles" } });
 
 /**
  * A generic type for hitting any of the Typegoose models
