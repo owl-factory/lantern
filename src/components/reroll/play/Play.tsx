@@ -37,7 +37,8 @@ export const Play = observer((props: PlayProps) => {
 
   // ON LOAD
   React.useEffect(() => {
-    gameServer.connect(props.table._id);
+    // TODO - see if we can't remove that
+    gameServer.connect(props.table._id as string);
   }, []);
 
   return (

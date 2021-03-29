@@ -1,5 +1,5 @@
 import { NextApiRequest } from "next";
-import { TableResolver, authenticateUser } from "server";
+import { TableLogic, authenticateUser } from "server";
 import HTTPHandler from "../../../server/response/Response";
 import { createEndpoint } from "../../../server/utilities/handlers";
 
@@ -9,9 +9,11 @@ import { createEndpoint } from "../../../server/utilities/handlers";
  * @param req The request to the server
  */
 async function createTable(this: HTTPHandler, req: NextApiRequest) {
-  await authenticateUser(this);
-  const table = await TableResolver.createOne(req.body, this.ctx);
-  this.returnSuccess({ table });
+  const user = await authenticateUser(this);
+  if (!user || !user._id) { return; }
+  const data = await TableLogic.createTable(user._id, req.body);
+  console.log(data);
+  this.returnSuccess(data);
 }
 
 export default createEndpoint({PUT: createTable});

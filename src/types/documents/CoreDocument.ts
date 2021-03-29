@@ -1,12 +1,28 @@
-import { Ref, prop } from "@typegoose/typegoose";
+import { Ref, prop, post } from "@typegoose/typegoose";
 import { Field, ID, ObjectType } from "src/utilities";
 import { UserProfileDoc } from "types";
 
+// TODO - move this to a different file and make it, you know, work
+export function getUserID() {
+  return "1";
+}
+
 @ObjectType()
+@post<CoreDocument>(`init`, function (doc) {
+  doc.ownedBy = getUserID();
+  doc.createdAt = new Date();
+  doc.createdBy = getUserID();
+})
+@post<CoreDocument>(`save`, function (doc) {
+  doc.updatedAt = new Date();
+  doc.createdBy = getUserID();
+})
 export class CoreDocument {
+  _doc?: unknown;
+  
   // The ID of the document
   @Field(() => ID)
-  _id!: string;
+  _id?: string;
 
   // The name of the document
   @Field({ nullable: true })

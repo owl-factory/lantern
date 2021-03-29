@@ -1,6 +1,6 @@
-import { Ref, prop } from "@typegoose/typegoose";
+import { Ref, prop, post } from "@typegoose/typegoose";
 import { CoreDocument } from "types/documents/CoreDocument";
-import { RulesetDoc, TableDoc } from "types";
+import { getUserID, RulesetDoc, TableDoc } from "types";
 
 /**
  * Represents the campaign and all information contained therein
@@ -22,4 +22,10 @@ export class CampaignDoc extends CoreDocument {
   // The date last played
   @prop({ default: new Date()})
   lastPlayed?: Date;
+
+  @prop({ default: false })
+  allowLinkInvitation?: boolean;
+
+  @prop({ default: "" })
+  invitationAddress?: string
 }

@@ -90,17 +90,15 @@ function UserView() {
   React.useEffect(() => {
     rest.get(`/api/pages`)
     .then((res: any) => {
-      console.log(res.data)
       setMe(res.data.me);
       setCampaigns(res.data.campaigns);
-      console.log(res);
     });
   }, []);
 
   return (
     <div>
       <h3>Welcome back {me.name}!</h3>
-      
+
       <Button onClick={() => signOut()}>Log Out</Button>
       {/* Recent Games */}
       <RecentGames campaigns={campaigns}/>
