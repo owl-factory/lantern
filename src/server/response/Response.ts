@@ -1,15 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
+import { Context } from "types";
 import { databaseSetup } from "../../utilities/mongo";
-import { Session } from "next-auth/client";
 
 type RequestFunction = (req: NextApiRequest, res: NextApiResponse) => void;
 type PossibleMethods = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
-
-export interface Context {
-  req: NextApiRequest;
-  res: NextApiResponse;
-  session: Session | null;
-}
 
 export class HTTPHandler {
   public GET?: RequestFunction;
@@ -58,6 +52,7 @@ export class HTTPHandler {
           error.message
         );
       } else {
+        console.error(error)
         this.returnError(
           500,
           `An unexpected error occured. If this continues occuring, please contact our staff!`

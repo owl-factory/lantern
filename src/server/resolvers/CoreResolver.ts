@@ -1,8 +1,9 @@
 import { ReturnModelType } from "@typegoose/typegoose";
 import { validate } from "class-validator";
 import { Query } from "mongoose";
+import { getUser } from "server/utilities";
 import { GenericModelType, RulesetModel } from "..";
-import { GenericDocumentType } from "../../types/documents";
+import { GenericDocumentType, RulesetDoc } from "../../types/documents";
 import { Options } from "../../types/inputs/options";
 import { CreateOneResponse, FindCountResponse, FindManyResponse, FindOneResponse } from "../../types/resolvers";
 import { Context } from "../../types/server";
@@ -70,25 +71,28 @@ export class CoreResolver {
    */
   public static async createOne(
     input: Record<string, unknown>,
-    ctx?: Context
+    ctx: Context
   ): Promise<CreateOneResponse<GenericDocumentType>> {
-    console.log("Hi")
-    const errors = await validate(input);
-    if (errors.length > 0) {
-      console.log(errors)
-      throw new Error(errors.toString());
-    }
-    console.log("Validate finishes")
+
+    const user = await getUser(ctx);
+    const userID = user ? user._id : null;
+
     // Updates both so we can track when something was last created and when
     // it was last touched easier
     input.createdAt = new Date();
-    input.createdBy = "1";
+    input.createdBy = userID;
     // data.createdBy = getUserID();
 
     input.updatedAt = new Date();
-    input.updatedBy = "1";
+    input.updatedBy = userID;
     // data.updatedBy = getUserID();
-    console.log(input)
+
+    const errors = await validate(input);
+    if (errors.length > 0) {
+      console.log(errors);
+      throw new Error(errors.toString());
+    }
+
     return this.model.create(input);
   }
 
@@ -132,7 +136,7 @@ export class CoreResolver {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     model: ReturnModelType<any>, // Note: also needs to be any
     superDocumentAliases?: SuperDocumentAliases // TODO - properly type this
-  ): Promise<Query<GenericDocumentType, any> | null> {
+  ): Promise<Query<GenericDocumentType> | null> {
     // The search filters, to be used by the applyFilters function
     const filters: Record<string, unknown> = {};
 

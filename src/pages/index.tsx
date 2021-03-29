@@ -1,9 +1,13 @@
 import Link from "next/link";
 import React from "react";
 import AuthenticationCard from "../components/authetication/AuthenticationCard";
-import Page from "../components/design/Page";
+
 import { Button, Col, Row } from "react-bootstrap";
 import { signOut, useSession } from "next-auth/client";
+import { Input, Page } from "components";
+import { rest } from "utilities";
+import { CampaignDoc, ServerResponse } from "types";
+import { Form, Formik } from "formik";
 
 /**
  * Renders the index page and one of two subviews
@@ -26,7 +30,19 @@ function Index(): JSX.Element {
   );
 }
 
-function RecentGames() {
+function RecentGames(props: any) {
+  const campaigns: JSX.Element[] = [];
+  props.campaigns.forEach((campaign: CampaignDoc) => {
+    campaigns.push(
+      <>
+        <h5>{campaign.name}</h5>
+        <Link href={`/campaigns/${campaign._id}`}>
+          Visit
+        </Link>
+      </>
+    );
+  });
+
   return (
     <div>
       <h4>
@@ -37,9 +53,29 @@ function RecentGames() {
           </Button>
         </Link>
       </h4>
-      Tables Go Here
+      {campaigns}
     </div>
   );
+}
+
+function ProfileForm(props: any) {
+
+  async function saveProfile(values: any) {
+    await rest.patch(`/api/profile`, values);
+  }
+  return (
+    <Formik
+      initialValues={props.me}
+      onSubmit={saveProfile}
+    >
+      {() => (
+        <Form>
+          <Input name="name"/>
+          <Button type="submit">Save</Button>
+        </Form>
+      )}
+    </Formik>
+  )
 }
 
 /**
@@ -47,15 +83,33 @@ function RecentGames() {
  * @param props TODO
  */
 function UserView() {
+  const [ me, setMe ] = React.useState({ name: "" });
+  const [ characters, setCharacters ] = React.useState([]);
+  const [ campaigns, setCampaigns ] = React.useState([]);
+
+  React.useEffect(() => {
+    rest.get(`/api/pages`)
+    .then((res: any) => {
+      console.log(res.data)
+      setMe(res.data.me);
+      setCampaigns(res.data.campaigns);
+      console.log(res);
+    });
+  }, []);
+
   return (
     <div>
-      <h3>Welcome back!</h3>
+      <h3>Welcome back {me.name}!</h3>
+      
       <Button onClick={() => signOut()}>Log Out</Button>
       {/* Recent Games */}
-      <RecentGames/>
+      <RecentGames campaigns={campaigns}/>
 
       {/* Characters */}
       <h4>My Characters</h4>
+
+      <h4>Temp Profile Stuff</h4>
+      <ProfileForm me={me}/>
     </div>
   );
 }

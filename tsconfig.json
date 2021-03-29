@@ -20,7 +20,20 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "strict": true
+    "strict": true,
+    "baseUrl": ".",
+    "paths": {
+      "client": ["src/client"],
+      "client/*": ["src/client/*"],
+      "components": ["src/components"],
+      "components/*": ["src/components/*"],
+      "server": ["src/server"],
+      "server/*": ["src/server/*"],
+      "types": ["src/types"],
+      "types/*": ["src/types/*"],
+      "utilities": ["src/utilities"],
+      "utilities/*": ["src/utilities/*"],
+    }
   },
   "exclude": [
     "node_modules",

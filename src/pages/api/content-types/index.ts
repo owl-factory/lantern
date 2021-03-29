@@ -11,7 +11,7 @@ import { FieldTypeEnum } from "../../../types";
 async function createContentType(this: HTTPHandler, req: NextApiRequest) {
   const body = req.body;
   body.fields = { name: { name: "Name", key: "name", type: FieldTypeEnum.Text }};
-  const contentType = await ContentTypeResolver.createOne(body);
+  const contentType = await ContentTypeResolver.createOne(body, this.ctx);
   this.returnSuccess({ contentType });
 }
 

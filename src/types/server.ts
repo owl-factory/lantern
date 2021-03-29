@@ -1,7 +1,8 @@
-import { IncomingMessage, ServerResponse } from "http";
+import { NextApiRequest, NextApiResponse } from "next";
+import { Session } from "next-auth";
 
 export interface Context {
-  session: unknown;
-  req: IncomingMessage;
-  res: ServerResponse;
+  req: NextApiRequest;
+  res: NextApiResponse;
+  session: Session | null;
 }

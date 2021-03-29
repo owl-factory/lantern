@@ -6,12 +6,30 @@ import {
 import { ModuleResolver } from "./ModuleResolver";
 import { RulesetModel } from "..";
 import { CoreResolver } from "./CoreResolver";
+import { Query, Resolver } from "type-graphql";
+import { Query as Query2 } from "mongoose";
+
+export type FindOneResponse<T> = Promise<Query2<T> | null>;
+export type FindManyResponse<T> = Promise<Query2<T[]>>
 
 /**
  * The resolver for CRUD operations on the Ruleset model.
  */
+@Resolver(RulesetDoc)
 export class RulesetResolver extends CoreResolver {
   public static model = RulesetModel;
+
+  @Query(() => RulesetDoc)
+  public test2(): any {
+    const res = RulesetModel.findOne({_id: "603ab2dbaa4922002b1453a3"});
+    const res2 = [{ name: "Hi" }]
+    console.log(res)
+    // console.log(typeof res[0]._id)
+    // console.log(res2)
+    // console.log(typeof res2)
+    return res._doc;
+    // return [res2[0], {...res[0]}._doc, ];
+  }
 
   /**
    * Creates a single new document and inserts it into the database
@@ -21,7 +39,7 @@ export class RulesetResolver extends CoreResolver {
    */
   public static async createOne(
     input: Record<string, unknown>,
-    ctx?: Context
+    ctx: Context
   ): Promise<CreateOneResponse<RulesetDoc>> {
     let rulesetID = "";
     let moduleID = "";
