@@ -26,6 +26,22 @@ function Index(): JSX.Element {
   );
 }
 
+function RecentGames() {
+  return (
+    <div>
+      <h4>
+        Recent Games
+        <Link href="/tables/new" passHref>
+          <Button className="float-end">
+            Create New Game
+          </Button>
+        </Link>
+      </h4>
+      Tables Go Here
+    </div>
+  );
+}
+
 /**
  * Renders the view for users who are logged in
  * @param props TODO
@@ -36,7 +52,8 @@ function UserView() {
       <h3>Welcome back!</h3>
       <Button onClick={() => signOut()}>Log Out</Button>
       {/* Recent Games */}
-      <h4>My Games</h4>
+      <RecentGames/>
+
       {/* Characters */}
       <h4>My Characters</h4>
     </div>

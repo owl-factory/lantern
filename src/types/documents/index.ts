@@ -8,7 +8,7 @@ export * from "./Module";
 export * from "./Organization";
 export * from "./Ruleset";
 export * from "./Table";
-export * from "./User";
+export * from "./UserProfile";
 export * from "./misc";
 
 import { Content } from "./Content";
@@ -19,7 +19,7 @@ import { ModuleDoc } from "./Module";
 import { OrganizationDoc } from "./Organization";
 import { RulesetDoc } from "./Ruleset";
 import { TableDoc } from "./Table";
-import { UserDoc } from "./User";
+import { UserProfileDoc } from "./UserProfile";
 
 /**
  * A generic document type for any situation where we might be getting document data but
@@ -34,5 +34,5 @@ export type GenericDocumentType = (
   OrganizationDoc |
   RulesetDoc |
   TableDoc |
-  UserDoc
+  UserProfileDoc
 );

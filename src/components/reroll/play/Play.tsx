@@ -1,15 +1,22 @@
 import React from "react";
-import { TableDoc, UserDoc } from "../../../types";
+import { TableDoc, UserProfileDoc } from "../../../types";
 import { Chat } from "./Chat";
-import { GameServer } from "../../../client/sockets/GameServer";
+
+import { GameServer } from "../../../client";
 import { observer } from "mobx-react-lite";
 
 interface PlayProps {
   table: TableDoc;
-  user: UserDoc;
+  user: UserProfileDoc;
 }
 
 const gameServer = new GameServer();
+gameServer.gameState = {
+  count: 0,
+  messages: [],
+  activePlayers: 0,
+  hostQueue: [],
+};
 
 /**
  * Renders out the playspace and server functionality
@@ -22,6 +29,12 @@ export const Play = observer((props: PlayProps) => {
     gameServer.dispatch(dispatch);
   }
 
+  function printQueue() {
+    gameServer.gameState.hostQueue.forEach((hostItem: any) => {
+      console.log(hostItem.peerID)
+    });
+  }
+
   // ON LOAD
   React.useEffect(() => {
     gameServer.connect(props.table._id);
@@ -30,14 +43,12 @@ export const Play = observer((props: PlayProps) => {
   return (
     <div>
       Hello!<br/>
-      {/* My ID is: {peer.id}<br/> */}
-      {/* <button onClick={assumeHost}>Assume Host</button><br/> */}
-      {/* I am {peer.id === host ? "" : "not "} the current host!<br/> */}
-      {/* <Chat peer={peer} host={host}/> */}
+      Game ID: {gameServer.peer ? gameServer.peer.id : "..."}<br/>
+
       Count: {gameServer.gameState.count}
       <button onClick={test}>Test</button>
+      <button onClick={printQueue}>See Queue</button>
       <Chat server={gameServer} />
-      {/* <Counter channels={channels.count}/> */}
     </div>
   );
 });

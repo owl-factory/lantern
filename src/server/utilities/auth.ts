@@ -1,8 +1,8 @@
 import { getSession } from "next-auth/client";
 import { Context, HTTPHandler } from "../response";
-import { User } from "../../types/user"
+import { User } from "../../types/user";
 
-export async function getUser(ctx: Context) {
+export async function getUser(ctx: Context): Promise<(User | null)> {
   if (ctx.session) {
     return ctx.session.user as User;
   } else {

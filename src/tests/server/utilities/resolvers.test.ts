@@ -1,4 +1,4 @@
-import { isID } from "../../../server/utilities/resolverHelpers";
+import { isID } from "../../../server/utilities/resolvers";
 
 // isID
 describe("isID", () => {

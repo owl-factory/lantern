@@ -7,6 +7,7 @@ import {
   ModuleDoc,
   OrganizationDoc,
   RulesetDoc,
+  UserProfileDoc,
 } from "../../types";
 
 export const CommonContentTypeModel = getModelForClass(CommonContentType);
@@ -16,6 +17,7 @@ export const EntityModel = getModelForClass(Entity);
 export const ModuleModel = getModelForClass(ModuleDoc, {schemaOptions: { collection: "modules" } });
 export const OrganizationModel = getModelForClass(OrganizationDoc);
 export const RulesetModel = getModelForClass(RulesetDoc, {schemaOptions: { collection: "rulesets" } });
+export const UserProfileModel = getModelForClass(UserProfileDoc, {schemaOptions: { collection: "rulesets" } });
 
 /**
  * A generic type for hitting any of the Typegoose models
@@ -27,5 +29,6 @@ export type GenericModelType = (
   typeof EntityModel |
   typeof ModuleModel |
   typeof OrganizationModel |
-  typeof RulesetModel
+  typeof RulesetModel |
+  typeof UserProfileModel
 );

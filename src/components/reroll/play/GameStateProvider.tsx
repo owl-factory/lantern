@@ -1,8 +1,9 @@
 import React, {createContext, useContext, useReducer} from 'react';
-import { GameServer } from '../../../client/sockets/GameServer';
+import { GameServer } from '../../../client';
 import { MessageType } from './Chat';
 
 export interface GameState {
+  host?: string;
   count: number;
   messages: MessageType[];
   server?: GameServer;
@@ -26,7 +27,12 @@ const GameStateContext = createContext<GameStateContextType | null>(null);
  */
 function gameStateReducer(state: GameState, action: Action) {
   switch (action.type) {
+    case "full gamestate":
+      console.log("full gamestate")
+      console.log(action.data)
+      return { ...state, ...action.data };
     case "set count":
+      console.log("set count")
       return { ...state, count: action.data };
     case "set server":
       return { ...state, server: action.data };
@@ -51,7 +57,7 @@ export function GameStateProvider({ children }: any): JSX.Element {
 /**
  * Grabs the game state context for the user
  */
-export function useGameState() {
+export function useGameState(): GameStateContextType {
   const ctx = useContext(GameStateContext);
   if (ctx === null) {
     throw new Error("No GameStateProvider is available to this component.");

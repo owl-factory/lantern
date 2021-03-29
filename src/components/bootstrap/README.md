@@ -1,2 +1,0 @@
-# Bootstrap Components
-This folder is meant to contain the Bootstrap elements to replace React-Bootstrap with our own custom elements that do more of what we want them to do, rather than relying on an overly-complicated and incomplete external library. 

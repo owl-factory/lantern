@@ -11,7 +11,6 @@ export class TableDoc extends CoreDocument {
   @prop()
   campaignIDs?: string[];
 
-
   // All players in this game
   @prop()
   playerIDs?: string[];

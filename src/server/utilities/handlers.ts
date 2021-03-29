@@ -18,6 +18,6 @@ export function createEndpoint (options: CreateEndpointOptions) {
     handler.PATCH = options.PATCH;
     handler.DELETE = options.DELETE;
     await handler.handle();
-  }
+  };
   return func;
 }
