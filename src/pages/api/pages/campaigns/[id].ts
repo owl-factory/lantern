@@ -12,14 +12,11 @@ async function getCampaign(this: HTTPHandler, req: NextApiRequest): Promise<void
   const user = await authenticateUser(this);
   if (!user || user._id === undefined) { return; }
 
-  const campaign = await CampaignLogic.fetchCampaign(req.query.id as string, user._id);
+  const campaign = await CampaignLogic.fetchCampaign(user._id, req.query.id as string);
   if (!campaign) { this.returnError(404, "The campaign does not exist");  return; }
-  const table = await TableLogic.fetchTable(campaign.table as string, user._id);
-  if (!table) { this.returnError(404, "The table does not exist"); return; }
   const players = await UserProfileLogic.fetchList(campaign.players as string[]);
 
-  this.returnSuccess({ campaign: campaign, players: players, table: table });
-  // this.returnSuccess({ campaign: "campaign", table: "table" });
+  this.returnSuccess({ campaign: campaign, players: players });
 }
 
 /**

@@ -11,7 +11,7 @@ export class CampaignDoc extends CoreDocument {
   ruleset?: Ref<RulesetDoc>;
 
   // The table that this campaign belongs to
-  @prop({ ref: "tables", required: true })
+  @prop({ ref: "tables", required: false })
   table?: Ref<TableDoc>;
 
   // The IDs of the users who play in this game

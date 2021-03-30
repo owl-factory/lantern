@@ -46,7 +46,7 @@ export class CampaignLogic {
     return campaigns;
   }
 
-  public static async fetchCampaign(_id: string, myUserID: string): Promise<CampaignDoc | null> {
+  public static async fetchCampaign(myUserID: string, _id: string): Promise<CampaignDoc | null> {
     const campaign = await (
       CampaignModel.findOne()
       .where(`_id`).equals(_id)
@@ -67,7 +67,7 @@ export class CampaignLogic {
   }
 
   public static async toggleInviteLink(myUserID: string, _id: string) {
-    const campaign = await this.fetchCampaign(_id, myUserID);
+    const campaign = await this.fetchCampaign(myUserID, _id);
     if (!campaign) { throw {code: 404, message: "The given campaign does not exist"}; }
     if (campaign.ownedBy?.toString() !== myUserID) { 
       throw {code: 403, message: "You do not have access to modify the invite by link setting"};
@@ -89,22 +89,25 @@ export class CampaignLogic {
   }
 
   public static async attemptJoinByLink(myUserID: string, _id: string, inviteKey: string) {
+    const res: {campaign: CampaignDoc | null, justAdded: boolean} = { campaign: null, justAdded: false };
     const errorPacket = { code: 404, message: "The given campaign could not be found" };
     // Grab campaign
-    const campaign = await CampaignModel.findById(_id);
-    if (!campaign) { throw errorPacket; }
-    if (campaign.players && myUserID in campaign.players) {
-      return false;
+    res.campaign = await CampaignModel.findById(_id);
+    if (!res.campaign) { throw errorPacket; }
+    if (res.campaign.players && myUserID in res.campaign.players) {
+      res.justAdded = false;
+      return res;
     }
 
     // Is link enabled? Does link match?
-    if (!campaign.allowLinkInvitation || campaign.invitationAddress !== inviteKey) {
+    if (!res.campaign.allowLinkInvitation || res.campaign.invitationAddress !== inviteKey) {
       throw errorPacket;
     }
 
-    campaign.players?.push(myUserID);
+    res.campaign.players?.push(myUserID);
 
-    await this.updateCampaign(myUserID, _id, campaign._doc as CampaignDoc);
-    return true;
+    await this.updateCampaign(myUserID, _id, res.campaign._doc as CampaignDoc);
+    res.justAdded = true;
+    return res;
   }
 }

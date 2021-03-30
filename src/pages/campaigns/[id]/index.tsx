@@ -59,5 +59,6 @@ export default function CampaignView(props: any) {
 
 CampaignView.getInitialProps = async (ctx: NextPageContext) => {
   const res = await rest.get(`/api/pages/campaigns/${ctx.query.id}`);
+  console.log(res)
   return res.data;
 };

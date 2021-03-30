@@ -1,5 +1,5 @@
 import { NextApiRequest } from "next";
-import { authenticateUser, CampaignLogic, createEndpoint, HTTPHandler } from "server";
+import { authenticateUser, CampaignLogic, createEndpoint, HTTPHandler, TableLogic } from "server";
 
 async function toggleLinkInvite(this: HTTPHandler, req: NextApiRequest) {
   const user = await authenticateUser(this);
@@ -11,9 +11,12 @@ async function toggleLinkInvite(this: HTTPHandler, req: NextApiRequest) {
 async function attemptJoin(this: HTTPHandler, req: NextApiRequest) {
   const user = await authenticateUser(this);
   if (!user || !user._id) { return; }
-  const newlyJoined = await CampaignLogic.attemptJoinByLink(user._id, req.query.id as string, req.body.inviteKey);
-  this.returnSuccess({ newlyJoined });
-  // this.returnSuccess({})
+  const res = await CampaignLogic.attemptJoinByLink(user._id, req.query.id as string, req.body.inviteKey);
+  if (!res.campaign) { return; }
+  if (res.campaign.table) {
+    await TableLogic.addUserToTable(user._id, res.campaign.table.toString());
+  }
+  this.returnSuccess(res);
 }
 
 export default createEndpoint({ POST: toggleLinkInvite, PATCH: attemptJoin });

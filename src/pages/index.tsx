@@ -6,7 +6,7 @@ import { Button, Col, Row } from "react-bootstrap";
 import { signOut, useSession } from "next-auth/client";
 import { Input, Page } from "components";
 import { rest } from "utilities";
-import { CampaignDoc, ServerResponse } from "types";
+import { CampaignDoc } from "types";
 import { Form, Formik } from "formik";
 
 /**
@@ -39,6 +39,10 @@ function RecentGames(props: any) {
         <Link href={`/campaigns/${campaign._id}`}>
           Visit
         </Link>
+        &nbsp;
+        <Link href={`/play/${campaign.table}`}>
+          Play
+        </Link>
       </>
     );
   });
@@ -47,7 +51,7 @@ function RecentGames(props: any) {
     <div>
       <h4>
         Recent Games
-        <Link href="/tables/new" passHref>
+        <Link href="/campaigns/new" passHref>
           <Button className="float-end">
             Create New Game
           </Button>

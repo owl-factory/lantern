@@ -56,8 +56,21 @@ export class TableLogic {
       ])
     );
 
-    console.log(table);
     return table;
   }
 
+  /**
+   * Adds a user to the table. Idempotent
+   * @param myUserID The current user's _id
+   * @param _id The id of the table to add a user to
+   * @returns Returns nothing. Idempotent
+   */
+  public static async addUserToTable(myUserID: string, _id: string): Promise<void> {
+    const table = await TableModel.findById(_id);
+    if (!table) { return; }
+    const players = table.players || [];
+    if (myUserID in players) { return; }
+    players.push(myUserID);
+    await TableModel.updateOne({ _id }, { players }, { upsert: false });
+  }
 }
