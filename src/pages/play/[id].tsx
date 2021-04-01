@@ -2,30 +2,22 @@ import React from "react";
 import dynamic from "next/dynamic";
 import { NextPageContext } from "next";
 import { rest } from "utilities";
+import { useRouter } from "next/router";
 
 const Play = dynamic(
   () => import('../../components/reroll/play/Play'),
   { loading: () => <h1>...</h1>, ssr: false},
 );
 
-const table = {
-  _id: "laura-test",
-  ownerID: "321",
-};
-
-const user = {
-  _id: "0987",
-};
-
-export default function PlayPage(props: any): JSX.Element {
+export default function PlayPage(): JSX.Element {
+  const router = useRouter();
+  const [props, setProps] = React.useState(undefined)
   
-
+  console.log(props)
+  
   return (
-    <Play table={table} user={user}/>
+    <Play />
   );
-}
 
-PlayPage.getInitialProp = async (ctx: NextPageContext) => {
-  const res = await rest.get(`/api/play/${ctx.query.id}`);
-  return res;
+  
 }

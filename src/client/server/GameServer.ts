@@ -1,3 +1,4 @@
+import { Dispatch, DispatchEvent } from "components/reroll/play";
 import { makeAutoObservable } from "mobx";
 import Peer, { DataConnection } from "peerjs";
 import { Socket } from "socket.io-client";
@@ -9,12 +10,6 @@ import * as logging from "./logging";
 import * as send from "./send";
 import * as socketEvents from "./socketEvents";
 
-// A single action sent to others
-export interface Action {
-  type: string;
-  data: any;
-}
-
 export interface HostPQueue {
   peerID: string;
   isHost: boolean;
@@ -25,6 +20,7 @@ export interface HostPQueue {
 export interface GameState {
   host?: string;
   hostQueue: HostPQueue[];
+  dispatchHistory: Dispatch[];
   activePlayers: number;
   count: number;
   messages: MessageType[];
@@ -47,7 +43,7 @@ export class GameServer {
   isPeerReady = false; // If the peer has been connected
   isSocketReady = false; // If the socket has been connected
 
-  tableID!: string; // The ID of the table server to connect to
+  campaignID!: string; // The ID of the table server to connect to
 
   // The peerID indexed object containing the channels connected to them
   channels: Record<string, DataConnection> = {};
@@ -79,6 +75,7 @@ export class GameServer {
 
   // DISPATCH FUNCTIONALITY
   public dispatch = dispatch.dispatch;
+  public flushDispatch = dispatch.flushDispatch;
 
   // HOST FUNCTIONALITY
   protected addToHostQueue = host.addToHostQueue;
@@ -103,8 +100,7 @@ export class GameServer {
    */
   protected onReady(): void {
     this.log(`I am ready to play`);
-    this.socket.emit(`ready`, this.tableID, this.peer.id);
-
+    this.socket.emit(`ready`, this.campaignID, this.peer.id);
   }
 
   /**
@@ -112,7 +108,7 @@ export class GameServer {
    * from the host
    */
   protected onLoad(): void {
-    this.sendToAll({ type: "push host queue", data: this.hostPriority });
+    this.sendToAll({ event: DispatchEvent.PushHostQueue, content: this.hostPriority });
   }
 
   // LOGGING

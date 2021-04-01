@@ -1,6 +1,7 @@
 import { Form, Formik } from "formik";
 import { observer } from "mobx-react-lite";
 import React from "react";
+import { DispatchEvent } from ".";
 import { Input, TextArea } from "../..";
 import { GameServer } from "../../../client";
 
@@ -26,7 +27,7 @@ function Message({ message }: { message: MessageType }) {
 export const Chat = observer((props: ChatProps) => {
   const { server } = props;
   function sendMessage(values: MessageType) {
-    const dispatch = { type: "add message", data: values };
+    const dispatch = { event: DispatchEvent.Message, content: values };
     server?.sendToAll(dispatch);
   }
 

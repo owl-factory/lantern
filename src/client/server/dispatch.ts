@@ -1,28 +1,47 @@
-import { Action, GameServer } from ".";
+import { Dispatch, DispatchEvent } from "components/reroll/play";
+import { rest } from "utilities";
+import { GameServer } from ".";
 
 /**
 * Updates the game state from the given action
 * @param state The previous game state
 * @param action The action taken with data and type
 */
-export function dispatch(this: GameServer, action: Action): void {
-  switch (action.type) {
-    case "full gamestate":
-      this.gameState = action.data;
+export function dispatch(this: GameServer, newDispatch: Dispatch): void {
+  let addToHistory = true;
+  switch (newDispatch.event) {
+    case DispatchEvent.PushHostQueue:
+      this.addToHostQueue(newDispatch.content);
+      break;
+    case DispatchEvent.Flush:
+      addToHistory = false;
+      this.flushDispatch();
+      break;
+    case DispatchEvent.FullGamestate:
+      this.gameState = newDispatch.content;
       this.onLoad();
       break;
-    case "push host queue":
-      this.addToHostQueue(action.data);
+
+    case DispatchEvent.Test:
+      this.gameState.count = newDispatch.content;
       break;
-    case "set count":
-      this.gameState.count = action.data;
-      break;
-    case "add message":
-      this.gameState.messages.push(action.data);
+    case DispatchEvent.Message:
+      this.gameState.messages.push(newDispatch.content);
       break;
     default:
       // eslint-disable-next-line no-console
-      console.error(`Action '${action.type}' is invalid`);
+      console.error(newDispatch);
+      console.error(`Dispatch event '${newDispatch.event}' is invalid`);
+      addToHistory = false;
       break;
   }
+
+  if ( addToHistory ) { this.gameState.dispatchHistory.push(newDispatch); }
+}
+
+
+export function flushDispatch(this: GameServer) {
+  if (this.gameState.host !== this.peerID) { return; }
+  // const lastestTimestamp = 
+  // rest.patch(`/api/play/${this.campaignID}`, )
 }

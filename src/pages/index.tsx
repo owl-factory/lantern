@@ -34,16 +34,16 @@ function RecentGames(props: any) {
   const campaigns: JSX.Element[] = [];
   props.campaigns.forEach((campaign: CampaignDoc) => {
     campaigns.push(
-      <>
+      <div key={campaign._id}>
         <h5>{campaign.name}</h5>
         <Link href={`/campaigns/${campaign._id}`}>
           Visit
         </Link>
         &nbsp;
-        <Link href={`/play/${campaign.table}`}>
+        <Link href={`/play/${campaign._id}`}>
           Play
         </Link>
-      </>
+      </div>
     );
   });
 
