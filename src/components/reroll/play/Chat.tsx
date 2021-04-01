@@ -1,7 +1,7 @@
 import { Form, Formik } from "formik";
 import { observer } from "mobx-react-lite";
 import React from "react";
-import { DispatchEvent } from ".";
+import { DispatchEvent } from "types";
 import { Input, TextArea } from "../..";
 import { GameServer } from "../../../client";
 

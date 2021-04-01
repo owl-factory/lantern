@@ -1,4 +1,4 @@
-import { Dispatch, DispatchEvent } from "components/reroll/play";
+import { Dispatch, DispatchEvent } from "types";
 import { rest } from "utilities";
 import { GameServer } from ".";
 
@@ -11,13 +11,15 @@ export function dispatch(this: GameServer, newDispatch: Dispatch): void {
   let addToHistory = true;
   switch (newDispatch.event) {
     case DispatchEvent.PushHostQueue:
+      addToHistory = false;
       this.addToHostQueue(newDispatch.content);
       break;
-    case DispatchEvent.Flush:
+    case DispatchEvent.CleanHistory:
       addToHistory = false;
-      this.flushDispatch();
+      this.cleanDispatchHistory(newDispatch.content);
       break;
     case DispatchEvent.FullGamestate:
+      addToHistory = false;
       this.gameState = newDispatch.content;
       this.onLoad();
       break;
@@ -40,8 +42,47 @@ export function dispatch(this: GameServer, newDispatch: Dispatch): void {
 }
 
 
-export function flushDispatch(this: GameServer) {
-  if (this.gameState.host !== this.peerID) { return; }
-  // const lastestTimestamp = 
-  // rest.patch(`/api/play/${this.campaignID}`, )
+/**
+ * The function that kicks off the dispatch flush
+ */
+export function attemptFlush(this: GameServer) {
+  console.log("Attempting flush")
+  // Require this to be the host that begins
+  if (this.gameState.host !== this.peer.id) { console.log("Not host!"); return; }
+  const flushedFUIDs: string[] = [];
+
+  // Grab the length now to prevent race conditions
+  const length = this.gameState.dispatchHistory.length;
+  if (length === 0) { return; }
+
+  rest.patch(
+    `/api/play/${this.campaignID}`,
+    { dispatchHistory: this.gameState.dispatchHistory.slice(0, length)}
+  ).then((res: any) => {
+    // Failure on the backends
+    if (!res.success) { return; }
+    for(let i = 0; i < length; i++) {
+      const dispatchItem = this.gameState.dispatchHistory[i];
+      if (!dispatchItem.fuid) { continue; }
+      flushedFUIDs.push(dispatchItem.fuid);
+    }
+    this.sendToAll({event: DispatchEvent.CleanHistory, content: flushedFUIDs});
+  });
+}
+
+/**
+ * Clears out dispatch history
+ * @param flushedFUIDs The fake unqiue ids that we should remove
+ */
+export function cleanDispatchHistory(this: GameServer, flushedFUIDs: string[]) {
+  console.log("Flushing!")
+  flushedFUIDs.forEach((fuid: string) => {
+    for(let i = 0; i < this.gameState.dispatchHistory.length; i++) {
+      if (this.gameState.dispatchHistory[i].fuid === fuid) {
+        this.gameState.dispatchHistory.splice(i, 1);
+        break;
+      }
+    }
+  });
+  console.log(this.gameState.dispatchHistory)
 }

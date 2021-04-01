@@ -1,4 +1,4 @@
-import { Dispatch, DispatchEvent } from "components/reroll/play";
+import { Dispatch, DispatchEvent } from "types";
 import { makeAutoObservable } from "mobx";
 import Peer, { DataConnection } from "peerjs";
 import { Socket } from "socket.io-client";
@@ -53,6 +53,10 @@ export class GameServer {
   // The host priority of this user and their priority to host
   hostPriority!: HostPQueue;
 
+  // The time in milliseconds difference between here and the server.
+  // Added to the time before being sent to simulate 'server time'.
+  timeWiggle = 0;
+
   /**
    * Sets the default information for the socket and peer connection
    */
@@ -75,7 +79,8 @@ export class GameServer {
 
   // DISPATCH FUNCTIONALITY
   public dispatch = dispatch.dispatch;
-  public flushDispatch = dispatch.flushDispatch;
+  public attemptFlush = dispatch.attemptFlush;
+  public cleanDispatchHistory = dispatch.cleanDispatchHistory;
 
   // HOST FUNCTIONALITY
   protected addToHostQueue = host.addToHostQueue;

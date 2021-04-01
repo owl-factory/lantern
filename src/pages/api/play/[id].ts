@@ -1,5 +1,6 @@
 import { NextApiRequest } from "next";
 import { CampaignLogic, HTTPHandler, UserProfileLogic, authenticateUser, createEndpoint } from "server";
+import { PlayLogic } from "server/logic/play";
 
 async function getPlay(this: HTTPHandler, req: NextApiRequest) {
   const user = await authenticateUser(this);
@@ -13,6 +14,11 @@ async function getPlay(this: HTTPHandler, req: NextApiRequest) {
   this.returnSuccess({ campaign, userProfile });
 }
 
-// async function patchGameState(this: HTTPHandler, req)
+async function patchGameState(this: HTTPHandler, req: NextApiRequest) {
+  const user = await authenticateUser(this);
+  if (!user || !user._id) { return; }
+  PlayLogic.handleFlush(user._id, req.query.id as string, req.body.dispatchHistory);
+  this.returnSuccess({});
+}
 
-export default createEndpoint({GET: getPlay,  });
+export default createEndpoint({GET: getPlay, PATCH: patchGameState });

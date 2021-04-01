@@ -1,4 +1,4 @@
-import { DispatchEvent } from "components/reroll/play";
+import { DispatchEvent } from "types";
 import { GameServer } from "./GameServer";
 
 /**

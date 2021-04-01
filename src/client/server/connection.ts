@@ -1,4 +1,4 @@
-import { DispatchEvent } from "components/reroll/play";
+import { DispatchEvent } from "types";
 import Peer, { DataConnection } from "peerjs";
 import { io } from "socket.io-client";
 import { GameServer } from ".";

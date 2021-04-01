@@ -7,26 +7,6 @@ import { observer } from "mobx-react-lite";
 import { rest } from "utilities";
 import { useRouter } from "next/router";
 
-export enum DispatchEvent {
-  // Game Handlers
-  PushHostQueue,
-  FullGamestate, // TODO - remove in the future
-  CatchUp,
-  Flush,
-
-  // User Actions
-  Test,
-  Message,
-}
-
-// Indicates the type of action we're taking on a dispatch event
-export interface Dispatch {
-  event: DispatchEvent;
-  content: any; // TODO for more specific types,
-  timestamp?: number;
-}
-
-
 const gameServer = new GameServer();
 gameServer.gameState = {
   count: 0,
@@ -56,7 +36,7 @@ export const Play = observer(() => {
   }
 
   function flushDispatch() {
-    gameServer.flushDispatch();
+    gameServer.attemptFlush();
   }
 
   // ON LOAD
