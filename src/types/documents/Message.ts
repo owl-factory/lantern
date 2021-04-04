@@ -1,13 +1,13 @@
-import { prop, Ref } from "@typegoose/typegoose";
+import { Ref, prop } from "@typegoose/typegoose";
 import { CoreDocument } from "types/documents/CoreDocument";
 import { UserProfileDoc } from "types";
 
-enum MessageType {
+export enum MessageType {
   Text,
-
 }
 
 export class MessageDoc extends CoreDocument {
+  // The user who sent the message
   @prop({ ref: "userProfiles"})
   author: Ref<UserProfileDoc>;
 
@@ -15,6 +15,7 @@ export class MessageDoc extends CoreDocument {
   @prop({ enum: MessageType, type: Number })
   type?: MessageType;
 
+  // The text content of the message
   @prop()
   content?: string;
 }

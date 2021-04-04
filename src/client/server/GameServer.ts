@@ -1,4 +1,4 @@
-import { Dispatch, DispatchEvent } from "types";
+import { Dispatch, DispatchEvent, UserProfileDoc } from "types";
 import { makeAutoObservable } from "mobx";
 import Peer, { DataConnection } from "peerjs";
 import { Socket } from "socket.io-client";
@@ -7,8 +7,10 @@ import * as connection from "./connection";
 import * as dispatch from "./dispatch";
 import * as host from "./host";
 import * as logging from "./logging";
+import * as message from "./message";
 import * as send from "./send";
 import * as socketEvents from "./socketEvents";
+import { MessageModel } from "server";
 
 export interface HostPQueue {
   peerID: string;
@@ -44,6 +46,7 @@ export class GameServer {
   isSocketReady = false; // If the socket has been connected
 
   campaignID!: string; // The ID of the table server to connect to
+  user!: UserProfileDoc;
 
   // The peerID indexed object containing the channels connected to them
   channels: Record<string, DataConnection> = {};
@@ -128,4 +131,7 @@ export class GameServer {
 
   // SEND FUNCTIONALITY
   public sendToAll = send.sendToAll;
+
+  // MESSAGE FUNCTIONALITY
+  public fireTextMessage = message.fireTextMessage;
 }

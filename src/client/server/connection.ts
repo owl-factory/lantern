@@ -1,4 +1,4 @@
-import { DispatchEvent } from "types";
+import { DispatchEvent, UserProfileDoc } from "types";
 import Peer, { DataConnection } from "peerjs";
 import { io } from "socket.io-client";
 import { GameServer } from ".";
@@ -8,8 +8,9 @@ import { GameServer } from ".";
  * @param campaignID The campaign to connect to
  * TODO - move to a socket-only file?
  */
-export function connect(this: GameServer, campaignID: string): void {
+export function connect(this: GameServer, campaignID: string, user: UserProfileDoc): void {
   this.campaignID = campaignID;
+  this.user = user;
 
   this.socket = io(this.socketAddress);
   this.socket.on(`connect`, () => {

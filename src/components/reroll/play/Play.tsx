@@ -1,5 +1,5 @@
 import React from "react";
-import { CampaignDoc, UserProfileDoc } from "types";
+import { CampaignDoc, DispatchEvent, UserProfileDoc } from "types";
 import { Chat } from "./Chat";
 
 import { GameServer } from "client";
@@ -45,13 +45,12 @@ export const Play = observer(() => {
     .then((res: any) => {
       if (res.success) {
         setCampaign(res.data.campaign);
-        setUser(res.data.user);
-        gameServer.campaignID = res.data.campaign;
-        gameServer.connect(res.data.campaign._id as string);
+        setUser(res.data.userProfile);
+        gameServer.connect(res.data.campaign._id as string, res.data.userProfile);
 
       }
-    })
- 
+    });
+
     // TODO - see if we can't remove that
   }, []);
 
