@@ -1,13 +1,12 @@
 import Link from "next/link";
 import React from "react";
-import AuthenticationCard from "../components/authetication/AuthenticationCard";
-
+import AuthenticationCard from "components/authetication/AuthenticationCard";
 import { Button, Col, Row } from "react-bootstrap";
-import { signOut, useSession } from "next-auth/client";
 import { Input, Page } from "components";
 import { rest } from "utilities";
-import { CampaignDoc, ServerResponse } from "types";
+import { CampaignDoc } from "types";
 import { Form, Formik } from "formik";
+import { q, useQuery } from "utilities/db";
 
 /**
  * Renders the index page and one of two subviews
@@ -15,14 +14,13 @@ import { Form, Formik } from "formik";
  * @param props ...
  */
 function Index(): JSX.Element {
+  const [ result, loading ] = useQuery(q.Get(q.Ref(q.Collection("customers"),101)));
   // Sets the view for the currenly logged in user
-  const [ session, loading ] = useSession();
-
   if (loading) return <>Loading...</>;
 
   return (
     <Page>
-      {session ? (<UserView />) : (<GuestView />)}
+      {result}
       <h4>
         News
       </h4>

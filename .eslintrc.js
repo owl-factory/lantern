@@ -21,6 +21,7 @@ module.exports = {
     "sort-imports": [1, {
       "ignoreDeclarationSort": true,
     }],
+    "@typescript-eslint/ban-types": 0,
     "no-trailing-spaces": 1,
     "eol-last": 1,
     "max-len": [2, {
