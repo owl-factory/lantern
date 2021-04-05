@@ -9,6 +9,7 @@ import { GameServer } from ".";
 */
 export function dispatch(this: GameServer, newDispatch: Dispatch): void {
   let addToHistory = true;
+  newDispatch.timestamp = new Date();
   switch (newDispatch.event) {
     case DispatchEvent.PushHostQueue:
       addToHistory = false;
@@ -28,6 +29,7 @@ export function dispatch(this: GameServer, newDispatch: Dispatch): void {
       this.gameState.count = newDispatch.content;
       break;
     case DispatchEvent.Message:
+      console.log(newDispatch)
       this.gameState.messages.push(newDispatch.content);
       break;
     default:
@@ -57,9 +59,13 @@ export function attemptFlush(this: GameServer) {
 
   rest.patch(
     `/api/play/${this.campaignID}`,
-    { dispatchHistory: this.gameState.dispatchHistory.slice(0, length)}
+    {
+      dispatchTime: new Date(),
+      dispatchHistory: this.gameState.dispatchHistory.slice(0, length),
+    }
   ).then((res: any) => {
     // Failure on the backends
+    console.log(res);
     if (!res.success) { return; }
     for(let i = 0; i < length; i++) {
       const dispatchItem = this.gameState.dispatchHistory[i];
@@ -67,6 +73,9 @@ export function attemptFlush(this: GameServer) {
       flushedFUIDs.push(dispatchItem.fuid);
     }
     this.sendToAll({event: DispatchEvent.CleanHistory, content: flushedFUIDs});
+  })
+  .catch((err: any) => {
+    console.log(err);
   });
 }
 
@@ -75,7 +84,7 @@ export function attemptFlush(this: GameServer) {
  * @param flushedFUIDs The fake unqiue ids that we should remove
  */
 export function cleanDispatchHistory(this: GameServer, flushedFUIDs: string[]) {
-  console.log("Flushing!")
+  this.log("Flushing!");
   flushedFUIDs.forEach((fuid: string) => {
     for(let i = 0; i < this.gameState.dispatchHistory.length; i++) {
       if (this.gameState.dispatchHistory[i].fuid === fuid) {
@@ -84,5 +93,4 @@ export function cleanDispatchHistory(this: GameServer, flushedFUIDs: string[]) {
       }
     }
   });
-  console.log(this.gameState.dispatchHistory)
 }

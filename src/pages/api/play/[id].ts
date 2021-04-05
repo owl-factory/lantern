@@ -10,8 +10,9 @@ async function getPlay(this: HTTPHandler, req: NextApiRequest) {
     throw { code: 404, message: `The campaign wasn't found or you do not have access`};
   }
   const userProfile = await UserProfileLogic.fetchProfile(user._id);
+  const messages = await PlayLogic.fetchMessages(campaign._id as string);
 
-  this.returnSuccess({ campaign, userProfile });
+  this.returnSuccess({ campaign, messages, userProfile });
 }
 
 async function patchGameState(this: HTTPHandler, req: NextApiRequest) {

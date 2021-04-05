@@ -17,5 +17,5 @@ export interface Dispatch {
   fuid?: string;
   event: DispatchEvent;
   content: any; // TODO for more specific types,
-  timestamp?: number;
+  timestamp?: Date;
 }

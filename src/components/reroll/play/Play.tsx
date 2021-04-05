@@ -1,5 +1,5 @@
 import React from "react";
-import { CampaignDoc, DispatchEvent, UserProfileDoc } from "types";
+import { DispatchEvent } from "types";
 import { Chat } from "./Chat";
 
 import { GameServer } from "client";
@@ -21,8 +21,6 @@ gameServer.gameState = {
  */
 export const Play = observer(() => {
   const router = useRouter();
-  const [ campaign, setCampaign ] = React.useState(undefined);
-  const [ user, setUser ] = React.useState(undefined);
 
   function test() {
     const dispatch = { event: DispatchEvent.Test, content: gameServer.gameState.count + 1 };
@@ -44,8 +42,7 @@ export const Play = observer(() => {
     rest.get(`/api/play/${router.query.id}`)
     .then((res: any) => {
       if (res.success) {
-        setCampaign(res.data.campaign);
-        setUser(res.data.userProfile);
+        gameServer.gameState.messages = res.data.messages;
         gameServer.connect(res.data.campaign._id as string, res.data.userProfile);
 
       }

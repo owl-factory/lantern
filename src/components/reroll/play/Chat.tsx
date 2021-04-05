@@ -34,6 +34,7 @@ export const Chat = observer((props: ChatProps) => {
   }
 
   const messageBlock: JSX.Element[] = [];
+
   server.gameState.messages.forEach((message: MessageType, index: number) => {
     messageBlock.push(<Message message={message} key={index}/>);
   });
