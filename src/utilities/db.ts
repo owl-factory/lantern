@@ -31,6 +31,12 @@ export function getClient(): Client {
     }
 }
 
+export function logout(callback: (success: boolean) => void): void {
+    client.query(q.Logout(true)).then((res: unknown) => {
+        callback(res as boolean);
+    });
+}
+
 type UseQueryType = [ object|undefined, boolean, Error | undefined ];
 
 export function useQuery(expr: ExprArg, options?: QueryOptions | undefined): UseQueryType {
