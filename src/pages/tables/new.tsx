@@ -1,5 +1,4 @@
 import React from "react";
-import { useSession } from "next-auth/client";
 import { Button, Input, Page, Select } from "components";
 import { Form, Formik } from "formik";
 import { rest } from "../../utilities";
@@ -25,8 +24,8 @@ interface NewTableProps {
 
 export default function NewTable(props: NewTableProps): JSX.Element {
   const router = useRouter();
-  const [ session, loading ] = useSession();
-  if (!loading && !session) {
+  // TODO Auth
+  if (true) {
     return <>Error</>;
   }
 

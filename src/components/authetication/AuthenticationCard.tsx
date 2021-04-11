@@ -1,4 +1,3 @@
-import { signIn } from "next-auth/client";
 import React, { ReactNode, useState } from "react";
 import { Button, Card } from "react-bootstrap";
 import LoginForm from "./LoginForm";
@@ -52,7 +51,7 @@ function LoginSection(props: AuthCardSectionProps) {
   return (
     <>
       <h5>Login</h5>
-      <Button variant="secondary" onClick={() => signIn("google")}>
+      <Button variant="secondary" onClick={() => console.log("google")}>
         Log in with Google
       </Button>
       <LoginForm/>

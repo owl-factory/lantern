@@ -7,7 +7,6 @@ import { rest } from "utilities";
 import { CampaignDoc } from "types";
 import { Form, Formik } from "formik";
 import { q, useQuery } from "utilities/db";
-import { signOut } from "next-auth/client";
 
 /**
  * Renders the index page and one of two subviews
@@ -77,7 +76,7 @@ function ProfileForm(props: any) {
         </Form>
       )}
     </Formik>
-  )
+  );
 }
 
 /**
@@ -103,7 +102,7 @@ function UserView() {
     <div>
       <h3>Welcome back {me.name}!</h3>
 
-      <Button onClick={() => signOut()}>Log Out</Button>
+      <Button onClick={() => console.log("log out")}>Log Out</Button>
       {/* Recent Games */}
       <RecentGames campaigns={campaigns}/>
 
