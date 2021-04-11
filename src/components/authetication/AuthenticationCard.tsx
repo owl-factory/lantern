@@ -1,6 +1,7 @@
 import React, { ReactNode, useState } from "react";
 import { Button, Card } from "react-bootstrap";
 import SignInForm from "./SignInForm";
+import SignUpForm from "./SignupForm";
 
 interface AuthenticationCardProps {
   initialState?: AuthCardSection;
@@ -51,7 +52,7 @@ function LoginSection(props: AuthCardSectionProps) {
   return (
     <>
       <h5>Login</h5>
-      <SignInForm/>
+      <SignInForm />
       <Button onClick={() => props.setSection(AuthCardSection.signup)}>Sign Up</Button>
       <Button onClick={() => props.setSection(AuthCardSection.forgotPassword)}>Forgot Password</Button>
     </>
@@ -66,6 +67,7 @@ function SignUpSection(props: AuthCardSectionProps) {
   return (
     <>
       <h5>Sign Up</h5>
+      <SignUpForm />
       <Button onClick={() => props.setSection(AuthCardSection.login)}>Back</Button>
     </>
   );

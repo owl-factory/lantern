@@ -22,7 +22,7 @@ const validationSchema = Yup.object({
 /**
  * Renders the form for logging in
  */
-export default function LoginForm(): JSX.Element {
+export default function SignInForm(): JSX.Element {
 
   /**
    * Submits the form on successful validation

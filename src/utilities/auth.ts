@@ -1,11 +1,11 @@
 import fetch from "cross-fetch";
 import { getClient, q } from "./db";
 
-export function signUp(email: string, username: string, password: string, callback?: (res: any) => void): void {
+export function signUp(username: string, email: string, password: string, callback?: (res: any) => void): void {
   fetch("/api/auth/signup", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({email, username, password}),
+    body: JSON.stringify({username, email, password}),
   }).then(async (res) => {
     const json = await res.json();
     if (callback) callback(json);
