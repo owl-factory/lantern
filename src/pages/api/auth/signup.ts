@@ -6,7 +6,7 @@ import { getServerClient, q } from "utilities/db";
  * @param req The request to the server
  * @param res The result from the server to be sent back
  */
-export default async function Signup(req: NextApiRequest, res: NextApiResponse): Promise<void> {
+export default async function SignUp(req: NextApiRequest, res: NextApiResponse): Promise<void> {
   const { email, password, username } = req.body;
   const client = getServerClient();
   const response = await client.query(

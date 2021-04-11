@@ -24,6 +24,7 @@ function Index(): JSX.Element {
   return (
     <Page>
       {JSON.stringify(result)}
+      <GuestView />
       <h4>
         News
       </h4>

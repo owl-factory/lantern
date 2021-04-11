@@ -17,6 +17,7 @@ module.exports = {
     "eqeqeq": 2,
     "@typescript-eslint/no-shadow": 2,
     "semi": 1,
+    "@typescript-eslint/no-explicit-any": 0,
     "comma-dangle": [1, "always-multiline"],
     "sort-imports": [1, {
       "ignoreDeclarationSort": true,
