@@ -7,6 +7,7 @@ import { rest } from "utilities";
 import { CampaignDoc } from "types";
 import { Form, Formik } from "formik";
 import { q, useQuery } from "utilities/db";
+import { signOut } from "next-auth/client";
 
 /**
  * Renders the index page and one of two subviews
@@ -14,13 +15,16 @@ import { q, useQuery } from "utilities/db";
  * @param props ...
  */
 function Index(): JSX.Element {
-  const [ result, loading ] = useQuery(q.Get(q.Ref(q.Collection("customers"),101)));
+
+  const [ result, loading ] = useQuery(
+    q.Get(q.Ref(q.Collection("characters"), "295042967505207810"))
+  );
   // Sets the view for the currenly logged in user
   if (loading) return <>Loading...</>;
 
   return (
     <Page>
-      {result}
+      {JSON.stringify(result)}
       <h4>
         News
       </h4>
@@ -88,7 +92,7 @@ function UserView() {
   React.useEffect(() => {
     rest.get(`/api/pages`)
     .then((res: any) => {
-      console.log(res.data)
+      console.log(res.data);
       setMe(res.data.me);
       setCampaigns(res.data.campaigns);
       console.log(res);
@@ -98,7 +102,7 @@ function UserView() {
   return (
     <div>
       <h3>Welcome back {me.name}!</h3>
-      
+
       <Button onClick={() => signOut()}>Log Out</Button>
       {/* Recent Games */}
       <RecentGames campaigns={campaigns}/>
