@@ -8,11 +8,14 @@ export enum MessageType {
 
 export class MessageDoc extends CoreDocument {
   @prop({ ref: "campaigns" })
-  campaign: Ref<CampaignDoc>;
+  campaign?: Ref<CampaignDoc>;
 
   // The user who sent the message
   @prop({ ref: "userProfiles"})
-  author: Ref<UserProfileDoc>;
+  author?: Ref<UserProfileDoc>;
+
+  @prop()
+  sentAs?: string;
 
   // Name used for the messager name
   @prop({ enum: MessageType, type: Number })
@@ -21,4 +24,7 @@ export class MessageDoc extends CoreDocument {
   // The text content of the message
   @prop()
   content?: string;
+
+  // A value for rendering messages
+  isSmoothed?: boolean;
 }

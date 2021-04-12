@@ -1,7 +1,7 @@
 import { DataConnection } from "peerjs";
-import { GameState, HostPQueue } from "../../../client";
-import * as host from "../../../client/server/host";
-import * as logging from "../../../client/server/logging";
+import { GameState, HostPriorityQueue } from "types";
+import * as host from "../../../client/play/host";
+import * as logging from "../../../client/play/logging";
 
 /**
  * A mock game server for testing purposes. This does not have any of the connection code
@@ -29,16 +29,14 @@ export class MockGameServer {
   gameState!: GameState; // The React-updated game state that refreshes the DOM
 
   // The host priority of this user and their priority to host
-  hostPriority!: HostPQueue;
+  hostPriority!: HostPriorityQueue;
 
   constructor() {
     this.gameState = {
       activePlayers: 0,
       count: 0,
+      entities: {},
       messages: [],
-      host: undefined,
-      hostQueue: [],
-      dispatchHistory: [],
     };
 
     this.peer = { id: "test-id" };

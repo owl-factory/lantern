@@ -1,16 +1,16 @@
-import { DispatchEvent } from "types";
-import { GameServer, HostPQueue } from "./GameServer";
+import { DispatchEvent, HostPriorityQueue } from "types";
+import { GameServer } from "./GameServer";
 
 /**
  * Adds an item to the host queue in it's desired priority
  * @param newHostItem The new item to add to the host queue
  */
-export function addToHostQueue(this: GameServer, newHostItem: HostPQueue): void {
+export function addToHostQueue(this: GameServer, newHostItem: HostPriorityQueue): void {
   this.removeFromHostQueue(newHostItem.peerID, false);
 
   // Handles the only item in the thing
-  if (this.gameState.hostQueue.length === 0) {
-    this.gameState.hostQueue.push(newHostItem);
+  if (this.hostQueue.length === 0) {
+    this.hostQueue.push(newHostItem);
     this.recalculateHost();
     return;
   }
@@ -18,20 +18,20 @@ export function addToHostQueue(this: GameServer, newHostItem: HostPQueue): void 
   // Adds the new host at the top of the queue by default
   // TODO - should we remove this?
   if (newHostItem.isHost === true) {
-    this.gameState.hostQueue.splice(0, 0, newHostItem);
+    this.hostQueue.splice(0, 0, newHostItem);
     this.recalculateHost();
     return;
   }
 
-  this.gameState.hostQueue.forEach((hostItem: HostPQueue, index: number) => {
+  this.hostQueue.forEach((hostItem: HostPriorityQueue, index: number) => {
     if (newHostItem.priority > hostItem.priority) {
-    this.gameState.hostQueue.splice(index - 1, 0, hostItem);
+    this.hostQueue.splice(index - 1, 0, hostItem);
       this.recalculateHost();
       return;
     }
   });
 
-  this.gameState.hostQueue.push(newHostItem);
+  this.hostQueue.push(newHostItem);
   this.recalculateHost();
 }
 
@@ -41,7 +41,7 @@ export function addToHostQueue(this: GameServer, newHostItem: HostPQueue): void 
 export function assumeHost(this: GameServer): void {
   this.log(`Look at me. I'm the host now`);
   this.socket.emit(`assume-host`, this.campaignID, this.peer.id);
-  this.gameState.host = this.peer.id;
+  this.host = this.peer.id;
   // Delete previous host queue
   this.calculateHostPriority();
   this.dispatch({ event: DispatchEvent.PushHostQueue, content: this.hostPriority });
@@ -53,11 +53,11 @@ export function assumeHost(this: GameServer): void {
  * is static, unless such an event occurs as to require the recalculation of the host
  * priority, such as in the case of someone being elevated to GM or being manually set
  */
-export function calculateHostPriority(this: GameServer | any): void {
+export function calculateHostPriority(this: GameServer): void {
   this.hostPriority = {
     peerID: this.peer.id,
     priority: 1,
-    isHost: this.gameState.host === this.peer.id,
+    isHost: this.host === this.peer.id,
   };
 }
 
@@ -66,7 +66,7 @@ export function calculateHostPriority(this: GameServer | any): void {
  * the host position
  */
 export function recalculateHost(this: GameServer): void {
-  const topQueue = this.gameState.hostQueue[0];
+  const topQueue = this.hostQueue[0];
   if (topQueue.isHost === true) { return; }
   if (topQueue.peerID === this.peer.id) {
     this.assumeHost();
@@ -78,9 +78,9 @@ export function recalculateHost(this: GameServer): void {
  * @param peerID The id of the user to remove from the host queue
  */
 export function removeFromHostQueue(this: GameServer, peerID: string, recalculate?: boolean): void {
-  this.gameState.hostQueue.forEach((hostItem: HostPQueue, index: number) => {
+  this.hostQueue.forEach((hostItem: HostPriorityQueue, index: number) => {
     if(hostItem.peerID === peerID) {
-      this.gameState.hostQueue.splice(index, 1);
+      this.hostQueue.splice(index, 1);
     }
   });
 

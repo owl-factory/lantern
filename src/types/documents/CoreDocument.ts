@@ -8,11 +8,11 @@ export function getUserID() {
 }
 
 @ObjectType()
-@post<CoreDocument>(`init`, function (doc) {
-  doc.ownedBy = getUserID();
-  doc.createdAt = new Date();
-  doc.createdBy = getUserID();
-})
+// @post<CoreDocument>(`init`, function (doc) {
+//   doc.ownedBy = getUserID();
+//   doc.createdAt = new Date();
+//   doc.createdBy = getUserID();
+// })
 @post<CoreDocument>(`save`, function (doc) {
   doc.updatedAt = new Date();
   doc.createdBy = getUserID();
@@ -46,7 +46,7 @@ export class CoreDocument {
 
   // The date time that this document was created
   @Field({ default: new Date() })
-  @prop({ required: false })
+  @prop()
   createdAt?: Date;
 
   // The id of the user who last updated this document (set on create)

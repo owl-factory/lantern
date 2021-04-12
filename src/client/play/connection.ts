@@ -1,26 +1,25 @@
-import { DispatchEvent, UserProfileDoc } from "types";
+import { Dispatch, DispatchEvent, UserProfileDoc } from "types";
 import Peer, { DataConnection } from "peerjs";
 import { io } from "socket.io-client";
 import { GameServer } from ".";
 
 /**
- * Connects the socket, then peer, then table.
+ * Runs all of the actions required to connect the current player to the socket, peer, and table.
+ * As each depends on the previous action, there are layers to the connection implementation
  * @param campaignID The campaign to connect to
- * TODO - move to a socket-only file?
  */
 export function connect(this: GameServer, campaignID: string, user: UserProfileDoc): void {
+  // TODO - have seperate set functions for these
   this.campaignID = campaignID;
   this.user = user;
 
   this.socket = io(this.socketAddress);
   this.socket.on(`connect`, () => {
     this.log(`Socket successfully connected`);
-    this.isSocketReady = true;
 
     this.peer = new Peer(this.peerID, this.peerConfig);
     this.peer.on(`open`, () => {
       this.log(`Peer successfully connected`);
-      this.isPeerReady = true;
       this.joinTable();
     });
   });
@@ -35,14 +34,15 @@ export function connectToPlayer(this: GameServer, peerID: string): void {
   this.log(`Connecting to new player ${peerID}`);
   this.channels[peerID] = this.peer.connect(peerID);
 
-  this.channels[peerID].on(`data`, (data:any) => {
+  this.channels[peerID].on(`data`, (data: Dispatch) => {
     this.dispatch(data);
   });
 
-  if (this.peer.id !== this.gameState.host) { return; }
+  if (this.peer.id !== this.host) { return; }
+  // TODO - remove the full gamestate!
   this.channels[peerID].on(`open`, () => {
     this.log(`Sending gamestate to new player`);
-    this.channels[peerID].send({content: this.gameState, event: DispatchEvent.FullGamestate});
+    this.channels[peerID].send({content: this.state, event: DispatchEvent.FullGamestate});
   });
 }
 
@@ -67,6 +67,7 @@ export function disconnectFromPlayer(this: GameServer, peerID: string): void {
 export function joinTable(this: GameServer): void {
   this.log(`Joining campaign ${this.campaignID} as ${this.peer.id}`);
   this.socket.emit(`join-table`, this.campaignID, this.peer.id);
+  this.isReady = true;
 
   this.calculateHostPriority();
 

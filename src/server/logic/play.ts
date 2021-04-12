@@ -9,7 +9,7 @@ export class PlayLogic {
    * @param campaignID The id of the campaign to fetch messages for
    */
   public static async fetchMessages(campaignID: string): Promise<MessageDoc[]> {
-    const messages = await MessageModel.find({ campaign: campaignID }).sort({createdAt: 1}).limit(100);
+    const messages = await MessageModel.find({ campaign: campaignID }).limit(100);
     return messages;
   }
 
@@ -22,18 +22,21 @@ export class PlayLogic {
   public static async handleFlush(
     myUserID: string,
     campaignID: string,
+    dispatchTime: Date,
     dispatchHistory: Dispatch[]
   ): Promise<void> {
     const campaign = await CampaignLogic.fetchCampaign(myUserID, campaignID);
     if (!campaign) { throw { code: 404, message: "The campaign was not found." }; }
 
     const messages: MessageDoc[] = [];
+    const serverTime = new Date();
+    const timeDifference = serverTime.valueOf() - dispatchTime.valueOf();
     dispatchHistory.forEach((dispatch: Dispatch) => {
       switch(dispatch.event) {
         case DispatchEvent.Message:
-          const message = dispatch.content;
+          const message = dispatch.content as MessageDoc;
 
-          message.createdAt = new Date();
+          message.createdAt = new Date((new Date(message.createdAt as Date | string)).valueOf() + timeDifference);
           message.updatedAt = message.createdAt;
           message.createdBy = myUserID;
           message.updatedBy = message.createdBy;

@@ -1,0 +1,2 @@
+# Client Folder
+The Client folder is specifically for any components (?) and logic that may be run ONLY on the client, due to the differences between a web and node environment (like the `window` object, for example).
