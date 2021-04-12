@@ -18,10 +18,11 @@ export default async function SignUp(req: NextApiRequest, res: NextApiResponse):
       {
         credentials: { password },
         data: {
-          email,
           username,
+          email,
           displayName: "",
           icon: "",
+          roles: [],
         },
       }
     )

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { CtxReq, getSession } from "./auth";
 import { isClient, isServer } from "./tools";
 
-const publicSecret = "fnAEF_EGFzACBNZOJzWRFP3jqzPcjFTHtO3lVK-d";
+const publicSecret = "fnAEGnar9QACAufk-juLojDn9IRNNa_HgdGHGZX6";
 let client: Client;
 
 /**

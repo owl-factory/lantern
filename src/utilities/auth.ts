@@ -4,7 +4,8 @@ import Router from "next/router";
 import { destroyCookie, parseCookies, setCookie } from "nookies";
 import { useEffect, useState } from "react";
 import { Session } from "types";
-import { getClient, q, updateClient } from "./db";
+import { getClient, updateClient } from "./db";
+import { query as q } from "faunadb";
 
 export function signUp(username: string, email: string, password: string): void {
   fetch("/api/auth/signup", {
