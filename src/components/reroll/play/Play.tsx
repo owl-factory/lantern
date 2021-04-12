@@ -8,12 +8,11 @@ import { rest } from "utilities";
 import { useRouter } from "next/router";
 
 const gameServer = new GameServer();
-gameServer.gameState = {
+gameServer.state = {
   count: 0,
+  entities: {},
   messages: [],
   activePlayers: 0,
-  hostQueue: [],
-  dispatchHistory: [],
 };
 
 /**
@@ -23,14 +22,8 @@ export const Play = observer(() => {
   const router = useRouter();
 
   function test() {
-    const dispatch = { event: DispatchEvent.Test, content: gameServer.gameState.count + 1 };
+    const dispatch = { event: DispatchEvent.Test, content: gameServer.state.count + 1 };
     gameServer.sendToAll(dispatch);
-  }
-
-  function printQueue() {
-    gameServer.gameState.hostQueue.forEach((hostItem: any) => {
-      console.log(hostItem.peerID)
-    });
   }
 
   function flushDispatch() {
@@ -42,7 +35,13 @@ export const Play = observer(() => {
     rest.get(`/api/play/${router.query.id}`)
     .then((res: any) => {
       if (res.success) {
-        gameServer.gameState.messages = res.data.messages;
+        gameServer.state.messages = res.data.messages;
+        gameServer.state.entities = {
+          "123": {
+            name: "Cyri Garneaux",
+          }
+        }
+        console.log(gameServer.state.messages)
         gameServer.connect(res.data.campaign._id as string, res.data.userProfile);
 
       }
@@ -54,11 +53,11 @@ export const Play = observer(() => {
   return (
     <div>
       Hello!<br/>
-      Game ID: {gameServer.peer ? gameServer.peer.id : "..."}<br/>
+      Game ID: {gameServer.getPeerID()}<br/>
 
-      Count: {gameServer.gameState.count}
+      Count: {gameServer.state.count}
       <button onClick={test}>Test</button>
-      <button onClick={printQueue}>See Queue</button>
+      {/* <button onClick={printQueue}>See Queue</button> */}
       <button onClick={flushDispatch}>Flush Dispatch</button>
       <Chat server={gameServer} />
     </div>

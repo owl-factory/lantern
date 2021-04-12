@@ -1,8 +1,7 @@
-import { Dispatch, DispatchEvent, UserProfileDoc } from "types";
+import { Dispatch, DispatchEvent, GameState, HostPriorityQueue, UserProfileDoc } from "types";
 import { makeAutoObservable } from "mobx";
 import Peer, { DataConnection } from "peerjs";
 import { Socket } from "socket.io-client";
-import { MessageType } from "../../components/reroll/play/Chat";
 import * as connection from "./connection";
 import * as dispatch from "./dispatch";
 import * as host from "./host";
@@ -10,55 +9,36 @@ import * as logging from "./logging";
 import * as message from "./message";
 import * as send from "./send";
 import * as socketEvents from "./socketEvents";
-import { MessageModel } from "server";
-
-export interface HostPQueue {
-  peerID: string;
-  isHost: boolean;
-  priority: number;
-}
-
-// The state used for tracking the whole of the game
-export interface GameState {
-  host?: string;
-  hostQueue: HostPQueue[];
-  dispatchHistory: Dispatch[];
-  activePlayers: number;
-  count: number;
-  messages: MessageType[];
-}
 
 /**
  * All of the game server functionality
  */
 export class GameServer {
-  debug = true; // True to post debug information
+  protected debug = true; // True to post debug information
 
-  peerID?: string; // This user's starting peer ID
-  peerConfig: any; // The configuration for connecting to the peer.
+  protected peerID?: string; // This connection's peer ID
+  protected peerConfig: any; // The configuration for connecting to the peer.
 
-  socketAddress: string; // The socket connection address
+  protected socketAddress: string; // The socket connection address
 
-  peer!: Peer; // The peer object
-  socket!: Socket; // The socket object
+  protected peer!: Peer; // The peer object
+  protected socket!: Socket; // The socket object
 
-  isPeerReady = false; // If the peer has been connected
-  isSocketReady = false; // If the socket has been connected
+  public isReady = false;
 
-  campaignID!: string; // The ID of the table server to connect to
-  user!: UserProfileDoc;
+  protected host?: string; // The peer ID of the current host
+  protected hostPriority?: HostPriorityQueue; // The priority of this connection to assume host
+  protected hostQueue: HostPriorityQueue[] = [];
+
+  protected dispatchHistory: Dispatch[] = [];
+
+  protected campaignID!: string; // The ID of the table server to connect to
+  public user!: UserProfileDoc;
 
   // The peerID indexed object containing the channels connected to them
-  channels: Record<string, DataConnection> = {};
+  protected channels: Record<string, DataConnection> = {};
 
-  gameState!: GameState; // The React-updated game state that refreshes the DOM
-
-  // The host priority of this user and their priority to host
-  hostPriority!: HostPQueue;
-
-  // The time in milliseconds difference between here and the server.
-  // Added to the time before being sent to simulate 'server time'.
-  timeWiggle = 0;
+  state!: GameState; // The React-updated game state that refreshes the DOM
 
   /**
    * Sets the default information for the socket and peer connection
@@ -80,11 +60,6 @@ export class GameServer {
   protected disconnectFromPlayer = connection.disconnectFromPlayer;
   protected joinTable = connection.joinTable;
 
-  // DISPATCH FUNCTIONALITY
-  public dispatch = dispatch.dispatch;
-  public attemptFlush = dispatch.attemptFlush;
-  public cleanDispatchHistory = dispatch.cleanDispatchHistory;
-
   // HOST FUNCTIONALITY
   protected addToHostQueue = host.addToHostQueue;
   protected assumeHost = host.assumeHost;
@@ -92,13 +67,19 @@ export class GameServer {
   protected removeFromHostQueue = host.removeFromHostQueue;
   protected recalculateHost = host.recalculateHost;
 
+  // DISPATCH FUNCTIONALITY
+  public dispatch = dispatch.dispatch;
+  public attemptFlush = dispatch.attemptFlush;
+  public cleanDispatchHistory = dispatch.cleanDispatchHistory;
+
+
   /**
    * Checks if the current player is ready.
    * Metrics used are the active players less one is equal to the number of active
    * channels
    */
   protected checkIfReady(): void {
-    if (Object.keys(this.channels).length === (this.gameState.activePlayers - 1)) {
+    if (Object.keys(this.channels).length === (this.state.activePlayers - 1)) {
       this.onReady();
     }
   }
@@ -134,4 +115,9 @@ export class GameServer {
 
   // MESSAGE FUNCTIONALITY
   public fireTextMessage = message.fireTextMessage;
+
+  public getPeerID(): string | undefined {
+    if (!this.peer) { return undefined; }
+    return this.peer.id;
+  }
 }

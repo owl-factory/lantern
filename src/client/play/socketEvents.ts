@@ -8,11 +8,11 @@ import { GameServer } from "./GameServer";
  */
 export function iJoined(this: GameServer, playerCount: number): void {
   this.log(`Joined table. ${playerCount - 1} other players present`);
-  this.gameState.activePlayers = playerCount;
+  this.state.activePlayers = playerCount;
 
   // Assume host if we have one player and we are not currently the host
   // For example, if we have just joined
-  if (playerCount === 1 && this.gameState.host !== this.peer.id) {
+  if (playerCount === 1 && this.host !== this.peer.id) {
     this.assumeHost();
   }
   this.checkIfReady();
@@ -27,7 +27,7 @@ export function iJoined(this: GameServer, playerCount: number): void {
  */
 export function playerJoined(this: GameServer, peerID: string, playerCount: number): void {
   this.log(`Player count: ${playerCount}`);
-  this.gameState.activePlayers = playerCount;
+  this.state.activePlayers = playerCount;
   this.connectToPlayer(peerID);
 }
 
@@ -38,8 +38,8 @@ export function playerJoined(this: GameServer, peerID: string, playerCount: numb
  */
 export function newHost(this: GameServer, peerID: string): void {
   this.log(`${peerID} is the new host`);
-  const isLosingHost = this.gameState.host === this.peer.id;
-  this.gameState.host = peerID;
+  const isLosingHost = this.host === this.peer.id;
+  this.host = peerID;
 
   if (isLosingHost) {
     this.calculateHostPriority();
@@ -64,7 +64,7 @@ export function playerReady(this: GameServer, peerID: string): void {
  * @param playerCount The number of players now playing the game
  */
 export function playerDisconnected(this: GameServer, peerID: string, playerCount: number): void {
-  this.gameState.activePlayers = playerCount;
+  this.state.activePlayers = playerCount;
   this.removeFromHostQueue(peerID, true);
   this.disconnectFromPlayer(peerID);
 }

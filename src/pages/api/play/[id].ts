@@ -11,6 +11,7 @@ async function getPlay(this: HTTPHandler, req: NextApiRequest) {
   }
   const userProfile = await UserProfileLogic.fetchProfile(user._id);
   const messages = await PlayLogic.fetchMessages(campaign._id as string);
+  console.log(messages)
 
   this.returnSuccess({ campaign, messages, userProfile });
 }
@@ -18,7 +19,7 @@ async function getPlay(this: HTTPHandler, req: NextApiRequest) {
 async function patchGameState(this: HTTPHandler, req: NextApiRequest) {
   const user = await authenticateUser(this);
   if (!user || !user._id) { return; }
-  PlayLogic.handleFlush(user._id, req.query.id as string, req.body.dispatchHistory);
+  PlayLogic.handleFlush(user._id, req.query.id as string, new Date(req.body.dispatchTime), req.body.dispatchHistory);
   this.returnSuccess({});
 }
 
