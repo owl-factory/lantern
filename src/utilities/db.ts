@@ -1,5 +1,7 @@
 import { Client, ExprArg, QueryOptions, query } from "faunadb";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { CtxReq, getSession } from "./auth";
+import { isClient, isServer } from "./tools";
 
 const publicSecret = "fnAEF_EGFzACBNZOJzWRFP3jqzPcjFTHtO3lVK-d";
 let client: Client;
@@ -11,7 +13,7 @@ export const q = query;
  * any document. Made for use on the server and requires a FAUNA_SERVER_KEY enviornment variable
  */
 export function getServerClient(): Client {
-    if (typeof(window) !== "undefined" || !process.env.FAUNA_SERVER_KEY) {
+    if (isClient || !process.env.FAUNA_SERVER_KEY) {
         throw new Error("Not in a valid server enviornment.");
     }
     return new Client({secret: process.env.FAUNA_SERVER_KEY});
@@ -20,15 +22,21 @@ export function getServerClient(): Client {
 /**
  * Get a fauna client using a secret stored in a cookie or with a default public secret.
  */
-export function getClient(): Client {
-    if (typeof(window) === "undefined") {
-        return new Client({ secret: publicSecret });
+export function getClient(ctx?: CtxReq): Client {
+    if (isServer) {
+        const session = getSession(ctx);
+        return new Client({ secret: session?.secret || publicSecret });
     } else {
         if (!client) {
-            client = new Client({ secret: publicSecret });
+            const session = getSession();
+            client = new Client({ secret: session?.secret || publicSecret });
         }
         return client;
     }
+}
+
+export function updateClient(newSecret?: string): void {
+    client = new Client({ secret: newSecret || publicSecret });
 }
 
 type UseQueryType = [ object|undefined, boolean, Error | undefined ];
