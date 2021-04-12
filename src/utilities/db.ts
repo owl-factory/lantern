@@ -1,12 +1,10 @@
-import { Client, ExprArg, QueryOptions, query } from "faunadb";
+import { Client, ExprArg, QueryOptions } from "faunadb";
 import { useEffect, useState } from "react";
 import { CtxReq, getSession } from "./auth";
 import { isClient, isServer } from "./tools";
 
 const publicSecret = "fnAEF_EGFzACBNZOJzWRFP3jqzPcjFTHtO3lVK-d";
 let client: Client;
-
-export const q = query;
 
 /**
  * Get a fauna client with unrestricted permissions to read, write, create and delete
