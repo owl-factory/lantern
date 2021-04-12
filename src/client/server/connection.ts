@@ -1,14 +1,16 @@
+import { DispatchEvent, UserProfileDoc } from "types";
 import Peer, { DataConnection } from "peerjs";
 import { io } from "socket.io-client";
 import { GameServer } from ".";
 
 /**
  * Connects the socket, then peer, then table.
- * @param tableID The table to connect to
+ * @param campaignID The campaign to connect to
  * TODO - move to a socket-only file?
  */
-export function connect(this: GameServer, tableID: string): void {
-  this.tableID = tableID;
+export function connect(this: GameServer, campaignID: string, user: UserProfileDoc): void {
+  this.campaignID = campaignID;
+  this.user = user;
 
   this.socket = io(this.socketAddress);
   this.socket.on(`connect`, () => {
@@ -40,7 +42,7 @@ export function connectToPlayer(this: GameServer, peerID: string): void {
   if (this.peer.id !== this.gameState.host) { return; }
   this.channels[peerID].on(`open`, () => {
     this.log(`Sending gamestate to new player`);
-    this.channels[peerID].send({data: this.gameState, type: "full gamestate"});
+    this.channels[peerID].send({content: this.gameState, event: DispatchEvent.FullGamestate});
   });
 }
 
@@ -63,8 +65,8 @@ export function disconnectFromPlayer(this: GameServer, peerID: string): void {
  * TODO - check if we need `checkIfReady` checks
  */
 export function joinTable(this: GameServer): void {
-  this.log(`Joining table ${this.tableID} as ${this.peer.id}`);
-  this.socket.emit(`join-table`, this.tableID, this.peer.id);
+  this.log(`Joining campaign ${this.campaignID} as ${this.peer.id}`);
+  this.socket.emit(`join-table`, this.campaignID, this.peer.id);
 
   this.calculateHostPriority();
 

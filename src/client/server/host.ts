@@ -1,3 +1,4 @@
+import { DispatchEvent } from "types";
 import { GameServer, HostPQueue } from "./GameServer";
 
 /**
@@ -39,11 +40,11 @@ export function addToHostQueue(this: GameServer, newHostItem: HostPQueue): void 
  */
 export function assumeHost(this: GameServer): void {
   this.log(`Look at me. I'm the host now`);
-  this.socket.emit(`assume-host`, this.tableID, this.peer.id);
+  this.socket.emit(`assume-host`, this.campaignID, this.peer.id);
   this.gameState.host = this.peer.id;
   // Delete previous host queue
   this.calculateHostPriority();
-  this.dispatch({ type: "push host queue", data: this.hostPriority });
+  this.dispatch({ event: DispatchEvent.PushHostQueue, content: this.hostPriority });
 }
 
 /**

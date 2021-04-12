@@ -39,14 +39,14 @@ export class TableResolver extends CoreResolver {
         ...input,
         players: [userID],
       }, ctx);
-      tableID = table._id;
+      tableID = table._id as string;
 
       const campaign = await CampaignResolver.createOne({
         ...input,
         table: table,
         players: [userID],
       }, ctx);
-      campaignID = campaign._id;
+      campaignID = campaign._id as string;
 
       await super.updateOne(tableID, {activeCampaign: campaignID, campaigns: [campaignID]})
 

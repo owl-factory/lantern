@@ -1,3 +1,4 @@
+import { DispatchEvent } from "types";
 import { GameServer } from "./GameServer";
 
 /**
@@ -42,7 +43,7 @@ export function newHost(this: GameServer, peerID: string): void {
 
   if (isLosingHost) {
     this.calculateHostPriority();
-    this.dispatch({ type: "push host queue", data: this.hostPriority });
+    this.dispatch({ event: DispatchEvent.PushHostQueue, content: this.hostPriority });
   }
 }
 

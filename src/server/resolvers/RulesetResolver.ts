@@ -47,7 +47,7 @@ export class RulesetResolver extends CoreResolver {
     try {
       // Create ruleset
       const ruleset = await super.createOne(input, ctx);
-      rulesetID = ruleset._id;
+      rulesetID = ruleset._id as string;
 
       // Create default module
       const module = await ModuleResolver.createOne({

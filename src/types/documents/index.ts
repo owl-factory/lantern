@@ -5,6 +5,7 @@ export * from "./CommonContentType";
 export * from "./Content";
 export * from "./ContentType";
 export * from "./Entity";
+export * from "./Message";
 export * from "./Module";
 export * from "./Organization";
 export * from "./Ruleset";
@@ -17,6 +18,7 @@ import { Content } from "./Content";
 import { ContentTypeDoc } from "./ContentType";
 import { Entity } from "./Entity";
 import { CoreDocument } from "./CoreDocument";
+import { MessageDoc } from "./Message";
 import { ModuleDoc } from "./Module";
 import { OrganizationDoc } from "./Organization";
 import { RulesetDoc } from "./Ruleset";
@@ -33,6 +35,7 @@ export type GenericDocumentType = (
   ContentTypeDoc |
   Entity |
   CoreDocument |
+  MessageDoc |
   ModuleDoc |
   OrganizationDoc |
   RulesetDoc |

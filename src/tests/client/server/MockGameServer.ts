@@ -38,6 +38,7 @@ export class MockGameServer {
       messages: [],
       host: undefined,
       hostQueue: [],
+      dispatchHistory: [],
     };
 
     this.peer = { id: "test-id" };

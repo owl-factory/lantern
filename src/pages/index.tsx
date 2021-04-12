@@ -6,7 +6,7 @@ import { Button, Col, Row } from "react-bootstrap";
 import { signOut, useSession } from "next-auth/client";
 import { Input, Page } from "components";
 import { rest } from "utilities";
-import { CampaignDoc, ServerResponse } from "types";
+import { CampaignDoc } from "types";
 import { Form, Formik } from "formik";
 
 /**
@@ -34,12 +34,16 @@ function RecentGames(props: any) {
   const campaigns: JSX.Element[] = [];
   props.campaigns.forEach((campaign: CampaignDoc) => {
     campaigns.push(
-      <>
+      <div key={campaign._id}>
         <h5>{campaign.name}</h5>
         <Link href={`/campaigns/${campaign._id}`}>
           Visit
         </Link>
-      </>
+        &nbsp;
+        <Link href={`/play/${campaign._id}`}>
+          Play
+        </Link>
+      </div>
     );
   });
 
@@ -47,7 +51,7 @@ function RecentGames(props: any) {
     <div>
       <h4>
         Recent Games
-        <Link href="/tables/new" passHref>
+        <Link href="/campaigns/new" passHref>
           <Button className="float-end">
             Create New Game
           </Button>
@@ -90,17 +94,15 @@ function UserView() {
   React.useEffect(() => {
     rest.get(`/api/pages`)
     .then((res: any) => {
-      console.log(res.data)
       setMe(res.data.me);
       setCampaigns(res.data.campaigns);
-      console.log(res);
     });
   }, []);
 
   return (
     <div>
       <h3>Welcome back {me.name}!</h3>
-      
+
       <Button onClick={() => signOut()}>Log Out</Button>
       {/* Recent Games */}
       <RecentGames campaigns={campaigns}/>

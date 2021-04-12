@@ -1,14 +1,11 @@
 import React from "react";
-import { TableDoc, UserProfileDoc } from "../../../types";
+import { DispatchEvent } from "types";
 import { Chat } from "./Chat";
 
-import { GameServer } from "../../../client";
+import { GameServer } from "client";
 import { observer } from "mobx-react-lite";
-
-interface PlayProps {
-  table: TableDoc;
-  user: UserProfileDoc;
-}
+import { rest } from "utilities";
+import { useRouter } from "next/router";
 
 const gameServer = new GameServer();
 gameServer.gameState = {
@@ -16,17 +13,18 @@ gameServer.gameState = {
   messages: [],
   activePlayers: 0,
   hostQueue: [],
+  dispatchHistory: [],
 };
 
 /**
  * Renders out the playspace and server functionality
  */
-export const Play = observer((props: PlayProps) => {
+export const Play = observer(() => {
+  const router = useRouter();
 
   function test() {
-    const dispatch = { type: "set count", data: gameServer.gameState.count + 1 };
+    const dispatch = { event: DispatchEvent.Test, content: gameServer.gameState.count + 1 };
     gameServer.sendToAll(dispatch);
-    gameServer.dispatch(dispatch);
   }
 
   function printQueue() {
@@ -35,9 +33,22 @@ export const Play = observer((props: PlayProps) => {
     });
   }
 
+  function flushDispatch() {
+    gameServer.attemptFlush();
+  }
+
   // ON LOAD
   React.useEffect(() => {
-    gameServer.connect(props.table._id);
+    rest.get(`/api/play/${router.query.id}`)
+    .then((res: any) => {
+      if (res.success) {
+        gameServer.gameState.messages = res.data.messages;
+        gameServer.connect(res.data.campaign._id as string, res.data.userProfile);
+
+      }
+    });
+
+    // TODO - see if we can't remove that
   }, []);
 
   return (
@@ -48,6 +59,7 @@ export const Play = observer((props: PlayProps) => {
       Count: {gameServer.gameState.count}
       <button onClick={test}>Test</button>
       <button onClick={printQueue}>See Queue</button>
+      <button onClick={flushDispatch}>Flush Dispatch</button>
       <Chat server={gameServer} />
     </div>
   );
