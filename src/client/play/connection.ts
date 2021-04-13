@@ -22,8 +22,37 @@ export function connect(this: GameServer, campaignID: string, user: UserProfileD
       this.log(`Peer successfully connected`);
       this.joinTable();
     });
+
+    // Handles errors with the peer server and connection
+    // TODO - better handling?
+    this.peer.on(`error`, (err: Record<string, unknown>) => {
+      switch(err.type) {
+        case `browser-incompatible`:
+        case `invalid-id`:
+        case `invalid-key`:
+        case `ssl-incompatible`:
+        case `server-error`:
+        case `socket-error`:
+        case `socket-closed`:
+          this.fatalError = `An error with the Peer server has occurred.`;
+          // eslint-disable-next-line no-console
+          console.error(err);
+          return;
+        default:
+          // eslint-disable-next-line no-console
+          console.warn(err);
+      }
+    });
   });
-  // TODO - add error handling
+
+  // Handles issues with the socket
+  this.socket.on(`connect_error`, () => {
+    this.fatalError = `The socket failed to connect to the server.`;
+  });
+
+  this.socket.on(`connect_timeout`, () => {
+    this.fatalError = `The socket failed to connect to the server within the timeout period.`;
+  });
 }
 
 /**
@@ -35,14 +64,21 @@ export function connectToPlayer(this: GameServer, peerID: string): void {
   this.channels[peerID] = this.peer.connect(peerID);
 
   this.channels[peerID].on(`data`, (data: Dispatch) => {
-    this.dispatch(data);
+    this.handleDispatch(data);
   });
 
   if (this.peer.id !== this.host) { return; }
   // TODO - remove the full gamestate!
   this.channels[peerID].on(`open`, () => {
     this.log(`Sending gamestate to new player`);
-    this.channels[peerID].send({content: this.state, event: DispatchEvent.FullGamestate});
+    this.dispatchToOne(peerID, {
+      event: DispatchEvent.DispatchHistory,
+      content: {
+        hostDispatchedAt: new Date(),
+        history: this.dispatchHistory,
+      },
+    }, false);
+    // this.channels[peerID].send({content: this.state, event: DispatchEvent.FullGamestate});
   });
 }
 
@@ -60,8 +96,6 @@ export function disconnectFromPlayer(this: GameServer, peerID: string): void {
 /**
  * Handles joining a table and establishing all functionality required for
  * interacting within this server
- * TODO - split this function up such that the socket/peer ON events have their
- * own functions :)
  * TODO - check if we need `checkIfReady` checks
  */
 export function joinTable(this: GameServer): void {
@@ -97,9 +131,9 @@ export function joinTable(this: GameServer): void {
     this.checkIfReady();
 
     // Handles receiving data through the channel
-    this.channels[channel.peer].on(`data`, (data:any) => {
+    this.channels[channel.peer].on(`data`, (data: Dispatch) => {
       this.log(this.channels);
-      this.dispatch(data);
+      this.handleDispatch(data);
     });
   });
 

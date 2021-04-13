@@ -7,7 +7,6 @@ import * as dispatch from "./dispatch";
 import * as host from "./host";
 import * as logging from "./logging";
 import * as message from "./message";
-import * as send from "./send";
 import * as socketEvents from "./socketEvents";
 
 /**
@@ -17,7 +16,7 @@ export class GameServer {
   protected debug = true; // True to post debug information
 
   protected peerID?: string; // This connection's peer ID
-  protected peerConfig: any; // The configuration for connecting to the peer.
+  protected peerConfig: Peer.PeerJSOption; // The configuration for connecting to the peer.
 
   protected socketAddress: string; // The socket connection address
 
@@ -25,6 +24,7 @@ export class GameServer {
   protected socket!: Socket; // The socket object
 
   public isReady = false;
+  public fatalError = ""; // Indicates if this play session has had a fatal error.
 
   protected host?: string; // The peer ID of the current host
   protected hostPriority?: HostPriorityQueue; // The priority of this connection to assume host
@@ -68,9 +68,13 @@ export class GameServer {
   protected recalculateHost = host.recalculateHost;
 
   // DISPATCH FUNCTIONALITY
-  public dispatch = dispatch.dispatch;
-  public attemptFlush = dispatch.attemptFlush;
-  public cleanDispatchHistory = dispatch.cleanDispatchHistory;
+  protected buildDispatch = dispatch.buildDispatch;
+  public dispatchToAll = dispatch.dispatchToAll;
+  public dispatchToOne = dispatch.dispatchToOne;
+  protected receiveDispatchHistory = dispatch.receiveDispatchHistory;
+  public handleDispatch = dispatch.handleDispatch;
+  public beginDispatchFlush = dispatch.beginDispatchFlush;
+  public flushDispatchHistory = dispatch.flushDispatchHistory;
 
 
   /**
@@ -97,7 +101,7 @@ export class GameServer {
    * from the host
    */
   protected onLoad(): void {
-    this.sendToAll({ event: DispatchEvent.PushHostQueue, content: this.hostPriority });
+    this.dispatchToAll({ event: DispatchEvent.HostQueueItem, content: this.hostPriority });
   }
 
   // LOGGING
@@ -109,9 +113,6 @@ export class GameServer {
   protected playerDisconnected = socketEvents.playerDisconnected;
   protected playerJoined = socketEvents.playerJoined;
   protected playerReady = socketEvents.playerReady;
-
-  // SEND FUNCTIONALITY
-  public sendToAll = send.sendToAll;
 
   // MESSAGE FUNCTIONALITY
   public fireTextMessage = message.fireTextMessage;

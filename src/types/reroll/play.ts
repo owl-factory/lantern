@@ -5,14 +5,21 @@ import { Entity, MessageDoc } from "types/documents";
 // TODO - review
 export enum DispatchEvent {
   // Game Handlers
-  PushHostQueue,
-  FullGamestate, // TODO - remove in the future
-  CatchUp,
+  HostQueueItem,
+  DispatchHistory,
   CleanHistory,
 
   // User Actions
-  Test,
+  Test, // Testing Purposes, remove
+
+  // Chat Actions
   Message,
+  Roll
+}
+
+export interface DispatchHistory {
+  hostDispatchedAt: string | Date;
+  history: Dispatch[];
 }
 
 // The base dispatch object. Meant to be extended for working with a specific dispatch event
@@ -25,13 +32,18 @@ interface BaseDispatch {
   dispatchedAt?: Date;
 }
 
+export interface HistoricalDispatch extends BaseDispatch {
+  event: DispatchEvent.DispatchHistory;
+  content: DispatchHistory;
+}
+
 export interface MessageDispatch extends BaseDispatch {
   event: DispatchEvent.Message;
   content: MessageDoc;
 }
 
 // Indicates the type of action we're taking on a dispatch event
-export type Dispatch = BaseDispatch | MessageDispatch
+export type Dispatch = BaseDispatch | HistoricalDispatch | MessageDispatch
 
 /**
  * Describes an item in the Priority Queue for a host

@@ -1,56 +1,125 @@
-import { Dispatch, DispatchEvent, GameState, HostPriorityQueue, MessageDispatch, MessageDoc } from "types";
+import { Dispatch, DispatchEvent, GameState, HistoricalDispatch, HostPriorityQueue, MessageDispatch, MessageDoc } from "types";
 import { rest } from "utilities";
 import { GameServer } from ".";
+
+export interface RawDispatch {
+  fuid?: string;
+  event: DispatchEvent;
+  content: unknown;
+  dispatchedAt?: Date;
+}
+
+/**
+ * Builds a dispatch and validates it.
+ * @param rawDispatch The raw dispatch to validate and prepare
+ */
+export function buildDispatch(this: GameServer, rawDispatch: RawDispatch): Dispatch {
+  if (!rawDispatch.dispatchedAt) { rawDispatch.dispatchedAt = new Date(); }
+  if (!rawDispatch.fuid) { rawDispatch.fuid = (Math.random() * Number.MAX_SAFE_INTEGER).toString(); }
+  return rawDispatch;
+}
+
+/**
+ * Dispatches a dispatch object to all players
+ * @param rawDispatch The raw dispatch to process before sending
+ * @param localDispatch True if this dispatch should be run locally
+ */
+export function dispatchToAll(this: GameServer, rawDispatch: RawDispatch, localDispatch = true): void {
+  const dispatch = this.buildDispatch(rawDispatch);
+  const keys = Object.keys(this.channels);
+  keys.forEach((key: string) => {
+    this.dispatchToOne(key, dispatch, false);
+  });
+  if (localDispatch) { this.handleDispatch(dispatch); }
+}
+
+/**
+ * Dispatches an object to a single player
+ * @param targetPeer The target peer ID to send the object to
+ * @param rawDispatch The raw dispatch to process before sending
+ * @param localDispatch Truthy if this dispatch should be run locally
+ */
+export function dispatchToOne(
+  this: GameServer,
+  targetPeer: string,
+  rawDispatch: RawDispatch,
+  localDispatch = true
+): void {
+  const dispatch = this.buildDispatch(rawDispatch);
+  const channel = this.channels[targetPeer];
+  if (!channel) { console.error(`The given peer ID was not found`); return; }
+  channel.send(dispatch);
+  if (localDispatch) { this.handleDispatch(dispatch); }
+}
 
 /**
 * Updates the game state from the given action
 * @param state The previous game state
 * @param action The action taken with data and type
 */
-export function dispatch(this: GameServer, newDispatch: Dispatch): void {
-  let addToHistory = true;
-  newDispatch.dispatchedAt = new Date();
-  switch (newDispatch.event) {
-    case DispatchEvent.PushHostQueue:
-      addToHistory = false;
-      this.addToHostQueue(newDispatch.content as HostPriorityQueue);
-      break;
-    case DispatchEvent.CleanHistory:
-      addToHistory = false;
-      this.cleanDispatchHistory(newDispatch.content as string[]);
-      break;
-    case DispatchEvent.FullGamestate:
-      addToHistory = false;
-      this.state = newDispatch.content as GameState;
-      this.onLoad();
+export function handleDispatch(this: GameServer, dispatch: Dispatch): void {
+  dispatch.dispatchedAt = new Date();
+  switch (dispatch.event) {
+    // SERVER MANAGEMENT
+    // Post Host Queue
+    case DispatchEvent.HostQueueItem:
+      this.addToHostQueue(dispatch.content as HostPriorityQueue);
       break;
 
+    case DispatchEvent.DispatchHistory:
+      this.receiveDispatchHistory(dispatch as HistoricalDispatch);
+      break;
+
+    case DispatchEvent.CleanHistory:
+      this.flushDispatchHistory(dispatch.content as string[]);
+      break;
+
+    // MESSAGES
+
     case DispatchEvent.Test:
-      this.state.count = newDispatch.content as number;
+      this.state.count = dispatch.content as number;
       break;
     case DispatchEvent.Message:
-      if (!(newDispatch.content as MessageDoc).createdAt) {
-        (newDispatch.content as MessageDoc).createdAt = newDispatch.dispatchedAt;
-      }
-      this.state.messages.push(newDispatch.content as MessageDoc);
+      // if (!(dispatch.content as MessageDoc).createdAt) {
+        (dispatch.content as MessageDoc).createdAt = new Date(dispatch.dispatchedAt);
+      // }
+      this.state.messages.push(dispatch.content as MessageDoc);
+      this.dispatchHistory.push(dispatch);
       break;
     default:
       // eslint-disable-next-line no-console
-      console.error(newDispatch);
-      console.error(`Dispatch event '${newDispatch.event}' is invalid`);
-      addToHistory = false;
+      console.error(dispatch);
+      // eslint-disable-next-line no-console
+      console.error(`Dispatch event '${dispatch.event}' is invalid`);
       break;
   }
+}
 
-  if ( addToHistory ) { this.dispatchHistory.push(newDispatch); }
+/**
+ * Receieves and processes dispatch history from the host
+ * @param dispatch The historical dispatch data
+ */
+export function receiveDispatchHistory(this: GameServer, dispatch: HistoricalDispatch): void {
+  console.log(`Receiving Dispatch History`)
+  console.log(dispatch);
+  dispatch.content.hostDispatchedAt = new Date(dispatch.content.hostDispatchedAt);
+  const serverDifference = dispatch.content.hostDispatchedAt.valueOf() - (dispatch.dispatchedAt as Date).valueOf();
+
+  dispatch.content.history.forEach((dispatchItem: Dispatch) => {
+    dispatchItem.dispatchedAt = new Date(
+      new Date(dispatchItem.dispatchedAt as Date | string).valueOf() + serverDifference
+    );
+    this.handleDispatch(dispatchItem);
+  });
 }
 
 
 /**
  * The function that kicks off the dispatch flush
  */
-export function attemptFlush(this: GameServer): void {
-  console.log("Attempting flush")
+export function beginDispatchFlush(this: GameServer): void {
+  this.log("Attempting dispatch history flush");
+
   // Require this to be the host that begins
   if (this.host !== this.peer.id) { return; }
   const flushedFUIDs: string[] = [];
@@ -67,17 +136,13 @@ export function attemptFlush(this: GameServer): void {
     }
   ).then((res: any) => {
     // Failure on the backends
-    console.log(res);
     if (!res.success) { return; }
     for(let i = 0; i < length; i++) {
       const dispatchItem = this.dispatchHistory[i];
       if (!dispatchItem.fuid) { continue; }
       flushedFUIDs.push(dispatchItem.fuid);
     }
-    this.sendToAll({event: DispatchEvent.CleanHistory, content: flushedFUIDs});
-  })
-  .catch((err: any) => {
-    console.log(err);
+    this.dispatchToAll({event: DispatchEvent.CleanHistory, content: flushedFUIDs});
   });
 }
 
@@ -85,7 +150,7 @@ export function attemptFlush(this: GameServer): void {
  * Clears out dispatch history
  * @param flushedFUIDs The fake unqiue ids that we should remove
  */
-export function cleanDispatchHistory(this: GameServer, flushedFUIDs: string[]): void {
+export function flushDispatchHistory(this: GameServer, flushedFUIDs: string[]): void {
   this.log("Flushing!");
   flushedFUIDs.forEach((fuid: string) => {
     for(let i = 0; i < this.dispatchHistory.length; i++) {

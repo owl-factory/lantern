@@ -44,7 +44,7 @@ export function assumeHost(this: GameServer): void {
   this.host = this.peer.id;
   // Delete previous host queue
   this.calculateHostPriority();
-  this.dispatch({ event: DispatchEvent.PushHostQueue, content: this.hostPriority });
+  this.handleDispatch({ event: DispatchEvent.HostQueueItem, content: this.hostPriority });
 }
 
 /**

@@ -129,11 +129,12 @@ export const Chat = observer((props: ChatProps) => {
       <h2>Chat</h2>
       {messageBlock}
       <Formik
-        initialValues={{sendAs: "", content: ""} as MessageDoc}
+        initialValues={{name: "", sendAs: "", content: ""} as MessageDoc}
         onSubmit={(values: MessageDoc) => sendMessage(values)}
       >
       {() => (
         <Form>
+          <Input name="name"/>
           <Select name="sendAs" options={sendAsOptions} includeEmpty={false} valueKey="value"/>
           <TextArea name="content"/>
           <button type="submit">Submit</button>
