@@ -13,7 +13,7 @@ module.exports = {
     "no-case-declarations": 0,
     "no-constant-condition": 0,
     // "no-multiple-empty-lines": { max: 2, maxEOF: 1, maxBOF: 0 },
-    "no-console": 1,
+    "no-console": 0,
     "eqeqeq": 2,
     "@typescript-eslint/no-shadow": 2,
     "semi": 1,

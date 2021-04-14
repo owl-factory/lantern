@@ -39,9 +39,9 @@ export const Play = observer(() => {
         gameServer.state.entities = {
           "123": {
             name: "Cyri Garneaux",
-          }
-        }
-        console.log(gameServer.state.messages)
+          },
+        };
+        console.log(gameServer.state.messages);
         gameServer.connect(res.data.campaign._id as string, res.data.userProfile);
 
       }

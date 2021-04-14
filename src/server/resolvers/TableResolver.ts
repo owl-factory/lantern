@@ -65,7 +65,6 @@ export class TableResolver extends CoreResolver {
     } catch( e ) {
       if (tableID.length === 24) { await super.deleteOne(tableID); }
       if (campaignID.length === 24) { await CampaignResolver.deleteOne(campaignID); }
-      console.log(e)
       throw e;
     }
   }

@@ -1,9 +1,9 @@
-import { Ref, prop, post } from "@typegoose/typegoose";
+import { Ref, post, prop} from "@typegoose/typegoose";
 import { Field, ID, ObjectType } from "src/utilities";
 import { UserProfileDoc } from "types";
 
 // TODO - move this to a different file and make it, you know, work
-export function getUserID() {
+export function getUserID(): string {
   return "1";
 }
 
