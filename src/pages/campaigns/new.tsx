@@ -1,10 +1,14 @@
 import React from "react";
-import { useSession } from "next-auth/client";
 import { Button, Input, Page, Select } from "components";
 import { Form, Formik } from "formik";
 import { rest } from "../../utilities";
 import { CampaignDoc } from "types";
 import { useRouter } from "next/router";
+import { NextPageContext } from "next";
+import { getSession, requireClientLogin } from "utilities/auth";
+import { getClient } from "utilities/db";
+import { query as q } from "faunadb";
+
 
 interface RestResponse<T> {
   success: boolean;
@@ -18,8 +22,8 @@ interface CreateTableResponse {
 
 export default function NewCampaign(props: any): JSX.Element {
   const router = useRouter();
-  const [ session, loading ] = useSession();
-  if (!loading && !session) {
+
+  if (!props.session) {
     return <>You need to be logged in to create a campaign</>;
   }
 
@@ -45,7 +49,7 @@ export default function NewCampaign(props: any): JSX.Element {
           <Input name="name"/>
 
           <label>Ruleset</label>
-          <Select name="rulesetID" options={props.data.initialRulesets} labelKey="name" valueKey="_id"/>
+          <Select name="rulesetID" options={props.rulesets} labelKey="0" valueKey="1"/>
 
           <Button type="submit">Create</Button>
         </Form>
@@ -55,6 +59,19 @@ export default function NewCampaign(props: any): JSX.Element {
   );
 }
 
-NewCampaign.getInitialProps = async () => {
-  return await rest.get("/api/pages/campaigns/new");
+NewCampaign.getInitialProps = async (ctx: NextPageContext) => {
+  const session = getSession(ctx);
+  if (!requireClientLogin(session, ctx)) { return {}; }
+  const client = getClient(ctx);
+  const rulesets = await client.query(
+    q.Paginate(
+      q.Match(
+        q.Index(`rulesets_dropdown`)
+      )
+    )
+  );
+
+  console.log(typeof rulesets.data[0][1])
+
+  return { session, rulesets: rulesets.data };
 };

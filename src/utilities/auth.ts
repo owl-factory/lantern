@@ -83,3 +83,17 @@ export function useSession(): Session | undefined | null {
   }, []);
   return ses;
 }
+
+export function requireClientLogin(session: Session | null, ctx?: NextPageContext) {
+  if (!session) {
+    if (ctx && ctx.res) {
+      ctx.res.writeHead(302, { Location: '/' });
+      ctx.res.end();
+    } else {
+      Router.push("/");
+    }
+    return false;
+  }
+
+  return true;
+}

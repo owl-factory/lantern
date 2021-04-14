@@ -8,6 +8,8 @@ import { rest } from "utilities";
 import { getSession, signOut } from "utilities/auth";
 import { NextPage, NextPageContext } from "next";
 import Router from "next/router";
+import { getClient } from "utilities/db";
+import { query as q } from "faunadb";
 
 interface DashboardProps {
   session?: Session;
@@ -20,6 +22,7 @@ const Dashboard: NextPage<DashboardProps> = ({ session }) => {
 
       <Button onClick={() => signOut()}>Log Out</Button>
       {/* Recent Games */}
+      <RecentGames campaigns={[]}/>
 
       {/* Characters */}
       <h4>My Characters</h4>
@@ -31,9 +34,7 @@ const Dashboard: NextPage<DashboardProps> = ({ session }) => {
 
 Dashboard.getInitialProps = async (ctx: NextPageContext) => {
   const session = getSession(ctx);
-  if (session) {
-    return { session };
-  } else {
+  if (!session) {
     if (ctx.res) {
       ctx.res.writeHead(302, { Location: '/' });
       ctx.res.end();
@@ -42,6 +43,12 @@ Dashboard.getInitialProps = async (ctx: NextPageContext) => {
     }
     return {};
   }
+
+  const client = getClient(ctx);
+  const campaigns = await client.query(q.Paginate(q.Documents(q.Collection(`campaigns`)), { size: 3 }));
+  console.log(campaigns)
+
+  return { session, campaigns: campaigns.data };
 };
 
 export default Dashboard;
@@ -63,7 +70,7 @@ function RecentGames(props: any) {
     <div>
       <h4>
         Recent Games
-        <Link href="/tables/new" passHref>
+        <Link href="/campaigns/new" passHref>
           <Button className="float-end">
             Create New Game
           </Button>
