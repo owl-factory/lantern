@@ -1,13 +1,12 @@
+import { Input, Page } from "components";
+import AuthenticationCard from "components/authetication/AuthenticationCard";
+import { Form, Formik } from "formik";
 import Link from "next/link";
 import React from "react";
-import AuthenticationCard from "../components/authetication/AuthenticationCard";
-
 import { Button, Col, Row } from "react-bootstrap";
-import { signOut, useSession } from "next-auth/client";
-import { Input, Page } from "components";
-import { rest } from "utilities";
 import { CampaignDoc } from "types";
-import { Form, Formik } from "formik";
+import { rest } from "utilities";
+import { signOut, useSession } from "utilities/auth";
 
 /**
  * Renders the index page and one of two subviews
@@ -15,19 +14,22 @@ import { Form, Formik } from "formik";
  * @param props ...
  */
 function Index(): JSX.Element {
-  // Sets the view for the currenly logged in user
-  const [ session, loading ] = useSession();
+  const session = useSession();
 
-  if (loading) return <>Loading...</>;
+  if (session) {
 
-  return (
-    <Page>
-      {session ? (<UserView />) : (<GuestView />)}
-      <h4>
-        News
-      </h4>
-    </Page>
-  );
+    return (
+      <Page>
+        <UserView session={session} />
+      </Page>
+    );
+  } else {
+    return (
+      <Page>
+        <GuestView />
+      </Page>
+    );
+  }
 }
 
 function RecentGames(props: any) {
@@ -74,44 +76,32 @@ function ProfileForm(props: any) {
     >
       {() => (
         <Form>
-          <Input name="name"/>
+          <Input name="name" />
           <Button type="submit">Save</Button>
         </Form>
       )}
     </Formik>
-  )
+  );
 }
 
 /**
  * Renders the view for users who are logged in
  * @param props TODO
  */
-function UserView() {
-  const [ me, setMe ] = React.useState({ name: "" });
-  const [ characters, setCharacters ] = React.useState([]);
-  const [ campaigns, setCampaigns ] = React.useState([]);
-
-  React.useEffect(() => {
-    rest.get(`/api/pages`)
-    .then((res: any) => {
-      setMe(res.data.me);
-      setCampaigns(res.data.campaigns);
-    });
-  }, []);
+function UserView(props: any) {
+  const { user } = props.session;
 
   return (
     <div>
-      <h3>Welcome back {me.name}!</h3>
+      <h3>Welcome back {user.data.username}!</h3>
 
       <Button onClick={() => signOut()}>Log Out</Button>
       {/* Recent Games */}
-      <RecentGames campaigns={campaigns}/>
 
       {/* Characters */}
       <h4>My Characters</h4>
 
       <h4>Temp Profile Stuff</h4>
-      <ProfileForm me={me}/>
     </div>
   );
 }
