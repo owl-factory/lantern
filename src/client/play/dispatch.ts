@@ -63,6 +63,7 @@ export function handleDispatch(this: GameServer, dispatch: Dispatch): void {
     // SERVER MANAGEMENT
     // Post Host Queue
     case DispatchEvent.HostQueueItem:
+      console.log(dispatch)
       this.addToHostQueue(dispatch.content as HostPriorityQueue);
       break;
 
@@ -100,8 +101,6 @@ export function handleDispatch(this: GameServer, dispatch: Dispatch): void {
  * @param dispatch The historical dispatch data
  */
 export function receiveDispatchHistory(this: GameServer, dispatch: HistoricalDispatch): void {
-  console.log(`Receiving Dispatch History`)
-  console.log(dispatch);
   dispatch.content.hostDispatchedAt = new Date(dispatch.content.hostDispatchedAt);
   const serverDifference = dispatch.content.hostDispatchedAt.valueOf() - (dispatch.dispatchedAt as Date).valueOf();
 
@@ -111,6 +110,11 @@ export function receiveDispatchHistory(this: GameServer, dispatch: HistoricalDis
     );
     this.handleDispatch(dispatchItem);
   });
+
+  dispatch.content.hostQueue.forEach((hostQueueItem: HostPriorityQueue) => {
+    this.addToHostQueue(hostQueueItem);
+  });
+  this.onLoad();
 }
 
 

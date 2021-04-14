@@ -20,6 +20,7 @@ export enum DispatchEvent {
 export interface DispatchHistory {
   hostDispatchedAt: string | Date;
   history: Dispatch[];
+  hostQueue: HostPriorityQueue[];
 }
 
 // The base dispatch object. Meant to be extended for working with a specific dispatch event

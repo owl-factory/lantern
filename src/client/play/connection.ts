@@ -74,11 +74,11 @@ export function connectToPlayer(this: GameServer, peerID: string): void {
     this.dispatchToOne(peerID, {
       event: DispatchEvent.DispatchHistory,
       content: {
+        hostQueue: this.hostQueue,
         hostDispatchedAt: new Date(),
         history: this.dispatchHistory,
       },
     }, false);
-    // this.channels[peerID].send({content: this.state, event: DispatchEvent.FullGamestate});
   });
 }
 

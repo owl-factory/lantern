@@ -116,7 +116,7 @@ export const Chat = observer((props: ChatProps) => {
 
   const messageBlock: JSX.Element[] = [];
   const sendAsOptions = [
-    { value: '', label: server.user.name }
+    { value: '', label: server.user.name },
   ];
   console.log(sendAsOptions)
 
