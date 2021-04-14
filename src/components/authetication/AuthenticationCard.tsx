@@ -1,7 +1,7 @@
 import React, { ReactNode, useState } from "react";
 import { Button, Card } from "react-bootstrap";
 import SignInForm from "./SignInForm";
-import SignUpForm from "./SignupForm";
+import SignUpForm from "./SignUpForm";
 
 interface AuthenticationCardProps {
   initialState?: AuthCardSection;

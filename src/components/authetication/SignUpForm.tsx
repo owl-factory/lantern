@@ -32,7 +32,7 @@ export default function SignUpForm(): JSX.Element {
    * @param values The form values
    */
   function submit(values: {username: string, email: string, password: string}) {
-    signUp(values.username, values.email, values.password, (res) => {console.log(res);});
+    signUp(values.username, values.email, values.password);
   }
 
   return (

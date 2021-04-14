@@ -3,7 +3,7 @@ import { Form, Formik } from "formik";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { MessageDoc } from "types";
-import { Input, Select, TextArea } from "../..";
+import { Select, TextArea } from "../..";
 import { GameServer } from "../../../client";
 
 interface ChatProps {
@@ -21,7 +21,7 @@ function MessageTime({ createdAt }: {createdAt?: Date}) {
     hour12: true,
     hour: "numeric",
     minute: "2-digit",
-    dayPeriod: "short",
+    // dayPeriod: "short",
   }
   ).format(createdAtDate);
   const now = new Date();
@@ -39,7 +39,7 @@ function MessageTime({ createdAt }: {createdAt?: Date}) {
       hour12: true,
       hour: "numeric",
       minute: "2-digit",
-      dayPeriod: "short",
+      // dayPeriod: "short",
     }
     ).format(createdAtDate);
   }

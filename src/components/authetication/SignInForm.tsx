@@ -29,7 +29,7 @@ export default function SignInForm(): JSX.Element {
    * @param values The form values
    */
   function submit(values: {username: string, password: string}) {
-    signIn(values.username, values.password, (res) => {console.log(res);});
+    signIn(values.username, values.password);
   }
 
   return (

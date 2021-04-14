@@ -69,4 +69,3 @@ export class CoreDocument {
   @prop()
   deletedAt?: Date;
 }
-console.log("CoreDocument")
