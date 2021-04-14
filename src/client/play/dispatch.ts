@@ -1,4 +1,4 @@
-import { Dispatch, DispatchEvent, GameState, HostPriorityQueue, MessageDispatch, MessageDoc } from "types";
+import { Dispatch, DispatchEvent, GameState, HostPriorityQueue, MessageDoc } from "types";
 import { rest } from "utilities";
 import { GameServer } from ".";
 
@@ -50,7 +50,7 @@ export function dispatch(this: GameServer, newDispatch: Dispatch): void {
  * The function that kicks off the dispatch flush
  */
 export function attemptFlush(this: GameServer): void {
-  console.log("Attempting flush")
+  console.log("Attempting flush");
   // Require this to be the host that begins
   if (this.host !== this.peer.id) { return; }
   const flushedFUIDs: string[] = [];
