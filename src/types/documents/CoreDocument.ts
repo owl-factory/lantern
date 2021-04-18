@@ -22,7 +22,7 @@ export class CoreDocument {
   
   // The ID of the document
   @Field(() => ID)
-  _id?: string;
+  ref?: object | string;
 
   // The name of the document
   @Field({ nullable: true })

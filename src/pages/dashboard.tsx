@@ -8,21 +8,22 @@ import { rest } from "utilities";
 import { getSession, signOut } from "utilities/auth";
 import { NextPage, NextPageContext } from "next";
 import Router from "next/router";
-import { getClient } from "utilities/db";
+import { getClient, getID, readQuery } from "utilities/db";
 import { query as q } from "faunadb";
 
 interface DashboardProps {
   session?: Session;
 }
 
-const Dashboard: NextPage<DashboardProps> = ({ session }) => {
+const Dashboard: NextPage<DashboardProps> = (props: any) => {
+  console.log(props)
   return (
-    <Page>
-      <h3>Welcome back {session?.user.data.username}!</h3>
+    <Page error={props.error}>
+      <h3>Welcome back {props.session?.user.data.username}!</h3>
 
       <Button onClick={() => signOut()}>Log Out</Button>
       {/* Recent Games */}
-      <RecentGames campaigns={[]}/>
+      <RecentGames campaigns={props.data.data}/>
 
       {/* Characters */}
       <h4>My Characters</h4>
@@ -32,24 +33,7 @@ const Dashboard: NextPage<DashboardProps> = ({ session }) => {
   );
 };
 
-Dashboard.getInitialProps = async (ctx: NextPageContext) => {
-  const session = getSession(ctx);
-  if (!session) {
-    if (ctx.res) {
-      ctx.res.writeHead(302, { Location: '/' });
-      ctx.res.end();
-    } else {
-      Router.push("/");
-    }
-    return {};
-  }
 
-  const client = getClient(ctx);
-  const campaigns = await client.query(q.Paginate(q.Documents(q.Collection(`campaigns`)), { size: 3 }));
-  console.log(campaigns)
-
-  return { session, campaigns: campaigns.data };
-};
 
 export default Dashboard;
 
@@ -58,8 +42,8 @@ function RecentGames(props: any) {
   props.campaigns.forEach((campaign: CampaignDoc) => {
     campaigns.push(
       <>
-        <h5>{campaign.name}</h5>
-        <Link href={`/campaigns/${campaign._id}`}>
+        <h5>{campaign.data.name}</h5>
+        <Link href={`/campaigns/${getID(campaign.ref)}`}>
           Visit
         </Link>
       </>
@@ -81,22 +65,22 @@ function RecentGames(props: any) {
   );
 }
 
-function ProfileForm(props: any) {
-
-  async function saveProfile(values: any) {
-    await rest.patch(`/api/profile`, values);
+Dashboard.getInitialProps = async (ctx: NextPageContext) => {
+  const session = getSession(ctx);
+  if (!session) {
+    if (ctx.res) {
+      ctx.res.writeHead(302, { Location: '/' });
+      ctx.res.end();
+    } else {
+      Router.push("/");
+    }
+    return {};
   }
-  return (
-    <Formik
-      initialValues={props.me}
-      onSubmit={saveProfile}
-    >
-      {() => (
-        <Form>
-          <Input name="name" />
-          <Button type="submit">Save</Button>
-        </Form>
-      )}
-    </Formik>
-  );
-}
+
+  const client = getClient(ctx);
+  const { data, error } = await readQuery(client.query(
+    q.Call("fetch_my_campaigns", [ 6 ])
+  ));
+
+  return { session, data, error };
+};

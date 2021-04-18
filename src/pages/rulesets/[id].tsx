@@ -35,7 +35,7 @@ const initialContentTypeSort = "name";
  */
 async function deleteContentType(context: ContentTypeDoc): Promise<void> {
   if (confirm(`Are you sure you want to delete ${context.name}?`)) {
-    await rest.delete(`/api/content-types/${context._id}`, {});
+    // TODO - implement this
   }
 }
 
@@ -79,14 +79,7 @@ function NewContentTypeForm(): JSX.Element {
    */
   async function onSubmit(values: Record<string, string>) {
     values.rulesetID = rulesetID as string;
-    const response = await rest.put<{ contentType: ContentTypeDoc }>(
-      `/api/content-types`,
-      values
-    );
-    if (!response.success) {
-      alert(response.message);
-      return;
-    }
+    // TODO - implement this
 
     const href = `/content-types/${response.data.contentType._id}`;
     router.push(href);
@@ -167,14 +160,8 @@ function RulesetPage({
     skip: number,
     sort: string
   ): Promise<any> {
-    const res = await rest.post<FetchContentTypeData>(
-      `/api/ruleset/${ruleset._id}/content-types`,
-      {
-        filters,
-        options: { limit, skip, sort },
-      }
-    );
-    return { content: res.data.contentTypes, count: 0 };
+    // TODO - implement
+    // return { content: res.data.contentTypes, count: 0 };
   }
 
   return (

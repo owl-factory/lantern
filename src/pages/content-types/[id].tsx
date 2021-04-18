@@ -37,10 +37,7 @@ export function ContentTypePageProps({ initialContentType, ruleset }: ContentTyp
    */
   function saveAll(values: ContentTypeDoc) {
     values.fields = fields;
-    rest.patch(
-      `/api/content-types/${initialContentType._id}`,
-      values as unknown as Record<string, unknown>
-    );
+    // TODO - implement this (not critical)
 
     setIsUpdated(false);
   }
@@ -73,12 +70,12 @@ export function ContentTypePageProps({ initialContentType, ruleset }: ContentTyp
 }
 
 ContentTypePageProps.getInitialProps = async (ctx: NextPageContext) => {
-  const res = await rest.get<any>(`/api/pages/content-types/${ctx.query.id}`);
 
-  return {
-    initialContentType: res.data.contentType,
-    ruleset: res.data.ruleset,
-  };
+  // return {
+  //   initialContentType: res.data.contentType,
+  //   ruleset: res.data.ruleset,
+  // };
+  return {};
 };
 
 export default ContentTypePageProps;

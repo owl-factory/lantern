@@ -5,31 +5,45 @@ import { useRouter } from "next/router";
 import React from "react";
 import { UserProfileDoc } from "types";
 import { rest } from "utilities";
+import { getSession, requireClientLogin } from "utilities/auth";
+import { getClient, getID, readQuery } from "utilities/db";
+import { query as q } from "faunadb";
 
-
-
+/**
+ * Renders a single campaign and the information inside
+ * @param props 
+ */
 export default function CampaignView(props: any) {
-  if (!props.campaign) { return <Page>Error</Page>; }
+  console.log(props)
+  if (!props.campaign) { return <Page error={props.error}>Error</Page>; }
+  const [ campaign, setCampaign ] = React.useState(props.campaign.data);
   const router = useRouter();
+  const client = getClient();
 
-  function toggleInviteByLink() {
-    rest.post(`/api/campaigns/${router.query.id}/invite`, {})
-    .then(() => {
-      // Super dirty way of reloading the page
-      console.log("Hit")
-      // location.reload();
+  console.log(props)
+
+  function createInviteLink() {
+    const inviteKey = "testAddress";
+    client.query(
+      q.Call(
+        `create_campaign_invite`,
+        [ getID(props.campaign.ref), inviteKey ]
+      )
+    ).then((res) => {
+      console.log(res)
     });
   }
+
 
   function Players() {
     const players: JSX.Element[] = [];
     const inviteAddress = `/campaigns/${router.query.id}/invite/${props.campaign.invitationAddress}`;
-    props.players.forEach((player: UserProfileDoc) => {
+    campaign.players.forEach((player: any) => {
       players.push(
-        <div key={player._id}>
-          {player.name}&nbsp;
-          {player._id === props.campaign.ownedBy ? "(GM) " : ""}
-          <Link href={`/profile/${player._id}`}>Profile</Link>
+        <div key={getID(player.ref)}>
+          {player.data.name || player.data.username}&nbsp;
+          {getID(player.ref) === getID(campaign.ownedBy) ? "(GM) " : ""}
+          <Link href={`/profile/${getID(player.ref)}`}>Profile</Link>
         </div>
       );
     });
@@ -38,27 +52,33 @@ export default function CampaignView(props: any) {
         <h2>Players</h2>
         {players}
         Invite By Link? {props.campaign.allowLinkInvitation ? "Enabled" : "Disabled"}<br/>
-        <Button className="btn-sm" type="button" onClick={toggleInviteByLink}>
-          {!props.campaign.allowLinkInvitation ? "Enable" : "Disable"}
+        <Button className="btn-sm" type="button" onClick={createInviteLink}>
+          Create Invite
         </Button><br/>
         {props.campaign.allowLinkInvitation ?
           <Link href={inviteAddress}>{inviteAddress}</Link> : <></>
         }
-
       </>
     );
   }
 
   return (
-    <Page>
-      <h1>{props.campaign.name}</h1>
+    <Page error={props.error}>
+      <h1>{campaign.name}</h1>
       <Players/>
     </Page>
   );
 }
 
 CampaignView.getInitialProps = async (ctx: NextPageContext) => {
-  const res = await rest.get(`/api/pages/campaigns/${ctx.query.id}`);
-  console.log(res)
-  return res.data;
+  const session = getSession(ctx);
+  if (!requireClientLogin(session, ctx)) { return {}; }
+  const client = getClient(ctx);
+  const { data, error } = await readQuery(client.query(
+    q.Call(
+      `view_campaign_page`,
+      [ctx.query.id as string]
+    )
+  ));
+  return { session, campaign: data, error };
 };

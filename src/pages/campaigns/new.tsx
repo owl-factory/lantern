@@ -6,7 +6,7 @@ import { CampaignDoc } from "types";
 import { useRouter } from "next/router";
 import { NextPageContext } from "next";
 import { getSession, requireClientLogin } from "utilities/auth";
-import { getClient } from "utilities/db";
+import { getClient, getID, readQuery, unwrapRefs } from "utilities/db";
 import { query as q } from "faunadb";
 
 
@@ -22,16 +22,21 @@ interface CreateTableResponse {
 
 export default function NewCampaign(props: any): JSX.Element {
   const router = useRouter();
+  const client = getClient();
 
   if (!props.session) {
     return <>You need to be logged in to create a campaign</>;
   }
 
   async function createCampaign(values: any) {
-    const res: RestResponse<CreateTableResponse> = await rest.put("/api/campaigns", values);
-
-    if (res.success) {
-      const href = `/campaigns/${res.data.campaign._id}`;
+    const { data, error } = await readQuery(client.query(
+      q.Call(
+        "create_campaign",
+        [ values ]
+      )
+    ));
+    if (data.ref) {
+      const href = `/campaigns/${getID(data.ref)}`;
       router.push(href);
     }
   }
@@ -40,7 +45,7 @@ export default function NewCampaign(props: any): JSX.Element {
     <Page>
       <h1>Create a New Campaign</h1>
       <Formik
-        initialValues={{ name: "" }}
+        initialValues={{ name: "", ruleset: "" }}
         onSubmit={(values: any) => {createCampaign(values)}}
       >
         {() => (
@@ -49,7 +54,7 @@ export default function NewCampaign(props: any): JSX.Element {
           <Input name="name"/>
 
           <label>Ruleset</label>
-          <Select name="rulesetID" options={props.rulesets} labelKey="0" valueKey="1"/>
+          <Select name="ruleset" options={props.rulesets} labelKey="0" valueKey="1"/>
 
           <Button type="submit">Create</Button>
         </Form>
@@ -71,7 +76,7 @@ NewCampaign.getInitialProps = async (ctx: NextPageContext) => {
     )
   );
 
-  console.log(typeof rulesets.data[0][1])
+  rulesets.data = unwrapRefs(rulesets.data, 1);
 
   return { session, rulesets: rulesets.data };
 };

@@ -53,3 +53,37 @@ export function useQuery(expr: ExprArg, options?: QueryOptions | undefined): Use
 
     return [ result, loading, error ];
 }
+
+/**
+ * Unwraps Fauna references into ID strings
+ * @param data The array of data to unwrap references for
+ * @param key The key the reference is located at
+ */
+export function unwrapRefs(data: Record<string | number, unknown>[], key: string | number): unknown {
+  data.forEach((item: Record<string | number, unknown>) => {
+    if (item[key] && (item[key] as Record<string, string>).id) {
+      item[key] = (item[key] as Record<string, string>).id;
+    }
+  });
+
+  return data;
+}
+
+export async function readQuery(query: Promise<object>): Promise<{ data: object | null, error: object | null}> {
+  try {
+    return {
+      data: await query,
+      error: null,
+    };
+  } catch (error) {
+    return { data: null, error};
+  }
+}
+export function getID(ref: any) {
+  console.log(ref)
+  if ( typeof ref === "string") { return ref; }
+  if ( ref.id ) { return ref.id; }
+  if ( ref["@ref"].id ) { return ref["@ref"].id ; }
+  if ( ref.value.id ) { return ref.value.id ; }
+  return undefined;
+}
