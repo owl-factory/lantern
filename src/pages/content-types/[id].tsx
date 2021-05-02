@@ -3,12 +3,11 @@ import { NextPageContext } from "next";
 import React from "react";
 import { LayoutBuilder, Page } from "../../components";
 import { Fields } from "../../components/reroll/rulesets/Fields";
-import { ContentTypeDoc, FieldType, RulesetDoc } from "../../types";
-import { rest } from "../../utilities";
+import { FieldType } from "../../types";
 
 interface ContentTypePageProps {
-  initialContentType: ContentTypeDoc;
-  ruleset: RulesetDoc;
+  initialContentType: any;
+  ruleset: any;
 }
 
 export function ContentTypePageProps({ initialContentType, ruleset }: ContentTypePageProps): JSX.Element {
@@ -35,12 +34,9 @@ export function ContentTypePageProps({ initialContentType, ruleset }: ContentTyp
    * Saves the content type and all related data to the database
    * @param values The base content type to save to the database
    */
-  function saveAll(values: ContentTypeDoc) {
+  function saveAll(values: any) {
     values.fields = fields;
-    rest.patch(
-      `/api/content-types/${initialContentType._id}`,
-      values as unknown as Record<string, unknown>
-    );
+    // TODO - implement this (not critical)
 
     setIsUpdated(false);
   }
@@ -57,7 +53,7 @@ export function ContentTypePageProps({ initialContentType, ruleset }: ContentTyp
               className={`btn btn-primary float-end ${isUpdated ? "" : "disabled"}`}
             >Save</button>
           </h1>
-          <a href={`/rulesets/${ruleset._id}`}>&lt; {ruleset.name}</a>
+          <a href={`/rulesets/${ruleset.ref?.id}`}>&lt; {ruleset.name}</a>
         </Form>
         )}
       </Formik>
@@ -73,12 +69,12 @@ export function ContentTypePageProps({ initialContentType, ruleset }: ContentTyp
 }
 
 ContentTypePageProps.getInitialProps = async (ctx: NextPageContext) => {
-  const res = await rest.get<any>(`/api/pages/content-types/${ctx.query.id}`);
 
-  return {
-    initialContentType: res.data.contentType,
-    ruleset: res.data.ruleset,
-  };
+  // return {
+  //   initialContentType: res.data.contentType,
+  //   ruleset: res.data.ruleset,
+  // };
+  return {};
 };
 
 export default ContentTypePageProps;

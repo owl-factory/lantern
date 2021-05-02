@@ -1,7 +1,6 @@
-import { GenericDocumentType } from "../../types/documents";
 
 // Describes a component function that takes in a row of data and returns an element
-export type TableDataType = GenericDocumentType | Record<string, unknown>;
+export type TableDataType = Record<string, unknown>;
 
 export interface TableComponentProps {
   data: Record<string, unknown>,

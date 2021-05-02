@@ -1,10 +1,12 @@
-import { Severity, modelOptions } from "@typegoose/typegoose";
-import { CoreDocument } from "./CoreDocument";
+import { CommonFaunaData, Model } from "./CoreDocument";
 
 /**
  * The user object for the user's core data for use with NextAuth
  */
-@modelOptions({ schemaOptions: { collection: "users" }, options: { allowMixed: Severity.ALLOW } } )
-export class UserDoc extends CoreDocument {
+export interface UserData extends CommonFaunaData {
+  
+}
 
+export class UserModel extends Model {
+  
 }

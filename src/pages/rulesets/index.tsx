@@ -9,20 +9,20 @@ import {  MdBlock, MdBuild, MdInfo } from "react-icons/md";
 import ContextMenu from "../../components/design/contextMenus/ContextMenu";
 import { ContextMenuBuilder } from "../../utilities/design/contextMenu";
 import { TableBuilder } from "../../utilities/design/table";
-import { RulesetDoc, TableComponentProps } from "../../types";
+import { TableComponentProps } from "../../types";
 import { useRouter } from "next/router";
 import * as Yup from "yup";
 import { IndexTable, fetchContentResponse } from "../../components";
 
 // The props for the RulesetPage
 interface RulesetProps {
-  initialRulesets: RulesetDoc[];
+  initialRulesets: any[];
   rulesetCount: number;
 }
 
 // The expected data packet response from the server for fetching rulesets
 interface FetchRulesetsData {
-  rulesets: RulesetDoc[];
+  rulesets: any[];
   rulesetCount: number;
 }
 
@@ -64,16 +64,15 @@ function CreateRulesetForm() {
    * @param values The values from the form to submit
    */
   async function onSubmit(values: Record<string, string>) {
-    const response = await request.put<{ ruleset: RulesetDoc }>(
+    const response = await request.put<{ ruleset: any }>(
       "/api/rulesets",
       values
     );
     if (!response.success) {
-      alert(response.message);
       return;
     }
 
-    const href = `/rulesets/${response.data.ruleset._id}`;
+    const href = `/rulesets`;
     router.push(href);
   }
 
@@ -138,7 +137,7 @@ function RulesetFilter() {
  * @param initialRulesets The initial group of rulesets to render in the table
  * @param rulesetCount The initial count of rulesets retrievable
  */
-export default function Rulesets({ initialRulesets, rulesetCount }: RulesetProps): JSX.Element {
+export default function Rulesets({ initialRulesets, rulesetCount }: RulesetProps) {
   const [ modal, setModal ] = React.useState(false); // Boolean for rendering the modal
   function handleClose() { setModal(false); } // Handles closing the modal
 
@@ -146,21 +145,15 @@ export default function Rulesets({ initialRulesets, rulesetCount }: RulesetProps
    * Runs the action to delete the ruleset
    * @param context The context for rendering information
    */
-  async function deleteRuleset(context: RulesetDoc) {
-    if (confirm(`Are you sure you want to delete ${context.name}?`)) {
-      await request.delete<any>(
-        `/api/rulesets/${context._id}`, {}
-      );
-      // Do something?
-      // TODO - trigger reload downstream
-    }
+  async function deleteRuleset(context: any) {
+    return;
   }
 
   // Adds actions for the table builder
   const rulesetActions = new ContextMenuBuilder()
     .addLink("Details", MdInfo, "/rulesets/[alias]")
     .addLink("Edit", MdBuild, "/rulesets/[alias]/edit")
-    .addItem("Delete", MdBlock, (context: RulesetDoc) => (deleteRuleset(context)));
+    .addItem("Delete", MdBlock, (context: any) => (deleteRuleset(context)));
 
   // Builds the table columns
   const tableBuilder = new TableBuilder()

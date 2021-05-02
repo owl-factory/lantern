@@ -4,25 +4,25 @@ import Error from 'next/error';
 import { useRouter } from "next/router";
 import React from "react";
 import { Button, Card, Col, FormGroup, FormLabel, Row } from "react-bootstrap";
-import { MdInfo, MdBuild, MdBlock } from "react-icons/md";
+import { MdBlock, MdBuild, MdInfo } from "react-icons/md";
 import { Breadcrumbs, ContextMenu, IndexTable, Input, Modal, Page } from "../../components";
-import { ContentTypeDoc, RulesetDoc, TableComponentProps } from "../../types";
+import { TableComponentProps } from "../../types";
 import { ContextMenuBuilder, TableBuilder, rest } from "../../utilities";
 import * as Yup from "yup";
 
 interface FetchContentTypeData {
-  contentTypes: ContentTypeDoc[];
+  contentTypes: any[];
   contentTypeCount: number;
 }
 
 interface RulesetPageProps {
-  contentTypes: ContentTypeDoc[];
+  contentTypes: any[];
   contentTypeCount: number;
-  ruleset: RulesetDoc;
+  ruleset: any;
 }
 
 interface FetchRulesetData {
-  ruleset: RulesetDoc;
+  ruleset: any;
 }
 
 const initialContentTypeLimit = 10;
@@ -33,17 +33,15 @@ const initialContentTypeSort = "name";
  * Deletes a single context type
  * @param context the content type context that indicates relevant data for deleting
  */
-async function deleteContentType(context: ContentTypeDoc): Promise<void> {
-  if (confirm(`Are you sure you want to delete ${context.name}?`)) {
-    await rest.delete(`/api/content-types/${context._id}`, {});
-  }
+async function deleteContentType(context: any): Promise<void> {
+  // TODO - implement this
 }
 
 // Adds actions for the table builder
 const contentTypeActions = new ContextMenuBuilder()
 .addLink("Details", MdInfo, "/content-types/[alias]")
 .addLink("Edit", MdBuild, "/content-types/[alias]/edit")
-.addItem("Delete", MdBlock, (context: ContentTypeDoc) => (deleteContentType(context)));
+.addItem("Delete", MdBlock, (context: any) => (deleteContentType(context)));
 
 // Builds the table columns
 const contentTypeTableBuilder = new TableBuilder()
@@ -79,16 +77,9 @@ function NewContentTypeForm(): JSX.Element {
    */
   async function onSubmit(values: Record<string, string>) {
     values.rulesetID = rulesetID as string;
-    const response = await rest.put<{ contentType: ContentTypeDoc }>(
-      `/api/content-types`,
-      values
-    );
-    if (!response.success) {
-      alert(response.message);
-      return;
-    }
+    // TODO - implement this
 
-    const href = `/content-types/${response.data.contentType._id}`;
+    const href = `/content-types/content-type-here`;
     router.push(href);
   }
 
@@ -167,14 +158,8 @@ function RulesetPage({
     skip: number,
     sort: string
   ): Promise<any> {
-    const res = await rest.post<FetchContentTypeData>(
-      `/api/ruleset/${ruleset._id}/content-types`,
-      {
-        filters,
-        options: { limit, skip, sort },
-      }
-    );
-    return { content: res.data.contentTypes, count: 0 };
+    // TODO - implement
+    // return { content: res.data.contentTypes, count: 0 };
   }
 
   return (

@@ -1,10 +1,13 @@
 import React from "react";
-import { useSession } from "next-auth/client";
 import { Button, Input, Page, Select } from "components";
 import { Form, Formik } from "formik";
-import { rest } from "../../utilities";
-import { CampaignDoc } from "types";
+import { CampaignModel } from "types";
 import { useRouter } from "next/router";
+import { NextPageContext } from "next";
+import { getSession, requireClientLogin } from "utilities/auth";
+import { getClient, getID, readQuery, unwrapRefs } from "utilities/db";
+import { query as q } from "faunadb";
+
 
 interface RestResponse<T> {
   success: boolean;
@@ -13,21 +16,26 @@ interface RestResponse<T> {
 }
 
 interface CreateTableResponse {
-  campaign: CampaignDoc;
+  campaign: CampaignModel;
 }
 
 export default function NewCampaign(props: any): JSX.Element {
   const router = useRouter();
-  const [ session, loading ] = useSession();
-  if (!loading && !session) {
+  const client = getClient();
+
+  if (!props.session) {
     return <>You need to be logged in to create a campaign</>;
   }
 
   async function createCampaign(values: any) {
-    const res: RestResponse<CreateTableResponse> = await rest.put("/api/campaigns", values);
-
-    if (res.success) {
-      const href = `/campaigns/${res.data.campaign._id}`;
+    const { data, error } = await readQuery(client.query(
+      q.Call(
+        "create_campaign",
+        [ values ]
+      )
+    ));
+    if (data) {
+      const href = `/campaigns/${getID((data as any).ref)}`;
       router.push(href);
     }
   }
@@ -36,7 +44,7 @@ export default function NewCampaign(props: any): JSX.Element {
     <Page>
       <h1>Create a New Campaign</h1>
       <Formik
-        initialValues={{ name: "" }}
+        initialValues={{ name: "", ruleset: "" }}
         onSubmit={(values: any) => {createCampaign(values)}}
       >
         {() => (
@@ -45,7 +53,7 @@ export default function NewCampaign(props: any): JSX.Element {
           <Input name="name"/>
 
           <label>Ruleset</label>
-          <Select name="rulesetID" options={props.data.initialRulesets} labelKey="name" valueKey="_id"/>
+          <Select name="ruleset" options={props.rulesets} labelKey="0" valueKey="1"/>
 
           <Button type="submit">Create</Button>
         </Form>
@@ -55,6 +63,19 @@ export default function NewCampaign(props: any): JSX.Element {
   );
 }
 
-NewCampaign.getInitialProps = async () => {
-  return await rest.get("/api/pages/campaigns/new");
+NewCampaign.getInitialProps = async (ctx: NextPageContext) => {
+  const session = getSession(ctx);
+  if (!requireClientLogin(session, ctx)) { return {}; }
+  const client = getClient(ctx);
+  const rulesets: any = await client.query(
+    q.Paginate(
+      q.Match(
+        q.Index(`rulesets_dropdown`)
+      )
+    )
+  ) as any;
+
+  rulesets.data = unwrapRefs(rulesets.data, 1);
+
+  return { session, rulesets: rulesets.data };
 };

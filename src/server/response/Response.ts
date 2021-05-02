@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { Context } from "types";
-import { databaseSetup } from "../../utilities/mongo";
 
 type RequestFunction = (req: NextApiRequest, res: NextApiResponse) => void;
 type PossibleMethods = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
@@ -19,7 +18,7 @@ export class HTTPHandler {
   constructor(req: NextApiRequest, res: NextApiResponse) {
     this.req = req;
     this.res = res;
-    this.ctx = { req, res, session: null };
+    this.ctx = { req, res };
   }
 
   public async handle(): Promise<void> {
@@ -33,7 +32,7 @@ export class HTTPHandler {
       // Handles initializing the database
       // TODO - ensure that we can access the user DB 
       //  seperately with or without disconnecting
-      databaseSetup();
+      // databaseSetup();
 
       // Checks that this method is present
       const method = this.req.method as PossibleMethods;
