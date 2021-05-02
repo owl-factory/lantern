@@ -1,10 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { ContentTypeResolver, HTTPHandler, RulesetResolver, UserProfileResolver } from "../../../../server";
-import { authenticateUser } from "../../../../server/utilities/auth";
-import { RulesetDoc, UserProfileDoc } from "../../../../types";
+import { HTTPHandler, RulesetResolver } from "../../../../server";
 
 async function getRulesets(this: HTTPHandler, req: NextApiRequest): Promise<void> {
-  console.log("HI!")
+  console.log("HI!");
   // const data: Record<string, RulesetDoc[]> = { myRulesets: [], rulesets: [] };
   // const user = authenticateUser(this);
   // TODO - add publishSource / type (official, etc) filter

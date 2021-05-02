@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { CampaignLogic, HTTPHandler, TableLogic, authenticateUser, UserProfileModel, UserProfileLogic } from "server";
+import { CampaignLogic, HTTPHandler, UserProfileLogic } from "server";
 import {  } from "server";
+import { authenticate } from "utilities/auth";
 
 /**
  * Fetches all information for rendering the individual ruleset page
@@ -9,10 +10,10 @@ import {  } from "server";
  */
 async function getCampaign(this: HTTPHandler, req: NextApiRequest): Promise<void> {
   // console.log("test")
-  const user = await authenticateUser(this);
-  if (!user || user._id === undefined) { return; }
+  const session = await authenticate({req});
+  if (!session || !session.user.ref.id) { return; }
 
-  const campaign = await CampaignLogic.fetchCampaign(user._id, req.query.id as string);
+  const campaign = await CampaignLogic.fetchCampaign(session.user.ref.id, req.query.id as string);
   if (!campaign) { this.returnError(404, "The campaign does not exist");  return; }
   const players = await UserProfileLogic.fetchList(campaign.players as string[]);
 

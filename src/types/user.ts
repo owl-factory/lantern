@@ -5,14 +5,15 @@ export interface Document<D> {
 }
 
 export interface Ref {
-  "@ref": {
-    id: number,
+  "@ref"?: {
+    id: string,
     collection: {
       "@ref": {
         id: string
       }
     },
   };
+  id?: string
 }
 
 export interface UserData {
