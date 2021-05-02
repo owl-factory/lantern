@@ -4,7 +4,7 @@ import Error from 'next/error';
 import { useRouter } from "next/router";
 import React from "react";
 import { Button, Card, Col, FormGroup, FormLabel, Row } from "react-bootstrap";
-import { MdInfo, MdBuild, MdBlock } from "react-icons/md";
+import { MdBlock, MdBuild, MdInfo } from "react-icons/md";
 import { Breadcrumbs, ContextMenu, IndexTable, Input, Modal, Page } from "../../components";
 import { ContentTypeDoc, RulesetDoc, TableComponentProps } from "../../types";
 import { ContextMenuBuilder, TableBuilder, rest } from "../../utilities";
@@ -34,9 +34,7 @@ const initialContentTypeSort = "name";
  * @param context the content type context that indicates relevant data for deleting
  */
 async function deleteContentType(context: ContentTypeDoc): Promise<void> {
-  if (confirm(`Are you sure you want to delete ${context.name}?`)) {
-    // TODO - implement this
-  }
+  // TODO - implement this
 }
 
 // Adds actions for the table builder
@@ -81,7 +79,7 @@ function NewContentTypeForm(): JSX.Element {
     values.rulesetID = rulesetID as string;
     // TODO - implement this
 
-    const href = `/content-types/${response.data.contentType._id}`;
+    const href = `/content-types/content-type-here`;
     router.push(href);
   }
 

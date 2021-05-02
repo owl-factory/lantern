@@ -39,7 +39,7 @@ export default Dashboard;
 
 function RecentGames(props: any) {
   const campaigns: JSX.Element[] = [];
-  props.campaigns.forEach((campaign: CampaignDoc) => {
+  props.campaigns.forEach((campaign: any) => {
     campaigns.push(
       <>
         <h5>{campaign.data.name}</h5>

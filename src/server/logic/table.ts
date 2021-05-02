@@ -1,17 +1,16 @@
-import { Ref } from "@typegoose/typegoose";
 import { CampaignLogic, onCreate, onUpdate } from "server";
 import { CampaignModel, TableModel } from "server/models";
-import { CampaignDoc, Context, RulesetDoc, TableDoc } from "types";
+import { CampaignDoc, Context, Ref, RulesetDoc, TableDoc } from "types";
 
 interface CreateTableInput {
   name: string;
-  ruleset: Ref<RulesetDoc>
+  ruleset: Ref;
 }
 
 interface UpdateTableInput {
   name?: string;
-  activeCampaign: Ref<CampaignDoc>;
-  campaigns: Ref<CampaignDoc>[];
+  activeCampaign: Ref;
+  campaigns: Ref[];
 }
 
 // TODO - export this and have it used elsewhere for consistency

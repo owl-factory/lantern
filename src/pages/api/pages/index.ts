@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { authenticateUser, HTTPHandler, UserProfileLogic } from "server";
+import { HTTPHandler } from "server";
 import { CampaignLogic } from "server/logic/campaign";
+import { authenticate } from "utilities/auth";
 
 /**
  * Fetches all information for rendering the individual ruleset page
@@ -8,12 +9,12 @@ import { CampaignLogic } from "server/logic/campaign";
  * @param req The request to the server
  */
 async function getHome(this: HTTPHandler, req: NextApiRequest): Promise<void> {
-  const user = await authenticateUser(this);
-  if (!user || user._id === undefined) { return; }
-  const me = await UserProfileLogic.fetchProfile(user._id);
-  const campaigns = await CampaignLogic.listCampaigns(user._id);
+  const session = await authenticate({req});
+  if (!session || !session.user.ref.id) { return; }
+  // const me = await UserProfileLogic.fetchProfile(session.user.ref.id);
+  const campaigns = await CampaignLogic.listCampaigns(session.user.ref.id);
 
-  this.returnSuccess({ campaigns: campaigns, me });
+  this.returnSuccess({ campaigns: campaigns });
 }
 
 /**

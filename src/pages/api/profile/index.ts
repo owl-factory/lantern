@@ -1,6 +1,5 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import { authenticateUser, UserProfileLogic } from "server";
-import { RulesetResolver } from "../../../server/resolvers/RulesetResolver";
+import { NextApiRequest } from "next";
+import { authenticate } from "utilities/auth";
 import HTTPHandler from "../../../server/response/Response";
 import { createEndpoint } from "../../../server/utilities/handlers";
 
@@ -10,11 +9,10 @@ import { createEndpoint } from "../../../server/utilities/handlers";
  * @param req The request to the server
  */
 async function saveProfile(this: HTTPHandler, req: NextApiRequest) {
-  const user = await authenticateUser(this);
-  if (!user || !user._id) { return; }
-  const profile = await UserProfileLogic.saveUserProfile(user._id, req.body);
-  console.log(profile)
-  this.returnSuccess({ profile });
+  const session = await authenticate({req});
+  if (!session || !session.user.ref.id) { return; }
+  // const profile = await UserProfileLogic.saveUserProfile(session.user.ref.id, req.body);
+  this.returnSuccess({});
 }
 
 export default createEndpoint({PATCH: saveProfile});

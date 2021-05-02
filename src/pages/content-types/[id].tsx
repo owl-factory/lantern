@@ -4,7 +4,6 @@ import React from "react";
 import { LayoutBuilder, Page } from "../../components";
 import { Fields } from "../../components/reroll/rulesets/Fields";
 import { ContentTypeDoc, FieldType, RulesetDoc } from "../../types";
-import { rest } from "../../utilities";
 
 interface ContentTypePageProps {
   initialContentType: ContentTypeDoc;
@@ -54,7 +53,7 @@ export function ContentTypePageProps({ initialContentType, ruleset }: ContentTyp
               className={`btn btn-primary float-end ${isUpdated ? "" : "disabled"}`}
             >Save</button>
           </h1>
-          <a href={`/rulesets/${ruleset._id}`}>&lt; {ruleset.name}</a>
+          <a href={`/rulesets/${ruleset.ref?.id}`}>&lt; {ruleset.name}</a>
         </Form>
         )}
       </Formik>

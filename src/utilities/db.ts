@@ -69,7 +69,7 @@ export function unwrapRefs(data: Record<string | number, unknown>[], key: string
   return data;
 }
 
-export async function readQuery(query: Promise<object>): Promise<{ data: object | null, error: object | null}> {
+export async function readQuery(query: Promise<object>): Promise<{ data: any | null, error: object | null}> {
   try {
     return {
       data: await query,
@@ -79,8 +79,9 @@ export async function readQuery(query: Promise<object>): Promise<{ data: object 
     return { data: null, error};
   }
 }
-export function getID(ref: any) {
-  console.log(ref)
+
+export function getID(ref: any): string | undefined {
+  console.log(ref);
   if ( typeof ref === "string") { return ref; }
   if ( ref.id ) { return ref.id; }
   if ( ref["@ref"].id ) { return ref["@ref"].id ; }

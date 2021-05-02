@@ -1,7 +1,6 @@
 import React from "react";
 import { Button, Input, Page, Select } from "components";
 import { Form, Formik } from "formik";
-import { rest } from "../../utilities";
 import { CampaignDoc } from "types";
 import { useRouter } from "next/router";
 import { NextPageContext } from "next";
@@ -74,7 +73,7 @@ NewCampaign.getInitialProps = async (ctx: NextPageContext) => {
         q.Index(`rulesets_dropdown`)
       )
     )
-  );
+  ) as any;
 
   rulesets.data = unwrapRefs(rulesets.data, 1);
 

@@ -1,10 +1,9 @@
-import { Ref } from "@typegoose/typegoose";
 import { CampaignModel } from "server/models";
-import { CampaignDoc, TableDoc } from "types";
+import { CampaignDoc, Ref } from "types";
 
 interface CreateCampaignInput {
   name: string;
-  table: Ref<TableDoc>;
+  table: Ref;
 }
 
 function onUpdate(myUserID: string) {

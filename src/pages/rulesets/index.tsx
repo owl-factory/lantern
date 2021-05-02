@@ -69,11 +69,11 @@ function CreateRulesetForm() {
       values
     );
     if (!response.success) {
-      alert(response.message);
+      // alert(response.message);
       return;
     }
 
-    const href = `/rulesets/${response.data.ruleset._id}`;
+    const href = `/rulesets/${response.data.ruleset.ref?.id}`;
     router.push(href);
   }
 
@@ -138,7 +138,7 @@ function RulesetFilter() {
  * @param initialRulesets The initial group of rulesets to render in the table
  * @param rulesetCount The initial count of rulesets retrievable
  */
-export default function Rulesets({ initialRulesets, rulesetCount }: RulesetProps): JSX.Element {
+export default function Rulesets({ initialRulesets, rulesetCount }: RulesetProps) {
   const [ modal, setModal ] = React.useState(false); // Boolean for rendering the modal
   function handleClose() { setModal(false); } // Handles closing the modal
 
@@ -147,20 +147,20 @@ export default function Rulesets({ initialRulesets, rulesetCount }: RulesetProps
    * @param context The context for rendering information
    */
   async function deleteRuleset(context: RulesetDoc) {
-    if (confirm(`Are you sure you want to delete ${context.name}?`)) {
-      await request.delete<any>(
-        `/api/rulesets/${context._id}`, {}
-      );
-      // Do something?
-      // TODO - trigger reload downstream
-    }
+    // if (confirm(`Are you sure you want to delete ${context.name}?`)) {
+    //   await request.delete<any>(
+    //     `/api/rulesets/${context._id}`, {}
+    //   );
+    // Do something?
+    // TODO - trigger reload downstream
+    // }
   }
 
   // Adds actions for the table builder
   const rulesetActions = new ContextMenuBuilder()
     .addLink("Details", MdInfo, "/rulesets/[alias]")
     .addLink("Edit", MdBuild, "/rulesets/[alias]/edit")
-    .addItem("Delete", MdBlock, (context: RulesetDoc) => (deleteRuleset(context)));
+    // .addItem("Delete", MdBlock, (context: RulesetDoc) => (deleteRuleset(context)));
 
   // Builds the table columns
   const tableBuilder = new TableBuilder()

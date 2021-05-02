@@ -1,5 +1,6 @@
 import { NextApiRequest } from "next";
-import { TableLogic, authenticateUser } from "server";
+import { TableLogic } from "server";
+import { authenticate } from "utilities/auth";
 import HTTPHandler from "../../../server/response/Response";
 import { createEndpoint } from "../../../server/utilities/handlers";
 
@@ -9,9 +10,9 @@ import { createEndpoint } from "../../../server/utilities/handlers";
  * @param req The request to the server
  */
 async function createTable(this: HTTPHandler, req: NextApiRequest) {
-  const user = await authenticateUser(this);
-  if (!user || !user._id) { return; }
-  const data = await TableLogic.createTable(user._id, req.body);
+  const session = await authenticate({req});
+  if (!session || !session.user.ref.id) { return; }
+  const data = await TableLogic.createTable(session.user.ref.id, req.body);
   console.log(data);
   this.returnSuccess(data);
 }
