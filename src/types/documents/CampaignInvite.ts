@@ -1,8 +1,8 @@
 import { Ref } from "types/user";
-import { CoreDocument } from "./CoreDocument";
+import { Model } from "./CoreDocument";
 
 
-export class CampaignInvite extends CoreDocument {
+export class CampaignInvite extends Model {
   campaign?: Ref;
   inviteAddress?: string;
   ttl?: Date;

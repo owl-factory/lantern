@@ -6,23 +6,23 @@ import React from "react";
 import { Button, Card, Col, FormGroup, FormLabel, Row } from "react-bootstrap";
 import { MdInfo, MdBuild, MdBlock } from "react-icons/md";
 import { Breadcrumbs, ContextMenu, IndexTable, Input, Modal, Page } from "../../components";
-import { ContentTypeDoc, RulesetDoc, TableComponentProps } from "../../types";
+import { TableComponentProps } from "../../types";
 import { ContextMenuBuilder, TableBuilder, rest } from "../../utilities";
 import * as Yup from "yup";
 
 interface FetchContentTypeData {
-  contentTypes: ContentTypeDoc[];
+  contentTypes: any[];
   contentTypeCount: number;
 }
 
 interface RulesetPageProps {
-  contentTypes: ContentTypeDoc[];
+  contentTypes: any[];
   contentTypeCount: number;
-  ruleset: RulesetDoc;
+  ruleset: any;
 }
 
 interface FetchRulesetData {
-  ruleset: RulesetDoc;
+  ruleset: any;
 }
 
 const initialContentTypeLimit = 10;
@@ -33,17 +33,17 @@ const initialContentTypeSort = "name";
  * Deletes a single context type
  * @param context the content type context that indicates relevant data for deleting
  */
-async function deleteContentType(context: ContentTypeDoc): Promise<void> {
-  if (confirm(`Are you sure you want to delete ${context.name}?`)) {
+async function deleteContentType(context: any): Promise<void> {
+  // if (confirm(`Are you sure you want to delete ${context.name}?`)) {
     // TODO - implement this
-  }
+  // }
 }
 
 // Adds actions for the table builder
 const contentTypeActions = new ContextMenuBuilder()
 .addLink("Details", MdInfo, "/content-types/[alias]")
 .addLink("Edit", MdBuild, "/content-types/[alias]/edit")
-.addItem("Delete", MdBlock, (context: ContentTypeDoc) => (deleteContentType(context)));
+.addItem("Delete", MdBlock, (context: any) => (deleteContentType(context)));
 
 // Builds the table columns
 const contentTypeTableBuilder = new TableBuilder()
@@ -81,7 +81,7 @@ function NewContentTypeForm(): JSX.Element {
     values.rulesetID = rulesetID as string;
     // TODO - implement this
 
-    const href = `/content-types/${response.data.contentType._id}`;
+    const href = `/content-types`;
     router.push(href);
   }
 

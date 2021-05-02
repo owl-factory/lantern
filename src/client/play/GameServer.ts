@@ -1,4 +1,4 @@
-import { Dispatch, DispatchEvent, GameState, HostPriorityQueue, UserProfileDoc } from "types";
+import { Dispatch, DispatchEvent, GameState, HostPriorityQueue, UserModel } from "types";
 import { makeAutoObservable } from "mobx";
 import Peer, { DataConnection } from "peerjs";
 import { Socket } from "socket.io-client";
@@ -33,7 +33,7 @@ export class GameServer {
   protected dispatchHistory: Dispatch[] = [];
 
   protected campaignID!: string; // The ID of the table server to connect to
-  public user!: UserProfileDoc;
+  public user!: UserModel;
 
   // The peerID indexed object containing the channels connected to them
   protected channels: Record<string, DataConnection> = {};

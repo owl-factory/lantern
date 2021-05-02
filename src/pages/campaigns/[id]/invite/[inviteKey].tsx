@@ -1,7 +1,6 @@
 import React from "react";
 import { Button, Page } from "components";
 import { NextPageContext } from "next";
-import { rest } from "utilities";
 import Link from "next/link";
 import { getSession, requireClientLogin } from "utilities/auth";
 import { getClient, readQuery } from "utilities/db";

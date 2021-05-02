@@ -1,5 +1,4 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { Session, User } from "types";
 import { setSession } from "utilities/auth";
 import { query as q } from "faunadb";
 import { getServerClient } from "utilities/db";
@@ -12,7 +11,7 @@ import { getServerClient } from "utilities/db";
 export default async function SignUp(req: NextApiRequest, res: NextApiResponse): Promise<void> {
   const { email, password, username } = req.body;
   const client = getServerClient();
-  const user: User = await client.query(
+  const user: any = await client.query(
     q.Create(
       q.Collection("users"),
       {
@@ -30,7 +29,7 @@ export default async function SignUp(req: NextApiRequest, res: NextApiResponse):
 
   const { secret }: any = await client.query(q.Login(user.ref, { password }));
   delete user.data.email;
-  const session: Session = { user, secret };
+  const session: any = { user, secret };
   setSession(session, { res });
 
   res.json(session);

@@ -3,7 +3,6 @@ import React from "react";
 import { Form } from "react-bootstrap";
 import { useField } from "formik";
 import { FieldProps } from "../../../types/design/form";
-import { GenericDocumentType } from "../../../types/documents";
 
 export interface SelectProps extends FieldProps {
   // Select Properties
@@ -20,7 +19,7 @@ export interface SelectProps extends FieldProps {
   includeEmpty?: boolean; // Include an empty selection
   labelKey?: string; // The key to use for label inputs
   // An array of structs containing the label and value to use
-  options?: (GenericDocumentType | Record<string, unknown>)[];
+  options?: (Record<string, unknown>)[];
   valueKey?: string; // The key of the value
 }
 
@@ -74,7 +73,7 @@ function renderChildren(id: string, props: SelectProps): JSX.Element[] {
 
   if (props.children === undefined) {
     let index = 0;
-    options.forEach((option: GenericDocumentType | Record<string, unknown>) => {
+    options.forEach((option: Record<string, unknown>) => {
       const typedOption = option as Record<string, unknown>;
       children.push(
         <option

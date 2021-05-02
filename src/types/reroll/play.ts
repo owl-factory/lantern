@@ -1,5 +1,5 @@
 
-import { Entity, MessageDoc } from "types/documents";
+import { MessageModel } from "types/documents";
 
 // Describes the different kinds of events that may be used in a dispatch
 // TODO - review
@@ -27,7 +27,7 @@ interface BaseDispatch {
 
 export interface MessageDispatch extends BaseDispatch {
   event: DispatchEvent.Message;
-  content: MessageDoc;
+  content: MessageModel;
 }
 
 // Indicates the type of action we're taking on a dispatch event
@@ -46,7 +46,7 @@ export type Dispatch = BaseDispatch | MessageDispatch
 export interface GameState {
   activePlayers: number; // The number of active players. TODO - replace with a list of the current players and
   count: number; // A value for testing
-  entities: Record<string, Entity>;
-  messages: MessageDoc[]; // A list of all messages received
+  entities: Record<string, any>;
+  messages: MessageModel[]; // A list of all messages received
   // myEntities: Entity[]; // A list of entity ids that we have access to
 }

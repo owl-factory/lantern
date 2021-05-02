@@ -2,7 +2,7 @@ import Tooltip from "components/design/Tooltip";
 import { Form, Formik } from "formik";
 import { observer } from "mobx-react-lite";
 import React from "react";
-import { MessageDoc } from "types";
+import { MessageModel } from "types";
 import { Select, TextArea } from "../..";
 import { GameServer } from "../../../client";
 
@@ -53,7 +53,7 @@ function MessageTime({ createdAt }: {createdAt?: Date}) {
   );
 }
 
-function shouldSmooth(message: MessageDoc, previousMessages: MessageDoc[], index: number) {
+function shouldSmooth(message: MessageModel, previousMessages: MessageModel[], index: number) {
   if (index === 0) { return false; }
 
   let count = 0;
@@ -78,7 +78,7 @@ function shouldSmooth(message: MessageDoc, previousMessages: MessageDoc[], index
  * Renders a single message
  * @param message The message doc object to render
  */
-function Message({ messages, index }: { messages: MessageDoc[], index: number }): JSX.Element {
+function Message({ messages, index }: { messages: MessageModel[], index: number }): JSX.Element {
   const message = messages[index];
   if (typeof message.createdAt === "string") { message.createdAt = new Date(message.createdAt); }
 
@@ -109,7 +109,7 @@ export const Chat = observer((props: ChatProps) => {
   const { server } = props;
   if (!server.isReady) { return <></>}
 
-  function sendMessage(values: MessageDoc) {
+  function sendMessage(values: MessageModel) {
     // message.
     server?.fireTextMessage(values);
   }
@@ -120,7 +120,7 @@ export const Chat = observer((props: ChatProps) => {
   ];
   console.log(sendAsOptions)
 
-  server.state.messages.forEach((_: MessageDoc, index: number) => {
+  server.state.messages.forEach((_: MessageModel, index: number) => {
     messageBlock.push(<Message messages={server.state.messages} index={index} key={index}/>);
   });
 
@@ -129,8 +129,8 @@ export const Chat = observer((props: ChatProps) => {
       <h2>Chat</h2>
       {messageBlock}
       <Formik
-        initialValues={{sendAs: "", content: ""} as MessageDoc}
-        onSubmit={(values: MessageDoc) => sendMessage(values)}
+        initialValues={{sendAs: "", content: ""} as MessageModel}
+        onSubmit={(values: MessageModel) => sendMessage(values)}
       >
       {() => (
         <Form>

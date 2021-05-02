@@ -1,4 +1,4 @@
-import { Dispatch, DispatchEvent, GameState, HostPriorityQueue, MessageDoc } from "types";
+import { Dispatch, DispatchEvent, GameState, HostPriorityQueue, MessageModel } from "types";
 import { rest } from "utilities";
 import { GameServer } from ".";
 
@@ -29,10 +29,10 @@ export function dispatch(this: GameServer, newDispatch: Dispatch): void {
       this.state.count = newDispatch.content as number;
       break;
     case DispatchEvent.Message:
-      if (!(newDispatch.content as MessageDoc).createdAt) {
-        (newDispatch.content as MessageDoc).createdAt = newDispatch.dispatchedAt;
+      if (!(newDispatch.content as MessageModel).createdAt) {
+        (newDispatch.content as MessageModel).createdAt = newDispatch.dispatchedAt;
       }
-      this.state.messages.push(newDispatch.content as MessageDoc);
+      this.state.messages.push(newDispatch.content as MessageModel);
       break;
     default:
       // eslint-disable-next-line no-console

@@ -3,12 +3,11 @@ import { NextPageContext } from "next";
 import React from "react";
 import { LayoutBuilder, Page } from "../../components";
 import { Fields } from "../../components/reroll/rulesets/Fields";
-import { ContentTypeDoc, FieldType, RulesetDoc } from "../../types";
-import { rest } from "../../utilities";
+import { FieldType } from "../../types";
 
 interface ContentTypePageProps {
-  initialContentType: ContentTypeDoc;
-  ruleset: RulesetDoc;
+  initialContentType: any;
+  ruleset: any;
 }
 
 export function ContentTypePageProps({ initialContentType, ruleset }: ContentTypePageProps): JSX.Element {
@@ -35,7 +34,7 @@ export function ContentTypePageProps({ initialContentType, ruleset }: ContentTyp
    * Saves the content type and all related data to the database
    * @param values The base content type to save to the database
    */
-  function saveAll(values: ContentTypeDoc) {
+  function saveAll(values: any) {
     values.fields = fields;
     // TODO - implement this (not critical)
 

@@ -80,7 +80,6 @@ export async function readQuery(query: Promise<object>): Promise<{ data: object 
   }
 }
 export function getID(ref: any) {
-  console.log(ref)
   if ( typeof ref === "string") { return ref; }
   if ( ref.id ) { return ref.id; }
   if ( ref["@ref"].id ) { return ref["@ref"].id ; }

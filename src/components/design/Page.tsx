@@ -6,7 +6,7 @@ interface PageProps {
   error?: object; // An error to render
 }
 
-function parseError(error: object | string): string {
+function parseError(error: any): string {
   if (typeof error === "string") { return error; }
   try {
     return error.requestResult.responseContent.errors[0].cause[0].description;

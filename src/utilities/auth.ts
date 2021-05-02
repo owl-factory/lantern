@@ -3,7 +3,6 @@ import { NextApiRequest, NextApiResponse, NextPageContext } from "next";
 import Router from "next/router";
 import { destroyCookie, parseCookies, setCookie } from "nookies";
 import { useEffect, useState } from "react";
-import { Session } from "types";
 import { getClient, updateClient } from "./db";
 import { query as q } from "faunadb";
 
@@ -13,7 +12,7 @@ export function signUp(username: string, email: string, password: string): void 
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({username, email, password}),
   }).then(async (res) => {
-    const session: Session = await res.json();
+    const session: any = await res.json();
     updateClient(session.secret);
     Router.reload();
   });
@@ -25,7 +24,7 @@ export function signIn(username: string, password: string): void {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({username, password}),
   }).then(async (res) => {
-    const session: Session = await res.json();
+    const session: any = await res.json();
     updateClient(session.secret);
     Router.reload();
   });
@@ -44,7 +43,7 @@ export function signOut(): void {
 
 export type CtxRes = Pick<NextPageContext, "res"> | {res: NextApiResponse<any>;} | null | undefined;
 
-export function setSession(session: Session, ctx?: CtxRes): void {
+export function setSession(session: any, ctx?: CtxRes): void {
   setCookie(ctx, "session", JSON.stringify(session), {
     maxAge: 30 * 24 * 60 * 60,
     path: '/',
@@ -57,15 +56,15 @@ export function destroySession(ctx?: CtxRes): void {
 
 export type CtxReq = Pick<NextPageContext, "req"> | {req: NextApiRequest;} | null | undefined;
 
-export function getSession(ctx?: CtxReq): Session | null {
+export function getSession(ctx?: CtxReq): any | null {
   const cookie = parseCookies(ctx).session;
   if (!cookie)
     return null;
-  const session: Session = JSON.parse(cookie);
+  const session: any = JSON.parse(cookie);
   return session;
 }
 
-export async function authenticate(ctx?: CtxReq): Promise<Session | null> {
+export async function authenticate(ctx?: CtxReq): Promise<any | null> {
   const session = getSession(ctx);
   const client = getClient(ctx);
   const id: any = await client.query(q.CurrentIdentity());
@@ -76,15 +75,15 @@ export async function authenticate(ctx?: CtxReq): Promise<Session | null> {
   }
 }
 
-export function useSession(): Session | undefined | null {
-  const [ ses, setSes ] = useState<Session | undefined | null>();
+export function useSession(): any | undefined | null {
+  const [ ses, setSes ] = useState<any | undefined | null>();
   useEffect(() => {
     setSes(getSession());
   }, []);
   return ses;
 }
 
-export function requireClientLogin(session: Session | null, ctx?: NextPageContext) {
+export function requireClientLogin(session: any | null, ctx?: NextPageContext) {
   if (!session) {
     if (ctx && ctx.res) {
       ctx.res.writeHead(302, { Location: '/' });

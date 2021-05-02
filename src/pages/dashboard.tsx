@@ -1,22 +1,19 @@
-import { Input, Page } from "components";
-import { Form, Formik } from "formik";
+import { Page } from "components";
 import Link from "next/link";
 import React from "react";
 import { Button } from "react-bootstrap";
-import { CampaignDoc, Session } from "types";
-import { rest } from "utilities";
+import { CampaignModel } from "types";
 import { getSession, signOut } from "utilities/auth";
 import { NextPage, NextPageContext } from "next";
 import Router from "next/router";
-import { getClient, getID, readQuery } from "utilities/db";
+import { getClient, readQuery } from "utilities/db";
 import { query as q } from "faunadb";
 
 interface DashboardProps {
-  session?: Session;
+  session?: any;
 }
 
 const Dashboard: NextPage<DashboardProps> = (props: any) => {
-  console.log(props)
   return (
     <Page error={props.error}>
       <h3>Welcome back {props.session?.user.data.username}!</h3>
@@ -39,11 +36,11 @@ export default Dashboard;
 
 function RecentGames(props: any) {
   const campaigns: JSX.Element[] = [];
-  props.campaigns.forEach((campaign: CampaignDoc) => {
+  props.campaigns.forEach((campaign: CampaignModel) => {
     campaigns.push(
       <>
-        <h5>{campaign.data.name}</h5>
-        <Link href={`/campaigns/${getID(campaign.ref)}`}>
+        <h5>{campaign.name}</h5>
+        <Link href={`/campaigns/${campaign.id}`}>
           Visit
         </Link>
       </>

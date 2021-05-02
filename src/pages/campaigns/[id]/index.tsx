@@ -3,8 +3,6 @@ import { NextPageContext } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
-import { UserProfileDoc } from "types";
-import { rest } from "utilities";
 import { getSession, requireClientLogin } from "utilities/auth";
 import { getClient, getID, readQuery } from "utilities/db";
 import { query as q } from "faunadb";
@@ -14,13 +12,10 @@ import { query as q } from "faunadb";
  * @param props 
  */
 export default function CampaignView(props: any) {
-  console.log(props)
   if (!props.campaign) { return <Page error={props.error}>Error</Page>; }
   const [ campaign, setCampaign ] = React.useState(props.campaign.data);
   const router = useRouter();
   const client = getClient();
-
-  console.log(props)
 
   function createInviteLink() {
     const inviteKey = "testAddress";
@@ -30,7 +25,7 @@ export default function CampaignView(props: any) {
         [ getID(props.campaign.ref), inviteKey ]
       )
     ).then((res) => {
-      console.log(res)
+      console.log("tmp")
     });
   }
 

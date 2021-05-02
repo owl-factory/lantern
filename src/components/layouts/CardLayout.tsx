@@ -1,4 +1,3 @@
-import { Content, ContentTypeDoc } from "../../types";
 import React from "react";
 import { Card } from "react-bootstrap";
 import { DynamicMolecule } from "./molecules";
@@ -6,16 +5,16 @@ import { Atom, Molecule } from "../../types/layouts";
 
 // The props for the base Card Layout
 interface CardLayoutProps {
-  content: Content;
-  contentType: ContentTypeDoc;
+  content: any;
+  contentType: any;
   rules: any;
 }
 
 // The props for the Card Layout Header and Body.
 interface CardLayoutChildProps {
-  contentType: ContentTypeDoc;
+  contentType: any;
   data: {
-    content: Content;
+    content: any;
   }
 }
 

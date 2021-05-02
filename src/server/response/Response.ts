@@ -19,7 +19,7 @@ export class HTTPHandler {
   constructor(req: NextApiRequest, res: NextApiResponse) {
     this.req = req;
     this.res = res;
-    this.ctx = { req, res, session: null };
+    this.ctx = { req, res };
   }
 
   public async handle(): Promise<void> {

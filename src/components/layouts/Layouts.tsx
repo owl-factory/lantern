@@ -2,14 +2,13 @@
 import React from "react";
 import { Formik, Form as FormikForm } from "formik";
 import { Button, Card, Col, Container, Form, Nav, Row, Tab } from "react-bootstrap";
-import { Entity } from "../../types/documents";
 import { DynamicMolecule } from "./molecules";
 import { Section } from "../../types/layouts/section";
 import { Atom, Molecule, Page } from "../../types/layouts";
 
 // Props for the base dynamic layout
 interface DynamicLayoutProps {
-  entity: Entity;
+  entity: any;
   onSubmit?: (values: Record<string, unknown>) => void;
 }
 
@@ -92,7 +91,7 @@ function DynamicPage(props: any) {
  * TODO - remove?
  */
 export function DynamicFormWrapper(props: any) {
-  if (props.onSubmit == undefined) {
+  if (props.onSubmit === undefined) {
     throw Error("This dynamic layout requires an onSubmit action.");
   }
 
