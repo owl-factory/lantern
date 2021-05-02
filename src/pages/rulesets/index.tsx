@@ -137,7 +137,7 @@ function RulesetFilter() {
  * @param initialRulesets The initial group of rulesets to render in the table
  * @param rulesetCount The initial count of rulesets retrievable
  */
-export default function Rulesets({ initialRulesets, rulesetCount }: RulesetProps): JSX.Element {
+export default function Rulesets({ initialRulesets, rulesetCount }: RulesetProps) {
   const [ modal, setModal ] = React.useState(false); // Boolean for rendering the modal
   function handleClose() { setModal(false); } // Handles closing the modal
 

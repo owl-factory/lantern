@@ -68,7 +68,7 @@ export async function authenticate(ctx?: CtxReq): Promise<any | null> {
   const session = getSession(ctx);
   const client = getClient(ctx);
   const id: any = await client.query(q.CurrentIdentity());
-  if (id.id === session?.user.ref["@ref"].id) {
+  if (id.id === session?.user.ref["@ref"]?.id) {
     return session;
   } else {
     return null;
@@ -93,6 +93,5 @@ export function requireClientLogin(session: any | null, ctx?: NextPageContext) {
     }
     return false;
   }
-
   return true;
 }
