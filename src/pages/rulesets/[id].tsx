@@ -33,7 +33,7 @@ const initialContentTypeSort = "name";
  * Deletes a single context type
  * @param context the content type context that indicates relevant data for deleting
  */
-async function deleteContentType(context: ContentTypeDoc): Promise<void> {
+async function deleteContentType(context: any): Promise<void> {
   // TODO - implement this
 }
 
