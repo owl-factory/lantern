@@ -1,5 +1,5 @@
 
-import { MessageModel } from "types/documents";
+import { MessageModel } from "types/models";
 
 // Describes the different kinds of events that may be used in a dispatch
 // TODO - review

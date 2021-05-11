@@ -6,6 +6,7 @@ import React from "react";
 import { getSession, requireClientLogin } from "utilities/auth";
 import { getClient, getID, readQuery } from "utilities/db";
 import { query as q } from "faunadb";
+import { mapFauna } from "utilities";
 
 /**
  * Renders a single campaign and the information inside
@@ -13,6 +14,11 @@ import { query as q } from "faunadb";
  */
 export default function CampaignView(props: any) {
   if (!props.campaign) { return <Page error={props.error}>Error</Page>; }
+  const test2 = JSON.parse(JSON.stringify(props.campaign));
+  console.log(test2)
+  // console.log(props.campaign)
+  const test = mapFauna(test2);
+  console.log(test)
   const [ campaign, setCampaign ] = React.useState(props.campaign.data);
   const router = useRouter();
   const client = getClient();
@@ -60,7 +66,7 @@ export default function CampaignView(props: any) {
   return (
     <Page error={props.error}>
       <h1>{campaign.name}</h1>
-      <Players/>
+      {/* <Players/> */}
     </Page>
   );
 }

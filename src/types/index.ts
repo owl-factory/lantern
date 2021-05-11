@@ -1,5 +1,5 @@
 export * from "./design";
-export * from "./documents";
+export * from "./models";
 export * from "./enums";
 export * from "./inputs";
 export * from "./layouts";

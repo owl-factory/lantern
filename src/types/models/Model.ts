@@ -1,9 +1,6 @@
 import { UserModel } from "types";
-
-// TODO - move this to a different file and make it, you know, work
-export function getUserID(): string {
-  return "1";
-}
+import { getClient, readQuery } from "utilities/db";
+import { query as q } from "faunadb";
 
 export interface ReceievedFaunaRef {
   "@ref": FaunaRef;
@@ -21,11 +18,14 @@ export interface FaunaRef {
   }
 }
 
-export class Model {
-  // protected keys = [];
-  protected createKeys = [];
-  protected updateKeys = [];
+export interface DocumentModelConfig {
+  collection: string;
 
+  findByIDMethod: string;
+}
+
+export abstract class DocumentModel {
+  // Core Model definition
   public id?: string;
   public ts?: number;
 
@@ -36,10 +36,40 @@ export class Model {
   public updatedAt?: Date;
   public updatedBy?: UserModel;
 
+  public static config: DocumentModelConfig;
+
   constructor(initialValues: unknown) {
     if (typeof initialValues === "string") {
       this.id = initialValues;
     }
+  }
+
+  public static async findByID(id: string) {
+    console.log('test')
+    const client = getClient();
+    let response: object;
+    // Call findByID-specific method
+    if (this.config.findByIDMethod) {
+      response = await readQuery(client.query(
+        q.Call(
+          `view_campaign_page`,
+          [id as string]
+        )
+      ));
+      console.log(response)
+    } else {
+      response = await readQuery(client.query(
+        q.Get(
+          q.Ref(q.Collection(this.config.collection), id)
+        )
+      ));
+    }
+
+    this.mapFauna("class", response);
+  }
+
+  protected static mapFauna(target: string, obj: FaunaDocument) {
+    return obj;
   }
 
   /**
@@ -66,11 +96,11 @@ export class Model {
   }
 
   /**
-   * Soft sets the 
+   * Soft sets the
    * @param key The key to store the datetime to, if any
    * @param datetime The datetime object, string, or number
    */
-  public softDateTimeSet(key: (keyof Model), datetime?: FaunaTime | Date | string | number): void {
+  public softDateTimeSet(key: (keyof DocumentModel), datetime?: FaunaTime | Date | string | number): void {
     if (datetime === undefined) { return; }
 
     // String or number case
@@ -94,7 +124,7 @@ export class Model {
     return;
   }
 
-  public softSet(key: keyof Model, value: unknown): void {
+  public softSet(key: keyof DocumentModel, value: unknown): void {
     if (value === undefined) { return; }
     this[key] = value as never;
   }
@@ -140,7 +170,7 @@ export interface CommonFaunaData {
 // export class CoreDocument {
 
 //   _doc?: unknown;
-  
+
 //   // The ID of the document
 //   ref?: object | string;
 

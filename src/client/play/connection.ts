@@ -2,7 +2,7 @@ import { Dispatch, DispatchEvent } from "types";
 import Peer, { DataConnection } from "peerjs";
 import { io } from "socket.io-client";
 import { GameServer } from ".";
-import { UserModel } from "types/documents/User";
+import { UserModel } from "types/models/User";
 
 /**
  * Runs all of the actions required to connect the current player to the socket, peer, and table.

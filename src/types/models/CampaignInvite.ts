@@ -1,5 +1,5 @@
 import { Ref } from "types/user";
-import { Model } from "./CoreDocument";
+import { Model } from "./Model";
 
 
 export class CampaignInvite extends Model {

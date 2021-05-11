@@ -1,4 +1,4 @@
-import { Model } from "types/documents/CoreDocument";
+import { DocumentModel } from "types/models/Model";
 import { CampaignModel } from "types";
 import { UserModel } from "./User";
 
@@ -6,7 +6,7 @@ export enum MessageType {
   Text,
 }
 
-export class MessageModel extends Model {
+export class MessageModel extends DocumentModel {
   campaign?: CampaignModel;
 
   // The user who sent the message
