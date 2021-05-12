@@ -1,27 +1,20 @@
-import { CommonFaunaData, FaunaRef, UserData } from "types";
-import { DocumentModel, FaunaDocument } from "./Model";
-import { UserModel } from "./User";
+
+import { CoreDocument, DocumentModel, FaunaDocument } from "./Model";
+import { UserDocument, UserModel } from "./User";
 
 /**
  * Represents the campaign and all information contained therein
  */
-export interface CampaignData extends CommonFaunaData {
+export interface CampaignDocument extends CoreDocument {
 
-  players: (FaunaRef | FaunaDocument<UserData>)[];
-
-
+  players?: UserDocument[];
   lastPlayed?: Date;
-
   allowLinkInvitation?: boolean;
-
   invitationAddress?: string
 }
 
-export class CampaignModel extends DocumentModel {
-  public static config = {
-    collection: "campaigns",
-    findByIDMethod: "view_campaign_page",
-  }
+export class CampaignModel extends DocumentModel implements CampaignDocument {
+
 
   players?: UserModel[];
   lastPlayed?: Date;

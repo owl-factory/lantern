@@ -6,7 +6,7 @@ import React from "react";
 import { getSession, requireClientLogin } from "utilities/auth";
 import { getClient, getID, readQuery } from "utilities/db";
 import { query as q } from "faunadb";
-import { mapFauna } from "utilities";
+import { mapFauna, rest } from "utilities";
 
 /**
  * Renders a single campaign and the information inside
@@ -14,12 +14,7 @@ import { mapFauna } from "utilities";
  */
 export default function CampaignView(props: any) {
   if (!props.campaign) { return <Page error={props.error}>Error</Page>; }
-  const test2 = JSON.parse(JSON.stringify(props.campaign));
-  console.log(test2)
-  // console.log(props.campaign)
-  const test = mapFauna(test2);
-  console.log(test)
-  const [ campaign, setCampaign ] = React.useState(props.campaign.data);
+  const [ campaign, setCampaign ] = React.useState(mapFauna(props.campaign));
   const router = useRouter();
   const client = getClient();
 
@@ -72,6 +67,8 @@ export default function CampaignView(props: any) {
 }
 
 CampaignView.getInitialProps = async (ctx: NextPageContext) => {
+  const res = await rest.get(`/api/campaigns/${ctx.query.id}`);
+  console.log("Hi:", res);
   const session = getSession(ctx);
   if (!requireClientLogin(session, ctx)) { return {}; }
   const client = getClient(ctx);

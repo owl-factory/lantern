@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { setSession } from "utilities/auth";
 import { getServerClient } from "utilities/db";
 import { query as q } from "faunadb";
+import { mapFauna } from "utilities";
 
 const checkEmail = /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i;
 
@@ -21,8 +22,8 @@ export default async function SignIn(req: NextApiRequest, res: NextApiResponse):
     )
   );
 
-  const user: any = await client.query(q.Get(instance));
-  delete user.data.email;
+  const user: any = mapFauna(await client.query(q.Get(instance)));
+  delete user.email;
   const session: any = { user, secret };
   setSession(session, { res });
 

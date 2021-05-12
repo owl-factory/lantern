@@ -1,6 +1,6 @@
-import { UserModel } from "types";
+import { UserDocument, UserModel } from "types";
 import { getClient, readQuery } from "utilities/db";
-import { query as q } from "faunadb";
+import { Client, query as q } from "faunadb";
 
 export interface ReceievedFaunaRef {
   "@ref": FaunaRef;
@@ -19,24 +19,37 @@ export interface FaunaRef {
 }
 
 export interface DocumentModelConfig {
-  collection: string;
-
-  findByIDMethod: string;
+  findByIDMethod?: string;
 }
 
-export abstract class DocumentModel {
+export interface CoreDocument {
+  id?: string;
+  collection?: string
+  ts?: number;
+
+  name?: string;
+  ownedBy?: UserDocument;
+  createdAt?: Date;
+  createdBy?: UserDocument;
+  updatedAt?: Date;
+  updatedBy?: UserDocument;
+}
+
+export abstract class DocumentModel implements CoreDocument {
   // Core Model definition
   public id?: string;
+  public collection!: string;
   public ts?: number;
 
   public name?: string;
-  public ownedBy?: UserModel;
+  public ownedBy?: UserDocument;
   public createdAt?: Date;
-  public createdBy?: UserModel;
+  public createdBy?: UserDocument;
   public updatedAt?: Date;
-  public updatedBy?: UserModel;
+  public updatedBy?: UserDocument;
 
-  public static config: DocumentModelConfig;
+  public abstract config: DocumentModelConfig;
+  static collection: string;
 
   constructor(initialValues: unknown) {
     if (typeof initialValues === "string") {
@@ -44,7 +57,7 @@ export abstract class DocumentModel {
     }
   }
 
-  public static async findByID(id: string) {
+  public static async _findByID(id: string) {
     console.log('test')
     const client = getClient();
     let response: object;
