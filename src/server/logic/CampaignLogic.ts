@@ -1,8 +1,9 @@
 import { getServerClient } from "utilities/db";
 import { query as q } from "faunadb";
-import { mapFauna, smoothFauna } from "utilities";
+import { mapFauna } from "utilities";
 import { CampaignDocument, UserDocument } from "types";
 import { CoreModelLogic } from "./CoreModelLogic";
+import { FaunaDocument } from "types/fauna";
 
 enum CampaignAccessLevels {
   GUEST,
@@ -24,6 +25,7 @@ export class CampaignLogic {
    * @param id The id of the campaign to fetch
    * @param myID The current user's ID
    * @param roles The roles of the user, if any
+   * @TODO - change to fetchCampaignByRef. ByID becomes a wrapper to build
    */
   public static async fetchCampaignByID(
     id: string,
@@ -31,12 +33,14 @@ export class CampaignLogic {
     roles?: string[]
   ): Promise<CampaignDocument | null> {
     const client = getServerClient();
-    const rawCampaign: Record<string, unknown> = await client.query(q.Get(q.Ref(q.Collection("campaigns"), id)));
+    const rawCampaign: FaunaDocument<CampaignDocument> = await client.query(
+      q.Get(q.Ref(q.Collection("campaigns"), id))
+    );
 
     if (!rawCampaign) { return null; }
     let campaign: CampaignDocument = mapFauna(rawCampaign);
-    const accessLevel = this.determineAccessLevel(campaign, myID, roles);
-    campaign = this.trimRestrictedFields(campaign, accessLevel);
+    const accessLevel = this.determineAccessLevel(campaign as CampaignDocument, myID, roles);
+    campaign = this.trimRestrictedFields(campaign as CampaignDocument, accessLevel);
 
     return campaign;
   }
@@ -71,8 +75,8 @@ export class CampaignLogic {
     if (accessLevel === CampaignAccessLevels.ADMIN || accessLevel === CampaignAccessLevels.OWNER) {
       return campaign;
     } else if (accessLevel === CampaignAccessLevels.PLAYER) {
-      return CoreModelLogic.trimRestrictedFields(campaign as Record<string, unknown>, allowedPlayerFields);
+      return CoreModelLogic.trimRestrictedFields(campaign, allowedPlayerFields);
     }
-    return CoreModelLogic.trimRestrictedFields(campaign as Record<string, unknown>, allowedGuestFields);
+    return CoreModelLogic.trimRestrictedFields(campaign, allowedGuestFields);
   }
 }

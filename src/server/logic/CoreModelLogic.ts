@@ -1,3 +1,5 @@
+import { CoreDocument } from "types";
+
 export class CoreModelLogic {
   /**
    * Trims the given document to only have the given fields. All others are discarded.
@@ -6,15 +8,16 @@ export class CoreModelLogic {
    * @returns A subset object of the given document
    */
   public static trimRestrictedFields(
-    doc: Record<string, unknown>,
+    doc: any,
     givenAllowedFields: string[]
-  ): Record<string, unknown> {
+  ): any {
     const allowedFields = [
-      "id", "collection", "ts", "name", "createdAt", "updatedAt", "ownedBy", "createdBy", "updatedBy",
+      "id", "collection", "ref", "ts", "name", "createdAt", "updatedAt", "ownedBy", "createdBy", "updatedBy",
     ].concat(givenAllowedFields);
 
-    const newDoc: Record<string, unknown> = {};
+    const newDoc: any = {};
     allowedFields.forEach((allowedField: string) => {
+      if (!(allowedField in doc)) { return; }
       newDoc[allowedField] = doc[allowedField];
     });
 

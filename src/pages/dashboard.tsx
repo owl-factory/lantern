@@ -2,7 +2,7 @@ import { Page } from "components";
 import Link from "next/link";
 import React from "react";
 import { Button } from "react-bootstrap";
-import { CampaignModel } from "types";
+import { CampaignDocument } from "types";
 import { getSession, signOut } from "utilities/auth";
 import { NextPage, NextPageContext } from "next";
 import Router from "next/router";
@@ -36,7 +36,7 @@ export default Dashboard;
 
 function RecentGames(props: any) {
   const campaigns: JSX.Element[] = [];
-  props.campaigns.forEach((campaign: CampaignModel) => {
+  props.campaigns.forEach((campaign: CampaignDocument) => {
     campaigns.push(
       <>
         <h5>{campaign.name}</h5>

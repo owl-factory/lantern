@@ -1,16 +1,13 @@
-import { FaunaRef } from "types";
+import { CoreDocument } from "types";
+import { FaunaDocument, FaunaRef } from "types/fauna";
 
 /**
  * Maps fauna into a flatter data format for easier readability and accessibility.
  * @param doc The document to map from Fauna into a flat function
  * @param format The format to return the fauna function as. Valid options are 'class' or 'struct'.
  */
- export function mapFauna(doc: Record<string, unknown>, format = "struct"): Record<string, unknown> {
-  doc = smoothFauna(doc);
+ export function mapFauna(doc: FaunaDocument<unknown>): CoreDocument {
   let mappedDoc: any = {};
-  if (format === "class") {
-    mappedDoc = determineClass(doc.ref as FaunaRef);
-  }
 
   // Nab all of the data data
   mappedDoc = mapLayer(doc.data, mappedDoc);
@@ -20,6 +17,7 @@ import { FaunaRef } from "types";
   const ref = parseRef(doc.ref);
   mappedDoc.id = ref.id;
   mappedDoc.ts = doc.ts;
+  mappedDoc.ref = doc.ref;
 
   if (!("collection" in mappedDoc)) {
     mappedDoc.collection = ref.collection;
@@ -47,10 +45,10 @@ import { FaunaRef } from "types";
  * Checks if the given data object is a Fauna ref.
  * @param data The data to check if it is a Fauna ref
  */
-function isFaunaRef(data: object): boolean {
+function isFaunaRef(data: Record<string, unknown>): boolean {
   if (typeof data !== "object") { return false; }
   if ("@ref" in data) { return true; }
-  if ("value" in data && typeof data.value === "object" && "id" in data.value) { return true; }
+  if (data.value && typeof data.value === "object" && "id" in data.value) { return true; }
   return false;
 }
 
@@ -76,27 +74,19 @@ function parseRef(ref: any): { id: string, collection: string } {
  * Determines if an object is a Fauna date.
  * @param data The data object to determine if a Fauna date
  */
-function isFaunaDate(data: object): boolean {
-  return "@ts" in data ;
+function isFaunaDate(data: Record<string, unknown>): boolean {
+  if ("@ts" in data) { return true; }
+  if (data.value && typeof data.value === "string" && Date.parse(data.value)) { return true; }
+  return false;
 }
 
 /**
  * Parses a Fauna date into a common javascript date
  * @param date The Fauna date to parse into a Date
  */
-function parseFaunaDate(date: object): Date {
-  return new Date(date["@ts"]);
-}
-
-/**
- * 
- * @param ref The Fauna ref to determine which class to use.
- */
-function determineClass(ref?: FaunaRef) {
-  // TODO - should this throw?
-  if (!ref) { return {}; }
-  // switch(ref.value.collection)
-  return {};
+function parseFaunaDate(date: Record<string, unknown>): Date {
+  if ("@ts" in date && date["@ts"]) { return new Date(date["@ts"] as string | number | Date); }
+  return new Date(date.value as string | number | Date);
 }
 
 function mapLayerItem(data: any) {
@@ -111,7 +101,10 @@ function mapLayerItem(data: any) {
     return data;
   }
   // Fauna Ref
-  if (isFaunaRef(data)) { return parseRef(data); }
+  if (isFaunaRef(data)) { 
+    const ref = parseRef(data);
+    return { ...ref, ref: data };
+  }
 
   // Fauna Object
   if ("ref" in data) { return mapFauna(data); }
