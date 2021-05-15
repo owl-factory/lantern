@@ -1,7 +1,7 @@
 import { MessageDocument } from "types/documents";
 import { Dispatch, DispatchEvent, GameState, HostPriorityQueue } from "types/reroll/play";
 import { rest } from "utilities/request";
-import { GameServer } from ".";
+import { GameServer } from "client/play";
 
 /**
 * Updates the game state from the given action

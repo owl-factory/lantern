@@ -1,4 +1,4 @@
-import { Section } from ".";
+import { Section } from "types/layouts";
 
 export interface Page {
   // The name of the page. It may be used in tabs, if any

@@ -25,7 +25,7 @@ const validationSchema = Yup.object({
 /**
  * Renders the form for logging in
  */
-export default function SignUpForm(): JSX.Element {
+export function SignUpForm(): JSX.Element {
 
   /**
    * Submits the form on successful validation
@@ -68,3 +68,4 @@ export default function SignUpForm(): JSX.Element {
     </Formik>
   );
 }
+export default SignUpForm;

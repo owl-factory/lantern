@@ -1,5 +1,5 @@
 import { DispatchEvent, HostPriorityQueue } from "types/reroll/play";
-import { GameServer } from "./GameServer";
+import { GameServer } from "client/play";
 
 /**
  * Adds an item to the host queue in it's desired priority

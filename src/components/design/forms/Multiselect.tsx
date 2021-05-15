@@ -1,6 +1,6 @@
 import React from "react";
-import { Select } from "./Forms";
-import { SelectProps } from "./Select";
+import { Select } from "components/design/forms/Forms";
+import { SelectProps } from "components/design/forms/Select";
 
 /**
  * A placeholder for a multiselect function that is more complex than the normal

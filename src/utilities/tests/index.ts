@@ -1,1 +1,1 @@
-export * from "./WithTestRouter";
+export * from "utilities/tests/WithTestRouter";

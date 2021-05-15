@@ -1,8 +1,8 @@
 
 import React from "react";
 import { Formik, Form as FormikForm } from "formik";
-import { Button, Card, Col, Container, Form, Nav, Row, Tab } from "react-bootstrap";
-import { DynamicMolecule } from "./molecules";
+import { Card, Col, Container, Nav, Row, Tab } from "react-bootstrap";
+import { DynamicMolecule } from "components/layouts";
 import { Atom, Molecule, Page, Section } from "types/layouts";
 
 // Props for the base dynamic layout

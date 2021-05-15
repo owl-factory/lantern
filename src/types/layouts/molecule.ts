@@ -1,4 +1,4 @@
-import { Atom, Display } from ".";
+import { Atom, Display } from "types/layouts";
 import { MoleculeType } from "types/enums";
 
 // Describes how to render a molecule wrapping a collection of atoms

@@ -1,5 +1,5 @@
 import { Page } from "components/design";
-import AuthenticationCard from "components/authetication/AuthenticationCard";
+import { AuthenticationCard } from "components/authentication";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";

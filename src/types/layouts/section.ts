@@ -1,4 +1,4 @@
-import { Width } from ".";
+import { Width } from "types/layouts";
 
 // Describes how to create a specific section.
 export interface Section {

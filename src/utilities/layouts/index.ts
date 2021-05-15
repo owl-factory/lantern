@@ -1,1 +1,1 @@
-export * from "./atoms";
+export * from "utilities/layouts/atoms";

@@ -1,5 +1,4 @@
-import { CampaignDocument, CoreDocument } from "types/documents";
-import { UserDocument } from "./User";
+import { CampaignDocument, CoreDocument, UserDocument } from "types/documents";
 
 export enum MessageType {
   Text,

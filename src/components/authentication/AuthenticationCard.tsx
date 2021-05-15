@@ -1,7 +1,6 @@
 import React, { ReactNode, useState } from "react";
 import { Button, Card } from "react-bootstrap";
-import SignInForm from "./SignInForm";
-import SignUpForm from "./SignUpForm";
+import { SignInForm, SignUpForm } from "components/authentication";
 
 interface AuthenticationCardProps {
   initialState?: AuthCardSection;
@@ -19,7 +18,7 @@ export enum AuthCardSection {
  * Renders an authentication card
  * @param props Contains the session
  */
-function AuthenticationCard(props: AuthenticationCardProps): JSX.Element {
+export function AuthenticationCard(props: AuthenticationCardProps): JSX.Element {
   const [section, setSection] = useState(props.initialState || AuthCardSection.login);
 
   let cardBody: ReactNode;

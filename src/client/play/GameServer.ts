@@ -3,13 +3,13 @@ import Peer, { DataConnection } from "peerjs";
 import { Socket } from "socket.io-client";
 import { UserDocument } from "types/documents";
 import { Dispatch, DispatchEvent, GameState, HostPriorityQueue } from "types/reroll/play";
-import * as connection from "./connection";
-import * as dispatch from "./dispatch";
-import * as host from "./host";
-import * as logging from "./logging";
-import * as message from "./message";
-import * as send from "./send";
-import * as socketEvents from "./socketEvents";
+import * as connection from "client/play/connection";
+import * as dispatch from "client/play/dispatch";
+import * as host from "client/play/host";
+import * as logging from "client/play/logging";
+import * as message from "client/play/message";
+import * as send from "client/play/send";
+import * as socketEvents from "client/play/socketEvents";
 
 /**
  * All of the game server functionality

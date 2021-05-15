@@ -1,5 +1,4 @@
-import { CoreDocument } from ".";
-import { CampaignDocument } from "./Campaign";
+import { CampaignDocument, CoreDocument } from "types/documents";
 
 
 export interface CampaignInviteDocument extends CoreDocument {

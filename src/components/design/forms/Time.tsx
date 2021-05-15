@@ -1,5 +1,5 @@
 import React from "react";
-import { Input } from "./Input";
+import { Input } from "components/design/forms/Input";
 import { CoreInputProps } from "types/design/form";
 
 /**

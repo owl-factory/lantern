@@ -1,4 +1,4 @@
-import { Display, Width } from ".";
+import { Display, Width } from "types/layouts";
 import { AtomType } from "types/enums";
 
 // Describes the structure of an atom object for properly rendering all atoms

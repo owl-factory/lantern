@@ -1,6 +1,5 @@
 
-import { CoreDocument } from "./CoreDocument";
-import { UserDocument } from "./User";
+import { CoreDocument, UserDocument } from "types/documents";
 
 /**
  * Represents the campaign and all information contained therein

@@ -29,6 +29,8 @@
       "components/*": ["src/components/*"],
       "server": ["src/server"],
       "server/*": ["src/server/*"],
+      "tests": ["src/tests"],
+      "tests/*": ["src/tests/*"],
       "types": ["src/types"],
       "types/*": ["src/types/*"],
       "utilities": ["src/utilities"],

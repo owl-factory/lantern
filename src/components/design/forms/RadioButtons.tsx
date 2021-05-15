@@ -1,5 +1,5 @@
 import React from "react";
-import { FormCheck } from "./FormCheck";
+import { FormCheck } from "components/design/forms/FormCheck";
 import { CoreFormCheckProps } from "types/design/form";
 
 interface RadioButtonProps extends CoreFormCheckProps {

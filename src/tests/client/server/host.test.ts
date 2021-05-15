@@ -1,4 +1,4 @@
-import { MockGameServer } from "./MockGameServer";
+import { MockGameServer } from "tests/client/server/MockGameServer";
 
 
 

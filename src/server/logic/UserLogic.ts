@@ -3,7 +3,7 @@ import { UserDocument } from "types/documents";
 import { FaunaDocument, FaunaRef } from "types/fauna";
 import { mapFauna } from "utilities/fauna";
 import { getServerClient } from "utilities/db";
-import { CoreModelLogic } from "./CoreModelLogic";
+import { CoreModelLogic } from "server/logic";
 
 const guestFields = ["username"];
 

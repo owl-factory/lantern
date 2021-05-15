@@ -1,14 +1,16 @@
 import React from "react";
 import { AtomType } from "types/enums";
 import { AtomProps } from "types/layouts";
-import { Action } from "./Action";
-import { AtomError } from "./AtomError";
-import { LabeledText } from "./LabeledText";
-import { MultiselectInput } from "./Multiselect";
-import { Submit } from "./Submit";
-import { TernaryInput } from "./TernaryInput";
-import { Text } from "./Text";
-import { TextInput } from "./TextInput";
+import {
+  Action,
+  AtomError,
+  LabeledText,
+  MultiselectInput,
+  Submit,
+  TernaryInput,
+  Text,
+  TextInput,
+} from "components/layouts/atoms";
 
 /**
  * Renders a singlular atom
@@ -41,11 +43,11 @@ export function DynamicAtom(props: AtomProps): JSX.Element {
   }
 }
 
-export * from "./Action";
-export * from "./AtomError";
-export * from "./LabeledText";
-export * from "./Multiselect";
-export * from "./Submit";
-export * from "./TernaryInput";
-export * from "./Text";
-export * from "./TextInput";
+export * from "components/layouts/atoms/Action";
+export * from "components/layouts/atoms/AtomError";
+export * from "components/layouts/atoms/LabeledText";
+export * from "components/layouts/atoms/Multiselect";
+export * from "components/layouts/atoms/Submit";
+export * from "components/layouts/atoms/TernaryInput";
+export * from "components/layouts/atoms/Text";
+export * from "components/layouts/atoms/TextInput";

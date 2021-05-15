@@ -1,5 +1,5 @@
 import { DispatchEvent } from "types/reroll/play";
-import { GameServer } from "./GameServer";
+import { GameServer } from "client/play";
 
 /**
  * Informs the current player that they have successfully joined the table

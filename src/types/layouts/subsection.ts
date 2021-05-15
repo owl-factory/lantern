@@ -1,4 +1,4 @@
-import { Atom, Molecule, Width } from ".";
+import { Atom, Molecule, Width } from "types/layouts";
 
 // Describes how to render a single subsection and all of the molecules
 // and atoms therein
