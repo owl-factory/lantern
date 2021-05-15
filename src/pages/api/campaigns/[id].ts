@@ -1,5 +1,5 @@
 import { NextApiRequest } from "next";
-import { createEndpoint, HTTPHandler } from "server";
+import { HTTPHandler, createEndpoint } from "server";
 import { CampaignLogic } from "server/logic";
 import { UserLogic } from "server/logic/UserLogic";
 import { UserDocument } from "types";

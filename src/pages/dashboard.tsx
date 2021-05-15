@@ -6,8 +6,7 @@ import { CampaignDocument } from "types";
 import { getSession, signOut } from "utilities/auth";
 import { NextPage, NextPageContext } from "next";
 import Router from "next/router";
-import { getClient, readQuery } from "utilities/db";
-import { query as q } from "faunadb";
+import { rest } from "utilities";
 
 interface DashboardProps {
   session?: any;
@@ -20,7 +19,7 @@ const Dashboard: NextPage<DashboardProps> = (props: any) => {
 
       <Button onClick={() => signOut()}>Log Out</Button>
       {/* Recent Games */}
-      <RecentGames campaigns={props.data.data}/>
+      <RecentGames campaigns={props.campaigns}/>
 
       {/* Characters */}
       <h4>My Characters</h4>
@@ -29,8 +28,6 @@ const Dashboard: NextPage<DashboardProps> = (props: any) => {
     </Page>
   );
 };
-
-
 
 export default Dashboard;
 
@@ -74,10 +71,8 @@ Dashboard.getInitialProps = async (ctx: NextPageContext) => {
     return {};
   }
 
-  const client = getClient(ctx);
-  const { data, error } = await readQuery(client.query(
-    q.Call("fetch_my_campaigns", [ 6 ])
-  ));
+  const result = await rest.get(`/api/dashboard`);
+  console.log(result)
 
-  return { session, data, error };
+  return { session, campaigns: result.data.campaigns };
 };

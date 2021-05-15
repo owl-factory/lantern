@@ -57,7 +57,7 @@ function isFaunaRef(data: Record<string, unknown>): boolean {
  * id and collection of the ref.
  * @param ref The ref object to parse
  */
-function parseRef(ref: any): { id: string, collection: string } {
+export function parseRef(ref: any): { id: string, collection: string } {
   let id, collection = "";
   if ("@ref" in ref && "id" in ref["@ref"]) {
     id = ref["@ref"].id;

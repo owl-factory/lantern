@@ -45,6 +45,17 @@ export class CampaignLogic {
     return campaign;
   }
 
+  public static async fetchMyCampaigns(myID: string, roles?: string[]): Promise<CampaignDocument[]> {
+    const campaigns = await CoreModelLogic.fetchByIndex(
+      "my_campaigns",
+      [q.Ref(q.Collection("users"), myID)],
+      ["ref", "name"],
+      { size: 6 }
+    );
+
+    return campaigns;
+  }
+
   /**
    * Determines which access level the current user has access to
    * @param campaign The campaign we are determining access level of
