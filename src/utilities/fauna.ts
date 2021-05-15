@@ -89,6 +89,10 @@ function parseFaunaDate(date: Record<string, unknown>): Date {
   return new Date(date.value as string | number | Date);
 }
 
+/**
+ * Processes and maps a single item from a document object. 
+ * @param data The data to process and map
+ */
 function mapLayerItem(data: any) {
   if (typeof data !== "object") { return data; }
   // Date?
@@ -111,16 +115,4 @@ function mapLayerItem(data: any) {
 
   // Just an object layer
   return mapLayer(data, {});
-}
-
-/**
- * This sin against humanity ensures that fauna responses are in a standard format no matter where they
- * are. Eg, Ref(Collection("x"), "id") is ref { "@ref": { id, ... }}
- *
- * TODO - remove this by making other isX or parseX code better
- *
- * @param fauna The raw fauna object
- */
-export function smoothFauna(fauna: object): Record<string, unknown> {
-  return JSON.parse(JSON.stringify(fauna));
 }

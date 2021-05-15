@@ -12,6 +12,13 @@ interface IndexResponse {
 }
 
 export class CoreModelLogic {
+  /**
+   * Handles the shared code for fetching by an index and putting into documents
+   * @param index The index to search through
+   * @param terms The terms in order of usage encapsulated in an array
+   * @param values The field names of the values, in the order they are returned
+   * @param paginationOptions Options for paginaton, such as size
+   */
   public static async fetchByIndex(
     index: string,
     terms: (string | Expr)[],
@@ -49,7 +56,6 @@ export class CoreModelLogic {
       parsedResult.push(parsedItem);
     });
 
-    console.log(parsedResult);
     return parsedResult;
   }
 

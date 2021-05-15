@@ -31,26 +31,6 @@ export default function CampaignView(props: any): JSX.Element {
     });
   }
 
-  function frontEndTest1() {
-    client.query(q.Map(
-      new Array(50),
-      q.Lambda("x", q.Get(q.Ref(q.Collection("campaigns"), router.query.id as string)))))
-    .then((ret: any) => {
-      console.log(ret);
-      setRef(ret[0].ref);
-    });
-  }
-
-  function frontEndTest2() {
-    client.query(q.Map(
-      new Array(50),
-      q.Lambda("x", q.Get(ref as unknown as ExprArg))))
-    .then((ret: any) => {
-      console.log(ret);
-    });
-  }
-
-
   function Players() {
     const players: JSX.Element[] = [];
     const inviteAddress = `/campaigns/${router.query.id}/invite/${props.campaign.invitationAddress}`;
@@ -68,11 +48,8 @@ export default function CampaignView(props: any): JSX.Element {
         <h2>Players</h2>
         {players}
         Invite By Link? {props.campaign.allowLinkInvitation ? "Enabled" : "Disabled"}<br/>
-        <Button className="btn-sm" type="button" onClick={frontEndTest1}>
+        <Button className="btn-sm" type="button" onClick={createInviteLink}>
           Create Invite
-        </Button><br/>
-        <Button className="btn-sm" type="button" onClick={frontEndTest2}>
-          Create Invite 2
         </Button><br/>
         {props.campaign.allowLinkInvitation ?
           <Link href={inviteAddress}>{inviteAddress}</Link> : <></>

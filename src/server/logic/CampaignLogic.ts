@@ -5,6 +5,7 @@ import { CampaignDocument, UserDocument } from "types";
 import { CoreModelLogic } from "./CoreModelLogic";
 import { FaunaDocument } from "types/fauna";
 
+// The different levels of access for a campaign
 enum CampaignAccessLevels {
   GUEST,
   PLAYER,
@@ -45,6 +46,11 @@ export class CampaignLogic {
     return campaign;
   }
 
+  /**
+   * Fetches a number of campaigns that the current user is a part of
+   * @param myID The current user's ID
+   * @param roles The current user's roles
+   */
   public static async fetchMyCampaigns(myID: string, roles?: string[]): Promise<CampaignDocument[]> {
     const campaigns = await CoreModelLogic.fetchByIndex(
       "my_campaigns",

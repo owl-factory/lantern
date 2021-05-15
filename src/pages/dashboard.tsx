@@ -72,7 +72,6 @@ Dashboard.getInitialProps = async (ctx: NextPageContext) => {
   }
 
   const result = await rest.get(`/api/dashboard`);
-  console.log(result)
 
-  return { session, campaigns: result.data.campaigns };
+  return { session, campaigns: (result as any).data.campaigns };
 };
