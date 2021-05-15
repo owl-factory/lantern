@@ -1,6 +1,6 @@
 import React from "react";
 import { Tab } from "react-bootstrap";
-import { Section } from "../../types/layouts";
+import { Section } from "types/layouts";
 import { DynamicFormWrapper, DynamicSection } from "./Layouts";
 
 /**

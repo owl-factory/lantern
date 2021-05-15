@@ -1,6 +1,6 @@
 import React from "react";
 import { Input } from "./Input";
-import { CoreInputProps } from "../../../types/design/form";
+import { CoreInputProps } from "types/design/form";
 
 interface TextAreaProps extends CoreInputProps {
   rows?: number;

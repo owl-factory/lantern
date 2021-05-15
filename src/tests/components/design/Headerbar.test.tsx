@@ -1,6 +1,6 @@
 import React from "react";
 import renderer from "react-test-renderer";
-import HeaderBar from "../../../components/design/HeaderBar";
+import HeaderBar from "components/design";
 
 describe('Render Headerbar', () => {
   it('renders correctly', () => {

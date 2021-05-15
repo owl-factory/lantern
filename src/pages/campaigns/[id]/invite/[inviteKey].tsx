@@ -1,5 +1,6 @@
 import React from "react";
-import { Button, Page } from "components";
+import { Button } from "components/style";
+import { Page } from "components/design";
 import { NextPageContext } from "next";
 import Link from "next/link";
 import { getSession, requireClientLogin } from "utilities/auth";

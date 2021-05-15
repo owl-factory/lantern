@@ -2,9 +2,9 @@ import Tooltip from "components/design/Tooltip";
 import { Form, Formik } from "formik";
 import { observer } from "mobx-react-lite";
 import React from "react";
-import { MessageDocument } from "types";
-import { Select, TextArea } from "../..";
-import { GameServer } from "../../../client";
+import { MessageDocument } from "types/documents";
+import { Select, TextArea } from "components/design/forms";
+import { GameServer } from "client/play";
 
 interface ChatProps {
   server: GameServer;

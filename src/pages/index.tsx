@@ -1,4 +1,4 @@
-import { Page } from "components";
+import { Page } from "components/design";
 import AuthenticationCard from "components/authetication/AuthenticationCard";
 import Link from "next/link";
 import { useRouter } from "next/router";

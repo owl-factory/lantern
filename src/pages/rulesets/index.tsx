@@ -1,18 +1,13 @@
 import { Form, Formik } from "formik";
 import React from "react";
 import { Button, Card, Col, FormGroup, FormLabel, Row } from "react-bootstrap";
-import Modal from "../../components/design/Modal";
-import Page from "../../components/design/Page";
-import { ErrorMessage, Input } from "../../components/design/forms/Forms";
-import request from "../../utilities/request";
-import {  MdBlock, MdBuild, MdInfo } from "react-icons/md";
-import ContextMenu from "../../components/design/contextMenus/ContextMenu";
-import { ContextMenuBuilder } from "../../utilities/design/contextMenu";
-import { TableBuilder } from "../../utilities/design/table";
-import { TableComponentProps } from "../../types";
+import { ContextMenu, ErrorMessage, fetchContentResponse, IndexTable, Input, Modal, Page } from "components/design";
+import request from "utilities/request";
+import { MdBlock, MdBuild, MdInfo } from "react-icons/md";
+import { ContextMenuBuilder, TableBuilder } from "utilities/design";
+import { TableComponentProps } from "types/design";
 import { useRouter } from "next/router";
 import * as Yup from "yup";
-import { IndexTable, fetchContentResponse } from "../../components";
 
 // The props for the RulesetPage
 interface RulesetProps {

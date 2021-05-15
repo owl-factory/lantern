@@ -1,7 +1,8 @@
-import { Dispatch, DispatchEvent, GameState, HostPriorityQueue, UserDocument } from "types";
 import { makeAutoObservable } from "mobx";
 import Peer, { DataConnection } from "peerjs";
 import { Socket } from "socket.io-client";
+import { UserDocument } from "types/documents";
+import { Dispatch, DispatchEvent, GameState, HostPriorityQueue } from "types/reroll/play";
 import * as connection from "./connection";
 import * as dispatch from "./dispatch";
 import * as host from "./host";

@@ -47,7 +47,7 @@ function PaginationCell(props: PaginationCellProps) {
  * Renders pagination and handles pagination-related actions
  * @param props see PaginationProps
  */
-function Pagination(props: PaginationProps): JSX.Element {
+export function Pagination(props: PaginationProps): JSX.Element {
   const perPage = (props.pageState.perPage >= 1) ? props.pageState.perPage : 1;
   let maxPage = Math.ceil((props.pageState.totalCount) / perPage);
   if (maxPage === 0) { maxPage = 1; } // Prevents issues with zero items

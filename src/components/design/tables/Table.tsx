@@ -1,7 +1,7 @@
 import React from "react";
 import { Table as BSTable } from "react-bootstrap";
-import { MdUnfoldMore, MdExpandLess, MdExpandMore } from "react-icons/md";
-import { Column, TableDataType } from "../../../types/design/table";
+import { MdExpandLess, MdExpandMore, MdUnfoldMore } from "react-icons/md";
+import { Column, TableDataType } from "types/design/table";
 
 type RowAction = (index: number, data: TableDataType, globalData?: TableDataType) => void;
 

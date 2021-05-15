@@ -1,6 +1,6 @@
 import React from "react";
 import renderer from "react-test-renderer";
-import Tooltip from "../../../components/design/Tooltip";
+import { Tooltip } from "components/design";
 
 describe('renders Tooltip', () => {
   it('renders correctly', () => {

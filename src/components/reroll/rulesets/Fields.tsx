@@ -1,12 +1,11 @@
 import { Form, Formik } from "formik";
-import { update } from "lodash";
 import React from "react";
 import { Table } from "react-bootstrap";
 import { MdBlock, MdBuild } from "react-icons/md";
-import { Col, ContextMenu, Row } from "../..";
-import { fieldTypes, FieldTypeEnum } from "../../../types";
-import { ContextMenuBuilder } from "../../../utilities";
-import { FloatingLabel, Input, Select } from "../../design";
+import { ContextMenu, FloatingLabel, Input, Select } from "components/design";
+import { ContextMenuBuilder } from "utilities/design";
+import { FieldTypeEnum, fieldTypes } from "types/enums";
+import { Col, Row } from "components/style";
 
 // TODO
 type FieldType = any;

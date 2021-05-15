@@ -2,7 +2,7 @@ import Adapter from 'enzyme-adapter-react-16';
 import { configure, mount } from "enzyme";
 import React from "react";
 import renderer from "react-test-renderer";
-import Pagination, { PageState } from "../../../components/design/Pagination";
+import { PageState, Pagination } from "components/design";
 
 configure({adapter: new Adapter()});
 

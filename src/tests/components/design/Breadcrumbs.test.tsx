@@ -1,7 +1,7 @@
 import React from "react";
 import renderer from "react-test-renderer";
-import Breadcrumbs from "../../../components/design/Breadcrumbs";
-import { WithTestRouter } from "../../../utilities/tests/WithTestRouter";
+import Breadcrumbs from "components/design/Breadcrumbs";
+import { WithTestRouter } from "utilities/tests/WithTestRouter";
 
 const push = jest.fn();
 

@@ -1,5 +1,5 @@
-import { PageState } from "../components/design/Pagination";
-import { Options, SortByObject, SortByType } from "../types/inputs/options";
+import { PageState } from "components/design";
+import { Options, SortByObject, SortByType } from "types/inputs";
 
 /**
  * Formats a sort by string or object, if needed

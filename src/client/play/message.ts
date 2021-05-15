@@ -1,4 +1,5 @@
-import { DispatchEvent, MessageDocument, UserDocument } from "types";
+import { DispatchEvent } from "types/reroll/play";
+import { MessageDocument } from "types/documents";
 import { GameServer } from "./GameServer";
 
 export function fireTextMessage(this: GameServer, message: MessageDocument): void {

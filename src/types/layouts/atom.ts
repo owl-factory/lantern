@@ -1,5 +1,5 @@
 import { Display, Width } from ".";
-import { AtomType } from "../enums/atomType";
+import { AtomType } from "types/enums";
 
 // Describes the structure of an atom object for properly rendering all atoms
 export interface Atom {

@@ -1,5 +1,5 @@
-import { CoreDocument } from "types";
-import { FaunaDocument, FaunaRef } from "types/fauna";
+import { CoreDocument } from "types/documents";
+import { FaunaDocument } from "types/fauna";
 
 /**
  * Maps fauna into a flatter data format for easier readability and accessibility.

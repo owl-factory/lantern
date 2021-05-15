@@ -1,4 +1,4 @@
-import { DispatchEvent, HostPriorityQueue } from "types";
+import { DispatchEvent, HostPriorityQueue } from "types/reroll/play";
 import { GameServer } from "./GameServer";
 
 /**

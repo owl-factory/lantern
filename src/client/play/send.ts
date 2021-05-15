@@ -1,4 +1,4 @@
-import { Dispatch } from "types";
+import { Dispatch } from "types/reroll/play";
 import { GameServer } from ".";
 
 /**

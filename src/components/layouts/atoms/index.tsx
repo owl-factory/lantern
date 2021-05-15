@@ -1,6 +1,6 @@
 import React from "react";
-import { AtomType } from "../../../types/enums/atomType";
-import { AtomProps } from "../../../types/layouts/atom";
+import { AtomType } from "types/enums";
+import { AtomProps } from "types/layouts";
 import { Action } from "./Action";
 import { AtomError } from "./AtomError";
 import { LabeledText } from "./LabeledText";

@@ -1,8 +1,8 @@
 import React from "react";
 import { Form, Formik } from "formik";
 import Table from "./Table";
-import Pagination, { PageState } from "../Pagination";
-import { TableBuilder } from "../../../utilities";
+import { PageState, Pagination } from "components/design";
+import { TableBuilder } from "utilities/design";
 
 
 interface newFilterState {

@@ -1,7 +1,7 @@
 import {  query as q } from "faunadb";
-import { UserDocument } from "types";
+import { UserDocument } from "types/documents";
 import { FaunaDocument, FaunaRef } from "types/fauna";
-import { mapFauna } from "utilities";
+import { mapFauna } from "utilities/fauna";
 import { getServerClient } from "utilities/db";
 import { CoreModelLogic } from "./CoreModelLogic";
 

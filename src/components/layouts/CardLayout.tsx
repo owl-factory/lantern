@@ -1,7 +1,7 @@
 import React from "react";
 import { Card } from "react-bootstrap";
 import { DynamicMolecule } from "./molecules";
-import { Atom, Molecule } from "../../types/layouts";
+import { Atom, Molecule } from "types/layouts";
 
 // The props for the base Card Layout
 interface CardLayoutProps {

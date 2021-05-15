@@ -1,23 +1,11 @@
-import { Page } from "components";
+import { Page } from "components/design";
 import React from "react";
-import { CampaignModel } from "types";
-import { isClient } from "utilities";
+import { isClient } from "utilities/tools";
 
-export default function Test() {
-  React.useEffect(() => {
-    console.log(typeof process)
-    test();
-
-  }, [])
-
-  async function test() {
-    const result = await CampaignModel.findByID("295957071440904710");
-    console.log(result);
+export default function Test(): JSX.Element {
+  if (isClient) {
+    console.log("hop")
   }
-
- if (isClient) {
-   console.log("hop")
- }
 
   return (
     <Page>

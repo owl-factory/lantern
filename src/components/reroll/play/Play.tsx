@@ -1,10 +1,10 @@
 import React from "react";
-import { DispatchEvent } from "types";
+import { DispatchEvent } from "types/reroll/play";
 import { Chat } from "./Chat";
 
-import { GameServer } from "client";
+import { GameServer } from "client/play";
 import { observer } from "mobx-react-lite";
-import { rest } from "utilities";
+import { rest } from "utilities/request";
 import { useRouter } from "next/router";
 
 const gameServer = new GameServer();
