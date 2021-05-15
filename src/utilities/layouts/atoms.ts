@@ -1,4 +1,4 @@
-import { Display } from "../../types/layouts";
+import { Display } from "types/layouts";
 
 /**
  * Finds the value for a given key in the dynamic or static values

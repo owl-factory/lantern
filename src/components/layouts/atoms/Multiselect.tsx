@@ -1,9 +1,9 @@
 import React from "react";
 import { Col, Form } from "react-bootstrap";
-import { findValue, renderDisplayClasses } from "../../../utilities/layouts/atoms";
-import { AtomProps } from "../../../types/layouts/atom";
-import { Multiselect } from "../../design/forms/Forms";
-import { AtomError } from "../atoms/AtomError";
+import { findValue, renderDisplayClasses } from "utilities/layouts";
+import { AtomProps } from "types/layouts";
+import { Multiselect } from "components/design/forms";
+import { AtomError } from "components/layouts";
 
 /**
  * Renders an input that allows for selecting multiple options

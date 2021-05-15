@@ -1,6 +1,7 @@
 import { NextApiRequest } from "next";
-import { HTTPHandler, createEndpoint } from "server";
+import { HTTPHandler } from "server/response";
 import { CampaignLogic } from "server/logic";
+import { createEndpoint } from "server/utilities";
 
 /**
  * Creates a single new ruleset

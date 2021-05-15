@@ -1,12 +1,13 @@
 import React from "react";
-import { Button, Input, Page, Select } from "components";
+import { Input, Page, Select } from "components/design";
 import { Form, Formik } from "formik";
-import { CampaignDocument } from "types";
+import { CampaignDocument } from "types/documents";
 import { useRouter } from "next/router";
 import { NextPageContext } from "next";
 import { getSession, requireClientLogin } from "utilities/auth";
 import { getClient, getID, readQuery, unwrapRefs } from "utilities/db";
 import { query as q } from "faunadb";
+import { Button } from "components/style";
 
 
 interface RestResponse<T> {

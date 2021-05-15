@@ -1,6 +1,6 @@
 import React from "react";
-import { AtomProps } from "../../../types/layouts/atom";
-import { findValue } from "../../../utilities/layouts/atoms";
+import { AtomProps } from "types/layouts";
+import { findValue } from "utilities/layouts";
 
 /**
  * Simply renders a spot of text pulled from a static or dynamic source

@@ -1,4 +1,4 @@
-import { Page } from ".";
+import { Page } from "types/layouts";
 
 // TODO - this might be removed for more specific layouts
 export interface DynamicLayout {

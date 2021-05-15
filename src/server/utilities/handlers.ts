@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import HTTPHandler from "../../server/response/Response";
+import { HTTPHandler } from "server/response";
 
 export interface CreateEndpointOptions {
   GET?: (this: HTTPHandler, req: NextApiRequest) => Promise<void>;

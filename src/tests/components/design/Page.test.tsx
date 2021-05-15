@@ -1,6 +1,6 @@
 import React from "react";
 import renderer from "react-test-renderer";
-import Page from "../../../components/design/Page";
+import Page from "components/design";
 
 describe('renders Page', () => {
   it('renders correctly', () => {

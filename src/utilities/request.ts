@@ -1,5 +1,5 @@
 import fetch from "cross-fetch";
-import { ServerResponse } from "../types/utilities/response";
+import { ServerResponse } from "types/utilities";
 
 // The default request initialization.
 const defaultRequestInit: RequestInit = {

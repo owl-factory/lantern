@@ -1,9 +1,9 @@
 import { Form, Formik } from "formik";
 import { NextPageContext } from "next";
 import React from "react";
-import { LayoutBuilder, Page } from "../../components";
-import { Fields } from "../../components/reroll/rulesets/Fields";
-import { FieldType } from "../../types";
+import { Page } from "components/design";
+import { Fields, LayoutBuilder } from "components/reroll/rulesets";
+import { FieldType } from "types/documents";
 
 interface ContentTypePageProps {
   initialContentType: any;

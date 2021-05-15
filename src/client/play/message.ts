@@ -1,5 +1,6 @@
-import { DispatchEvent, MessageDocument, UserDocument } from "types";
-import { GameServer } from "./GameServer";
+import { DispatchEvent } from "types/reroll/play";
+import { MessageDocument } from "types/documents";
+import { GameServer } from "client/play";
 
 export function fireTextMessage(this: GameServer, message: MessageDocument): void {
   // message.author = new UserDocument(this.user.id as string);

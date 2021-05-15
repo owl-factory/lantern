@@ -1,2 +1,2 @@
-export * from "./handlers";
-export * from "./resolvers";
+export * from "server/utilities/handlers";
+export * from "server/utilities/resolvers";

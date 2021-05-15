@@ -1,5 +1,5 @@
-import { Dispatch } from "types";
-import { GameServer } from ".";
+import { Dispatch } from "types/reroll/play";
+import { GameServer } from "client/play";
 
 /**
  * Sends packaged data to all users

@@ -1,10 +1,9 @@
 import React from "react";
-import { MoleculeType } from "../../../types/enums";
-import { Atom } from "../../../types/layouts";
-import { Molecule } from "../../../types/layouts/molecule";
-import { renderDisplayClasses } from "../../../utilities/layouts/atoms";
-import { DynamicAtom } from "../atoms";
-import { AccordionMolecule } from "./Accordion";
+import { MoleculeType } from "types/enums";
+import { Atom, Molecule } from "types/layouts/";
+import { renderDisplayClasses } from "utilities/layouts";
+import { DynamicAtom } from "components/layouts";
+import { AccordionMolecule } from "components/layouts/molecules";
 
 interface MoleculeProps {
   // The molecule or atom to render
@@ -42,4 +41,4 @@ export function DynamicMolecule(props: MoleculeProps) {
   }
 }
 
-export * from "./Accordion";
+export * from "components/layouts/molecules/Accordion";

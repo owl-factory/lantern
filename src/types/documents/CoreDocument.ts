@@ -1,4 +1,4 @@
-import { UserDocument } from "types";
+import { UserDocument } from "types/documents";
 import { FaunaRef } from "types/fauna";
 
 export interface CoreDocument {

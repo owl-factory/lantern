@@ -1,2 +1,2 @@
-export * from "./contextMenu";
-export * from "./table";
+export * from "utilities/design/contextMenu";
+export * from "utilities/design/table";

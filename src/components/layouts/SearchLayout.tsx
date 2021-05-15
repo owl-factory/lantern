@@ -1,7 +1,7 @@
 import React from "react";
 import { Tab } from "react-bootstrap";
-import { Section } from "../../types/layouts";
-import { DynamicFormWrapper, DynamicSection } from "./Layouts";
+import { Section } from "types/layouts";
+import { DynamicFormWrapper, DynamicSection } from "components/layouts";
 
 /**
  * Renders the search layout.

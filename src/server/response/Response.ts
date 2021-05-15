@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { Context } from "types";
+import { Context } from "types/server";
 
 type RequestFunction = (req: NextApiRequest, res: NextApiResponse) => void;
 type PossibleMethods = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";

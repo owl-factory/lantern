@@ -1,4 +1,4 @@
-import { GameServer } from ".";
+import { GameServer } from "client/play";
 
 /**
  * A debug log for printing out logging information in testing

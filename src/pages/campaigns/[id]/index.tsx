@@ -1,12 +1,13 @@
-import { Button, Page } from "components";
+import { Page } from "components/design";
+import { Button } from "components/style";
 import { NextPageContext } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
 import { getSession, requireClientLogin } from "utilities/auth";
 import { getClient } from "utilities/db";
-import { ExprArg, query as q } from "faunadb";
-import { rest } from "utilities";
+import { query as q } from "faunadb";
+import { rest } from "utilities/request";
 
 /**
  * Renders a single campaign and the information inside

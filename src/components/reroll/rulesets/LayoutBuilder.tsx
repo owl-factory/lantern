@@ -1,5 +1,5 @@
 import React from "react";
-import { Toolbox } from "../..";
+import { Toolbox } from "components/design";
 
 interface LayoutBuilderProps {
   layout: any;

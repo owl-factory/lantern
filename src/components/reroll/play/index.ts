@@ -1,2 +1,2 @@
-export * from "./Chat";
-export * from "./Play";
+export * from "components/reroll/play/Chat";
+export * from "components/reroll/play/Play";

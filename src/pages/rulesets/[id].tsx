@@ -1,3 +1,4 @@
+import { Breadcrumbs, ContextMenu, IndexTable, Input, Modal, Page } from "components/design";
 import { ErrorMessage, Form, Formik } from "formik";
 import { NextPageContext } from "next";
 import Error from 'next/error';
@@ -5,9 +6,9 @@ import { useRouter } from "next/router";
 import React from "react";
 import { Button, Card, Col, FormGroup, FormLabel, Row } from "react-bootstrap";
 import { MdBlock, MdBuild, MdInfo } from "react-icons/md";
-import { Breadcrumbs, ContextMenu, IndexTable, Input, Modal, Page } from "../../components";
-import { TableComponentProps } from "../../types";
-import { ContextMenuBuilder, TableBuilder, rest } from "../../utilities";
+import { TableComponentProps } from "types/design";
+import { ContextMenuBuilder, TableBuilder } from "utilities/design";
+import { rest } from "utilities/request";
 import * as Yup from "yup";
 
 interface FetchContentTypeData {

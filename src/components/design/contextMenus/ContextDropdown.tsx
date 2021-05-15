@@ -9,9 +9,9 @@ import {
   ContextMenuItemProps,
   ContextMenuLink,
   ContextMenuLinkProps,
-} from "../../../types/design/contextMenu";
+} from "types/design";
 import { useRouter } from "next/router";
-import { parseHref } from "../../../utilities/design/contextMenu";
+import { parseHref } from "utilities/design";
 
 
 interface ContextDropdownMenuProps {

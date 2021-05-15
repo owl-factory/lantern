@@ -1,7 +1,7 @@
 import React from "react";
-import Page from "../../components/design/Page";
-import { CardLayout } from "../../components/layouts/CardLayout";
-import { AtomType, MoleculeType } from "../../types/enums";
+import { Page } from "components/design";
+import { CardLayout } from "components/layouts";
+import { AtomType, MoleculeType } from "types/enums";
 
 export default function ID(props: any) {
   return (

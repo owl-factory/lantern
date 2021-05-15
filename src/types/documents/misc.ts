@@ -1,5 +1,5 @@
 // TODO - rename and reorganize once we figure out where to put things
-import { FieldTypeEnum } from "..";
+import { FieldTypeEnum } from "types/enums";
 
 /**
  * An option used in a dropdown

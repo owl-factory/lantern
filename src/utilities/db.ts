@@ -1,7 +1,7 @@
 import { Client, ExprArg, QueryOptions } from "faunadb";
 import { useEffect, useState } from "react";
-import { CtxReq, getSession } from "./auth";
-import { isClient, isServer } from "./tools";
+import { CtxReq, getSession } from "utilities/auth";
+import { isClient, isServer } from "utilities/tools";
 
 const publicSecret = "fnAEGnar9QACAufk-juLojDn9IRNNa_HgdGHGZX6";
 let client: Client;

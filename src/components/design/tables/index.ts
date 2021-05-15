@@ -1,2 +1,2 @@
-export * from "./IndexTable";
-export * from "./Table";
+export * from "components/design/tables/IndexTable";
+export * from "components/design/tables/Table";

@@ -1,5 +1,5 @@
 import { IsDefined } from "class-validator";
-import { CoreInput } from ".";
+import { CoreInput } from "types/inputs";
 
 class ModuleInput extends CoreInput {
   @IsDefined()

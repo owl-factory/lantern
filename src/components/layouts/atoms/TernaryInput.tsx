@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "react-bootstrap";
-import { AtomProps } from "../../../types/layouts/atom";
+import { AtomProps } from "types/layouts";
 
 /**
  * Operates as a three-state button. States are null (default), true, and false

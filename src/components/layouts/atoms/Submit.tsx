@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Col } from "react-bootstrap";
-import { findValue, renderDisplayClasses } from "../../../utilities/layouts/atoms";
-import { AtomProps } from "../../../types/layouts/atom";
+import { findValue, renderDisplayClasses } from "utilities/layouts";
+import { AtomProps } from "types/layouts";
 
 /**
  * Renders a button to act as a submit button

@@ -1,9 +1,9 @@
 import React from "react";
 import { Col, Form } from "react-bootstrap";
-import { AtomProps } from "../../../types/layouts/atom";
-import { findValue } from "../../../utilities/layouts/atoms";
-import { ErrorMessage, Input } from "../../design/forms/Forms";
-import { AtomError } from "./AtomError";
+import { AtomProps } from "types/layouts";
+import { findValue } from "utilities/layouts";
+import { ErrorMessage, Input } from "components/design/forms";
+import { AtomError } from "components/layouts/atoms";
 
 /**
  * Renders a text input that connects with a Formik form

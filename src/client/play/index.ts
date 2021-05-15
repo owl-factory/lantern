@@ -1,1 +1,1 @@
-export * from "./GameServer";
+export * from "client/play/GameServer";

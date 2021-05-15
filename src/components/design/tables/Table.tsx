@@ -1,7 +1,7 @@
 import React from "react";
 import { Table as BSTable } from "react-bootstrap";
-import { MdUnfoldMore, MdExpandLess, MdExpandMore } from "react-icons/md";
-import { Column, TableDataType } from "../../../types/design/table";
+import { MdExpandLess, MdExpandMore, MdUnfoldMore } from "react-icons/md";
+import { Column, TableDataType } from "types/design/table";
 
 type RowAction = (index: number, data: TableDataType, globalData?: TableDataType) => void;
 
@@ -153,7 +153,7 @@ function TableRow(props: TableRowProps) {
  * Renders a table based off of given data and column configuration
  * @param props see TableProps
  */
-export default function Table(props: TableProps): JSX.Element {  
+export function Table(props: TableProps): JSX.Element {
   /**
    * Sets the key to sort by given the key we want to sort by and what 
    * we were previously sorting by
@@ -182,3 +182,4 @@ export default function Table(props: TableProps): JSX.Element {
     </BSTable>
   );
 }
+export default Table;

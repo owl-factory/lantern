@@ -1,12 +1,12 @@
-import { Page } from "components";
+import { Page } from "components/design";
 import Link from "next/link";
 import React from "react";
 import { Button } from "react-bootstrap";
-import { CampaignDocument } from "types";
+import { CampaignDocument } from "types/documents";
 import { getSession, signOut } from "utilities/auth";
 import { NextPage, NextPageContext } from "next";
 import Router from "next/router";
-import { rest } from "utilities";
+import { rest } from "utilities/request";
 
 interface DashboardProps {
   session?: any;

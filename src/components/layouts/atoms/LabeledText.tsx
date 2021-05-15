@@ -1,6 +1,6 @@
 import React from "react";
-import { findValue } from "../../../utilities/layouts/atoms";
-import { AtomProps } from "../../../types/layouts/atom";
+import { findValue } from "utilities/layouts";
+import { AtomProps } from "types/layouts";
 
 /**
  * Renders text labeled by seperate text. This will not render if no text is present
