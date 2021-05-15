@@ -2,14 +2,14 @@ import { Dispatch, DispatchEvent } from "types";
 import Peer, { DataConnection } from "peerjs";
 import { io } from "socket.io-client";
 import { GameServer } from ".";
-import { UserModel } from "types/documents/User";
+import { UserDocument } from "types/documents";
 
 /**
  * Runs all of the actions required to connect the current player to the socket, peer, and table.
  * As each depends on the previous action, there are layers to the connection implementation
  * @param campaignID The campaign to connect to
  */
-export function connect(this: GameServer, campaignID: string, user: UserModel): void {
+export function connect(this: GameServer, campaignID: string, user: UserDocument): void {
   // TODO - have seperate set functions for these
   this.campaignID = campaignID;
   this.user = user;

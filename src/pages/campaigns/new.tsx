@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Input, Page, Select } from "components";
 import { Form, Formik } from "formik";
-import { CampaignModel } from "types";
+import { CampaignDocument } from "types";
 import { useRouter } from "next/router";
 import { NextPageContext } from "next";
 import { getSession, requireClientLogin } from "utilities/auth";
@@ -16,7 +16,7 @@ interface RestResponse<T> {
 }
 
 interface CreateTableResponse {
-  campaign: CampaignModel;
+  campaign: CampaignDocument;
 }
 
 export default function NewCampaign(props: any): JSX.Element {

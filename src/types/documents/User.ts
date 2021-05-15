@@ -1,12 +1,13 @@
-import { CommonFaunaData, Model } from "./CoreDocument";
+import { CoreDocument } from "types/documents";
 
 /**
  * The user object for the user's core data for use with NextAuth
  */
-export interface UserData extends CommonFaunaData {
-  
-}
+export interface UserDocument extends CoreDocument {
+  username?: string;
+  email?: string;
+  displayName?: string;
+  icon?: string;
 
-export class UserModel extends Model {
-  
+  roles?: string[];
 }

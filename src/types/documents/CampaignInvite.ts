@@ -1,9 +1,10 @@
-import { Ref } from "types/user";
-import { Model } from "./CoreDocument";
+import { CoreDocument } from ".";
+import { CampaignDocument } from "./Campaign";
 
 
-export class CampaignInvite extends Model {
-  campaign?: Ref;
+export interface CampaignInviteDocument extends CoreDocument {
+  campaign?: CampaignDocument;
+
   inviteAddress?: string;
-  ttl?: Date;
+  ttl?: Date; // TODO - uuuuuuhhh remove? Or rename to something we clean up ourselves? idk
 }

@@ -1,20 +1,19 @@
-import { Model } from "types/documents/CoreDocument";
-import { CampaignModel } from "types";
-import { UserModel } from "./User";
+import { CampaignDocument, CoreDocument } from "types";
+import { UserDocument } from "./User";
 
 export enum MessageType {
   Text,
 }
 
-export class MessageModel extends Model {
-  campaign?: CampaignModel;
+export interface MessageDocument extends CoreDocument {
+  campaign?: CampaignDocument;
 
   // The user who sent the message
-  author?: UserModel;
-
-  sendAs?: string;
+  author?: UserDocument;
 
   // Name used for the messager name
+  sendAs?: string;
+
   type?: MessageType;
 
   // The text content of the message
