@@ -1,6 +1,7 @@
 import { getServerClient } from "utilities/db";
-import { Expr, query as q } from "faunadb";
+import { Expr, Ref, query as q } from "faunadb";
 import { parseRef } from "utilities/fauna";
+import { FaunaRef } from "types/fauna";
 
 interface PaginationOptions {
   size: number;
@@ -12,6 +13,11 @@ interface IndexResponse {
 }
 
 export class CoreModelLogic {
+  public static buildRef(id: string, collection: string): Expr {
+    const ref: Expr = q.Ref(q.Collection(collection), id);
+
+    return ref;
+  }
   /**
    * Handles the shared code for fetching by an index and putting into documents
    * @param index The index to search through
@@ -82,3 +88,7 @@ export class CoreModelLogic {
     return newDoc;
   }
 }
+function FaunaTime(arg0: Date): any {
+  throw new Error("Function not implemented.");
+}
+

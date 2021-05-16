@@ -1,11 +1,11 @@
-import {  query as q } from "faunadb";
+import {  Expr, query as q } from "faunadb";
 import { UserDocument } from "types/documents";
 import { FaunaDocument, FaunaRef } from "types/fauna";
 import { mapFauna } from "utilities/fauna";
 import { getServerClient } from "utilities/db";
 import { CoreModelLogic } from "server/logic";
 
-const guestFields = ["username"];
+const guestFields = ["username", "displayName"];
 
 // TODO - change findByIDs/Refs to find by ID. Nothing matters except that they are either
 // strings or structs containing { id } or { ref }. Validate refs. Build them from IDs
@@ -18,7 +18,11 @@ export class UserLogic {
    * @param myID The ID of the current user
    * @param roles The roles of the current user, if any
    */
-  public static async findUserByRef(ref: FaunaRef, myID: string, roles?: string[]): Promise<UserDocument | null> {
+  public static async findUserByRef(
+    ref: FaunaRef | Expr,
+    myID: string,
+    roles?: string[]
+  ): Promise<UserDocument | null> {
     // TODO - ref validation?
     const client = getServerClient();
     const rawUser: FaunaDocument<UserDocument> = await client.query(q.Get(ref));
