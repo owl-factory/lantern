@@ -11,7 +11,7 @@ export interface UserDocument extends CoreDocument {
 
   roles?: string[];
 
-  recentlyPlayedWith: UserDocument[];
+  recentPlayers: UserDocument[];
 
   badges?: {
     earnedAt?: Date;
@@ -23,5 +23,4 @@ export interface UserDocument extends CoreDocument {
   isPrivate?: boolean;
 
   hoursPlayed?: number;
-  
 }

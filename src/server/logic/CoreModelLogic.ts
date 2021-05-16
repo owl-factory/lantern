@@ -49,16 +49,24 @@ export class CoreModelLogic {
 
     result.data.forEach((item: (string | number | unknown)[]) => {
       const parsedItem: Record<string, unknown> = {};
-      item.forEach((value: (string | number | unknown), i: number) => {
-        const valueKey = values[i];
-        parsedItem[valueKey] = value;
 
-        if(valueKey === "ref") {
-          const { id, collection } = parseRef(value);
-          parsedItem.id = id;
-          parsedItem.collection = collection;
-        }
-      });
+      if (!Array.isArray(item)) {
+        const { id, collection } = parseRef(item);
+        parsedItem.ref = item;
+        parsedItem.id = id;
+        parsedItem.collection = collection;
+      } else {
+        item.forEach((value: (string | number | unknown), i: number) => {
+          const valueKey = values[i];
+          parsedItem[valueKey] = value;
+
+          if(valueKey === "ref") {
+            const { id, collection } = parseRef(value);
+            parsedItem.id = id;
+            parsedItem.collection = collection;
+          }
+        });
+      }
       parsedResult.push(parsedItem);
     });
 

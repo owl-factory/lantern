@@ -5,7 +5,7 @@ import { mapFauna } from "utilities/fauna";
 import { getServerClient } from "utilities/db";
 import { CoreModelLogic } from "server/logic";
 
-const guestFields = ["username", "displayName"];
+const guestFields = ["username", "displayName", "icon", "bio"];
 
 // TODO - change findByIDs/Refs to find by ID. Nothing matters except that they are either
 // strings or structs containing { id } or { ref }. Validate refs. Build them from IDs
@@ -27,13 +27,25 @@ export class UserLogic {
     const client = getServerClient();
     const rawUser: FaunaDocument<UserDocument> = await client.query(q.Get(ref));
     if (!rawUser) { return null; }
-    const user: UserDocument = mapFauna(rawUser);
+    const user: UserDocument = mapFauna(rawUser) as UserDocument;
 
     if (this.isOwner(user, myID, roles)) { return user; }
     // TODO - fix this mess ;~;
     return CoreModelLogic.trimRestrictedFields(
       user as unknown as Record<string, unknown>, guestFields
     ) as unknown as UserDocument;
+  }
+
+  public static async findUserByUsername(username: string, myID: string, roles?: string[]) {
+    const client = getServerClient();
+    const rawIndex = await CoreModelLogic.fetchByIndex(
+      `users_by_username`,
+      [username],
+      ["ref"],
+      { size: 1 }
+    );
+    console.log("RAW:", rawIndex);
+    return await this.findUserByRef(rawIndex[0].ref, myID, roles);
   }
 
   /**
