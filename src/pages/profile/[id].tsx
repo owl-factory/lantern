@@ -3,6 +3,16 @@ import { Page } from "components/design";
 import { NextPageContext } from "next";
 import { rest } from "utilities/request";
 
+function arrayToList(arr: string[]): string {
+  let list = "";
+  const lastIndex = arr.length - 1;
+  arr.forEach((item: string, index: number) => {
+    list += item;
+    if (index !== lastIndex) { list += ", ";}
+  });
+  return list;
+}
+
 function RecentPlayer(props: any) {
   return (
     <div>
@@ -61,10 +71,10 @@ export default function Profile(props: any): JSX.Element {
           <div>{user.bio}</div>
           <hr/>
           <span>Enjoys Playing</span>
-          <div>...</div>
+          <div>{arrayToList(user.enjoysPlaying)}</div>
           <hr/>
           <span>Actively Seeking Group For</span>
-          <div>...</div>
+          <div>{arrayToList(user.activelySeeking)}</div>
           <hr/>
           { () => (
             user.id === myID ?
