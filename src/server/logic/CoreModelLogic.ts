@@ -73,6 +73,19 @@ export class CoreModelLogic {
     return parsedResult;
   }
 
+  public static isFaunaError(doc: unknown): boolean {
+    return false;
+  }
+
+  public static async updateOne(ref: FaunaRef | Expr, doc: Record<string, unknown>): Promise<Record<string, unknown>> {
+    const client = getServerClient();
+    const savedDoc = await client.query(q.Update(ref, { data: doc })) as Record<string, unknown>;
+    if (this.isFaunaError(savedDoc)) {
+      throw { code: 500, status: "An error occured while updating your document" };
+    }
+    return savedDoc;
+  }
+
   /**
    * Trims the given document to only have the given fields. All others are discarded.
    * @param doc The document to trim

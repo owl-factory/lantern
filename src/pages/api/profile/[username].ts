@@ -12,10 +12,19 @@ import { UserDocument } from "types/documents";
 async function getProfile(this: HTTPHandler, req: NextApiRequest) {
   const userID = "295863299256353286";
   const user = await UserLogic.findUserByUsername(req.query.username as string, userID) as UserDocument;
-  user.recentPlayers = await UserLogic.findUsersByRefs(user.recentPlayers, userID);
-  // if (!user) { this.returnError(404, "The given profile was not found."); }
-  console.log(user)
+  if (!user) { this.returnError(404, "The given profile was not found."); }
+  if (user.recentPlayers) {
+    user.recentPlayers = await UserLogic.findUsersByRefs(user.recentPlayers, userID);
+  }
+
   this.returnSuccess({ user });
 }
 
-export default createEndpoint({GET: getProfile});
+async function updateProfile(this: HTTPHandler, req: NextApiRequest) {
+  const userID = "295863299256353286";
+  req.body.ref = CoreModelLogic.buildRef(req.body.id, "users");
+  const user = await UserLogic.updateUser(req.body, userID);
+  this.returnSuccess({ user });
+}
+
+export default createEndpoint({GET: getProfile, PATCH: updateProfile});

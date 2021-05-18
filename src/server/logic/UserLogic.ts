@@ -5,7 +5,23 @@ import { mapFauna } from "utilities/fauna";
 import { getServerClient } from "utilities/db";
 import { CoreModelLogic } from "server/logic";
 
-const guestFields = ["username", "displayName", "icon", "bio"];
+const guestFields = [
+  "username",
+  "displayName",
+  "icon",
+  "bio",
+  "enjoysPlaying",
+  "activelySeeking",
+  "isPrivate",
+  "badges",
+];
+const updateFields = [
+  "displayName",
+  "bio",
+  "enjoysPlaying",
+  "activelySeeking",
+  "isPrivate",
+];
 
 // TODO - change findByIDs/Refs to find by ID. Nothing matters except that they are either
 // strings or structs containing { id } or { ref }. Validate refs. Build them from IDs
@@ -36,15 +52,26 @@ export class UserLogic {
     ) as unknown as UserDocument;
   }
 
-  public static async findUserByUsername(username: string, myID: string, roles?: string[]) {
-    const client = getServerClient();
+  /**
+   * Fetches a user by their username
+   * @param username The username to search for
+   * @param myID The current user's id
+   * @param roles The current user's roles
+   */
+  public static async findUserByUsername(
+    username: string,
+    myID: string,
+    roles?: string[]
+  ): Promise<UserDocument | null> {
     const rawIndex = await CoreModelLogic.fetchByIndex(
       `users_by_username`,
       [username],
       ["ref"],
       { size: 1 }
     );
-    console.log("RAW:", rawIndex);
+    if (rawIndex.length === 0) { return null; }
+
+
     return await this.findUserByRef(rawIndex[0].ref, myID, roles);
   }
 
@@ -66,6 +93,21 @@ export class UserLogic {
     });
 
     return Promise.all(users);
+  }
+
+  public static createUser(user: UserDocument) {
+    return;
+  }
+
+  public static async updateUser(user: UserDocument, myID: string, roles?: string[]) {
+    const fetchedUser = await this.findUserByRef(user.ref as FaunaRef, myID, roles);
+    if (!fetchedUser) { throw { code: 404, status: "User does not exist!" }; }
+    if (!this.isOwner(fetchedUser, myID, roles)) {
+      throw { code: 403, status: "You do not have permissions to edit this user!" };
+    }
+    const processedUser = CoreModelLogic.trimRestrictedFields(user, updateFields);
+    const updatedUser = mapFauna(await CoreModelLogic.updateOne(user.ref as FaunaRef, processedUser));
+    return updatedUser;
   }
 
   /**
