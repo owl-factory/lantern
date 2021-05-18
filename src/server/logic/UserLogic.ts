@@ -95,11 +95,22 @@ export class UserLogic {
     return Promise.all(users);
   }
 
-  public static createUser(user: UserDocument) {
+  /**
+   * Creates and returns a new user document in Fauna
+   * @param user The user to create into a document
+   * TODO - actually make this xD
+   */
+  public static createUser(user: UserDocument): UserDocument {
     return;
   }
 
-  public static async updateUser(user: UserDocument, myID: string, roles?: string[]) {
+  /**
+   * Updates a single user's document in Fauna
+   * @param user The partial user document to update
+   * @param myID The id of the current user, to determine access rights
+   * @param roles The roles of the current user, to determine access rights
+   */
+  public static async updateUser(user: UserDocument, myID: string, roles?: string[]): UserDocument {
     const fetchedUser = await this.findUserByRef(user.ref as FaunaRef, myID, roles);
     if (!fetchedUser) { throw { code: 404, status: "User does not exist!" }; }
     if (!this.isOwner(fetchedUser, myID, roles)) {

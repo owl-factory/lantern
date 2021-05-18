@@ -73,10 +73,21 @@ export class CoreModelLogic {
     return parsedResult;
   }
 
+  /**
+   * Determine if the given document is a fauna error or not
+   * @param doc The document to determine if an error or not.
+   * TODO - create this
+   * TODO - move to utilities/fauna
+   */
   public static isFaunaError(doc: unknown): boolean {
     return false;
   }
 
+  /**
+   * Updates a single document in Fauna. If it fails, throw an error
+   * @param ref The reference object to update
+   * @param doc The partial document to update
+   */
   public static async updateOne(ref: FaunaRef | Expr, doc: Record<string, unknown>): Promise<Record<string, unknown>> {
     const client = getServerClient();
     const savedDoc = await client.query(q.Update(ref, { data: doc })) as Record<string, unknown>;
@@ -108,8 +119,5 @@ export class CoreModelLogic {
 
     return newDoc;
   }
-}
-function FaunaTime(arg0: Date): any {
-  throw new Error("Function not implemented.");
 }
 

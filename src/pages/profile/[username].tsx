@@ -1,5 +1,5 @@
 import React from "react";
-import { Input, Page } from "components/design";
+import { Checkbox, Input, Page, TextArea } from "components/design";
 import { NextPageContext } from "next";
 import { rest } from "utilities/request";
 import { getSession } from "utilities/auth";
@@ -7,38 +7,37 @@ import { UserDocument } from "types/documents";
 import { Formik, Form as FormikForm } from "formik";
 import { Button } from "components/style";
 import { useRouter } from "next/router";
+import { arrayToList } from "utilities/arrays";
 
-function arrayToList(arr?: string[]): string {
-  let list = "";
-  if (arr === undefined) { return list; }
-
-  const lastIndex = arr.length - 1;
-  arr.forEach((item: string, index: number) => {
-    list += item;
-    if (index !== lastIndex) { list += ", ";}
-  });
-  return list;
-}
-
-function MemberSince(props: any) {
+/**
+ * Renders a small section indicating how long a player has been a member, their hours played,
+ * and their total games GMed
+ * @param user The user to render member since information
+ */
+function MemberSince({ user }: { user: UserDocument }) {
   const joinDate = Intl.DateTimeFormat('en', {
     month: "short",
     day: "numeric",
     year: "numeric",
-  }).format(props.user.createdAt);
+  }).format(user.createdAt);
+
   return (
     <div>
       <div>
         Member since {joinDate} |
         GM of 0 Games |
-        {props.user.hoursPlayed || 0} hours played
+        {user.hoursPlayed || 0} hours played
       </div>
       <hr/>
     </div>
   );
 }
 
-function Badges(props: any) {
+/**
+ * Renders the badges for the user
+ * @param user The user to render the badges for
+ */
+function Badges({ user }: { user: UserDocument }) {
   return (
     <div>
       <span>Badges</span>
@@ -47,9 +46,14 @@ function Badges(props: any) {
   );
 }
 
-function MyOptions(props: any) {
+/**
+ * Renders the Options for the user if it is the same as the active user.
+ * @param user The current user's information for rendering proper links
+ * @param players The current user's recently played with players
+ */
+function MyOptions({ user, players}: { user: UserDocument, players: UserDocument[] }) {
   const recentPlayers: JSX.Element[] = [];
-  props.players.forEach((player: UserDocument) => {
+  players.forEach((player: UserDocument) => {
     recentPlayers.push(<RecentPlayer key={player.id} player={player}/>);
   });
 
@@ -70,29 +74,36 @@ function MyOptions(props: any) {
   );
 }
 
-function MyDetails(props: any) {
+/**
+ * Renders the details for the current user. Includes a form for updating some user information. 
+ * @param user The user to render details for
+ * @param saveUser A function to save the user's information to the database
+ */
+function MyDetails({ user, saveUser }: { user: UserDocument, saveUser: (values: Record<string, unknown>) => void }) {
   return (
     <div>
       <Formik
-        initialValues={props.user}
-        onSubmit={(values: Record<string, unknown>) => (props.saveUser(values))}
+        initialValues={user as unknown as Record<string, unknown>}
+        onSubmit={(values: Record<string, unknown>) => (saveUser(values))}
       >
         <FormikForm>
           <Input name="displayName"/>
-          <MemberSince user={props.user}/>
+          <MemberSince user={user}/>
           <span>Badges</span>
           <div><i>None yet! Check back soon!</i></div>
           <hr/>
           <span>Bio</span>
-          <div>{props.user.bio}</div>
+          <TextArea name="bio"/>
           <hr/>
           <span>Enjoys Playing</span>
-          <div>{arrayToList(props.user.enjoysPlaying)}</div>
+          <div>{arrayToList(user.enjoysPlaying)}</div>
           <hr/>
           <span>Actively Seeking Group For</span>
-          <div>{arrayToList(props.user.activelySeeking)}</div>
+          <div>{arrayToList(user.activelySeeking)}</div>
           <hr/>
-          <span>Player Directory</span>
+          <span>Remove from Player Directory</span>
+          <Checkbox name="isPrivate"/>
+          <hr/>
           <Button type="submit">Save</Button>
         </FormikForm>
       </Formik>
@@ -100,7 +111,11 @@ function MyDetails(props: any) {
   );
 }
 
-function OtherOptions(props: any) {
+/**
+ * Renders the options when viewing another person's profile page
+ * @param user The user information to render
+ */
+function OtherOptions({ user }: { user: UserDocument }) {
   return (
     <div>
       <a href="#">Send Private Message</a><br/>
@@ -109,62 +124,90 @@ function OtherOptions(props: any) {
       <a href="#">View Marketplace Items</a><br/>
       <a href="#">View Topics</a><br/>
       <a href="#">View Replies</a><br/>
-      <a href="#">Block {props.user.displayName}</a><br/>
+      <a href="#">Block {user.displayName}</a><br/>
     </div>
   );
 }
 
-function OtherDetails(props: any) {
+/**
+ * Renders another user's details
+ * @param user The user information to render
+ */
+function OtherDetails({ user }: { user: UserDocument }) {
   return (
     <div>
-      <h1>{props.user.displayName}</h1>
-      <MemberSince user={props.user}/>
-      <Badges user={props.user}/>
+      <h1>{user.displayName}</h1>
+      <MemberSince user={user}/>
+      <Badges user={user}/>
 
-      { props.user.bio ? (<>
+      { user.bio ? (<>
         <hr/>
         <span>Bio</span>
-        <div>{props.user.bio}</div>
+        <div>{user.bio}</div>
       </>) : null }
 
-      { props.user.enjoysPlaying ? (<>
+      { user.enjoysPlaying ? (<>
         <hr/>
         <span>Enjoys Playing</span>
-        <div>{arrayToList(props.user.enjoysPlaying)}</div>
+        <div>{arrayToList(user.enjoysPlaying)}</div>
       </>) : null }
 
-      { props.user.activelySeeking ? (<>
+      { user.activelySeeking ? (<>
         <hr/>
         <span>Actively Seeking Group For</span>
-        <div>{arrayToList(props.user.activelySeeking)}</div>
+        <div>{arrayToList(user.activelySeeking)}</div>
       </>) : null }
     </div>
   );
 }
 
-function RecentPlayer(props: any) {
+/**
+ * Renders a recently played with user
+ * @param player The recently played with user.
+ */
+function RecentPlayer({ player }: { player: UserDocument }) {
   return (
     <div>
-      <a href={`/profile/${props.player.username}`}>
-        <img width="30px" height="30px" src={props.player.icon}/>
-        <span style={{paddingLeft: "10px"}}>{props.player.displayName}</span>
+      <a href={`/profile/${player.username}`}>
+        <img width="30px" height="30px" src={player.icon}/>
+        <span style={{paddingLeft: "10px"}}>{player.displayName}</span>
       </a>
     </div>
   );
 }
 
+/**
+ * Renders a user's profile page.
+ * @param props.success True if the request succeeded. False otherwise
+ * @param props.data Contains the user's profile information
+ * @param props.message A message, if any, explaining the success value
+ * @param props.session The current user's session, if any
+ */
 export default function Profile(props: any): JSX.Element {
   if (!props.success) {
     console.error(404);
 
-    return <>Errror</>
+    return <>Error</>;
   }
   const router = useRouter();
   const [ user, setUser ] = React.useState(props.data.user);
-  const [ players, setPlayers ] = React.useState(props.data.user.recentPlayers);
-  console.log(props)
-  const isMyPage = props.session !== undefined && user.id === props.session.user.id;
+  const [ players ] = React.useState(props.data.user.recentPlayers);
+  const isMyPage = calculateIfUserIsOwner();
 
+  /**
+   * Determines if the current player is the owner of the profile page.
+   * Required to catch issue where unlogged players would cause an issue with the logic
+   */
+  function calculateIfUserIsOwner() {
+    if (!props.session) { return false; }
+    if (props.session.user.id === user.id) { return true; }
+    return false;
+  }
+
+  /**
+   * A callback function that handles saving the user's information to the database 
+   * @param values The user document values to save to the database
+   */
   async function saveUser(values: Record<string, unknown>) {
     values.id = user.id;
     values.ref = user.ref;
@@ -197,6 +240,5 @@ Profile.getInitialProps = async (ctx: NextPageContext) => {
   const session = await getSession(ctx);
 
   const result = await rest.get(`/api/profile/${ctx.query.username}`);
-  console.log(result)
   return { ...result, session};
 };

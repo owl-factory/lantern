@@ -3,7 +3,7 @@ import { setSession } from "utilities/auth";
 import { getServerClient } from "utilities/db";
 import { query as q } from "faunadb";
 import { mapFauna } from "utilities/fauna";
-import { normalize } from "utilities/string";
+import { normalize } from "utilities/strings";
 
 const checkEmail = /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i;
 

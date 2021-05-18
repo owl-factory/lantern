@@ -3,7 +3,7 @@ import { setSession } from "utilities/auth";
 import { query as q } from "faunadb";
 import { getServerClient } from "utilities/db";
 import { mapFauna } from "utilities/fauna";
-import { normalize } from "utilities/string";
+import { normalize } from "utilities/strings";
 
 /**
  * Handles the signup authorization endpoint
