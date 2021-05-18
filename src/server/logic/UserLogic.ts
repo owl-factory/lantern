@@ -100,8 +100,8 @@ export class UserLogic {
    * @param user The user to create into a document
    * TODO - actually make this xD
    */
-  public static createUser(user: UserDocument): UserDocument {
-    return;
+  public static async createUser(user: UserDocument): Promise<UserDocument> {
+    return {};
   }
 
   /**
@@ -110,14 +110,14 @@ export class UserLogic {
    * @param myID The id of the current user, to determine access rights
    * @param roles The roles of the current user, to determine access rights
    */
-  public static async updateUser(user: UserDocument, myID: string, roles?: string[]): UserDocument {
+  public static async updateUser(user: UserDocument, myID: string, roles?: string[]): Promise<UserDocument> {
     const fetchedUser = await this.findUserByRef(user.ref as FaunaRef, myID, roles);
     if (!fetchedUser) { throw { code: 404, status: "User does not exist!" }; }
     if (!this.isOwner(fetchedUser, myID, roles)) {
       throw { code: 403, status: "You do not have permissions to edit this user!" };
     }
     const processedUser = CoreModelLogic.trimRestrictedFields(user, updateFields);
-    const updatedUser = mapFauna(await CoreModelLogic.updateOne(user.ref as FaunaRef, processedUser));
+    const updatedUser = mapFauna(await CoreModelLogic.updateOne(user.ref as FaunaRef, processedUser)) as UserDocument;
     return updatedUser;
   }
 

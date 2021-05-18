@@ -5,7 +5,7 @@ import { createEndpoint } from "server/utilities";
 import { UserDocument } from "types/documents";
 
 /**
- * Creates a single new ruleset
+ * Gets a single profile for the profile page
  * @param this The Handler class calling this function
  * @param req The request to the server
  */
@@ -20,6 +20,11 @@ async function getProfile(this: HTTPHandler, req: NextApiRequest) {
   this.returnSuccess({ user });
 }
 
+/**
+ * Updates a single profile for the current user
+ * @param this The handler class calling this function
+ * @param req The request to the server
+ */
 async function updateProfile(this: HTTPHandler, req: NextApiRequest) {
   const userID = "295863299256353286";
   req.body.ref = CoreModelLogic.buildRef(req.body.id, "users");
