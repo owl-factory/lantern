@@ -7,4 +7,5 @@ export * from "components/design/HeaderBar";
 export * from "components/design/Modal";
 export * from "components/design/Page";
 export * from "components/design/Pagination";
+export * from "components/design/Swatch";
 export * from "components/design/Tooltip";
