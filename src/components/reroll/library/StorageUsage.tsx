@@ -23,6 +23,7 @@ export function StorageUsage(props: StorageUsageProps): JSX.Element {
     totalBytes += usageItem.bytes;
     storageUsageBar.push(
       <StorageSection
+        key={usageItem.storageType}
         percent={((usageItem.bytes / props.maxAllowedStorage) * 100).toFixed(2)}
         bytes={usageItem.bytes}
         type={usageItem.storageType}

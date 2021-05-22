@@ -1,5 +1,5 @@
 import { getServerClient } from "utilities/db";
-import { Expr, Ref, query as q } from "faunadb";
+import { Expr, query as q } from "faunadb";
 import { parseRef } from "utilities/fauna";
 import { FaunaRef } from "types/fauna";
 
@@ -10,6 +10,15 @@ interface PaginationOptions {
 interface IndexResponse {
   data?: (string | number | unknown)[][];
   error?: any;
+}
+
+interface RawDocument {
+  ref?: Expr;
+  data?: object;
+  credentials?: Record<string, unknown>;
+  delegates?: Record<string, unknown>;
+  ts?: number;
+
 }
 
 export class CoreModelLogic {
@@ -24,6 +33,7 @@ export class CoreModelLogic {
 
     return ref;
   }
+
   /**
    * Handles the shared code for fetching by an index and putting into documents
    * @param index The index to search through
@@ -89,12 +99,45 @@ export class CoreModelLogic {
     return false;
   }
 
+  public static async createOne(
+    collection: string,
+    myID: string,
+    doc: RawDocument
+  ): Promise<object> {
+    delete doc.ref;
+
+    if (!doc.data) { doc.data = {}; }
+    doc.data.createdAt = new Date();
+    doc.data.updatedAt = doc.data.createdAt;
+    doc.data.ownedBy = this.buildRef(myID, "users");
+    doc.data.createdBy = doc.data.ownedBy;
+    doc.data.updatedBy = doc.data.ownedBy;
+
+    const client = getServerClient();
+    const result = await client.query(
+      q.Create(collection, doc)
+    );
+
+    if (this.isFaunaError(result)) {
+      throw { code: 500, status: "An error occurred while creating your document" };
+    }
+
+    return result;
+  }
+
   /**
    * Updates a single document in Fauna. If it fails, throw an error
    * @param ref The reference object to update
    * @param doc The partial document to update
    */
-  public static async updateOne(ref: FaunaRef | Expr, doc: Record<string, unknown>): Promise<Record<string, unknown>> {
+  public static async updateOne(
+    ref: FaunaRef | Expr,
+    doc: Record<string, unknown>,
+    myID: string,
+  ): Promise<Record<string, unknown>> {
+    doc.updatedAt = new Date();
+    doc.updatedBy = this.buildRef(myID, "users");
+
     const client = getServerClient();
     const savedDoc = await client.query(q.Update(ref, { data: doc })) as Record<string, unknown>;
     if (this.isFaunaError(savedDoc)) {
