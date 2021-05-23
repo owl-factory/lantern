@@ -14,7 +14,7 @@ const defaultRequestInit: RequestInit = {
 };
 
 // TODO - load in from env variable
-const thisDomain = "http://192.168.0.195:3000";
+const thisDomain = "http://localhost:3000";
 
 /**
  * Formats the URL. Serverside requests require an absolute URL; this adds it 

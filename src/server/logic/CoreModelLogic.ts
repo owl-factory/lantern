@@ -107,7 +107,7 @@ export class CoreModelLogic {
     delete doc.ref;
 
     if (!doc.data) { doc.data = {}; }
-    doc.data.createdAt = new Date();
+    doc.data.createdAt = (new Date()).toString();
     doc.data.updatedAt = doc.data.createdAt;
     doc.data.ownedBy = this.buildRef(myID, "users");
     doc.data.createdBy = doc.data.ownedBy;

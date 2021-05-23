@@ -9,7 +9,8 @@ import { rest } from "utilities/request";
 
 function UploadImageModal({ handleClose, modal }: { handleClose: () => void, modal: boolean }) {
   async function saveLinkedImage(values: any) {
-    rest.post(`/api/images/external`, values)
+    console.log("test")
+    rest.put(`/api/images/external`, values)
     .then((res) => {
       // Clear form
       // Close modal?
@@ -29,7 +30,7 @@ function UploadImageModal({ handleClose, modal }: { handleClose: () => void, mod
           <Row>
             <Col xs={12} md={6}>
               <Formik
-                initialValues={{ href: "", name: "" }}
+                initialValues={{ src: "", name: "" }}
                 onSubmit={saveLinkedImage}
               >
                 { (formik) => (
@@ -39,11 +40,11 @@ function UploadImageModal({ handleClose, modal }: { handleClose: () => void, mod
                       <Tooltip title="Save a reference to the image"><span>(?)</span></Tooltip>
                     </h4>
                     <label>Link</label>
-                    <Input name="href"/>
+                    <Input name="src"/>
                     <label>Name</label>
                     <Input name="name"/>
                     <label>Preview</label>
-                    <img style={{ width: "100%", height: "auto" }} src={formik.values.href}/><br/>
+                    <img style={{ width: "100%", height: "auto" }} src={formik.values.src}/><br/>
 
                     <Button type="submit">Save</Button>
                   </FormikForm>
