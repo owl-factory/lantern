@@ -22,17 +22,7 @@ interface RawDocument {
 }
 
 export class CoreModelLogic {
-  /**
-   * Builds a Ref using the ID and collection
-   * @param id The id to build into a ref
-   * @param collection The colelction to build into a ref
-   * TODO - figure out how to avoid the extra Expr arguments
-   */
-  public static buildRef(id: string, collection: string): Expr {
-    const ref: Expr = q.Ref(q.Collection(collection), id);
-
-    return ref;
-  }
+  
 
   /**
    * Handles the shared code for fetching by an index and putting into documents

@@ -1,0 +1,54 @@
+import { ImageManager } from "client/library";
+import { Modal } from "components/design";
+import React from "react";
+import { Card } from "react-bootstrap";
+import { ImageDocument } from "types/documents";
+
+interface ImageDetailsModalProps {
+  imageManager: ImageManager;
+  imageID: string;
+  handleClose: () => void;
+}
+
+/**
+ * Renders a modal with the details of an image.
+ * @param imageManager The manager for the images and the state.
+ * @param imageID The id of the image to fetch and render details for
+ * @param handleClose Handles closing the modal
+ */
+export function ImageDetailsModal({ imageManager, imageID, handleClose }: ImageDetailsModalProps): JSX.Element | null {
+  if (imageID === "") { return null; }
+  const [ image, setImage ] = React.useState<ImageDocument>({});
+
+  // The images that is guaranteed to be there
+  const baseImage = imageManager.images[imageID];
+
+  // Ensures that this only runs when the imageID changes
+  React.useEffect(() => {
+    imageManager.fetchImage(imageID)
+    .then((fetchedImage) => {
+      setImage(fetchedImage);
+    });},
+    [ imageID ]
+  );
+
+  function deleteImage(imageID: string) {
+    // imageManager.deleteImage(imageID);
+    handleClose();
+  }
+
+  return (
+    <Modal open={image !== null} handleClose={handleClose}>
+      <Card>
+        <Card.Header>
+          <b>{baseImage.name}</b>
+        </Card.Header>
+        <Card.Body>
+          {image.createdAt}
+          <img width="100%" height="auto" src={baseImage.src}/>
+          {/* <Button onClick={() => deleteImage(image.id as string)}>Delete</Button> */}
+        </Card.Body>
+      </Card>
+    </Modal>
+  );
+}
