@@ -39,8 +39,8 @@ export class CampaignLogic {
     );
 
     if (!rawCampaign) { return null; }
-    let campaign: CampaignDocument = mapFauna(rawCampaign);
-    const accessLevel = this.determineAccessLevel(campaign as CampaignDocument, myID, roles);
+    let campaign = mapFauna(rawCampaign) as CampaignDocument;
+    const accessLevel = this.determineAccessLevel(campaign, myID, roles);
     campaign = this.trimRestrictedFields(campaign as CampaignDocument, accessLevel);
 
     return campaign;

@@ -10,4 +10,17 @@ export interface UserDocument extends CoreDocument {
   icon?: string;
 
   roles?: string[];
+
+  recentPlayers?: UserDocument[];
+
+  badges?: {
+    earnedAt?: Date;
+    badge: any;
+  }[];
+  bio?: string;
+  enjoysPlaying?: string[];
+  activelySeeking?: string[];
+  isPrivate?: boolean;
+
+  hoursPlayed?: number;
 }

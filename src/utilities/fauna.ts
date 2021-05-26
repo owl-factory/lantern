@@ -6,7 +6,7 @@ import { FaunaDocument } from "types/fauna";
  * @param doc The document to map from Fauna into a flat function
  * @param format The format to return the fauna function as. Valid options are 'class' or 'struct'.
  */
- export function mapFauna(doc: FaunaDocument<unknown>): CoreDocument {
+ export function mapFauna(doc: FaunaDocument<unknown>): unknown {
   let mappedDoc: any = {};
 
   // Nab all of the data data

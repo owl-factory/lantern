@@ -23,10 +23,9 @@ function parseError(error: any): string {
  * These are passed automatically
  */
 export function Page(props: PageProps): JSX.Element {
-  console.log(props.error)
   return (
     <Container className="mt-3">
-      { props.error ? <>{parseError(props.error)}</> : null}
+      { props.error ? <>{parseError(props.error)}</> : <></>}
       {props.children}
     </Container>
   );
