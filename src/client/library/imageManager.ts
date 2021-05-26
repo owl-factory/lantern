@@ -46,8 +46,18 @@ export class ImageManager {
    * the ID so that we can quickly reference the array and remove it everywhere in
    * as short a time as possible
    */
-  public async deleteImage(index: number): Promise<void> {
-    if (!this.imageList[index] || !this.images[this.imageList[index]]) { throw "The image to delete does not exist."; }
+  public async deleteImage(imageID: string): Promise<void> {
+    console.log(imageID)
+    let index = -1;
+    for(let i = 0; i < this.imageList.length; i++) {
+      if(this.imageList[i] === imageID) {
+        index = i;
+        break;
+      }
+    }
+
+    if (index === -1 || !this.images[this.imageList[index]]) { throw "The image to delete does not exist."; }
+
     const image = this.images[this.imageList[index]];
     if (this.isExternal(image)) {
       this.client.query(q.Delete(image.ref as FaunaRef));
@@ -58,6 +68,11 @@ export class ImageManager {
     this.imageList.splice(index, 1);
   }
 
+  /**
+   * Fetches an image. Returns nothing if the imageID does not exist in this manager, and pulls from fauna
+   * if it's only partially present.
+   * @param imageID The ID of the image to fetch
+   */
   public async fetchImage(imageID: string ): Promise<ImageDocument> {
     if (!this.images[imageID]) { return {}; }
     if (this.images[imageID].ownedBy !== undefined) { return this.images[imageID]; }
@@ -67,11 +82,28 @@ export class ImageManager {
     return this.images[imageID];
   }
 
-  public getImage(imageID: string): ImageDocument {
-    if (!this.images[imageID]) { return {}; }
-    if (this.images[imageID].ownedBy !== undefined) { return this.images[imageID]; }
-    this.fetchImage(imageID);
-    return this.images[imageID];
+  /**
+   * Saves a linked image to the database. 
+   * @param values The image values to save
+   */
+  public saveLinkedImage(values: ImageDocument) {
+    const tempID = "temp";
+    values.id = tempID;
+    this.images[tempID] = values;
+    this.imageList.splice(0, 0, tempID);
+    rest.put(`/api/images/external`, values as Record<string, unknown>)
+    .then((res: any) => {
+      if (res.success === false) {
+        delete this.images[tempID];
+        this.imageList = this.imageList.splice(0, 1);
+        return;
+      }
+
+      this.images[res.data.image.id] = res.data.image;
+      this.imageList[0] = res.data.image.id;
+      delete this.images[tempID];
+
+    });
   }
 
   /**

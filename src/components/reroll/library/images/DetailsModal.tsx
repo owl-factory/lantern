@@ -1,5 +1,6 @@
 import { ImageManager } from "client/library";
 import { Modal } from "components/design";
+import { Button } from "components/style";
 import React from "react";
 import { Card } from "react-bootstrap";
 import { ImageDocument } from "types/documents";
@@ -22,6 +23,8 @@ export function ImageDetailsModal({ imageManager, imageID, handleClose }: ImageD
 
   // The images that is guaranteed to be there
   const baseImage = imageManager.images[imageID];
+  imageManager.fetchImage(imageID);
+
 
   // Ensures that this only runs when the imageID changes
   React.useEffect(() => {
@@ -32,8 +35,8 @@ export function ImageDetailsModal({ imageManager, imageID, handleClose }: ImageD
     [ imageID ]
   );
 
-  function deleteImage(imageID: string) {
-    // imageManager.deleteImage(imageID);
+  function deleteImage() {
+    imageManager.deleteImage(imageID);
     handleClose();
   }
 
@@ -46,7 +49,7 @@ export function ImageDetailsModal({ imageManager, imageID, handleClose }: ImageD
         <Card.Body>
           {image.createdAt}
           <img width="100%" height="auto" src={baseImage.src}/>
-          {/* <Button onClick={() => deleteImage(image.id as string)}>Delete</Button> */}
+          <Button onClick={deleteImage}>Delete</Button>
         </Card.Body>
       </Card>
     </Modal>

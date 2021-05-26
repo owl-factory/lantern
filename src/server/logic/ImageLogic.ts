@@ -4,6 +4,7 @@ import { FaunaRef } from "types/fauna";
 import { CoreModelLogic } from "./CoreModelLogic";
 import { query as q } from "faunadb";
 import { getServerClient } from "utilities/db";
+import { mapFauna } from "utilities/fauna";
 
 const createFields = [
   "name",
@@ -20,7 +21,7 @@ export class ImageLogic {
     image.isExternal = true;
     image.sizeInBytes = 0;
 
-    return await CoreModelLogic.createOne("images", myID, { data: image });
+    return mapFauna(await CoreModelLogic.createOne("images", myID, { data: image })) as ImageDocument;
 
   }
 

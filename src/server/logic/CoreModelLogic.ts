@@ -1,6 +1,6 @@
 import { getServerClient } from "utilities/db";
 import { Expr, query as q } from "faunadb";
-import { parseRef } from "utilities/fauna";
+import { buildRef, parseRef } from "utilities/fauna";
 import { FaunaRef } from "types/fauna";
 
 interface PaginationOptions {
@@ -99,7 +99,7 @@ export class CoreModelLogic {
     if (!doc.data) { doc.data = {}; }
     doc.data.createdAt = (new Date()).toString();
     doc.data.updatedAt = doc.data.createdAt;
-    doc.data.ownedBy = this.buildRef(myID, "users");
+    doc.data.ownedBy = buildRef(myID, "users");
     doc.data.createdBy = doc.data.ownedBy;
     doc.data.updatedBy = doc.data.ownedBy;
 
@@ -126,7 +126,7 @@ export class CoreModelLogic {
     myID: string,
   ): Promise<Record<string, unknown>> {
     doc.updatedAt = new Date();
-    doc.updatedBy = this.buildRef(myID, "users");
+    doc.updatedBy = buildRef(myID, "users");
 
     const client = getServerClient();
     const savedDoc = await client.query(q.Update(ref, { data: doc })) as Record<string, unknown>;

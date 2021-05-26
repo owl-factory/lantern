@@ -4,7 +4,9 @@ import React from "react";
 import { Card } from "react-bootstrap";
 import { ImageDocument } from "types/documents";
 import { ImageManager } from "client/library";
-import { ImageDetailsModal, UploadImageModal } from "components/reroll/library/images";
+import { ImageDetailsModal } from "components/reroll/library/images";
+import { observer } from "mobx-react-lite";
+import { LinkImageModal } from "./LinkImageModal";
 
 interface ImageThumbnailProps {
   image: ImageDocument;
@@ -38,7 +40,7 @@ interface ImageListProps {
  * @param props 
  * @returns 
  */
-export function ImageList(props: ImageListProps): JSX.Element {
+export const ImageList = observer((props: ImageListProps): JSX.Element =>{
   const [ modal, setModal ] = React.useState(false);
   const [ imageDetailsModal, setImageDetailsModal ] = React.useState("");
   const imageThumbnails: JSX.Element[] = [];
@@ -48,6 +50,7 @@ export function ImageList(props: ImageListProps): JSX.Element {
 
   props.imageManager.imageList.forEach((imageID: string) => {
     const image = props.imageManager.images[imageID];
+    if (!image) { return; }
     switch(props.listFormat) {
       case ListFormat.Thumbnails:
       case undefined:
@@ -71,7 +74,7 @@ export function ImageList(props: ImageListProps): JSX.Element {
         imageID={imageDetailsModal}
         handleClose={closeImageDetailsModal}
       />
-      <UploadImageModal modal={modal} handleClose={closeModal}/>
+      <LinkImageModal imageManager={props.imageManager} modal={modal} handleClose={closeModal}/>
     </div>
   );
-}
+});
