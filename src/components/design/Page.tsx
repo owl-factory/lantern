@@ -1,9 +1,10 @@
 import React, { ReactNode } from "react";
 import { Container } from "react-bootstrap";
+import ErrorPage from "next/error";
 
 interface PageProps {
   children: ReactNode;
-  error?: object; // An error to render
+  error?: any; // An error to render
 }
 
 function parseError(error: any): string {
@@ -23,7 +24,10 @@ function parseError(error: any): string {
  * These are passed automatically
  */
 export function Page(props: PageProps): JSX.Element {
-  console.log(props.error)
+  if (props.error && typeof(props.error) === "number") {
+    return <ErrorPage statusCode={props.error} />;
+  }
+
   return (
     <Container className="mt-3">
       { props.error ? <>{parseError(props.error)}</> : null}

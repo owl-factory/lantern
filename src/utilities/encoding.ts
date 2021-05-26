@@ -19,19 +19,24 @@ export function encode(id: string | number, collection: string): string {
 }
 
 export function decode(ref64: string): { id: string, collection: string} {
-  const trim = ref64.replace(/=+/, "");
-  const collection = collections.find((item) => item.id === trim[0])?.string;
-  const id = toNumber(trim.slice(1)).toString().padStart(18, "0");
-  if (!collection) throw Error("Invalid encoded document referance.");
+  const id = decodeId(ref64);
+  const collection = decodeCollection(ref64);
   return { id, collection };
 }
 
 export function isEncoding(ref64: string): boolean {
-  return encodingTest.test(ref64);
+  return (ref64.length === 12 && encodingTest.test(ref64));
 }
 
-export function getCollection(ref64: string): string {
-  return collections.find((item) => item.id === ref64[0])?.string || "";
+export function decodeId(ref64: string): string {
+  const trim = ref64.slice(1).replace(/=+/, "");
+  return toNumber(trim).toString().padStart(18, "0");
+}
+
+export function decodeCollection(ref64: string): string {
+  const collection = collections.find((item) => item.id === ref64[0])?.string || "";
+  if (!collection) throw Error("Invalid encoded document referance.");
+  return collection;
 }
 
 function fromNumber (number: bigint): string {
