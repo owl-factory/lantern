@@ -4,21 +4,12 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import { Button, Col, Row } from "react-bootstrap";
-import { useSession } from "utilities/auth";
 
 /**
  * Renders the not logged in index page
  * @param props ...
  */
 function Index(): JSX.Element {
-  const session = useSession();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (session) {
-      router.push("/dashboard");
-    }
-  }, [session]);
 
   return (
     <Page>

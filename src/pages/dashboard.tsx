@@ -5,7 +5,6 @@ import { Button } from "react-bootstrap";
 import { CampaignDocument } from "types/documents";
 import { getSession, signOut } from "utilities/auth";
 import { NextPage, NextPageContext } from "next";
-import Router from "next/router";
 import { rest } from "utilities/request";
 
 interface DashboardProps {
@@ -61,16 +60,6 @@ function RecentGames(props: any) {
 
 Dashboard.getInitialProps = async (ctx: NextPageContext) => {
   const session = getSession(ctx);
-  if (!session) {
-    if (ctx.res) {
-      ctx.res.writeHead(302, { Location: '/' });
-      ctx.res.end();
-    } else {
-      Router.push("/");
-    }
-    return {};
-  }
-
   const result = await rest.get(`/api/dashboard`);
 
   return { session, campaigns: (result as any).data.campaigns };
