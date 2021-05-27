@@ -117,7 +117,9 @@ export class UserLogic {
       throw { code: 403, status: "You do not have permissions to edit this user!" };
     }
     const processedUser = CoreModelLogic.trimRestrictedFields(user, updateFields);
-    const updatedUser = mapFauna(await CoreModelLogic.updateOne(user.ref as FaunaRef, processedUser)) as UserDocument;
+    const updatedUser = mapFauna(
+      await CoreModelLogic.updateOne(user.ref as FaunaRef, processedUser, myID)
+    ) as UserDocument;
     return updatedUser;
   }
 

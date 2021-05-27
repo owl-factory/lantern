@@ -1,5 +1,5 @@
-import { CoreDocument } from "types/documents";
 import { FaunaDocument } from "types/fauna";
+import { Expr, query as q } from "faunadb";
 
 /**
  * Maps fauna into a flatter data format for easier readability and accessibility.
@@ -115,4 +115,16 @@ function mapLayerItem(data: any) {
 
   // Just an object layer
   return mapLayer(data, {});
+}
+
+/**
+ * Builds a Ref using the ID and collection
+ * @param id The id to build into a ref
+ * @param collection The colelction to build into a ref
+ * TODO - figure out how to avoid the extra Expr arguments
+ */
+export function buildRef(id: string, collection: string): Expr {
+const ref: Expr = q.Ref(q.Collection(collection), id);
+
+return ref;
 }
