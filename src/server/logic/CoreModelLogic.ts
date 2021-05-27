@@ -1,6 +1,7 @@
 import { getServerClient } from "utilities/db";
 import { Expr, query as q } from "faunadb";
-import { parseRef } from "utilities/fauna";
+import { buildRef, parseRef } from "utilities/fauna";
+import { FaunaRef } from "types/fauna";
 
 interface PaginationOptions {
   size: number;
@@ -11,7 +12,18 @@ interface IndexResponse {
   error?: any;
 }
 
+interface RawDocument {
+  ref?: Expr;
+  data?: object;
+  credentials?: Record<string, unknown>;
+  delegates?: Record<string, unknown>;
+  ts?: number;
+
+}
+
 export class CoreModelLogic {
+  
+
   /**
    * Handles the shared code for fetching by an index and putting into documents
    * @param index The index to search through
@@ -43,20 +55,85 @@ export class CoreModelLogic {
 
     result.data.forEach((item: (string | number | unknown)[]) => {
       const parsedItem: Record<string, unknown> = {};
-      item.forEach((value: (string | number | unknown), i: number) => {
-        const valueKey = values[i];
-        parsedItem[valueKey] = value;
 
-        if(valueKey === "ref") {
-          const { id, collection } = parseRef(value);
-          parsedItem.id = id;
-          parsedItem.collection = collection;
-        }
-      });
+      if (!Array.isArray(item)) {
+        const { id, collection } = parseRef(item);
+        parsedItem.ref = item;
+        parsedItem.id = id;
+        parsedItem.collection = collection;
+      } else {
+        item.forEach((value: (string | number | unknown), i: number) => {
+          const valueKey = values[i];
+          parsedItem[valueKey] = value;
+
+          if(valueKey === "ref") {
+            const { id, collection } = parseRef(value);
+            parsedItem.id = id;
+            parsedItem.collection = collection;
+          }
+        });
+      }
       parsedResult.push(parsedItem);
     });
 
     return parsedResult;
+  }
+
+  /**
+   * Determine if the given document is a fauna error or not
+   * @param doc The document to determine if an error or not.
+   * TODO - create this
+   * TODO - move to utilities/fauna
+   */
+  public static isFaunaError(doc: unknown): boolean {
+    return false;
+  }
+
+  public static async createOne(
+    collection: string,
+    myID: string,
+    doc: RawDocument
+  ): Promise<object> {
+    delete doc.ref;
+
+    if (!doc.data) { doc.data = {}; }
+    (doc.data as Record<string, unknown>).createdAt = (new Date()).toString();
+    (doc.data as Record<string, unknown>).updatedAt = (doc.data as Record<string, unknown>).createdAt;
+    (doc.data as Record<string, unknown>).ownedBy = buildRef(myID, "users");
+    (doc.data as Record<string, unknown>).createdBy = (doc.data as Record<string, unknown>).ownedBy;
+    (doc.data as Record<string, unknown>).updatedBy = (doc.data as Record<string, unknown>).ownedBy;
+
+    const client = getServerClient();
+    const result = await client.query(
+      q.Create(collection, doc)
+    );
+
+    if (this.isFaunaError(result)) {
+      throw { code: 500, status: "An error occurred while creating your document" };
+    }
+
+    return result;
+  }
+
+  /**
+   * Updates a single document in Fauna. If it fails, throw an error
+   * @param ref The reference object to update
+   * @param doc The partial document to update
+   */
+  public static async updateOne(
+    ref: FaunaRef | Expr,
+    doc: Record<string, unknown>,
+    myID: string,
+  ): Promise<Record<string, unknown>> {
+    doc.updatedAt = new Date();
+    doc.updatedBy = buildRef(myID, "users");
+
+    const client = getServerClient();
+    const savedDoc = await client.query(q.Update(ref, { data: doc })) as Record<string, unknown>;
+    if (this.isFaunaError(savedDoc)) {
+      throw { code: 500, status: "An error occured while updating your document" };
+    }
+    return savedDoc;
   }
 
   /**
@@ -82,3 +159,4 @@ export class CoreModelLogic {
     return newDoc;
   }
 }
+

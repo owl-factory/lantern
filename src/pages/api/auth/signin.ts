@@ -3,6 +3,7 @@ import { setSession } from "utilities/auth";
 import { getServerClient } from "utilities/db";
 import { query as q } from "faunadb";
 import { mapFauna } from "utilities/fauna";
+import { normalize } from "utilities/strings";
 
 const checkEmail = /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i;
 
@@ -17,7 +18,7 @@ export default async function SignIn(req: NextApiRequest, res: NextApiResponse):
   const index = (checkEmail.test(username)) ? "users_by_email" : "users_by_username";
   const { instance, secret }: any = await client.query(
     q.Login(
-      q.Match(q.Index(index), username),
+      q.Match(q.Index(index), normalize(username)),
       { password },
     )
   );
