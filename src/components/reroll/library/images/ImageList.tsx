@@ -7,27 +7,42 @@ import { ImageManager } from "client/library";
 import { ImageDetailsModal } from "components/reroll/library/images";
 import { observer } from "mobx-react-lite";
 import { LinkImageModal } from "./LinkImageModal";
+import style from "./ImageList.module.scss";
 
 interface ImageThumbnailProps {
   image: ImageDocument;
   openModal: (imageID: string) => void
 }
 
+function ImageIcon({ image, openModal }: ImageThumbnailProps) {
+  return (
+    <Col xs={12}>
+      <div className={style.icon} onClick={() => openModal(image.id as string)}>
+        <img style={{height: "auto", width: "auto"}} src={image.src}/>
+        &nbsp;
+        {image.name}
+      </div>
+      <hr/>
+    </Col>
+  );
+}
+
 function ImageThumbnail({ image, openModal }: ImageThumbnailProps) {
   return (
-    <Col xs={12} sm={4} md={3}>
-      <Card>
-        <Card.Body onClick={() => openModal(image.id as string)}>
+    <Col xs={6} sm={4} md={3} lg={2}>
+      <Card onClick={() => openModal(image.id as string)}>
+        <Card.Body >
           {image.name} <br/>
-          <img width="100%" height="auto" src={image.src}/>
+          <img style={{maxWidth: "100%"}} height="auto" src={image.src}/>
         </Card.Body>
       </Card>
     </Col>
   );
 }
 
-enum ListFormat {
+export enum ListFormat {
   Thumbnails,
+  Icons,
 }
 
 interface ImageListProps {
@@ -55,6 +70,9 @@ export const ImageList = observer((props: ImageListProps): JSX.Element =>{
       case ListFormat.Thumbnails:
       case undefined:
         imageThumbnails.push(<ImageThumbnail key={image.id} image={image} openModal={setImageDetailsModal}/>);
+        break;
+      case ListFormat.Icons:
+        imageThumbnails.push(<ImageIcon key={image.id} image={image} openModal={setImageDetailsModal}/>);
         break;
     }
   });

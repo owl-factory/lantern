@@ -47,7 +47,6 @@ export class ImageManager {
    * as short a time as possible
    */
   public async deleteImage(imageID: string): Promise<void> {
-    console.log(imageID)
     let index = -1;
     for(let i = 0; i < this.imageList.length; i++) {
       if(this.imageList[i] === imageID) {
@@ -86,7 +85,7 @@ export class ImageManager {
    * Saves a linked image to the database. 
    * @param values The image values to save
    */
-  public saveLinkedImage(values: ImageDocument) {
+  public saveLinkedImage(values: ImageDocument): void {
     const tempID = "temp";
     values.id = tempID;
     this.images[tempID] = values;

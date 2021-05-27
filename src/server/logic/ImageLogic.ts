@@ -33,7 +33,7 @@ export class ImageLogic {
 
   public static async fetchMyImages(myID: string, roles?: string[]): Promise<ImageDocument[]> {
     const images = await CoreModelLogic.fetchByIndex(
-      "my_images",
+      "my_images_asc",
       [ q.Ref(q.Collection("users"), myID) ],
       ["ref", "name", "src"],
       { size: 100 }

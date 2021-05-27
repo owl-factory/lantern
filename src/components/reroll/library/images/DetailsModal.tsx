@@ -3,6 +3,7 @@ import { Modal } from "components/design";
 import { Button } from "components/style";
 import React from "react";
 import { Card } from "react-bootstrap";
+import { MdClose } from "react-icons/md";
 import { ImageDocument } from "types/documents";
 
 interface ImageDetailsModalProps {
@@ -45,10 +46,10 @@ export function ImageDetailsModal({ imageManager, imageID, handleClose }: ImageD
       <Card>
         <Card.Header>
           <b>{baseImage.name}</b>
+          <a href="#" className="clickable" style={{float: "right"}} onClick={handleClose}><MdClose  /></a>
         </Card.Header>
         <Card.Body>
-          {image.createdAt}
-          <img width="100%" height="auto" src={baseImage.src}/>
+          <img style={{maxWidth: "100%"}} height="auto" src={baseImage.src}/><br/>
           <Button onClick={deleteImage}>Delete</Button>
         </Card.Body>
       </Card>

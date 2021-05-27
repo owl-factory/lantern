@@ -1,6 +1,6 @@
 import React from "react";
 import { Page } from "components/design";
-import { ImageList, StorageUsage } from "components/reroll/library";
+import { ImageList, ListFormat, StorageUsage } from "components/reroll/library";
 import { StorageTypeEnum } from "types/enums/storageType";
 import { rest } from "utilities/request";
 import { NextPageContext } from "next";
@@ -26,7 +26,7 @@ export default function Library(props: any): JSX.Element {
     <Page>
       <h1>Library</h1>
       <StorageUsage maxAllowedStorage={maxAllowedStorage} usage={usage}/>
-      <ImageList imageManager={imageManager}/>
+      <ImageList imageManager={imageManager} listFormat={ListFormat.Icons}/>
     </Page>
   );
 }
