@@ -85,10 +85,16 @@ export class CoreModelLogic {
    * TODO - create this
    * TODO - move to utilities/fauna
    */
-  public static isFaunaError(doc: unknown): boolean {
+  public static isFaunaError(_doc: unknown): boolean {
     return false;
   }
 
+  /**
+   * Creates a single document in the database
+   * @param collection The collection to create a new document in
+   * @param myID The current user's ID
+   * @param doc The document to create
+   */
   public static async createOne(
     collection: string,
     myID: string,

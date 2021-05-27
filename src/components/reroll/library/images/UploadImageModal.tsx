@@ -3,26 +3,18 @@ import { Button, Col, Row } from "components/style";
 import { Formik, Form as FormikForm } from "formik";
 import React from "react";
 import { Card } from "react-bootstrap";
-import { rest } from "utilities/request";
 
 interface UploadImageModalProps {
   modal: boolean;
   handleClose: () => void;
 }
 
-export function UploadImageModal({ handleClose, modal }: UploadImageModalProps) {
-  async function saveLinkedImage(values: any) {
-    rest.put(`/api/images/external`, values)
-    .then((res) => {
-      // Clear form
-      // Close modal?
-      handleClose();
-    })
-    .catch((err) => {
-      // Print errors
-    });
-  }
-
+/**
+ * Renders a function to upload an image to the CDN
+ * @param handleClose The function to close the modal
+ * @param modal True if this modal should be open
+ */
+export function UploadImageModal({ handleClose, modal }: UploadImageModalProps): JSX.Element {
   return (
     <Modal open={modal} handleClose={handleClose}>
       <Card>
@@ -32,7 +24,7 @@ export function UploadImageModal({ handleClose, modal }: UploadImageModalProps) 
             <Col xs={12} md={6}>
               <Formik
                 initialValues={{ src: "", name: "" }}
-                onSubmit={saveLinkedImage}
+                onSubmit={() => {return;}}
               >
                 { (formik) => (
                   <FormikForm>

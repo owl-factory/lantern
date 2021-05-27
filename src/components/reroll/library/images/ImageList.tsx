@@ -14,6 +14,11 @@ interface ImageThumbnailProps {
   openModal: (imageID: string) => void
 }
 
+/**
+ * Renders an icon and name of an image
+ * @param image The image document to render an icon for
+ * @param openModal A function to open the image details modal
+ */
 function ImageIcon({ image, openModal }: ImageThumbnailProps) {
   return (
     <Col xs={12}>
@@ -27,6 +32,11 @@ function ImageIcon({ image, openModal }: ImageThumbnailProps) {
   );
 }
 
+/**
+ * Renders a thumbnail and name of an image
+ * @param image The image document to render a thumbnail for
+ * @param openModal A function to open the image details modal
+ */
 function ImageThumbnail({ image, openModal }: ImageThumbnailProps) {
   return (
     <Col xs={6} sm={4} md={3} lg={2}>
@@ -51,9 +61,9 @@ interface ImageListProps {
 }
 
 /**
- * 
- * @param props 
- * @returns 
+ * Renders a list of images as thumbnails or as icons
+ * @param imageManager The ImageManager containing all of the image information
+ * @param listFormat The format to render the images as
  */
 export const ImageList = observer((props: ImageListProps): JSX.Element =>{
   const [ modal, setModal ] = React.useState(false);
