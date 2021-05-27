@@ -11,6 +11,12 @@ import { normalize } from "utilities/strings";
  * @param res The result from the server to be sent back
  */
 export default async function SignUp(req: NextApiRequest, res: NextApiResponse): Promise<void> {
+  console.log(process.env.NODE_ENV);
+  if (process.env.NODE_ENV === "production") {
+    res.end("Account creation is disabled at this time.");
+    return;
+  }
+
   const { email, password, username } = req.body;
   const client = getServerClient();
   // TODO - move to UserLogic
