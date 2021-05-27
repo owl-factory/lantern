@@ -28,7 +28,7 @@ export class ImageLogic {
   public static async deleteImage(ref: FaunaRef | Expr, myID: string, roles: string[]): Promise<boolean> {
     const image = await this.fetchImageByRef(ref, myID, roles);
     if (!image) { throw { code: 404, status: "The image could not be found."}; }
-    
+    return false;
   }
 
   public static async fetchMyImages(myID: string, roles?: string[]): Promise<ImageDocument[]> {

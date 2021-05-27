@@ -97,11 +97,11 @@ export class CoreModelLogic {
     delete doc.ref;
 
     if (!doc.data) { doc.data = {}; }
-    doc.data.createdAt = (new Date()).toString();
-    doc.data.updatedAt = doc.data.createdAt;
-    doc.data.ownedBy = buildRef(myID, "users");
-    doc.data.createdBy = doc.data.ownedBy;
-    doc.data.updatedBy = doc.data.ownedBy;
+    (doc.data as Record<string, unknown>).createdAt = (new Date()).toString();
+    (doc.data as Record<string, unknown>).updatedAt = (doc.data as Record<string, unknown>).createdAt;
+    (doc.data as Record<string, unknown>).ownedBy = buildRef(myID, "users");
+    (doc.data as Record<string, unknown>).createdBy = (doc.data as Record<string, unknown>).ownedBy;
+    (doc.data as Record<string, unknown>).updatedBy = (doc.data as Record<string, unknown>).ownedBy;
 
     const client = getServerClient();
     const result = await client.query(

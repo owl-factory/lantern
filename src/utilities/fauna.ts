@@ -1,5 +1,5 @@
 import { FaunaDocument } from "types/fauna";
-import { query as q } from "faunadb";
+import { Expr, query as q } from "faunadb";
 
 /**
  * Maps fauna into a flatter data format for easier readability and accessibility.
