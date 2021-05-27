@@ -7,7 +7,7 @@ module.exports = {
     config.externals.push("bufferutil", "utf-8-validate");
     return config;
   },
-	async redirects() {
+  async redirects() {
     return [
       {
         source: "/dashboard",
@@ -16,7 +16,7 @@ module.exports = {
       },
     ]
   },
-	async rewrites() {
+  async rewrites() {
     return {
       beforeFiles: [
         {
