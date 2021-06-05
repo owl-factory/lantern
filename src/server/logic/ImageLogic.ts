@@ -4,7 +4,9 @@ import { FaunaRef } from "types/fauna";
 import { CoreModelLogic } from "./CoreModelLogic";
 import { query as q } from "faunadb";
 import { getServerClient } from "utilities/db";
-import { mapFauna } from "utilities/fauna";
+import { buildRef, mapFauna } from "utilities/fauna";
+import { AssetSource } from "types/enums/assetSource";
+import { AssetType } from "types/enums/assetType";
 
 const createFields = [
   "name",
@@ -19,15 +21,66 @@ export class ImageLogic {
    * @param image The image document to save to the database
    * @param myID The current user's id
    */
-  public static async createExternalImage(image: ImageDocument, myID: string): Promise<ImageDocument> {
+  public static async createExternalLink(image: ImageDocument, myID: string): Promise<ImageDocument> {
     // Validate external image
     image = CoreModelLogic.trimRestrictedFields(image, createFields);
 
-    image.isExternal = true;
+    image.assetSource = AssetSource.ExternalLink;
     image.sizeInBytes = 0;
 
-    return mapFauna(await CoreModelLogic.createOne("images", myID, { data: image })) as ImageDocument;
+    return this.createOne(image, myID) as ImageDocument;
+  }
 
+  /**
+   * 
+   * @param image The image document to create
+   * @param targetImage THe target image document that we're linking to
+   * @param myID 
+   * @returns 
+   */
+  public static async createInternalLink(
+    image: ImageDocument,
+    targetImage: ImageDocument,
+    myID: string
+  ): Promise<ImageDocument> {
+    let sourceImage = await this.fetchImageByRef(
+      buildRef(targetImage.id as string, targetImage.collection as string), myID, ["admin"]
+    );
+
+    if (sourceImage === null) { throw { code: 404, message: "Source image does not exist" }; }
+
+    switch(sourceImage.assetSource) {
+      // In cases where the image is an external link, copy over the external link
+      // TODO - do we want to keep reference image information?
+      case AssetSource.ExternalLink:
+        image.src = sourceImage.src;
+        image.height = sourceImage.height;
+        image.width = sourceImage.width;
+        return this.createExternalLink(image, myID);
+
+      // If this Asset is interally linked to another asset. Grab that asset directly
+      case AssetSource.InternalLink:
+        sourceImage = await this.fetchImageByRef(sourceImage.ref as FaunaRef, myID, ["admin"]);
+        if (sourceImage === null) { throw { code: 404, message: "Source image does not exist" }; }
+        break;
+    }
+
+    image = CoreModelLogic.trimRestrictedFields(image, createFields);
+    image.assetSource = AssetSource.InternalLink;
+    image.sizeInBytes = 0;
+
+    return this.createOne(image, myID) as ImageDocument;
+  }
+
+  /**
+   * Creates a new Image document
+   * @param image The image document to create
+   * @param myID The current user's id
+   */
+  public static async createOne(image: ImageDocument, myID: string): Promise<ImageDocument> {
+    image.assetType = AssetType.Image;
+
+    return mapFauna(await CoreModelLogic.createOne("images", myID, { data: image })) as ImageDocument;
   }
 
   /**

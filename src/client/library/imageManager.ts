@@ -1,6 +1,7 @@
 import { Client, query as q } from "faunadb";
 import { makeAutoObservable } from "mobx";
 import { ImageDocument } from "types/documents";
+import { AssetSource } from "types/enums/assetSource";
 import { FaunaRef } from "types/fauna";
 import { getClient } from "utilities/db";
 import { buildRef, mapFauna } from "utilities/fauna";
@@ -58,7 +59,7 @@ export class ImageManager {
     if (index === -1 || !this.images[this.imageList[index]]) { throw "The image to delete does not exist."; }
 
     const image = this.images[this.imageList[index]];
-    if (this.isExternal(image)) {
+    if (this.isLinked(image)) {
       this.client.query(q.Delete(image.ref as FaunaRef));
     } else {
       rest.delete(`/api/images/${image.id}`, {});
@@ -82,7 +83,7 @@ export class ImageManager {
   }
 
   /**
-   * Saves a linked image to the database. 
+   * Saves a linked image to the database.
    * @param values The image values to save
    */
   public saveLinkedImage(values: ImageDocument): void {
@@ -109,8 +110,10 @@ export class ImageManager {
    * Checks if an image is external without a database call. If unknown, return false
    * @param image The image to determine if external or not
    */
-  public isExternal(image: ImageDocument): boolean {
-    if (image.isExternal) { return true; }
+  public isLinked(image: ImageDocument): boolean {
+    if (image.assetSource === AssetSource.InternalLink || image.assetSource === AssetSource.ExternalLink) {
+      return true;
+    }
     if (image.src && image.src.includes(this.ourCDNPrefex)) { return false; }
     return true;
   }
