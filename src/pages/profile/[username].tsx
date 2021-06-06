@@ -1,5 +1,5 @@
 import React from "react";
-import { Checkbox, Input, Page, TextArea } from "components/design";
+import { Checkbox, Input, Modal, Page, TextArea } from "components/design";
 import { NextPageContext } from "next";
 import { rest } from "utilities/request";
 import { getSession } from "utilities/auth";
@@ -8,6 +8,10 @@ import { Formik, Form as FormikForm } from "formik";
 import { Button } from "components/style";
 import { useRouter } from "next/router";
 import { arrayToList } from "utilities/arrays";
+import style from "./profile.module.scss";
+import { ImageSelectionForm } from "components/reroll/library/images/ImageSelectionForm";
+import { ImageManager } from "client/library";
+
 
 /**
  * Renders a small section indicating how long a player has been a member, their hours played,
@@ -166,13 +170,61 @@ function OtherDetails({ user }: { user: UserDocument }) {
  * @param player The recently played with user.
  */
 function RecentPlayer({ player }: { player: UserDocument }) {
+  let src = "";
+  if (player.icon && player.icon.src) { src = player.icon.src; }
   return (
     <div>
       <a href={`/profile/${player.username}`}>
-        <img width="30px" height="30px" src={player.icon}/>
+        <img width="30px" height="30px" src={src}/>
         <span style={{paddingLeft: "10px"}}>{player.displayName}</span>
       </a>
     </div>
+  );
+}
+
+interface ChangeProfileModalProps {
+  user: UserDocument;
+  open: boolean;
+  handleClose: () => void;
+  imageManager: ImageManager;
+}
+
+function ChangeProfileModal({ user, open, handleClose, imageManager, setUser}: any) {
+  console.log(open)
+  return (
+    <Modal open={open} handleClose={handleClose}>
+      <ImageSelectionForm imageManager={imageManager} setUser={setUser} onSave={handleClose}/>
+    </Modal>
+  );
+}
+
+function ProfileImage({ user, isMyPage, imageManager, modal, setModal, setUser }: any) {
+  function closeModal() { setModal(false); }
+
+  let image = <img src={user.icon.src} width="200px" height="200px"/>;
+  if (isMyPage) {
+    React.useEffect(() => {
+      imageManager.fetchImages();
+    }, []);
+    image = (
+      <div>
+        <div className={`${style.profileImageWrapper}`} onClick={() => (setModal(true))}>
+          <div className={`${style.profileHoverWrapper}`}>
+            Change Image
+          </div>
+          {image}
+        </div>
+        <ChangeProfileModal 
+          imageManager={imageManager} user={user} open={modal} handleClose={closeModal} setUser={setUser}/>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      {image}
+      <hr/>
+    </>
   );
 }
 
@@ -189,6 +241,8 @@ export default function Profile(props: any): JSX.Element {
 
     return <>Error</>;
   }
+  const [ imageManager, _setImageManager ] = React.useState(new ImageManager());
+  const [ profileImageModal, setProfileImageModal ] = React.useState(false);
   const router = useRouter();
   const [ user, setUser ] = React.useState(props.data.user);
   const [ players ] = React.useState(props.data.user.recentPlayers);
@@ -223,8 +277,14 @@ export default function Profile(props: any): JSX.Element {
     <Page>
       <div className="row">
         <div className="col-12 col-md-4">
-          <img src={user.icon} width="200px" height="200px"/>
-          <hr/>
+          <ProfileImage
+            user={user}
+            isMyPage={isMyPage}
+            imageManager={imageManager}
+            setUser={setUser}
+            modal={profileImageModal}
+            setModal={setProfileImageModal}
+          />
           { isMyPage ? <MyOptions user={user} players={players}/> : <OtherOptions user={user}/>}
         </div>
 

@@ -8,6 +8,8 @@ import { Expr, query as q } from "faunadb";
  */
  export function mapFauna(doc: FaunaDocument<unknown>): unknown {
   let mappedDoc: any = {};
+  console.log("MAP")
+  console.log(doc.data);
 
   // Nab all of the data data
   mappedDoc = mapLayer(doc.data, mappedDoc);
@@ -22,7 +24,7 @@ import { Expr, query as q } from "faunadb";
   if (!("collection" in mappedDoc)) {
     mappedDoc.collection = ref.collection;
   }
-
+  console.log(mappedDoc)
   return mappedDoc;
 }
 
@@ -32,6 +34,8 @@ import { Expr, query as q } from "faunadb";
  * @param initialDoc The document we would like to map the current layer to
  */
  function mapLayer(doc: any, initialDoc: any = {}) {
+  if (doc === undefined) { return undefined; }
+  // console.log(doc)
   const keys = Object.keys(doc);
   keys.forEach((key: string) => {
     const data = doc[key];
@@ -110,11 +114,17 @@ function mapLayerItem(data: any) {
     return { ...ref, ref: data };
   }
 
+  const mappedDoc: Record<string, unknown> = {};
+
   // Fauna Object
-  if ("ref" in data) { return mapFauna(data); }
+  if ("ref" in data) {
+    const ref = parseRef(data.ref);
+    mappedDoc.id = ref.id;
+    mappedDoc.ref = data.ref;
+  }
 
   // Just an object layer
-  return mapLayer(data, {});
+  return mapLayer(data, mappedDoc);
 }
 
 /**

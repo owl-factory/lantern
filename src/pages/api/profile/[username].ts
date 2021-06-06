@@ -15,7 +15,7 @@ async function getProfile(this: HTTPHandler, req: NextApiRequest) {
   const user = await UserLogic.findUserByUsername(req.query.username as string, userID) as UserDocument;
   if (!user) { this.returnError(404, "The given profile was not found."); }
   if (user.recentPlayers) {
-    user.recentPlayers = await UserLogic.findUsersByRefs(user.recentPlayers, userID);
+    // user.recentPlayers = await UserLogic.findUsersByRefs(user.recentPlayers, userID);
   }
 
   this.returnSuccess({ user });
