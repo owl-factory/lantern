@@ -190,7 +190,6 @@ interface ChangeProfileModalProps {
 }
 
 function ChangeProfileModal({ user, open, handleClose, imageManager, setUser}: any) {
-  console.log(open)
   return (
     <Modal open={open} handleClose={handleClose}>
       <ImageSelectionForm imageManager={imageManager} setUser={setUser} onSave={handleClose}/>

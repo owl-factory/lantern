@@ -8,14 +8,13 @@ import { Expr, query as q } from "faunadb";
  */
  export function mapFauna(doc: FaunaDocument<unknown>): unknown {
   let mappedDoc: any = {};
-  console.log("MAP")
-  console.log(doc.data);
 
   // Nab all of the data data
   mappedDoc = mapLayer(doc.data, mappedDoc);
 
   // Run after to ensure that any reserved words in the data are overridden.
   // TODO - change these keys to unique keys?
+  console.log(doc)
   const ref = parseRef(doc.ref);
   mappedDoc.id = ref.id;
   mappedDoc.ts = doc.ts;
@@ -24,7 +23,6 @@ import { Expr, query as q } from "faunadb";
   if (!("collection" in mappedDoc)) {
     mappedDoc.collection = ref.collection;
   }
-  console.log(mappedDoc)
   return mappedDoc;
 }
 
@@ -117,11 +115,7 @@ function mapLayerItem(data: any) {
   const mappedDoc: Record<string, unknown> = {};
 
   // Fauna Object
-  if ("ref" in data) {
-    const ref = parseRef(data.ref);
-    mappedDoc.id = ref.id;
-    mappedDoc.ref = data.ref;
-  }
+  if ("ref" in data) { return mapFauna(data); }
 
   // Just an object layer
   return mapLayer(data, mappedDoc);
@@ -134,7 +128,7 @@ function mapLayerItem(data: any) {
  * TODO - figure out how to avoid the extra Expr arguments
  */
 export function buildRef(id: string, collection: string): Expr {
-const ref: Expr = q.Ref(q.Collection(collection), id);
+  const ref: Expr = q.Ref(q.Collection(collection), id);
 
-return ref;
+  return ref;
 }
