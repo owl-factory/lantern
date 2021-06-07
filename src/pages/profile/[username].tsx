@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Dispatch } from "react";
 import { Checkbox, Input, Modal, Page, TextArea } from "components/design";
 import { NextPageContext } from "next";
 import { rest } from "utilities/request";
@@ -182,25 +182,27 @@ function RecentPlayer({ player }: { player: UserDocument }) {
   );
 }
 
-interface ChangeProfileModalProps {
-  user: UserDocument;
-  open: boolean;
-  handleClose: () => void;
+interface ProfileImageProps {
   imageManager: ImageManager;
+  isMyPage: boolean;
+  user: UserDocument;
+  setUser: Dispatch<UserDocument>;
 }
 
-function ChangeProfileModal({ user, open, handleClose, imageManager, setUser}: any) {
-  return (
-    <Modal open={open} handleClose={handleClose}>
-      <ImageSelectionForm imageManager={imageManager} setUser={setUser} onSave={handleClose}/>
-    </Modal>
-  );
-}
+/**
+ * Renders the Profile image and any modification tools
+ * @param imageManager The image manager
+ * @param user The current user
+ * @param setUser Sets the user object to update information
+ * @param isMyPage True if this is the current user's page
+ */
+function ProfileImage({ imageManager, user, isMyPage, setUser }: ProfileImageProps) {
+  const [ modal, setModal ] = React.useState(false);
 
-function ProfileImage({ user, isMyPage, imageManager, modal, setModal, setUser }: any) {
   function closeModal() { setModal(false); }
 
   let image = <img src={user.icon.src} width="200px" height="200px"/>;
+
   if (isMyPage) {
     React.useEffect(() => {
       imageManager.fetchImages();
@@ -213,8 +215,9 @@ function ProfileImage({ user, isMyPage, imageManager, modal, setModal, setUser }
           </div>
           {image}
         </div>
-        <ChangeProfileModal 
-          imageManager={imageManager} user={user} open={modal} handleClose={closeModal} setUser={setUser}/>
+        <Modal open={modal} handleClose={closeModal}>
+          <ImageSelectionForm imageManager={imageManager} setUser={setUser} onSave={closeModal}/>
+        </Modal>
       </div>
     );
   }
@@ -240,8 +243,7 @@ export default function Profile(props: any): JSX.Element {
 
     return <>Error</>;
   }
-  const [ imageManager, _setImageManager ] = React.useState(new ImageManager());
-  const [ profileImageModal, setProfileImageModal ] = React.useState(false);
+  const [ imageManager ] = React.useState(new ImageManager());
   const router = useRouter();
   const [ user, setUser ] = React.useState(props.data.user);
   const [ players ] = React.useState(props.data.user.recentPlayers);
@@ -277,12 +279,10 @@ export default function Profile(props: any): JSX.Element {
       <div className="row">
         <div className="col-12 col-md-4">
           <ProfileImage
+            imageManager={imageManager}
             user={user}
             isMyPage={isMyPage}
-            imageManager={imageManager}
             setUser={setUser}
-            modal={profileImageModal}
-            setModal={setProfileImageModal}
           />
           { isMyPage ? <MyOptions user={user} players={players}/> : <OtherOptions user={user}/>}
         </div>

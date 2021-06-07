@@ -1,9 +1,10 @@
-import { ImageManager } from "client/library";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { ImageList, LinkImageForm, ListFormat } from "components/reroll/library/images";
 import { rest } from "utilities/request";
 import { ImageDocument } from "types/documents";
+import { UploadImageForm } from "./forms/UploadImage";
+import { SelectionTabs } from "components/design";
 
 const TABS = [
   "list",
@@ -11,42 +12,17 @@ const TABS = [
   "upload",
 ];
 
-
-function SelectionTabs({ useTabs, activeTab, setActiveTab }: any) {
-  // TODO - move this out into a design component
-  const tabs: JSX.Element[] = [];
-  useTabs.forEach((useTab: string) => {
-    const readableTab = useTab.charAt(0).toUpperCase() + useTab.slice(1);
-    tabs.push(
-      <li key={useTab} className={`nav-item`}>
-        <a
-          className={`nav-link ${useTab === activeTab ? "active" : ""}`}
-          onClick={() => setActiveTab(useTab)}
-        >
-          {readableTab}
-        </a>
-      </li>
-    );
-  });
-
-  return (
-    <ul className={`nav nav-tabs`}>
-      {tabs}
-    </ul>
-  );
-}
-
-const ListForm = observer(({imageManager, onSubmit}: any) => {
-  return (
-    <div>
-      <ImageList imageManager={imageManager} listFormat={ListFormat.Icons} onClick={onSubmit}/>
-    </div>
-  );
-});
-
-export const ImageSelectionForm = observer(({user, imageManager, setUser, onSave}: any) => {
+/**
+ * Renders a form to select an image
+ */
+export const ImageSelectionForm = observer(({imageManager, setUser, onSave}: any) => {
   const [activeTab, setActiveTab] = React.useState("list");
 
+  /**
+   * Submits an image selection to the server
+   * @param image The new image document to submit
+   * @param method The method of selecting a new image
+   */
   async function onSubmit(image: ImageDocument, method: string): Promise<void> {
     const res = await rest.patch(`/api/profile/image`, { method, image}) as any;
     if (!res.success) { console.log(res.message); return; }
@@ -60,12 +36,16 @@ export const ImageSelectionForm = observer(({user, imageManager, setUser, onSave
       activeForm = <LinkImageForm onSubmit={(image: ImageDocument) => onSubmit(image, "link")}/>;
       break;
     case "list":
-      activeForm = (<ListForm
-        user={user} 
-        imageManager={imageManager} setUser={setUser} onSubmit={(image:ImageDocument) => onSubmit(image, "list")} />);
+      activeForm = (
+        <ImageList
+          imageManager={imageManager}
+          listFormat={ListFormat.Icons}
+          onClick={(image:ImageDocument) => onSubmit(image, "list")}
+        />
+      );
       break;
     case "upload":
-      activeForm = <></>;
+      activeForm = <UploadImageForm />;
       break;
     default:
       activeForm = <></>;

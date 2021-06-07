@@ -13,8 +13,6 @@ export function LinkImageForm(props: any): JSX.Element {
   let onSubmit: (image: ImageDocument) => void = props.onSubmit;
   if (!props.onSubmit) {
     onSubmit = () => {
-      console.log("Save image");
-
       if (props.onSave) {
         props.onSave();
       }
