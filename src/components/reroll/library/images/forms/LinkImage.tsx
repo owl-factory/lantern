@@ -4,15 +4,23 @@ import { Formik, Form as FormikForm } from "formik";
 import React from "react";
 import { ImageDocument } from "types/documents";
 
+interface LinkImageFormProps {
+  onSubmit?: (image: ImageDocument) => Promise<void>;
+  onSave?: () => void;
+}
+
 /**
  * Renders the form to link an external image
- * @param props 
- * @returns 
+ * @param onSubmit A custom function that takes the new image and runs on submit. Nothing else is run
+ * @param onSave A custom function that adds extra handling post-save but without overwriting the
+ *  original save function
  */
-export function LinkImageForm(props: any): JSX.Element {
-  let onSubmit: (image: ImageDocument) => void = props.onSubmit;
-  if (!props.onSubmit) {
-    onSubmit = () => {
+export function LinkImageForm(props: LinkImageFormProps): JSX.Element {
+  let onSubmit: (Image: ImageDocument) => Promise<void>;
+  if (props.onSubmit) { onSubmit = props.onSubmit; }
+  else {
+    onSubmit = async () => {
+      // TODO - normal save
       if (props.onSave) {
         props.onSave();
       }

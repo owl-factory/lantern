@@ -198,10 +198,11 @@ interface ProfileImageProps {
  */
 function ProfileImage({ imageManager, user, isMyPage, setUser }: ProfileImageProps) {
   const [ modal, setModal ] = React.useState(false);
-
+  let src = "";
+  if (user.icon && user.icon.src) { src = user.icon.src; }
   function closeModal() { setModal(false); }
 
-  let image = <img src={user.icon.src} width="200px" height="200px"/>;
+  let image = <img src={src} width="200px" height="200px"/>;
 
   if (isMyPage) {
     React.useEffect(() => {
@@ -223,10 +224,10 @@ function ProfileImage({ imageManager, user, isMyPage, setUser }: ProfileImagePro
   }
 
   return (
-    <>
+    <div>
       {image}
       <hr/>
-    </>
+    </div>
   );
 }
 

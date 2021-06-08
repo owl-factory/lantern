@@ -1,10 +1,11 @@
 import { observer } from "mobx-react-lite";
-import React from "react";
+import React, { Dispatch } from "react";
 import { ImageList, LinkImageForm, ListFormat } from "components/reroll/library/images";
 import { rest } from "utilities/request";
-import { ImageDocument } from "types/documents";
+import { ImageDocument, UserDocument } from "types/documents";
 import { UploadImageForm } from "./forms/UploadImage";
 import { SelectionTabs } from "components/design";
+import { ImageManager } from "client/library";
 
 const TABS = [
   "list",
@@ -12,10 +13,19 @@ const TABS = [
   "upload",
 ];
 
+interface ImageSelectionFormProps {
+  imageManager: ImageManager;
+  setUser: Dispatch<UserDocument>;
+  onSave: () => void;
+}
+
 /**
  * Renders a form to select an image
+ * @param imageManager The image manager containing and managing all of the images
+ * @param setUser The function to update the user when a new profile image is selected
+ * @param onSave The function to run after the profile image is changed
  */
-export const ImageSelectionForm = observer(({imageManager, setUser, onSave}: any) => {
+export const ImageSelectionForm = observer(({imageManager, setUser, onSave}: ImageSelectionFormProps) => {
   const [activeTab, setActiveTab] = React.useState("list");
 
   /**
