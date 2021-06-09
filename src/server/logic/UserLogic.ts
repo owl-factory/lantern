@@ -123,22 +123,24 @@ export class UserLogic {
     return updatedUser;
   }
 
-  public static async updateUserImage(user: UserDocument, body: any, myID: string) {
+  /**
+   * Updates the user's profile image by one of several methods.
+   * @param user The user document to update
+   * @param body The body of request to update the user image.
+   * @param myID The current user's id
+   */
+  public static async updateUserImage(user: UserDocument, body: any, myID: string): Promise<UserDocument> {
     let image: ImageDocument;
     switch(body.method) {
       // TODO - handle upload
       // TODO - handle link
       case "link":
-        console.log("Making")
-
         image = await ImageLogic.createExternalImage(body.image, myID) as ImageDocument;
-        console.log("Made")
         break;
       case "list":
-        console.log("why here")
 
         image = await ImageLogic.fetchImageByRef(buildRef(body.image.id, "images"), myID, []) as ImageDocument;
-        if (!image) { throw {code: 404, message: "Image not found."}; } 
+        if (!image) { throw {code: 404, message: "Image not found."}; }
         break;
       default:
         throw {code: 501, message: `Function '${body.method}' not implemented.`};
@@ -148,7 +150,7 @@ export class UserLogic {
 
     const updatedUser = await CoreModelLogic.updateOne(
       user.ref as FaunaRef, targetUser as Record<string, unknown>, myID);
-    return mapFauna(updatedUser);
+    return mapFauna(updatedUser) as UserDocument;
   }
 
   /**

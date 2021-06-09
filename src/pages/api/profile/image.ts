@@ -1,11 +1,11 @@
 import { NextApiRequest } from "next";
-import { ImageLogic, UserLogic } from "server/logic";
+import { UserLogic } from "server/logic";
 import { HTTPHandler } from "server/response";
 import { createEndpoint } from "server/utilities";
 import { buildRef } from "utilities/fauna";
 
 /**
- * Updates a single profile for the current user
+ * Updates a single profile image for the current user
  * @param this The handler class calling this function
  * @param req The request to the server
  */

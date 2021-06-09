@@ -14,7 +14,6 @@ import { Expr, query as q } from "faunadb";
 
   // Run after to ensure that any reserved words in the data are overridden.
   // TODO - change these keys to unique keys?
-  console.log(doc)
   const ref = parseRef(doc.ref);
   mappedDoc.id = ref.id;
   mappedDoc.ts = doc.ts;
@@ -33,7 +32,6 @@ import { Expr, query as q } from "faunadb";
  */
  function mapLayer(doc: any, initialDoc: any = {}) {
   if (doc === undefined) { return undefined; }
-  // console.log(doc)
   const keys = Object.keys(doc);
   keys.forEach((key: string) => {
     const data = doc[key];
@@ -92,7 +90,7 @@ function parseFaunaDate(date: Record<string, unknown>): Date {
 }
 
 /**
- * Processes and maps a single item from a document object. 
+ * Processes and maps a single item from a document object.
  * @param data The data to process and map
  */
 function mapLayerItem(data: any) {
@@ -107,7 +105,7 @@ function mapLayerItem(data: any) {
     return data;
   }
   // Fauna Ref
-  if (isFaunaRef(data)) { 
+  if (isFaunaRef(data)) {
     const ref = parseRef(data);
     return { ...ref, ref: data };
   }

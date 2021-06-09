@@ -14,9 +14,9 @@ interface ImageListProps {
 }
 
 /**
- * 
- * @param props 
- * @returns 
+ * Renders the library list containing a user's images.
+ * @param imageManager The manager containing the images
+ * @param listFormat The method by which the list is rendered.
  */
 export const LibraryImageList = observer((props: ImageListProps): JSX.Element =>{
   const [ modal, setModal ] = React.useState(false);
@@ -24,8 +24,6 @@ export const LibraryImageList = observer((props: ImageListProps): JSX.Element =>
 
   function closeModal() { setModal(false); }
   function closeImageDetailsModal() { setImageDetailsModal(""); }
-
-  
 
   return (
     <div style={{marginTop: "20px"}}>
