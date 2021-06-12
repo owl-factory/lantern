@@ -3,7 +3,7 @@ import { makeAutoObservable } from "mobx";
 import { ImageDocument } from "types/documents";
 import { FaunaRef } from "types/fauna";
 import { getClient } from "utilities/db";
-import { buildRef, mapFauna } from "utilities/fauna";
+import { fromFauna, toFaunaRef } from "utilities/fauna";
 import { rest } from "utilities/request";
 
 /**
@@ -84,14 +84,14 @@ export class ImageManager {
   public async fetchImage(imageID: string ): Promise<ImageDocument> {
     if (!this.images[imageID]) { return {}; }
     if (this.images[imageID].ownedBy !== undefined) { return this.images[imageID]; }
-    this.images[imageID] = mapFauna(
-      await this.client.query(q.Get(buildRef(imageID, this.images[imageID].collection as string)))
+    this.images[imageID] = fromFauna(
+      await this.client.query(q.Get(toFaunaRef(imageID, this.images[imageID].collection as string)))
     ) as ImageDocument;
     return this.images[imageID];
   }
 
   /**
-   * Saves a linked image to the database. 
+   * Saves a linked image to the database.
    * @param values The image values to save
    */
   public saveLinkedImage(values: ImageDocument): void {

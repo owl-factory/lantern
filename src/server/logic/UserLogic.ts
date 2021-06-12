@@ -1,7 +1,7 @@
 import {  Expr, query as q } from "faunadb";
 import { ImageDocument, UserDocument } from "types/documents";
 import { FaunaDocument, FaunaRef } from "types/fauna";
-import { buildRef, mapFauna } from "utilities/fauna";
+import { toFaunaRef, fromFauna } from "utilities/fauna";
 import { getServerClient } from "utilities/db";
 import { CoreModelLogic, ImageLogic } from "server/logic";
 
@@ -44,7 +44,7 @@ export class UserLogic {
     const rawUser: FaunaDocument<UserDocument> = await client.query(q.Get(ref));
     // console.log(rawUser);
     if (!rawUser) { return null; }
-    const user: UserDocument = mapFauna(rawUser) as UserDocument;
+    const user: UserDocument = fromFauna(rawUser) as UserDocument;
 
     if (this.isOwner(user, myID, roles)) { return user; }
     // TODO - fix this mess ;~;
@@ -117,7 +117,7 @@ export class UserLogic {
       throw { code: 403, status: "You do not have permissions to edit this user!" };
     }
     const processedUser = CoreModelLogic.trimRestrictedFields(user, updateFields);
-    const updatedUser = mapFauna(
+    const updatedUser = fromFauna(
       await CoreModelLogic.updateOne(user.ref as FaunaRef, processedUser, myID)
     ) as UserDocument;
     return updatedUser;
@@ -139,7 +139,7 @@ export class UserLogic {
         break;
       case "list":
 
-        image = await ImageLogic.fetchImageByRef(buildRef(body.image.id, "images"), myID, []) as ImageDocument;
+        image = await ImageLogic.fetchImageByRef(toFaunaRef(body.image.id, "images"), myID, []) as ImageDocument;
         if (!image) { throw {code: 404, message: "Image not found."}; }
         break;
       default:
@@ -150,7 +150,7 @@ export class UserLogic {
 
     const updatedUser = await CoreModelLogic.updateOne(
       user.ref as FaunaRef, targetUser as Record<string, unknown>, myID);
-    return mapFauna(updatedUser) as UserDocument;
+    return fromFauna(updatedUser) as UserDocument;
   }
 
   /**

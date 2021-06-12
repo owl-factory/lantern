@@ -3,7 +3,7 @@ import { UserLogic } from "server/logic";
 import { HTTPHandler } from "server/response";
 import { createEndpoint } from "server/utilities";
 import { UserDocument } from "types/documents";
-import { buildRef } from "utilities/fauna";
+import { toFaunaRef } from "utilities/fauna";
 
 /**
  * Gets a single profile for the profile page
@@ -28,7 +28,7 @@ async function getProfile(this: HTTPHandler, req: NextApiRequest) {
  */
 async function updateProfile(this: HTTPHandler, req: NextApiRequest) {
   const userID = "295863299256353286";
-  req.body.ref = buildRef(req.body.id, "users");
+  req.body.ref = toFaunaRef(req.body.id, "users");
   const user = await UserLogic.updateUser(req.body, userID);
   this.returnSuccess({ user });
 }

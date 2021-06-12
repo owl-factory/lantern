@@ -4,7 +4,7 @@ import { FaunaRef } from "types/fauna";
 import { CoreModelLogic } from "./CoreModelLogic";
 import { query as q } from "faunadb";
 import { getServerClient } from "utilities/db";
-import { mapFauna } from "utilities/fauna";
+import { fromFauna } from "utilities/fauna";
 
 const createFields = [
   "name",
@@ -21,7 +21,7 @@ export class ImageLogic {
     image.isExternal = true;
     image.sizeInBytes = 0;
 
-    return mapFauna(await CoreModelLogic.createOne("images", myID, { data: image })) as ImageDocument;
+    return fromFauna(await CoreModelLogic.createOne("images", myID, { data: image })) as ImageDocument;
 
   }
 
@@ -46,7 +46,7 @@ export class ImageLogic {
     const image = await client.query(q.Get(ref));
     if (!image) { return null; }
     // TODO - security
-    return mapFauna(image);
+    return fromFauna(image);
   }
 
   public static canDelete(image: ImageDocument, myID: string, roles: string[]): boolean {

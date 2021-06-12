@@ -1,6 +1,6 @@
 import { getServerClient } from "utilities/db";
 import { query as q } from "faunadb";
-import { mapFauna } from "utilities/fauna";
+import { fromFauna } from "utilities/fauna";
 import { CampaignDocument, UserDocument } from "types/documents";
 import { CoreModelLogic } from "server/logic";
 import { FaunaDocument } from "types/fauna";
@@ -34,12 +34,13 @@ export class CampaignLogic {
     roles?: string[]
   ): Promise<CampaignDocument | null> {
     const client = getServerClient();
-    const rawCampaign: FaunaDocument<CampaignDocument> = await client.query(
+    // TODO - move to fetchOne
+    const rawCampaign: Record<string, unknown> = await client.query(
       q.Get(q.Ref(q.Collection("campaigns"), id))
     );
 
     if (!rawCampaign) { return null; }
-    let campaign = mapFauna(rawCampaign) as CampaignDocument;
+    let campaign = fromFauna(rawCampaign) as CampaignDocument;
     const accessLevel = this.determineAccessLevel(campaign, myID, roles);
     campaign = this.trimRestrictedFields(campaign as CampaignDocument, accessLevel);
 
