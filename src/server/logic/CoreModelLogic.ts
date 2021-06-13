@@ -1,6 +1,6 @@
 import { getServerClient } from "utilities/db";
 import { Expr, query as q } from "faunadb";
-import { isFaunaError, parseFaunaRef, toFauna, toFaunaDate, toFaunaRef } from "utilities/fauna";
+import { fromFauna, isFaunaError, parseFaunaRef, toFauna, toFaunaDate, toFaunaRef } from "utilities/fauna";
 import { FaunaRef } from "types/fauna";
 import { UserDocument } from "types/documents";
 type AnyDocument = any;
@@ -34,82 +34,21 @@ export class CoreModelLogic {
     return true;
   }
 
-  /**
-   * Creates a single document
-   * @param collection The collection to save a new document to
-   * @param doc The raw Javascript-style document to save to the database
-   * @param allowedFields The fields that we are allowing to be saved
-   * @param myUser The current user who is creating the document
-   */
-  public static async createOne(
-    collection: string,
-    doc: RawDocument,
-    allowedFields: string[],
-    myUser: MyUserDocument,
-  ): Promise<Record<string, unknown>> {
-
-    const faunaDoc = toFauna(this.trimRestrictedFields(doc, allowedFields));
-    const now = toFaunaDate(new Date());
-    const currentUser = { ref: myUser.ref };
-
-    faunaDoc.data.createdAt = now;
-    faunaDoc.data.updatedAt = now;
-    faunaDoc.data.ownedBy = currentUser;
-    faunaDoc.data.createdBy = currentUser;
-    faunaDoc.data.updatedBy = currentUser;
-
-    const client = getServerClient();
-    const result = await client.query(
-      q.Create(collection, doc)
-    );
-
-    if (isFaunaError(result)) {
-      throw { code: 500, status: "An error occurred while creating your document" };
-    }
-
-    return result as Record<string, unknown>;
-  }
-
-
-  public static async updateOne(
-    ref: AnyDocument,
-    doc: Record<string, unknown>,
-    allowedFields: string[],
-    myUser: MyUserDocument
-  ) {
+  public static async fetchByRef(ref: AnyDocument) {
     const client = getServerClient();
 
-    const faunaDoc = toFauna(this.trimRestrictedFields(doc, allowedFields));
-    const now = toFaunaDate(new Date());
-    const currentUser = { ref: myUser.ref };
-
-    faunaDoc.data.updatedAt = now;
-    faunaDoc.data.updatedBy = currentUser;
-
-
+    const faunaRef = toFaunaRef(ref);
+    const result = await client.query(q.Get(faunaRef)) as Record<string, unknown>;
+    if (result === null) { return result; }
+    return fromFauna(result);
   }
 
-  /**
-   * Updates a single document in Fauna. If it fails, throw an error
-   * @param ref The reference object to update
-   * @param doc The partial document to update
-   */
-   public static async updateOnea(
-    ref: FaunaRef | Expr,
-    doc: Record<string, unknown>,
-    myID: string,
-  ): Promise<Record<string, unknown>> {
+  public static async fetchByIndex() {
     const client = getServerClient();
 
-    doc.updatedAt = new Date();
-    doc.updatedBy = toFaunaRef(myID, "users");
-
-    const savedDoc = await client.query(q.Update(ref, { data: doc })) as Record<string, unknown>;
-    if (isFaunaError(savedDoc)) {
-      throw { code: 500, status: "An error occured while updating your document" };
-    }
-    return savedDoc;
+    const result: IndexResponse
   }
+
 
   /**
    * Handles the shared code for fetching by an index and putting into documents
@@ -118,7 +57,7 @@ export class CoreModelLogic {
    * @param values The field names of the values, in the order they are returned
    * @param paginationOptions Options for paginaton, such as size
    */
-  public static async fetchByIndex(
+   public static async fetchByIndex2(
     index: string,
     terms: (string | Expr)[],
     values: string[],
@@ -165,6 +104,69 @@ export class CoreModelLogic {
 
     return parsedResult;
   }
+
+  /**
+   * Creates a single document
+   * @param collection The collection to save a new document to
+   * @param doc The raw Javascript-style document to save to the database
+   * @param allowedFields The fields that we are allowing to be saved
+   * @param myUser The current user who is creating the document
+   */
+  public static async createOne(
+    collection: string,
+    doc: RawDocument,
+    allowedFields: string[],
+    myUser: MyUserDocument,
+  ): Promise<AnyDocument> {
+
+    const faunaDoc = toFauna(this.trimRestrictedFields(doc, allowedFields));
+    const now = toFaunaDate(new Date());
+    const currentUser = { ref: myUser.ref };
+
+    faunaDoc.data.createdAt = now;
+    faunaDoc.data.updatedAt = now;
+    faunaDoc.data.ownedBy = currentUser;
+    faunaDoc.data.createdBy = currentUser;
+    faunaDoc.data.updatedBy = currentUser;
+
+    const client = getServerClient();
+    const result = await client.query(
+      q.Create(collection, doc)
+    ) as Record<string, unknown>;
+
+    if (isFaunaError(result)) {
+      throw { code: 500, status: "An error occurred while creating your document" };
+    }
+
+    return fromFauna(result);
+  }
+
+
+  public static async updateOne(
+    refDoc: AnyDocument,
+    doc: Record<string, unknown>,
+    allowedFields: string[],
+    myUser: MyUserDocument
+  ) {
+    const client = getServerClient();
+
+    const faunaDoc = toFauna(this.trimRestrictedFields(doc, allowedFields));
+    const ref = toFaunaRef(refDoc);
+    const now = toFaunaDate(new Date());
+    const currentUser = { ref: myUser.ref };
+
+    delete faunaDoc.ref;
+
+    faunaDoc.data.updatedAt = now;
+    faunaDoc.data.updatedBy = currentUser;
+
+    const result = await client.query(q.Update(ref, faunaDoc)) as Record<string, unknown>;
+    if (isFaunaError(result)) {
+      throw { code: "500", message: "An error occured while updating the document" };
+    }
+    return fromFauna(result);
+  }
+
 
 
   /**
