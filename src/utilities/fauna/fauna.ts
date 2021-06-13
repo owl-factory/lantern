@@ -1,5 +1,3 @@
-import { Expr, query as q } from "faunadb";
-
 
 
 /**

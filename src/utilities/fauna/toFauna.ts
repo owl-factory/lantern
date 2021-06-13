@@ -1,4 +1,5 @@
 import { Expr, query as q } from "faunadb";
+import { AnyRef } from "server/logic";
 import { isFaunaRef } from "utilities/fauna";
 
 type AnyDocument = any;
@@ -66,13 +67,19 @@ interface BaseDocument {
   ref?: Expr;
 }
 
+export function ensureFaunaRef(ref: FaunaRef | Expr) {
+  
+}
+
 /**
  * Converts an id and collection to a Fauna Reference
  * @param id The id of the reference
  * @param collection The collection of the reference
  */
-export function toFaunaRef(doc: BaseDocument): Expr {
-  if (doc.ref && isFaunaRef(doc.ref)) { return doc.ref;}
+export function toFaunaRef(doc: AnyRef): Expr {
+  if ("ref" in doc && doc.ref && isFaunaRef(doc.ref)) {
+    return doc.ref;
+  }
   else if (!doc.id && !doc.collection) { throw "Cannot build fauna reference."; }
   return q.Ref(q.Collection(doc.collection as string), doc.id as string);
 }

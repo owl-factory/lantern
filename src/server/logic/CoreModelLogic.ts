@@ -2,8 +2,7 @@ import { getServerClient } from "utilities/db";
 import { Expr, query as q } from "faunadb";
 import { fromFauna, isFaunaError, parseFaunaRef, toFauna, toFaunaDate, toFaunaRef } from "utilities/fauna";
 import { FaunaRef } from "types/fauna";
-import { UserDocument } from "types/documents";
-type AnyDocument = any;
+import { AnyDocument } from "types/documents";
 
 interface PaginationOptions {
   size: number;
@@ -14,182 +13,198 @@ interface IndexResponse {
   error?: any;
 }
 
-interface RawDocument {
-  ref?: Expr;
-  data?: object;
-  credentials?: Record<string, unknown>;
-  delegates?: Record<string, unknown>;
-  ts?: number;
-
+interface IdCollectionRef {
+  id: string;
+  collection: string;
 }
 
-interface MyUserDocument {
+interface RefRef {
+  ref: FaunaRef;
+}
+
+export type DocumentReference = IdCollectionRef |& RefRef;
+
+export interface MyUserDocument {
   id: string,
   ref: FaunaRef,
   roles: string[];
 }
-export class CoreModelLogic {
-  public static isLoggedIn(myUser: UserDocument): boolean {
-    if (!myUser || !myUser.id) { return false; }
-    return true;
+
+/**
+ * Fetches a document by reference and converts it into a JS object.
+ * @param ref A reference document
+ */
+export async function fetchByRef(ref: DocumentReference): Promise<AnyDocument | null> {
+  const client = getServerClient();
+
+  const faunaRef = toFaunaRef(ref);
+  const result = await client.query(q.Get(faunaRef)) as Record<string, unknown>;
+  if (result === null) { return result; }
+  return fromFauna(result);
+}
+
+/**
+ * Handles the shared code for fetching by an index and putting into documents
+ * @param searchIndex The index to search through
+ * @param terms The terms in order of usage encapsulated in an array
+ * @param values The field names of the values, in the order they are returned
+ * @param paginationOptions Options for paginaton, such as size
+ */
+export async function fetchByIndex(
+  searchIndex: string,
+  terms: (string | Expr)[],
+  values: string[],
+  paginationOptions: PaginationOptions
+): Promise<AnyDocument[]> {
+  const client = getServerClient();
+
+  const result: IndexResponse = await client.query(
+    q.Paginate(
+      q.Match(q.Index(searchIndex), terms),
+      paginationOptions
+    ),
+  );
+
+  // TODO - proper error message
+  if (!result.data || isFaunaError(result)) {
+    throw `An error occured while attempting to search the ${searchIndex} index`;
   }
 
-  public static async fetchByRef(ref: AnyDocument) {
-    const client = getServerClient();
+  const parsedResult: any[] = [];
+  // TODO - move parsing index to fromFauna?
+  result.data.forEach((item: (string | number | unknown)[]) => {
+    const parsedItem: Record<string, unknown> = {};
 
-    const faunaRef = toFaunaRef(ref);
-    const result = await client.query(q.Get(faunaRef)) as Record<string, unknown>;
-    if (result === null) { return result; }
-    return fromFauna(result);
-  }
+    // If there are no terms, the only value returned is a Ref object
+    if (!Array.isArray(item)) {
+      const { id, collection } = parseFaunaRef(item);
+      parsedItem.ref = item;
+      parsedItem.id = id;
+      parsedItem.collection = collection;
+    } else {
+      // For each item, there is a term given that maps it
+      // The end result should resemble a mapped object
+      item.forEach((value: (string | number | unknown), index: number) => {
+        const valueKey = values[index];
+        parsedItem[valueKey] = value;
 
-  public static async fetchByIndex() {
-    const client = getServerClient();
-
-    const result: IndexResponse
-  }
-
-
-  /**
-   * Handles the shared code for fetching by an index and putting into documents
-   * @param index The index to search through
-   * @param terms The terms in order of usage encapsulated in an array
-   * @param values The field names of the values, in the order they are returned
-   * @param paginationOptions Options for paginaton, such as size
-   */
-   public static async fetchByIndex2(
-    index: string,
-    terms: (string | Expr)[],
-    values: string[],
-    paginationOptions: PaginationOptions
-  ): Promise<any[]> {
-    const client = getServerClient();
-
-    const result: IndexResponse = await client.query(
-      q.Paginate(
-        q.Match(q.Index(index), terms),
-        paginationOptions
-      ),
-    );
-
-    // TODO - proper error message
-    if (!result.data) {
-      throw "ERROR";
+        if(valueKey === "ref") {
+          const { id, collection } = parseFaunaRef(value);
+          parsedItem.id = id;
+          parsedItem.collection = collection;
+        }
+      });
     }
+    parsedResult.push(parsedItem);
+  });
 
-    const parsedResult: any[] = [];
+  return parsedResult;
+}
 
-    result.data.forEach((item: (string | number | unknown)[]) => {
-      const parsedItem: Record<string, unknown> = {};
+/**
+ * Creates a single document
+ * @param collection The collection to save a new document to
+ * @param doc The raw Javascript-style document to save to the database
+ * @param allowedFields The fields that we are allowing to be saved
+ * @param myUser The current user who is creating the document
+ */
+export async function createOne(
+  collection: string,
+  doc: AnyDocument,
+  allowedFields: string[],
+  myUser: MyUserDocument,
+): Promise<AnyDocument> {
 
-      if (!Array.isArray(item)) {
-        const { id, collection } = parseFaunaRef(item);
-        parsedItem.ref = item;
-        parsedItem.id = id;
-        parsedItem.collection = collection;
-      } else {
-        item.forEach((value: (string | number | unknown), i: number) => {
-          const valueKey = values[i];
-          parsedItem[valueKey] = value;
+  const faunaDoc = toFauna(trimRestrictedFields(doc as Record<string, unknown>, allowedFields));
+  const now = toFaunaDate(new Date());
+  const currentUser = { ref: myUser.ref };
 
-          if(valueKey === "ref") {
-            const { id, collection } = parseFaunaRef(value);
-            parsedItem.id = id;
-            parsedItem.collection = collection;
-          }
-        });
-      }
-      parsedResult.push(parsedItem);
-    });
+  faunaDoc.data.createdAt = now;
+  faunaDoc.data.updatedAt = now;
+  faunaDoc.data.ownedBy = currentUser;
+  faunaDoc.data.createdBy = currentUser;
+  faunaDoc.data.updatedBy = currentUser;
 
-    return parsedResult;
+  const client = getServerClient();
+  const result = await client.query(
+    q.Create(collection, doc)
+  ) as Record<string, unknown>;
+
+  if (isFaunaError(result)) {
+    throw { code: 500, status: "An error occurred while creating your document" };
   }
 
-  /**
-   * Creates a single document
-   * @param collection The collection to save a new document to
-   * @param doc The raw Javascript-style document to save to the database
-   * @param allowedFields The fields that we are allowing to be saved
-   * @param myUser The current user who is creating the document
-   */
-  public static async createOne(
-    collection: string,
-    doc: RawDocument,
-    allowedFields: string[],
-    myUser: MyUserDocument,
-  ): Promise<AnyDocument> {
+  return fromFauna(result);
+}
 
-    const faunaDoc = toFauna(this.trimRestrictedFields(doc, allowedFields));
-    const now = toFaunaDate(new Date());
-    const currentUser = { ref: myUser.ref };
+/**
+ * Updates a single document in fauna
+ * @param refDoc The reference to the document to update
+ * @param doc The fields to update. Present but null fields will be deleted
+ * @param allowedFields The fields allowed to save. All others will be discarded
+ * @param myUser The current user object
+ */
+export async function updateOne(
+  refDoc: DocumentReference,
+  doc: Record<string, unknown>,
+  allowedFields: string[],
+  myUser: MyUserDocument
+): Promise<AnyDocument> {
+  const client = getServerClient();
 
-    faunaDoc.data.createdAt = now;
-    faunaDoc.data.updatedAt = now;
-    faunaDoc.data.ownedBy = currentUser;
-    faunaDoc.data.createdBy = currentUser;
-    faunaDoc.data.updatedBy = currentUser;
+  const faunaDoc = toFauna(trimRestrictedFields(doc, allowedFields));
+  const ref = toFaunaRef(refDoc);
+  const now = toFaunaDate(new Date());
+  const currentUser = { ref: myUser.ref };
 
-    const client = getServerClient();
-    const result = await client.query(
-      q.Create(collection, doc)
-    ) as Record<string, unknown>;
+  delete faunaDoc.ref;
 
-    if (isFaunaError(result)) {
-      throw { code: 500, status: "An error occurred while creating your document" };
-    }
+  faunaDoc.data.updatedAt = now;
+  faunaDoc.data.updatedBy = currentUser;
 
-    return fromFauna(result);
+  const result = await client.query(q.Update(ref, faunaDoc)) as Record<string, unknown>;
+  if (isFaunaError(result)) {
+    throw { code: "500", message: "An error occured while updating the document" };
+  }
+  return fromFauna(result);
+}
+
+/**
+ * Deletes a single document, if present. Returns the deleted document if successful, null if no document was found
+ * @param docRef The reference to a document
+ */
+ export async function deleteOne(docRef: DocumentReference): Promise<AnyDocument | null> {
+  const client = getServerClient();
+  const ref = toFaunaRef(docRef);
+  const result = await client.query(q.Delete(ref)) as Record<string, unknown>;
+  if (isFaunaError(result)) {
+    return null;
   }
 
+  return fromFauna(result);
+}
 
-  public static async updateOne(
-    refDoc: AnyDocument,
-    doc: Record<string, unknown>,
-    allowedFields: string[],
-    myUser: MyUserDocument
-  ) {
-    const client = getServerClient();
+/**
+ * Trims the given document to only have the given fields. All others are discarded.
+ * TODO - refactor this so that multiple layers are allowed
+ * TODO - move this to a more appropriate area
+ * @param doc The document to trim
+ * @param givenAllowedFields The given fields to keep, if any
+ */
+export function trimRestrictedFields(
+  doc: Record<string, unknown>,
+  givenAllowedFields: string[]
+): Record<string, unknown> {
+  const allowedFields = [
+    "id", "collection", "ref", "name", "createdAt", "updatedAt", "ownedBy", "createdBy", "updatedBy",
+  ].concat(givenAllowedFields);
 
-    const faunaDoc = toFauna(this.trimRestrictedFields(doc, allowedFields));
-    const ref = toFaunaRef(refDoc);
-    const now = toFaunaDate(new Date());
-    const currentUser = { ref: myUser.ref };
+  const newDoc: any = {};
+  allowedFields.forEach((allowedField: string) => {
+    if (!(allowedField in doc)) { return; }
+    newDoc[allowedField] = doc[allowedField];
+  });
 
-    delete faunaDoc.ref;
-
-    faunaDoc.data.updatedAt = now;
-    faunaDoc.data.updatedBy = currentUser;
-
-    const result = await client.query(q.Update(ref, faunaDoc)) as Record<string, unknown>;
-    if (isFaunaError(result)) {
-      throw { code: "500", message: "An error occured while updating the document" };
-    }
-    return fromFauna(result);
-  }
-
-
-
-  /**
-   * Trims the given document to only have the given fields. All others are discarded.
-   * @param doc The document to trim
-   * @param givenAllowedFields The given fields to keep, if any
-   * @returns A subset object of the given document
-   */
-  public static trimRestrictedFields(
-    doc: any,
-    givenAllowedFields: string[]
-  ): any {
-    const allowedFields = [
-      "id", "collection", "ref", "ts", "name", "createdAt", "updatedAt", "ownedBy", "createdBy", "updatedBy",
-    ].concat(givenAllowedFields);
-
-    const newDoc: any = {};
-    allowedFields.forEach((allowedField: string) => {
-      if (!(allowedField in doc)) { return; }
-      newDoc[allowedField] = doc[allowedField];
-    });
-
-    return newDoc;
-  }
+  return newDoc;
 }
 
