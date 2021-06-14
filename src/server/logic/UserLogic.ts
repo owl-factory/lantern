@@ -1,9 +1,10 @@
 import {  Expr, query as q } from "faunadb";
-import { ImageDocument, UserDocument } from "types/documents";
+import { AnyDocument, ImageDocument, UserDocument } from "types/documents";
 import { FaunaDocument, FaunaRef } from "types/fauna";
 import { toFaunaRef, fromFauna } from "utilities/fauna";
 import { getServerClient } from "utilities/db";
 import { CoreModelLogic, ImageLogic } from "server/logic";
+import { DocumentReference, MyUserDocument } from "./CoreModelLogic";
 
 const guestFields = [
   "username",
@@ -27,139 +28,118 @@ const updateFields = [
 // strings or structs containing { id } or { ref }. Validate refs. Build them from IDs
 // if possible. Another @TODO - manually build ref objects (or repair them).
 
-export class UserLogic {
-  /**
-   * Finds a user by their ID and returns sanitized values
-   * @param id The id of the user to find
-   * @param myID The ID of the current user
-   * @param roles The roles of the current user, if any
-   */
-  public static async findUserByRef(
-    ref: FaunaRef | Expr,
-    myID: string,
-    roles?: string[]
-  ): Promise<UserDocument | null> {
-    // TODO - ref validation?
-    const client = getServerClient();
-    const rawUser: FaunaDocument<UserDocument> = await client.query(q.Get(ref));
-    // console.log(rawUser);
-    if (!rawUser) { return null; }
-    const user: UserDocument = fromFauna(rawUser) as UserDocument;
+/**
+ * Finds a user by their ID and returns sanitized values
+ * @param id The id of the user to find
+ * @param myID The ID of the current user
+ * @param roles The roles of the current user, if any
+ */
+export async function fetchUser(ref: DocumentReference, myUser: MyUserDocument): Promise<UserDocument | null> {
+  const client = getServerClient();
+  const user = await CoreModelLogic.fetchByRef(ref);
+  if (!user) { return null; }
 
-    if (this.isOwner(user, myID, roles)) { return user; }
-    // TODO - fix this mess ;~;
-    return CoreModelLogic.trimRestrictedFields(
-      user as unknown as Record<string, unknown>, guestFields
-    ) as unknown as UserDocument;
-  }
-
-  /**
-   * Fetches a user by their username
-   * @param username The username to search for
-   * @param myID The current user's id
-   * @param roles The current user's roles
-   */
-  public static async findUserByUsername(
-    username: string,
-    myID: string,
-    roles?: string[]
-  ): Promise<UserDocument | null> {
-    const rawIndex = await CoreModelLogic.fetchByIndex(
-      `users_by_username`,
-      [username],
-      ["ref"],
-      { size: 1 }
-    );
-    if (rawIndex.length === 0) { return null; }
-
-    return await this.findUserByRef(rawIndex[0].ref, myID, roles);
-  }
-
-  /**
-   * Finds a collection of users by their refs
-   * @param refs The refs, given as an array of objects containing ref
-   * @param myID The current user's ID
-   * @param roles The current user's roles
-   * @TODO - combine the user id and roles into a single object? Good idea- do later
-   */
-  public static async findUsersByRefs(refs: UserDocument[], myID: string, roles?: string[]): Promise<UserDocument[]> {
-    const users: Promise<UserDocument>[] = [];
-    refs.forEach((ref: UserDocument) => {
-      if (!ref.ref) { return; }
-      const user = this.findUserByRef(ref.ref, myID, roles);
-      if (user === null) { return; }
-
-      users.push(user as Promise<UserDocument>);
-    });
-
-    return Promise.all(users);
-  }
-
-  /**
-   * Creates and returns a new user document in Fauna
-   * @param user The user to create into a document
-   * TODO - actually make this xD
-   */
-  public static async createUser(user: UserDocument): Promise<UserDocument> {
-    return {};
-  }
-
-  /**
-   * Updates a single user's document in Fauna
-   * @param user The partial user document to update
-   * @param myID The id of the current user, to determine access rights
-   * @param roles The roles of the current user, to determine access rights
-   */
-  public static async updateUser(user: UserDocument, myID: string, roles?: string[]): Promise<UserDocument> {
-    const fetchedUser = await this.findUserByRef(user.ref as FaunaRef, myID, roles);
-    if (!fetchedUser) { throw { code: 404, status: "User does not exist!" }; }
-    if (!this.isOwner(fetchedUser, myID, roles)) {
-      throw { code: 403, status: "You do not have permissions to edit this user!" };
-    }
-    const processedUser = CoreModelLogic.trimRestrictedFields(user, updateFields);
-    const updatedUser = fromFauna(
-      await CoreModelLogic.updateOne(user.ref as FaunaRef, processedUser, myID)
-    ) as UserDocument;
-    return updatedUser;
-  }
-
-  /**
-   * Updates the user's profile image by one of several methods.
-   * @param user The user document to update
-   * @param body The body of request to update the user image.
-   * @param myID The current user's id
-   */
-  public static async updateUserImage(user: UserDocument, body: any, myID: string): Promise<UserDocument> {
-    let image: ImageDocument;
-    switch(body.method) {
-      // TODO - handle upload
-      // TODO - handle link
-      case "link":
-        image = await ImageLogic.createExternalImage(body.image, myID) as ImageDocument;
-        break;
-      case "list":
-
-        image = await ImageLogic.fetchImageByRef(toFaunaRef(body.image.id, "images"), myID, []) as ImageDocument;
-        if (!image) { throw {code: 404, message: "Image not found."}; }
-        break;
-      default:
-        throw {code: 501, message: `Function '${body.method}' not implemented.`};
-    }
-
-    const targetUser = { icon: { ref: image.ref, data: { src: image.src } }};
-
-    const updatedUser = await CoreModelLogic.updateOne(
-      user.ref as FaunaRef, targetUser as Record<string, unknown>, myID);
-    return fromFauna(updatedUser) as UserDocument;
-  }
-
-  /**
-   * Determines if the current user has full permissions to access the user document
-   * @param user The user object to sanitize
-   * @param myID The current user ID
-   * @param roles The roles of the current user, if any
-   */
-  public static isOwner(user: UserDocument, myID: string, roles: string[] = []): boolean {
-    return (user.id === myID || "ADMIN" in roles);
-  }
+  if (isOwner(user, myUser)) { return user; }
+  return CoreModelLogic.trimRestrictedFields(user as Record<string, unknown>, guestFields);
 }
+
+/**
+ * Fetches a user by their username
+ * @param username The username to search for
+ * @param myID The current user's id
+ * @param roles The current user's roles
+ */
+export async function fetchUserByUsername(username: string, myUser: MyUserDocument): Promise<UserDocument | null> {
+  const index = await CoreModelLogic.fetchByIndex(
+    `users_by_username`,
+    [username],
+    ["ref"],
+    { size: 1 }
+  );
+  if (index.length === 0 || !index[0].ref) { return null; }
+
+  return await fetchUser({ ref: index[0].ref }, myUser);
+}
+
+/**
+ * Finds a collection of users by their refs
+ * @param refs The refs, given as an array of objects containing ref
+ * @param myID The current user's ID
+ * @param roles The current user's roles
+ * @TODO - combine the user id and roles into a single object? Good idea- do later
+ */
+export async function fetchUsersFromList(refs: DocumentReference[], myUser: MyUserDocument): Promise<UserDocument[]> {
+  const users: Promise<UserDocument>[] = [];
+  refs.forEach((ref: DocumentReference) => {
+    const user = fetchUser(ref, myUser);
+    if (user === null) { return; }
+
+    users.push(user as Promise<UserDocument>);
+  });
+
+  return Promise.all(users);
+}
+
+/**
+ * Updates a single user's document in Fauna
+ * @param user The partial user document to update
+ * @param myID The id of the current user, to determine access rights
+ * @param roles The roles of the current user, to determine access rights
+ */
+export async function updateUser(user: UserDocument, myUser: MyUserDocument): Promise<UserDocument> {
+  const updatedUser = await CoreModelLogic.updateOne(user as Record<string, unknown>, updateFields, myUser, canUpdate);
+
+  if (isOwner(user, myUser)) { return updatedUser; }
+  return CoreModelLogic.trimRestrictedFields(updatedUser as Record<string, unknown>, guestFields);
+}
+
+function isAdmin(myUser: MyUserDocument) {
+  return (myUser.roles.includes("admin"));
+}
+
+function isOwner(doc: AnyDocument, myUser: MyUserDocument) {
+  return (!doc.ownedBy || doc.ownedBy.id === myUser.id);
+}
+
+function canUpdate(user: UserDocument, myUser: MyUserDocument) {
+  if (isAdmin(myUser)) { return true; }
+  if (isOwner(user, myUser)) {
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Updates the user's profile image by one of several methods.
+ * @param user The user document to update
+ * @param body The body of request to update the user image.
+ * @param myID The current user's id
+ */
+export async function updateUserImage(user: UserDocument, body: any, myUser: MyUserDocument): Promise<UserDocument> {
+  if (!canUpdate(user, myUser)) {
+    throw { code: 403, message: "You do not have permission to update this user's profile image." };
+  }
+
+  let image: ImageDocument | null;
+  switch(body.method) {
+    // TODO - handle upload
+    // TODO - handle link
+    case "link":
+      image = await ImageLogic.createExternalImage(body.image, myUser) as ImageDocument;
+      break;
+    case "list":
+      image = await ImageLogic.fetchImage(
+        { id: body.image.id, collection: "images" }, 
+        myUser
+      );
+      if (!image) { throw {code: 404, message: "Image not found."}; }
+      break;
+    default:
+      throw {code: 501, message: `Function '${body.method}' not implemented.`};
+  }
+
+  const targetUser = { ref: user.ref, icon: { ref: image.ref, data: { src: image.src } }};
+
+  return await CoreModelLogic.updateOne(targetUser, ["icon"], myUser, () => true);
+}
+

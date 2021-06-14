@@ -1,10 +1,7 @@
 import { Expr } from "faunadb";
 import { ImageDocument } from "types/documents";
-import { FaunaRef } from "types/fauna";
-import { CoreModelLogic } from "./CoreModelLogic";
-import { query as q } from "faunadb";
-import { getServerClient } from "utilities/db";
-import { fromFauna } from "utilities/fauna";
+import { CoreModelLogic } from "server/logic";
+import { DocumentReference, MyUserDocument, PaginationOptions } from "./CoreModelLogic";
 
 const createFields = [
   "name",
@@ -13,45 +10,62 @@ const createFields = [
   "width",
 ];
 
-export class ImageLogic {
-  public static async createExternalImage(image: ImageDocument, myID: string): Promise<ImageDocument> {
-    // Validate external image
-    image = CoreModelLogic.trimRestrictedFields(image, createFields);
+/**
+ * Fetches a single image from the database.
+ * @param ref The reference of the document to fetch
+ * @param myUser The current user
+ */
+export async function fetchImage(ref: DocumentReference, myUser: MyUserDocument): Promise<ImageDocument | null> {
+  const image = CoreModelLogic.fetchByRef(ref);
+  // TODO - security
+  return image;
+}
 
-    image.isExternal = true;
-    image.sizeInBytes = 0;
+/**
+ * Fetches a collection of the current user's images
+ * @param myUser The user to fetch images for
+ * @param options The pagination options
+ */
+export async function fetchMyImages(myUser: MyUserDocument, options: PaginationOptions): Promise<ImageDocument[]> {
+  if (!options.size) { options.size = 100; }
+  const images = await CoreModelLogic.fetchByIndex(
+    "my_images_asc",
+    [ myUser.ref as Expr ],
+    ["ref", "name", "src"],
+    options
+  );
+  return images;
+}
 
-    return fromFauna(await CoreModelLogic.createOne("images", myID, { data: image })) as ImageDocument;
+/**
+ * Creates an image that is linked from an external source
+ * @param image The image to create
+ * @param myUser The current user attempting to create an image
+ */
+export async function createExternalImage(image: ImageDocument, myUser: MyUserDocument): Promise<ImageDocument> {
+  const fields = createFields.concat(["isExternal", "sizeInBytes"]);
+  image.isExternal = true;
+  image.sizeInBytes = 0;
+  return await CoreModelLogic.createOne("images", image, fields, myUser);
+}
 
-  }
+/**
+ * Deletes an image from the database and the CDN, if needed
+ * @param ref The reference to the document to delete
+ * @param myUser The current user attempting to delete an image
+ */
+export async function deleteImage(ref: DocumentReference, myUser: MyUserDocument): Promise<boolean> {
+  // TODO - handle uploaded image case
+  return await CoreModelLogic.deleteOne(ref, myUser, canDelete);
+}
 
-  public static async deleteImage(ref: FaunaRef | Expr, myID: string, roles: string[]): Promise<boolean> {
-    const image = await this.fetchImageByRef(ref, myID, roles);
-    if (!image) { throw { code: 404, status: "The image could not be found."}; }
-    return false;
-  }
-
-  public static async fetchMyImages(myID: string, roles?: string[]): Promise<ImageDocument[]> {
-    const images = await CoreModelLogic.fetchByIndex(
-      "my_images_asc",
-      [ q.Ref(q.Collection("users"), myID) ],
-      ["ref", "name", "src"],
-      { size: 100 }
-    );
-    return images;
-  }
-
-  public static async fetchImageByRef(ref: FaunaRef | Expr, myID: string, roles?: string[]) {
-    const client = getServerClient();
-    const image = await client.query(q.Get(ref));
-    if (!image) { return null; }
-    // TODO - security
-    return fromFauna(image);
-  }
-
-  public static canDelete(image: ImageDocument, myID: string, roles: string[]): boolean {
-    if ("admin" in roles) { return true; }
-    if (myID === image.ownedBy?.id) { return true; }
-    return false;
-  }
+/**
+ * Checks if the current user can delete the image
+ * @param image The image document that the user may be able to delete
+ * @param myUser The current user
+ */
+export function canDelete(image: ImageDocument, myUser: MyUserDocument): boolean {
+  if ("admin" in myUser.roles) { return true; }
+  if (myUser.id === image.ownedBy?.id) { return true; }
+  return false;
 }

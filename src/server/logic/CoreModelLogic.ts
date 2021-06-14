@@ -4,7 +4,7 @@ import { fromFauna, isFaunaError, parseFaunaRef, toFauna, toFaunaDate, toFaunaRe
 import { FaunaRef } from "types/fauna";
 import { AnyDocument } from "types/documents";
 
-interface PaginationOptions {
+export interface PaginationOptions {
   size: number;
 }
 
@@ -48,20 +48,21 @@ export async function fetchByRef(ref: DocumentReference): Promise<AnyDocument | 
  * @param searchIndex The index to search through
  * @param terms The terms in order of usage encapsulated in an array
  * @param values The field names of the values, in the order they are returned
- * @param paginationOptions Options for paginaton, such as size
+ * @param options Options for paginaton, such as size
  */
 export async function fetchByIndex(
   searchIndex: string,
   terms: (string | Expr)[],
   values: string[],
-  paginationOptions: PaginationOptions
+  options: PaginationOptions
 ): Promise<AnyDocument[]> {
   const client = getServerClient();
+  if (!options.size) { options.size = 10; }
 
   const result: IndexResponse = await client.query(
     q.Paginate(
       q.Match(q.Index(searchIndex), terms),
-      paginationOptions
+      options
     ),
   );
 
@@ -139,21 +140,26 @@ export async function createOne(
 
 /**
  * Updates a single document in fauna
- * @param refDoc The reference to the document to update
  * @param doc The fields to update. Present but null fields will be deleted
  * @param allowedFields The fields allowed to save. All others will be discarded
  * @param myUser The current user object
  */
 export async function updateOne(
-  refDoc: DocumentReference,
   doc: Record<string, unknown>,
   allowedFields: string[],
-  myUser: MyUserDocument
+  myUser: MyUserDocument,
+  canUpdate: (doc: AnyDocument, myUser: MyUserDocument) => boolean
 ): Promise<AnyDocument> {
   const client = getServerClient();
 
+  const targetDoc = await fetchByRef(doc as unknown as DocumentReference);
+  if (!targetDoc) { throw { code: 404, message: "The document to update could not be found" }; }
+  if (!canUpdate(targetDoc, myUser)) {
+    throw { code: 403, message: "You do not have permissions to update this document" };
+  }
+
   const faunaDoc = toFauna(trimRestrictedFields(doc, allowedFields));
-  const ref = toFaunaRef(refDoc);
+  const ref = toFaunaRef(doc);
   const now = toFaunaDate(new Date());
   const currentUser = { ref: myUser.ref };
 
@@ -173,15 +179,24 @@ export async function updateOne(
  * Deletes a single document, if present. Returns the deleted document if successful, null if no document was found
  * @param docRef The reference to a document
  */
- export async function deleteOne(docRef: DocumentReference): Promise<AnyDocument | null> {
+export async function deleteOne(
+  docRef: DocumentReference,
+  myUser: MyUserDocument,
+  canDelete: (doc: AnyDocument, myUser: MyUserDocument) => boolean
+): Promise<boolean> {
   const client = getServerClient();
   const ref = toFaunaRef(docRef);
+  const doc = await fetchByRef(docRef);
+  if (!doc) {
+    throw { code: 404, message: "The document could not be found for deleting" };
+  }
+  if (!canDelete(doc, myUser)) { throw { code: 403, message: "You do not have permission to delete this document" }; }
   const result = await client.query(q.Delete(ref)) as Record<string, unknown>;
   if (isFaunaError(result)) {
-    return null;
+    return false;
   }
 
-  return fromFauna(result);
+  return true;
 }
 
 /**
