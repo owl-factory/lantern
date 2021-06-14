@@ -113,7 +113,7 @@ function canUpdate(user: UserDocument, myUser: MyUserDocument) {
  * Updates the user's profile image by one of several methods.
  * @param user The user document to update
  * @param body The body of request to update the user image.
- * @param myID The current user's id
+ * @param myUser The current user
  */
 export async function updateUserImage(user: UserDocument, body: any, myUser: MyUserDocument): Promise<UserDocument> {
   if (!canUpdate(user, myUser)) {

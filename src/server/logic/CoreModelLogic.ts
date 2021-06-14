@@ -26,8 +26,10 @@ export type DocumentReference = IdCollectionRef |& RefRef;
 
 export interface MyUserDocument {
   id: string,
-  ref: FaunaRef,
+  collection: "users",
+  ref: FaunaRef | Expr,
   roles: string[];
+  isLoggedIn: boolean;
 }
 
 /**
