@@ -85,7 +85,7 @@ export class ImageManager {
     if (!this.images[imageID]) { return {}; }
     if (this.images[imageID].ownedBy !== undefined) { return this.images[imageID]; }
     this.images[imageID] = fromFauna(
-      await this.client.query(q.Get(toFaunaRef(imageID, this.images[imageID].collection as string)))
+      await this.client.query(q.Get(toFaunaRef({ id: imageID, collection: "images" })))
     ) as ImageDocument;
     return this.images[imageID];
   }

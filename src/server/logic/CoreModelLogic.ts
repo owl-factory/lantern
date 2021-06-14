@@ -147,7 +147,7 @@ export async function createOne(
  * @param myUser The current user object
  */
 export async function updateOne(
-  doc: Record<string, unknown>,
+  doc: AnyDocument,
   allowedFields: string[],
   myUser: MyUserDocument,
   canUpdate: (doc: AnyDocument, myUser: MyUserDocument) => boolean
@@ -160,8 +160,8 @@ export async function updateOne(
     throw { code: 403, message: "You do not have permissions to update this document" };
   }
 
-  const faunaDoc = toFauna(trimRestrictedFields(doc, allowedFields));
-  const ref = toFaunaRef(doc);
+  const faunaDoc = toFauna(trimRestrictedFields(doc as Record<string, unknown>, allowedFields));
+  const ref = toFaunaRef(doc as DocumentReference);
   const now = toFaunaDate(new Date());
   const currentUser = { ref: myUser.ref };
 
