@@ -19,7 +19,20 @@ export function toFauna(doc: AnyDocument): AnyFaunaDocument {
 
   if (doc.ttl) { faunaDoc.ttl = doc.ttl; }
 
-  faunaDoc.data = mapObjectToFaunaLayer(doc);
+  faunaDoc.data = layerToFauna(doc);
+  return faunaDoc;
+}
+
+function layerToFauna(doc: any, faunaDoc: any = {}) {
+  // Edge case handling 
+  if (typeof doc !== "object") { return doc; }
+  const keys = Object.keys(doc);
+  keys.forEach((key: string) => {
+    // Skip item if it's a special case
+    if (["id", "ref", "collection", "ts", "ttl"].includes(key)) { return; }
+    const data = doc[key];
+    faunaDoc[key] = itemToFauna(data);
+  });
   return faunaDoc;
 }
 
@@ -27,36 +40,38 @@ export function toFauna(doc: AnyDocument): AnyFaunaDocument {
  * Maps a single layer of items to a fauna document. This step skip
  * @param doc The document to map
  */
-function mapObjectToFaunaLayer(doc: AnyDocument) {
-  const keys = Object.keys(doc);
-  const faunaDoc: Record<string, unknown> = {};
-  keys.forEach((key: string) => {
-    // Skip item if it's a special case
-    if (["id", "ref", "collection", "ts", "ttl"].includes(key)) { return; }
-    const value = doc[key];
+function itemToFauna(item: unknown): unknown {
+  // Base case. Do nothing if the item is null/undefined.
+  // Do not change; the different values act different in Fauna
+  if (item === null || item === undefined) {
+    return item;
+  }
 
-    // Do nothing if simple type
-    if (typeof value !== "object") {
-      faunaDoc[key] = value;
-      return;
-    }
+  // Do nothing if simple type
+  if (typeof item !== "object") {
+    return item;
+  }
 
-    // Date type
-    if (typeof value.getMonth === "function") {
-      faunaDoc[key] = toFaunaDate(value);
-      return;
-    }
-    else if ("id" in value && "collection" in value || "ref" in value) {
-      // fauna object
-      faunaDoc[key] = toFauna(value);
-      return;
-    } else {
-      faunaDoc[key] = mapObjectToFaunaLayer(value);
-      return;
-    }
+  // If this is an array, loop through and parse as well
+  if (Array.isArray(item)) {
+    item.forEach((subItem: unknown, index: number) => {
+      item[index] = itemToFauna(subItem);
+    });
+    return item;
+  }
 
-  });
-  return faunaDoc;
+  // Date type
+  if (isDateObject(item)) {
+    return toFaunaDate(item as Date);
+  }
+  else if (isReferenceDocument(item)) {
+    // fauna object
+    return toFauna(item);
+    return;
+  } else {
+    return itemToFauna(item);
+  }
+
 }
 
 /**
@@ -92,4 +107,25 @@ export function toFaunaRef(doc: DocumentReference): Expr {
     return q.Ref(q.Collection(doc.collection as string), doc.id as string);
   }
   throw "Cannot build fauna reference.";
+}
+
+/**
+ * Determines if a given item is a date object. Returns true if it is, false otherwise
+ * TODO - test this!
+ * @param item The possible date object to test
+ */
+function isDateObject(item: unknown) {
+  if (!item || typeof item !== "object") { return false; }
+  if (item instanceof Date) { return true; }
+  return false;
+}
+
+function isReferenceDocument(item: unknown) {
+  if (item === null) { return false; }
+  if (!item || typeof item !== "object") { return false; }
+  const castedItem = item as object;
+  if (("id" in castedItem && "collection" in castedItem) || "ref" in castedItem) {
+    return true;
+  }
+  return false;
 }

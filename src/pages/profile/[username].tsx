@@ -247,8 +247,8 @@ export default function Profile(props: any): JSX.Element {
   const [ imageManager ] = React.useState(new ImageManager());
   const router = useRouter();
   const [ user, setUser ] = React.useState(props.data.user);
+  const [ isMyPage ] = React.useState(calculateIfUserIsOwner());
   const [ players ] = React.useState(props.data.user.recentPlayers);
-  const isMyPage = calculateIfUserIsOwner();
 
   /**
    * Determines if the current player is the owner of the profile page.

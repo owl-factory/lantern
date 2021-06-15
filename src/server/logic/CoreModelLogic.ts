@@ -174,6 +174,7 @@ export async function updateOne(
     throw { code: "500", message: "An error occured while updating the document" };
   }
   return fromFauna(result);
+  // return faunaDoc;
 }
 
 /**
