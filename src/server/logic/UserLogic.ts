@@ -129,7 +129,7 @@ export async function updateUserImage(user: UserDocument, body: any, myUser: MyU
       break;
     case "list":
       image = await ImageLogic.fetchImage(
-        { id: body.image.id, collection: "images" }, 
+        { id: body.image.id, collection: "images" },
         myUser
       );
       if (!image) { throw {code: 404, message: "Image not found."}; }
@@ -138,8 +138,7 @@ export async function updateUserImage(user: UserDocument, body: any, myUser: MyU
       throw {code: 501, message: `Function '${body.method}' not implemented.`};
   }
 
-  const targetUser = { ref: user.ref, icon: { ref: image.ref, data: { src: image.src } }};
-
+  const targetUser = { ref: user.ref, icon: { ref: image.ref, src: image.src }};
   return await CoreModelLogic.updateOne(targetUser, ["icon"], myUser, () => true);
 }
 

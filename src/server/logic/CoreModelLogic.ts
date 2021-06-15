@@ -169,7 +169,6 @@ export async function updateOne(
 
   faunaDoc.data.updatedAt = now;
   faunaDoc.data.updatedBy = currentUser;
-
   const result = await client.query(q.Update(ref, faunaDoc)) as Record<string, unknown>;
   if (isFaunaError(result)) {
     throw { code: "500", message: "An error occured while updating the document" };

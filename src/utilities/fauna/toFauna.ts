@@ -1,6 +1,7 @@
 import { Expr, query as q } from "faunadb";
 import { DocumentReference } from "server/logic/CoreModelLogic";
 import { isFaunaRef } from "utilities/fauna";
+import { fromFauna, parseFaunaRef } from "./fromFauna";
 
 type AnyDocument = any;
 type AnyFaunaDocument = any; // TODO - make this a proper document
@@ -31,26 +32,31 @@ function mapObjectToFaunaLayer(doc: AnyDocument) {
   const faunaDoc: Record<string, unknown> = {};
   keys.forEach((key: string) => {
     // Skip item if it's a special case
-    if (key in ["id", "ref", "collection", "ts", "ttl"]) { return; }
+    if (["id", "ref", "collection", "ts", "ttl"].includes(key)) { return; }
     const value = doc[key];
 
     // Do nothing if simple type
     if (typeof value !== "object") {
       faunaDoc[key] = value;
+      return;
     }
 
     // Date type
     if (typeof value.getMonth === "function") {
       faunaDoc[key] = toFaunaDate(value);
+      return;
     }
     else if ("id" in value && "collection" in value || "ref" in value) {
       // fauna object
       faunaDoc[key] = toFauna(value);
+      return;
     } else {
       faunaDoc[key] = mapObjectToFaunaLayer(value);
+      return;
     }
 
   });
+  return faunaDoc;
 }
 
 /**
@@ -58,7 +64,7 @@ function mapObjectToFaunaLayer(doc: AnyDocument) {
  * @param date The JS object to convert into a Fauna date
  */
 export function toFaunaDate(date: Date): Expr {
-  return q.Date(date.toISOString());
+  return q.Time(date.toISOString());
 }
 
 interface BaseDocument {
@@ -74,8 +80,14 @@ interface BaseDocument {
  * @param collection The collection of the reference
  */
 export function toFaunaRef(doc: DocumentReference): Expr {
-  if ("ref" in doc && doc.ref && isFaunaRef(doc.ref)) {
-    return doc.ref as Expr;
+  if ("ref" in doc && doc.ref) {
+    if (doc.ref instanceof Expr) { return doc.ref; }
+    if (typeof doc.ref === "object" && "@ref" in doc.ref) {
+      const collectionAndID = parseFaunaRef(doc.ref);
+      return q.Ref(q.Collection(collectionAndID.collection), collectionAndID.id);
+    } else {
+      return doc.ref as Expr;
+    }
   } else if ("id" in doc && "collection" in doc) {
     return q.Ref(q.Collection(doc.collection as string), doc.id as string);
   }

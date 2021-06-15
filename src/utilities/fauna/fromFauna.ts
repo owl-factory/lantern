@@ -8,12 +8,13 @@ type AnyDocument = any;
  * @param format The format to return the fauna function as. Valid options are 'class' or 'struct'.
  */
  export function fromFauna(faunaDoc: Record<string, unknown>): AnyDocument  {
-  const mappedDoc: Record<string, unknown> = parseFaunaLayer(faunaDoc.data, {});
+  const mappedDoc: Record<string, unknown> = parseFaunaLayer(faunaDoc.data || {}, {});
 
   // Parse ref after the fact to ensure we have accurate values
   const ref = parseFaunaRef(faunaDoc.ref);
+  mappedDoc.ref = faunaDoc.ref;
   mappedDoc.id = ref.id;
-  mappedDoc.collection = ref.id;
+  mappedDoc.collection = ref.collection;
   mappedDoc.ts = faunaDoc.ts;
   mappedDoc.ttl = faunaDoc.ttl;
 
@@ -41,7 +42,7 @@ type AnyDocument = any;
  */
 function parseFaunaItem(item: unknown) {
   // If null, simply return the null
-  if (item === null) { return item; }
+  if (item === null || item === undefined) { return item; }
 
   // If not an object, this is a simple type. Return the item as-is
   if (typeof item !== "object") { return item; }
