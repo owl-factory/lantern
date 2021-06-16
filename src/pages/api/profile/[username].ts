@@ -1,9 +1,11 @@
 import { NextApiRequest } from "next";
+import { getMyUser } from "server/auth";
 import { UserLogic } from "server/logic";
+import { DocumentReference } from "server/logic/CoreModelLogic";
 import { HTTPHandler } from "server/response";
 import { createEndpoint } from "server/utilities";
 import { UserDocument } from "types/documents";
-import { buildRef } from "utilities/fauna";
+import { toFaunaRef } from "utilities/fauna";
 
 /**
  * Gets a single profile for the profile page
@@ -11,11 +13,12 @@ import { buildRef } from "utilities/fauna";
  * @param req The request to the server
  */
 async function getProfile(this: HTTPHandler, req: NextApiRequest) {
-  const userID = "295863299256353286";
-  const user = await UserLogic.findUserByUsername(req.query.username as string, userID) as UserDocument;
+  const myUser = getMyUser(req);
+
+  const user = await UserLogic.fetchUserByUsername(req.query.username as string, myUser) as UserDocument;
   if (!user) { this.returnError(404, "The given profile was not found."); }
   if (user.recentPlayers) {
-    user.recentPlayers = await UserLogic.findUsersByRefs(user.recentPlayers, userID);
+    user.recentPlayers = await UserLogic.fetchUsersFromList(user.recentPlayers as DocumentReference[], myUser);
   }
 
   this.returnSuccess({ user });
@@ -27,9 +30,10 @@ async function getProfile(this: HTTPHandler, req: NextApiRequest) {
  * @param req The request to the server
  */
 async function updateProfile(this: HTTPHandler, req: NextApiRequest) {
-  const userID = "295863299256353286";
-  req.body.ref = buildRef(req.body.id, "users");
-  const user = await UserLogic.updateUser(req.body, userID);
+  const myUser = getMyUser(req);
+
+  req.body.ref = toFaunaRef({ id: req.body.id, collection: "users" });
+  const user = await UserLogic.updateUser(req.body, myUser);
   this.returnSuccess({ user });
 }
 

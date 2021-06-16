@@ -22,6 +22,7 @@ const thisDomain = "http://localhost:3000";
  * @param url The url to format properly
  */
 function formatURL(url: string) {
+  if (typeof window !== "undefined") { return url; }
   if (url.charAt(0) === "/") { return thisDomain + url; }
   return url;
 }

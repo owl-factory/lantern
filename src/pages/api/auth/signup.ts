@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { setSession } from "utilities/auth";
 import { query as q } from "faunadb";
 import { getServerClient } from "utilities/db";
-import { mapFauna } from "utilities/fauna";
+import { fromFauna } from "utilities/fauna";
 import { normalize } from "utilities/strings";
 
 /**
@@ -20,7 +20,7 @@ export default async function SignUp(req: NextApiRequest, res: NextApiResponse):
   const { email, password, username } = req.body;
   const client = getServerClient();
   // TODO - move to UserLogic
-  const user: any = mapFauna(await client.query(
+  const user: any = fromFauna(await client.query(
     q.Create(
       q.Collection("users"),
       {

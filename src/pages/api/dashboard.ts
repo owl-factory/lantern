@@ -2,6 +2,7 @@ import { NextApiRequest } from "next";
 import { HTTPHandler } from "server/response";
 import { CampaignLogic } from "server/logic";
 import { createEndpoint } from "server/utilities";
+import { getMyUser, requireLogin } from "server/auth";
 
 /**
  * Creates a single new ruleset
@@ -9,8 +10,9 @@ import { createEndpoint } from "server/utilities";
  * @param req The request to the server
  */
 async function getDashboardPage(this: HTTPHandler, req: NextApiRequest) {
-  const userID = "295863299256353286";
-  const campaigns = await CampaignLogic.fetchMyCampaigns(userID);
+  const myUser = getMyUser(req);
+  requireLogin(myUser);
+  const campaigns = await CampaignLogic.fetchMyCampaigns(myUser, { size: 6 });
   this.returnSuccess({ campaigns: campaigns });
 }
 
