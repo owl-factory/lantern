@@ -41,10 +41,12 @@ export class ImageLogic {
     return images;
   }
 
-  public static async fetchImageByRef(ref: FaunaRef | Expr, myID: string, roles: string[]) {
+  public static async fetchImageByRef(ref: FaunaRef | Expr, myID: string, roles?: string[]) {
     const client = getServerClient();
     const image = await client.query(q.Get(ref));
     if (!image) { return null; }
+    // TODO - security
+    return mapFauna(image);
   }
 
   public static canDelete(image: ImageDocument, myID: string, roles: string[]): boolean {

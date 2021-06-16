@@ -1,9 +1,9 @@
 import {  Expr, query as q } from "faunadb";
-import { UserDocument } from "types/documents";
+import { ImageDocument, UserDocument } from "types/documents";
 import { FaunaDocument, FaunaRef } from "types/fauna";
-import { mapFauna } from "utilities/fauna";
+import { buildRef, mapFauna } from "utilities/fauna";
 import { getServerClient } from "utilities/db";
-import { CoreModelLogic } from "server/logic";
+import { CoreModelLogic, ImageLogic } from "server/logic";
 
 const guestFields = [
   "username",
@@ -42,6 +42,7 @@ export class UserLogic {
     // TODO - ref validation?
     const client = getServerClient();
     const rawUser: FaunaDocument<UserDocument> = await client.query(q.Get(ref));
+    // console.log(rawUser);
     if (!rawUser) { return null; }
     const user: UserDocument = mapFauna(rawUser) as UserDocument;
 
@@ -70,7 +71,6 @@ export class UserLogic {
       { size: 1 }
     );
     if (rawIndex.length === 0) { return null; }
-
 
     return await this.findUserByRef(rawIndex[0].ref, myID, roles);
   }
@@ -121,6 +121,36 @@ export class UserLogic {
       await CoreModelLogic.updateOne(user.ref as FaunaRef, processedUser, myID)
     ) as UserDocument;
     return updatedUser;
+  }
+
+  /**
+   * Updates the user's profile image by one of several methods.
+   * @param user The user document to update
+   * @param body The body of request to update the user image.
+   * @param myID The current user's id
+   */
+  public static async updateUserImage(user: UserDocument, body: any, myID: string): Promise<UserDocument> {
+    let image: ImageDocument;
+    switch(body.method) {
+      // TODO - handle upload
+      // TODO - handle link
+      case "link":
+        image = await ImageLogic.createExternalImage(body.image, myID) as ImageDocument;
+        break;
+      case "list":
+
+        image = await ImageLogic.fetchImageByRef(buildRef(body.image.id, "images"), myID, []) as ImageDocument;
+        if (!image) { throw {code: 404, message: "Image not found."}; }
+        break;
+      default:
+        throw {code: 501, message: `Function '${body.method}' not implemented.`};
+    }
+
+    const targetUser = { icon: { ref: image.ref, data: { src: image.src } }};
+
+    const updatedUser = await CoreModelLogic.updateOne(
+      user.ref as FaunaRef, targetUser as Record<string, unknown>, myID);
+    return mapFauna(updatedUser) as UserDocument;
   }
 
   /**

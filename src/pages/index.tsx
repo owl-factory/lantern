@@ -1,8 +1,7 @@
 import { Page } from "components/design";
 import { AuthenticationCard } from "components/authentication";
 import Link from "next/link";
-import { useRouter } from "next/router";
-import React, { useEffect } from "react";
+import React from "react";
 import { Button, Col, Row } from "react-bootstrap";
 
 /**

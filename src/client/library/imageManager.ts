@@ -22,6 +22,15 @@ export class ImageManager {
   }
 
   /**
+   * Fetches the initial collection of images from the server
+   */
+  public async fetchImages(): Promise<void> {
+    const imageResponse = await rest.get(`/api/images`);
+    if (!imageResponse.success) { return; }
+    this.loadImages((imageResponse.data as any).images);
+  }
+
+  /**
    * Loads the images into the image manager
    * @param images The array of images to load into the image manager
    * @param startIndex The index to insert the images into, if doing multiple pages.

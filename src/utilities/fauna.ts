@@ -22,7 +22,6 @@ import { Expr, query as q } from "faunadb";
   if (!("collection" in mappedDoc)) {
     mappedDoc.collection = ref.collection;
   }
-
   return mappedDoc;
 }
 
@@ -32,6 +31,7 @@ import { Expr, query as q } from "faunadb";
  * @param initialDoc The document we would like to map the current layer to
  */
  function mapLayer(doc: any, initialDoc: any = {}) {
+  if (doc === undefined) { return undefined; }
   const keys = Object.keys(doc);
   keys.forEach((key: string) => {
     const data = doc[key];
@@ -90,7 +90,7 @@ function parseFaunaDate(date: Record<string, unknown>): Date {
 }
 
 /**
- * Processes and maps a single item from a document object. 
+ * Processes and maps a single item from a document object.
  * @param data The data to process and map
  */
 function mapLayerItem(data: any) {
@@ -105,16 +105,18 @@ function mapLayerItem(data: any) {
     return data;
   }
   // Fauna Ref
-  if (isFaunaRef(data)) { 
+  if (isFaunaRef(data)) {
     const ref = parseRef(data);
     return { ...ref, ref: data };
   }
+
+  const mappedDoc: Record<string, unknown> = {};
 
   // Fauna Object
   if ("ref" in data) { return mapFauna(data); }
 
   // Just an object layer
-  return mapLayer(data, {});
+  return mapLayer(data, mappedDoc);
 }
 
 /**
@@ -124,7 +126,7 @@ function mapLayerItem(data: any) {
  * TODO - figure out how to avoid the extra Expr arguments
  */
 export function buildRef(id: string, collection: string): Expr {
-const ref: Expr = q.Ref(q.Collection(collection), id);
+  const ref: Expr = q.Ref(q.Collection(collection), id);
 
-return ref;
+  return ref;
 }
