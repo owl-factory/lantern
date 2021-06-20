@@ -37,6 +37,12 @@ export async function fetchMyImages(myUser: MyUserDocument, options: PaginationO
   return images;
 }
 
+/**
+ * Creates an image by way of a given method.
+ * @param image The image to create/upload
+ * @param method The method by which to create an image. Currently "link" and "upload".
+ * @param myUser The current user attempting to create this image
+ */
 export async function createImageFromMethod(image: ImageDocument, method: string, myUser: MyUserDocument): Promise<ImageDocument> {
   switch(method) {
     case "link":
@@ -57,8 +63,6 @@ export async function createExternalImage(image: ImageDocument, myUser: MyUserDo
   const fields = createFields.concat(["isExternal", "sizeInBytes"]);
   image.isExternal = true;
   image.sizeInBytes = 0;
-  console.log(image);
-  console.log(fields);
   return await CoreModelLogic.createOne("images", image, fields, myUser);
 }
 

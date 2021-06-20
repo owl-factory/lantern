@@ -93,15 +93,29 @@ export async function updateUser(user: UserDocument, myUser: MyUserDocument): Pr
   return CoreModelLogic.trimRestrictedFields(updatedUser as Record<string, unknown>, guestFields);
 }
 
-function isAdmin(myUser: MyUserDocument) {
+/**
+ * Checks if the current user is an admin
+ * @param myUser The current user object to check
+ */
+function isAdmin(myUser: MyUserDocument): boolean {
   return (myUser.roles.includes("admin"));
 }
 
-function isOwner(doc: AnyDocument, myUser: MyUserDocument) {
+/**
+ * Checks if the current user is the owner of the current document
+ * @param doc The document to check
+ * @param myUser The current user owbject to check for ownership
+ */
+function isOwner(doc: AnyDocument, myUser: MyUserDocument): boolean {
   return (!doc.ownedBy || doc.ownedBy.id === myUser.id);
 }
 
-function canUpdate(user: UserDocument, myUser: MyUserDocument) {
+/**
+ * Checks if the current user can update the given document
+ * @param user The user document to check updatability
+ * @param myUser The current user object attempting to update
+ */
+function canUpdate(user: UserDocument, myUser: MyUserDocument): boolean {
   if (isAdmin(myUser)) { return true; }
   if (isOwner(user, myUser)) {
     return true;

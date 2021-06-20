@@ -3,9 +3,9 @@ import React, { Dispatch } from "react";
 import { ImageList, LinkImageForm, ListFormat } from "components/reroll/library/images";
 import { rest } from "utilities/request";
 import { ImageDocument, UserDocument } from "types/documents";
-import { UploadImageForm } from "./forms/UploadImage";
+import { UploadImageForm } from "./UploadImage";
 import { ImageManager } from "client/library";
-import { ImageForm } from "./forms/ImageForm";
+import { ImageForm } from "./ImageForm";
 
 const tabs = [
   "list",

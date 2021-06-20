@@ -1,11 +1,11 @@
 
-import { Button, Col, Row } from "components/style";
+import { Button } from "components/style";
 import React from "react";
 import { ImageDocument } from "types/documents";
 import { ImageManager } from "client/library";
 import { ImageDetailsModal, ImageList, ListFormat } from "components/reroll/library/images";
 import { observer } from "mobx-react-lite";
-import { ImageUploadFormModal } from "./ImageCreationForm";
+import { ImageCreationFormModal } from "./forms/ImageCreationForm";
 
 interface ImageListProps {
   imageManager: ImageManager;
@@ -41,7 +41,7 @@ export const LibraryImageList = observer((props: ImageListProps): JSX.Element =>
         imageID={imageDetailsModal}
         handleClose={closeImageDetailsModal}
       />
-      <ImageUploadFormModal imageManager={props.imageManager} open={modal} handleClose={closeModal}/>
+      <ImageCreationFormModal imageManager={props.imageManager} open={modal} handleClose={closeModal}/>
     </div>
   );
 });

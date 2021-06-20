@@ -114,6 +114,10 @@ export class ImageManager {
     });
   }
 
+  /**
+   * Adds an image to the top of the image list
+   * @param image The image to add to the top of the image list
+   */
   public add(image: ImageDocument) {
     this.images[image.id as string] = image;
     this.imageList.splice(0, 0, image.id as string);

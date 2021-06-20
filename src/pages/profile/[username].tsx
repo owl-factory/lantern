@@ -9,7 +9,7 @@ import { Button } from "components/style";
 import { useRouter } from "next/router";
 import { arrayToList } from "utilities/arrays";
 import style from "./profile.module.scss";
-import { ImageSelectionForm } from "components/reroll/library/images/ImageSelectionForm";
+import { ImageSelectionForm } from "components/reroll/library/images/forms/ImageSelectionForm";
 import { ImageManager } from "client/library";
 
 

@@ -2,11 +2,13 @@ import { Modal } from "components/design";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { ImageDocument } from "types/documents";
-import { rest } from "utilities/request";
-import { ImageForm } from "./forms/ImageForm";
+import { ImageForm } from "./ImageForm";
 
-
-export const ImageUploadForm = observer(({imageManager, onSave}: any) => {
+/**
+ * Renders a form for creating an image, be it linking from an external site or
+ * uploading a brand new image
+ */
+export const ImageCreationForm = observer(({imageManager, onSave}: any) => {
   const tabs = [
     "link",
     "upload",
@@ -34,11 +36,14 @@ export const ImageUploadForm = observer(({imageManager, onSave}: any) => {
   );
 });
 
-export const ImageUploadFormModal = observer(({ imageManager, open, handleClose }: any) => {
+/**
+ * Renders the ImageCreationForm within a modal
+ */
+export const ImageCreationFormModal = observer(({ imageManager, open, handleClose }: any) => {
   
   return (
     <Modal open={open} handleClose={handleClose}>
-      <ImageUploadForm imageManager={imageManager} onSave={handleClose}/>
+      <ImageCreationForm imageManager={imageManager} onSave={handleClose}/>
     </Modal>
   )
 });
