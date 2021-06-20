@@ -15,9 +15,9 @@ async function updateProfileImage(this: HTTPHandler, req: NextApiRequest) {
 
   const user = await UserLogic.fetchUser(myUser, myUser);
   if (!user) { this.returnError(404, "User not found."); return; }
-  const updatedUser = await UserLogic.updateUserImage(user, req.body, myUser);
+  const newImageAndUser = await UserLogic.updateUserImage(user, req.body, myUser);
 
-  this.returnSuccess({ user: updatedUser });
+  this.returnSuccess({ user: newImageAndUser.user, image: newImageAndUser.image });
 }
 
 export default createEndpoint({PATCH: updateProfileImage});

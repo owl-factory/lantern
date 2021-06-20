@@ -115,17 +115,16 @@ function canUpdate(user: UserDocument, myUser: MyUserDocument) {
  * @param body The body of request to update the user image.
  * @param myUser The current user
  */
-export async function updateUserImage(user: UserDocument, body: any, myUser: MyUserDocument): Promise<UserDocument> {
+export async function updateUserImage(user: UserDocument, body: any, myUser: MyUserDocument): Promise<any> {
   if (!canUpdate(user, myUser)) {
     throw { code: 403, message: "You do not have permission to update this user's profile image." };
   }
 
   let image: ImageDocument | null;
   switch(body.method) {
-    // TODO - handle upload
-    // TODO - handle link
     case "link":
-      image = await ImageLogic.createExternalImage(body.image, myUser) as ImageDocument;
+    case "upload":
+      image = await ImageLogic.createImageFromMethod(body.image, body.method, myUser);
       break;
     case "list":
       image = await ImageLogic.fetchImage(
@@ -139,6 +138,7 @@ export async function updateUserImage(user: UserDocument, body: any, myUser: MyU
   }
 
   const targetUser = { ref: user.ref, icon: { ref: image.ref, src: image.src }};
-  return await CoreModelLogic.updateOne(targetUser, ["icon"], myUser, () => true);
+  const updatedUser = await CoreModelLogic.updateOne(targetUser, ["icon"], myUser, () => true);
+  return { user: updatedUser, image };
 }
 

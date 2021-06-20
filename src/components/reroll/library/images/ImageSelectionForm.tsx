@@ -4,10 +4,10 @@ import { ImageList, LinkImageForm, ListFormat } from "components/reroll/library/
 import { rest } from "utilities/request";
 import { ImageDocument, UserDocument } from "types/documents";
 import { UploadImageForm } from "./forms/UploadImage";
-import { SelectionTabs } from "components/design";
 import { ImageManager } from "client/library";
+import { ImageForm } from "./forms/ImageForm";
 
-const TABS = [
+const tabs = [
   "list",
   "link",
   "upload",
@@ -26,7 +26,6 @@ interface ImageSelectionFormProps {
  * @param onSave The function to run after the profile image is changed
  */
 export const ImageSelectionForm = observer(({imageManager, setUser, onSave}: ImageSelectionFormProps) => {
-  const [activeTab, setActiveTab] = React.useState("list");
 
   /**
    * Submits an image selection to the server
@@ -34,40 +33,22 @@ export const ImageSelectionForm = observer(({imageManager, setUser, onSave}: Ima
    * @param method The method of selecting a new image
    */
   async function onSubmit(image: ImageDocument, method: string): Promise<void> {
-    const res = await rest.patch(`/api/profile/image`, { method, image}) as any;
-    if (!res.success) { console.log(res.message); return; }
-    setUser(res.data.user);
-    onSave();
-  }
-
-  let activeForm: JSX.Element;
-  switch(activeTab) {
-    case "link":
-      activeForm = <LinkImageForm onSubmit={(image: ImageDocument) => onSubmit(image, "link")}/>;
-      break;
-    case "list":
-      activeForm = (
-        <ImageList
-          imageManager={imageManager}
-          listFormat={ListFormat.Icons}
-          onClick={(image:ImageDocument) => onSubmit(image, "list")}
-        />
-      );
-      break;
-    case "upload":
-      activeForm = <UploadImageForm />;
-      break;
-    default:
-      activeForm = <></>;
-      break;
+    imageManager.setProfileImage(image, method)
+    .then((user: UserDocument) => {
+      setUser(user);
+      onSave();
+    })
+    .catch((err: Error) => {
+      console.error(err);
+    });
   }
 
   return (
-    <div>
-      <SelectionTabs useTabs={TABS} activeTab={activeTab} setActiveTab={setActiveTab}/>
-      <div style={{padding: "1em"}}>
-        {activeForm}
-      </div>
-    </div>
+    <ImageForm
+      defaultTab="list"
+      imageManager={imageManager}
+      onSubmit={onSubmit}
+      tabs={tabs}
+    />
   );
 });

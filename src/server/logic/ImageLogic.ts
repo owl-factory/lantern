@@ -37,6 +37,17 @@ export async function fetchMyImages(myUser: MyUserDocument, options: PaginationO
   return images;
 }
 
+export async function createImageFromMethod(image: ImageDocument, method: string, myUser: MyUserDocument): Promise<ImageDocument> {
+  switch(method) {
+    case "link":
+      return await createExternalImage(image, myUser);
+    case "upload": 
+      throw {code: 405, message: "Upload method not implemented"}
+    default:
+      throw {code: 405, message: "Method not supported"}
+  }
+}
+
 /**
  * Creates an image that is linked from an external source
  * @param image The image to create
@@ -46,6 +57,8 @@ export async function createExternalImage(image: ImageDocument, myUser: MyUserDo
   const fields = createFields.concat(["isExternal", "sizeInBytes"]);
   image.isExternal = true;
   image.sizeInBytes = 0;
+  console.log(image);
+  console.log(fields);
   return await CoreModelLogic.createOne("images", image, fields, myUser);
 }
 
