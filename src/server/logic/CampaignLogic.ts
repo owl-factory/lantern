@@ -16,6 +16,7 @@ enum CampaignAccessLevels {
 const allowedPlayerFields = [
   "lastPlayed",
   "players",
+  "banner",
 ];
 
 const allowedGuestFields: string[] = [];
@@ -50,12 +51,12 @@ export async function fetchMyCampaigns(
   options: PaginationOptions
 ): Promise<CampaignDocument[]> {
   const campaigns = await CoreModelLogic.fetchByIndex(
-    "my_campaigns",
+    "my_campaigns4",
     [myUser.ref as Expr],
-    ["ref", "name"],
+    ["lastPlayedAt", "ref", "name", "banner.src"],
     options
   );
-
+  console.log(campaigns)
   return campaigns;
 }
 

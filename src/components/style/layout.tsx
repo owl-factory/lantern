@@ -9,7 +9,7 @@ interface ColProps {
   xl?: number;
 }
 
-export function Col(props: ColProps) {
+export function Col2(props: ColProps) {
   let classes = `col-${props.xs}`;
   if (props.sm) { classes += ` col-sm-${props.sm}`;}
   if (props.md) { classes += ` col-md-${props.md}`;}
@@ -19,6 +19,6 @@ export function Col(props: ColProps) {
   return <div className={classes}>{ props.children }</div>;
 }
 
-export function Row(props: { children: React.ReactNode; }): JSX.Element {
+export function Row2(props: { children: React.ReactNode; }): JSX.Element {
   return <div className="row">{props.children}</div>;
 }
