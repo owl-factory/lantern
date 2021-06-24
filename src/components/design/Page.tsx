@@ -30,10 +30,10 @@ export function Page(props: PageProps): JSX.Element {
   }
 
   return (
-    <Container className="mt-3">
+    <div className="container mt-3">
       { props.error ? <>{parseError(props.error)}</> : <></>}
       {props.children}
-    </Container>
+    </div>
   );
 }
 

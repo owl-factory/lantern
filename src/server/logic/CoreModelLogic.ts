@@ -3,6 +3,7 @@ import { Expr, query as q } from "faunadb";
 import { fromFauna, isFaunaError, parseFaunaRef, toFauna, toFaunaDate, toFaunaRef } from "utilities/fauna";
 import { FaunaRef } from "types/fauna";
 import { AnyDocument } from "types/documents";
+import { set } from "utilities/objects";
 
 export interface PaginationOptions {
   size: number;
@@ -43,36 +44,6 @@ export async function fetchByRef(ref: DocumentReference): Promise<AnyDocument | 
   const result = await client.query(q.Get(faunaRef)) as Record<string, unknown>;
   if (result === null) { return result; }
   return fromFauna(result);
-}
-
-function get(obj: Record<string, unknown>, target: string) {
-  const targetKeys = target.split(".");
-  let current = obj;
-  targetKeys.forEach((targetKey: string) => {
-    if (typeof current !== "object") { return undefined; }
-    if (!(targetKey in current)) { return undefined; }
-    current = current[targetKey] as Record<string, unknown>;
-  });
-  return current;
-}
-
-function set(obj: Record<string, unknown>, target: string, value: any) {
-  const targetKeys = target.split(".");
-  let current = obj;
-  targetKeys.forEach((targetKey: string, index: number) => {
-    if (index === targetKeys.length - 1) { 
-      current[targetKey] = value;
-      return;
-    }
-    if (!(targetKey in current)) { 
-      current[targetKey] = {};
-    }
-
-    // TODO - array handling
-
-    current = current[targetKey] as Record<string, unknown>;
-  });
-  return obj;
 }
 
 /**
@@ -257,4 +228,3 @@ export function trimRestrictedFields(
 
   return newDoc;
 }
-

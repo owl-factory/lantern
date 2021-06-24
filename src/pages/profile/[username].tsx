@@ -11,6 +11,7 @@ import { arrayToList } from "utilities/arrays";
 import style from "./profile.module.scss";
 import { ImageSelectionForm } from "components/reroll/library/images/forms/ImageSelectionForm";
 import { ImageManager } from "client/library";
+import { ImageSelectionWrapper } from "components/reroll/library/images/ImageSelectionWrapper";
 
 
 /**
@@ -197,29 +198,22 @@ interface ProfileImageProps {
  * @param isMyPage True if this is the current user's page
  */
 function ProfileImage({ imageManager, user, isMyPage, setUser }: ProfileImageProps) {
-  const [ modal, setModal ] = React.useState(false);
   let src = "";
   if (user.icon && user.icon.src) { src = user.icon.src; }
-  function closeModal() { setModal(false); }
 
   let image = <img src={src} width="200px" height="200px"/>;
+  const onSave = (result: unknown) => {
+    setUser(result as UserDocument);
+  }
 
   if (isMyPage) {
     React.useEffect(() => {
       imageManager.fetchImages();
     }, []);
     image = (
-      <div>
-        <div className={`${style.profileImageWrapper}`} onClick={() => (setModal(true))}>
-          <div className={`${style.profileHoverWrapper}`}>
-            Change Image
-          </div>
-          {image}
-        </div>
-        <Modal open={modal} handleClose={closeModal}>
-          <ImageSelectionForm imageManager={imageManager} setUser={setUser} onSave={closeModal}/>
-        </Modal>
-      </div>
+     <ImageSelectionWrapper imageManager={imageManager} onSubmit={imageManager.setProfileImage} onSave={onSave}>
+        {image}
+      </ImageSelectionWrapper>
     );
   }
 

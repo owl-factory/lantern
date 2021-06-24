@@ -1,0 +1,27 @@
+.profileImageWrapper {
+  position: relative;
+
+  img {
+    margin: auto;
+  }
+
+  .profileHoverWrapper {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+
+    background-color: #444;
+    color: #EEE;
+    font-weight: 700;
+    padding: 3px;
+    opacity: 85%;
+
+    display: none;
+  }
+}
+
+.profileImageWrapper:hover {
+  .profileHoverWrapper {
+    display: block;
+  }
+}

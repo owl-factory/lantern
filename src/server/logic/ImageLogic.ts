@@ -54,6 +54,30 @@ export async function createImageFromMethod(image: ImageDocument, method: string
   }
 }
 
+export async function fetchImageToSet(image: ImageDocument, method: string, myUser: MyUserDocument): Promise<ImageDocument> {
+
+  let fetchedImage: ImageDocument | null;
+  switch(method) {
+    case "link":
+    case "upload":
+      fetchedImage = await createImageFromMethod(image, method, myUser);
+      break;
+    case "list":
+      fetchedImage = await fetchImage(
+        { id: image.id as string, collection: "images" },
+        myUser
+      );
+      if (!image) { throw {code: 404, message: "Image not found."}; }
+      break;
+    default:
+      throw {code: 501, message: `Function '${method}' not implemented.`};
+  }
+  if (fetchedImage === null) {
+    throw { code: 500, message: "An unexpected error occured while attempting to set the image"};
+  }
+  return fetchedImage;
+}
+
 /**
  * Creates an image that is linked from an external source
  * @param image The image to create
