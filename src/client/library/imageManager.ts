@@ -153,6 +153,14 @@ export class ImageManager {
 
   }
 
+  /**
+   * Runs all of the standard actions for setting an image in a document
+   * 
+   * @param image The image to set and potentially save
+   * @param method The method by which to set the image
+   * @param url The API url we are sending the data to
+   * @param allowedMethods The allowed methods used for setting the image
+   */
   protected async setImage(image: ImageDocument, method: string, url: string, allowedMethods: string[] = ["list", "link", "upload"]) {
     if (!allowedMethods.includes(method)) {
       Promise.reject(new Error("Method does not exist"));
@@ -181,9 +189,14 @@ export class ImageManager {
     return result.user;
   }
 
+  /**
+   * Runs the actions to set the banner image for a campaign
+   * @param campaign The campaign to set the new banner for
+   * @param image The image that we are setting and potentially creating
+   * @param method The method that we are using to set the banner
+   */
   public async setCampaignBanner(campaign: CampaignDocument, image: ImageDocument, method: string) {
     const result = await this.setImage(image, method, `/api/campaigns/${campaign.id}/banner`);
-    console.log(result);
     return result.campaign;
   }
 }

@@ -69,8 +69,6 @@ export async function fetchByIndex(
     ),
   );
 
-  console.log(result)
-
   // TODO - proper error message
   if (!result.data || isFaunaError(result)) {
     throw `An error occured while attempting to search the ${searchIndex} index`;

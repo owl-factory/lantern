@@ -54,8 +54,14 @@ export async function createImageFromMethod(image: ImageDocument, method: string
   }
 }
 
+/**
+ * Creates a new image or fetches an existing image based on the given document and returns the result
+ *
+ * @param image The image to create or the ref to an image to fetch
+ * @param method The method to perform the actions for
+ * @param myUser The current user
+ */
 export async function fetchImageToSet(image: ImageDocument, method: string, myUser: MyUserDocument): Promise<ImageDocument> {
-
   let fetchedImage: ImageDocument | null;
   switch(method) {
     case "link":

@@ -1,5 +1,5 @@
 CreateIndex({
-  name: "my_campaigns4",
+  name: "my_campaigns",
   source: Collection("campaigns"),
   terms: [{ field: ["data", "players"]} ],
   values: [

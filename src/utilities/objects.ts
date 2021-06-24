@@ -1,3 +1,8 @@
+/**
+ * Reads a value from an object from a period-delimited key. Safe for cases where keys may be undefined
+ * @param obj The object to read a key from
+ * @param target The target address of an object to read
+ */
 export function read<T>(obj: Record<string, unknown>, target: string): T {
   const targetKeys = target.split(".");
   let current = obj;
@@ -9,7 +14,14 @@ export function read<T>(obj: Record<string, unknown>, target: string): T {
   return current as T;
 }
 
-export function set(obj: Record<string, unknown>, target: string, value: any) {
+/**
+ * Sets the value of an object from a period-delimited key. Safe for cases where
+ * levels may be undefined; they default to empty objects.
+ * @param obj The object to set a value to
+ * @param target The period-delimited address to set
+ * @param value The value to set
+ */
+export function set(obj: Record<string, unknown>, target: string, value: unknown): Record<string, unknown> {
   const targetKeys = target.split(".");
   let current = obj;
   targetKeys.forEach((targetKey: string, index: number) => {

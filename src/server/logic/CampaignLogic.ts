@@ -106,6 +106,13 @@ function canUpdate(campaign: CampaignDocument, myUser: MyUserDocument) {
   return false;
 }
 
+/**
+ * Potentially creates a new image document and assigns an image document to be the banner image for a campaign
+ *
+ * @param campaign The campaign document to update
+ * @param body The body of the request to update the banner. Contains an image document (image) and method (string)
+ * @param myUser The current user making changes
+ */
 export async function updateBanner(campaign: CampaignDocument, body: any, myUser: MyUserDocument) {
   if (!canUpdate(campaign, myUser)) {
     throw { code: 403, message: "You do not have permission to update this campaign's banner image." };

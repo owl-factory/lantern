@@ -34,7 +34,6 @@ export default Dashboard;
 function RecentGames(props: any) {
   const campaigns: JSX.Element[] = [];
   props.campaigns.forEach((campaign: CampaignDocument) => {
-    console.log(campaign)
     let src = "";
     if (campaign.banner && campaign.banner.src) { src = campaign.banner.src; }
     campaigns.push(
