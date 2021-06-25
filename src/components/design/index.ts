@@ -2,6 +2,7 @@ export * from "components/design/contextMenus";
 export * from "components/design/forms";
 export * from "components/design/tables";
 export * from "components/design/toolbox";
+export * from "components/design/AppPage";
 export * from "components/design/Breadcrumbs";
 export * from "components/design/HeaderBar";
 export * from "components/design/Modal";
