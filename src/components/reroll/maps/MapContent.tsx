@@ -1,3 +1,5 @@
+import { MapController } from "client/maps/MapController";
+import { Button } from "components/style";
 import { observer } from "mobx-react-lite";
 import { Application } from "pixi.js";
 import React, { useEffect } from "react";
@@ -5,7 +7,7 @@ import React, { useEffect } from "react";
 
 const app = new Application({
   width: 800,
-  height: 600,
+  height: 800,
   backgroundColor: 0xFFFFFF,
   antialias: true
 });
@@ -24,14 +26,17 @@ const MapContent = observer(() => {
     ref.current.appendChild(app.view);
     app.start();
 
-
+    mapController = new MapController(app);
 
     return () => {
       app.stop();
     };
   }, []);
 
-  return <div ref={ref} />;
+  return (<>
+    {/* <Button type="button" onClick={mapController.setMapUnit()} */}
+    <div ref={ref} />
+  </>);
 });
 
 export default MapContent;
