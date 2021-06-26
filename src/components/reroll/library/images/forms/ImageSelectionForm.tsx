@@ -8,15 +8,15 @@ import { ImageManager } from "client/library";
 import { ImageForm } from "./ImageForm";
 
 const tabs = [
-  "list",
   "link",
   "upload",
+  "list",
 ];
 
 interface ImageSelectionFormProps {
   imageManager: ImageManager;
-  setUser: Dispatch<UserDocument>;
-  onSave: () => void;
+  onSubmit: (image: ImageDocument, method: string) => Promise<unknown>;
+  onSave: (result: unknown) => void;
 }
 
 /**
@@ -25,18 +25,17 @@ interface ImageSelectionFormProps {
  * @param setUser The function to update the user when a new profile image is selected
  * @param onSave The function to run after the profile image is changed
  */
-export const ImageSelectionForm = observer(({imageManager, setUser, onSave}: ImageSelectionFormProps) => {
+export const ImageSelectionForm = observer(({imageManager, onSubmit, onSave}: ImageSelectionFormProps) => {
 
   /**
    * Submits an image selection to the server
    * @param image The new image document to submit
    * @param method The method of selecting a new image
    */
-  async function onSubmit(image: ImageDocument, method: string): Promise<void> {
-    imageManager.setProfileImage(image, method)
-    .then((user: UserDocument) => {
-      setUser(user);
-      onSave();
+  async function submit(image: ImageDocument, method: string): Promise<void> {
+    onSubmit(image, method)
+    .then((result: unknown) => {
+      onSave(result);
     })
     .catch((err: Error) => {
       console.error(err);
@@ -45,9 +44,9 @@ export const ImageSelectionForm = observer(({imageManager, setUser, onSave}: Ima
 
   return (
     <ImageForm
-      defaultTab="list"
+      defaultTab="link"
       imageManager={imageManager}
-      onSubmit={onSubmit}
+      onSubmit={submit}
       tabs={tabs}
     />
   );

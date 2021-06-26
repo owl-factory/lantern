@@ -1,11 +1,12 @@
 import { Page } from "components/design";
 import Link from "next/link";
 import React from "react";
-import { Button } from "react-bootstrap";
+import { Button, Card} from "react-bootstrap";
 import { CampaignDocument } from "types/documents";
 import { getSession, signOut } from "utilities/auth";
 import { NextPage, NextPageContext } from "next";
 import { rest } from "utilities/request";
+import { Col, Row } from "components/style";
 
 interface DashboardProps {
   session?: any;
@@ -33,13 +34,18 @@ export default Dashboard;
 function RecentGames(props: any) {
   const campaigns: JSX.Element[] = [];
   props.campaigns.forEach((campaign: CampaignDocument) => {
+    let src = "";
+    if (campaign.banner && campaign.banner.src) { src = campaign.banner.src; }
     campaigns.push(
-      <>
-        <h5>{campaign.name}</h5>
-        <Link href={`/campaigns/${campaign.id}`}>
-          Visit
-        </Link>
-      </>
+      <Col xs={12} md={6} lg={3}>
+        <Card>
+          <img src={src}/>
+          <h5>{campaign.name}</h5>
+          <Link href={`/campaigns/${campaign.id}`}>
+            Visit
+          </Link>
+        </Card>
+      </Col>
     );
   });
 
@@ -53,7 +59,10 @@ function RecentGames(props: any) {
           </Button>
         </Link>
       </h4>
-      {campaigns}
+      <br/>
+      <Row>
+        {campaigns}
+      </Row>
     </div>
   );
 }

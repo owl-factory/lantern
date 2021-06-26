@@ -3,6 +3,7 @@ import { Expr, query as q } from "faunadb";
 import { fromFauna, isFaunaError, parseFaunaRef, toFauna, toFaunaDate, toFaunaRef } from "utilities/fauna";
 import { FaunaRef } from "types/fauna";
 import { AnyDocument } from "types/documents";
+import { set } from "utilities/objects";
 
 export interface PaginationOptions {
   size: number;
@@ -96,6 +97,8 @@ export async function fetchByIndex(
           parsedItem.id = id;
           parsedItem.collection = collection;
         }
+        
+        set(parsedItem, valueKey, value);
       });
     }
     parsedResult.push(parsedItem);
@@ -223,4 +226,3 @@ export function trimRestrictedFields(
 
   return newDoc;
 }
-

@@ -1,9 +1,10 @@
 import { getServerClient } from "utilities/db";
 import { Expr, query as q } from "faunadb";
 import { fromFauna } from "utilities/fauna";
-import { CampaignDocument, UserDocument } from "types/documents";
-import { CoreModelLogic } from "server/logic";
+import { CampaignDocument, ImageDocument, UserDocument } from "types/documents";
+import { CoreModelLogic, ImageLogic } from "server/logic";
 import { DocumentReference, MyUserDocument, PaginationOptions } from "./CoreModelLogic";
+import { isAdmin, isOwner } from "./security";
 
 // The different levels of access for a campaign
 enum CampaignAccessLevels {
@@ -16,6 +17,7 @@ enum CampaignAccessLevels {
 const allowedPlayerFields = [
   "lastPlayed",
   "players",
+  "banner",
 ];
 
 const allowedGuestFields: string[] = [];
@@ -50,12 +52,12 @@ export async function fetchMyCampaigns(
   options: PaginationOptions
 ): Promise<CampaignDocument[]> {
   const campaigns = await CoreModelLogic.fetchByIndex(
-    "my_campaigns",
+    "my_campaigns4",
     [myUser.ref as Expr],
-    ["ref", "name"],
+    ["lastPlayedAt", "ref", "name", "banner.src"],
     options
   );
-
+  console.log(campaigns)
   return campaigns;
 }
 
@@ -91,4 +93,34 @@ export function trimRestrictedFields(campaign: CampaignDocument, accessLevel: Ca
     return CoreModelLogic.trimRestrictedFields(campaign as Record<string, unknown>, allowedPlayerFields);
   }
   return CoreModelLogic.trimRestrictedFields(campaign as Record<string, unknown>, allowedGuestFields);
+}
+
+/**
+ * Checks if the user is able to update the non-game related portions of the campaign
+ * @param campaign 
+ * @param myUser 
+ */
+function canUpdate(campaign: CampaignDocument, myUser: MyUserDocument) {
+  if (isAdmin(myUser)) { return true; }
+  if (isOwner(campaign, myUser)) { return true; } 
+  return false;
+}
+
+/**
+ * Potentially creates a new image document and assigns an image document to be the banner image for a campaign
+ *
+ * @param campaign The campaign document to update
+ * @param body The body of the request to update the banner. Contains an image document (image) and method (string)
+ * @param myUser The current user making changes
+ */
+export async function updateBanner(campaign: CampaignDocument, body: any, myUser: MyUserDocument) {
+  if (!canUpdate(campaign, myUser)) {
+    throw { code: 403, message: "You do not have permission to update this campaign's banner image." };
+  }
+
+  const image = await ImageLogic.fetchImageToSet(body.image, body.method, myUser);
+
+  const targetCampaign = { ref: campaign.ref, banner: { ref: image.ref, src: image.src }};
+  const updatedCampaign = await CoreModelLogic.updateOne(targetCampaign, ["banner"], myUser, () => true);
+  return { campaign: updatedCampaign, image };
 }

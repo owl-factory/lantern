@@ -5,6 +5,8 @@ import { toFaunaRef, fromFauna } from "utilities/fauna";
 import { getServerClient } from "utilities/db";
 import { CoreModelLogic, ImageLogic } from "server/logic";
 import { DocumentReference, MyUserDocument } from "./CoreModelLogic";
+import { isAdmin, isOwner } from "./security";
+import { fetchImageToSet } from "./ImageLogic";
 
 const guestFields = [
   "username",
@@ -94,23 +96,6 @@ export async function updateUser(user: UserDocument, myUser: MyUserDocument): Pr
 }
 
 /**
- * Checks if the current user is an admin
- * @param myUser The current user object to check
- */
-function isAdmin(myUser: MyUserDocument): boolean {
-  return (myUser.roles.includes("admin"));
-}
-
-/**
- * Checks if the current user is the owner of the current document
- * @param doc The document to check
- * @param myUser The current user owbject to check for ownership
- */
-function isOwner(doc: AnyDocument, myUser: MyUserDocument): boolean {
-  return (!doc.ownedBy || doc.ownedBy.id === myUser.id);
-}
-
-/**
  * Checks if the current user can update the given document
  * @param user The user document to check updatability
  * @param myUser The current user object attempting to update
@@ -134,22 +119,7 @@ export async function updateUserImage(user: UserDocument, body: any, myUser: MyU
     throw { code: 403, message: "You do not have permission to update this user's profile image." };
   }
 
-  let image: ImageDocument | null;
-  switch(body.method) {
-    case "link":
-    case "upload":
-      image = await ImageLogic.createImageFromMethod(body.image, body.method, myUser);
-      break;
-    case "list":
-      image = await ImageLogic.fetchImage(
-        { id: body.image.id, collection: "images" },
-        myUser
-      );
-      if (!image) { throw {code: 404, message: "Image not found."}; }
-      break;
-    default:
-      throw {code: 501, message: `Function '${body.method}' not implemented.`};
-  }
+  const image = await fetchImageToSet(body.image, body.method, myUser);
 
   const targetUser = { ref: user.ref, icon: { ref: image.ref, src: image.src }};
   const updatedUser = await CoreModelLogic.updateOne(targetUser, ["icon"], myUser, () => true);

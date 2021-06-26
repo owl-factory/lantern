@@ -1,6 +1,6 @@
 import { Client, query as q } from "faunadb";
 import { makeAutoObservable } from "mobx";
-import { ImageDocument } from "types/documents";
+import { CampaignDocument, ImageDocument } from "types/documents";
 import { FaunaRef } from "types/fauna";
 import { getClient } from "utilities/db";
 import { fromFauna, toFaunaRef } from "utilities/fauna";
@@ -154,17 +154,20 @@ export class ImageManager {
   }
 
   /**
-   * Handles the creation and setting of a profile image
-   * @param image The image to set as the new profile image
-   * @param method The method to set the new profile image
+   * Runs all of the standard actions for setting an image in a document
+   * 
+   * @param image The image to set and potentially save
+   * @param method The method by which to set the image
+   * @param url The API url we are sending the data to
+   * @param allowedMethods The allowed methods used for setting the image
    */
-  public async setProfileImage(image: ImageDocument, method: string) {
-    if (!["list", "link", "upload"].includes(method)) {
+  protected async setImage(image: ImageDocument, method: string, url: string, allowedMethods: string[] = ["list", "link", "upload"]) {
+    if (!allowedMethods.includes(method)) {
       Promise.reject(new Error("Method does not exist"));
       return;
     }
 
-    const res = await rest.patch("/api/profile/images", { method, image }) as any;
+    const res = await rest.patch(url, { method, image }) as any;
     if (!res.success) {
       Promise.reject(new Error(res.message));
       return;
@@ -172,6 +175,28 @@ export class ImageManager {
     if (method !== "list") {
       this.add(res.data.image);
     }
-    return res.data.user;
+    return res.data;
+  }
+
+  /**
+   * Handles the creation and setting of a profile image
+   * @param image The image to set as the new profile image
+   * @param method The method to set the new profile image
+   */
+  public async setProfileImage(image: ImageDocument, method: string) {
+    const result = await this.setImage(image, method, "/api/profile/images");
+    
+    return result.user;
+  }
+
+  /**
+   * Runs the actions to set the banner image for a campaign
+   * @param campaign The campaign to set the new banner for
+   * @param image The image that we are setting and potentially creating
+   * @param method The method that we are using to set the banner
+   */
+  public async setCampaignBanner(campaign: CampaignDocument, image: ImageDocument, method: string) {
+    const result = await this.setImage(image, method, `/api/campaigns/${campaign.id}/banner`);
+    return result.campaign;
   }
 }
