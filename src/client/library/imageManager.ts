@@ -115,6 +115,15 @@ export class ImageManager {
   }
 
   /**
+   * Adds an image to the top of the image list
+   * @param image The image to add to the top of the image list
+   */
+  public add(image: ImageDocument) {
+    this.images[image.id as string] = image;
+    this.imageList.splice(0, 0, image.id as string);
+  }
+
+  /**
    * Checks if an image is external without a database call. If unknown, return false
    * @param image The image to determine if external or not
    */
@@ -122,5 +131,47 @@ export class ImageManager {
     if (image.isExternal) { return true; }
     if (image.src && image.src.includes(this.ourCDNPrefex)) { return false; }
     return true;
+  }
+
+  /**
+   * Handles the creation of a single image, sending it to the backend, and adding it to the image manager
+   * @param image The image to create
+   * @param method The method by which to create an image
+   */
+  public async createImage(image: ImageDocument, method: string) {
+    if (!["link", "upload"].includes(method)) {
+      Promise.reject(new Error("Method does not exist"));
+      return;
+    }
+    const res = await rest.put(`/api/images`, { method, image }) as any;
+    if (!res.success) {
+      Promise.reject(new Error(res.message));
+      return;
+    }
+    this.add(res.data.image);
+    return;
+
+  }
+
+  /**
+   * Handles the creation and setting of a profile image
+   * @param image The image to set as the new profile image
+   * @param method The method to set the new profile image
+   */
+  public async setProfileImage(image: ImageDocument, method: string) {
+    if (!["list", "link", "upload"].includes(method)) {
+      Promise.reject(new Error("Method does not exist"));
+      return;
+    }
+
+    const res = await rest.patch("/api/profile/images", { method, image }) as any;
+    if (!res.success) {
+      Promise.reject(new Error(res.message));
+      return;
+    }
+    if (method !== "list") {
+      this.add(res.data.image);
+    }
+    return res.data.user;
   }
 }

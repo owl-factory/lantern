@@ -130,9 +130,8 @@ export async function createOne(
 
   const client = getServerClient();
   const result = await client.query(
-    q.Create(collection, doc)
+    q.Create(collection, faunaDoc)
   ) as Record<string, unknown>;
-
   if (isFaunaError(result)) {
     throw { code: 500, status: "An error occurred while creating your document" };
   }

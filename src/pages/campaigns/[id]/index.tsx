@@ -40,7 +40,7 @@ export default function CampaignView(props: any): JSX.Element {
         <div key={player.id}>
           {player.name || player.username}&nbsp;
           {player.id === campaign.ownedBy.id ? "(GM) " : ""}
-          <Link href={`/profile/${player.id}`}>Profile</Link>
+          <Link href={`/profile/${player.username}`}>Profile</Link>
         </div>
       );
     });

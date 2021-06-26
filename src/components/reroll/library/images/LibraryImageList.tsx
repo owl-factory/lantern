@@ -1,12 +1,11 @@
 
-import { Button, Col, Row } from "components/style";
+import { Button } from "components/style";
 import React from "react";
-import { Card } from "react-bootstrap";
 import { ImageDocument } from "types/documents";
 import { ImageManager } from "client/library";
 import { ImageDetailsModal, ImageList, ListFormat } from "components/reroll/library/images";
 import { observer } from "mobx-react-lite";
-import { LinkImageModal } from "./LinkImageModal";
+import { ImageCreationFormModal } from "./forms/ImageCreationForm";
 
 interface ImageListProps {
   imageManager: ImageManager;
@@ -29,7 +28,7 @@ export const LibraryImageList = observer((props: ImageListProps): JSX.Element =>
     <div style={{marginTop: "20px"}}>
       <div>
         <h2>Images</h2>
-        <Button type="button" onClick={() => setModal(true)}>Upload</Button>
+        <Button type="button" onClick={() => setModal(true)}>+</Button>
         <ImageList
           imageManager={props.imageManager}
           onClick={(image: ImageDocument) => setImageDetailsModal(image.id as string)}
@@ -42,7 +41,7 @@ export const LibraryImageList = observer((props: ImageListProps): JSX.Element =>
         imageID={imageDetailsModal}
         handleClose={closeImageDetailsModal}
       />
-      <LinkImageModal imageManager={props.imageManager} modal={modal} handleClose={closeModal}/>
+      <ImageCreationFormModal imageManager={props.imageManager} open={modal} handleClose={closeModal}/>
     </div>
   );
 });
