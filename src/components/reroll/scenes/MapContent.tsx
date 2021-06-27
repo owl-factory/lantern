@@ -6,27 +6,22 @@ import React, { useEffect } from "react";
 // import * as pixi from "pixi.js";
 
 const app = new Application({
-  width: 800,
-  height: 800,
+  width: 500,
+  height: 500,
   backgroundColor: 0xFFFFFF,
   antialias: true
 });
 
-interface XYCoords {
-  x: number;
-  y: number;
-}
-
 const MapContent = observer(() => {
+  const [ mapController ] = React.useState(new MapController(app))
   const ref = React.useRef(null);
-  let mapController: MapController;
 
   useEffect(() => {
     if (!ref || !ref.current) { return; }
     ref.current.appendChild(app.view);
     app.start();
 
-    mapController = new MapController(app);
+    // mapController = new MapController(app);
 
     return () => {
       app.stop();
