@@ -1,5 +1,5 @@
 import { PIXELS_PER_HEX, PIXELS_PER_SQUARE } from "./consts";
-import { SceneController, MapSizeUnit } from "./SceneController";
+import { MapUnit, SceneController } from "./SceneController";
 
 /**
  * Fetches the map's current height in pixels
@@ -21,7 +21,7 @@ export function getMapUnitWidth(this: SceneController): number { return this.map
 /**
  * Fetches the tile type currently being used
  */
-export function getMapUnit(this: SceneController): MapSizeUnit { return this.mapSize.unit; }
+export function getMapUnit(this: SceneController): MapUnit { return this.mapSize.unit; }
 
 /**
  * Sets the new height of the map in pixels
@@ -67,7 +67,7 @@ export function setMapUnitWidth(this: SceneController, unitWidth: number): void 
  * Change the map unit from one unit to another
  * @param unit The new unit type
  */
-export function setMapUnit(this: SceneController, unit: MapSizeUnit): void {
+export function setMapUnit(this: SceneController, unit: MapUnit): void {
   this.mapSize.unit = unit;
   this.mapSize.height = this.pixelsToNearestUnit(this.mapSize.height);
   this.mapSize.width = this.pixelsToNearestUnit(this.mapSize.width);
@@ -81,7 +81,7 @@ export function setMapUnit(this: SceneController, unit: MapSizeUnit): void {
  * TODO - remove or rename. Not here
  */
 export function setDefaultMap(this: SceneController): void {
-  this.setMapUnit(MapSizeUnit.HorizontalHex);
+  this.setMapUnit(MapUnit.HorizontalHex);
   this.setMapUnitHeight(5);
   this.setMapUnitWidth(5);
 }
@@ -93,12 +93,12 @@ export function setDefaultMap(this: SceneController): void {
  */
 export function pixelsToUnit(this: SceneController, pixels: number): number {
   switch(this.mapSize.unit) {
-    case MapSizeUnit.Squares:
+    case MapUnit.Squares:
       return Math.round(pixels / PIXELS_PER_SQUARE);
-    case MapSizeUnit.VerticalHex:
-    case MapSizeUnit.HorizontalHex:
+    case MapUnit.VerticalHex:
+    case MapUnit.HorizontalHex:
       return Math.round(pixels / PIXELS_PER_HEX); // Check
-    case MapSizeUnit.Pixels:
+    case MapUnit.Pixels:
     default:
       return pixels;
   }
@@ -111,12 +111,12 @@ export function pixelsToUnit(this: SceneController, pixels: number): number {
  */
 export function unitToPixels(this: SceneController, units: number): number {
   switch(this.mapSize.unit) {
-    case MapSizeUnit.Squares:
+    case MapUnit.Squares:
       return units * PIXELS_PER_SQUARE;
-    case MapSizeUnit.VerticalHex:
-    case MapSizeUnit.HorizontalHex:
+    case MapUnit.VerticalHex:
+    case MapUnit.HorizontalHex:
       return units * PIXELS_PER_HEX * 0.75;
-    case MapSizeUnit.Pixels:
+    case MapUnit.Pixels:
     default:
       return units;
   }

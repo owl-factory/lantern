@@ -15,5 +15,5 @@ export function SceneRenderer({ sceneController }: any): JSX.Element {
     };
   }, []);
 
-  return <div ref={ref}/>;
+  return <div ref={ref} />;
 }

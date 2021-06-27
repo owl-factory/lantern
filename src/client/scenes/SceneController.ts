@@ -3,10 +3,20 @@ import { Texture } from "@pixi/core";
 import { Container } from "@pixi/display";
 import { Graphics } from "@pixi/graphics";
 import { makeAutoObservable } from "mobx";
-import { Sprite } from "pixi.js";
+import { InteractionData, InteractionEvent, Sprite } from "pixi.js";
 
 import * as grid from "./grid";
 import * as size from "./size";
+
+interface InteractiveSprite extends Sprite {
+  data: InteractionData | null;
+  dragging: boolean;
+}
+
+interface InteractiveContainer extends Container {
+  data: InteractionData | null;
+  dragging: boolean;
+}
 
 export enum MapUnit {
   Pixels,
@@ -23,7 +33,9 @@ export interface MapSize {
   unit: MapUnit;
 }
 
-const DEFAULT_SCALE = 1;
+export type Interactable = InteractiveContainer | InteractiveSprite;
+
+const DEFAULT_SCALE = 1.5;
 
 export class SceneController {
   protected app: Application;
@@ -33,8 +45,8 @@ export class SceneController {
   protected grid: Graphics;
 
   protected data: unknown;
-  protected dragging = false;
   protected panning = false;
+  protected panData: any;
 
   /**
    * Creates a new, empty map controller.
@@ -46,6 +58,7 @@ export class SceneController {
     this.app.stage.addChild(this.scene);
     this.initScene();
     this.grid = new Graphics();
+
 
     this.mapSize = {
       height: 0,
@@ -77,13 +90,22 @@ export class SceneController {
 
     this.scene.x = this.scene.parent.width / 2;
     this.scene.y = this.scene.parent.height / 2;
+
+    this.scene.interactive = true;
+    // this.scene.buttonMode = true;
+
+    this.scene
+      .on("mousedown", (event) => this.onPanStart(event, this.scene))
+      .on("mouseup", (event) => this.onPanEnd(event, this.scene))
+      .on("mouseupoutside", (event) => this.onPanEnd(event, this.scene))
+      .on("mousemove", (event) => this.onPanMove(event, this.scene));
   }
 
   public getApp(): Application {
     return this.app;
   }
 
-  public async createSprite(textureSource: string, x: number, y: number) {
+  public async createSprite(textureSource: string, x: number, y: number): Promise<void> {
     const texture = await Texture.fromURL(textureSource);
 
     const sprite = Sprite.from(texture);
@@ -94,56 +116,70 @@ export class SceneController {
     sprite.y = y;
     sprite.scale.set(DEFAULT_SCALE);
 
-    this.scene.addChild(sprite);
+    this.app.stage.addChild(sprite);
 
     sprite
-      .on("pointerdown", (event) => this.onDragStart(event, sprite))
-      .on("pointerup", () => this.onDragEnd(sprite))
-      .on("pointerupoutside", () => this.onDragEnd(sprite))
-      .on("pointermove", () => this.onDragMove(sprite));
+      .on("pointerdown", (event) => this.onDragStart(event, sprite as InteractiveSprite))
+      .on("pointerup", () => this.onDragEnd(sprite as InteractiveSprite))
+      .on("pointerupoutside", () => this.onDragEnd(sprite as InteractiveSprite))
+      .on("pointermove", (event, event2) => this.onDragMove(event, event2, sprite as InteractiveSprite));
   }
 
-  protected onDragStart(event: any, sprite: Sprite) {
+  protected onPointerDown(event: InteractionEvent, target: Interactable, sceneController: SceneController) {
+    // Check button
+    
+  }
+
+  protected onPointerUp(event: InteractionEvent, target: Interactable, sceneController: SceneController) {
+    // Check button
+  }
+
+  protected onPointerMove(event: InteractionEvent, target: Interactable, sceneController: SceneController) {
+    // Check button
+  }
+
+  protected onDragStart(event: InteractionEvent, sprite: InteractiveSprite): void {
+    console.log(event)
     sprite.data = event.data;
     sprite.dragging = true;
     sprite.alpha = 0.5;
   }
 
-  protected onDragEnd(sprite: Sprite) {
+  protected onDragEnd(sprite: InteractiveSprite): void {
     sprite.alpha = 1;
     sprite.dragging = false;
     sprite.data = null;
   }
 
-  protected onDragMove(sprite: Sprite) {
-    if (sprite.dragging) {
-        const newPosition = sprite.data.getLocalPosition(sprite.parent);
-        sprite.x = newPosition.x;
-        sprite.y = newPosition.y;
+  protected onDragMove(sprite: InteractiveSprite): void {
+
+    if (sprite.dragging && sprite.data !== null) {
+        // const newPosition = sprite.data.getLocalPosition(sprite.parent);
+        // sprite.x = newPosition.x;
+        // sprite.y = newPosition.y;
     }
   }
 
-  protected onPanStart(event: any, map: Sprite) {
-    // Only if middle mouse button
-    if (map.data.button !== 1) { return; }
-
-    map.data = event.data;
-    map.dragging = true;
+  public onPanStart(event: InteractionEvent, scene: InteractiveContainer): void {
+    console.log(event)
+    if (!event.data || event.data.button !== 1) { return; }
+    console.log(event)
+    scene.dragging = true;
+    scene.data = event.data;
   }
 
-  protected onPanEnd(event: any, map: Sprite) {
-    // Only if middle mouse btn
+  protected onPanEnd(event: InteractionEvent, scene: InteractiveContainer): void {
     if (event.data.button !== 1) { return; }
-
-    this.data = null;
-    this.panning = false;
+    scene.data = null;
+    scene.dragging = false;
   }
 
-  protected onPanMove(event: any) {
-    if (this.panning) {
-      console.log(event.data);
-      // const newPosition = ;
-      // console.log(newPosition)
+  protected onPanMove(event: InteractionEvent, scene: InteractiveContainer): void {
+    if (event.data.button !== 1) { return; }
+    if (scene.dragging && scene.data !== null) {
+      const newPosition = scene.data.getLocalPosition(scene.parent);
+      scene.x = newPosition.x;
+      scene.y = newPosition.y;
     }
   }
 
