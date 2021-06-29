@@ -3,6 +3,7 @@ import { Texture } from "@pixi/core";
 import { Container } from "@pixi/display";
 import { Graphics } from "@pixi/graphics";
 import { makeAutoObservable } from "mobx";
+import { Viewport } from "pixi-viewport";
 import { InteractionData, InteractionEvent, Point, Sprite } from "pixi.js";
 
 import * as grid from "./grid";
@@ -54,6 +55,7 @@ const DEFAULT_SCALE = 1.5;
 
 export class SceneController {
   public app: Application;
+  public viewport: Viewport;
   public scene: Container;
   protected mapSize: MapSize;
 
@@ -61,17 +63,46 @@ export class SceneController {
 
   public mode: SceneMode;
 
+  protected initializeBackground(): void {
+    const background = new Sprite(Texture.WHITE);
+    background.tint = 0x444444;
+    background.height = this.app.stage.height;
+    background.width = this.app.stage.width;
+  }
+
+  protected initializeViewport(): void {
+    this.viewport = new Viewport({
+      screenWidth: 1000,
+      screenHeight: 1000,
+      worldWidth: 1000,
+      worldHeight: 1000,
+
+      interaction: this.app.renderer.plugins.interaction,
+    });
+
+    this.viewport
+      .drag({ mouseButtons: "middle" })
+      .pinch()
+      .wheel()
+      .decelerate();
+
+    this.app.stage.addChild(this.viewport);
+  }
+
   /**
    * Creates a new, empty map controller.
    * @param app The PixiJS Application used for rendering out this map
    */
   constructor(app: Application) {
     this.app = app;
-    this.scene = new Container();
-    this.app.stage.addChild(this.scene);
-    this.initScene();
+    this.initializeBackground();
+    this.initializeViewport();
+    this.initializeScene();
+    
     this.grid = new Graphics();
     this.mode = SceneMode.Select;
+
+    
 
 
     this.mapSize = {
@@ -85,7 +116,8 @@ export class SceneController {
     makeAutoObservable(this);
   }
 
-  protected initScene(): void {
+  protected initializeScene(): void {
+    this.scene = new Container();
     this.scene.width = 250;
     this.scene.height = 250;
     this.scene.pivot.set(0.5);
@@ -102,17 +134,11 @@ export class SceneController {
 
     background.zIndex = -1;
 
-    this.scene.x = this.scene.parent.width / 2;
-    this.scene.y = this.scene.parent.height / 2;
-
     this.scene.interactive = true;
     // this.scene.buttonMode = true;
 
-    this.scene
-      .on("mousedown", (event) => this.onPointerDown(event, this.scene as InteractiveContainer, this))
-      .on("mouseup", (event) => this.onPointerUp(event, this.scene as InteractiveContainer, this))
-      .on("mouseupoutside", (event) => this.onPointerUp(event, this.scene as InteractiveContainer, this))
-      .on("mousemove", (event) => this.onPointerMove(event, this.scene as InteractiveContainer, this));
+    this.viewport.addChild(this.scene);
+
   }
 
   public getApp(): Application {
@@ -206,6 +232,7 @@ export class SceneController {
 
   protected onSelectStart(event: InteractionEvent, target: Interactable, sceneController: SceneController): void {
     if (target === sceneController.scene) { return; }
+    this.viewport.plugins.pause('drag');
     this.getAnchorOffset(event.data.global, target.getGlobalPosition(), target as Sprite);
     console.log((target as Sprite).anchor)
 
@@ -218,6 +245,8 @@ export class SceneController {
 
   protected onSelectEnd(event: InteractionEvent, target: Interactable, sceneController: SceneController): void {
     if (!target.dragging || !target.data) { return; }
+    this.viewport.plugins.resume('drag');
+
     target.dragging = false;
     target.data = null;
     return;

@@ -6,7 +6,7 @@ import React from "react";
 export const SceneBuilderOverlay = observer(({ children, sceneController }: any): JSX.Element => {
   function addSprite() {
     sceneController.createSprite(
-      "http://192.168.0.195:3000/images/sprites/waals_brodnen_death_sprite.png",
+      "http://192.168.0.195:3000/dev/images/sprites/waals_brodnen_death_sprite.png",
       125,
       125
     );
