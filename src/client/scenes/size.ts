@@ -30,7 +30,6 @@ export function getMapUnit(this: SceneController): MapUnit { return this.mapSize
 export function setMapHeight(this: SceneController, height: number): void {
   this.mapSize.height = this.pixelsToNearestUnit(height);
   this.mapSize.unitHeight = this.pixelsToUnit(this.mapSize.height);
-  this.map.height = this.mapSize.height;
 }
 
 /**
@@ -40,7 +39,6 @@ export function setMapHeight(this: SceneController, height: number): void {
 export function setMapWidth(this: SceneController, width: number): void {
   this.mapSize.width = this.pixelsToNearestUnit(width);
   this.mapSize.unitWidth = this.pixelsToUnit(this.mapSize.width);
-  this.map.width = this.mapSize.width;
 }
 
 /**
@@ -50,7 +48,6 @@ export function setMapWidth(this: SceneController, width: number): void {
 export function setMapUnitHeight(this: SceneController, unitHeight: number): void {
   this.mapSize.unitHeight = unitHeight;
   this.mapSize.height = this.unitToPixels(unitHeight);
-  this.map.height = this.mapSize.height;
 }
 
 /**
@@ -60,7 +57,6 @@ export function setMapUnitHeight(this: SceneController, unitHeight: number): voi
 export function setMapUnitWidth(this: SceneController, unitWidth: number): void {
   this.mapSize.unitWidth = unitWidth;
   this.mapSize.width = this.unitToPixels(unitWidth);
-  this.map.width = this.mapSize.width;
 }
 
 /**

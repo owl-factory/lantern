@@ -7,7 +7,7 @@ export function SceneRenderer({ sceneController }: any): JSX.Element {
     const app = sceneController.getApp();
     
     if (!ref || !ref.current) { return; }
-    ref.current.appendChild(app.view);
+    (ref.current as any).appendChild(app.view);
     app.start();
     
     return () => {

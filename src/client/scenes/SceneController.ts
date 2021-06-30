@@ -7,16 +7,19 @@ import { Viewport } from "pixi-viewport";
 import { InteractionData, InteractionEvent, Point, Sprite } from "pixi.js";
 
 import * as grid from "./grid";
+import * as initialize from "./initialize";
 import * as size from "./size";
 
 interface InteractiveSprite extends Sprite {
   data: InteractionData | null;
   dragging: boolean;
+  dragPoint: Point;
 }
 
 interface InteractiveContainer extends Container {
   data: InteractionData | null;
   dragging: boolean;
+  dragPoint: Point;
 }
 
 export enum MapUnit {
@@ -63,47 +66,20 @@ export class SceneController {
 
   public mode: SceneMode;
 
-  protected initializeBackground(): void {
-    const background = new Sprite(Texture.WHITE);
-    background.tint = 0x444444;
-    background.height = this.app.stage.height;
-    background.width = this.app.stage.width;
-  }
-
-  protected initializeViewport(): void {
-    this.viewport = new Viewport({
-      screenWidth: 1000,
-      screenHeight: 1000,
-      worldWidth: 1000,
-      worldHeight: 1000,
-
-      interaction: this.app.renderer.plugins.interaction,
-    });
-
-    this.viewport
-      .drag({ mouseButtons: "middle" })
-      .pinch()
-      .wheel()
-      .decelerate();
-
-    this.app.stage.addChild(this.viewport);
-  }
-
   /**
    * Creates a new, empty map controller.
    * @param app The PixiJS Application used for rendering out this map
    */
   constructor(app: Application) {
     this.app = app;
+    this.viewport = new Viewport();
+    this.scene = new Container();
     this.initializeBackground();
     this.initializeViewport();
     this.initializeScene();
-    
+
     this.grid = new Graphics();
     this.mode = SceneMode.Select;
-
-    
-
 
     this.mapSize = {
       height: 0,
@@ -116,35 +92,16 @@ export class SceneController {
     makeAutoObservable(this);
   }
 
-  protected initializeScene(): void {
-    this.scene = new Container();
-    this.scene.width = 250;
-    this.scene.height = 250;
-    this.scene.pivot.set(0.5);
-
-    const background = new Sprite(Texture.WHITE);
-    background.anchor.set(0.5);
-    background.width = 250;
-    background.height = 250;
-
-    this.scene.addChild(background);
-
-    background.x = background.parent.width / 2;
-    background.y = background.parent.height / 2;
-
-    background.zIndex = -1;
-
-    this.scene.interactive = true;
-    // this.scene.buttonMode = true;
-
-    this.viewport.addChild(this.scene);
-
-  }
-
+  /**
+   * Fetches the scene's app
+   */
   public getApp(): Application {
     return this.app;
   }
 
+  /**
+   * Runs the action to unset any settings for the current mode
+   */
   public unsetMode(): void {
     // TODO - throw events ending current action if mode changed
     switch (this.mode) {
@@ -156,6 +113,10 @@ export class SceneController {
     }
   }
 
+  /**
+   * Sets any settings required for the new mode
+   * @param mode The new mode
+   */
   public setMode(mode: SceneMode): void {
     this.unsetMode();
     this.mode = mode;
@@ -168,6 +129,13 @@ export class SceneController {
     }
   }
 
+  /**
+   * Creates a new sprite from a source.
+   * TODO - replace with createProp & createActor functions
+   * @param textureSource The URL source of the texture
+   * @param x The x coordinate of the new sprite
+   * @param y The y coordinate of the new sprite
+   */
   public async createSprite(textureSource: string, x: number, y: number): Promise<void> {
     const texture = await Texture.fromURL(textureSource);
 
@@ -188,10 +156,13 @@ export class SceneController {
       .on("pointermove", (event) => this.onPointerMove(event, sprite as InteractiveSprite, this));
   }
 
+  /**
+   * Handles the onPointerDown event
+   * @param event The onPointerDown event
+   * @param target The target sprite or container to interact with
+   * @param sceneController The scene, as `this` is unavailable
+   */
   protected onPointerDown(event: InteractionEvent, target: Interactable, sceneController: SceneController): void {
-    // Check mode
-    // Check button
-
     switch(this.mode) {
       case SceneMode.Select:
         return this.onSelectStart(event, target, sceneController);
@@ -200,6 +171,12 @@ export class SceneController {
     }
   }
 
+  /**
+   * Handles the onPointerUp event
+   * @param event The onPointerUp event
+   * @param target The target sprite or container to interact with
+   * @param sceneController The scene, as `this` is unavailable
+   */
   protected onPointerUp(event: InteractionEvent, target: Interactable, sceneController: SceneController): void {
     // Check button
     switch(this.mode) {
@@ -210,6 +187,12 @@ export class SceneController {
     }
   }
 
+  /**
+   * Handles the onPointerMove event
+   * @param event The onPointerMove event
+   * @param target The target sprite or container to interact with
+   * @param sceneController The scene, as `this` is unavailable
+   */
   protected onPointerMove(event: InteractionEvent, target: Interactable, sceneController: SceneController): void {
     // Check button
     switch(this.mode) {
@@ -220,29 +203,29 @@ export class SceneController {
     }
   }
 
-  protected getGrabPointOffset(grabPoint: Point, targetPoint: Point): Point {
-    return new Point(grabPoint.x - targetPoint.x, grabPoint.y - targetPoint.y);
-  }
-
-  protected getAnchorOffset(grabPoint: Point, targetPoint: Point, target: Sprite): void {
-    const xOffset = ((grabPoint.x - targetPoint.x) / target.width) + target.anchor.x;
-    const yOffset = ((grabPoint.y - targetPoint.y) / target.height) + target.anchor.y;
-    target.anchor.set(xOffset, yOffset);
-  }
-
+  /**
+   * Handles the beginning of onSelect
+   * @param event The event triggering the onSelect action
+   * @param target The target sprite or container to interact with
+   * @param sceneController The scene, as `this` is unavailable
+   */
   protected onSelectStart(event: InteractionEvent, target: Interactable, sceneController: SceneController): void {
     if (target === sceneController.scene) { return; }
     this.viewport.plugins.pause('drag');
-    this.getAnchorOffset(event.data.global, target.getGlobalPosition(), target as Sprite);
-    console.log((target as Sprite).anchor)
 
     target.dragging = true;
     target.data = event.data;
-    const newPosition = target.data.getLocalPosition(target.parent);
-    target.x = newPosition.x;
-    target.y = newPosition.y;
+    target.dragPoint = event.data.getLocalPosition(target.parent);
+    target.dragPoint.x -= target.x;
+    target.dragPoint.y -= target.y;
   }
 
+  /**
+   * Handles the end of onSelect
+   * @param event The event triggering the onSelect action's end
+   * @param target The target sprite or container to interact with
+   * @param sceneController The scene, as `this` is unavailable
+   */
   protected onSelectEnd(event: InteractionEvent, target: Interactable, sceneController: SceneController): void {
     if (!target.dragging || !target.data) { return; }
     this.viewport.plugins.resume('drag');
@@ -252,6 +235,12 @@ export class SceneController {
     return;
   }
 
+  /**
+   * Handles the movement of onSelect
+   * @param event The event triggering the onSelect movement
+   * @param target The target sprite or container to interact with
+   * @param sceneController The scene, as `this` is unavailable
+   */
   protected onSelectMove(event: InteractionEvent, target: Interactable, sceneController: SceneController): void {
     if (!target.dragging || !target.data) { return; }
     const newPosition = target.data.getLocalPosition(target.parent);
@@ -260,6 +249,12 @@ export class SceneController {
     return;
   }
 
+  /**
+   * Handles the beginning of onPan
+   * @param event The event triggering the onPan action
+   * @param target The target sprite or container to interact with
+   * @param sceneController The scene, as `this` is unavailable
+   */
   protected onPanStart(event: InteractionEvent, target: Interactable, sceneController: SceneController): void {
     const scene = sceneController.scene as InteractiveContainer;
     scene.dragging = true;
@@ -267,6 +262,12 @@ export class SceneController {
     return;
   }
 
+  /**
+   * Handles the end of onPan
+   * @param event The event triggering the onPan action's end
+   * @param target The target sprite or container to interact with
+   * @param sceneController The scene, as `this` is unavailable
+   */
   protected onPanEnd(event: InteractionEvent, target: Interactable, sceneController: SceneController): void {
     const scene = sceneController.scene as InteractiveContainer;
     scene.dragging = false;
@@ -274,6 +275,12 @@ export class SceneController {
     return;
   }
 
+  /**
+   * Handles the movement of onPan
+   * @param event The event triggering the onPan action
+   * @param target The target sprite or container to interact with
+   * @param sceneController The scene, as `this` is unavailable
+   */
   protected onPanMove(event: InteractionEvent, target: Interactable, sceneController: SceneController): void {
     const scene = sceneController.scene as InteractiveContainer;
     if (!scene.dragging || !scene.data) { return; }
@@ -283,51 +290,6 @@ export class SceneController {
     return;
   }
 
-  protected onDragStart(event: InteractionEvent, sprite: InteractiveSprite): void {
-    console.log(event)
-    sprite.data = event.data;
-    sprite.dragging = true;
-    sprite.alpha = 0.5;
-  }
-
-  protected onDragEnd(sprite: InteractiveSprite): void {
-    sprite.alpha = 1;
-    sprite.dragging = false;
-    sprite.data = null;
-  }
-
-  protected onDragMove(sprite: InteractiveSprite): void {
-
-    if (sprite.dragging && sprite.data !== null) {
-        // const newPosition = sprite.data.getLocalPosition(sprite.parent);
-        // sprite.x = newPosition.x;
-        // sprite.y = newPosition.y;
-    }
-  }
-
-  // public onPanStart(event: InteractionEvent, scene: InteractiveContainer): void {
-  //   console.log(event)
-  //   if (!event.data || event.data.button !== 1) { return; }
-  //   console.log(event)
-  //   scene.dragging = true;
-  //   scene.data = event.data;
-  // }
-
-  // protected onPanEnd(event: InteractionEvent, scene: InteractiveContainer): void {
-  //   if (event.data.button !== 1) { return; }
-  //   scene.data = null;
-  //   scene.dragging = false;
-  // }
-
-  // protected onPanMove(event: InteractionEvent, scene: InteractiveContainer): void {
-  //   if (event.data.button !== 1) { return; }
-  //   if (scene.dragging && scene.data !== null) {
-  //     const newPosition = scene.data.getLocalPosition(scene.parent);
-  //     scene.x = newPosition.x;
-  //     scene.y = newPosition.y;
-  //   }
-  // }
-
   // GRID BUILDING
   protected buildGrid = grid.buildGrid;
   protected buildHorizontalHexGrid = grid.buildHorizontalHexGrid;
@@ -335,6 +297,11 @@ export class SceneController {
   protected buildHorizontalHex = grid.buildHorizontalHex;
   protected buildVerticalHex = grid.buildVerticalHex;
   protected buildSquareGrid = grid.buildSquareGrid;
+
+  // INITIALIZE
+  protected initializeBackground = initialize.initializeBackground;
+  protected initializeViewport = initialize.initializeViewport;
+  protected initializeScene = initialize.initializeScene;
 
   // SIZING
   public getMapHeight = size.getMapHeight;
