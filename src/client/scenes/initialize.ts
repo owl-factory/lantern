@@ -1,16 +1,20 @@
 import { Viewport } from "pixi-viewport";
 import { Container, Sprite, Texture } from "pixi.js";
-import { SceneController } from "./SceneController";
+import { DEFAULT_GRID_SIZE } from "./consts";
+import { GridType, Interactable, SceneController } from "./SceneController";
 
 /**
  * Initializes the background component of the app. This is a null space that has a basic texture
  * and lives behind everything in the camera for a bit of visual distinction
+ * TODO - is there a better way of doing this?
  */
 export function initializeBackground(this: SceneController): void {
   const background = new Sprite(Texture.WHITE);
   background.tint = 0x444444;
-  background.height = this.app.stage.height;
-  background.width = this.app.stage.width;
+  background.x = 0;
+  background.y = 0;
+  background.height = 1000;
+  background.width = 1000;
 
   this.app.stage.addChild(background);
 }
@@ -61,5 +65,18 @@ export function initializeScene(this: SceneController): void {
   this.scene.interactive = true;
   // this.scene.buttonMode = true;
 
+  this.subscribe(this.scene as Interactable);
+
   this.viewport.addChild(this.scene);
+}
+
+/**
+ * Initializes a grid
+ */
+export function initializeGrid(this: SceneController): void {
+  this.gridType = GridType.Squares;
+  this.gridSize = DEFAULT_GRID_SIZE;
+
+  this.buildGrid();
+  this.scene.addChild(this.grid);
 }

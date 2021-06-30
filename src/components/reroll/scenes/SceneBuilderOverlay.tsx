@@ -1,8 +1,11 @@
-import { SceneMode, SceneModeReadable as SCENE_MODE_READABLE } from "client/scenes/SceneController";
+import { SceneModeReadable as SCENE_MODE_READABLE, SceneMode, GridType } from "client/scenes/SceneController";
 import { Button } from "components/style";
 import { observer } from "mobx-react-lite";
 import React from "react";
 
+/**
+ * Renders a wrapper that surrounds a scene, applying UI for interaction with the Scene
+ */
 export const SceneBuilderOverlay = observer(({ children, sceneController }: any): JSX.Element => {
   function addSprite() {
     sceneController.createSprite(
@@ -24,6 +27,13 @@ export const SceneBuilderOverlay = observer(({ children, sceneController }: any)
         <Button className="sm" onClick={addSprite}>Add Image</Button>
       </div>
       {children}
+      <div>
+        <Button onClick={() => sceneController.setGridType(GridType.None)}>None</Button>
+        <Button onClick={() => sceneController.setGridType(GridType.Squares)}>Squares</Button>
+        <Button onClick={() => sceneController.setGridType(GridType.HorizontalHex)}>Horz. Hex</Button>
+        <Button onClick={() => sceneController.setGridType(GridType.VerticalHex)}>Vert. Hex</Button>
+        { sceneController.getGridTypeReadable() }
+      </div>
     </div>
   );
 });
