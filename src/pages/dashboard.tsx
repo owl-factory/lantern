@@ -32,6 +32,8 @@ const Dashboard: NextPage<DashboardProps> = (props: any) => {
 export default Dashboard;
 
 function RecentGames(props: any) {
+  if (!props.campaigns) { return null; }
+
   const campaigns: JSX.Element[] = [];
   props.campaigns.forEach((campaign: CampaignDocument) => {
     let src = "";

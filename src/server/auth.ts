@@ -1,8 +1,13 @@
 import { NextApiRequest } from "next";
+import { getSession } from "utilities/auth";
 import { toFaunaRef } from "utilities/fauna";
 import { MyUserDocument } from "./logic/CoreModelLogic";
 
 export function getMyUser(req: NextApiRequest): MyUserDocument {
+  // TODO - have this working on page refresh
+  const myUser2 = getSession({req});
+  if (myUser2 !== null) { return myUser2; }
+
   const myUser: MyUserDocument = {
     id: "295863299256353286",
     collection: "users",
@@ -11,7 +16,7 @@ export function getMyUser(req: NextApiRequest): MyUserDocument {
       collection: "users",
     }),
     roles: [],
-    isLoggedIn: true
+    isLoggedIn: true,
 };
   myUser.ref = toFaunaRef(myUser);
   return myUser;
