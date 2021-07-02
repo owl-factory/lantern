@@ -84,8 +84,8 @@ export class SceneController {
 
   public mode: SceneMode;
 
-  protected gridType: GridType;
-  protected gridSize: number;
+  protected gridType: GridType = GridType.None;
+  protected gridSize = 0;
 
   /**
    * Creates a new, empty map controller.
@@ -103,9 +103,19 @@ export class SceneController {
     this.initializeScene();
     this.initializeGrid();
 
+    this.centerViewport();
+
     this.mode = SceneMode.Select;
 
     makeAutoObservable(this);
+  }
+
+  /**
+   * Centers the viewport
+   */
+  public centerViewport(): void {
+    this.viewport.x = (this.app.view.width - this.scene.width) / 2;
+    this.viewport.y = (this.app.view.height - this.scene.height) / 2;
   }
 
   /**
@@ -224,6 +234,23 @@ export class SceneController {
         return this.onSelectMove(event, target, sceneController);
       case SceneMode.Pan:
         return this.onPanMove(event, target, sceneController);
+    }
+  }
+
+  public findNearestSnap(this: SceneController, dropPoint: Point ): Point {
+    let x, y: number;
+    switch(this.gridType) {
+      case GridType.None:
+        return dropPoint;
+      case GridType.Squares:
+        // TODO - handle larger objects
+        x = Math.round((dropPoint.x - (this.gridSize / 2)) / this.gridSize) * this.gridSize + (this.gridSize / 2);
+        y = Math.round((dropPoint.y - (this.gridSize / 2)) / this.gridSize) * this.gridSize + (this.gridSize / 2);
+        return new Point(x, y);
+      case GridType.HorizontalHex:
+      case GridType.VerticalHex:
+      default:
+        return dropPoint;
     }
   }
 

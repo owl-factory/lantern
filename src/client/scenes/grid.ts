@@ -66,16 +66,18 @@ export function buildHorizontalHexGrid(this: SceneController): void {
  */
 export function buildHorizontalHex(this: SceneController, x: number, y: number): void {
   let yOffset = 0;
-  if (x % 2 === 1) { yOffset = 0.5 * this.gridSize * COS_30; }
-  const xOffset = -0.25 * this.gridSize * x;
+  if (x % 2 === 1) { yOffset = 0.5 * this.gridSize; }
+  const horizontalSize = this.gridSize / COS_30;
 
-  this.grid.moveTo((x + 0.25) * this.gridSize + xOffset, (y * this.gridSize * COS_30) + yOffset);
-  this.grid.lineTo((x + 0.75) * this.gridSize + xOffset, (y * this.gridSize * COS_30) + yOffset);
-  this.grid.lineTo((x + 1) * this.gridSize + xOffset, ((y + 0.5) * this.gridSize * COS_30) + yOffset);
-  this.grid.lineTo((x + 0.75) * this.gridSize + xOffset, ((y + 1) * this.gridSize * COS_30) + yOffset);
-  this.grid.lineTo((x + 0.25) * this.gridSize + xOffset, ((y + 1) * this.gridSize * COS_30) + yOffset);
-  this.grid.lineTo(x * this.gridSize + xOffset, ((y + 0.5) * this.gridSize * COS_30) + yOffset);
-  this.grid.lineTo((x + 0.25) * this.gridSize + xOffset, (y * this.gridSize * COS_30) + yOffset);
+  const xOffset = -0.25 * horizontalSize * x;
+
+  this.grid.moveTo((x + 0.25) * horizontalSize + xOffset, (y * this.gridSize) + yOffset);
+  this.grid.lineTo((x + 0.75) * horizontalSize + xOffset, (y * this.gridSize) + yOffset);
+  this.grid.lineTo((x + 1) * horizontalSize + xOffset, ((y + 0.5) * this.gridSize) + yOffset);
+  this.grid.lineTo((x + 0.75) * horizontalSize + xOffset, ((y + 1) * this.gridSize) + yOffset);
+  this.grid.lineTo((x + 0.25) * horizontalSize + xOffset, ((y + 1) * this.gridSize) + yOffset);
+  this.grid.lineTo(x * horizontalSize + xOffset, ((y + 0.5) * this.gridSize) + yOffset);
+  this.grid.lineTo((x + 0.25) * horizontalSize + xOffset, (y * this.gridSize) + yOffset);
 }
 
 /**
@@ -99,16 +101,18 @@ export function buildVerticalHexGrid(this: SceneController): void {
  */
 export function buildVerticalHex(this: SceneController, x: number, y: number): void {
   let xOffset = 0;
-  if (y % 2 === 1) { xOffset = 0.5 * this.gridSize * COS_30; }
-  const yOffset = (-0.25 * this.gridSize * y) + 0.25 * this.gridSize;
+  if (y % 2 === 1) { xOffset = 0.5 * this.gridSize; }
+  const verticalSize = this.gridSize / COS_30;
 
-  this.grid.moveTo((x * this.gridSize * COS_30) + xOffset, y * this.gridSize + yOffset);
-  this.grid.lineTo((x * this.gridSize * COS_30) + xOffset, ((y + 0.5) * this.gridSize) + yOffset);
-  this.grid.lineTo(((x + 0.5) * this.gridSize * COS_30) + xOffset, ((y + 0.75) * this.gridSize) + yOffset);
-  this.grid.lineTo(((x + 1) * this.gridSize * COS_30) + xOffset, ((y + 0.5) * this.gridSize) + yOffset);
-  this.grid.lineTo(((x + 1) * this.gridSize * COS_30) + xOffset, (y * this.gridSize) + yOffset);
-  this.grid.lineTo(((x + 0.5) * this.gridSize * COS_30) + xOffset, ((y - 0.25) * this.gridSize) + yOffset);
-  this.grid.lineTo((x * this.gridSize * COS_30) + xOffset, y * this.gridSize + yOffset);
+  const yOffset = (-0.25 * verticalSize * y) + 0.25 * verticalSize;
+
+  this.grid.moveTo((x * this.gridSize) + xOffset, y * verticalSize + yOffset);
+  this.grid.lineTo((x * this.gridSize) + xOffset, ((y + 0.5) * verticalSize) + yOffset);
+  this.grid.lineTo(((x + 0.5) * this.gridSize) + xOffset, ((y + 0.75) * verticalSize) + yOffset);
+  this.grid.lineTo(((x + 1) * this.gridSize) + xOffset, ((y + 0.5) * verticalSize) + yOffset);
+  this.grid.lineTo(((x + 1) * this.gridSize) + xOffset, (y * verticalSize) + yOffset);
+  this.grid.lineTo(((x + 0.5) * this.gridSize) + xOffset, ((y - 0.25) * verticalSize) + yOffset);
+  this.grid.lineTo((x * this.gridSize) + xOffset, y * verticalSize + yOffset);
 }
 
 /**

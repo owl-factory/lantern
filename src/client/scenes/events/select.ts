@@ -1,5 +1,5 @@
-import { InteractionEvent } from "pixi.js";
-import { Interactable, SceneController } from "../SceneController";
+import { InteractionEvent, Point } from "pixi.js";
+import { GridType, Interactable, SceneController } from "../SceneController";
 
 /**
  * Handles the beginning of onSelect
@@ -27,7 +27,9 @@ export function onSelectStart(event: InteractionEvent, target: Interactable, sce
 export function onSelectEnd(event: InteractionEvent, target: Interactable, sceneController: SceneController): void {
   if (!target.dragging || !target.data) { return; }
   sceneController.viewport.plugins.resume('drag');
-
+  const newPosition = sceneController.findNearestSnap(target.data.getLocalPosition(target.parent));
+  target.x = newPosition.x;
+  target.y = newPosition.y;
   target.dragging = false;
   target.data = null;
   return;
@@ -46,3 +48,4 @@ export function onSelectMove(event: InteractionEvent, target: Interactable, scen
   target.y = newPosition.y;
   return;
 }
+
