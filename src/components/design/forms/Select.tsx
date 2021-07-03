@@ -47,6 +47,7 @@ export function Select(props: SelectProps): JSX.Element {
       disabled={props.disabled}
       multiple={props.multiple}
       size={props.size}
+      onChange={props.onChange}
       {...field}
     >
       {renderChildren(id, props)}

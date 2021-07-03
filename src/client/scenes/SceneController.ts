@@ -127,6 +127,10 @@ export class SceneController {
     return this.app;
   }
 
+  public getGridType(): GridType {
+    return this.gridType;
+  }
+
   /**
    * Runs the action to unset any settings for the current mode
    */
