@@ -10,6 +10,7 @@ import * as events from "./events";
 import * as grid from "./grid";
 import * as initialize from "./initialize";
 import * as size from "./size";
+import * as snap from "./snap";
 
 /**
  * Adds several fields to a sprite's definition that are added by Pixi for interacting with them
@@ -77,6 +78,7 @@ const DEFAULT_SCALE = 1.5;
  */
 export class SceneController {
   public app: Application;
+  public background: Sprite;
   public viewport: Viewport;
   public scene: Container;
 
@@ -93,7 +95,7 @@ export class SceneController {
    */
   constructor(app: Application) {
     this.app = app;
-
+    this.background = new Sprite();
     this.viewport = new Viewport();
     this.scene = new Container();
     this.grid = new Graphics();
@@ -237,22 +239,7 @@ export class SceneController {
     }
   }
 
-  public findNearestSnap(this: SceneController, dropPoint: Point ): Point {
-    let x, y: number;
-    switch(this.gridType) {
-      case GridType.None:
-        return dropPoint;
-      case GridType.Squares:
-        // TODO - handle larger objects
-        x = Math.round((dropPoint.x - (this.gridSize / 2)) / this.gridSize) * this.gridSize + (this.gridSize / 2);
-        y = Math.round((dropPoint.y - (this.gridSize / 2)) / this.gridSize) * this.gridSize + (this.gridSize / 2);
-        return new Point(x, y);
-      case GridType.HorizontalHex:
-      case GridType.VerticalHex:
-      default:
-        return dropPoint;
-    }
-  }
+  
 
   // EVENTS
   protected onPanStart = events.pan.onPanStart;
@@ -296,6 +283,22 @@ export class SceneController {
   protected pixelsToUnit = size.pixelsToUnit;
   protected pixelsToNearestUnit = size.pixelsToNearestUnit;
   protected unitToPixels = size.unitToPixels;
+
+  public setSceneSize(values: any, sceneController: SceneController): void {
+    // TODO - balance the values
+
+    sceneController.background.height = values.height;
+    sceneController.background.width = values.width;
+    sceneController.background.x = values.height / 2; //Math.floor(sceneController.background.parent.width / 2);
+    sceneController.background.y = values.width / 2; //Math.floor(sceneController.background.parent.height / 2);
+    sceneController.gridSize = values.gridSize;
+    sceneController.centerViewport();
+    sceneController.buildGrid();
+
+  }
+
+  // SNAP
+  public snap = snap.snap;
 
   // TODO - delete/rename this
   protected setDefaultMap = size.setDefaultMap;

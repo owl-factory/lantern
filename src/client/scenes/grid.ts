@@ -52,7 +52,7 @@ export function buildHorizontalHexGrid(this: SceneController): void {
   const yUnits = Math.ceil(this.scene.height / this.gridSize); // TODO - handle cos
 
 
-  for(let x = 0; x < xUnits; x++) {
+  for(let x = 0; x <= xUnits; x++) {
     for(let y = 0; y < yUnits; y++) {
       this.buildHorizontalHex(x, y);
     }
@@ -88,7 +88,7 @@ export function buildVerticalHexGrid(this: SceneController): void {
   const yUnits = Math.ceil(this.scene.height / this.gridSize);
 
   for(let x = 0; x < xUnits; x++) {
-    for(let y = 0; y < yUnits; y++) {
+    for(let y = 0; y <= yUnits; y++) {
       this.buildVerticalHex(x, y);
     }
   }

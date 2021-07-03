@@ -50,17 +50,17 @@ export function initializeScene(this: SceneController): void {
   this.scene.height = 250;
   this.scene.pivot.set(0.5);
 
-  const background = new Sprite(Texture.WHITE);
-  background.anchor.set(0.5);
-  background.width = 250;
-  background.height = 250;
+  this.background = new Sprite(Texture.WHITE);
+  this.background.anchor.set(0.5);
+  this.background.width = 256;
+  this.background.height = 256;
 
-  this.scene.addChild(background);
+  this.scene.addChild(this.background);
 
-  background.x = background.parent.width / 2;
-  background.y = background.parent.height / 2;
+  this.background.x = this.background.parent.width / 2;
+  this.background.y = this.background.parent.height / 2;
 
-  background.zIndex = -1;
+  this.background.zIndex = -1;
 
   this.scene.interactive = true;
   // this.scene.buttonMode = true;

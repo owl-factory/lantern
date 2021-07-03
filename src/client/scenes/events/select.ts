@@ -27,7 +27,7 @@ export function onSelectStart(event: InteractionEvent, target: Interactable, sce
 export function onSelectEnd(event: InteractionEvent, target: Interactable, sceneController: SceneController): void {
   if (!target.dragging || !target.data) { return; }
   sceneController.viewport.plugins.resume('drag');
-  const newPosition = sceneController.findNearestSnap(target.data.getLocalPosition(target.parent));
+  const newPosition = sceneController.snap(target.data.getLocalPosition(target.parent));
   target.x = newPosition.x;
   target.y = newPosition.y;
   target.dragging = false;
