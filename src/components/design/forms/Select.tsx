@@ -21,6 +21,7 @@ export interface SelectProps extends FieldProps {
   // An array of structs containing the label and value to use
   options?: (Record<string, unknown>)[];
   valueKey?: string; // The key of the value
+  style?: Record<string, string | number>;
 }
 
 /**
@@ -40,15 +41,15 @@ export function Select(props: SelectProps): JSX.Element {
   const id = props.id || props.name;
 
   const [field] = useField(props);
-
   return (
     <Form.Control
       as="select"
       disabled={props.disabled}
       multiple={props.multiple}
       size={props.size}
-      onChange={props.onChange}
       {...field}
+      onChange={props.onChange}
+      style={props.style}
     >
       {renderChildren(id, props)}
     </Form.Control>

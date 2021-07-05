@@ -291,11 +291,12 @@ export class SceneController {
   public setSceneSize(values: any, sceneController: SceneController): void {
     // TODO - balance the values
 
-    sceneController.background.height = values.height;
-    sceneController.background.width = values.width;
-    sceneController.background.x = values.height / 2; //Math.floor(sceneController.background.parent.width / 2);
-    sceneController.background.y = values.width / 2; //Math.floor(sceneController.background.parent.height / 2);
-    sceneController.gridSize = values.gridSize;
+    sceneController.background.height = parseInt(values.height);
+    sceneController.background.width = parseInt(values.width);
+    sceneController.background.x = parseInt(values.height) / 2;
+    sceneController.background.y = parseInt(values.width) / 2;
+    sceneController.gridSize = parseInt(values.gridSize);
+    sceneController.gridType = parseInt(values.gridType);
     sceneController.centerViewport();
     sceneController.buildGrid();
 

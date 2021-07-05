@@ -1,11 +1,8 @@
 import { SceneModeReadable as SCENE_MODE_READABLE, SceneMode, GridType } from "client/scenes/SceneController";
-import { Input } from "components/design";
 import { Button } from "components/style";
-import { Formik, Form as FormikForm } from "formik";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { GridSizeForm } from "./forms/size";
-import SceneBuilder from "./pages/SceneBuilder";
 
 /**
  * Renders a wrapper that surrounds a scene, applying UI for interaction with the Scene

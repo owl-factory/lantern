@@ -28,7 +28,7 @@ interface SharedColumnProps {
 export interface FieldProps extends SharedColumnProps {
   id?: string; // The input id
   label?: string; // The label of the inputs
-  onChange?: () => void;
+  onChange?: (event: any) => void;
 }
 
 /**
@@ -42,6 +42,7 @@ export interface CoreInputProps extends FieldProps {
   placeholder?: string; // A placeholder value for when the input is empty
 
   size?: "sm" | "lg"; // The bootstrap size of the input
+  style?: Record<string, string | number>;
 }
 
 /**
