@@ -9,7 +9,6 @@ import { InteractionData, InteractionEvent, Point, Sprite } from "pixi.js";
 import * as events from "./events";
 import * as grid from "./grid";
 import * as initialize from "./initialize";
-import * as size from "./size";
 import * as snap from "./snap";
 
 /**
@@ -87,7 +86,7 @@ export class SceneController {
   public mode: SceneMode;
 
   protected gridType: GridType = GridType.None;
-  protected gridSize = 0;
+  public gridSize = 0;
 
   /**
    * Creates a new, empty map controller.
@@ -262,6 +261,8 @@ export class SceneController {
   protected buildHorizontalHex = grid.buildHorizontalHex;
   protected buildVerticalHex = grid.buildVerticalHex;
   protected buildSquareGrid = grid.buildSquareGrid;
+  public static calculateGridCount = grid.calculateGridCount;
+  public static calculateGridToPixels = grid.calculateGridToPixels;
   public getGridTypeReadable = grid.getGridTypeReadable;
   public setGridType = grid.setGridType;
 
@@ -270,23 +271,6 @@ export class SceneController {
   protected initializeViewport = initialize.initializeViewport;
   protected initializeScene = initialize.initializeScene;
   protected initializeGrid = initialize.initializeGrid;
-
-  // SIZING
-  public getMapHeight = size.getMapHeight;
-  public getMapWidth = size.getMapWidth;
-  public getMapUnitHeight = size.getMapUnitHeight;
-  public getMapUnitWidth = size.getMapUnitWidth;
-  public getMapUnit = size.getMapUnit;
-
-  public setMapHeight = size.setMapHeight;
-  public setMapWidth = size.setMapWidth;
-  public setMapUnitHeight = size.setMapUnitHeight;
-  public setMapUnitWidth = size.setMapUnitWidth;
-  public setMapUnit = size.setMapUnit;
-
-  protected pixelsToUnit = size.pixelsToUnit;
-  protected pixelsToNearestUnit = size.pixelsToNearestUnit;
-  protected unitToPixels = size.unitToPixels;
 
   public setSceneSize(values: any, sceneController: SceneController): void {
     // TODO - balance the values
@@ -305,6 +289,4 @@ export class SceneController {
   // SNAP
   public snap = snap.snap;
 
-  // TODO - delete/rename this
-  protected setDefaultMap = size.setDefaultMap;
 }

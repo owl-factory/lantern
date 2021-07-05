@@ -1,8 +1,8 @@
-import { SceneModeReadable as SCENE_MODE_READABLE, SceneMode, GridType } from "client/scenes/SceneController";
+import { SceneModeReadable as SCENE_MODE_READABLE, SceneMode } from "client/scenes/SceneController";
 import { Button } from "components/style";
 import { observer } from "mobx-react-lite";
 import React from "react";
-import { GridSizeForm } from "./forms/size";
+import { GridForm } from "./forms/grid";
 
 /**
  * Renders a wrapper that surrounds a scene, applying UI for interaction with the Scene
@@ -28,7 +28,7 @@ export const SceneBuilderOverlay = observer(({ children, sceneController }: any)
         <Button className="sm" onClick={addSprite}>Add Image</Button>
       </div>
       {children}
-      <GridSizeForm sceneController={sceneController}/>
+      <GridForm sceneController={sceneController}/>
     </div>
   );
 });
