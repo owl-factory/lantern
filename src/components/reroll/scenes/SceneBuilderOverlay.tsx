@@ -1,8 +1,12 @@
-import { SceneMode, SceneModeReadable as SCENE_MODE_READABLE } from "client/scenes/SceneController";
+import { SceneModeReadable as SCENE_MODE_READABLE, SceneMode } from "client/scenes/SceneController";
 import { Button } from "components/style";
 import { observer } from "mobx-react-lite";
 import React from "react";
+import { GridForm } from "./forms/grid";
 
+/**
+ * Renders a wrapper that surrounds a scene, applying UI for interaction with the Scene
+ */
 export const SceneBuilderOverlay = observer(({ children, sceneController }: any): JSX.Element => {
   function addSprite() {
     sceneController.createSprite(
@@ -24,6 +28,7 @@ export const SceneBuilderOverlay = observer(({ children, sceneController }: any)
         <Button className="sm" onClick={addSprite}>Add Image</Button>
       </div>
       {children}
+      <GridForm sceneController={sceneController}/>
     </div>
   );
 });

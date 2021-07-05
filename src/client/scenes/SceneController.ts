@@ -6,65 +6,87 @@ import { makeAutoObservable } from "mobx";
 import { Viewport } from "pixi-viewport";
 import { InteractionData, InteractionEvent, Point, Sprite } from "pixi.js";
 
+import * as events from "./events";
 import * as grid from "./grid";
 import * as initialize from "./initialize";
-import * as size from "./size";
+import * as snap from "./snap";
 
+/**
+ * Adds several fields to a sprite's definition that are added by Pixi for interacting with them
+ */
 interface InteractiveSprite extends Sprite {
   data: InteractionData | null;
   dragging: boolean;
   dragPoint: Point;
 }
 
+/**
+ * Adds several fields to a container's definition that are added by pixi for interacting with them
+ */
 interface InteractiveContainer extends Container {
   data: InteractionData | null;
   dragging: boolean;
   dragPoint: Point;
 }
 
-export enum MapUnit {
-  Pixels,
+/**
+ * Describes the different kinds of grids that may be drawn
+ */
+export enum GridType {
+  None,
   Squares,
   VerticalHex,
   HorizontalHex
 }
 
+/**
+ * Describes the different kinds of button modes that may be used
+ */
 export enum SceneMode {
   Select,
   Pan,
 }
 
+/**
+ * The readable text for the different scene modes
+ */
 export const SceneModeReadable: string[] = [
   "Select",
   "Pan",
 ];
 
+/**
+ * The buttons to be used for selecting the scene modes (not implemented)
+ */
 export const SceneModeButtons: string[] = [
   "v",
   " ",
 ];
 
-export interface MapSize {
-  height: number;
-  width: number;
-  unitHeight: number;
-  unitWidth: number;
-  unit: MapUnit;
-}
-
+/**
+ * Any interactable pixi item
+ */
 export type Interactable = InteractiveContainer | InteractiveSprite;
 
+// The default scale of the sprite.
+// TODO - remove. Things should remain their true size or be scaled automatically
 const DEFAULT_SCALE = 1.5;
 
+/**
+ * The controller for the PixiJS application for rendering a scene
+ */
 export class SceneController {
   public app: Application;
+  public background: Sprite;
   public viewport: Viewport;
   public scene: Container;
-  protected mapSize: MapSize;
 
   protected grid: Graphics;
 
   public mode: SceneMode;
+
+  protected gridType: GridType = GridType.None;
+  public gridSize = 0;
 
   /**
    * Creates a new, empty map controller.
@@ -72,24 +94,29 @@ export class SceneController {
    */
   constructor(app: Application) {
     this.app = app;
+    this.background = new Sprite();
     this.viewport = new Viewport();
     this.scene = new Container();
+    this.grid = new Graphics();
+
     this.initializeBackground();
     this.initializeViewport();
     this.initializeScene();
+    this.initializeGrid();
 
-    this.grid = new Graphics();
+    this.centerViewport();
+
     this.mode = SceneMode.Select;
 
-    this.mapSize = {
-      height: 0,
-      width: 0,
-      unitHeight: 0,
-      unitWidth: 0,
-      unit: MapUnit.Pixels,
-    };
-
     makeAutoObservable(this);
+  }
+
+  /**
+   * Centers the viewport
+   */
+  public centerViewport(): void {
+    this.viewport.x = (this.app.view.width - this.scene.width) / 2;
+    this.viewport.y = (this.app.view.height - this.scene.height) / 2;
   }
 
   /**
@@ -97,6 +124,10 @@ export class SceneController {
    */
   public getApp(): Application {
     return this.app;
+  }
+
+  public getGridType(): GridType {
+    return this.gridType;
   }
 
   /**
@@ -149,11 +180,19 @@ export class SceneController {
 
     this.scene.addChild(sprite);
 
-    sprite
-      .on("pointerdown", (event) => this.onPointerDown(event, sprite as InteractiveSprite, this))
-      .on("pointerup", (event) => this.onPointerUp(event, sprite as InteractiveSprite, this))
-      .on("pointerupoutside", (event) => this.onPointerUp(event, sprite as InteractiveSprite, this))
-      .on("pointermove", (event) => this.onPointerMove(event, sprite as InteractiveSprite, this));
+    this.subscribe(sprite as Interactable);
+  }
+
+  /**
+   * Subscribes the given target to standard events
+   * @param target The target to subscribe events to
+   */
+  protected subscribe(target: Interactable): void {
+    target
+      .on("pointerdown", (event) => this.onPointerDown(event, target, this))
+      .on("pointerup", (event) => this.onPointerUp(event, target, this))
+      .on("pointerupoutside", (event) => this.onPointerUp(event, target, this))
+      .on("pointermove", (event) => this.onPointerMove(event, target, this));
   }
 
   /**
@@ -203,92 +242,17 @@ export class SceneController {
     }
   }
 
-  /**
-   * Handles the beginning of onSelect
-   * @param event The event triggering the onSelect action
-   * @param target The target sprite or container to interact with
-   * @param sceneController The scene, as `this` is unavailable
-   */
-  protected onSelectStart(event: InteractionEvent, target: Interactable, sceneController: SceneController): void {
-    if (target === sceneController.scene) { return; }
-    this.viewport.plugins.pause('drag');
+  
 
-    target.dragging = true;
-    target.data = event.data;
-    target.dragPoint = event.data.getLocalPosition(target.parent);
-    target.dragPoint.x -= target.x;
-    target.dragPoint.y -= target.y;
-  }
+  // EVENTS
+  protected onPanStart = events.pan.onPanStart;
+  protected onPanEnd = events.pan.onPanEnd;
+  protected onPanMove = events.pan.onPanMove;
 
-  /**
-   * Handles the end of onSelect
-   * @param event The event triggering the onSelect action's end
-   * @param target The target sprite or container to interact with
-   * @param sceneController The scene, as `this` is unavailable
-   */
-  protected onSelectEnd(event: InteractionEvent, target: Interactable, sceneController: SceneController): void {
-    if (!target.dragging || !target.data) { return; }
-    this.viewport.plugins.resume('drag');
+  protected onSelectStart = events.select.onSelectStart;
+  protected onSelectEnd = events.select.onSelectEnd;
+  protected onSelectMove = events.select.onSelectMove;
 
-    target.dragging = false;
-    target.data = null;
-    return;
-  }
-
-  /**
-   * Handles the movement of onSelect
-   * @param event The event triggering the onSelect movement
-   * @param target The target sprite or container to interact with
-   * @param sceneController The scene, as `this` is unavailable
-   */
-  protected onSelectMove(event: InteractionEvent, target: Interactable, sceneController: SceneController): void {
-    if (!target.dragging || !target.data) { return; }
-    const newPosition = target.data.getLocalPosition(target.parent);
-    target.x = newPosition.x;
-    target.y = newPosition.y;
-    return;
-  }
-
-  /**
-   * Handles the beginning of onPan
-   * @param event The event triggering the onPan action
-   * @param target The target sprite or container to interact with
-   * @param sceneController The scene, as `this` is unavailable
-   */
-  protected onPanStart(event: InteractionEvent, target: Interactable, sceneController: SceneController): void {
-    const scene = sceneController.scene as InteractiveContainer;
-    scene.dragging = true;
-    scene.data = event.data;
-    return;
-  }
-
-  /**
-   * Handles the end of onPan
-   * @param event The event triggering the onPan action's end
-   * @param target The target sprite or container to interact with
-   * @param sceneController The scene, as `this` is unavailable
-   */
-  protected onPanEnd(event: InteractionEvent, target: Interactable, sceneController: SceneController): void {
-    const scene = sceneController.scene as InteractiveContainer;
-    scene.dragging = false;
-    scene.data = null;
-    return;
-  }
-
-  /**
-   * Handles the movement of onPan
-   * @param event The event triggering the onPan action
-   * @param target The target sprite or container to interact with
-   * @param sceneController The scene, as `this` is unavailable
-   */
-  protected onPanMove(event: InteractionEvent, target: Interactable, sceneController: SceneController): void {
-    const scene = sceneController.scene as InteractiveContainer;
-    if (!scene.dragging || !scene.data) { return; }
-    const newPosition = scene.data.getLocalPosition(scene.parent);
-    scene.x = newPosition.x;
-    scene.y = newPosition.y;
-    return;
-  }
 
   // GRID BUILDING
   protected buildGrid = grid.buildGrid;
@@ -297,29 +261,32 @@ export class SceneController {
   protected buildHorizontalHex = grid.buildHorizontalHex;
   protected buildVerticalHex = grid.buildVerticalHex;
   protected buildSquareGrid = grid.buildSquareGrid;
+  public static calculateGridCount = grid.calculateGridCount;
+  public static calculateGridToPixels = grid.calculateGridToPixels;
+  public getGridTypeReadable = grid.getGridTypeReadable;
+  public setGridType = grid.setGridType;
 
   // INITIALIZE
   protected initializeBackground = initialize.initializeBackground;
   protected initializeViewport = initialize.initializeViewport;
   protected initializeScene = initialize.initializeScene;
+  protected initializeGrid = initialize.initializeGrid;
 
-  // SIZING
-  public getMapHeight = size.getMapHeight;
-  public getMapWidth = size.getMapWidth;
-  public getMapUnitHeight = size.getMapUnitHeight;
-  public getMapUnitWidth = size.getMapUnitWidth;
-  public getMapUnit = size.getMapUnit;
+  public setSceneSize(values: any, sceneController: SceneController): void {
+    // TODO - balance the values
 
-  public setMapHeight = size.setMapHeight;
-  public setMapWidth = size.setMapWidth;
-  public setMapUnitHeight = size.setMapUnitHeight;
-  public setMapUnitWidth = size.setMapUnitWidth;
-  public setMapUnit = size.setMapUnit;
+    sceneController.background.height = parseInt(values.height);
+    sceneController.background.width = parseInt(values.width);
+    sceneController.background.x = 0;
+    sceneController.background.y = 0;
+    sceneController.gridSize = parseInt(values.gridSize);
+    sceneController.gridType = parseInt(values.gridType);
+    sceneController.centerViewport();
+    sceneController.buildGrid();
 
-  protected pixelsToUnit = size.pixelsToUnit;
-  protected pixelsToNearestUnit = size.pixelsToNearestUnit;
-  protected unitToPixels = size.unitToPixels;
+  }
 
-  // TODO - delete/rename this
-  protected setDefaultMap = size.setDefaultMap;
+  // SNAP
+  public snap = snap.snap;
+
 }

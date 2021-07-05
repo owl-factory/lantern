@@ -1,6 +1,15 @@
+import { SceneController } from "client/scenes/SceneController";
 import React from "react";
 
-export function SceneRenderer({ sceneController }: any): JSX.Element {
+interface SceneRendererProps {
+  sceneController: SceneController;
+}
+
+/**
+ * Renders the scene into a div in a React-friendly way
+ * @param sceneController The controller for the current scene
+ */
+export function SceneRenderer({ sceneController }: SceneRendererProps): JSX.Element {
   const ref = React.useRef(null);
 
   React.useEffect(() => {
