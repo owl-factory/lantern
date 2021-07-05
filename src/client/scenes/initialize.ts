@@ -51,14 +51,14 @@ export function initializeScene(this: SceneController): void {
   this.scene.pivot.set(0.5);
 
   this.background = new Sprite(Texture.WHITE);
-  this.background.anchor.set(0.5);
+  this.background.anchor.set(0);
   this.background.width = 256;
   this.background.height = 256;
 
   this.scene.addChild(this.background);
 
-  this.background.x = this.background.parent.width / 2;
-  this.background.y = this.background.parent.height / 2;
+  this.background.x = 0;
+  this.background.y = 0;
 
   this.background.zIndex = -1;
 

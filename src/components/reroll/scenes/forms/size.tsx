@@ -25,6 +25,7 @@ const GRID_SIZE_OPTIONS = [
 /**
  * Calculates the number of grids in a given direction for the given dimensions.
  * Returns the number of grids, rounded up to the nearest whole number
+ * TODO - move outside of this page
  * @param pixelSize The size in pixels of the scene
  * @param gridSize The size of the grid tile
  * @param gridType The type of grid
@@ -49,22 +50,53 @@ function calculateGridCount(
     (gridType === GridType.VerticalHex && direction === "vertical") ||
     (gridType === GridType.HorizontalHex && direction === "horizontal")
   ) {
-    return Math.ceil(((pixelSize * 0.866) / (gridSize * 0.75)) - 0.25);
+    const apothem = gridSize / 0.866; // The length of a hex tile between two opposite points
+    const res = (pixelSize - (apothem * 0.25)) / (apothem * 0.75);
+    return Math.ceil(res);
   } else {
     return Math.ceil(pixelSize / (gridSize));
+  }
+}
+
+function calculateGridToPixels(
+  gridSize: number,
+  gridCount: number,
+  gridType: GridType,
+  direction: "horizontal" | "vertical"
+) {
+  gridType = parseInt(gridType as unknown as string);
+
+  // TODO - examine this case to see what is passed in
+  if (gridType === GridType.None) {
+    return gridCount * gridSize;
+  }
+
+  if (gridType === GridType.Squares) {
+    return gridCount * gridSize;
+  }
+
+  if (
+    (gridType === GridType.VerticalHex && direction === "vertical") ||
+    (gridType === GridType.HorizontalHex && direction === "horizontal")
+  ) {
+    const apothem = gridSize / 0.866; // The length of a hex tile between two opposite points
+    const res = apothem * ((0.75 * gridCount) + 0.25);
+    return Math.ceil(res);
+  } else {
+    return ((gridCount + 0.5) * gridSize);
   }
 }
 
 function updateGridHeight(formikProps: any, pixelHeight: number, gridSize: number, gridType: GridType) {
   const height = calculateGridCount(pixelHeight, gridSize, gridType, "vertical");
   formikProps.setFieldValue("gridHeight", height);
-  formikProps.setFieldValue("expectedHeight", height * gridSize);
+  formikProps.setFieldValue("expectedHeight", calculateGridToPixels(gridSize, height, gridType, "vertical"));
 }
 
 function updateGridWidth(formikProps: any, pixelWidth: number, gridSize: number, gridType: GridType) {
   const width = calculateGridCount(pixelWidth, gridSize, gridType, "horizontal");
   formikProps.setFieldValue("gridWidth", width);
-  formikProps.setFieldValue("expectedWidth", width * gridSize);
+  formikProps.setFieldValue("expectedWidth", calculateGridToPixels(gridSize, width, gridType, "horizontal"));
 }
 
 function onGridTypeChange(e: any, formikProps: any) {
@@ -101,14 +133,26 @@ function onWidthChange(e: any, formikProps: any) {
 }
 
 function onHeightGridChange(e: any, formikProps: any) {
-  formikProps.setFieldValue("expectedHeight", e.currentTarget.value * formikProps.values.gridSize);
-  formikProps.setFieldValue("height", e.currentTarget.value * formikProps.values.gridSize);
+  const expectedHeight = calculateGridToPixels(
+    formikProps.values.gridSize,
+    e.currentTarget.value,
+    formikProps.values.gridType,
+    "vertical"
+  );
+  formikProps.setFieldValue("expectedHeight", expectedHeight);
+  formikProps.setFieldValue("height", expectedHeight);
   formikProps.handleChange(e);
 }
 
 function onWidthGridChange(e: any, formikProps: any) {
-  formikProps.setFieldValue("expectedWidth", e.currentTarget.value * formikProps.values.gridSize);
-  formikProps.setFieldValue("width", e.currentTarget.value * formikProps.values.gridSize);
+  const expectedWidth = calculateGridToPixels(
+    formikProps.values.gridSize,
+    e.currentTarget.value,
+    formikProps.values.gridType,
+    "horizontal"
+  );
+  formikProps.setFieldValue("expectedWidth", expectedWidth);
+  formikProps.setFieldValue("width", expectedWidth);
   formikProps.handleChange(e);
 }
 
@@ -198,9 +242,9 @@ function WidthGridInput({ formikProps }: any): JSX.Element {
 function HeightPixelsInput({ formikProps }: any): JSX.Element {
   return (
     <span>
-       {( formikProps.values.width !== formikProps.values.expectedWidth) ?
+       {( formikProps.values.height !== formikProps.values.expectedHeight) ?
         <span>
-          <Input name="expectedWidth" disabled={true} style={{ display: "inline", width: DEFAULT_PIXEL_INPUT_WIDTH }}/>
+          <Input name="expectedHeight" disabled={true} style={{ display: "inline", width: DEFAULT_PIXEL_INPUT_WIDTH }}/>
           <Button type="button" onClick={() => setActualHeight(formikProps)}>=&gt;</Button>
         </span> : null
       }
@@ -275,7 +319,7 @@ function HorizontalHexGridForm({ formikProps }: any): JSX.Element {
       Width: <WidthGridInput formikProps={formikProps}/>
       hexes &times; { formikProps.values.gridSize }px = <WidthPixelsInput formikProps={formikProps}/><br/>
       Height: <HeightGridInput formikProps={formikProps}/>
-      hexes &times; { formikProps.values.gridSize}px &times; 0.866 = <HeightPixelsInput formikProps={formikProps}/>
+      hexes &times; { formikProps.values.gridSize}px = <HeightPixelsInput formikProps={formikProps}/>
     </div>
   );
 }
@@ -298,6 +342,8 @@ export function GridSizeForm({ sceneController }: any): JSX.Element {
         initialValues={{
           width: sceneController.scene.children[0].width,
           height: sceneController.scene.children[0].height,
+          expectedWidth: sceneController.scene.children[0].width,
+          expectedHeight: sceneController.scene.children[0].height,
           gridWidth: calculateGridCount(
             sceneController.scene.children[0].width,
             sceneController.gridSize,

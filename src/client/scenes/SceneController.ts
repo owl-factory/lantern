@@ -293,8 +293,8 @@ export class SceneController {
 
     sceneController.background.height = parseInt(values.height);
     sceneController.background.width = parseInt(values.width);
-    sceneController.background.x = parseInt(values.height) / 2;
-    sceneController.background.y = parseInt(values.width) / 2;
+    sceneController.background.x = 0;
+    sceneController.background.y = 0;
     sceneController.gridSize = parseInt(values.gridSize);
     sceneController.gridType = parseInt(values.gridType);
     sceneController.centerViewport();
