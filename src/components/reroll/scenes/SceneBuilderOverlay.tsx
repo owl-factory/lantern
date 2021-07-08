@@ -1,7 +1,9 @@
 import { SceneModeReadable as SCENE_MODE_READABLE, SceneMode } from "client/scenes/SceneController";
 import { Button } from "components/style";
+import { Drawer, DrawerItem } from "components/style/drawer/Drawer";
 import { observer } from "mobx-react-lite";
 import React from "react";
+import { MdGridOn, MdImage } from "react-icons/md";
 import { GridForm } from "./forms/grid";
 
 /**
@@ -18,6 +20,10 @@ export const SceneBuilderOverlay = observer(({ children, sceneController }: any)
 
   return (
     <div>
+      <Drawer >
+        <DrawerItem name="Grid Sizing" Icon={MdGridOn}><GridForm sceneController={sceneController}/></DrawerItem>
+        <DrawerItem name="Images" Icon={MdImage}>Images!~~</DrawerItem>
+      </Drawer>
       <div>
         <Button onClick={() => sceneController.setMode(SceneMode.Select) }>Select</Button>
         <Button onClick={() => sceneController.setMode(SceneMode.Pan) }>Pan</Button>
@@ -28,7 +34,7 @@ export const SceneBuilderOverlay = observer(({ children, sceneController }: any)
         <Button className="sm" onClick={addSprite}>Add Image</Button>
       </div>
       {children}
-      <GridForm sceneController={sceneController}/>
+
     </div>
   );
 });

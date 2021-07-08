@@ -1,0 +1,60 @@
+.drawer {
+  display: block;
+  position: fixed;
+  right: 0;
+
+  height: 92.5%;
+
+  .tabContainer {
+    position: absolute;
+    left: -15rem;
+    width: 15rem;
+    overflow: hidden;
+    height: 100%;
+    padding-top: 1.5rem;
+
+    .tab {
+      position: relative;
+      left: 12.5rem;
+
+      padding: 0.5rem;
+      padding-left: 1rem;
+
+      border-style: solid;
+      border-width: thin;
+      border-color: lightblue;
+
+      &:hover {
+        left: 0rem;
+      }
+
+      &.active {
+        border-color: blue;
+      }
+      
+
+      .tabIcon {
+        padding-right: 1.5rem;
+      }
+    }
+  }
+
+  .contentContainer {
+    display: none;
+    padding: 0.75rem;
+    background-color: #EEE;
+  
+    border-style: solid;
+    border-width: thin;
+    
+    min-width: 15rem;
+    max-width: 20rem;
+    width: 20rem;
+    height: 92.5vh;
+  
+    &.open {
+      display: block;
+    }
+  }  
+}
+

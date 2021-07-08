@@ -13,6 +13,9 @@ const app = new Application({
   antialias: true,
 });
 
+/**
+ * The page for rendering a standalone scene builder
+ */
 export const SceneBuilder = observer(() => {
   const [ sceneController ] = React.useState(new SceneController(app));
   const [ imageManager ] = React.useState(new ImageManager());
