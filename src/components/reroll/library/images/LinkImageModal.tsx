@@ -1,19 +1,19 @@
-import { ImageManager } from "client/library";
+import { ImageController } from "client/library";
 import { Input, Modal, Tooltip } from "components/design";
-import { Button, Col, Row } from "components/style";
+import { Button } from "components/style";
 import { Formik, Form as FormikForm } from "formik";
 import React from "react";
 import { Card } from "react-bootstrap";
 
 interface LinkImageModalProps {
-  imageManager: ImageManager;
+  imageController: ImageController;
   modal: boolean;
   handleClose: () => void;
 }
 
-export function LinkImageModal({ imageManager, handleClose, modal }: LinkImageModalProps) {
+export function LinkImageModal({ imageController, handleClose, modal }: LinkImageModalProps) {
   function saveLinkedImage(values: any) {
-    imageManager.saveLinkedImage(values);
+    imageController.saveLinkedImage(values);
     handleClose();
   }
 

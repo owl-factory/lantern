@@ -2,9 +2,11 @@ import { Application } from "@pixi/app";
 import { Texture } from "@pixi/core";
 import { Container } from "@pixi/display";
 import { Graphics } from "@pixi/graphics";
+import { privateDecrypt, randomUUID } from "crypto";
 import { makeAutoObservable } from "mobx";
 import { Viewport } from "pixi-viewport";
 import { InteractionData, InteractionEvent, Point, Sprite } from "pixi.js";
+import { ImageDocument } from "types/documents";
 
 import * as events from "./events";
 import * as grid from "./grid";
@@ -72,6 +74,11 @@ export type Interactable = InteractiveContainer | InteractiveSprite;
 // TODO - remove. Things should remain their true size or be scaled automatically
 const DEFAULT_SCALE = 1.5;
 
+export interface Prop extends InteractiveSprite {
+  key: string;
+  image: ImageDocument;
+}
+
 /**
  * The controller for the PixiJS application for rendering a scene
  */
@@ -80,6 +87,8 @@ export class SceneController {
   public background: Sprite;
   public viewport: Viewport;
   public scene: Container;
+
+  protected props: Record<string, Prop> = {};
 
   protected grid: Graphics;
 
@@ -160,6 +169,23 @@ export class SceneController {
     }
   }
 
+  public addProp(sceneController: SceneController, image: ImageDocument, x?: number, y?: number): void {
+    const prop = Sprite.from(image.src as string);
+    (prop as Prop).image = image;
+    // TODO - make unique!
+    (prop as Prop).key = (new Date()).toString();
+
+    prop.interactive = true;
+    prop.buttonMode = true;
+
+    prop.anchor.set(0.5);
+    prop.x = x || sceneController.scene.x + sceneController.scene.width / 2;
+    prop.y = y || sceneController.scene.y + sceneController.scene.height / 2;
+    sceneController.subscribe(prop as InteractiveSprite);
+    sceneController.scene.addChild(prop);
+    sceneController.props[(prop as Prop).key] = prop as Prop;
+  }
+
   /**
    * Creates a new sprite from a source.
    * TODO - replace with createProp & createActor functions
@@ -187,7 +213,7 @@ export class SceneController {
    * Subscribes the given target to standard events
    * @param target The target to subscribe events to
    */
-  protected subscribe(target: Interactable): void {
+  public subscribe(target: Interactable): void {
     target
       .on("pointerdown", (event) => this.onPointerDown(event, target, this))
       .on("pointerup", (event) => this.onPointerUp(event, target, this))

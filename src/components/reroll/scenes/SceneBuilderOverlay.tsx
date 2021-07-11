@@ -4,12 +4,14 @@ import { Drawer, DrawerItem } from "components/style/drawer/Drawer";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { MdGridOn, MdImage } from "react-icons/md";
+import { ImageDocument } from "types/documents";
+import { ImageList, ListFormat } from "../library";
 import { GridForm } from "./forms/grid";
 
 /**
  * Renders a wrapper that surrounds a scene, applying UI for interaction with the Scene
  */
-export const SceneBuilderOverlay = observer(({ children, sceneController }: any): JSX.Element => {
+export const SceneBuilderOverlay = observer(({ children, imageController, sceneController }: any): JSX.Element => {
   function addSprite() {
     sceneController.createSprite(
       "http://192.168.0.195:3000/dev/images/sprites/waals_brodnen_death_sprite.png",
@@ -22,7 +24,12 @@ export const SceneBuilderOverlay = observer(({ children, sceneController }: any)
     <div>
       <Drawer >
         <DrawerItem name="Grid Sizing" Icon={MdGridOn}><GridForm sceneController={sceneController}/></DrawerItem>
-        <DrawerItem name="Images" Icon={MdImage}>Images!~~</DrawerItem>
+        <DrawerItem name="Images" Icon={MdImage}>
+          <ImageList
+          imageController={imageController}
+          listFormat={ListFormat.Icons}
+          onClick={(image: ImageDocument) => sceneController.addProp(sceneController, image)}/>
+        </DrawerItem>
       </Drawer>
       <div>
         <Button onClick={() => sceneController.setMode(SceneMode.Select) }>Select</Button>
@@ -34,7 +41,6 @@ export const SceneBuilderOverlay = observer(({ children, sceneController }: any)
         <Button className="sm" onClick={addSprite}>Add Image</Button>
       </div>
       {children}
-
     </div>
   );
 });

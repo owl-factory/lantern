@@ -17,7 +17,7 @@ async function getImages(this: HTTPHandler, req: NextApiRequest) {
 }
 
 /**
- * Creates a single new image. 
+ * Creates a single new image.
  * @param this The Handler class calling this function
  * @param req The request to the server. In body, contains an image object and method. 
  */

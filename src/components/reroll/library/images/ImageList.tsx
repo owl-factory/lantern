@@ -1,4 +1,5 @@
 import { Col, Row } from "components/style";
+import { observer } from "mobx-react-lite";
 import React from "react";
 import { Card } from "react-bootstrap";
 import { ImageDocument } from "types/documents";
@@ -40,19 +41,21 @@ function ImageThumbnail({ image, onClick }: ImageThumbnailProps) {
   );
 }
 
-export function ImageList(props: any): JSX.Element {
+export const ImageList = observer((props: any): JSX.Element => {
   const imageThumbnails: JSX.Element[] = [];
 
-  props.imageManager.imageList.forEach((imageID: string) => {
-    const image = props.imageManager.images[imageID];
+  const onClick = props.onClick === undefined ? (() => {return;}) : props.onClick;
+
+  props.imageController.imageList.forEach((imageID: string) => {
+    const image = props.imageController.images[imageID];
     if (!image) { return; }
     switch(props.listFormat) {
       case ListFormat.Thumbnails:
       case undefined:
-        imageThumbnails.push(<ImageThumbnail key={image.id} image={image} onClick={props.onClick}/>);
+        imageThumbnails.push(<ImageThumbnail key={image.id} image={image} onClick={onClick}/>);
         break;
       case ListFormat.Icons:
-        imageThumbnails.push(<ImageIcon key={image.id} image={image} onClick={props.onClick}/>);
+        imageThumbnails.push(<ImageIcon key={image.id} image={image} onClick={onClick}/>);
         break;
     }
   });
@@ -61,4 +64,4 @@ export function ImageList(props: any): JSX.Element {
       {imageThumbnails}
     </Row>
   );
-}
+});

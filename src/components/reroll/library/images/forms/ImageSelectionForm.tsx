@@ -1,10 +1,7 @@
 import { observer } from "mobx-react-lite";
-import React, { Dispatch } from "react";
-import { ImageList, LinkImageForm, ListFormat } from "components/reroll/library/images";
-import { rest } from "utilities/request";
-import { ImageDocument, UserDocument } from "types/documents";
-import { UploadImageForm } from "./UploadImage";
-import { ImageManager } from "client/library";
+import React from "react";
+import { ImageDocument } from "types/documents";
+import { ImageController } from "client/library";
 import { ImageForm } from "./ImageForm";
 
 const tabs = [
@@ -14,18 +11,18 @@ const tabs = [
 ];
 
 interface ImageSelectionFormProps {
-  imageManager: ImageManager;
+  imageController: ImageController;
   onSubmit: (image: ImageDocument, method: string) => Promise<unknown>;
   onSave: (result: unknown) => void;
 }
 
 /**
  * Renders a form to select an image
- * @param imageManager The image manager containing and managing all of the images
+ * @param imageController The image manager containing and managing all of the images
  * @param setUser The function to update the user when a new profile image is selected
  * @param onSave The function to run after the profile image is changed
  */
-export const ImageSelectionForm = observer(({imageManager, onSubmit, onSave}: ImageSelectionFormProps) => {
+export const ImageSelectionForm = observer(({imageController, onSubmit, onSave}: ImageSelectionFormProps) => {
 
   /**
    * Submits an image selection to the server
@@ -45,7 +42,7 @@ export const ImageSelectionForm = observer(({imageManager, onSubmit, onSave}: Im
   return (
     <ImageForm
       defaultTab="link"
-      imageManager={imageManager}
+      imageController={imageController}
       onSubmit={submit}
       tabs={tabs}
     />
