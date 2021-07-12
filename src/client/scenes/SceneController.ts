@@ -12,6 +12,7 @@ import * as events from "./events";
 import * as grid from "./grid";
 import * as initialize from "./initialize";
 import * as snap from "./snap";
+import { subscribeProp } from "./subscribe";
 
 /**
  * Adds several fields to a sprite's definition that are added by Pixi for interacting with them
@@ -20,6 +21,10 @@ interface InteractiveSprite extends Sprite {
   data: InteractionData | null;
   dragging: boolean;
   dragPoint: Point;
+  originalPosition: {
+    x: number;
+    y: number;
+  }
 }
 
 /**
@@ -29,6 +34,10 @@ interface InteractiveContainer extends Container {
   data: InteractionData | null;
   dragging: boolean;
   dragPoint: Point;
+  originalPosition: {
+    x: number;
+    y: number;
+  }
 }
 
 /**
@@ -96,6 +105,8 @@ export class SceneController {
 
   protected gridType: GridType = GridType.None;
   public gridSize = 0;
+
+  public selected: Prop[] = [];
 
   /**
    * Creates a new, empty map controller.
@@ -181,7 +192,7 @@ export class SceneController {
     prop.anchor.set(0.5);
     prop.x = x || sceneController.scene.x + sceneController.scene.width / 2;
     prop.y = y || sceneController.scene.y + sceneController.scene.height / 2;
-    sceneController.subscribe(prop as InteractiveSprite);
+    subscribeProp(prop as Prop, sceneController);
     sceneController.scene.addChild(prop);
     sceneController.props[(prop as Prop).key] = prop as Prop;
   }
@@ -267,8 +278,6 @@ export class SceneController {
         return this.onPanMove(event, target, sceneController);
     }
   }
-
-  
 
   // EVENTS
   protected onPanStart = events.pan.onPanStart;

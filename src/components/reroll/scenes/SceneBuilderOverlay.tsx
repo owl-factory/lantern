@@ -3,7 +3,7 @@ import { Button } from "components/style";
 import { Drawer, DrawerItem } from "components/style/drawer/Drawer";
 import { observer } from "mobx-react-lite";
 import React from "react";
-import { MdGridOn, MdImage } from "react-icons/md";
+import { MdGridOn, MdImage, MdSupervisorAccount } from "react-icons/md";
 import { ImageDocument } from "types/documents";
 import { ImageList, ListFormat } from "../library";
 import { GridForm } from "./forms/grid";
@@ -29,6 +29,9 @@ export const SceneBuilderOverlay = observer(({ children, imageController, sceneC
           imageController={imageController}
           listFormat={ListFormat.Icons}
           onClick={(image: ImageDocument) => sceneController.addProp(sceneController, image)}/>
+        </DrawerItem>
+        <DrawerItem name="Characters" Icon={MdSupervisorAccount}>
+          Nothing yet
         </DrawerItem>
       </Drawer>
       <div>

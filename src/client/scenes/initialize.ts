@@ -62,7 +62,7 @@ export function initializeScene(this: SceneController): void {
 
   this.background.zIndex = -1;
 
-  this.scene.interactive = true;
+  // this.scene.interactive = true;
   // this.scene.buttonMode = true;
 
   this.subscribe(this.scene as Interactable);
