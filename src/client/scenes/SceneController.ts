@@ -78,10 +78,6 @@ export const SceneModeButtons: string[] = [
  */
 export type Interactable = InteractiveContainer | InteractiveSprite;
 
-// The default scale of the sprite.
-// TODO - remove. Things should remain their true size or be scaled automatically
-const DEFAULT_SCALE = 1.5;
-
 export interface Prop extends InteractiveSprite {
   key: string;
   image: ImageDocument;
@@ -105,9 +101,6 @@ export class SceneController {
   protected gridType: GridType = GridType.None;
   public gridSize = 0;
 
-  public selected: Prop[] = [];
-  public selectBox: Graphics;
-
   /**
    * Creates a new, empty map controller.
    * @param app The PixiJS Application used for rendering out this map
@@ -118,14 +111,11 @@ export class SceneController {
     this.viewport = new Viewport();
     this.scene = new Container();
     this.grid = new Graphics();
-    this.selectBox = new Graphics();
 
     this.initializeBackground();
     this.initializeViewport();
     this.initializeScene();
     this.initializeGrid();
-
-    this.scene.addChild(this.selectBox);
 
     this.centerViewport();
 
@@ -208,19 +198,7 @@ export class SceneController {
    * @param y The y coordinate of the new sprite
    */
   public async createSprite(textureSource: string, x: number, y: number): Promise<void> {
-    const texture = await Texture.fromURL(textureSource);
-
-    const sprite = Sprite.from(texture);
-    sprite.interactive = true;
-    sprite.buttonMode = true;
-    sprite.anchor.set(0.5);
-    sprite.x = x;
-    sprite.y = y;
-    sprite.scale.set(DEFAULT_SCALE);
-
-    this.scene.addChild(sprite);
-
-    this.subscribe(sprite as Interactable);
+    this.addProp(this, { src: textureSource }, x, y);
   }
 
   /**

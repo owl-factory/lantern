@@ -22,9 +22,6 @@ export function onPointerDown(event: InteractionEvent, prop: Prop, sceneControll
   prop.dragging = true;
   prop.data = event.data;
 
-  sceneController.selected = [prop];
-  refreshSelected(sceneController);
-
   // Prevents an issue where the icon snaps to center when attempting to move it
   setClickedAnchor(prop, event);
 }
