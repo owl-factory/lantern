@@ -2,7 +2,6 @@ import { Application } from "@pixi/app";
 import { Texture } from "@pixi/core";
 import { Container } from "@pixi/display";
 import { Graphics } from "@pixi/graphics";
-import { privateDecrypt, randomUUID } from "crypto";
 import { makeAutoObservable } from "mobx";
 import { Viewport } from "pixi-viewport";
 import { InteractionData, InteractionEvent, Point, Sprite } from "pixi.js";
@@ -107,6 +106,7 @@ export class SceneController {
   public gridSize = 0;
 
   public selected: Prop[] = [];
+  public selectBox: Graphics;
 
   /**
    * Creates a new, empty map controller.
@@ -118,11 +118,14 @@ export class SceneController {
     this.viewport = new Viewport();
     this.scene = new Container();
     this.grid = new Graphics();
+    this.selectBox = new Graphics();
 
     this.initializeBackground();
     this.initializeViewport();
     this.initializeScene();
     this.initializeGrid();
+
+    this.scene.addChild(this.selectBox);
 
     this.centerViewport();
 
