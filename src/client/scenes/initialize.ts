@@ -1,7 +1,8 @@
 import { Viewport } from "pixi-viewport";
 import { Container, Sprite, Texture } from "pixi.js";
+import { GridType } from "types/enums/scene";
 import { DEFAULT_GRID_SIZE } from "./consts";
-import { GridType, Interactable, SceneController } from "./SceneController";
+import { Interactable, SceneController } from "./SceneController";
 
 /**
  * Initializes the background component of the app. This is a null space that has a basic texture

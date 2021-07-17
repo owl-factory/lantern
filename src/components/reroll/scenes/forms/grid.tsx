@@ -1,9 +1,10 @@
-import { GridType, SceneController } from "client/scenes/SceneController";
+import { SceneController } from "client/scenes/SceneController";
 import { Input } from "components/design";
 import { Button } from "components/style";
 import { Formik, Form as FormikForm, FormikProps } from "formik";
 import React from "react";
 import { Select } from "components/design/forms" ;
+import { GridType } from "types/enums/scene";
 
 // The default width of the grid count inputs
 const DEFAULT_GRID_INPUT_WIDTH="4.5em";

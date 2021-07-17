@@ -1,5 +1,6 @@
 import { Point } from "pixi.js";
-import { GridType, SceneController } from "./SceneController";
+import { GridType } from "types/enums/scene";
+import { SceneController } from "./SceneController";
 
 export function snap(this: SceneController, dropPoint: Point ): Point {
   let x, y: number;

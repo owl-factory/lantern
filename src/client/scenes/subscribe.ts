@@ -1,8 +1,9 @@
 import { InteractionEvent } from "pixi.js";
-import { Prop, SceneController } from "./SceneController";
+import { SceneController } from "./SceneController";
 import * as propEvents from "./events/props";
+import { Prop } from "types/reroll/scene";
 
-export function subscribeProp(prop: Prop, sceneController: SceneController) {
+export function subscribeProp(prop: Prop, sceneController: SceneController): void {
   prop
     .on("pointerdown", (event: InteractionEvent) => propEvents.onPointerDown(event, prop, sceneController))
     .on("pointerup", (event: InteractionEvent) => propEvents.onPointerUp(event, prop, sceneController))

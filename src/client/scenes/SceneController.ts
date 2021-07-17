@@ -6,6 +6,8 @@ import { makeAutoObservable } from "mobx";
 import { Viewport } from "pixi-viewport";
 import { InteractionData, InteractionEvent, Point, Sprite } from "pixi.js";
 import { ImageDocument } from "types/documents";
+import { GridType, SceneMode } from "types/enums/scene";
+import { Prop } from "types/reroll/scene";
 
 import * as events from "./events";
 import * as grid from "./grid";
@@ -40,48 +42,9 @@ interface InteractiveContainer extends Container {
 }
 
 /**
- * Describes the different kinds of grids that may be drawn
- */
-export enum GridType {
-  None,
-  Squares,
-  VerticalHex,
-  HorizontalHex
-}
-
-/**
- * Describes the different kinds of button modes that may be used
- */
-export enum SceneMode {
-  Select,
-  Pan,
-}
-
-/**
- * The readable text for the different scene modes
- */
-export const SceneModeReadable: string[] = [
-  "Select",
-  "Pan",
-];
-
-/**
- * The buttons to be used for selecting the scene modes (not implemented)
- */
-export const SceneModeButtons: string[] = [
-  "v",
-  " ",
-];
-
-/**
  * Any interactable pixi item
  */
 export type Interactable = InteractiveContainer | InteractiveSprite;
-
-export interface Prop extends InteractiveSprite {
-  key: string;
-  image: ImageDocument;
-}
 
 /**
  * The controller for the PixiJS application for rendering a scene

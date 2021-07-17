@@ -1,5 +1,6 @@
-import { GridType, SceneController } from "./SceneController";
+import { SceneController } from "./SceneController";
 import { COS_30 } from "./consts";
+import { GridType } from "types/enums/scene";
 
 /**
  * Calculates the number of grids in a given direction for the given dimensions.

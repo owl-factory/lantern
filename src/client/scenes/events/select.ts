@@ -1,5 +1,5 @@
-import { InteractionEvent, Point } from "pixi.js";
-import { GridType, Interactable, SceneController } from "../SceneController";
+import { InteractionEvent } from "pixi.js";
+import { Interactable, SceneController } from "../SceneController";
 
 /**
  * Handles the beginning of onSelect

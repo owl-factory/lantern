@@ -1,5 +1,6 @@
 import { Container, Graphics, InteractionEvent } from "pixi.js";
-import { Prop, SceneController } from "../SceneController";
+import { Prop } from "types/reroll/scene";
+import { SceneController } from "../SceneController";
 
 /**
  * Handles all events that occur when clicking down on a prop
