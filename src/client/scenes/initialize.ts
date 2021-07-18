@@ -75,9 +75,9 @@ export function initializeScene(this: SceneController): void {
  * Initializes a grid
  */
 export function initializeGrid(this: SceneController): void {
-  this.gridType = GridType.Squares;
-  this.gridSize = DEFAULT_GRID_SIZE;
+  this.grid.type = GridType.Squares;
+  this.grid.gridSize = DEFAULT_GRID_SIZE;
 
   this.buildGrid();
-  this.scene.addChild(this.grid);
+  this.scene.addChild(this.gridRender);
 }

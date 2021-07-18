@@ -78,7 +78,7 @@ export function calculateGridToPixels(
  * @param gridType The new grid type
  */
 export function setGridType(this: SceneController, gridType: GridType): void {
-  this.gridType = gridType;
+  this.grid.type = gridType;
   this.buildGrid();
 }
 
@@ -86,7 +86,7 @@ export function setGridType(this: SceneController, gridType: GridType): void {
  * Converts the current grid type to a readable string
  */
 export function getGridTypeReadable(this: SceneController): string {
-  switch (this.gridType) {
+  switch (this.grid.type) {
     case GridType.None:
       return "None";
     case GridType.Squares:
@@ -102,10 +102,10 @@ export function getGridTypeReadable(this: SceneController): string {
  * Builds the grid for the current scene controller
  */
 export function buildGrid(this: SceneController): void {
-  this.grid.clear();
-  this.grid.lineStyle(1, 0x555555, 1);
+  this.gridRender.clear();
+  this.gridRender.lineStyle(1, 0x555555, 1);
 
-  switch (this.gridType) {
+  switch (this.grid.type) {
     case GridType.Squares:
       this.buildSquareGrid();
       break;
@@ -127,8 +127,8 @@ export function buildGrid(this: SceneController): void {
  */
 export function buildHorizontalHexGrid(this: SceneController): void {
   // TODO - move line style to a different function
-  const xUnits = calculateGridCount(this.scene.width, this.gridSize, GridType.HorizontalHex, "horizontal");
-  const yUnits = calculateGridCount(this.scene.height, this.gridSize, GridType.HorizontalHex, "vertical");
+  const xUnits = calculateGridCount(this.scene.width, this.grid.gridSize, GridType.HorizontalHex, "horizontal");
+  const yUnits = calculateGridCount(this.scene.height, this.grid.gridSize, GridType.HorizontalHex, "vertical");
 
   for(let x = 0; x < xUnits; x++) {
     for(let y = 0; y < yUnits; y++) {
@@ -144,26 +144,26 @@ export function buildHorizontalHexGrid(this: SceneController): void {
  */
 export function buildHorizontalHex(this: SceneController, x: number, y: number): void {
   let yOffset = 0;
-  if (x % 2 === 1) { yOffset = 0.5 * this.gridSize; }
-  const horizontalSize = this.gridSize / COS_30;
+  if (x % 2 === 1) { yOffset = 0.5 * this.grid.gridSize; }
+  const horizontalSize = this.grid.gridSize / COS_30;
 
   const xOffset = -0.25 * horizontalSize * x;
 
-  this.grid.moveTo((x + 0.25) * horizontalSize + xOffset, (y * this.gridSize) + yOffset);
-  this.grid.lineTo((x + 0.75) * horizontalSize + xOffset, (y * this.gridSize) + yOffset);
-  this.grid.lineTo((x + 1) * horizontalSize + xOffset, ((y + 0.5) * this.gridSize) + yOffset);
-  this.grid.lineTo((x + 0.75) * horizontalSize + xOffset, ((y + 1) * this.gridSize) + yOffset);
-  this.grid.lineTo((x + 0.25) * horizontalSize + xOffset, ((y + 1) * this.gridSize) + yOffset);
-  this.grid.lineTo(x * horizontalSize + xOffset, ((y + 0.5) * this.gridSize) + yOffset);
-  this.grid.lineTo((x + 0.25) * horizontalSize + xOffset, (y * this.gridSize) + yOffset);
+  this.gridRender.moveTo((x + 0.25) * horizontalSize + xOffset, (y * this.grid.gridSize) + yOffset);
+  this.gridRender.lineTo((x + 0.75) * horizontalSize + xOffset, (y * this.grid.gridSize) + yOffset);
+  this.gridRender.lineTo((x + 1) * horizontalSize + xOffset, ((y + 0.5) * this.grid.gridSize) + yOffset);
+  this.gridRender.lineTo((x + 0.75) * horizontalSize + xOffset, ((y + 1) * this.grid.gridSize) + yOffset);
+  this.gridRender.lineTo((x + 0.25) * horizontalSize + xOffset, ((y + 1) * this.grid.gridSize) + yOffset);
+  this.gridRender.lineTo(x * horizontalSize + xOffset, ((y + 0.5) * this.grid.gridSize) + yOffset);
+  this.gridRender.lineTo((x + 0.25) * horizontalSize + xOffset, (y * this.grid.gridSize) + yOffset);
 }
 
 /**
  * Builds a vertical hex grid (hexes longest point is vertical)
  */
 export function buildVerticalHexGrid(this: SceneController): void {
-  const xUnits = calculateGridCount(this.scene.width, this.gridSize, GridType.VerticalHex, "horizontal");
-  const yUnits = calculateGridCount(this.scene.height, this.gridSize, GridType.VerticalHex, "vertical");
+  const xUnits = calculateGridCount(this.scene.width, this.grid.gridSize, GridType.VerticalHex, "horizontal");
+  const yUnits = calculateGridCount(this.scene.height, this.grid.gridSize, GridType.VerticalHex, "vertical");
 
   for(let x = 0; x < xUnits; x++) {
     for(let y = 0; y < yUnits; y++) {
@@ -179,26 +179,26 @@ export function buildVerticalHexGrid(this: SceneController): void {
  */
 export function buildVerticalHex(this: SceneController, x: number, y: number): void {
   let xOffset = 0;
-  if (y % 2 === 1) { xOffset = 0.5 * this.gridSize; }
-  const verticalSize = this.gridSize / COS_30;
+  if (y % 2 === 1) { xOffset = 0.5 * this.grid.gridSize; }
+  const verticalSize = this.grid.gridSize / COS_30;
 
   const yOffset = (-0.25 * verticalSize * y) + 0.25 * verticalSize;
 
-  this.grid.moveTo((x * this.gridSize) + xOffset, y * verticalSize + yOffset);
-  this.grid.lineTo((x * this.gridSize) + xOffset, ((y + 0.5) * verticalSize) + yOffset);
-  this.grid.lineTo(((x + 0.5) * this.gridSize) + xOffset, ((y + 0.75) * verticalSize) + yOffset);
-  this.grid.lineTo(((x + 1) * this.gridSize) + xOffset, ((y + 0.5) * verticalSize) + yOffset);
-  this.grid.lineTo(((x + 1) * this.gridSize) + xOffset, (y * verticalSize) + yOffset);
-  this.grid.lineTo(((x + 0.5) * this.gridSize) + xOffset, ((y - 0.25) * verticalSize) + yOffset);
-  this.grid.lineTo((x * this.gridSize) + xOffset, y * verticalSize + yOffset);
+  this.gridRender.moveTo((x * this.grid.gridSize) + xOffset, y * verticalSize + yOffset);
+  this.gridRender.lineTo((x * this.grid.gridSize) + xOffset, ((y + 0.5) * verticalSize) + yOffset);
+  this.gridRender.lineTo(((x + 0.5) * this.grid.gridSize) + xOffset, ((y + 0.75) * verticalSize) + yOffset);
+  this.gridRender.lineTo(((x + 1) * this.grid.gridSize) + xOffset, ((y + 0.5) * verticalSize) + yOffset);
+  this.gridRender.lineTo(((x + 1) * this.grid.gridSize) + xOffset, (y * verticalSize) + yOffset);
+  this.gridRender.lineTo(((x + 0.5) * this.grid.gridSize) + xOffset, ((y - 0.25) * verticalSize) + yOffset);
+  this.gridRender.lineTo((x * this.grid.gridSize) + xOffset, y * verticalSize + yOffset);
 }
 
 /**
  * Builds a square grid
  */
 export function buildSquareGrid(this: SceneController): void {
-  const xUnits = Math.ceil(this.scene.width / this.gridSize);
-  const yUnits = Math.ceil(this.scene.height / this.gridSize);
+  const xUnits = Math.ceil(this.scene.width / this.grid.gridSize);
+  const yUnits = Math.ceil(this.scene.height / this.grid.gridSize);
 
   // Need to use these instead of referencing scene height/width. This is some weird hacky bullshit
   // Lines will not render on subsequent selections
@@ -207,21 +207,21 @@ export function buildSquareGrid(this: SceneController): void {
 
   for (let x = 0; x <= xUnits; x++) {
     if (x === 0) {
-      this.grid.moveTo(0, 0);
-      this.grid.lineTo(0, height);
+      this.gridRender.moveTo(0, 0);
+      this.gridRender.lineTo(0, height);
       continue;
     }
-    this.grid.moveTo(x * this.gridSize, 0);
-    this.grid.lineTo(x * this.gridSize, height);
+    this.gridRender.moveTo(x * this.grid.gridSize, 0);
+    this.gridRender.lineTo(x * this.grid.gridSize, height);
   }
 
   for (let y = 0; y <= yUnits; y++) {
     if (y === 0) {
-      this.grid.moveTo(0, 0.5);
-      this.grid.lineTo(width, 0.5);
+      this.gridRender.moveTo(0, 0.5);
+      this.gridRender.lineTo(width, 0.5);
       continue;
     }
-    this.grid.moveTo(0, y * this.gridSize - 0.5);
-    this.grid.lineTo(width, y * this.gridSize - 0.5);
+    this.gridRender.moveTo(0, y * this.grid.gridSize - 0.5);
+    this.gridRender.lineTo(width, y * this.grid.gridSize - 0.5);
   }
 }

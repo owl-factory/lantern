@@ -6,8 +6,9 @@ import { makeAutoObservable } from "mobx";
 import { Viewport } from "pixi-viewport";
 import { InteractionData, InteractionEvent, Point, Sprite } from "pixi.js";
 import { ImageDocument } from "types/documents";
+import { SceneDocument, SceneDocumentGrid } from "types/documents/Scene";
 import { GridType, SceneMode } from "types/enums/scene";
-import { Prop } from "types/reroll/scene";
+import { Actor, Prop } from "types/reroll/scene";
 
 import * as events from "./events";
 import * as grid from "./grid";
@@ -49,20 +50,30 @@ export type Interactable = InteractiveContainer | InteractiveSprite;
 /**
  * The controller for the PixiJS application for rendering a scene
  */
-export class SceneController {
+export class SceneController implements SceneDocument {
   public app: Application;
-  public background: Sprite;
-  public viewport: Viewport;
-  public scene: Container;
 
-  protected props: Record<string, Prop> = {};
+  // Information saved to the database
+  public props: Record<string, Prop | Actor> = {};
+  public grid = {
+    width: 0,
+    height: 0,
+    gridWidth: 0,
+    gridHeight: 0,
+    gridSize: 0,
+    type: GridType.None,
+  };
+  public imageUsageCount: Record<string, number> = {};
+  public characterUsageCount: Record<string, number> = {};
 
-  protected grid: Graphics;
+  // Renderables
+  public background: Sprite = new Sprite();
+  public viewport: Viewport = new Viewport();
+  public scene: Container = new Container();
+  public gridRender: Graphics = new Graphics();
 
-  public mode: SceneMode;
-
-  protected gridType: GridType = GridType.None;
-  public gridSize = 0;
+  // Interaction
+  public mode: SceneMode = SceneMode.Select;
 
   /**
    * Creates a new, empty map controller.
@@ -70,10 +81,6 @@ export class SceneController {
    */
   constructor(app: Application) {
     this.app = app;
-    this.background = new Sprite();
-    this.viewport = new Viewport();
-    this.scene = new Container();
-    this.grid = new Graphics();
 
     this.initializeBackground();
     this.initializeViewport();
@@ -81,8 +88,6 @@ export class SceneController {
     this.initializeGrid();
 
     this.centerViewport();
-
-    this.mode = SceneMode.Select;
 
     makeAutoObservable(this);
   }
@@ -103,7 +108,7 @@ export class SceneController {
   }
 
   public getGridType(): GridType {
-    return this.gridType;
+    return this.grid.type;
   }
 
   /**
@@ -258,8 +263,8 @@ export class SceneController {
     sceneController.background.width = parseInt(values.width);
     sceneController.background.x = 0;
     sceneController.background.y = 0;
-    sceneController.gridSize = parseInt(values.gridSize);
-    sceneController.gridType = parseInt(values.gridType);
+    sceneController.grid.gridSize = parseInt(values.gridSize);
+    sceneController.grid.type = parseInt(values.gridType);
     sceneController.centerViewport();
     sceneController.buildGrid();
 
