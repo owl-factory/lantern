@@ -1,10 +1,11 @@
-import { SceneController } from "client/scenes/SceneController";
+import { SceneController } from "client/scenes/SceneController2";
 import { Input } from "components/design";
 import { Button } from "components/style";
 import { Formik, Form as FormikForm, FormikProps } from "formik";
 import React from "react";
 import { Select } from "components/design/forms" ;
 import { GridType } from "types/enums/scene";
+import { Grid } from "client/scenes/Grid";
 
 // The default width of the grid count inputs
 const DEFAULT_GRID_INPUT_WIDTH="4.5em";
@@ -51,8 +52,8 @@ type onChangeEvent = React.ChangeEvent<any>;
  * @param gridType The type of grid
  */
 function updateGridHeight(formikProps: FormikGridProps, pixelHeight: number, gridSize: number, gridType: GridType) {
-  const height = SceneController.calculateGridCount(pixelHeight, gridSize, gridType, "vertical");
-  const expectedHeight = SceneController.calculateGridToPixels(gridSize, height, gridType, "vertical");
+  const height = Grid.calculateGridCount(pixelHeight, gridSize, gridType, "vertical");
+  const expectedHeight = Grid.calculateGridToPixels(gridSize, height, gridType, "vertical");
   formikProps.setFieldValue("gridHeight", height);
   formikProps.setFieldValue("expectedHeight", expectedHeight);
 }
@@ -65,8 +66,8 @@ function updateGridHeight(formikProps: FormikGridProps, pixelHeight: number, gri
  * @param gridType The type of grid
  */
 function updateGridWidth(formikProps: FormikGridProps, pixelWidth: number, gridSize: number, gridType: GridType) {
-  const width = SceneController.calculateGridCount(pixelWidth, gridSize, gridType, "horizontal");
-  const expectedWidth = SceneController.calculateGridToPixels(gridSize, width, gridType, "horizontal");
+  const width = Grid.calculateGridCount(pixelWidth, gridSize, gridType, "horizontal");
+  const expectedWidth = Grid.calculateGridToPixels(gridSize, width, gridType, "horizontal");
   formikProps.setFieldValue("gridWidth", width);
   formikProps.setFieldValue("expectedWidth", expectedWidth);
 }
@@ -135,7 +136,7 @@ function onWidthChange(e: onChangeEvent, formikProps: FormikGridProps) {
  * @param formikProps The formik props containing values and update functions
  */
 function onHeightGridChange(e: onChangeEvent, formikProps: FormikGridProps) {
-  const expectedHeight = SceneController.calculateGridToPixels(
+  const expectedHeight = Grid.calculateGridToPixels(
     formikProps.values.gridSize,
     e.currentTarget.value,
     formikProps.values.gridType,
@@ -152,7 +153,7 @@ function onHeightGridChange(e: onChangeEvent, formikProps: FormikGridProps) {
  * @param formikProps The formik props containing values and update functions
  */
 function onWidthGridChange(e: onChangeEvent, formikProps: FormikGridProps) {
-  const expectedWidth = SceneController.calculateGridToPixels(
+  const expectedWidth = Grid.calculateGridToPixels(
     formikProps.values.gridSize,
     e.currentTarget.value,
     formikProps.values.gridType,
@@ -389,39 +390,39 @@ function VerticalHexGridForm({ formikProps }: GridSubformProps): JSX.Element {
 }
 
 interface GridFormProps {
-  sceneController: SceneController;
+  controller: SceneController;
 }
 
 /**
  * Renders a form for setting and selecting the grid type of the current scene
  * @param formikProps The formik props containing values and update functions
  */
-export function GridForm({ sceneController }: GridFormProps): JSX.Element {
+export function GridForm({ controller }: GridFormProps): JSX.Element {
   return (
     <div>
       <Formik
         initialValues={{
-          width: sceneController.background.width,
-          height: sceneController.background.height,
-          expectedWidth: sceneController.background.width,
-          expectedHeight: sceneController.background.height,
-          gridWidth: SceneController.calculateGridCount(
-            sceneController.background.width,
-            sceneController.gridSize,
-            sceneController.getGridType(),
+          width: controller.getScene().getWidth(),
+          height: controller.getScene().getHeight(),
+          expectedWidth: controller.getScene().getWidth(),
+          expectedHeight: controller.getScene().getHeight(),
+          gridWidth: Grid.calculateGridCount(
+            controller.getScene().getWidth(),
+            controller.getGrid().getSize(),
+            controller.getGrid().getType(),
             "horizontal"
           ),
-          gridHeight: SceneController.calculateGridCount(
-            sceneController.background.height,
-            sceneController.gridSize,
-            sceneController.getGridType(),
+          gridHeight: Grid.calculateGridCount(
+            controller.getScene().getHeight(),
+            controller.getGrid().getSize(),
+            controller.getGrid().getType(),
             "vertical"
           ),
-          gridSize: sceneController.gridSize,
-          gridSizeSelect: sceneController.gridSize,
-          gridType: sceneController.getGridType(),
+          gridSize: controller.getGrid().getSize(),
+          gridSizeSelect: controller.getGrid().getSize(),
+          gridType: controller.getGrid().getType(),
         }}
-        onSubmit={(values) => sceneController.setSceneSize(values, sceneController)}
+        onSubmit={(values) => controller.getGrid().setGrid(values)}
       >
         { (props: any) => (
           <FormikForm>

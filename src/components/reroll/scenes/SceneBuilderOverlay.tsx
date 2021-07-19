@@ -23,7 +23,7 @@ export const SceneBuilderOverlay = observer(({ children, imageController, sceneC
   return (
     <div>
       <Drawer >
-        <DrawerItem name="Grid Sizing" Icon={MdGridOn}><GridForm sceneController={sceneController}/></DrawerItem>
+        <DrawerItem name="Grid Sizing" Icon={MdGridOn}><GridForm controller={sceneController}/></DrawerItem>
         <DrawerItem name="Images" Icon={MdImage}>
           <ImageList
           imageController={imageController}
@@ -34,7 +34,7 @@ export const SceneBuilderOverlay = observer(({ children, imageController, sceneC
           Nothing yet
         </DrawerItem>
       </Drawer>
-      <div>
+      {/* <div>
         <Button onClick={() => sceneController.setMode(SceneMode.Select) }>Select</Button>
         <Button onClick={() => sceneController.setMode(SceneMode.Pan) }>Pan</Button>
         <br/>
@@ -42,7 +42,7 @@ export const SceneBuilderOverlay = observer(({ children, imageController, sceneC
       </div>
       <div>
         <Button className="sm" onClick={addSprite}>Add Image</Button>
-      </div>
+      </div> */}
       {children}
     </div>
   );

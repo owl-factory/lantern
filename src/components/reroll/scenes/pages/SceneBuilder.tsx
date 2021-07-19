@@ -1,5 +1,5 @@
 import { ImageController } from "client/library";
-import { SceneController } from "client/scenes/SceneController";
+import { SceneController } from "client/scenes/SceneController2";
 import { observer } from "mobx-react-lite";
 import { Application } from "pixi.js";
 import React from "react";
