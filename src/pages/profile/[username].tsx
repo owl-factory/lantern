@@ -10,7 +10,7 @@ import { useRouter } from "next/router";
 import { arrayToList } from "utilities/arrays";
 import style from "./profile.module.scss";
 import { ImageSelectionForm } from "components/reroll/library/images/forms/ImageSelectionForm";
-import { ImageManager } from "client/library";
+import { ImageController } from "client/library";
 import { ImageSelectionWrapper } from "components/reroll/library/images/ImageSelectionWrapper";
 
 
@@ -184,7 +184,7 @@ function RecentPlayer({ player }: { player: UserDocument }) {
 }
 
 interface ProfileImageProps {
-  imageManager: ImageManager;
+  imageController: ImageController;
   isMyPage: boolean;
   user: UserDocument;
   setUser: Dispatch<UserDocument>;
@@ -192,12 +192,12 @@ interface ProfileImageProps {
 
 /**
  * Renders the Profile image and any modification tools
- * @param imageManager The image manager
+ * @param imageController The image manager
  * @param user The current user
  * @param setUser Sets the user object to update information
  * @param isMyPage True if this is the current user's page
  */
-function ProfileImage({ imageManager, user, isMyPage, setUser }: ProfileImageProps) {
+function ProfileImage({ imageController, user, isMyPage, setUser }: ProfileImageProps) {
   let src = "";
   if (user.icon && user.icon.src) { src = user.icon.src; }
 
@@ -208,10 +208,10 @@ function ProfileImage({ imageManager, user, isMyPage, setUser }: ProfileImagePro
 
   if (isMyPage) {
     React.useEffect(() => {
-      imageManager.fetchImages();
+      imageController.fetchImages();
     }, []);
     image = (
-     <ImageSelectionWrapper imageManager={imageManager} onSubmit={imageManager.setProfileImage} onSave={onSave}>
+     <ImageSelectionWrapper imageController={imageController} onSubmit={imageController.setProfileImage} onSave={onSave}>
         {image}
       </ImageSelectionWrapper>
     );
@@ -238,7 +238,7 @@ export default function Profile(props: any): JSX.Element {
 
     return <>Error</>;
   }
-  const [ imageManager ] = React.useState(new ImageManager());
+  const [ imageController ] = React.useState(new ImageController());
   const router = useRouter();
   const [ user, setUser ] = React.useState(props.data.user);
   const [ isMyPage ] = React.useState(calculateIfUserIsOwner());
@@ -274,7 +274,7 @@ export default function Profile(props: any): JSX.Element {
       <div className="row">
         <div className="col-12 col-md-4">
           <ProfileImage
-            imageManager={imageManager}
+            imageController={imageController}
             user={user}
             isMyPage={isMyPage}
             setUser={setUser}

@@ -8,14 +8,14 @@ import { ImageForm } from "./ImageForm";
  * Renders a form for creating an image, be it linking from an external site or
  * uploading a brand new image
  */
-export const ImageCreationForm = observer(({imageManager, onSave}: any) => {
+export const ImageCreationForm = observer(({imageController, onSave}: any) => {
   const tabs = [
     "link",
     "upload",
   ];
 
   const onSubmit = async (image: ImageDocument, method: string) => {
-    imageManager.createImage(image, method)
+    imageController.createImage(image, method)
     .then(() => {
       if (onSave) {
         onSave();
@@ -29,7 +29,7 @@ export const ImageCreationForm = observer(({imageManager, onSave}: any) => {
   return (
     <ImageForm
       defaultTab="link"
-      imageManager={imageManager}
+      imageController={imageController}
       onSubmit={onSubmit}
       tabs={tabs}
     />
@@ -39,11 +39,11 @@ export const ImageCreationForm = observer(({imageManager, onSave}: any) => {
 /**
  * Renders the ImageCreationForm within a modal
  */
-export const ImageCreationFormModal = observer(({ imageManager, open, handleClose }: any) => {
+export const ImageCreationFormModal = observer(({ imageController, open, handleClose }: any) => {
   
   return (
     <Modal open={open} handleClose={handleClose}>
-      <ImageCreationForm imageManager={imageManager} onSave={handleClose}/>
+      <ImageCreationForm imageController={imageController} onSave={handleClose}/>
     </Modal>
   )
 });

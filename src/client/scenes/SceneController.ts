@@ -5,11 +5,13 @@ import { Graphics } from "@pixi/graphics";
 import { makeAutoObservable } from "mobx";
 import { Viewport } from "pixi-viewport";
 import { InteractionData, InteractionEvent, Point, Sprite } from "pixi.js";
+import { ImageDocument } from "types/documents";
 
 import * as events from "./events";
 import * as grid from "./grid";
 import * as initialize from "./initialize";
 import * as snap from "./snap";
+import { subscribeProp } from "./subscribe";
 
 /**
  * Adds several fields to a sprite's definition that are added by Pixi for interacting with them
@@ -18,6 +20,10 @@ interface InteractiveSprite extends Sprite {
   data: InteractionData | null;
   dragging: boolean;
   dragPoint: Point;
+  originalPosition: {
+    x: number;
+    y: number;
+  }
 }
 
 /**
@@ -27,6 +33,10 @@ interface InteractiveContainer extends Container {
   data: InteractionData | null;
   dragging: boolean;
   dragPoint: Point;
+  originalPosition: {
+    x: number;
+    y: number;
+  }
 }
 
 /**
@@ -68,9 +78,10 @@ export const SceneModeButtons: string[] = [
  */
 export type Interactable = InteractiveContainer | InteractiveSprite;
 
-// The default scale of the sprite.
-// TODO - remove. Things should remain their true size or be scaled automatically
-const DEFAULT_SCALE = 1.5;
+export interface Prop extends InteractiveSprite {
+  key: string;
+  image: ImageDocument;
+}
 
 /**
  * The controller for the PixiJS application for rendering a scene
@@ -80,6 +91,8 @@ export class SceneController {
   public background: Sprite;
   public viewport: Viewport;
   public scene: Container;
+
+  protected props: Record<string, Prop> = {};
 
   protected grid: Graphics;
 
@@ -160,6 +173,23 @@ export class SceneController {
     }
   }
 
+  public addProp(sceneController: SceneController, image: ImageDocument, x?: number, y?: number): void {
+    const prop = Sprite.from(image.src as string);
+    (prop as Prop).image = image;
+    // TODO - make unique!
+    (prop as Prop).key = (new Date()).toString();
+
+    prop.interactive = true;
+    prop.buttonMode = true;
+
+    prop.anchor.set(0.5);
+    prop.x = x || sceneController.scene.x + sceneController.scene.width / 2;
+    prop.y = y || sceneController.scene.y + sceneController.scene.height / 2;
+    subscribeProp(prop as Prop, sceneController);
+    sceneController.scene.addChild(prop);
+    sceneController.props[(prop as Prop).key] = prop as Prop;
+  }
+
   /**
    * Creates a new sprite from a source.
    * TODO - replace with createProp & createActor functions
@@ -168,26 +198,14 @@ export class SceneController {
    * @param y The y coordinate of the new sprite
    */
   public async createSprite(textureSource: string, x: number, y: number): Promise<void> {
-    const texture = await Texture.fromURL(textureSource);
-
-    const sprite = Sprite.from(texture);
-    sprite.interactive = true;
-    sprite.buttonMode = true;
-    sprite.anchor.set(0.5);
-    sprite.x = x;
-    sprite.y = y;
-    sprite.scale.set(DEFAULT_SCALE);
-
-    this.scene.addChild(sprite);
-
-    this.subscribe(sprite as Interactable);
+    this.addProp(this, { src: textureSource }, x, y);
   }
 
   /**
    * Subscribes the given target to standard events
    * @param target The target to subscribe events to
    */
-  protected subscribe(target: Interactable): void {
+  public subscribe(target: Interactable): void {
     target
       .on("pointerdown", (event) => this.onPointerDown(event, target, this))
       .on("pointerup", (event) => this.onPointerUp(event, target, this))
@@ -241,8 +259,6 @@ export class SceneController {
         return this.onPanMove(event, target, sceneController);
     }
   }
-
-  
 
   // EVENTS
   protected onPanStart = events.pan.onPanStart;

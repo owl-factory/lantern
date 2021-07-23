@@ -10,7 +10,7 @@ import { query as q } from "faunadb";
 import { rest } from "utilities/request";
 import { read } from "utilities/objects";
 import { ImageSelectionWrapper } from "components/reroll/library/images/ImageSelectionWrapper";
-import { ImageManager } from "client/library";
+import { ImageController } from "client/library";
 import { CampaignDocument, ImageDocument } from "types/documents";
 
 /**
@@ -20,17 +20,17 @@ import { CampaignDocument, ImageDocument } from "types/documents";
  * @param isOwner True if the current user is the owner. False otherwise. 
  */
 function Banner({ campaign, isOwner, setCampaign }: any) {
-  const [ imageManager ] = React.useState(new ImageManager());
+  const [ imageController ] = React.useState(new ImageController());
   let image = <img src={read<string>(campaign, "banner.src")}/>
 
   if(isOwner) {
     React.useEffect(() => {
-      imageManager.fetchImages();
+      imageController.fetchImages();
     }, []);
 
     /**
      * Handles the post-save then functionality after setting an image. 
-     * @param result The result of the imageManager set function
+     * @param result The result of the imageController set function
      */
     const onSave = (result: unknown) => {
       const newCampaign = {...campaign, banner: (result as CampaignDocument).banner }
@@ -43,11 +43,11 @@ function Banner({ campaign, isOwner, setCampaign }: any) {
      * @param method The method to set the new image
      */
     const onSubmit = async (image: ImageDocument, method: string) => {
-      return imageManager.setCampaignBanner(campaign, image, method);
+      return imageController.setCampaignBanner(campaign, image, method);
     }
 
     image = (
-      <ImageSelectionWrapper imageManager={imageManager} onSubmit={onSubmit} onSave={onSave}>
+      <ImageSelectionWrapper imageController={imageController} onSubmit={onSubmit} onSave={onSave}>
         {image}
       </ImageSelectionWrapper>
     );
@@ -128,6 +128,6 @@ CampaignView.getInitialProps = async (ctx: NextPageContext) => {
   if (!requireClientLogin(session, ctx)) { return {}; }
 
   const res = await rest.get(`/api/campaigns/${ctx.query.id}`);
-  
+
   return { session, campaign: (res.data as any).campaign, error: res.message };
 };

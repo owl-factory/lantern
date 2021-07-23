@@ -1,1 +1,1 @@
-export * from "client/library/imageManager";
+export * from "client/library/ImageController";

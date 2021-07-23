@@ -1,4 +1,4 @@
-import { ImageManager } from "client/library";
+import { ImageController } from "client/library";
 import { SelectionTabs } from "components/design";
 import React from "react";
 import { ImageDocument } from "types/documents";
@@ -25,7 +25,7 @@ function getApprovedTabs(requestedTabs: string[]) {
 
 interface ImageFormProps {
   defaultTab: string;
-  imageManager: ImageManager;
+  imageController: ImageController;
   onSubmit: (image: ImageDocument, method: string) => Promise<void>;
   tabs: string[];
 }
@@ -33,11 +33,11 @@ interface ImageFormProps {
 /**
  * Renders a selection between one of three image forms, either a list, a link form, or an upload form
  * @param defaultTab The default tab to show, if any
- * @param imageManager The imagemanager. Not required for all, but should be present
+ * @param imageController The imagemanager. Not required for all, but should be present
  * @param onSubmit The action to take on submission
  * @param tabs The tabs to show and switch between
  */
-export function ImageForm({defaultTab, imageManager, onSubmit, tabs}: ImageFormProps) {
+export function ImageForm({defaultTab, imageController, onSubmit, tabs}: ImageFormProps) {
   const [ approvedTabs ] = React.useState(getApprovedTabs(tabs));
   const [ activeTab, setActiveTab ] = React.useState(defaultTab || approvedTabs[0]);
 
@@ -49,7 +49,7 @@ export function ImageForm({defaultTab, imageManager, onSubmit, tabs}: ImageFormP
     case "list":
       activeForm = (
         <ImageList
-          imageManager={imageManager}
+          imageController={imageController}
           listFormat={ListFormat.Icons}
           onClick={(image:ImageDocument) => onSubmit(image, "list")}
         />

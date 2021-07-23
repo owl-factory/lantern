@@ -5,10 +5,9 @@ import { MyUserDocument } from "./logic/CoreModelLogic";
 
 export function getMyUser(req: NextApiRequest): MyUserDocument {
   // TODO - have this working on page refresh
-  const myUser2 = getSession({req});
-  if (myUser2 !== null) { return myUser2; }
-
-  const myUser: MyUserDocument = {
+ const myUser = getSession({req});
+ if (myUser === null || !("user" in myUser)) {
+  const myUser2: MyUserDocument = {
     id: "295863299256353286",
     collection: "users",
     ref: toFaunaRef({
@@ -18,10 +17,16 @@ export function getMyUser(req: NextApiRequest): MyUserDocument {
     roles: [],
     isLoggedIn: true,
 };
-  myUser.ref = toFaunaRef(myUser);
-  return myUser;
+  myUser2.ref = toFaunaRef(myUser2);
+  return myUser2;
+  //  return {} as MyUserDocument;
+ }
+
+  myUser.user.ref = toFaunaRef({ id: myUser.user.id, collection: "users" });
+  return myUser.user;
 }
 
+
 export function requireLogin(myUser: MyUserDocument): void {
-  if(!myUser.isLoggedIn) { throw { code: 403, message: "You must be logged in to perform this action." }; }
+  if(!myUser) { throw { code: 403, message: "You must be logged in to perform this action." }; }
 }

@@ -36,7 +36,7 @@ export function initializeViewport(this: SceneController): void {
     .drag({ mouseButtons: "middle" })
     .pinch()
     .wheel()
-    .decelerate();
+    .decelerate({ friction: 0.95, minSpeed: 0.5 });
 
   this.app.stage.addChild(this.viewport);
 }
@@ -62,7 +62,7 @@ export function initializeScene(this: SceneController): void {
 
   this.background.zIndex = -1;
 
-  this.scene.interactive = true;
+  // this.scene.interactive = true;
   // this.scene.buttonMode = true;
 
   this.subscribe(this.scene as Interactable);

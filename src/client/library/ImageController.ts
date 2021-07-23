@@ -10,7 +10,7 @@ import { rest } from "utilities/request";
  * Manages the state and massive list of images, allowing for fast
  * and efficient management of them on the front end
  */
-export class ImageManager {
+export class ImageController {
   public images: Record<string, ImageDocument> = {};
   public imageList: string[] = [];
   private ourCDNPrefex = "none";
@@ -161,7 +161,12 @@ export class ImageManager {
    * @param url The API url we are sending the data to
    * @param allowedMethods The allowed methods used for setting the image
    */
-  protected async setImage(image: ImageDocument, method: string, url: string, allowedMethods: string[] = ["list", "link", "upload"]) {
+  protected async setImage(
+    image: ImageDocument,
+    method: string,
+    url: string,
+    allowedMethods: string[] = ["list", "link", "upload"]
+  ) {
     if (!allowedMethods.includes(method)) {
       Promise.reject(new Error("Method does not exist"));
       return;

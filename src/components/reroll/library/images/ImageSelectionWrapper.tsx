@@ -1,4 +1,4 @@
-import { ImageManager } from "client/library";
+import { ImageController } from "client/library";
 import { Modal } from "components/design";
 import React from "react";
 import { ImageDocument } from "types/documents";
@@ -7,7 +7,7 @@ import style from "./ImageSelectionWrapper.module.scss";
 
 interface ImageSelectionWrapperProps {
   children: JSX.Element;
-  imageManager: ImageManager;
+  imageController: ImageController;
   onSubmit: (image: ImageDocument, method: string) => Promise<unknown>;
   onSave: (result: unknown) => void;
 }
@@ -17,11 +17,11 @@ interface ImageSelectionWrapperProps {
  * changing the image.
  *
  * @param children The image to render
- * @param imageManager The image manager containing our images and other information
+ * @param imageController The image manager containing our images and other information
  * @param onSubmit The action to run when the submit button is clicked
  * @param onSave The post-submit success action to run. This may be closing a modal, for example
  */
-export function ImageSelectionWrapper({ children, imageManager, onSubmit, onSave }: ImageSelectionWrapperProps) {
+export function ImageSelectionWrapper({ children, imageController, onSubmit, onSave }: ImageSelectionWrapperProps) {
 const [ modal, setModal ] = React.useState(false);
 
   function closeModal() { setModal(false); }
@@ -35,7 +35,7 @@ const [ modal, setModal ] = React.useState(false);
         {children}
       </div>
       <Modal open={modal} handleClose={closeModal}>
-        <ImageSelectionForm imageManager={imageManager} onSubmit={onSubmit} onSave={postSave}/>
+        <ImageSelectionForm imageController={imageController} onSubmit={onSubmit} onSave={postSave}/>
       </Modal>
     </div>
   )

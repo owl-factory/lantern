@@ -11,6 +11,11 @@ export function onSelectStart(event: InteractionEvent, target: Interactable, sce
   if (target === sceneController.scene) { return; }
   sceneController.viewport.plugins.pause('drag');
 
+  target.originalPosition = {
+    x: target.x,
+    y: target.y,
+  };
+
   target.dragging = true;
   target.data = event.data;
   target.dragPoint = event.data.getLocalPosition(target.parent);

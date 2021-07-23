@@ -4,7 +4,7 @@ import { LibraryImageList, ListFormat, StorageUsage } from "components/reroll/li
 import { StorageTypeEnum } from "types/enums/storageType";
 import { rest } from "utilities/request";
 import { NextPageContext } from "next";
-import { ImageManager } from "client/library/imageManager";
+import { ImageController } from "client/library/ImageController";
 
 
 /**
@@ -20,13 +20,13 @@ export default function Library(props: any): JSX.Element {
     { bytes: 2500000, storageType: StorageTypeEnum.MusicTracks },
     { bytes: 10 * 1024 * 1024, storageType: StorageTypeEnum.AudioClips },
   ];
-  const imageManager = new ImageManager();
-  imageManager.loadImages(props.data.images);
+  const imageController = new ImageController();
+  imageController.loadImages(props.data.images);
   return (
     <Page>
       <h1>Library</h1>
       <StorageUsage maxAllowedStorage={maxAllowedStorage} usage={usage}/>
-      <LibraryImageList imageManager={imageManager} listFormat={ListFormat.Icons}/>
+      <LibraryImageList imageController={imageController} listFormat={ListFormat.Icons}/>
     </Page>
   );
 }
