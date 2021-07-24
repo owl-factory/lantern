@@ -1,4 +1,4 @@
-import { SceneController } from "client/scenes/SceneController2";
+import { SceneController } from "client/scenes/SceneController";
 import React from "react";
 
 interface SceneRendererProps {

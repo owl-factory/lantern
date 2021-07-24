@@ -1,5 +1,5 @@
 import { Sprite, Texture } from "pixi.js";
-import { SceneController } from "./SceneController2";
+import { SceneController } from "./SceneController";
 
 /**
  * Manages the application background that sits behind the viewport and scene

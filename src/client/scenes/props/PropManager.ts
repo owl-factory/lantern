@@ -2,7 +2,7 @@ import { Sprite } from "pixi.js";
 import { ImageDocument } from "types/documents";
 import { Actor, Prop } from "types/reroll/scene";
 import { PropEvents } from "./PropEvents";
-import { SceneController } from "../SceneController2";
+import { SceneController } from "../SceneController";
 
 import * as PIXI from "pixi.js"
 import { PropMovement } from "./PropMovement";

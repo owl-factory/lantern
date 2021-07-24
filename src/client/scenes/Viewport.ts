@@ -1,6 +1,6 @@
 import { Viewport as PixiViewport } from "pixi-viewport";
 import { DisplayObject } from "pixi.js";
-import { SceneController } from "./SceneController2";
+import { SceneController } from "./SceneController";
 
 /**
  * Manages the viewport for the scene controller

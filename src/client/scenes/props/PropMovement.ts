@@ -1,6 +1,6 @@
 import { InteractionEvent } from "@pixi/interaction";
 import { Prop } from "types/reroll/scene";
-import { SceneController } from "../SceneController2";
+import { SceneController } from "../SceneController";
 
 export class PropMovement {
   protected controller: SceneController;

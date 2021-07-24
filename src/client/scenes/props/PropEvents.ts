@@ -1,7 +1,7 @@
 import { InteractionEvent, Sprite } from "pixi.js";
 import { Prop } from "types/reroll/scene";
 import { PropMovement } from "./PropMovement";
-import { SceneController } from "../SceneController2";
+import { SceneController } from "../SceneController";
 
 enum PixiEventType {
   Click,

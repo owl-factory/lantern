@@ -1,4 +1,4 @@
-import { SceneController } from "client/scenes/SceneController2";
+import { SceneController } from "client/scenes/SceneController";
 import { Input } from "components/design";
 import { Button } from "components/style";
 import { Formik, Form as FormikForm, FormikProps } from "formik";

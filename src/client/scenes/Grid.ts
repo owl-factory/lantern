@@ -1,7 +1,7 @@
 import { makeAutoObservable } from "mobx";
 import { DisplayObject, Graphics } from "pixi.js";
 import { GridType } from "types/enums/scene";
-import { SceneController } from "./SceneController2";
+import { SceneController } from "./SceneController";
 
 export const PIXELS_PER_SQUARE = 64; // The default number of pixels per square
 export const PIXELS_PER_HEX = 64; // The default number of pixels per hexagon

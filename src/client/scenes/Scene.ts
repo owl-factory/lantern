@@ -1,5 +1,5 @@
 import { Container, DisplayObject, Sprite, Texture } from "pixi.js";
-import { SceneController } from "./SceneController2";
+import { SceneController } from "./SceneController";
 
 /**
  * Manages the scene
