@@ -80,7 +80,7 @@ function updateGridWidth(formikProps: FormikGridProps, pixelWidth: number, gridS
 function onGridTypeChange(e: onChangeEvent, formikProps: FormikGridProps) {
   updateGridWidth(formikProps, formikProps.values.width, formikProps.values.gridSize, e.currentTarget.value);
   updateGridHeight(formikProps, formikProps.values.height, formikProps.values.gridSize, e.currentTarget.value);
-
+  console.log(formikProps.values)
   formikProps.handleChange(e);
 }
 

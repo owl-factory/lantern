@@ -1,22 +1,31 @@
 import { Sprite, Texture } from "pixi.js";
 import { SceneController } from "./SceneController2";
 
+/**
+ * Manages the application background that sits behind the viewport and scene
+ * TODO - name this better to avoid confusion with scene background.
+ * TODO - give a more textured backdrop. Potentially changeable? IE a rocky background for when
+ * the players are in caves, trees for forests, grass for plains, etc
+ */
 export class Background {
   protected controller: SceneController;
-  protected render: Sprite;
+  protected background: Sprite;
 
   constructor(controller: SceneController) {
     this.controller = controller;
-    this.render = new Sprite(Texture.WHITE);
+    this.background = new Sprite(Texture.WHITE);
 
-    this.render.tint = 0x444444;
-    this.render.x = 0;
-    this.render.y = 0;
-    this.render.height = 1000;
-    this.render.width = 1000;
+    this.background.tint = 0x444444;
+    this.background.x = 0;
+    this.background.y = 0;
+    this.background.height = 1000;
+    this.background.width = 1000;
   }
 
+  /**
+   * Registers the background. Sets it as a child of the application's stage
+   */
   public register(): void {
-    this.controller.getApp().stage.addChild(this.render);
+    this.controller.getApp().stage.addChild(this.background);
   }
 }

@@ -126,7 +126,7 @@ export class SceneController implements SceneDocument {
   }
 
   /**
-   * Sets any settings required for the new mode
+   * Sets any settings required for the xnew mode
    * @param mode The new mode
    */
   public setMode(mode: SceneMode): void {

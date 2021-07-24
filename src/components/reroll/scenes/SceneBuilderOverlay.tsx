@@ -13,8 +13,8 @@ import { GridForm } from "./forms/grid";
  */
 export const SceneBuilderOverlay = observer(({ children, imageController, sceneController }: any): JSX.Element => {
   function addSprite() {
-    sceneController.createSprite(
-      "http://192.168.0.195:3000/dev/images/sprites/waals_brodnen_death_sprite.png",
+    sceneController.getPropManager().addProp(
+      { src: "/dev/images/sprites/waals_brodnen_death_sprite.png" },
       125,
       125
     );
@@ -26,15 +26,16 @@ export const SceneBuilderOverlay = observer(({ children, imageController, sceneC
         <DrawerItem name="Grid Sizing" Icon={MdGridOn}><GridForm controller={sceneController}/></DrawerItem>
         <DrawerItem name="Images" Icon={MdImage}>
           <ImageList
-          imageController={imageController}
-          listFormat={ListFormat.Icons}
-          onClick={(image: ImageDocument) => sceneController.addProp(sceneController, image)}/>
+            imageController={imageController}
+            listFormat={ListFormat.Icons}
+            onClick={(image: ImageDocument) => sceneController.getPropManager().addProp(image)}
+          />
         </DrawerItem>
         <DrawerItem name="Characters" Icon={MdSupervisorAccount}>
           Nothing yet
         </DrawerItem>
       </Drawer>
-      {/* <div>
+      <div>
         <Button onClick={() => sceneController.setMode(SceneMode.Select) }>Select</Button>
         <Button onClick={() => sceneController.setMode(SceneMode.Pan) }>Pan</Button>
         <br/>
@@ -42,7 +43,7 @@ export const SceneBuilderOverlay = observer(({ children, imageController, sceneC
       </div>
       <div>
         <Button className="sm" onClick={addSprite}>Add Image</Button>
-      </div> */}
+      </div>
       {children}
     </div>
   );

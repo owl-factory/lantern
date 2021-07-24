@@ -14,11 +14,11 @@ export function SceneRenderer({ sceneController }: SceneRendererProps): JSX.Elem
 
   React.useEffect(() => {
     const app = sceneController.getApp();
-    
+
     if (!ref || !ref.current) { return; }
     (ref.current as any).appendChild(app.view);
     app.start();
-    
+
     return () => {
       app.stop();
     };
