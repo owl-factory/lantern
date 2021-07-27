@@ -1,6 +1,9 @@
 import { Sprite, Texture } from "pixi.js";
 import { SceneController } from "./SceneController";
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface BackgroundData {}
+
 /**
  * Manages the application background that sits behind the viewport and scene
  * TODO - name this better to avoid confusion with scene background.
@@ -28,4 +31,7 @@ export class Background {
   public register(): void {
     this.controller.getApp().stage.addChild(this.background);
   }
+
+  public export(): BackgroundData { return {}; }
+  public import(data: BackgroundData): void { return; }
 }

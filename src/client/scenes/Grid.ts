@@ -1,5 +1,4 @@
-import { makeAutoObservable } from "mobx";
-import { DisplayObject, Graphics } from "pixi.js";
+import { Graphics } from "pixi.js";
 import { GridType } from "types/enums/scene";
 import { SceneController } from "./SceneController";
 
@@ -9,6 +8,11 @@ export const DEFAULT_GRID_SIZE = 64; // The default number of pixels per grid
 
 // The static value of cos(30) in degrees, or the apothem multiplier of a hexagon
 export const COS_30 = 0.866;
+
+interface GridData {
+  size: number;
+  type: number;
+}
 
 /**
  * Manages the scene grid, including rendering the different types and updating it and the scene size
@@ -41,11 +45,20 @@ export class Grid {
     this.controller.getScene().addChild(this.grid);
   }
 
+  public export(): GridData {
+    return {
+      size: this.size,
+      type: this.type,
+    };
+  }
+
   /**
    * Loads in saved data to the grid
    */
-  public load(): void {
-    return;
+  public import(data: GridData): void {
+    this.size = data.size;
+    this.type = data.type;
+    this.buildGrid();
   }
 
   /**

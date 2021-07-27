@@ -2,6 +2,9 @@ import { Viewport as PixiViewport } from "pixi-viewport";
 import { DisplayObject } from "pixi.js";
 import { SceneController } from "./SceneController";
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface ViewportData {}
+
 /**
  * Manages the viewport for the scene controller
  */
@@ -35,6 +38,14 @@ export class Viewport {
       .decelerate({ friction: 0.95, minSpeed: 0.5 });
 
     this.controller.getApp().stage.addChild(this.viewport);
+  }
+
+  public export(): ViewportData {
+    return {};
+  }
+
+  public import(): void {
+    return;
   }
 
   /**

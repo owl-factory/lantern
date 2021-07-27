@@ -1,22 +1,32 @@
 import { GridType } from "types/enums/scene";
 import { Actor, Prop } from "types/reroll/scene";
+import { ImageDocument } from "./assets";
 import { CoreDocument } from "./CoreDocument";
 
 export interface SceneDocumentGrid {
-  width: number;
-  height: number;
-  gridWidth: number;
-  gridHeight: number;
-  gridSize: number;
+  size: number;
   type: GridType;
+}
+
+interface SceneDocumentScene {
+  height: number;
+  width: number;
+}
+
+interface PropDocument {
+  x: number;
+  y: number;
+  height: number;
+  width: number;
+
+  image: ImageDocument;
 }
 
 /**
  * Represents a scene and all information contained therein
  */
 export interface SceneDocument extends CoreDocument {
-  props: Record<string, Prop | Actor>;
   grid: SceneDocumentGrid;
-  imageUsageCount: Record<string, number>;
-  characterUsageCount: Record<string, number>;
+  props: Record<string, PropDocument>;
+  scene: SceneDocumentScene;
 }

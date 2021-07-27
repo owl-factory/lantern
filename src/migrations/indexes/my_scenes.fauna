@@ -1,0 +1,10 @@
+CreateIndex({
+  name: "my_scenes_asc",
+  source: Collection("scenes"),
+  terms: [{ field: ["data", "ownedBy", "ref"]} ],
+  values: [
+    { field: ["ref"], reverse: true},
+    { field: ["data", "name"]},
+    { field: ["data", "campaign", "ref"]},
+    { field: ["data", "updatedAt"]}],
+})

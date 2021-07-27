@@ -7,6 +7,7 @@ import { MdGridOn, MdImage, MdSupervisorAccount } from "react-icons/md";
 import { ImageDocument } from "types/documents";
 import { ImageList, ListFormat } from "../library";
 import { GridForm } from "./forms/grid";
+import { SceneSettings } from "./SceneSettings";
 
 /**
  * Renders a wrapper that surrounds a scene, applying UI for interaction with the Scene
@@ -23,7 +24,7 @@ export const SceneBuilderOverlay = observer(({ children, imageController, sceneC
   return (
     <div>
       <Drawer >
-        <DrawerItem name="Grid Sizing" Icon={MdGridOn}><GridForm controller={sceneController}/></DrawerItem>
+        <DrawerItem name="Scene Settings" Icon={MdGridOn}><SceneSettings controller={sceneController}/></DrawerItem>
         <DrawerItem name="Images" Icon={MdImage}>
           <ImageList
             imageController={imageController}
@@ -45,6 +46,9 @@ export const SceneBuilderOverlay = observer(({ children, imageController, sceneC
         <Button className="sm" onClick={addSprite}>Add Image</Button>
       </div>
       {children}
+      <div>
+        <Button onClick={sceneController.getSaveLoader().save}>Save</Button>
+      </div>
     </div>
   );
 });

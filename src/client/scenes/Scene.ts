@@ -1,6 +1,11 @@
 import { Container, DisplayObject, Sprite, Texture } from "pixi.js";
 import { SceneController } from "./SceneController";
 
+interface SceneData {
+  height: number;
+  width: number;
+}
+
 /**
  * Manages the scene
  */
@@ -50,6 +55,18 @@ export class Scene {
       throw "SceneController: Viewport does not exist.";
     }
     viewport.addChild(this.scene);
+  }
+
+  public export(): SceneData {
+    return {
+      height: this.getHeight(),
+      width: this.getWidth(),
+    };
+  }
+
+  public import(data: SceneData): void {
+    this.setHeight(data.height);
+    this.setWidth(data.width);
   }
 
   /**

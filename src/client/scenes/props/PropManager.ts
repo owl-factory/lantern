@@ -7,6 +7,8 @@ import { SceneController } from "../SceneController";
 import * as PIXI from "pixi.js"
 import { PropMovement } from "./PropMovement";
 
+type PropData = Record<string, Prop>;
+
 export class PropManager {
   protected controller: SceneController;
   protected props: Record<string, Prop | Actor>;
@@ -19,6 +21,14 @@ export class PropManager {
     this.props = {};
     this.propEvents = new PropEvents(this.controller);
     this.propMovement = new PropMovement(this.controller);
+  }
+
+  public export(): PropData {
+    return {};
+  }
+
+  public import(data: PropData) {
+    return;
   }
 
   public geEvents(): PropEvents { return this.propEvents; }
