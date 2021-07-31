@@ -5,6 +5,7 @@ import ErrorPage from "next/error";
 interface PageProps {
   children: ReactNode;
   error?: any; // An error to render
+  fluid?: boolean;
 }
 
 function parseError(error: any): string {
@@ -24,13 +25,15 @@ function parseError(error: any): string {
  * These are passed automatically
  */
 export function Page(props: PageProps): JSX.Element {
-
   if (props.error && typeof(props.error) === "number") {
     return <ErrorPage statusCode={props.error} />;
   }
 
+  let containerClass = props.fluid ? "container-fluid" : "container";
+  containerClass += " mt-3";
+
   return (
-    <div className="container mt-3">
+    <div className={containerClass}>
       { props.error ? <>{parseError(props.error)}</> : <></>}
       {props.children}
     </div>

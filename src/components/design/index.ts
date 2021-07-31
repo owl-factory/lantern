@@ -5,7 +5,7 @@ export * from "components/design/toolbox";
 export * from "components/design/AppPage";
 export * from "components/design/Breadcrumbs";
 export * from "components/design/HeaderBar";
-export * from "components/design/Modal";
+export * from "components/design/modal/index";
 export * from "components/design/Page";
 export * from "components/design/Pagination";
 export * from "components/design/SelectionTabs";

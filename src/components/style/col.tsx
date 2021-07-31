@@ -12,7 +12,7 @@ function sizeToClass(prefix: string, size?: ColumnSize) {
   if (!size) { return ""; }
 
   let className = "col-";
-  if (prefix != "xs") { className += `${prefix}-`; }
+  if (prefix !== "xs") { className += `${prefix}-`; }
   className += size;
 
   return className;
@@ -25,6 +25,7 @@ interface ColProps {
   md?: ColumnSize;
   lg?: ColumnSize;
   xl?: ColumnSize;
+  onClick: () => void;
 }
 
 /**
@@ -41,5 +42,5 @@ export function Col(props: ColProps) {
   SIZES.forEach((size: string) => {
     className += `${sizeToClass(size, (props as any)[size])} `;
   });
-  return <div className={className}>{props.children}</div>;
+  return <div className={className} {...props}>{props.children}</div>;
 }
