@@ -25,7 +25,7 @@ interface ColProps {
   md?: ColumnSize;
   lg?: ColumnSize;
   xl?: ColumnSize;
-  onClick: () => void;
+  onClick?: () => void;
 }
 
 /**

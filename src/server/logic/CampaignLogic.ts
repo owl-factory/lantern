@@ -1,10 +1,11 @@
 import { getServerClient } from "utilities/db";
 import { Expr, query as q } from "faunadb";
-import { fromFauna } from "utilities/fauna";
+import { fromFauna, toFaunaRef } from "utilities/fauna";
 import { CampaignDocument, ImageDocument, UserDocument } from "types/documents";
 import { CoreModelLogic, ImageLogic } from "server/logic";
 import { DocumentReference, MyUserDocument, PaginationOptions } from "./CoreModelLogic";
 import { isAdmin, isOwner } from "./security";
+import { FaunaRef } from "types/fauna";
 
 // The different levels of access for a campaign
 enum CampaignAccessLevels {
@@ -14,13 +15,30 @@ enum CampaignAccessLevels {
   ADMIN,
 }
 
+const createFields = [
+  "name",
+  "ruleset.ref",
+  "banner.ref",
+  "banner.src",
+  "height",
+  "width",
+];
+
 const allowedPlayerFields = [
-  "lastPlayed",
+  "lastPlayedAt",
   "players",
   "banner",
 ];
 
 const allowedGuestFields: string[] = [];
+
+export async function createCampaign(campaign: CampaignDocument, myUser: MyUserDocument) {
+  if (!campaign.ruleset) { throw "Ruleset is required"; }
+  campaign.ruleset.ref = toFaunaRef({ id: campaign.ruleset.id as string, collection: "rulesets"}) as FaunaRef;
+  campaign.lastPlayedAt = new Date();
+  const fields = createFields.concat(["isExternal", "sizeInBytes"]);
+  return await CoreModelLogic.createOne("campaigns", campaign, fields, myUser);
+}
 
 /**
  * Fetches a campaign by the id and validates against the user's id
@@ -49,15 +67,15 @@ export async function fetchCampaign(
  */
 export async function fetchMyCampaigns(
   myUser: MyUserDocument,
-  options: PaginationOptions
+  options: PaginationOptions = {}
 ): Promise<CampaignDocument[]> {
   const campaigns = await CoreModelLogic.fetchByIndex(
-    "my_campaigns4",
+    "my_campaigns_asc",
     [myUser.ref as Expr],
     ["lastPlayedAt", "ref", "name", "banner.src"],
     options
   );
-  console.log(campaigns)
+
   return campaigns;
 }
 

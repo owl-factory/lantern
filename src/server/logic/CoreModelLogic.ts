@@ -6,7 +6,7 @@ import { AnyDocument } from "types/documents";
 import { set } from "utilities/objects";
 
 export interface PaginationOptions {
-  size: number;
+  size?: number;
 }
 
 interface IndexResponse {

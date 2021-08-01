@@ -1,10 +1,7 @@
 import { CampaignController } from "client/CampaignController";
 import { makeAutoObservable } from "mobx";
-import { CampaignDocument, SceneDocument } from "types/documents";
+import { CampaignDocument, RulesetDocument, SceneDocument } from "types/documents";
 
-interface GameSystemDocument {
-
-}
 
 export enum EditorState {
   ViewAllCampaigns,
@@ -14,7 +11,7 @@ export enum EditorState {
 export class EditorController {
   protected campaign: CampaignController;
 
-  protected activeGameSystem: GameSystemDocument | null = null;
+  protected activeRuleset: RulesetDocument | null = null;
   protected activeCampaign: CampaignDocument | null = null;
   protected activeScene: SceneDocument | null = null;
 
@@ -23,7 +20,7 @@ export class EditorController {
   constructor() {
     this.state = EditorState.ViewAllCampaigns;
 
-    this.campaign = new CampaignController();
+    this.campaign = new CampaignController(true);
 
     makeAutoObservable(this);
   }

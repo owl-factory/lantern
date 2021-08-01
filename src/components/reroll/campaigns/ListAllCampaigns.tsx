@@ -2,7 +2,10 @@ import { CampaignController } from "client/CampaignController";
 import { Input, Modal, ModalBody, ModalHeader, Select } from "components/design";
 import { Col, Row } from "components/style";
 import { Formik, Form as FormikForm } from "formik";
+import { observe } from "mobx";
+import { observer } from "mobx-react-lite";
 import React from "react";
+import { MdAddCircleOutline } from "react-icons/md";
 import { CampaignDocument } from "types/documents";
 import styles from "./ListAllCampaigns.module.scss";
 
@@ -66,7 +69,7 @@ function CampaignThumbnail({ campaign }: CampaignThumbnailProps): JSX.Element {
 }
 
 interface CampaignBoxProps {
-  children: React.ReactChild;
+  children: React.ReactChild | React.ReactChild[];
   onClick: () => void;
   isEmpty?: boolean;
 }
@@ -82,8 +85,8 @@ function CampaignBox({ children, onClick, isEmpty }: CampaignBoxProps) {
   if (isEmpty) { className += ` ${styles.empty}`; }
 
   return (
-    <Col xs={12} sm={6} md={4} onClick={onClick}>
-      <div className={className}>
+    <Col xs={12} sm={6} md={6}  lg={3} xl={2}>
+      <div className={className} onClick={onClick}>
         {children}
       </div>
     </Col>
@@ -98,7 +101,7 @@ interface ListAllCampaignsProps {
  * Renders out a list of all campaigns
  * @param controller The campaign controller
  */
-export function ListAllCampaigns({ controller }: ListAllCampaignsProps): JSX.Element {
+export const ListAllCampaigns = observer(({ controller }: ListAllCampaignsProps) => {
   const [ modal, setModal ] = React.useState(false);
   const campaigns: JSX.Element[] = [];
   controller.getCampaigns().forEach((campaign: CampaignDocument, index: number) => {
@@ -109,7 +112,10 @@ export function ListAllCampaigns({ controller }: ListAllCampaignsProps): JSX.Ele
     );
   });
   campaigns.push(
-    <CampaignBox key="_addCampaign" isEmpty={true} onClick={() => setModal(true)}>Add Campaign</CampaignBox>
+    <CampaignBox key="_addCampaign" isEmpty={true} onClick={() => setModal(true)}>
+      Add Campaign<br/>
+      <MdAddCircleOutline/>
+    </CampaignBox>
   );
 
   return (
@@ -118,4 +124,4 @@ export function ListAllCampaigns({ controller }: ListAllCampaignsProps): JSX.Ele
       <NewCampaignModal open={modal} closeModal={() => setModal(false)} controller={controller}/>
     </Row>
   );
-}
+});

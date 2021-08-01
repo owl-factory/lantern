@@ -2,6 +2,7 @@
 export * from "types/documents/assets";
 export * from "types/documents/CoreDocument";
 export * from "types/documents/Campaign";
+export * from "types/documents/Ruleset";
 export * from "types/documents/Message";
 export * from "types/documents/Scene";
 export * from "types/documents/User";
@@ -13,6 +14,7 @@ export type AnyDocument = (
   type.AnyAssetDocument |
   type.CoreDocument |
   type.CampaignDocument |
+  type.RulesetDocument |
   type.MessageDocument |
   type.SceneDocument |
   type.UserDocument
