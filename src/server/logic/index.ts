@@ -1,5 +1,5 @@
 
-export * as CampaignLogic from "server/logic/CampaignLogic";
-export * as CoreModelLogic from "server/logic/CoreModelLogic";
-export * as ImageLogic from "server/logic/ImageLogic";
-export * as UserLogic from "server/logic/UserLogic";
+export * from "server/logic/CampaignLogic";
+export * from "server/logic/CoreModelLogic";
+export * from "server/logic/ImageLogic";
+export * from "server/logic/UserLogic";

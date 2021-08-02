@@ -223,6 +223,6 @@ export function trimRestrictedFields(
     if (!(allowedField in doc)) { return; }
     newDoc[allowedField] = doc[allowedField];
   });
-
+  console.log(givenAllowedFields)
   return newDoc;
 }
