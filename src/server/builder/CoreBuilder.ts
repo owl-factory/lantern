@@ -7,12 +7,15 @@ import { fromFauna, toFauna, toFaunaRef } from "utilities/fauna";
 import { canDelete, DocumentReference } from "server/logic";
 
 type FunctionConfig = any;
+interface IndexConfig extends FunctionConfig {
+  indexFields: string[];
+}
 
 type FieldConfig = any;
 type RoleConfig = any;
 
-type FieldValue = string[] | ((myUser: MyUserDocument, doc?: AnyDocument | AnyDocument[]) => string[]);
-type RoleValue = boolean | ((myUser: MyUserDocument, doc?: AnyDocument | AnyDocument[]) => boolean);
+type FieldValue = string[] | ((myUser: MyUserDocument, doc?: AnyDocument) => string[]);
+type RoleValue = boolean | ((myUser: MyUserDocument, doc?: AnyDocument) => boolean);
 
 export enum UserRole {
   GUEST = 0,
@@ -41,6 +44,12 @@ function getRole(myUser: MyUserDocument) {
     });
   });
   return highestRole;
+}
+
+function checkConfig(config: unknown) {
+  if (config === undefined) {
+    throw { code: 501, message: "This method does not exist." };
+  }
 }
 
 /**
@@ -84,7 +93,7 @@ function canAct(doc: AnyDocument | null, myUser: MyUserDocument, roleConfig: Rol
   const roleCheck = roleConfig[myUser.role];
 
   if (typeof roleCheck === "boolean") { return roleCheck; }
-  return roleCheck(doc);
+  return roleCheck(myUser, doc);
 }
 
 /**
@@ -204,6 +213,7 @@ async function $delete(ref: string | DocumentReference, myUser: MyUserDocument, 
  */
 async function $fetch(ref: string | DocumentReference, myUser: MyUserDocument, config: FunctionConfig) {
   const client = getServerClient();
+  checkConfig(config);
 
   // Static checks that can exit out before anything is done
   const newRef = toFaunaRef(ref, config.collection );
@@ -215,6 +225,7 @@ async function $fetch(ref: string | DocumentReference, myUser: MyUserDocument, c
   // Fetches and converts the query into something readable
   let result: FaunaDocument<unknown> | null = await client.query(q.Get(newRef));
   if (result) { result = fromFauna(result as Record<string, unknown>); }
+  console.log(canAct(result, myUser, config.roles))
 
   // Validates that we recieved the result and that the user can act/view it
   if (result === null || !canAct(result, myUser, config.roles)) {
@@ -306,22 +317,14 @@ export class CoreLogicBuilder {
    * Indicates the end of the logic building. Returns a struct containing functions for accessing fauna
    */
   public done() {
-    const config: any = { $collection: this.config.$collection };
-    config.create = (
-      doc: AnyDocument, myUser: MyUserDocument
-    ) => $create(doc, myUser, this.config["create"]);
-
-    config.delete = (
-      ref: string | DocumentReference, myUser: MyUserDocument
-    ) => $delete(ref, myUser, this.config["delete"]);
-
-    config.fetch = (
-      ref: string | DocumentReference, myUser: MyUserDocument
-    ) => $fetch(ref, myUser, this.config["fetch"]);
-
-    config.update = (
-      ref: string | DocumentReference, doc: AnyDocument, myUser: MyUserDocument
-    ) => $update(ref, doc, myUser, this.config["update"]);
+    const config = {
+      create: (doc: AnyDocument, myUser: MyUserDocument) => $create(doc, myUser, this.config["create"]),
+      delete: (ref: string | DocumentReference, myUser: MyUserDocument) => $delete(ref, myUser, this.config["delete"]),
+      fetch: (ref: string | DocumentReference, myUser: MyUserDocument) => $fetch(ref, myUser, this.config["fetch"]),
+      update: (
+        ref: string | DocumentReference, doc: AnyDocument, myUser: MyUserDocument
+      ) => $update(ref, doc, myUser, this.config["update"]),
+    };
 
     return config;
   }
@@ -368,6 +371,11 @@ export class CoreLogicBuilder {
     return new FunctionBuilder("update", this);
   }
 
+  public search(functionName: string, indexName: string) {
+    this.canSetDefaults = false;
+    return new IndexBuilder(functionName, indexName, this);
+  }
+
   private checkIfCanSetDefault() {
     if (this.canSetDefaults === false) {
       throw "You can no longer set the default values. Move any default setter to the top of the configuration class";
@@ -410,9 +418,9 @@ export class CoreLogicBuilder {
  * A configuration builder for configuring fetch, create, update, and other functions
  */
 class FunctionBuilder {
-  private config: FunctionConfig;
-  private parent: CoreLogicBuilder;
-  private name: string;
+  protected config: FunctionConfig;
+  protected parent: CoreLogicBuilder;
+  protected name: string;
   constructor(name: string, parent: CoreLogicBuilder) {
     this.name = name;
     this.parent = parent;
@@ -487,6 +495,17 @@ class FunctionBuilder {
   }
 }
 
+class IndexBuilder extends FunctionBuilder {
+  constructor(functionName: string, indexName: string, parent: CoreLogicBuilder) {
+    super(functionName, parent);
+    this.config.index = indexName;
+    return this;
+  }
+
+  public indexFields() {
+    return new FieldBuilder("indexFields", this);
+  }
+}
 
 /**
  * A configuration builder for configuring fields

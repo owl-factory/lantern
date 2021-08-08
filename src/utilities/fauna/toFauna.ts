@@ -109,7 +109,6 @@ export function toFaunaRef(doc: DocumentReference | FaunaRef | string, collectio
       return doc.ref as Expr;
     }
   } else if ("id" in doc && "collection" in doc) {
-    console.log(doc)
     return q.Ref(q.Collection(doc.collection as string), doc.id as string);
   }
   throw "Cannot build fauna reference.";
