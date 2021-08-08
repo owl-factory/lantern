@@ -4,6 +4,7 @@ import { fromFauna, isFaunaError, parseFaunaRef, toFauna, toFaunaDate, toFaunaRe
 import { FaunaRef } from "types/fauna";
 import { AnyDocument } from "types/documents";
 import { set } from "utilities/objects";
+import { UserRole } from "server/builder/CoreBuilder";
 
 export interface PaginationOptions {
   size: number;
@@ -30,6 +31,7 @@ export interface MyUserDocument {
   collection: "users",
   ref: FaunaRef | Expr,
   roles: string[];
+  role: UserRole,
   isLoggedIn: boolean;
 }
 
