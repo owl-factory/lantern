@@ -1,4 +1,4 @@
-import { CoreLogicBuilder } from "server/builder/CoreBuilder";
+import { CoreLogicBuilder } from "server/apiConfigBuilder/ConfigBuilder";
 import { CampaignDocument, UserDocument } from "types/documents";
 import { MyUserDocument } from ".";
 
@@ -20,6 +20,9 @@ export const CampaignLogic = (new CoreLogicBuilder("campaigns")
     .admin(true)
   .done()
   .fetch().done()
+  .search("fetchMyCampaigns", "my_campaigns_asc")
+    .indexFields(["lastPlayedAt", "ref", "name", "banner.src"])
+  .done()
 .done());
 
 /**

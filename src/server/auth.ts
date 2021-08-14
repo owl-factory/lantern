@@ -1,8 +1,7 @@
-import { Roles } from "faunadb";
 import { NextApiRequest } from "next";
 import { getSession } from "utilities/auth";
 import { toFaunaRef } from "utilities/fauna";
-import { RoleReadable, UserRole } from "./builder/CoreBuilder";
+import { RoleReadable, UserRole } from "./apiConfigBuilder/types";
 import { MyUserDocument } from "./logic/CoreModelLogic";
 
 export function getMyUser(req: NextApiRequest): MyUserDocument {
@@ -38,7 +37,7 @@ export function getMyUser(req: NextApiRequest): MyUserDocument {
 function getHighestRole(myUser: MyUserDocument): UserRole {
   // Base cases. If not logged in or missing roles, Guest. If logged in but no roles set, User
   if (!myUser.roles || !myUser.isLoggedIn) { return UserRole.GUEST; }
-  if (myUser.roles.length == 0 && myUser.isLoggedIn) { return UserRole.USER; }
+  if (myUser.roles.length === 0 && myUser.isLoggedIn) { return UserRole.USER; }
 
   let highest = 0;
 

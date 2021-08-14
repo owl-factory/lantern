@@ -17,8 +17,23 @@ export interface ReceievedFaunaRef {
   }
 }
 
+/**
+ * A raw Fauna document recieved from FaunaDB
+ */
 export interface FaunaDocument<T> {
   ref?: FaunaRef;
   data?: T;
   ts?: number;
+}
+
+/**
+ * Represents a response from running a search using Fauna indexes
+ */
+export interface FaunaIndexResponse {
+  data?: (string | number | unknown)[][];
+  error?: any;
+}
+
+export interface FaunaIndexOptions {
+  size: number;
 }

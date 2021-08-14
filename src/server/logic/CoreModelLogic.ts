@@ -4,16 +4,7 @@ import { fromFauna, isFaunaError, parseFaunaRef, toFauna, toFaunaDate, toFaunaRe
 import { FaunaRef } from "types/fauna";
 import { AnyDocument } from "types/documents";
 import { set } from "utilities/objects";
-import { UserRole } from "server/builder/CoreBuilder";
-
-export interface PaginationOptions {
-  size: number;
-}
-
-interface IndexResponse {
-  data?: (string | number | unknown)[][];
-  error?: any;
-}
+import { UserRole } from "server/apiConfigBuilder/ConfigBuilder";
 
 interface IdCollectionRef {
   id: string;
