@@ -1,6 +1,6 @@
 import { MyUserDocument } from "server/logic/CoreModelLogic";
 import { AnyDocument } from "types/documents";
-import { FieldBuilder, FunctionBuilder, IndexBuilder, RoleBuilder } from "./classes";
+import { FieldBuilder, FunctionBuilder, SearchBuilder, RoleBuilder, GlobalFieldBuilder, GlobalRoleBuilder } from "./classes";
 import { FunctionConfig, FunctionType } from "./types";
 
 /**
@@ -30,6 +30,10 @@ export class ApiConfigBuilder {
    * Indicates the end of the logic building. Returns a struct containing functions for accessing fauna
    */
   public done() {
+    return this;
+  }
+
+  public export() {
     return this.config;
   }
 
@@ -77,7 +81,7 @@ export class ApiConfigBuilder {
 
   public search(name: string, indexName: string) {
     this.canSetDefaults = false;
-    return new IndexBuilder(name, indexName, this);
+    return new SearchBuilder(name, indexName, this);
   }
 
   private checkIfCanSetDefault() {
@@ -92,19 +96,19 @@ export class ApiConfigBuilder {
     return this;
   }
 
-  public fields() {
+  public fields(): GlobalFieldBuilder {
     this.checkIfCanSetDefault();
-    return new FieldBuilder("fields", this);
+    return new GlobalFieldBuilder("fields", this);
   }
 
-  public setFields() {
+  public setFields(): GlobalFieldBuilder {
     this.checkIfCanSetDefault();
-    return new FieldBuilder("setFields", this);
+    return new GlobalFieldBuilder("setFields", this);
   }
 
-  public roles() {
+  public roles(): GlobalRoleBuilder {
     this.checkIfCanSetDefault();
-    return new RoleBuilder(this);
+    return new GlobalRoleBuilder(this);
   }
 
   public preProcess(fx: (doc: AnyDocument, myUser: MyUserDocument) => AnyDocument) {

@@ -3,7 +3,7 @@ import { AnyDocument } from "types/documents";
 
 export type FunctionConfig = any;
 export interface IndexConfig extends FunctionConfig {
-  indexFields: string[];
+  // indexFields: string[][];
 }
 
 export type FieldConfig = any;

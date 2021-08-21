@@ -1,6 +1,6 @@
 import { NextApiRequest } from "next";
 import { HTTPHandler } from "server/response";
-import { CampaignLogic, UserLogic } from "server/logic";
+import { CampaignLogic } from "server/logic";
 import { UserDocument } from "types/documents";
 import { createEndpoint } from "server/utilities";
 import { getMyUser } from "server/auth";

@@ -1,14 +1,19 @@
-import { CoreLogicBuilder } from "server/apiConfigBuilder/ConfigBuilder";
+
+import { Expr } from "faunadb";
+import { ApiConfigBuilder } from "server/apiConfigBuilder/ApiConfigBuilder";
 import { CampaignDocument, UserDocument } from "types/documents";
 import { MyUserDocument } from ".";
+import { isOwner } from "./security";
 
 const USER_VIEW_FIELDS = [
-  "banner.src",
-  "ruleset",
-  "players",
+  "banner.*",
+  "ruleset.*",
+  "players.*",
+  "lastPlayedAt",
 ];
-
-export const CampaignLogic = (new CoreLogicBuilder("campaigns")
+const CampaignLogicBuilder = new ApiConfigBuilder("campaigns")
+  // Globals
+  // Users are only able to view campaigns if they are a player, and all fields if they are an owner/GM
   .fields()
     .guest([])
     .user(userViewableFields)
@@ -19,11 +24,48 @@ export const CampaignLogic = (new CoreLogicBuilder("campaigns")
     .user(userViewable)
     .admin(true)
   .done()
-  .fetch().done()
+
+  /**
+   * Initializes the fetch function from defaults
+   */
+  .fetch()
+  .done()
+
+  /**
+   * Allows for specifically updating the campaign banner
+   */
+  .update("updateBanner")
+    .roles()
+      .user(isOwner)
+      .admin(true)
+    .done()
+    .setFields()
+      .user(["banner.ref", "banner.src"])
+    .done()
+  .done()
+
+  /**
+   * Allows for searching through all of a user's campaigns from last played to oldest played
+   * The index fields allow for base data to populate tiles
+   */
   .search("fetchMyCampaigns", "my_campaigns_asc")
+    .preProcessTerms(myUserToTerm)
     .indexFields(["lastPlayedAt", "ref", "name", "banner.src"])
   .done()
-.done());
+
+.done();
+export const CampaignLogic = CampaignLogicBuilder.export();
+
+/**
+ * Adds a user to the terms
+ * @param terms The prexisting terms
+ * @param myUser The user to add to the terms
+ * @returns The existing terms, with the user's ref added on
+ */
+function myUserToTerm(terms: (string | Expr)[], myUser: MyUserDocument) {
+  terms.push(myUser.ref as Expr);
+  return terms;
+}
 
 /**
  * Determines if a standard user is able to view any part of a document

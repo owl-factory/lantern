@@ -11,8 +11,7 @@ import { getMyUser, requireLogin } from "server/auth";
  */
 async function getDashboardPage(this: HTTPHandler, req: NextApiRequest) {
   const myUser = getMyUser(req);
-  requireLogin(myUser);
-  const campaigns = await CampaignLogic.fetchMyCampaigns(myUser, { size: 6 });
+  const campaigns = await CampaignLogic.fetchMyCampaigns([], { size: 6 }, myUser);
   this.returnSuccess({ campaigns: campaigns });
 }
 

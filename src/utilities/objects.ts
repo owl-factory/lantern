@@ -22,10 +22,11 @@ export function read<T>(obj: Record<string, unknown>, target: string): T {
  * @param value The value to set
  */
 export function set(obj: Record<string, unknown>, target: string, value: unknown): Record<string, unknown> {
+  console.log(target)
   const targetKeys = target.split(".");
   let current = obj;
   targetKeys.forEach((targetKey: string, index: number) => {
-    if (index === targetKeys.length - 1) { 
+    if (index === targetKeys.length - 1) {
       current[targetKey] = value;
       return;
     }

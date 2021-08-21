@@ -38,7 +38,7 @@ export class FunctionBuilder {
   /**
    * Indicates the function is complete. Returns the original Core Logic Builder
    */
-  public done() {
+  public done(): ApiConfigBuilder {
     let func;
     switch (this.functionType) {
       case FunctionType.CREATE:
@@ -58,7 +58,11 @@ export class FunctionBuilder {
         ) => $update(ref, doc, myUser, this.config);
         break;
       case FunctionType.SEARCH:
-        func = (terms: (string | Expr)[], options?: FaunaIndexOptions) => $search(terms, options, this.config);
+        func = (
+          terms: (string | Expr)[],
+          options: FaunaIndexOptions | undefined,
+          myUser: MyUserDocument
+        ) => $search(terms, options, myUser, this.config);
         break;
     }
 
@@ -108,9 +112,11 @@ export class FunctionBuilder {
 
   public preProcess(fx: (doc: AnyDocument, myUser: MyUserDocument) => AnyDocument) {
     this.config.preProcess = fx;
+    return this;
   }
 
   public postProcess(fx: (doc: AnyDocument, myUser: MyUserDocument) => AnyDocument) {
     this.config.postProcess = fx;
+    return this;
   }
 }

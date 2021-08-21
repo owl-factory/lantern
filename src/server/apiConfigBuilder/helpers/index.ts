@@ -1,4 +1,4 @@
-import { MyUserDocument } from "server/logic";
+import { MyUserDocument, trimRestrictedFields } from "server/logic";
 import { AnyDocument } from "types/documents";
 import { RoleConfig, RoleReadable, UserRole } from "../types";
 
@@ -43,6 +43,7 @@ export function canActStatic(myUser: MyUserDocument, roleConfig: RoleConfig) {
  * @param roleConfig The Role Configuration describing who
  */
 export function canActOn(docs: AnyDocument[], myUser: MyUserDocument, roleConfig: RoleConfig): AnyDocument[] {
+  console.log(docs)
   const approvedDocs: AnyDocument[] = [];
   docs.forEach((doc: AnyDocument) => {
     if (canAct(doc, myUser, roleConfig)) { approvedDocs.push(doc); }
@@ -65,4 +66,18 @@ export function canAct(doc: AnyDocument | null, myUser: MyUserDocument, roleConf
   return roleCheck(myUser, doc);
 }
 
+export function trimRestrictedFieldsOn(
+  docs: AnyDocument[],
+  myUser: MyUserDocument,
+  fields: string[] | ((doc: AnyDocument, myUser: MyUserDocument) => string[])
+) {
+  docs.forEach((doc: AnyDocument) => {
+    let selectedFields = fields;
+    if (!Array.isArray(selectedFields)) {
+      selectedFields = (fields as (doc: AnyDocument, myUser: MyUserDocument) => string[])(doc, myUser);
+    }
+    doc = trimRestrictedFields(doc as Record<string, unknown>, selectedFields);
+  });
+  return docs;
+}
 
