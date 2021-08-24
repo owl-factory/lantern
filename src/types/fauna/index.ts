@@ -37,3 +37,8 @@ export interface FaunaIndexResponse {
 export interface FaunaIndexOptions {
   size: number;
 }
+
+// A single item of a document returned from a Fauna index search
+export type FaunaIndexResponseItem = (string | number | unknown);
+// A single document of items returned from a Fauna index search
+export type FaunaIndexResponseDocument = FaunaIndexResponseItem[];

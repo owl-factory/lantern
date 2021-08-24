@@ -2,7 +2,7 @@
 import { Expr } from "faunadb";
 import { ApiConfigBuilder } from "server/apiConfigBuilder/ApiConfigBuilder";
 import { CampaignDocument, UserDocument } from "types/documents";
-import { MyUserDocument } from ".";
+import { MyUserDocument } from "types/security";
 import { isOwner } from "./security";
 
 const USER_VIEW_FIELDS = [
@@ -51,6 +51,10 @@ const CampaignLogicBuilder = new ApiConfigBuilder("campaigns")
   .search("fetchMyCampaigns", "my_campaigns_asc")
     .preProcessTerms(myUserToTerm)
     .indexFields(["lastPlayedAt", "ref", "name", "banner.src"])
+    // Explicitly allow the user since the index guarantees ownership/playing
+    .roles()
+      .user(true)
+    .done()
   .done()
 
 .done();
@@ -90,10 +94,12 @@ function userViewable(myUser: MyUserDocument, doc?: CampaignDocument): boolean {
  * @returns An array of strings indicating what fields the user is able to see. *s indicate any field at that level
  */
 function userViewableFields(myUser: MyUserDocument, doc?: CampaignDocument): string[] {
+  console.log(myUser)
+  console.log(doc)
   if (!doc) { return []; }
 
   // Is owner check
-  if (doc.ownedBy?.id === myUser.id) { return ["id"]; }
+  if (doc.ownedBy?.id === myUser.id) { return ["*"]; }
 
   // If a player, return the user view fields
   doc.players?.forEach((player: UserDocument) => {

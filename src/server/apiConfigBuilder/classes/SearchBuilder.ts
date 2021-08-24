@@ -1,6 +1,5 @@
 import { Expr } from "faunadb";
-import { MyUserDocument } from "server/logic";
-import { FieldBuilder } from ".";
+import { MyUserDocument } from "types/security";
 import { ApiConfigBuilder } from "../ApiConfigBuilder";
 import { FunctionType } from "../types";
 import { FunctionBuilder } from "./FunctionBuilder";
@@ -25,6 +24,11 @@ export class SearchBuilder extends FunctionBuilder {
     return this;
   }
 
+  /**
+   * Sets a function to process the terms of a search before running the search.
+   * @param fx A function taking terms and the current user document and pre-processing them before running a search
+   * @returns Returns the current search builder
+   */
   public preProcessTerms(fx: (terms: (string | Expr)[], myUser: MyUserDocument) => (string | Expr)[]) {
     this.config.preProcess = fx;
     return this;

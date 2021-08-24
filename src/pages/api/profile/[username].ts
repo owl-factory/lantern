@@ -15,10 +15,13 @@ import { toFaunaRef } from "utilities/fauna";
 async function getProfile(this: HTTPHandler, req: NextApiRequest) {
   const myUser = getMyUser(req);
 
-  const user = await UserLogic.fetchUserByUsername(req.query.username as string, myUser) as UserDocument;
-  if (!user) { this.returnError(404, "The given profile was not found."); }
+  const userSearch = await UserLogic.findByUsername(req.query.username as string, {}, myUser) as UserDocument[];
+  if (userSearch.length === 0) { this.returnError(404, "The given profile was not found."); }
+
+  const user = await UserLogic.fetch(userSearch[0].id, myUser);
+
   if (user.recentPlayers) {
-    user.recentPlayers = await UserLogic.fetchUsersFromList(user.recentPlayers as DocumentReference[], myUser);
+    user.recentPlayers = await UserLogic.fetchMany(user.recentPlayers as DocumentReference[], myUser);
   }
 
   this.returnSuccess({ user });
@@ -33,7 +36,7 @@ async function updateProfile(this: HTTPHandler, req: NextApiRequest) {
   const myUser = getMyUser(req);
 
   req.body.ref = toFaunaRef({ id: req.body.id, collection: "users" });
-  const user = await UserLogic.updateUser(req.body, myUser);
+  const user = await UserLogic.update(req.body.id, req.body, myUser);
   this.returnSuccess({ user });
 }
 

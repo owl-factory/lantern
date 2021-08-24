@@ -1,32 +1,38 @@
 import { NextApiRequest } from "next";
+import { MyUserDocument, RoleReadable, UserRole } from "types/security";
 import { getSession } from "utilities/auth";
 import { toFaunaRef } from "utilities/fauna";
-import { RoleReadable, UserRole } from "./apiConfigBuilder/types";
-import { MyUserDocument } from "./logic/CoreModelLogic";
 
 export function getMyUser(req: NextApiRequest): MyUserDocument {
   // TODO - have this working on page refresh
- const myUser = getSession({req});
- if (myUser === null || !("user" in myUser)) {
-  const myUser2: MyUserDocument = {
-    id: "295863299256353286",
-    collection: "users",
-    ref: toFaunaRef({
+  const myUser = getSession({req});
+  console.log(myUser)
+  // If someone is not logged in
+  if (myUser === null || !("user" in myUser)) {
+    // TODO - until auth issues are resolved, we're going to fake an active user
+    const myUser2: MyUserDocument = {
       id: "295863299256353286",
       collection: "users",
-    }),
-    roles: [],
-    role: UserRole.USER,
-    isLoggedIn: true,
+      ref: toFaunaRef({
+        id: "295863299256353286",
+        collection: "users",
+      }),
+      roles: [],
+      role: UserRole.USER,
+      isLoggedIn: true,
 
-  };
-  myUser2.ref = toFaunaRef(myUser2);
-  myUser2.role = getHighestRole(myUser2);
-  return myUser2;
-  //  return {} as MyUserDocument;
- }
-
+    };
+    myUser2.ref = toFaunaRef(myUser2);
+    myUser2.role = getHighestRole(myUser2);
+    return myUser2;
+    //  return {} as MyUserDocument;
+  }
   myUser.user.ref = toFaunaRef({ id: myUser.user.id, collection: "users" });
+  if (myUser.user.id) {
+    myUser.user.isLoggedIn = true;
+    myUser.user.role = UserRole.USER;
+  }
+
   return myUser.user;
 }
 

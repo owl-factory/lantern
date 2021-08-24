@@ -1,7 +1,12 @@
-import { MyUserDocument, trimRestrictedFields } from "server/logic";
 import { AnyDocument } from "types/documents";
-import { RoleConfig, RoleReadable, UserRole } from "../types";
+import { MyUserDocument, RoleReadable, UserRole } from "types/security";
+import { RoleConfig } from "../types";
 
+/**
+ * Determines and returns the highest role of the currently logged in user
+ * @param myUser The currently logged in user
+ * @returns The highest role of the currently logged in user
+ */
 export function getRole(myUser: MyUserDocument) {
   if (!myUser.isLoggedIn) { return UserRole.GUEST; }
   let highestRole = UserRole.USER;
@@ -15,6 +20,10 @@ export function getRole(myUser: MyUserDocument) {
   return highestRole;
 }
 
+/**
+ * Checks the there is function configuration. Throws an error if there is none
+ * @param config The function configuration to check
+ */
 export function checkConfig(config: unknown) {
   if (config === undefined) {
     throw { code: 501, message: "This method does not exist." };
@@ -43,7 +52,6 @@ export function canActStatic(myUser: MyUserDocument, roleConfig: RoleConfig) {
  * @param roleConfig The Role Configuration describing who
  */
 export function canActOn(docs: AnyDocument[], myUser: MyUserDocument, roleConfig: RoleConfig): AnyDocument[] {
-  console.log(docs)
   const approvedDocs: AnyDocument[] = [];
   docs.forEach((doc: AnyDocument) => {
     if (canAct(doc, myUser, roleConfig)) { approvedDocs.push(doc); }
@@ -65,19 +73,3 @@ export function canAct(doc: AnyDocument | null, myUser: MyUserDocument, roleConf
   if (typeof roleCheck === "boolean") { return roleCheck; }
   return roleCheck(myUser, doc);
 }
-
-export function trimRestrictedFieldsOn(
-  docs: AnyDocument[],
-  myUser: MyUserDocument,
-  fields: string[] | ((doc: AnyDocument, myUser: MyUserDocument) => string[])
-) {
-  docs.forEach((doc: AnyDocument) => {
-    let selectedFields = fields;
-    if (!Array.isArray(selectedFields)) {
-      selectedFields = (fields as (doc: AnyDocument, myUser: MyUserDocument) => string[])(doc, myUser);
-    }
-    doc = trimRestrictedFields(doc as Record<string, unknown>, selectedFields);
-  });
-  return docs;
-}
-

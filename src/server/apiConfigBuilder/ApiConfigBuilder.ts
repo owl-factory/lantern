@@ -1,5 +1,6 @@
-import { MyUserDocument } from "server/logic/CoreModelLogic";
+
 import { AnyDocument } from "types/documents";
+import { MyUserDocument } from "types/security";
 import { FieldBuilder, FunctionBuilder, SearchBuilder, RoleBuilder, GlobalFieldBuilder, GlobalRoleBuilder } from "./classes";
 import { FunctionConfig, FunctionType } from "./types";
 
@@ -69,6 +70,14 @@ export class ApiConfigBuilder {
   public fetch(name="fetch") {
     this.canSetDefaults = false;
     return new FunctionBuilder(name, FunctionType.FETCH, this);
+  }
+
+  /**
+   * Initializes the creation of a 'fetch' function. Returns a new function builder for fetch
+   */
+   public fetchMany(name="fetchMany") {
+    this.canSetDefaults = false;
+    return new FunctionBuilder(name, FunctionType.FETCH_MANY, this);
   }
 
   /**

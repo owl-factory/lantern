@@ -1,7 +1,7 @@
 import { ImageDocument } from "types/documents";
-import { MyUserDocument } from "./CoreModelLogic";
 import { ApiConfigBuilder } from "server/apiConfigBuilder/ApiConfigBuilder";
 import { isOwner } from "./security";
+import { MyUserDocument } from "types/security";
 
 const createFields = [
   "name",
@@ -59,7 +59,7 @@ export const ImageLogic = (new ApiConfigBuilder("images")
   .search("fetchMyImages", "my_images_asc")
     .indexFields(["ref", "name", "src"])
   .done()
-.done());
+.done()).export();
 
 /**
  * Adds fields marking this image document as an external image.

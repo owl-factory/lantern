@@ -1,10 +1,14 @@
-import { DocumentReference, MyUserDocument, trimRestrictedFields } from "server/logic";
+
 import { FaunaDocument } from "types/fauna";
 import { getServerClient } from "utilities/db";
 import { fromFauna, toFaunaRef } from "utilities/fauna";
 import { canAct, canActStatic, checkConfig, getRole } from "../helpers";
 import { FunctionConfig } from "../types";
 import { query as q } from "faunadb";
+import { AnyDocument } from "types/documents";
+import { DocumentReference } from "server/logic";
+import { MyUserDocument } from "types/security";
+import { determineAccessibleFields, trimRestrictedFields } from "utilities/security";
 
 /**
  * A standard function that fetches a single document by ID from the database
@@ -34,7 +38,8 @@ export async function $fetch(ref: string | DocumentReference, myUser: MyUserDocu
 
   // Runs post processing on the receieved result
   result = config.postProcess(result, myUser);
-  result = trimRestrictedFields(result as Record<string, unknown>, config.fields[getRole(myUser)]);
+  const fields = determineAccessibleFields(result as AnyDocument, myUser, config.fields[getRole(myUser)]);
+  result = trimRestrictedFields(result as Record<string, unknown>, fields, true);
 
   return result;
 }

@@ -1,5 +1,5 @@
 import { AnyDocument } from "types/documents";
-import { MyUserDocument } from "./CoreModelLogic";
+import { MyUserDocument } from "types/security";
 
 /**
  * Checks if the current user is an admin

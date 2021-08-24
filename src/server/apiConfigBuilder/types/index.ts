@@ -1,5 +1,6 @@
-import { MyUserDocument } from "server/logic";
+
 import { AnyDocument } from "types/documents";
+import { MyUserDocument } from "types/security";
 
 export type FunctionConfig = any;
 export interface IndexConfig extends FunctionConfig {
@@ -16,20 +17,8 @@ export enum FunctionType {
   CREATE,
   DELETE,
   FETCH,
+  FETCH_MANY,
   UPDATE,
   SEARCH
 }
 
-export enum UserRole {
-  GUEST = 0,
-  USER,
-  MOD,
-  ADMIN
-}
-
-export const RoleReadable = [
-  "guest",
-  "user",
-  "moderator",
-  "admin",
-];
