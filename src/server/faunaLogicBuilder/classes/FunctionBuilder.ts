@@ -1,8 +1,8 @@
 import { DocumentReference } from "server/logic";
 import { AnyDocument } from "types/documents";
-import { ApiConfigBuilder } from "../ApiConfigBuilder";
-import { FieldConfig, FunctionConfig, FunctionType, RoleConfig } from "server/apiConfigBuilder/types";
-import { $create, $delete, $fetch, $search, $update } from "server/apiConfigBuilder/methods";
+import { FaunaLogicBuilder } from "../FaunaLogicBuilder";
+import { FieldConfig, FunctionConfig, FunctionType, RoleConfig } from "server/faunaLogicBuilder/types";
+import { $create, $delete, $fetch, $search, $update } from "server/faunaLogicBuilder/methods";
 import { Expr } from "faunadb";
 import { FaunaIndexOptions } from "types/fauna";
 import { FieldBuilder } from "./FieldBuilder";
@@ -15,11 +15,11 @@ import { MyUserDocument } from "types/security";
  */
 export class FunctionBuilder {
   protected config: FunctionConfig;
-  protected parent: ApiConfigBuilder;
+  protected parent: FaunaLogicBuilder;
   protected functionType: FunctionType;
   protected name: string;
 
-  constructor(name: string, functionType: FunctionType, parent: ApiConfigBuilder) {
+  constructor(name: string, functionType: FunctionType, parent: FaunaLogicBuilder) {
     this.name = name;
     this.functionType = functionType;
     this.parent = parent;
@@ -41,7 +41,7 @@ export class FunctionBuilder {
    * Indicates the function is complete and sets the different kinds of function types.
    * @returns the original Core Logic Builder
    */
-  public done(): ApiConfigBuilder {
+  public done(): FaunaLogicBuilder {
     let func;
     switch (this.functionType) {
       case FunctionType.CREATE:

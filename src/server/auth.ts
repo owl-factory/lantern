@@ -1,12 +1,12 @@
 import { NextApiRequest } from "next";
-import { MyUserDocument, RoleReadable, UserRole } from "types/security";
+import { MyUserDocument, UserRoleReadable, UserRole } from "types/security";
 import { getSession } from "utilities/auth";
 import { toFaunaRef } from "utilities/fauna";
 
 export function getMyUser(req: NextApiRequest): MyUserDocument {
   // TODO - have this working on page refresh
   const myUser = getSession({req});
-  console.log(myUser)
+
   // If someone is not logged in
   if (myUser === null || !("user" in myUser)) {
     // TODO - until auth issues are resolved, we're going to fake an active user
@@ -48,7 +48,7 @@ function getHighestRole(myUser: MyUserDocument): UserRole {
   let highest = 0;
 
   myUser.roles.forEach((role: string) => {
-    RoleReadable.forEach((readableRole: string, index: number) => {
+    UserRoleReadable.forEach((readableRole: string, index: number) => {
       if (role.toLowerCase() === readableRole && index > highest) {
         highest = index;
       }

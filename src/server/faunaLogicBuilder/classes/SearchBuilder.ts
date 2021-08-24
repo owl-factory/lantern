@@ -1,11 +1,14 @@
 import { Expr } from "faunadb";
 import { MyUserDocument } from "types/security";
-import { ApiConfigBuilder } from "../ApiConfigBuilder";
+import { FaunaLogicBuilder } from "../FaunaLogicBuilder";
 import { FunctionType } from "../types";
 import { FunctionBuilder } from "./FunctionBuilder";
 
+/**
+ * A function builder meant for building search functions using indexes
+ */
 export class SearchBuilder extends FunctionBuilder {
-  constructor(functionName: string, indexName: string, parent: ApiConfigBuilder) {
+  constructor(functionName: string, indexName: string, parent: FaunaLogicBuilder) {
     super(functionName, FunctionType.SEARCH, parent);
     this.config.index = indexName;
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

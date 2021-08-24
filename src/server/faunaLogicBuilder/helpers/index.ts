@@ -1,5 +1,5 @@
 import { AnyDocument } from "types/documents";
-import { MyUserDocument, RoleReadable, UserRole } from "types/security";
+import { MyUserDocument, UserRoleReadable, UserRole } from "types/security";
 import { RoleConfig } from "../types";
 
 /**
@@ -11,7 +11,7 @@ export function getRole(myUser: MyUserDocument) {
   if (!myUser.isLoggedIn) { return UserRole.GUEST; }
   let highestRole = UserRole.USER;
   myUser.roles.forEach((role: string) => {
-    RoleReadable.forEach((readableRole: string, index: number) => {
+    UserRoleReadable.forEach((readableRole: string, index: number) => {
       if (role.toLowerCase() === readableRole && index > highestRole) {
         highestRole = index;
       }

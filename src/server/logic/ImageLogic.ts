@@ -1,5 +1,5 @@
 import { ImageDocument } from "types/documents";
-import { ApiConfigBuilder } from "server/apiConfigBuilder/ApiConfigBuilder";
+import { FaunaLogicBuilder } from "server/faunaLogicBuilder/FaunaLogicBuilder";
 import { isOwner } from "./security";
 import { MyUserDocument } from "types/security";
 
@@ -10,7 +10,7 @@ const createFields = [
   "width",
 ];
 
-export const ImageLogic = (new ApiConfigBuilder("images")
+export const ImageLogic = (new FaunaLogicBuilder("images")
   // Globals
   .fields()
     .guest([])

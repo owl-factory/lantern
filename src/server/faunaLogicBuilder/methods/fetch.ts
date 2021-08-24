@@ -1,4 +1,3 @@
-
 import { FaunaDocument } from "types/fauna";
 import { getServerClient } from "utilities/db";
 import { fromFauna, toFaunaRef } from "utilities/fauna";

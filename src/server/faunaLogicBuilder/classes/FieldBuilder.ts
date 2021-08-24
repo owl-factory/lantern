@@ -2,12 +2,10 @@ import {
   FieldConfig,
   FieldValue,
   RoleConfig
-} from "server/apiConfigBuilder/types";
-import { RoleReadable, UserRole } from "types/security";
-import { ApiConfigBuilder } from "../ApiConfigBuilder";
+} from "server/faunaLogicBuilder/types";
+import { UserRoleReadable, UserRole } from "types/security";
+import { FaunaLogicBuilder } from "../FaunaLogicBuilder";
 import { FunctionBuilder } from "./FunctionBuilder";
-
-
 
 /**
  * A configuration builder for configuring fields
@@ -15,9 +13,9 @@ import { FunctionBuilder } from "./FunctionBuilder";
 abstract class $FieldBuilder {
   private config: FieldConfig;
   private name: string;
-  protected parent: ApiConfigBuilder | FunctionBuilder;
+  protected parent: FaunaLogicBuilder | FunctionBuilder;
 
-  constructor(name: string, parent: ApiConfigBuilder | FunctionBuilder) {
+  constructor(name: string, parent: FaunaLogicBuilder | FunctionBuilder) {
     this.parent = parent;
     this.name = name;
     this.config = {};
@@ -26,10 +24,10 @@ abstract class $FieldBuilder {
   /**
    * Indicates the function is complete. Returns the original Function Builder
    */
-  public done(): ApiConfigBuilder | FunctionBuilder {
+  public done(): FaunaLogicBuilder | FunctionBuilder {
      // Ensures that each role has a value to reference, taking from the last defined lower role that came before it
      let value: FieldValue = [];
-     for(let i = 0; i < RoleReadable.length; i++) {
+     for(let i = 0; i < UserRoleReadable.length; i++) {
       if (this.config[i] === undefined) {
         this.config[i] = value;
       } else {
@@ -41,13 +39,22 @@ abstract class $FieldBuilder {
     return this.parent;
   }
 
+  /**
+   * Creates and returns the default configuration for Roles
+   * @returns The default configuration
+   */
   public static default(): RoleConfig {
     return this.align({});
   }
 
+  /**
+   * Aligns configuration so that the different values bubble up to fill empty higher roles
+   * @param config The configuration to align
+   * @returns An aligned configuration
+   */
   protected static align(config: RoleConfig): RoleConfig {
     let value: FieldValue = [];
-    for(let i = 0; i < RoleReadable.length; i++) {
+    for(let i = 0; i < UserRoleReadable.length; i++) {
       if (config[i] === undefined) {
         config[i] = value;
       } else {
@@ -110,16 +117,16 @@ export class FieldBuilder extends $FieldBuilder {
  * A global field builder for building out fields from the ApiConfigBuilder
  */
 export class GlobalFieldBuilder extends $FieldBuilder {
-  declare protected parent: ApiConfigBuilder;
+  declare protected parent: FaunaLogicBuilder;
 
-  constructor(name: string, parent: ApiConfigBuilder) {
+  constructor(name: string, parent: FaunaLogicBuilder) {
     super(name, parent);
   }
 
   /**
    * Indicates the function is complete. Returns the original Function Builder
    */
-  public done(): ApiConfigBuilder {
-    return super.done() as ApiConfigBuilder;
+  public done(): FaunaLogicBuilder {
+    return super.done() as FaunaLogicBuilder;
   }
 }

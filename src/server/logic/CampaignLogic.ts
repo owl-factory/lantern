@@ -1,6 +1,6 @@
 
 import { Expr } from "faunadb";
-import { ApiConfigBuilder } from "server/apiConfigBuilder/ApiConfigBuilder";
+import { FaunaLogicBuilder } from "server/faunaLogicBuilder/FaunaLogicBuilder";
 import { CampaignDocument, UserDocument } from "types/documents";
 import { MyUserDocument } from "types/security";
 import { isOwner } from "./security";
@@ -11,7 +11,7 @@ const USER_VIEW_FIELDS = [
   "players.*",
   "lastPlayedAt",
 ];
-const CampaignLogicBuilder = new ApiConfigBuilder("campaigns")
+const CampaignLogicBuilder = new FaunaLogicBuilder("campaigns")
   // Globals
   // Users are only able to view campaigns if they are a player, and all fields if they are an owner/GM
   .fields()

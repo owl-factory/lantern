@@ -1,4 +1,4 @@
-import { ApiConfigBuilder } from "server/apiConfigBuilder/ApiConfigBuilder";
+import { FaunaLogicBuilder } from "server/faunaLogicBuilder/FaunaLogicBuilder";
 import { isOwner } from "./security";
 
 const guestFields = [
@@ -18,7 +18,7 @@ const updateFields = [
   "activelySeeking",
   "isPrivate",
 ];
-const UserLogicBuilder = new ApiConfigBuilder("users");
+const UserLogicBuilder = new FaunaLogicBuilder("users");
 export const UserLogic = UserLogicBuilder
   // Globals
   .fields()

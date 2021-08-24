@@ -1,6 +1,6 @@
-import { RoleConfig, RoleValue } from "server/apiConfigBuilder/types";
-import { RoleReadable, UserRole } from "types/security";
-import { ApiConfigBuilder } from "../ApiConfigBuilder";
+import { RoleConfig, RoleValue } from "server/faunaLogicBuilder/types";
+import { UserRoleReadable, UserRole } from "types/security";
+import { FaunaLogicBuilder } from "../FaunaLogicBuilder";
 import { FunctionBuilder } from "./FunctionBuilder";
 
 /**
@@ -8,9 +8,9 @@ import { FunctionBuilder } from "./FunctionBuilder";
  */
 abstract class $RoleBuilder {
   private config: RoleConfig;
-  protected parent: ApiConfigBuilder | FunctionBuilder;
+  protected parent: FaunaLogicBuilder | FunctionBuilder;
 
-  constructor(parent: ApiConfigBuilder | FunctionBuilder) {
+  constructor(parent: FaunaLogicBuilder | FunctionBuilder) {
     this.parent = parent;
     this.config = {};
   }
@@ -18,7 +18,7 @@ abstract class $RoleBuilder {
   /**
    * Indicates the function is complete. Returns the original Function Builder
    */
-  public done(): ApiConfigBuilder | FunctionBuilder {
+  public done(): FaunaLogicBuilder | FunctionBuilder {
     // Ensures that each role has a value to reference, taking from the last defined lower role that came before it
     this.config = $RoleBuilder.align(this.config);
 
@@ -42,7 +42,7 @@ abstract class $RoleBuilder {
    */
   protected static align(config: RoleConfig) {
     let value: RoleValue = false;
-    for(let i = 0; i < RoleReadable.length; i++) {
+    for(let i = 0; i < UserRoleReadable.length; i++) {
       if (config[i] === undefined) {
         config[i] = value;
       } else {
@@ -104,16 +104,16 @@ export class RoleBuilder extends $RoleBuilder {
  * The global role builder for used by the logic builder
  */
 export class GlobalRoleBuilder extends $RoleBuilder {
-  declare protected parent: ApiConfigBuilder;
+  declare protected parent: FaunaLogicBuilder;
 
-  constructor(parent: ApiConfigBuilder) {
+  constructor(parent: FaunaLogicBuilder) {
     super(parent);
   }
 
   /**
    * Indicates the roles are complete. Returns the original logic builder
    */
-  public done(): ApiConfigBuilder {
-    return super.done() as ApiConfigBuilder;
+  public done(): FaunaLogicBuilder {
+    return super.done() as FaunaLogicBuilder;
   }
 }
