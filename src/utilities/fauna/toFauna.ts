@@ -1,5 +1,6 @@
 import { Expr, query as q } from "faunadb";
 import { DocumentReference } from "server/logic/CoreModelLogic";
+import { FaunaRef } from "types/fauna";
 import { isFaunaRef } from "utilities/fauna";
 import { fromFauna, parseFaunaRef } from "./fromFauna";
 
@@ -91,10 +92,14 @@ interface BaseDocument {
 
 /**
  * Converts an id and collection to a Fauna Reference
- * @param id The id of the reference
+ * @param doc The document or reference ID
  * @param collection The collection of the reference
  */
-export function toFaunaRef(doc: DocumentReference): Expr {
+export function toFaunaRef(doc: DocumentReference | FaunaRef | string, collection?: string): Expr {
+  if (typeof doc === "string" && !collection) { throw "A given string reference requires a collection"; }
+  if (typeof doc === "string") {
+    return q.Ref(q.Collection(collection as string), doc);
+  }
   if ("ref" in doc && doc.ref) {
     if (doc.ref instanceof Expr) { return doc.ref; }
     if (typeof doc.ref === "object" && "@ref" in doc.ref) {

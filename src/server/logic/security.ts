@@ -1,5 +1,5 @@
 import { AnyDocument } from "types/documents";
-import { MyUserDocument } from "./CoreModelLogic";
+import { MyUserDocument } from "types/security";
 
 /**
  * Checks if the current user is an admin
@@ -14,7 +14,8 @@ export function isAdmin(myUser: MyUserDocument): boolean {
  * @param doc The document to check
  * @param myUser The current user owbject to check for ownership
  */
-export function isOwner(doc: AnyDocument, myUser: MyUserDocument): boolean {
+export function isOwner(myUser: MyUserDocument, doc?: AnyDocument): boolean {
+  if (!doc) { return false; }
   return (!doc.ownedBy || doc.ownedBy.id === myUser.id);
 }
 

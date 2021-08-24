@@ -1,12 +1,5 @@
-import {  Expr, query as q } from "faunadb";
-import { AnyDocument, ImageDocument, UserDocument } from "types/documents";
-import { FaunaDocument, FaunaRef } from "types/fauna";
-import { toFaunaRef, fromFauna } from "utilities/fauna";
-import { getServerClient } from "utilities/db";
-import { CoreModelLogic, ImageLogic } from "server/logic";
-import { DocumentReference, MyUserDocument } from "./CoreModelLogic";
-import { isAdmin, isOwner } from "./security";
-import { fetchImageToSet } from "./ImageLogic";
+import { FaunaLogicBuilder } from "server/faunaLogicBuilder/FaunaLogicBuilder";
+import { isOwner } from "./security";
 
 const guestFields = [
   "username",
@@ -25,104 +18,86 @@ const updateFields = [
   "activelySeeking",
   "isPrivate",
 ];
+const UserLogicBuilder = new FaunaLogicBuilder("users");
+export const UserLogic = UserLogicBuilder
+  // Globals
+  .fields()
+    .guest(guestFields)
+    .user(["*"]) // TODO
+    .admin(["*"])
+  .done()
+  .roles()
+    .admin(true)
+  .done()
 
-// TODO - change findByIDs/Refs to find by ID. Nothing matters except that they are either
-// strings or structs containing { id } or { ref }. Validate refs. Build them from IDs
-// if possible. Another @TODO - manually build ref objects (or repair them).
+  /**
+   * Disables the delete functionality for users. Users cannot be deleted, as they are far too complex,
+   * but we can disable them and retire them in the future using specific functions
+   */
+  .delete()
+    .roles()
+      .admin(false)
+    .done()
+  .done()
 
-/**
- * Finds a user by their ID and returns sanitized values
- * @param id The id of the user to find
- * @param myID The ID of the current user
- * @param roles The roles of the current user, if any
- */
-export async function fetchUser(ref: DocumentReference, myUser: MyUserDocument): Promise<UserDocument | null> {
-  const client = getServerClient();
-  const user = await CoreModelLogic.fetchByRef(ref);
-  if (!user) { return null; }
+  /**
+   * Initializes the fetch function. Guests and above can view. The fields allowed are inherited.
+   */
+  .fetch()
+    .roles()
+      .guest(true)
+    .done()
+  .done()
 
-  if (isOwner(user, myUser)) { return user; }
-  return CoreModelLogic.trimRestrictedFields(user as Record<string, unknown>, guestFields);
-}
+  /**
+   * Creates a function for fetching many user documents at once. It should use the same
+   * logic and security as the ordinary fetch fucntion
+   */
+  .fetchMany()
+    .roles()
+      .guest(true)
+    .done()
+  .done()
 
-/**
- * Fetches a user by their username
- * @param username The username to search for
- * @param myID The current user's id
- * @param roles The current user's roles
- */
-export async function fetchUserByUsername(username: string, myUser: MyUserDocument): Promise<UserDocument | null> {
-  const index = await CoreModelLogic.fetchByIndex(
-    `users_by_username`,
-    [username],
-    ["ref"],
-    { size: 1 }
-  );
-  if (index.length === 0 || !index[0].ref) { return null; }
+  /**
+   * Creates a function to find by username. This can be used for searches of multiple users,
+   * running login functionality, and viewing a user's page with their username in the URL
+   */
+  .search("findByUsername", "users_by_username")
+    .indexFields(["ref"])
+    .fields()
+      .guest(["*"])
+    .done()
+    .roles()
+      .guest(true)
+    .done()
+  .done()
 
-  return await fetchUser({ ref: index[0].ref }, myUser);
-}
+  /**
+   * Creates the update function. Only a user (or admin) can update themselves. This updates a small selection
+   * of fields
+   */
+  .update()
+    .roles()
+      .user(isOwner)
+      .admin(true)
+    .done()
+    .setFields()
+      .user(updateFields)
+    .done()
+  .done()
 
-/**
- * Finds a collection of users by their refs
- * @param refs The refs, given as an array of objects containing ref
- * @param myID The current user's ID
- * @param roles The current user's roles
- * @TODO - combine the user id and roles into a single object? Good idea- do later
- */
-export async function fetchUsersFromList(refs: DocumentReference[], myUser: MyUserDocument): Promise<UserDocument[]> {
-  const users: Promise<UserDocument>[] = [];
-  refs.forEach((ref: DocumentReference) => {
-    const user = fetchUser(ref, myUser);
-    if (user === null) { return; }
+  /**
+   * Allows for a user to update specifically a profile image
+   */
+  .update("updateProfileImage")
+    .setFields()
+      .user(["icon.ref", "icon.src"])
+    .done()
+    .roles()
+      .user(isOwner)
+      .admin(true)
+    .done()
+  .done()
 
-    users.push(user as Promise<UserDocument>);
-  });
-
-  return Promise.all(users);
-}
-
-/**
- * Updates a single user's document in Fauna
- * @param user The partial user document to update
- * @param myID The id of the current user, to determine access rights
- * @param roles The roles of the current user, to determine access rights
- */
-export async function updateUser(user: UserDocument, myUser: MyUserDocument): Promise<UserDocument> {
-  const updatedUser = await CoreModelLogic.updateOne(user as Record<string, unknown>, updateFields, myUser, canUpdate);
-
-  if (isOwner(user, myUser)) { return updatedUser; }
-  return CoreModelLogic.trimRestrictedFields(updatedUser as Record<string, unknown>, guestFields);
-}
-
-/**
- * Checks if the current user can update the given document
- * @param user The user document to check updatability
- * @param myUser The current user object attempting to update
- */
-function canUpdate(user: UserDocument, myUser: MyUserDocument): boolean {
-  if (isAdmin(myUser)) { return true; }
-  if (isOwner(user, myUser)) {
-    return true;
-  }
-  return false;
-}
-
-/**
- * Updates the user's profile image by one of several methods.
- * @param user The user document to update
- * @param body The body of request to update the user image.
- * @param myUser The current user
- */
-export async function updateUserImage(user: UserDocument, body: any, myUser: MyUserDocument): Promise<any> {
-  if (!canUpdate(user, myUser)) {
-    throw { code: 403, message: "You do not have permission to update this user's profile image." };
-  }
-
-  const image = await fetchImageToSet(body.image, body.method, myUser);
-
-  const targetUser = { ref: user.ref, icon: { ref: image.ref, src: image.src }};
-  const updatedUser = await CoreModelLogic.updateOne(targetUser, ["icon"], myUser, () => true);
-  return { user: updatedUser, image };
-}
-
+.done().export();

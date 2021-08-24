@@ -1,126 +1,112 @@
-import { getServerClient } from "utilities/db";
-import { Expr, query as q } from "faunadb";
-import { fromFauna } from "utilities/fauna";
-import { CampaignDocument, ImageDocument, UserDocument } from "types/documents";
-import { CoreModelLogic, ImageLogic } from "server/logic";
-import { DocumentReference, MyUserDocument, PaginationOptions } from "./CoreModelLogic";
-import { isAdmin, isOwner } from "./security";
 
-// The different levels of access for a campaign
-enum CampaignAccessLevels {
-  GUEST,
-  PLAYER,
-  OWNER,
-  ADMIN,
-}
+import { Expr } from "faunadb";
+import { FaunaLogicBuilder } from "server/faunaLogicBuilder/FaunaLogicBuilder";
+import { CampaignDocument, UserDocument } from "types/documents";
+import { MyUserDocument } from "types/security";
+import { isOwner } from "./security";
 
-const allowedPlayerFields = [
-  "lastPlayed",
-  "players",
-  "banner",
+const USER_VIEW_FIELDS = [
+  "banner.*",
+  "ruleset.*",
+  "players.*",
+  "lastPlayedAt",
 ];
+const CampaignLogicBuilder = new FaunaLogicBuilder("campaigns")
+  // Globals
+  // Users are only able to view campaigns if they are a player, and all fields if they are an owner/GM
+  .fields()
+    .guest([])
+    .user(userViewableFields)
+    .admin(["*"])
+  .done()
+  .roles()
+    .guest(false)
+    .user(userViewable)
+    .admin(true)
+  .done()
 
-const allowedGuestFields: string[] = [];
+  /**
+   * Initializes the fetch function from defaults
+   */
+  .fetch()
+  .done()
+
+  /**
+   * Allows for specifically updating the campaign banner
+   */
+  .update("updateBanner")
+    .roles()
+      .user(isOwner)
+      .admin(true)
+    .done()
+    .setFields()
+      .user(["banner.ref", "banner.src"])
+    .done()
+  .done()
+
+  /**
+   * Allows for searching through all of a user's campaigns from last played to oldest played
+   * The index fields allow for base data to populate tiles
+   */
+  .search("fetchMyCampaigns", "my_campaigns_asc")
+    .preProcessTerms(myUserToTerm)
+    .indexFields(["lastPlayedAt", "ref", "name", "banner.src"])
+    // Explicitly allow the user since the index guarantees ownership/playing
+    .roles()
+      .user(true)
+    .done()
+  .done()
+
+.done();
+export const CampaignLogic = CampaignLogicBuilder.export();
 
 /**
- * Fetches a campaign by the id and validates against the user's id
- * @param id The id of the campaign to fetch
- * @param myID The current user's ID
- * @param roles The roles of the user, if any
- * @TODO - change to fetchCampaignByRef. ByID becomes a wrapper to build
+ * Adds a user to the terms
+ * @param terms The prexisting terms
+ * @param myUser The user to add to the terms
+ * @returns The existing terms, with the user's ref added on
  */
-export async function fetchCampaign(
-  ref: DocumentReference,
-  myUser: MyUserDocument
-): Promise<CampaignDocument | null> {
-  let campaign = await CoreModelLogic.fetchByRef(ref);
-  if (!campaign) { return null; }
-
-  const accessLevel = determineAccessLevel(campaign, myUser);
-  campaign = trimRestrictedFields(campaign, accessLevel);
-
-  return campaign;
+function myUserToTerm(terms: (string | Expr)[], myUser: MyUserDocument) {
+  terms.push(myUser.ref as Expr);
+  return terms;
 }
 
 /**
- * Fetches a number of campaigns that the current user is a part of
- * @param myID The current user's ID
- * @param roles The current user's roles
+ * Determines if a standard user is able to view any part of a document
+ * @param myUser The current user attempting to view
+ * @param doc The document the user is attempting to view
+ * @returns True if the user may view any part of the document, false otherwise
  */
-export async function fetchMyCampaigns(
-  myUser: MyUserDocument,
-  options: PaginationOptions
-): Promise<CampaignDocument[]> {
-  const campaigns = await CoreModelLogic.fetchByIndex(
-    "my_campaigns4",
-    [myUser.ref as Expr],
-    ["lastPlayedAt", "ref", "name", "banner.src"],
-    options
-  );
-  console.log(campaigns)
-  return campaigns;
-}
-
-/**
- * Determines which access level the current user has access to
- * @param campaign The campaign we are determining access level of
- * @param myID The owner ID
- * @param roles The roles of the user, if any
- */
-function determineAccessLevel(campaign: CampaignDocument, myUser: MyUserDocument): CampaignAccessLevels {
-  if ("ADMIN" in myUser.roles) { return CampaignAccessLevels.ADMIN; }
-
-  if (campaign.ownedBy && campaign.ownedBy.id === myUser.id) { return CampaignAccessLevels.OWNER; }
-
-  if (!campaign.players || campaign.players.length === 0) { return CampaignAccessLevels.GUEST; }
-
-  campaign.players.forEach((player: UserDocument) => {
-    if (player.id === myUser.id) { return CampaignAccessLevels.PLAYER; }
+function userViewable(myUser: MyUserDocument, doc?: CampaignDocument): boolean {
+  if (!doc) { return false; }
+  if (doc.ownedBy?.id === myUser.id) { return true; }
+  doc.players?.forEach((player: UserDocument) => {
+    if (player.id === myUser.id) { return true; }
   });
 
-  return CampaignAccessLevels.GUEST;
-}
-
-/**
- * Determines which fields should be kept when trimming restricted fields
- * @param campaign The campaign object to trim
- * @param accessLevel The level to trim for
- */
-export function trimRestrictedFields(campaign: CampaignDocument, accessLevel: CampaignAccessLevels): CampaignDocument {
-  if (accessLevel === CampaignAccessLevels.ADMIN || accessLevel === CampaignAccessLevels.OWNER) {
-    return campaign;
-  } else if (accessLevel === CampaignAccessLevels.PLAYER) {
-    return CoreModelLogic.trimRestrictedFields(campaign as Record<string, unknown>, allowedPlayerFields);
-  }
-  return CoreModelLogic.trimRestrictedFields(campaign as Record<string, unknown>, allowedGuestFields);
-}
-
-/**
- * Checks if the user is able to update the non-game related portions of the campaign
- * @param campaign 
- * @param myUser 
- */
-function canUpdate(campaign: CampaignDocument, myUser: MyUserDocument) {
-  if (isAdmin(myUser)) { return true; }
-  if (isOwner(campaign, myUser)) { return true; } 
   return false;
 }
 
 /**
- * Potentially creates a new image document and assigns an image document to be the banner image for a campaign
- *
- * @param campaign The campaign document to update
- * @param body The body of the request to update the banner. Contains an image document (image) and method (string)
- * @param myUser The current user making changes
+ * Determines which fields a user has access to in a given document
+ * @param myUser The user attempting to view the document
+ * @param doc The document the user is attempting to view
+ * @returns An array of strings indicating what fields the user is able to see. *s indicate any field at that level
  */
-export async function updateBanner(campaign: CampaignDocument, body: any, myUser: MyUserDocument) {
-  if (!canUpdate(campaign, myUser)) {
-    throw { code: 403, message: "You do not have permission to update this campaign's banner image." };
-  }
+function userViewableFields(myUser: MyUserDocument, doc?: CampaignDocument): string[] {
+  console.log(myUser)
+  console.log(doc)
+  if (!doc) { return []; }
 
-  const image = await ImageLogic.fetchImageToSet(body.image, body.method, myUser);
+  // Is owner check
+  if (doc.ownedBy?.id === myUser.id) { return ["*"]; }
 
-  const targetCampaign = { ref: campaign.ref, banner: { ref: image.ref, src: image.src }};
-  const updatedCampaign = await CoreModelLogic.updateOne(targetCampaign, ["banner"], myUser, () => true);
-  return { campaign: updatedCampaign, image };
+  // If a player, return the user view fields
+  doc.players?.forEach((player: UserDocument) => {
+    if (player.id === myUser.id) { return USER_VIEW_FIELDS; }
+  });
+
+  // Edge case
+  // TODO - can campaigns be public? Or should pre-generated campaigns be their own document type?
+  return [];
 }

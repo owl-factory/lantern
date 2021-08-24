@@ -1,4 +1,6 @@
+import { FaunaIndexResponseDocument } from "types/fauna";
 import { isFaunaDate, isFaunaRef } from "utilities/fauna";
+import { set } from "utilities/objects";
 
 type AnyDocument = any;
 
@@ -89,6 +91,7 @@ function parseFaunaItem(item: unknown) {
     collection = ref.collection.id;
   }
 
+
   return { id, collection };
 }
 
@@ -101,3 +104,40 @@ function parseFaunaDate(date: Record<string, unknown>): Date {
   return new Date(date.value as string | number | Date);
 }
 
+/**
+ * Parses an index response from a 2D array of strings, numbers, and unknowns into a list of documents
+ * @param faunaIndexDocuments The index documents returned from a fauna index search
+ * @param fields A list of fields in order that represent the output of the index
+ * @returns Returns a list of documents
+ */
+export function parseIndexResponse(faunaIndexDocuments: FaunaIndexResponseDocument[], fields: string[]): AnyDocument[] {
+  const parsedDocs: AnyDocument[] = [];
+  faunaIndexDocuments.forEach((indexDocument: (string | number | unknown)[]) => {
+    const parsedDoc: AnyDocument = {};
+
+    if (!Array.isArray(indexDocument)) {
+      const { id, collection } = parseFaunaRef(indexDocument);
+      parsedDoc.ref = indexDocument;
+      parsedDoc.id = id;
+      parsedDoc.collection = collection;
+    } else {
+      // For each item, there is a given term that maps it. The end result should
+      // resemble a mapped object
+      indexDocument.forEach((value: (string | number | unknown), index: number) => {
+        const valueKey = fields[index];
+        // (parsedDoc as Record<string, unknown>)[valueKey] = value;
+
+        if (valueKey === "ref") {
+          const { id, collection } = parseFaunaRef(value);
+          parsedDoc.id = id;
+          parsedDoc.collection = collection;
+        }
+        // Deep sets, deliminating the value key's periods
+        set(parsedDoc as Record<string, unknown>, valueKey, value);
+      });
+    }
+    parsedDocs.push(parsedDoc);
+  });
+
+  return parsedDocs;
+}
