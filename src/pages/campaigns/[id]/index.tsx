@@ -1,5 +1,4 @@
 import { Page } from "components/design";
-import { Button } from "components/style";
 import { NextPageContext } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -43,8 +42,8 @@ function Banner({ campaign, isOwner, setCampaign }: any) {
      * @param image The new image document to use as the banner image
      * @param method The method to set the new image
      */
-    const onSubmit = async (image: ImageDocument, method: string) => {
-      return imageController.setCampaignBanner(campaign, image, method);
+    const onSubmit = async (image2: ImageDocument, method: string) => {
+      return imageController.setCampaignBanner(campaign, image2, method);
     }
 
     image = (

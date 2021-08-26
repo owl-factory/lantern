@@ -2,8 +2,9 @@ import React from "react";
 import { Col, Form } from "react-bootstrap";
 import { AtomProps } from "types/layouts";
 import { findValue } from "utilities/layouts";
-import { ErrorMessage, Input } from "components/design/forms";
+import { ErrorMessage } from "components/design/forms";
 import { AtomError } from "components/layouts/atoms";
+import { Input } from "components/style/forms";
 
 /**
  * Renders a text input that connects with a Formik form
@@ -27,6 +28,7 @@ export function TextInput(props: AtomProps) {
     <Form.Group as={Col} {...(props.atom.w || {})}>
       { label ? <Form.Label>{label}</Form.Label> : null }
       <Input
+        type="text"
         name={inputName}
         placeholder={placeholder}
       />

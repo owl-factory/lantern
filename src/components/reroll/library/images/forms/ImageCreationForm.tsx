@@ -1,4 +1,4 @@
-import { Modal } from "components/design";
+import { Modal } from "components/style/modals";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { ImageDocument } from "types/documents";
@@ -24,7 +24,7 @@ export const ImageCreationForm = observer(({imageController, onSave}: any) => {
     .catch((error: string) => {
       console.error(error);
     });
-  }
+  };
 
   return (
     <ImageForm
@@ -40,10 +40,9 @@ export const ImageCreationForm = observer(({imageController, onSave}: any) => {
  * Renders the ImageCreationForm within a modal
  */
 export const ImageCreationFormModal = observer(({ imageController, open, handleClose }: any) => {
-  
   return (
     <Modal open={open} handleClose={handleClose}>
       <ImageCreationForm imageController={imageController} onSave={handleClose}/>
     </Modal>
-  )
+  );
 });

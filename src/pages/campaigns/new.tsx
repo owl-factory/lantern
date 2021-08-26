@@ -1,5 +1,5 @@
 import React from "react";
-import { Input, Page, Select } from "components/design";
+import { Page, Select } from "components/design";
 import { Form, Formik } from "formik";
 import { CampaignDocument } from "types/documents";
 import { useRouter } from "next/router";
@@ -8,6 +8,7 @@ import { getSession, requireClientLogin } from "utilities/auth";
 import { getClient, getID, readQuery, unwrapRefs } from "utilities/db";
 import { query as q } from "faunadb";
 import { Button } from "components/style";
+import { Input } from "components/style/forms";
 
 
 interface RestResponse<T> {
@@ -51,7 +52,7 @@ export default function NewCampaign(props: any): JSX.Element {
         {() => (
         <Form>
           <label>Name</label>
-          <Input name="name"/>
+          <Input type="text" name="name"/>
 
           <label>Ruleset</label>
           <Select name="ruleset" options={props.rulesets} labelKey="0" valueKey="1"/>

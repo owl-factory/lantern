@@ -1,9 +1,9 @@
 import { GridType, SceneController } from "client/scenes/SceneController";
-import { Input } from "components/design";
 import { Button } from "components/style";
 import { Formik, Form as FormikForm, FormikProps } from "formik";
 import React from "react";
 import { Select } from "components/design/forms" ;
+import { Input } from "components/style/forms";
 
 // The default width of the grid count inputs
 const DEFAULT_GRID_INPUT_WIDTH="4.5em";
@@ -273,7 +273,12 @@ function HeightPixelsInput({ formikProps }: GridSubformProps): JSX.Element {
     <span>
        {( formikProps.values.height !== formikProps.values.expectedHeight) ?
         <span>
-          <Input name="expectedHeight" disabled={true} style={{ display: "inline", width: DEFAULT_PIXEL_INPUT_WIDTH }}/>
+          <Input
+            type="text"
+            name="expectedHeight"
+            disabled={true}
+            style={{ display: "inline", width: DEFAULT_PIXEL_INPUT_WIDTH }}
+          />
           <Button type="button" onClick={() => setActualHeight(formikProps)}>=&gt;</Button>
         </span> : null
       }
@@ -296,7 +301,12 @@ function WidthPixelsInput({ formikProps }: GridSubformProps): JSX.Element {
     <span>
       {( formikProps.values.width !== formikProps.values.expectedWidth) ?
         <span>
-          <Input name="expectedWidth" disabled={true} style={{ display: "inline", width: DEFAULT_PIXEL_INPUT_WIDTH }}/>
+          <Input
+            type="text"
+            name="expectedWidth"
+            disabled={true}
+            style={{ display: "inline", width: DEFAULT_PIXEL_INPUT_WIDTH }}
+          />
           <Button type="button" onClick={() => setActualWidth(formikProps)}>=&gt;</Button>
         </span> : null
       }

@@ -2,8 +2,8 @@ import React from "react";
 import { ErrorMessage, Formik, Form as FormikForm } from "formik";
 import * as Yup from "yup";
 import { signIn } from "utilities/auth";
-import { Input } from "components/design";
 import { Button } from "components/style";
+import { Input } from "components/style/forms";
 
 /** Initial form values */
 const initialValues = {
@@ -40,7 +40,7 @@ export function SignInForm(): JSX.Element {
     >
       <FormikForm>
         <label>Username or email address</label>
-        <Input type="text" aria-label="Username or email address" name="username"/>
+        <Input label="Username" type="text" aria-label="Username or email address" name="username"/>
         <ErrorMessage name="username"/>
 
         <label>Password</label>

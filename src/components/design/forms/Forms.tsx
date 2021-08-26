@@ -2,7 +2,7 @@ export { Checkbox } from "components/design/forms/Checkboxes";
 export { Date } from "components/design/forms/Date";
 export { DateTime } from "components/design/forms/DateTime";
 export * from "components/design/forms/ErrorMessage";
-export { Input } from "components/design/forms/Input";
+// export { Input } from "components/design/forms/Input";
 export { Multiselect } from "components/design/forms/Multiselect";
 export { RadioButton } from "components/design/forms/RadioButtons";
 export { Select } from "components/design/forms/Select";

@@ -1,13 +1,15 @@
 import { Form, Formik } from "formik";
 import React from "react";
 import { Button, Card, Col, FormGroup, FormLabel, Row } from "react-bootstrap";
-import { ContextMenu, ErrorMessage, fetchContentResponse, IndexTable, Input, Modal, Page } from "components/design";
+import { ErrorMessage, fetchContentResponse, IndexTable, Page } from "components/design";
 import request from "utilities/request";
 import { MdBlock, MdBuild, MdInfo } from "react-icons/md";
 import { ContextMenuBuilder, TableBuilder } from "utilities/design";
 import { TableComponentProps } from "types/design";
 import { useRouter } from "next/router";
 import * as Yup from "yup";
+import { Input } from "components/style/forms";
+import { Modal } from "components/style/modals";
 
 // The props for the RulesetPage
 interface RulesetProps {
@@ -88,7 +90,7 @@ function CreateRulesetForm() {
           <Row>
             <FormGroup as={Col} xs={12} lg={6}>
               <FormLabel>Ruleset Name</FormLabel>
-              <Input name="name"/>
+              <Input type="text" name="name"/>
               <ErrorMessage name="name"/>
             </FormGroup>
           </Row>
@@ -122,7 +124,7 @@ function RulesetModal({ handleClose, modal }: { handleClose: () => void, modal: 
 function RulesetFilter() {
   return (
     <>
-      <Input name="name.like"/>
+      <Input type="text" name="name.like"/>
     </>
   );
 }
@@ -162,10 +164,7 @@ export default function Rulesets({ initialRulesets, rulesetCount }: RulesetProps
    */
   function RulesetActions({ data }: TableComponentProps) {
     return (
-      <ContextMenu
-        context={{_id: data._id, name: data.name, alias: data.alias || data._id}}
-        {...rulesetActions.renderConfig()}
-      />
+      <></>
     );
   }
 

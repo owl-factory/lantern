@@ -4,6 +4,7 @@ interface ButtonProps {
   children: React.ReactNode;
   className?: string;
   disabled?: boolean;
+  id?: string;
   onClick?: () => void;
   type?: "button" | "submit" | "reset";
 }
@@ -23,6 +24,7 @@ export function Button(props: ButtonProps): JSX.Element {
   return (
     <button
       className={className}
+      id={props.id}
       onClick={props.onClick}
       disabled={props.disabled}
       type={type}

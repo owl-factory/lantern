@@ -1,4 +1,4 @@
-import { PageState } from "components/design";
+import { PageState } from "components/style/Pagination";
 import { Options, SortByObject, SortByType } from "types/inputs";
 
 /**

@@ -1,4 +1,3 @@
-export * from "components/design/contextMenus";
 export * from "components/design/forms";
 export * from "components/design/tables";
 export * from "components/design/toolbox";

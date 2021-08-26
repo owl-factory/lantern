@@ -1,10 +1,14 @@
-import { Breadcrumbs, ContextMenu, IndexTable, Input, Modal, Page } from "components/design";
+import { IndexTable, Page } from "components/design";
+import { Breadcrumbs, Button, Col, Row } from "components/style";
+import { Card, CardBody, CardHeader } from "components/style/card";
+import { Input } from "components/style/forms";
+import { Modal } from "components/style/modals";
 import { ErrorMessage, Form, Formik } from "formik";
 import { NextPageContext } from "next";
 import Error from 'next/error';
 import { useRouter } from "next/router";
 import React from "react";
-import { Button, Card, Col, FormGroup, FormLabel, Row } from "react-bootstrap";
+import { FormGroup, FormLabel } from "react-bootstrap";
 import { MdBlock, MdBuild, MdInfo } from "react-icons/md";
 import { TableComponentProps } from "types/design";
 import { ContextMenuBuilder, TableBuilder } from "utilities/design";
@@ -56,10 +60,7 @@ const contentTypeTableBuilder = new TableBuilder()
  */
 function ContentTypeActions({ data }: TableComponentProps) {
   return (
-    <ContextMenu
-      context={{_id: data._id, name: data.name, alias: data.alias || data._id, rulesetID: data.rulesetID}}
-      {...contentTypeActions.renderConfig()}
-    />
+    <></>
   );
 }
 
@@ -101,7 +102,7 @@ function NewContentTypeForm(): JSX.Element {
           <Row>
             <FormGroup as={Col} xs={12} lg={6}>
               <FormLabel>Content Type Name</FormLabel>
-              <Input name="name"/>
+              <Input type="text" name="name"/>
               <ErrorMessage name="name"/>
             </FormGroup>
           </Row>
@@ -123,10 +124,10 @@ function ContentTypeModal({ handleClose, modal }: { handleClose: () => void, mod
   return (
     <Modal open={modal} handleClose={handleClose}>
       <Card>
-        <Card.Header>Create a New Content Type</Card.Header>
-        <Card.Body>
+        <CardHeader>Create a New Content Type</CardHeader>
+        <CardBody>
           <NewContentTypeForm/>
-        </Card.Body>
+        </CardBody>
       </Card>
     </Modal>
   );
