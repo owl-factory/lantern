@@ -1,5 +1,4 @@
 import React from "react";
-import { Pagination as BSPagination } from "react-bootstrap";
 
 interface PaginationProps {
   pageState: PageState; // The state of the page to use and update
@@ -37,9 +36,9 @@ function isDisabled(page: number, targetPage: number) {
 function PaginationCell(props: PaginationCellProps) {
   const pageText = props.pageText || props.targetPage.toString();
   return (
-    <BSPagination.Item className={props.className} onClick={() => {props.setPage(props.targetPage);}}>
+    <li className={`page-item ${props.className}`} onClick={() => {props.setPage(props.targetPage);}}>
       {pageText}
-    </BSPagination.Item>
+    </li>
   );
 }
 
@@ -116,11 +115,14 @@ export function Pagination(props: PaginationProps): JSX.Element {
 
   const cells = renderCells();
 
+  // TODO - add aria-label
   return ((maxPage > 1) ?
     (
-      <BSPagination>
-        {cells}
-      </BSPagination>
+      <nav>
+        <ul className="pagination">
+          {cells}
+        </ul>
+      </nav>
     ):
     <></>
   );

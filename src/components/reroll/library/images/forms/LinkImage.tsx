@@ -1,5 +1,6 @@
-import { Input, Tooltip } from "components/design";
+import { Input } from "components/design";
 import { Button } from "components/style";
+import { Tooltip } from "components/style/tooltips";
 import { Formik, Form as FormikForm } from "formik";
 import React from "react";
 import { ImageDocument } from "types/documents";

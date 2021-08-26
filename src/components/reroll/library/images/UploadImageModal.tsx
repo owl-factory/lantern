@@ -1,8 +1,8 @@
 import { Input, Modal, Tooltip } from "components/design";
 import { Button, Col, Row } from "components/style";
+import { Card, CardHeader, CardBody } from "components/style/card";
 import { Formik, Form as FormikForm } from "formik";
 import React from "react";
-import { Card } from "react-bootstrap";
 import { rest } from "utilities/request";
 
 interface UploadImageModalProps {
@@ -26,8 +26,8 @@ export function UploadImageModal({ handleClose, modal }: UploadImageModalProps) 
   return (
     <Modal open={modal} handleClose={handleClose}>
       <Card>
-        <Card.Header><h3>New Image</h3></Card.Header>
-        <Card.Body>
+        <CardHeader><h3>New Image</h3></CardHeader>
+        <CardBody>
           <Row>
             <Col xs={12} md={6}>
               <Formik
@@ -56,7 +56,7 @@ export function UploadImageModal({ handleClose, modal }: UploadImageModalProps) 
               <h4>Upload Image</h4>
             </Col>
           </Row>
-        </Card.Body>
+        </CardBody>
       </Card>
     </Modal>
   );

@@ -1,7 +1,8 @@
 import React from "react";
 import { ContextMenuBuilderOutput, ContextMenuContext } from "types/design";
-import { ButtonGroup, Dropdown } from "react-bootstrap";
+import { Dropdown } from "react-bootstrap";
 import { ContextButtons, ContextDropdownMenu, Tooltip } from "components/design";
+import { ButtonGroup } from "components/style";
 interface ContextMenuProps extends ContextMenuBuilderOutput {
   context: ContextMenuContext;
 }

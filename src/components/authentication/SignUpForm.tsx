@@ -1,9 +1,9 @@
 import React from "react";
 import { ErrorMessage, Formik, Form as FormikForm } from "formik";
 import * as Yup from "yup";
-import { Button, Col, Form, Row } from "react-bootstrap";
 import { signUp } from "utilities/auth";
 import { Input } from "components/design";
+import { Button } from "components/style";
 
 /** Initial form values */
 const initialValues = {
@@ -42,28 +42,19 @@ export function SignUpForm(): JSX.Element {
       onSubmit={submit}
     >
       <FormikForm>
-        <Row>
-          <Form.Group as={Col} sm={12}>
-            <Form.Label>Username</Form.Label>
-            <Input type="text" aria-label="Username" name="username"/>
-            <ErrorMessage name="username"/>
-          </Form.Group>
-          <Form.Group as={Col} sm={12}>
-            <Form.Label>Email</Form.Label>
-            <Input type="text" aria-label="Email" name="email"/>
-            <ErrorMessage name="email"/>
-          </Form.Group>
-          <Form.Group as={Col} sm={12}>
-            <Form.Label>Password</Form.Label>
-            <Input type="password" aria-label="Password" name="password"/>
-            <ErrorMessage name="password"/>
-          </Form.Group>
-        </Row>
-        <Row>
-          <Form.Group as={Col}>
-            <Button type="submit">Submit</Button>
-          </Form.Group>
-        </Row>
+        <label>Username</label>
+        <Input type="text" aria-label="Username" name="username"/>
+        <ErrorMessage name="username"/>
+
+        <label>Email</label>
+        <Input type="text" aria-label="Email" name="email"/>
+        <ErrorMessage name="email"/>
+
+        <label>Password</label>
+        <Input type="password" aria-label="Password" name="password"/>
+        <ErrorMessage name="password"/>
+
+        <Button type="submit">Submit</Button>
       </FormikForm>
     </Formik>
   );

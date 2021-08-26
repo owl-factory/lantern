@@ -12,6 +12,7 @@ import { read } from "utilities/objects";
 import { ImageSelectionWrapper } from "components/reroll/library/images/ImageSelectionWrapper";
 import { ImageController } from "client/library";
 import { CampaignDocument, ImageDocument } from "types/documents";
+import { Tooltip } from "components/style/tooltips";
 
 /**
  * Renders the campaign banner. Also renders the ability to set a new banner image, if the user is the owner
@@ -72,7 +73,9 @@ function Players({ campaign }: any) {
   });
   return (
     <div>
+      <Tooltip title="Hi there">
       <h2>Players</h2>
+      </Tooltip>
       {players}
     </div>
   );

@@ -1,7 +1,7 @@
 import React from "react";
-import { Card } from "react-bootstrap";
 import { DynamicMolecule } from "components/layouts";
 import { Atom, Molecule } from "types/layouts";
+import { Card, CardBody } from "components/style/card";
 
 // The props for the base Card Layout
 interface CardLayoutProps {
@@ -34,9 +34,9 @@ function CardLayoutHeader(props: CardLayoutChildProps) {
     );
   });
   return (
-    <Card.Header>
+    <CardHeader>
       {headerItems}
-    </Card.Header>
+    </CardHeader>
   );
 }
 
@@ -57,9 +57,9 @@ function CardLayoutBody(props: CardLayoutChildProps) {
   });
 
   return (
-    <Card.Body>
+    <CardBody>
       {bodyItems}
-    </Card.Body>
+    </CardBody>
   );
 }
 

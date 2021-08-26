@@ -1,5 +1,4 @@
 import React from "react";
-import { Breadcrumb as BSBreadcrumb } from "react-bootstrap";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
@@ -42,7 +41,7 @@ export function Breadcrumbs(props: BreadcrumbProps): JSX.Element {
 
       breadcrumbs.push(
         <Link key={"crumb_" + i} href={uri} passHref>
-          <BSBreadcrumb.Item>{title}</BSBreadcrumb.Item>
+          <li className="breadcrumb-item">{title}</li>
         </Link>,
       );
 
@@ -55,9 +54,11 @@ export function Breadcrumbs(props: BreadcrumbProps): JSX.Element {
   }
 
   return (
-    <BSBreadcrumb>
-      { buildCrumbs() }
-    </BSBreadcrumb>
+    <nav>
+      <ol className="breadcrumb">
+        { buildCrumbs() }
+      </ol>
+    </nav>
   );
 }
 

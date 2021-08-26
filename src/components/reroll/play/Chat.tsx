@@ -1,4 +1,4 @@
-import Tooltip from "components/design/Tooltip";
+import { Tooltip } from "components/style/tooltips";
 import { Form, Formik } from "formik";
 import { observer } from "mobx-react-lite";
 import React from "react";

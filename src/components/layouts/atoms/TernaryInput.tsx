@@ -1,5 +1,5 @@
+import { Button } from "components/style";
 import React from "react";
-import { Button } from "react-bootstrap";
 import { AtomProps } from "types/layouts";
 
 /**

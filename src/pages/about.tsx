@@ -1,7 +1,7 @@
 import React from "react";
 import Page from "components/design/Page";
 import Link from "next/link";
-import { Button } from "react-bootstrap";
+import { Button } from "components/style";
 
 
 function About(): JSX.Element {
@@ -20,7 +20,7 @@ function About(): JSX.Element {
         P.S. You are Cute, whoever you are.
       </p>
       <Link href="/" passHref>
-        <Button title="Home" color="secondary">
+        <Button>
           Home
         </Button>
       </Link>

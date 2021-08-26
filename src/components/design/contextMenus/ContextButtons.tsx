@@ -9,10 +9,10 @@ import {
   ContextMenuLink,
   ContextMenuLinkProps,
 } from "types/design";
-import { Button, ButtonGroup } from "react-bootstrap";
 import { parseHref } from "utilities/design";
 import Link from "next/link";
 import { Tooltip } from "components/design";
+import { Button, ButtonGroup } from "components/style";
 
 /**
  * Context Menu Buttons are split buttons created together in a singular group,

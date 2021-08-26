@@ -1,5 +1,5 @@
+import { Col } from "components/style";
 import React from "react";
-import { Col } from "react-bootstrap";
 
 /**
  * Renders error messages within an atom's allocated space to 
