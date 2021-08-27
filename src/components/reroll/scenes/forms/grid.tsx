@@ -2,8 +2,8 @@ import { GridType, SceneController } from "client/scenes/SceneController";
 import { Button } from "components/style";
 import { Formik, Form as FormikForm, FormikProps } from "formik";
 import React from "react";
-import { Select } from "components/design/forms" ;
 import { Input } from "components/style/forms";
+import { Select } from "components/style/forms/Select";
 
 // The default width of the grid count inputs
 const DEFAULT_GRID_INPUT_WIDTH="4.5em";
@@ -187,16 +187,20 @@ interface GridSubformProps {
  * @param onChange The event handler to run on change
  */
 function GridTypeDropdown({ formikProps }: GridSubformProps) {
+  const options: JSX.Element[] = [];
+  GRID_TYPE_OPTIONS.forEach((option) => {
+    options.push(<option value={option.value}>{option.label}</option>);
+  });
   return (
     <span>
       Grid Type:&nbsp;
       <Select
         name="gridType"
         onChange={(e: onChangeEvent) => {onGridTypeChange(e, formikProps);}}
-        options={GRID_TYPE_OPTIONS}
-        includeEmpty={false}
         style={{ display: "inline", width: "10em" }}
-      />
+      >
+        {options}
+      </Select>
     </span>
   );
 }
@@ -208,16 +212,20 @@ function GridTypeDropdown({ formikProps }: GridSubformProps) {
  * @param values The values of the form
  */
 function GridSize({ formikProps }: GridSubformProps): JSX.Element {
+  const options: JSX.Element[] = [];
+  GRID_SIZE_OPTIONS.forEach((option) => {
+    options.push(<option value={option.value}>{option.label}</option>);
+  });
   return (
     <div>
       Grid Size:&nbsp;
       <Select
         name="gridSizeSelect"
-        options={GRID_SIZE_OPTIONS}
-        includeEmpty={false}
         onChange={(e: onChangeEvent) => onGridSizeSelectChange(e, formikProps)}
         style={{ display: "inline", width: "13em" }}
-      />
+      >
+        {options}
+      </Select>
       { (formikProps.values.gridSizeSelect === "custom") ?
         <>
           <Input

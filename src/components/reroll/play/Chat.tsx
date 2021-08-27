@@ -3,8 +3,8 @@ import { Form, Formik } from "formik";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { MessageDocument } from "types/documents";
-import { Select, TextArea } from "components/design/forms";
 import { GameServer } from "client/play";
+import { Input, Select } from "components/style/forms";
 
 interface ChatProps {
   server: GameServer;
@@ -115,10 +115,9 @@ export const Chat = observer((props: ChatProps) => {
   }
 
   const messageBlock: JSX.Element[] = [];
-  const sendAsOptions = [
-    { value: '', label: server.user.name }
+  const options = [
+    <option value="">{server.user.name}</option>,
   ];
-  console.log(sendAsOptions)
 
   server.state.messages.forEach((_: MessageDocument, index: number) => {
     messageBlock.push(<Message messages={server.state.messages} index={index} key={index}/>);
@@ -134,8 +133,10 @@ export const Chat = observer((props: ChatProps) => {
       >
       {() => (
         <Form>
-          <Select name="sendAs" options={sendAsOptions} includeEmpty={false} valueKey="value"/>
-          <TextArea name="content"/>
+          <Select name="sendAs">
+            {options}
+          </Select>
+          <Input type="textarea" name="content"/>
           <button type="submit">Submit</button>
         </Form>
       )}

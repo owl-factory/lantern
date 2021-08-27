@@ -1,5 +1,5 @@
 import React from "react";
-import { Page, Select } from "components/design";
+import { Page } from "components/design";
 import { Form, Formik } from "formik";
 import { CampaignDocument } from "types/documents";
 import { useRouter } from "next/router";
@@ -9,6 +9,7 @@ import { getClient, getID, readQuery, unwrapRefs } from "utilities/db";
 import { query as q } from "faunadb";
 import { Button } from "components/style";
 import { Input } from "components/style/forms";
+import { Select } from "components/style/forms/Select";
 
 
 interface RestResponse<T> {
@@ -42,6 +43,11 @@ export default function NewCampaign(props: any): JSX.Element {
     }
   }
 
+  const options: JSX.Element[] = [];
+  props.rulesets.forEach((ruleset: any) => {
+    options.push(<option value={ruleset[1]}>{ruleset[0]}</option>);
+  });
+
   return (
     <Page>
       <h1>Create a New Campaign</h1>
@@ -55,7 +61,9 @@ export default function NewCampaign(props: any): JSX.Element {
           <Input type="text" name="name"/>
 
           <label>Ruleset</label>
-          <Select name="ruleset" options={props.rulesets} labelKey="0" valueKey="1"/>
+          <Select name="ruleset" >
+            {options}
+          </Select>
 
           <Button type="submit">Create</Button>
         </Form>

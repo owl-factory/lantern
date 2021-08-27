@@ -8,7 +8,6 @@ import { NextPageContext } from "next";
 import Error from 'next/error';
 import { useRouter } from "next/router";
 import React from "react";
-import { FormGroup, FormLabel } from "react-bootstrap";
 import { MdBlock, MdBuild, MdInfo } from "react-icons/md";
 import { TableComponentProps } from "types/design";
 import { ContextMenuBuilder, TableBuilder } from "utilities/design";
@@ -100,11 +99,11 @@ function NewContentTypeForm(): JSX.Element {
         <Form>
           {/* Just name for now */}
           <Row>
-            <FormGroup as={Col} xs={12} lg={6}>
-              <FormLabel>Content Type Name</FormLabel>
+            <Col xs={12} lg={6}>
+              <label>Content Type Name</label>
               <Input type="text" name="name"/>
               <ErrorMessage name="name"/>
-            </FormGroup>
+            </Col>
           </Row>
 
           <Button type="submit">Submit!</Button>

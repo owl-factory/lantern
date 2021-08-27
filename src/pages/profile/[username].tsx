@@ -1,5 +1,5 @@
 import React, { Dispatch } from "react";
-import { Checkbox, Page, TextArea } from "components/design";
+import { Page } from "components/design";
 import { NextPageContext } from "next";
 import { rest } from "utilities/request";
 import { getSession } from "utilities/auth";
@@ -10,7 +10,7 @@ import { useRouter } from "next/router";
 import { arrayToList } from "utilities/arrays";
 import { ImageController } from "client/library";
 import { ImageSelectionWrapper } from "components/reroll/library/images/ImageSelectionWrapper";
-import { Input } from "components/style/forms";
+import { Checkbox, Input } from "components/style/forms";
 
 
 /**
@@ -97,7 +97,7 @@ function MyDetails({ user, saveUser }: { user: UserDocument, saveUser: (values: 
           <div><i>None yet! Check back soon!</i></div>
           <hr/>
           <span>Bio</span>
-          <TextArea name="bio"/>
+          <Input type="textarea" name="bio"/>
           <hr/>
           <span>Enjoys Playing</span>
           <div>{arrayToList(user.enjoysPlaying)}</div>
@@ -106,7 +106,7 @@ function MyDetails({ user, saveUser }: { user: UserDocument, saveUser: (values: 
           <div>{arrayToList(user.activelySeeking)}</div>
           <hr/>
           <span>Remove from Player Directory</span>
-          <Checkbox name="isPrivate"/>
+          <Checkbox name="isPrivate" value="true"/>
           <hr/>
           <Button type="submit">Save</Button>
         </FormikForm>

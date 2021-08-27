@@ -1,7 +1,7 @@
 import { Form, Formik } from "formik";
 import React from "react";
-import { Button, Card, Col, FormGroup, FormLabel, Row } from "react-bootstrap";
-import { ErrorMessage, fetchContentResponse, IndexTable, Page } from "components/design";
+import { fetchContentResponse, IndexTable, Page } from "components/design";
+import { ErrorMessage } from "components/design/forms";
 import request from "utilities/request";
 import { MdBlock, MdBuild, MdInfo } from "react-icons/md";
 import { ContextMenuBuilder, TableBuilder } from "utilities/design";
@@ -10,6 +10,8 @@ import { useRouter } from "next/router";
 import * as Yup from "yup";
 import { Input } from "components/style/forms";
 import { Modal } from "components/style/modals";
+import { Button, Col, Row } from "components/style";
+import { Card, CardBody, CardHeader } from "components/style/card";
 
 // The props for the RulesetPage
 interface RulesetProps {
@@ -88,11 +90,11 @@ function CreateRulesetForm() {
         <Form>
           {/* Just name for now */}
           <Row>
-            <FormGroup as={Col} xs={12} lg={6}>
-              <FormLabel>Ruleset Name</FormLabel>
+            <Col xs={12} lg={6}>
+              <label>Ruleset Name</label>
               <Input type="text" name="name"/>
               <ErrorMessage name="name"/>
-            </FormGroup>
+            </Col>
           </Row>
 
           <Button type="submit">Submit!</Button>
@@ -112,10 +114,10 @@ function RulesetModal({ handleClose, modal }: { handleClose: () => void, modal: 
   return (
     <Modal open={modal} handleClose={handleClose}>
       <Card>
-        <Card.Header>Create a New Ruleset</Card.Header>
-        <Card.Body>
+        <CardHeader>Create a New Ruleset</CardHeader>
+        <CardBody>
           <CreateRulesetForm/>
-        </Card.Body>
+        </CardBody>
       </Card>
     </Modal>
   );
@@ -123,9 +125,7 @@ function RulesetModal({ handleClose, modal }: { handleClose: () => void, modal: 
 
 function RulesetFilter() {
   return (
-    <>
-      <Input type="text" name="name.like"/>
-    </>
+    <Input type="text" name="name.like"/>
   );
 }
 

@@ -1,5 +1,4 @@
 import React from "react";
-import { Table as BSTable } from "react-bootstrap";
 import { MdExpandLess, MdExpandMore, MdUnfoldMore } from "react-icons/md";
 import { Column, TableDataType } from "types/design/table";
 
@@ -166,7 +165,7 @@ export function Table(props: TableProps): JSX.Element {
   }
 
   return (
-    <BSTable>
+    <table className="table">
       <TableHeader
         columns={props.columns}
         lastSortBy={props.sortBy || ""}
@@ -179,7 +178,7 @@ export function Table(props: TableProps): JSX.Element {
         rowAction={props.rowAction}
         startingIncrement={props.startingIncrement}
       />
-    </BSTable>
+    </table>
   );
 }
 export default Table;

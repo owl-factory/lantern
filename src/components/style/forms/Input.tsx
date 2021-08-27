@@ -9,7 +9,7 @@ interface InputProps {
   onChange?: (e: React.ChangeEvent<any>) => void;
   placeholder?: string;
   style?: CSSProperties;
-  type: "text" | "password" | "email" | "number"
+  type: "text" | "password" | "email" | "number" | "textarea"
 }
 
 /**
