@@ -1,5 +1,4 @@
 import React from "react";
-import Link from "next/link";
 import { Navbar, NavbarBrand } from "components/style/navbar";
 
 /**
@@ -8,9 +7,7 @@ import { Navbar, NavbarBrand } from "components/style/navbar";
 function HeaderBar(): JSX.Element {
   return (
     <Navbar variant="dark" bg="dark" expand="lg" className="justify-content-between">
-      <Link href="/" passHref>
-        <NavbarBrand>Reroll</NavbarBrand>
-      </Link>
+      <NavbarBrand href="/">Reroll</NavbarBrand>
     </Navbar>
   );
 }

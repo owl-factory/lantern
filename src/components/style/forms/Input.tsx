@@ -26,20 +26,19 @@ interface InputProps {
  */
 export function Input(props: InputProps) {
   // Makes Formik work right
-  const [ field ] = useField(props.name);
+  const [ field ] = useField(props);
 
   // Build the input here so we can return it solo or put it into a floating label
   const input = (
     <input
-      {...field}
       type={props.type}
       className="form-control" // TODO - add other classes?
       disabled={props.disabled}
       id={props.id || props.name}
-      name={props.name}
-      onChange={props.onChange}
       placeholder={props.placeholder || " "}
       style={props.style}
+      {...field}
+
     />
   );
 

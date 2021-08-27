@@ -15,7 +15,7 @@ interface CardProps {
 export function Card(props: CardProps) {
   return (
     <div
-      className={`card ${props.className}`}
+      className={`card ${props.className || ""}`}
       onClick={props.onClick}
     >
       {props.children}

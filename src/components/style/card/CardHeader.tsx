@@ -13,6 +13,6 @@ interface CardHeaderProps {
  */
 export function CardHeader(props: CardHeaderProps) {
   return (
-    <div className="card-header">{props.children}</div>
+    <div className="card-header">{props.children || ""}</div>
   );
 }

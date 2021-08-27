@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 
 interface BrandProps {
@@ -13,8 +14,10 @@ interface BrandProps {
  */
 export function NavbarBrand(props: BrandProps) {
   return (
-    <a className="navbar-brand" href={`${props.href || "#"}`}>
-      {props.children}
-    </a>
+    <Link  href={`${props.href || "#"}`} passHref>
+      <a className="navbar-brand">
+        {props.children}
+      </a>
+    </Link>
   );
 }

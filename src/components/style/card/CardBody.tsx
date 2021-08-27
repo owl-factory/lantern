@@ -13,7 +13,7 @@ interface CardBodyProps {
  */
 export function CardBody(props: CardBodyProps) {
   return (
-    <div className={`card-body ${props.className}`}>
+    <div className={`card-body ${props.className || ""}`}>
       {props.children}
     </div>
   );

@@ -20,9 +20,11 @@ function About(): JSX.Element {
         P.S. You are Cute, whoever you are.
       </p>
       <Link href="/" passHref>
+        <a>
         <Button>
           Home
         </Button>
+        </a>
       </Link>
     </Page>
   );

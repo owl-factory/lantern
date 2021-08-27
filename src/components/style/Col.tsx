@@ -43,7 +43,7 @@ interface ColProps {
 export function Col(props: ColProps) {
   let className = "";
   SIZES.forEach((size: string) => {
-    className += `${sizeToClass(size, (props as any)[size])} ${props.className}`;
+    className += `${sizeToClass(size, (props as any)[size])} ${props.className || ""}`;
   });
   return <div className={className}>{props.children}</div>;
 }

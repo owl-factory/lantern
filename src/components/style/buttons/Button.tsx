@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ForwardedRef } from "react";
 
 interface ButtonProps {
   children: React.ReactNode;
@@ -18,11 +18,12 @@ interface ButtonProps {
  * @param props.type The type of button that this is, and the default action it will perform
  * @returns A JSX element with a button
  */
-export function Button(props: ButtonProps): JSX.Element {
-  const className = `btn btn-primary ${props.className}`;
+export const Button = React.forwardRef((props: ButtonProps, ref: ForwardedRef<HTMLButtonElement> ): JSX.Element => {
+  const className = `btn btn-primary ${props.className || ""}`;
   const type = props.type || "button";
   return (
     <button
+      ref={ref}
       className={className}
       id={props.id}
       onClick={props.onClick}
@@ -32,4 +33,4 @@ export function Button(props: ButtonProps): JSX.Element {
       {props.children}
     </button>
   );
-}
+});

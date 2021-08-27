@@ -39,7 +39,7 @@ function RecentGames(props: any) {
     let src = "";
     if (campaign.banner && campaign.banner.src) { src = campaign.banner.src; }
     campaigns.push(
-      <Col xs={12} md={6} lg={3}>
+      <Col key={campaign.id} xs={12} md={6} lg={3}>
         <Card>
           <img src={src}/>
           <h5>{campaign.name}</h5>
