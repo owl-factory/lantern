@@ -3,7 +3,7 @@ import React from "react";
 import { AppProps } from "next/app";
 import Head from "next/head";
 import "./_app.scss";
-import HeaderBar from "components/design/HeaderBar";
+import HeaderBar from "components/design/headerBar/HeaderBar";
 
 
 export default function MyApp({ Component , pageProps }: AppProps): JSX.Element {
