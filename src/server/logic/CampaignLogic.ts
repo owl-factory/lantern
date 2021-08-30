@@ -32,6 +32,13 @@ const CampaignLogicBuilder = new FaunaLogicBuilder("campaigns")
   .done()
 
   /**
+   * Creates a function for fetching many campaign documents at once. It should use the same
+   * logic and security as the ordinary fetch fucntion
+   */
+  .fetchMany()
+  .done()
+
+  /**
    * Allows for specifically updating the campaign banner
    */
   .update("updateBanner")
