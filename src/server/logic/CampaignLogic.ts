@@ -3,6 +3,7 @@ import { Expr } from "faunadb";
 import { FaunaLogicBuilder } from "server/faunaLogicBuilder/FaunaLogicBuilder";
 import { CampaignDocument, UserDocument } from "types/documents";
 import { MyUserDocument } from "types/security";
+import { myUserToTerm } from "./CoreModelLogic";
 import { isOwner } from "./security";
 
 const USER_VIEW_FIELDS = [
@@ -68,17 +69,6 @@ const CampaignLogicBuilder = new FaunaLogicBuilder("campaigns")
 export const CampaignLogic = CampaignLogicBuilder.export();
 
 /**
- * Adds a user to the terms
- * @param terms The prexisting terms
- * @param myUser The user to add to the terms
- * @returns The existing terms, with the user's ref added on
- */
-function myUserToTerm(terms: (string | Expr)[], myUser: MyUserDocument) {
-  terms.push(myUser.ref as Expr);
-  return terms;
-}
-
-/**
  * Determines if a standard user is able to view any part of a document
  * @param myUser The current user attempting to view
  * @param doc The document the user is attempting to view
@@ -101,8 +91,6 @@ function userViewable(myUser: MyUserDocument, doc?: CampaignDocument): boolean {
  * @returns An array of strings indicating what fields the user is able to see. *s indicate any field at that level
  */
 function userViewableFields(myUser: MyUserDocument, doc?: CampaignDocument): string[] {
-  console.log(myUser)
-  console.log(doc)
   if (!doc) { return []; }
 
   // Is owner check

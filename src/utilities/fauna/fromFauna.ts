@@ -131,6 +131,11 @@ export function parseIndexResponse(faunaIndexDocuments: FaunaIndexResponseDocume
           const { id, collection } = parseFaunaRef(value);
           parsedDoc.id = id;
           parsedDoc.collection = collection;
+        } else if (valueKey.match(/.+\.ref$/)) {
+          const starterKey = valueKey.slice(0, -3);
+          const { id, collection } = parseFaunaRef(value);
+          set(parsedDoc, starterKey + "id", id);
+          set(parsedDoc, starterKey + "collection", collection);
         }
         // Deep sets, deliminating the value key's periods
         set(parsedDoc as Record<string, unknown>, valueKey, value);

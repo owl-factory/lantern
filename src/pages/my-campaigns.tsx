@@ -5,15 +5,12 @@ import { NextPageContext } from "next";
 import Link from "next/link";
 import React from "react";
 import { Button, Card, Col, Row } from "react-bootstrap";
+import { InitialProps } from "types/client";
 import { CampaignDocument } from "types/documents";
-import { Session } from "types/user";
 import { getSession } from "utilities/auth";
 import { rest } from "utilities/request";
 
-interface MyCampaignsProps {
-  session: Session;
-  success: boolean;
-  message: string;
+interface MyCampaignsProps extends InitialProps {
   myCampaigns: CampaignDocument[];
 }
 
