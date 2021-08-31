@@ -39,7 +39,7 @@ function CharacterCard(props: CharacterCardProps) {
             {props.character.campaign.name}<br/>
             {props.character.ruleset.name}<br/>
             <ButtonGroup>
-              <Button>Copy</Button>
+              <Button>Duplicate</Button>
               <Button>Edit</Button>
             </ButtonGroup>
           </Col>
