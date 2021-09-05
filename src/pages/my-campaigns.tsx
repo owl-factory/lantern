@@ -44,6 +44,14 @@ function CampaignTile(props: CampaignTileProps) {
   );
 }
 
+/**
+ * 
+ * @param success Whether or not the initial props failed
+ * @param message The success or error message indicating the error from the intial props
+ * @param session The current user's session
+ * @param campaigns The initial light campaign information fetched from the API
+ * @returns 
+ */
 export default function MyCampaigns(props: MyCampaignsProps) {
   function searchCampaigns(values: SearchCampaignsArguments) {
     console.log(values);

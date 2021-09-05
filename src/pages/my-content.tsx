@@ -8,7 +8,6 @@ import { getSession } from "utilities/auth";
 import { rest } from "utilities/request";
 import { GiAxeSword } from 'react-icons/gi';
 import { MdContentCopy, MdDeleteForever, MdEdit } from "react-icons/md";
-import { Tooltip } from "components/style/tooltips";
 import { Loading } from "components/style";
 
 interface MyContentProps extends InitialProps {
@@ -23,9 +22,9 @@ function ContentRow(props: ContentRowProps) {
   return (
     <tr>
       <td><GiAxeSword/></td>
-      <td>Teardrop</td>
-      <td>{"Melee Weapon" || <Loading/>}</td>
-      <td>Dungeons &amp; Dragons, 5e</td>
+      <td>{props.content.name}</td>
+      <td>{props.content.type.name || <Loading/>}</td>
+      <td>{props.content.ruleset.name || <Loading/>}</td>
       <td>
         <ButtonGroup>
           <Button><MdContentCopy/></Button>
@@ -34,11 +33,15 @@ function ContentRow(props: ContentRowProps) {
         </ButtonGroup>
       </td>
     </tr>
-  )
+  );
 }
 
+
 export default function MyContent(props: MyContentProps) {
-  const rows: JSX.Element[] = [<ContentRow content={{} as ContentDocument}/>]
+   const rows: JSX.Element[] = [];
+  props.contents.forEach((content: ContentDocument) => {
+    rows.push(<ContentRow content={content}/>);
+  });
   return (
     <Page>
       <h1>My Content</h1>
@@ -57,7 +60,11 @@ export default function MyContent(props: MyContentProps) {
         </tbody>
       </Table>
     </Page>
-  )
+  );
+}
+
+interface MyContentResult {
+  contents: ContentDocument[];
 }
 
 MyContent.getInitialProps = async (ctx: NextPageContext) => {
@@ -71,11 +78,11 @@ MyContent.getInitialProps = async (ctx: NextPageContext) => {
     };
   }
 
-  // const result = await rest.get(`/api/my-content`);
+  const result = await rest.get<MyContentResult>(`/api/my-content`);
   return {
     session,
-    success: true,
-    message: "",
-    contents: [],
+    success: result.success,
+    message: result.message,
+    contents: result.data.contents,
   };
 };

@@ -83,6 +83,7 @@ function parseFaunaItem(item: unknown) {
  */
  export function parseFaunaRef(ref: any): { id: string, collection: string } {
   let id, collection = "";
+  if (ref === null) { return { id: "", collection: "" }}
   if ("@ref" in ref && "id" in ref["@ref"]) {
     id = ref["@ref"].id;
     collection = ref["@ref"].collection["@ref"].id;
@@ -126,7 +127,7 @@ export function parseIndexResponse(faunaIndexDocuments: FaunaIndexResponseDocume
       indexDocument.forEach((value: (string | number | unknown), index: number) => {
         const valueKey = fields[index];
         // (parsedDoc as Record<string, unknown>)[valueKey] = value;
-
+        if (valueKey === undefined) { return; }
         if (valueKey === "ref") {
           const { id, collection } = parseFaunaRef(value);
           parsedDoc.id = id;

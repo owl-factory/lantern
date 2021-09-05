@@ -19,6 +19,6 @@ interface PartialContentType extends Partial<ContentTypeDocument> {
 }
 
 export interface ContentDocument extends CoreDocument {
-  contentType: PartialContentType,
+  type: PartialContentType,
   ruleset: PartialRuleset,
 }
