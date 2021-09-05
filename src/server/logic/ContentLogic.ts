@@ -1,17 +1,11 @@
 
 import { FaunaLogicBuilder } from "server/faunaLogicBuilder/FaunaLogicBuilder";
-import { CampaignDocument, UserDocument } from "types/documents";
+import { AnyDocument, CampaignDocument } from "types/documents";
 import { MyUserDocument } from "types/security";
 import { myUserToTerm } from "./CoreModelLogic";
 import { isOwner } from "./security";
 
-const USER_VIEW_FIELDS = [
-  "banner.*",
-  "ruleset.*",
-  "players.*",
-  "lastPlayedAt",
-];
-const CampaignLogicBuilder = new FaunaLogicBuilder("campaigns")
+const ContentLogicBuilder = new FaunaLogicBuilder("campaigns")
   // Globals
   // Users are only able to view campaigns if they are a player, and all fields if they are an owner/GM
   .fields()
@@ -39,25 +33,12 @@ const CampaignLogicBuilder = new FaunaLogicBuilder("campaigns")
   .done()
 
   /**
-   * Allows for specifically updating the campaign banner
-   */
-  .update("updateBanner")
-    .roles()
-      .user(isOwner)
-      .admin(true)
-    .done()
-    .setFields()
-      .user(["banner.ref", "banner.src"])
-    .done()
-  .done()
-
-  /**
    * Allows for searching through all of a user's campaigns from last played to oldest played
    * The index fields allow for base data to populate tiles
    */
-  .search("fetchMyCampaigns", "my_campaigns_asc")
+  .search("fetchMyContent", "my_content_asc")
     .preProcessTerms(myUserToTerm)
-    .indexFields(["lastPlayedAt", "ref", "name", "banner.src"])
+    .indexFields(["updatedAt", "ref", "name", "type.ref", "ruleset.ref"])
     // Explicitly allow the user since the index guarantees ownership/playing
     .roles()
       .user(true)
@@ -65,7 +46,7 @@ const CampaignLogicBuilder = new FaunaLogicBuilder("campaigns")
   .done()
 
 .done();
-export const CampaignLogic = CampaignLogicBuilder.export();
+export const ContentLogic = ContentLogicBuilder.export();
 
 /**
  * Determines if a standard user is able to view any part of a document
@@ -73,12 +54,9 @@ export const CampaignLogic = CampaignLogicBuilder.export();
  * @param doc The document the user is attempting to view
  * @returns True if the user may view any part of the document, false otherwise
  */
-function userViewable(myUser: MyUserDocument, doc?: CampaignDocument): boolean {
+function userViewable(myUser: MyUserDocument, doc?: AnyDocument): boolean {
   if (!doc) { return false; }
-  if (doc.ownedBy?.id === myUser.id) { return true; }
-  doc.players?.forEach((player: UserDocument) => {
-    if (player.id === myUser.id) { return true; }
-  });
+  if (isOwner(myUser, doc)) { return true; }
 
   return false;
 }
@@ -94,11 +72,6 @@ function userViewableFields(myUser: MyUserDocument, doc?: CampaignDocument): str
 
   // Is owner check
   if (doc.ownedBy?.id === myUser.id) { return ["*"]; }
-
-  // If a player, return the user view fields
-  doc.players?.forEach((player: UserDocument) => {
-    if (player.id === myUser.id) { return USER_VIEW_FIELDS; }
-  });
 
   // Edge case
   // TODO - can campaigns be public? Or should pre-generated campaigns be their own document type?

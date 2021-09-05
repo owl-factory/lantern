@@ -28,17 +28,15 @@ interface SelectProps {
  */
 export function Select(props: SelectProps) {
   // Makes Formik work right
-  const [ field ] = useField(props.name);
+  const [ field ] = useField(props);
   const select = (
     <select
-      {...field}
       aria-label={props.ariaLabel}
       className={`form-select ${props.className}`}
       disabled={props.disabled}
       id={props.id || props.name}
-      name={props.name}
-      onChange={props.onChange}
       style={props.style}
+      {...field}
     >
       {props.children}
     </select>
