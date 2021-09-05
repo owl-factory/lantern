@@ -37,7 +37,7 @@ export default function InviteHandler(props: any) {
       </>
     );
   }
-  console.log(props)
+  console.log(props);
   return (
     <Page>
       { props.data ?

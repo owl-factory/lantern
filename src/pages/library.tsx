@@ -6,12 +6,11 @@ import { rest } from "utilities/request";
 import { NextPageContext } from "next";
 import { ImageController } from "client/library/ImageController";
 
-
 /**
  * Renders the liubrary of all user data
  * @param success Boolean. True if the getInitialProps was successful
  * @param message Failure message, if any.
- * @param data Contains the 
+ * @param data Contains the data.
  */
 export default function Library(props: any): JSX.Element {
   const maxAllowedStorage = 250 * 1024 * 1024;

@@ -83,8 +83,10 @@ function parseFaunaItem(item: unknown) {
  */
  export function parseFaunaRef(ref: any): { id: string, collection: string } {
   let id, collection = "";
-  if (ref === null) { return { id: "", collection: "" }}
-  if ("@ref" in ref && "id" in ref["@ref"]) {
+  if (ref === null)
+    return { id: "", collection: "" };
+
+    if ("@ref" in ref && "id" in ref["@ref"]) {
     id = ref["@ref"].id;
     collection = ref["@ref"].collection["@ref"].id;
   } else if ( "value" in ref && "id" in ref.value ) {

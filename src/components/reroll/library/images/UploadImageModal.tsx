@@ -1,5 +1,5 @@
 import { Button, Col, Row } from "components/style";
-import { Card, CardHeader, CardBody } from "components/style/card";
+import { Card, CardBody, CardHeader } from "components/style/card";
 import { Input } from "components/style/forms";
 import { Modal } from "components/style/modals";
 import { Tooltip } from "components/style/tooltips";

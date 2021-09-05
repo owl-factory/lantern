@@ -58,7 +58,7 @@ function shouldSmooth(message: MessageDocument, previousMessages: MessageDocumen
 
   let count = 0;
   let smooth = false;
-  console.log(`${message.name}: ${message.content}`)
+  console.log(`${message.name}: ${message.content}`);
   for(let i = index - 1; i >= 0; i--) {
     count++;
     if (count > 4) { return smooth; }
@@ -107,7 +107,8 @@ function Message({ messages, index }: { messages: MessageDocument[], index: numb
  */
 export const Chat = observer((props: ChatProps) => {
   const { server } = props;
-  if (!server.isReady) { return <></>}
+  if (!server.isReady)
+    return <></>;
 
   function sendMessage(values: MessageDocument) {
     // message.

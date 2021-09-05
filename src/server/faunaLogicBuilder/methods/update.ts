@@ -9,7 +9,6 @@ import { Expr, query as q } from "faunadb";
 import { MyUserDocument } from "types/security";
 import { determineAccessibleFields, trimRestrictedFields } from "utilities/security";
 
-
 /**
  * Deletes a single document from the database
  * @param ref The reference or ID of the document to delete
@@ -71,7 +70,7 @@ export async function $update(
  */
 function preUpdate(doc: AnyDocument, myUser: MyUserDocument, config: FunctionConfig) {
   const fields = determineAccessibleFields(doc, myUser, config.setFields[getRole(myUser)]);
-  doc = trimRestrictedFields(doc as Record<string, unknown>, fields, false)
+  doc = trimRestrictedFields(doc as Record<string, unknown>, fields, false);
 
   doc.updatedAt = new Date();
   doc.updatedBy = { id: myUser.id, collection: myUser.collection };

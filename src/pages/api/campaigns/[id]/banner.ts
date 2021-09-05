@@ -1,9 +1,8 @@
 import { NextApiRequest } from "next";
 import { getMyUser, requireLogin } from "server/auth";
-import { CampaignLogic, UserLogic } from "server/logic";
+import { CampaignLogic } from "server/logic";
 import { HTTPHandler } from "server/response";
 import { createEndpoint } from "server/utilities";
-import { toFaunaRef } from "utilities/fauna";
 
 /**
  * Updates a single profile image for the current user
@@ -17,7 +16,7 @@ async function updateCampaignBanner(this: HTTPHandler, req: NextApiRequest) {
   const campaign = await CampaignLogic.fetchCampaign({ id: req.query.id as string, collection: "campaigns" }, myUser);
   if (!campaign) { this.returnError(404, "Campaign not found."); return; }
   const newImageAndCampaign = await CampaignLogic.updateBanner(campaign, req.body, myUser);
-  
+
   this.returnSuccess({ campaign: newImageAndCampaign.campaign, image: newImageAndCampaign.image });
 }
 

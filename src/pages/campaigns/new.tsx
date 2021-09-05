@@ -53,7 +53,7 @@ export default function NewCampaign(props: any): JSX.Element {
       <h1>Create a New Campaign</h1>
       <Formik
         initialValues={{ name: "", ruleset: "" }}
-        onSubmit={(values: any) => {createCampaign(values)}}
+        onSubmit={(values: any) => { createCampaign(values); }}
       >
         {() => (
         <Form>

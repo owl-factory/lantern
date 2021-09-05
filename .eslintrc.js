@@ -19,6 +19,7 @@ module.exports = {
     "semi": 1,
     "@typescript-eslint/no-explicit-any": 0,
     "@typescript-eslint/explicit-module-boundary-types": 0,
+    "@typescript-eslint/no-unused-vars": 0,
     "comma-dangle": [1, "always-multiline"],
     "sort-imports": [1, {
       "ignoreDeclarationSort": true,

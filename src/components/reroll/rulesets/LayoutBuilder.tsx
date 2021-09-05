@@ -18,6 +18,7 @@ function ToolboxContent() {
   );
 }
 
+// TODO, use or remove these props
 export function LayoutBuilder(props: LayoutBuilderProps) {
   const [ open, setOpen ] = React.useState(false);
 

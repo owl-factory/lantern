@@ -12,7 +12,6 @@ import { ImageController } from "client/library";
 import { ImageSelectionWrapper } from "components/reroll/library/images/ImageSelectionWrapper";
 import { Checkbox, Input } from "components/style/forms";
 
-
 /**
  * Renders a small section indicating how long a player has been a member, their hours played,
  * and their total games GMed
@@ -79,7 +78,7 @@ function MyOptions({ user, players}: { user: UserDocument, players: UserDocument
 }
 
 /**
- * Renders the details for the current user. Includes a form for updating some user information. 
+ * Renders the details for the current user. Includes a form for updating some user information.
  * @param user The user to render details for
  * @param saveUser A function to save the user's information to the database
  */
@@ -203,7 +202,7 @@ function ProfileImage({ imageController, user, isMyPage, setUser }: ProfileImage
   let image = <img src={src} width="200px" height="200px"/>;
   const onSave = (result: unknown) => {
     setUser(result as UserDocument);
-  }
+  };
 
   if (isMyPage) {
     React.useEffect(() => {
@@ -255,7 +254,7 @@ export default function Profile(props: any): JSX.Element {
   }
 
   /**
-   * A callback function that handles saving the user's information to the database 
+   * A callback function that handles saving the user's information to the database
    * @param values The user document values to save to the database
    */
   async function saveUser(values: Record<string, unknown>) {
