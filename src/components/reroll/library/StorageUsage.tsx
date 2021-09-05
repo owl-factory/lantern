@@ -1,4 +1,5 @@
-import { Swatch, Tooltip } from "components/design";
+import { Swatch } from "components/design";
+import { Tooltip } from "components/style/tooltips";
 import React from "react";
 import { StorageTypeEnum, storageTypes } from "types/enums/storageType";
 import { StorageType, StorageUsageItem } from "types/reroll/library";

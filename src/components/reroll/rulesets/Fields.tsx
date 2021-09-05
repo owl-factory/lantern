@@ -1,11 +1,10 @@
 import { Form, Formik } from "formik";
 import React from "react";
-import { Table } from "react-bootstrap";
 import { MdBlock, MdBuild } from "react-icons/md";
-import { ContextMenu, FloatingLabel, Input, Select } from "components/design";
 import { ContextMenuBuilder } from "utilities/design";
 import { FieldTypeEnum, fieldTypes } from "types/enums";
 import { Col, Row } from "components/style";
+import { Input, Select } from "components/style/forms";
 
 // TODO
 type FieldType = any;
@@ -108,10 +107,7 @@ export function Fields(props: FieldsProps): JSX.Element {
         <td>{fieldTypes[field.type].name}</td>
         <td>{field.readOnly ? "Yes" : "No"}</td>
         <td>
-          <ContextMenu
-            context={field}
-            {...fieldActions.renderConfig()}
-          />
+
         </td>
       </tr>
     );
@@ -161,7 +157,7 @@ export function Fields(props: FieldsProps): JSX.Element {
         <button className="btn btn-primary" type="button" onClick={addOption}>
           Add
         </button>
-        <Table>
+        <table className="table">
           <thead>
             <tr>
               <th>Name</th>
@@ -172,7 +168,7 @@ export function Fields(props: FieldsProps): JSX.Element {
           <tbody>
             {fieldOptions}
           </tbody>
-        </Table>
+        </table>
         <br/>
       </div>
     );
@@ -185,6 +181,11 @@ export function Fields(props: FieldsProps): JSX.Element {
     if (activeField === "") { return null; }
     const initialValues = props.fields[activeField];
 
+    const options: JSX.Element[] = [];
+    fieldTypes.forEach((fieldType: FieldType) => {
+      options.push(<option value={fieldType.value}>{fieldType.name}</option>)
+    });
+
     // TODO - need validation
     return (
       <Formik
@@ -193,15 +194,11 @@ export function Fields(props: FieldsProps): JSX.Element {
       >
         {({ values }) => (
           <Form>
-            <FloatingLabel for="name" label="Field Name">
-              <Input id="name" name="name"/>
-            </FloatingLabel>
-            <FloatingLabel for="key" label="Variable Key">
-              <Input id="key" name="key"/>
-            </FloatingLabel>
-            <FloatingLabel for="type" label="Variable Type">
-              <Select id="type" name="type" options={fieldTypes} labelKey="name" valueKey="value"/>
-            </FloatingLabel>
+            <Input type="text" id="name" name="name" label="Field Name"/>
+            <Input type="text" id="key" name="key" label="Variable Key"/>
+            <Select id="type" name="type" label="Variable Type">
+              {options}
+            </Select>
             {(values.type === FieldTypeEnum.Options.toString()) ? (
               <FieldOptions/>
             ): null }
@@ -225,7 +222,7 @@ export function Fields(props: FieldsProps): JSX.Element {
     });
 
     return (
-      <Table>
+      <table className="table">
         <thead>
           <tr>
             <th>Key</th>
@@ -238,7 +235,7 @@ export function Fields(props: FieldsProps): JSX.Element {
         <tbody>
           {fieldListRows}
         </tbody>
-      </Table>
+      </table>
     );
   }
 

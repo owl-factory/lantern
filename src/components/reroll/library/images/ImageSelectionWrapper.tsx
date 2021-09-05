@@ -1,5 +1,5 @@
 import { ImageController } from "client/library";
-import { Modal } from "components/design";
+import { Modal } from "components/style/modals";
 import React from "react";
 import { ImageDocument } from "types/documents";
 import { ImageSelectionForm } from ".";
@@ -22,7 +22,7 @@ interface ImageSelectionWrapperProps {
  * @param onSave The post-submit success action to run. This may be closing a modal, for example
  */
 export function ImageSelectionWrapper({ children, imageController, onSubmit, onSave }: ImageSelectionWrapperProps) {
-const [ modal, setModal ] = React.useState(false);
+  const [ modal, setModal ] = React.useState(false);
 
   function closeModal() { setModal(false); }
   function postSave(result: unknown) { onSave(result); closeModal(); }
@@ -38,5 +38,5 @@ const [ modal, setModal ] = React.useState(false);
         <ImageSelectionForm imageController={imageController} onSubmit={onSubmit} onSave={postSave}/>
       </Modal>
     </div>
-  )
+  );
 }

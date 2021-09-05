@@ -1,5 +1,4 @@
 import { Page } from "components/design";
-import { Button } from "components/style";
 import { NextPageContext } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -12,6 +11,7 @@ import { read } from "utilities/objects";
 import { ImageSelectionWrapper } from "components/reroll/library/images/ImageSelectionWrapper";
 import { ImageController } from "client/library";
 import { CampaignDocument, ImageDocument } from "types/documents";
+import { Tooltip } from "components/style/tooltips";
 
 /**
  * Renders the campaign banner. Also renders the ability to set a new banner image, if the user is the owner
@@ -42,8 +42,8 @@ function Banner({ campaign, isOwner, setCampaign }: any) {
      * @param image The new image document to use as the banner image
      * @param method The method to set the new image
      */
-    const onSubmit = async (image: ImageDocument, method: string) => {
-      return imageController.setCampaignBanner(campaign, image, method);
+    const onSubmit = async (image2: ImageDocument, method: string) => {
+      return imageController.setCampaignBanner(campaign, image2, method);
     }
 
     image = (
@@ -72,7 +72,9 @@ function Players({ campaign }: any) {
   });
   return (
     <div>
+      <Tooltip title="Hi there">
       <h2>Players</h2>
+      </Tooltip>
       {players}
     </div>
   );

@@ -1,6 +1,6 @@
+import { Alert } from "components/style/Alert";
 import { ErrorMessage as FormikErrorMessage } from "formik";
 import React from "react";
-import { Alert } from "react-bootstrap";
 
 interface ErrorProps {
   name: string; // The name of the field with the error

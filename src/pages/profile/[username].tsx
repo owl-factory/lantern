@@ -1,5 +1,5 @@
 import React, { Dispatch } from "react";
-import { Checkbox, Input, Modal, Page, TextArea } from "components/design";
+import { Page } from "components/design";
 import { NextPageContext } from "next";
 import { rest } from "utilities/request";
 import { getSession } from "utilities/auth";
@@ -8,10 +8,9 @@ import { Formik, Form as FormikForm } from "formik";
 import { Button } from "components/style";
 import { useRouter } from "next/router";
 import { arrayToList } from "utilities/arrays";
-import style from "./profile.module.scss";
-import { ImageSelectionForm } from "components/reroll/library/images/forms/ImageSelectionForm";
 import { ImageController } from "client/library";
 import { ImageSelectionWrapper } from "components/reroll/library/images/ImageSelectionWrapper";
+import { Checkbox, Input } from "components/style/forms";
 
 
 /**
@@ -92,13 +91,13 @@ function MyDetails({ user, saveUser }: { user: UserDocument, saveUser: (values: 
         onSubmit={(values: Record<string, unknown>) => (saveUser(values))}
       >
         <FormikForm>
-          <Input name="displayName"/>
+          <Input type="text" name="displayName"/>
           <MemberSince user={user}/>
           <span>Badges</span>
           <div><i>None yet! Check back soon!</i></div>
           <hr/>
           <span>Bio</span>
-          <TextArea name="bio"/>
+          <Input type="textarea" name="bio"/>
           <hr/>
           <span>Enjoys Playing</span>
           <div>{arrayToList(user.enjoysPlaying)}</div>
@@ -107,7 +106,7 @@ function MyDetails({ user, saveUser }: { user: UserDocument, saveUser: (values: 
           <div>{arrayToList(user.activelySeeking)}</div>
           <hr/>
           <span>Remove from Player Directory</span>
-          <Checkbox name="isPrivate"/>
+          <Checkbox name="isPrivate" value="true"/>
           <hr/>
           <Button type="submit">Save</Button>
         </FormikForm>
@@ -211,7 +210,8 @@ function ProfileImage({ imageController, user, isMyPage, setUser }: ProfileImage
       imageController.fetchImages();
     }, []);
     image = (
-     <ImageSelectionWrapper imageController={imageController} onSubmit={imageController.setProfileImage} onSave={onSave}>
+     <ImageSelectionWrapper
+      imageController={imageController} onSubmit={imageController.setProfileImage} onSave={onSave}>
         {image}
       </ImageSelectionWrapper>
     );

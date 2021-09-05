@@ -1,7 +1,7 @@
 import { Col, Row } from "components/style";
+import { Card, CardBody } from "components/style/card";
 import { observer } from "mobx-react-lite";
 import React from "react";
-import { Card } from "react-bootstrap";
 import { ImageDocument } from "types/documents";
 import style from "./ImageList.module.scss";
 
@@ -32,10 +32,10 @@ function ImageThumbnail({ image, onClick }: ImageThumbnailProps) {
   return (
     <Col xs={6} sm={4} md={3} lg={2}>
       <Card onClick={() => {onClick(image);}}>
-        <Card.Body >
+        <CardBody >
           {image.name} <br/>
           <img style={{maxWidth: "100%"}} height="auto" src={image.src}/>
-        </Card.Body>
+        </CardBody>
       </Card>
     </Col>
   );

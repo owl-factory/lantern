@@ -1,9 +1,9 @@
 import React from "react";
 import { ErrorMessage, Formik, Form as FormikForm } from "formik";
 import * as Yup from "yup";
-import { Button, Col, Form, Row } from "react-bootstrap";
 import { signIn } from "utilities/auth";
-import { Input } from "components/design";
+import { Button } from "components/style";
+import { Input } from "components/style/forms";
 
 /** Initial form values */
 const initialValues = {
@@ -39,24 +39,15 @@ export function SignInForm(): JSX.Element {
       onSubmit={submit}
     >
       <FormikForm>
-        <Row>
-          <Form.Group as={Col} sm={12}>
-            <Form.Label>Username or email address</Form.Label>
-            <Input type="text" aria-label="Username or email address" name="username"/>
-            <ErrorMessage name="username"/>
-          </Form.Group>
+        <label>Username or email address</label>
+        <Input label="Username" type="text" aria-label="Username or email address" name="username"/>
+        <ErrorMessage name="username"/>
 
-          <Form.Group as={Col} sm={12}>
-            <Form.Label>Password</Form.Label>
-            <Input type="password" aria-label="Password" name="password"/>
-            <ErrorMessage name="password"/>
-          </Form.Group>
-        </Row>
-        <Row>
-          <Form.Group as={Col}>
-            <Button type="submit">Submit</Button>
-          </Form.Group>
-        </Row>
+        <label>Password</label>
+        <Input type="password" aria-label="Password" name="password"/>
+        <ErrorMessage name="password"/>
+
+        <Button type="submit">Submit</Button>
       </FormikForm>
     </Formik>
   );

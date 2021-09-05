@@ -1,8 +1,10 @@
-import { Input, Modal, Tooltip } from "components/design";
 import { Button, Col, Row } from "components/style";
+import { Card, CardHeader, CardBody } from "components/style/card";
+import { Input } from "components/style/forms";
+import { Modal } from "components/style/modals";
+import { Tooltip } from "components/style/tooltips";
 import { Formik, Form as FormikForm } from "formik";
 import React from "react";
-import { Card } from "react-bootstrap";
 import { rest } from "utilities/request";
 
 interface UploadImageModalProps {
@@ -26,8 +28,8 @@ export function UploadImageModal({ handleClose, modal }: UploadImageModalProps) 
   return (
     <Modal open={modal} handleClose={handleClose}>
       <Card>
-        <Card.Header><h3>New Image</h3></Card.Header>
-        <Card.Body>
+        <CardHeader><h3>New Image</h3></CardHeader>
+        <CardBody>
           <Row>
             <Col xs={12} md={6}>
               <Formik
@@ -41,9 +43,9 @@ export function UploadImageModal({ handleClose, modal }: UploadImageModalProps) 
                       <Tooltip title="Save a reference to the image"><span>(?)</span></Tooltip>
                     </h4>
                     <label>Link</label>
-                    <Input name="src"/>
+                    <Input type="text" name="src"/>
                     <label>Name</label>
-                    <Input name="name"/>
+                    <Input type="text" name="name"/>
                     <label>Preview</label>
                     <img style={{ width: "100%", height: "auto" }} src={formik.values.src}/><br/>
 
@@ -56,7 +58,7 @@ export function UploadImageModal({ handleClose, modal }: UploadImageModalProps) 
               <h4>Upload Image</h4>
             </Col>
           </Row>
-        </Card.Body>
+        </CardBody>
       </Card>
     </Modal>
   );

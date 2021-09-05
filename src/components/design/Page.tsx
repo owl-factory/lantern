@@ -1,5 +1,4 @@
 import React, { ReactNode } from "react";
-import { Container } from "react-bootstrap";
 import ErrorPage from "next/error";
 
 interface PageProps {

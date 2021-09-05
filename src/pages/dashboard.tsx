@@ -1,12 +1,12 @@
 import { Page } from "components/design";
 import Link from "next/link";
 import React from "react";
-import { Button, Card} from "react-bootstrap";
 import { CampaignDocument } from "types/documents";
 import { getSession, signOut } from "utilities/auth";
 import { NextPage, NextPageContext } from "next";
 import { rest } from "utilities/request";
-import { Col, Row } from "components/style";
+import { Button, Col, Row } from "components/style";
+import { Card } from "components/style/card";
 
 interface DashboardProps {
   session?: any;
@@ -39,7 +39,7 @@ function RecentGames(props: any) {
     let src = "";
     if (campaign.banner && campaign.banner.src) { src = campaign.banner.src; }
     campaigns.push(
-      <Col xs={12} md={6} lg={3}>
+      <Col key={campaign.id} xs={12} md={6} lg={3}>
         <Card>
           <img src={src}/>
           <h5>{campaign.name}</h5>
