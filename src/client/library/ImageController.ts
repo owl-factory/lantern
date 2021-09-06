@@ -154,8 +154,7 @@ export class ImageController {
   }
 
   /**
-   * Runs all of the standard actions for setting an image in a document
-   * 
+   * Runs all of the standard actions for setting an image in a document.
    * @param image The image to set and potentially save
    * @param method The method by which to set the image
    * @param url The API url we are sending the data to
@@ -190,7 +189,6 @@ export class ImageController {
    */
   public async setProfileImage(image: ImageDocument, method: string) {
     const result = await this.setImage(image, method, "/api/profile/images");
-    
     return result.user;
   }
 

@@ -3,8 +3,7 @@ import { AnyDocument } from "types/documents";
 import { getServerClient } from "utilities/db";
 import { IndexConfig } from "../types";
 import { query as q } from "faunadb";
-import { parseFaunaRef, parseIndexResponse } from "utilities/fauna";
-import { set } from "utilities/objects";
+import { parseIndexResponse } from "utilities/fauna";
 import { FaunaIndexOptions, FaunaIndexResponse } from "types/fauna";
 import { canActOn, getRole } from "../helpers";
 import { MyUserDocument } from "types/security";
@@ -40,8 +39,8 @@ export async function $search(
     ),
   );
 
-  console.log(result)
-  console.log(myUser)
+  console.log(result);
+  console.log(myUser);
   // Handles invalid results
   if (!result.data) {
     throw { code: 500, message: `An error occured while trying to search the ${config.index} index` };

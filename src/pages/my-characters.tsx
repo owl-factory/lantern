@@ -56,7 +56,7 @@ export default function MyCharacters(props: MyCharactersProps) {
   ];
 
   props.characters.forEach((character: CharacterDocument) => {
-    characterCards.push(<CharacterCard key={character.id} character={character}/>)
+    characterCards.push(<CharacterCard key={character.id} character={character}/>);
   });
   function searchCharacters(values: SearchCharacterValues) {
     // TODO - do something

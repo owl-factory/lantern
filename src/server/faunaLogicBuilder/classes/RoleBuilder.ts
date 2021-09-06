@@ -1,5 +1,5 @@
 import { RoleConfig, RoleValue } from "server/faunaLogicBuilder/types";
-import { UserRoleReadable, UserRole } from "types/security";
+import { UserRole, UserRoleReadable } from "types/security";
 import { FaunaLogicBuilder } from "../FaunaLogicBuilder";
 import { FunctionBuilder } from "./FunctionBuilder";
 

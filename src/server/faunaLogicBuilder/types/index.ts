@@ -3,9 +3,9 @@ import { AnyDocument } from "types/documents";
 import { MyUserDocument } from "types/security";
 
 export type FunctionConfig = any;
-export interface IndexConfig extends FunctionConfig {
-  // indexFields: string[][];
-}
+
+//TODO make this an interface that adds it's own functionality
+export type IndexConfig = FunctionConfig
 
 export type FieldConfig = any;
 export type RoleConfig = any;

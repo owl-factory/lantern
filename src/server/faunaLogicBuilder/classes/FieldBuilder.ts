@@ -1,9 +1,5 @@
-import {
-  FieldConfig,
-  FieldValue,
-  RoleConfig
-} from "server/faunaLogicBuilder/types";
-import { UserRoleReadable, UserRole } from "types/security";
+import { FieldConfig, FieldValue, RoleConfig } from "server/faunaLogicBuilder/types";
+import { UserRole, UserRoleReadable } from "types/security";
 import { FaunaLogicBuilder } from "../FaunaLogicBuilder";
 import { FunctionBuilder } from "./FunctionBuilder";
 
@@ -72,6 +68,7 @@ abstract class $FieldBuilder {
    * @returns Returns the current FieldBuilder
    */
   public admin(value: FieldValue) { this.config[UserRole.ADMIN] = value; return this; }
+
   /**
    * Sets the list of fields or a function that evaluate to a list of fields that determine what the
    * Guest role can access
@@ -79,6 +76,7 @@ abstract class $FieldBuilder {
    * @returns Returns the current FieldBuilder
    */
   public guest(value: FieldValue) { this.config[UserRole.GUEST] = value; return this; }
+
   /**
    * Sets the list of fields or a function that evaluate to a list of fields that determine what the
    * Moderator role can access
@@ -86,6 +84,7 @@ abstract class $FieldBuilder {
    * @returns Returns the current FieldBuilder
    */
   public moderator(value: FieldValue) { this.config[UserRole.MOD] = value; return this; }
+
   /**
    * Sets the list of fields or a function that evaluate to a list of fields that determine what the
    * User role can access

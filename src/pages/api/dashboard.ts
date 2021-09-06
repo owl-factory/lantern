@@ -2,7 +2,7 @@ import { NextApiRequest } from "next";
 import { HTTPHandler } from "server/response";
 import { CampaignLogic } from "server/logic";
 import { createEndpoint } from "server/utilities";
-import { getMyUser, requireLogin } from "server/auth";
+import { getMyUser } from "server/auth";
 
 /**
  * Creates a single new ruleset

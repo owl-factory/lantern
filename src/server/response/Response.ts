@@ -30,8 +30,8 @@ export class HTTPHandler {
 
     try {
       // Handles initializing the database
-      // TODO - ensure that we can access the user DB 
-      //  seperately with or without disconnecting
+      // TODO - ensure that we can access the user DB
+      // seperately with or without disconnecting
       // databaseSetup();
 
       // Checks that this method is present
@@ -44,14 +44,14 @@ export class HTTPHandler {
 
       await (this[method] as RequestFunction)(this.req, this.res);
 
-    } catch (error) {
+    } catch (error: any) {
       if (error.code && error.message) {
         this.returnError(
           error.code,
           error.message
         );
       } else {
-        console.error(error)
+        console.error(error);
         this.returnError(
           500,
           `An unexpected error occured. If this continues occuring, please contact our staff!`

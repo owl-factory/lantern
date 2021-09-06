@@ -75,7 +75,7 @@ export async function readQuery(query: Promise<object>): Promise<{ data: any | n
       data: await query,
       error: null,
     };
-  } catch (error) {
+  } catch (error: any) {
     return { data: null, error};
   }
 }

@@ -71,7 +71,7 @@ interface DrawerItemProps {
 /**
  * Renders a drawer item within a drawer, as well as containing instructions for how to render a tab
  * @param children The contents to render within the drawer.
- * @param name The name of the drawer, to be displayed in the selection tab 
+ * @param name The name of the drawer, to be displayed in the selection tab
  */
 export function DrawerItem({ children, name, Icon }: DrawerItemProps): JSX.Element {
   return (

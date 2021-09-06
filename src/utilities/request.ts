@@ -17,7 +17,7 @@ const defaultRequestInit: RequestInit = {
 const thisDomain = "http://localhost:3000";
 
 /**
- * Formats the URL. Serverside requests require an absolute URL; this adds it 
+ * Formats the URL. Serverside requests require an absolute URL; this adds it
  * if the environment variable is set
  * @param url The url to format properly
  */
@@ -40,7 +40,7 @@ export function toURLParams(data?: Record<string, string | unknown>): string {
 
   keys.forEach((key: string) => {
     if (data[key] === undefined || data[key] === "") { return; }
-    urlParams += `${key}=${data[key]}&`
+    urlParams += `${key}=${data[key]}&`;
   });
   if (urlParams === "?") { return ""; }
 

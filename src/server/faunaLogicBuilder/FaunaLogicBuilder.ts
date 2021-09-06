@@ -1,6 +1,7 @@
 import { AnyDocument } from "types/documents";
 import { MyUserDocument } from "types/security";
-import { FieldBuilder, FunctionBuilder, SearchBuilder, RoleBuilder, GlobalFieldBuilder, GlobalRoleBuilder } from "./classes";
+import { FieldBuilder, FunctionBuilder, GlobalFieldBuilder, GlobalRoleBuilder,
+   RoleBuilder, SearchBuilder } from "./classes";
 import { FunctionConfig, FunctionType } from "./types";
 
 /**

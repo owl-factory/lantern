@@ -1,5 +1,5 @@
 import { AnyDocument } from "types/documents";
-import { MyUserDocument, UserRoleReadable, UserRole } from "types/security";
+import { MyUserDocument, UserRole, UserRoleReadable } from "types/security";
 import { RoleConfig } from "../types";
 
 /**

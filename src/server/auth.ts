@@ -1,5 +1,5 @@
 import { NextApiRequest } from "next";
-import { MyUserDocument, UserRoleReadable, UserRole } from "types/security";
+import { MyUserDocument, UserRole, UserRoleReadable } from "types/security";
 import { getSession } from "utilities/auth";
 import { toFaunaRef } from "utilities/fauna";
 
@@ -56,7 +56,6 @@ function getHighestRole(myUser: MyUserDocument): UserRole {
   });
   return highest as UserRole;
 }
-
 
 export function requireLogin(myUser: MyUserDocument): void {
   if(!myUser) { throw { code: 403, message: "You must be logged in to perform this action." }; }

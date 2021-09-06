@@ -1,6 +1,6 @@
 import { Form, Formik } from "formik";
 import React from "react";
-import { fetchContentResponse, IndexTable, Page } from "components/design";
+import { IndexTable, Page, fetchContentResponse } from "components/design";
 import { ErrorMessage } from "components/design/forms";
 import request from "utilities/request";
 import { MdBlock, MdBuild, MdInfo } from "react-icons/md";

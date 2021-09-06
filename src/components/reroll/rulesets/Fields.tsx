@@ -183,7 +183,7 @@ export function Fields(props: FieldsProps): JSX.Element {
 
     const options: JSX.Element[] = [];
     fieldTypes.forEach((fieldType: FieldType) => {
-      options.push(<option value={fieldType.value}>{fieldType.name}</option>)
+      options.push(<option value={fieldType.value}>{fieldType.name}</option>);
     });
 
     // TODO - need validation

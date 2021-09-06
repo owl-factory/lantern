@@ -17,11 +17,11 @@ import { Tooltip } from "components/style/tooltips";
  * Renders the campaign banner. Also renders the ability to set a new banner image, if the user is the owner
  * @param campaign The campaign document
  * @param setCampaign Function to set the campaign with a new campaign, if applicable
- * @param isOwner True if the current user is the owner. False otherwise. 
+ * @param isOwner True if the current user is the owner. False otherwise.
  */
 function Banner({ campaign, isOwner, setCampaign }: any) {
   const [ imageController ] = React.useState(new ImageController());
-  let image = <img src={read<string>(campaign, "banner.src")}/>
+  let image = <img src={read<string>(campaign, "banner.src")}/>;
 
   if(isOwner) {
     React.useEffect(() => {
@@ -29,13 +29,13 @@ function Banner({ campaign, isOwner, setCampaign }: any) {
     }, []);
 
     /**
-     * Handles the post-save then functionality after setting an image. 
+     * Handles the post-save then functionality after setting an image.
      * @param result The result of the imageController set function
      */
     const onSave = (result: unknown) => {
-      const newCampaign = {...campaign, banner: (result as CampaignDocument).banner }
+      const newCampaign = {...campaign, banner: (result as CampaignDocument).banner };
       setCampaign(newCampaign);
-    }
+    };
 
     /**
      * Wraps the function to set the campaign banner image to pass in the campaign
@@ -44,7 +44,7 @@ function Banner({ campaign, isOwner, setCampaign }: any) {
      */
     const onSubmit = async (image2: ImageDocument, method: string) => {
       return imageController.setCampaignBanner(campaign, image2, method);
-    }
+    };
 
     image = (
       <ImageSelectionWrapper imageController={imageController} onSubmit={onSubmit} onSave={onSave}>
@@ -82,7 +82,7 @@ function Players({ campaign }: any) {
 
 /**
  * Renders a single campaign and the information inside
- * @param props 
+ * @param props
  */
 export default function CampaignView(props: any): JSX.Element {
   if (!props.campaign) { return <Page error={props.error}>Error</Page>; }
@@ -102,7 +102,7 @@ export default function CampaignView(props: any): JSX.Element {
         [ props.campaign.id, inviteKey ]
       )
     ).then((res) => {
-      console.log("tmp")
+      console.log("tmp");
     });
   }
 
