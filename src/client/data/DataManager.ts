@@ -19,27 +19,28 @@ const mockLocalStorage = {
 const LOCAL_STORAGE = isClient ? window.localStorage : mockLocalStorage;
 
 interface DataManagerOptions {
-  fetch?: (id: string) => Promise<CoreDocument | undefined>;
   fetchMany?: (ids: string[]) => Promise<CoreDocument[]>;
 }
 
 interface GetPageOptions {
   match?: (doc: AnyDocument) => boolean;
   page?: number;
+  size?: number;
 }
 
+/**
+ * A data manager that can fetch and cache data in a storage system. This does nothing unique
+ * for different document types. For that, a specific Controller is needed.
+ */
 export class DataManager<T extends CoreDocument> {
   protected key: string;
   public data: Record<string, T> = {};
-  protected $fetch: ((id: string) => Promise<CoreDocument | undefined>) | undefined = undefined;
   protected $fetchMany: ((ids: string[]) => Promise<CoreDocument[]>) | undefined = undefined;
 
 
   constructor(key: string, options?: DataManagerOptions) {
     this.key = key;
     if (!options) { return; }
-
-    if ("fetch" in options && options.fetch) { this.$fetch = options.fetch; }
     if ("fetchMany" in options && options.fetchMany) { this.$fetchMany = options.fetchMany; }
 
     makeAutoObservable(this);
@@ -50,10 +51,7 @@ export class DataManager<T extends CoreDocument> {
    * @param id The id of a document to fetch
    */
   public async fetch(id: string): Promise<void> {
-    if (this.$fetch === undefined) { return; }
-    const doc = await this.$fetch(id);
-    if (doc === undefined) { return; }
-    this.set(doc as T);
+    this.fetchMany([id]);
   }
 
   /**
@@ -61,13 +59,17 @@ export class DataManager<T extends CoreDocument> {
    * @param ids The ids of a number of documents to fetch.
    */
   public async fetchMany(ids: string[]): Promise<void> {
+    if (ids.length === 0) { return; }
     if (this.$fetchMany === undefined) { return; }
     // TODO - make unique
     const docs = await this.$fetchMany(ids);
-    console.log(docs)
     this.setMany(docs as T[]);
   }
 
+  /**
+   * Determines which IDs need to be sent to the fetchMany function
+   * @param ids A list of ids to verify are present and fetch if not
+   */
   public async fetchMissing(ids: string[]): Promise<void> {
     if (this.$fetchMany === undefined) { return; }
     const missingIDs: string[] = [];
@@ -97,6 +99,7 @@ export class DataManager<T extends CoreDocument> {
   public getPage(options: GetPageOptions = {}): T[] {
     const page: T[] = [];
     Object.keys(this.data).forEach((key: string) => {
+      if (options.size !== undefined && page.length >= options.size) { return; }
       if (options.match) {
         if (options.match(this.data[key])) {
           page.push(this.data[key]);
@@ -109,6 +112,10 @@ export class DataManager<T extends CoreDocument> {
     return page;
   }
 
+  /**
+   * Returns a list of all currently used ids in the manager
+   * @returns A list of all keys currently saved in the Manager
+   */
   public getKeys() {
     return Object.keys(this.data);
   }

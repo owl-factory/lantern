@@ -1,6 +1,6 @@
 import { NextApiRequest } from "next";
 import { getMyUser, requireLogin } from "server/auth";
-import { ContentTypeLogic } from "server/logic";
+import { CampaignLogic } from "server/logic";
 import { HTTPHandler } from "server/response";
 import { createEndpoint } from "server/utilities";
 
@@ -9,10 +9,11 @@ import { createEndpoint } from "server/utilities";
  * @param this The Handler class calling this function
  * @param req The request to the server
  */
-async function getContentTypes(this: HTTPHandler, req: NextApiRequest) {
+async function getCampaigns(this: HTTPHandler, req: NextApiRequest) {
   const myUser = getMyUser(req);
-  const contentTypes = await ContentTypeLogic.fetchMany(req.body.ids, myUser);
-  this.returnSuccess({ contentTypes: contentTypes });
+  requireLogin(myUser);
+  const campaigns = await CampaignLogic.fetchMany(req.body.ids, myUser);
+  this.returnSuccess({ campaigns: campaigns });
 }
 
-export default createEndpoint({POST: getContentTypes});
+export default createEndpoint({POST: getCampaigns});

@@ -5,7 +5,6 @@ import { DataManager } from "./DataManager";
 export const ContentManager = new DataManager<ContentDocument>(
   "my-content",
   {
-    fetch,
     fetchMany,
   }
 );
@@ -18,12 +17,11 @@ interface FetchManyResult {
   contents: ContentDocument[];
 }
 
-async function fetch(id: string): Promise<ContentDocument | undefined> {
-  const result = await fetchMany([id]);
-  if (result.length === 0) { return undefined; }
-  return result[0];
-}
-
+/**
+ * Fetches one or many content items from the database
+ * @param ids The ids of documents to fetch
+ * @returns A collection of content documents
+ */
 async function fetchMany(ids: string[]): Promise<ContentDocument[]> {
   const result = await rest.post<FetchManyResult>(`/api/content`, { ids: ids });
   if (!result.success) { return []; }

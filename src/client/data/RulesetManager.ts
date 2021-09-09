@@ -5,25 +5,19 @@ import { DataManager } from "./DataManager";
 export const RulesetManager = new DataManager<RulesetDocument>(
   "ruleset",
   {
-    fetch,
     fetchMany,
   }
 );
-
-interface FetchResult {
-  ruleset: RulesetDocument;
-}
 
 interface FetchManyResult {
   rulesets: RulesetDocument[];
 }
 
-async function fetch(id: string): Promise<RulesetDocument | undefined> {
-  const result = await rest.get<FetchResult>(`/api/rulesets/${id}`);
-  if (!result.success) { return undefined; }
-  return result.data.ruleset;
-}
-
+/**
+ * Fetches one or many rulesets from the database
+ * @param ids The ids of documents to fetch
+ * @returns A collection of ruleset documents
+ */
 async function fetchMany(ids: string[]): Promise<RulesetDocument[]> {
   const result = await rest.post<FetchManyResult>(`/api/rulesets`, { ids: ids });
   if (!result.success) { return []; }

@@ -5,27 +5,21 @@ import { DataManager } from "./DataManager";
 export const ContentManager = new DataManager<ContentTypeDocument>(
   "contentType",
   {
-    fetch,
     fetchMany,
   }
 );
 
-interface FetchResult {
-  content: ContentTypeDocument;
-}
-
 interface FetchManyResult {
-  contents: ContentTypeDocument[];
+  contentTypes: ContentTypeDocument[];
 }
 
-async function fetch(id: string): Promise<ContentTypeDocument | undefined> {
-  const result = await fetchMany([id]);
-  if (result.length === 0) { return undefined; }
-  return result[0];
-}
-
+/**
+ * Fetches one or many content types from the database
+ * @param ids The ids of documents to fetch
+ * @returns A collection of content type documents
+ */
 async function fetchMany(ids: string[]): Promise<ContentTypeDocument[]> {
   const result = await rest.post<FetchManyResult>(`/api/content-types`, { ids: ids });
   if (!result.success) { return []; }
-  return result.data.contents;
+  return result.data.contentTypes;
 }
