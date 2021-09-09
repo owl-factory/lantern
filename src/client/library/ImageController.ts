@@ -81,8 +81,8 @@ export class ImageController {
    * if it's only partially present.
    * @param imageID The ID of the image to fetch
    */
-  public async fetchImage(imageID: string ): Promise<ImageDocument> {
-    if (!this.images[imageID]) { return {}; }
+  public async fetchImage(imageID: string ): Promise<ImageDocument | undefined> {
+    if (!this.images[imageID]) { return undefined; }
     if (this.images[imageID].ownedBy !== undefined) { return this.images[imageID]; }
     this.images[imageID] = fromFauna(
       await this.client.query(q.Get(toFaunaRef({ id: imageID, collection: "images" })))
@@ -99,7 +99,7 @@ export class ImageController {
     values.id = tempID;
     this.images[tempID] = values;
     this.imageList.splice(0, 0, tempID);
-    rest.put(`/api/images/external`, values as Record<string, unknown>)
+    rest.put(`/api/images/external`, values as unknown as Record<string, unknown>)
     .then((res: any) => {
       if (res.success === false) {
         delete this.images[tempID];

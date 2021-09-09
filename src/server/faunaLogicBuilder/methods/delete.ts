@@ -7,6 +7,7 @@ import { FunctionConfig } from "../types";
 import { query as q } from "faunadb";
 import { trimRestrictedFields } from "utilities/security";
 import { MyUserDocument } from "types/security";
+import { AnyDocument } from "types/documents";
 
 /**
  * Deletes a single document from the database
@@ -31,7 +32,7 @@ export async function $delete(ref: string | DocumentReference, myUser: MyUserDoc
   if (faunaDoc) { faunaDoc = fromFauna(faunaDoc as Record<string, unknown>); }
 
   // Validates that we recieved the result and that the user can act/view it
-  if (faunaDoc === null || !canAct(faunaDoc, myUser, config.roles)) {
+  if (faunaDoc === null || !canAct(faunaDoc as AnyDocument, myUser, config.roles)) {
     throw { code: 404, message: "The requested resource was not found or you do not have permission to delete it." };
   }
 

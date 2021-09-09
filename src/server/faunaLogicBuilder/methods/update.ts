@@ -37,13 +37,13 @@ export async function $update(
   if (faunaDoc) { faunaDoc = fromFauna(faunaDoc as Record<string, unknown>); }
 
   // Validates that we recieved the result and that the user can act/view it
-  if (faunaDoc === null || !canAct(faunaDoc, myUser, config.roles)) {
+  if (faunaDoc === null || !canAct(faunaDoc as AnyDocument, myUser, config.roles)) {
     throw { code: 404, message: "The requested resource was not found or you do not have permission to update it." };
   }
 
   // Preprocesses, setting certain fields and doing any required steps before updating
   doc = config.preProcess(doc, myUser);
-  doc = preUpdate(doc, myUser, config);
+  doc = preUpdate(doc, myUser, config) as unknown as AnyDocument;
 
   let result: FaunaDocument<unknown> | null = await client.query(q.Update(faunaDoc.ref as Expr, doc));
   if (result) { result = fromFauna(result as Record<string, unknown>); }
@@ -70,14 +70,14 @@ export async function $update(
  */
 function preUpdate(doc: AnyDocument, myUser: MyUserDocument, config: FunctionConfig) {
   const fields = determineAccessibleFields(doc, myUser, config.setFields[getRole(myUser)]);
-  doc = trimRestrictedFields(doc as Record<string, unknown>, fields, false);
+  const newDoc = trimRestrictedFields(doc as unknown as Record<string, unknown>, fields, false);
 
-  doc.updatedAt = new Date();
-  doc.updatedBy = { id: myUser.id, collection: myUser.collection };
+  newDoc.updatedAt = new Date();
+  newDoc.updatedBy = { id: myUser.id, collection: myUser.collection };
 
-  delete doc.id;
-  delete doc.collection;
-  delete doc.ref;
+  delete newDoc.id;
+  delete newDoc.collection;
+  delete newDoc.ref;
 
-  return doc;
+  return newDoc;
 }

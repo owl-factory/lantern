@@ -1,4 +1,5 @@
 export interface Document<D> {
+  id: string | undefined;
   data: D;
   ref: Ref;
   ts: number;

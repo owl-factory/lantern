@@ -30,7 +30,7 @@ export function LinkImageForm(props: LinkImageFormProps): JSX.Element {
 
   return (
     <Formik
-      initialValues={{ src: "", name: "" }}
+      initialValues={{ id: "", src: "", name: "" }}
       onSubmit={onSubmit}
     >
       { (formik) => (

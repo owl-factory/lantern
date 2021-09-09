@@ -49,7 +49,9 @@ export async function $search(
   // Returns a subset of docs that the current user can see
   docs = canActOn(docs, myUser, config.roles);
 
-  docs = config.postProcess(docs, myUser);
+  docs.forEach((doc: AnyDocument) => {
+    doc = config.postProcess(doc, myUser);
+  });
   docs = trimRestrictedFieldsOn(docs, myUser, config.fields[getRole(myUser)]);
   return docs;
 }

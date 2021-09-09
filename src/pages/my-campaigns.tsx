@@ -1,6 +1,11 @@
+import { CampaignManager } from "client/data/CampaignManager";
+import { RulesetManager } from "client/data/RulesetManager";
 import { Page } from "components/design";
+import { Loading } from "components/style";
 import { Input } from "components/style/forms";
 import { Formik } from "formik";
+import { observer } from "mobx-react-lite";
+// import { observer } from "mobx-react-lite";
 import { NextPageContext } from "next";
 import Link from "next/link";
 import React from "react";
@@ -22,7 +27,11 @@ interface CampaignTileProps {
   campaign: CampaignDocument;
 }
 
-function CampaignTile(props: CampaignTileProps) {
+/**
+ * Renders a tile containing campaign information
+ * @param campaign The campaign to render a tile for
+ */
+const CampaignTile = observer((props: CampaignTileProps) => {
   return (
     <Card>
       <Row>
@@ -37,27 +46,39 @@ function CampaignTile(props: CampaignTileProps) {
             <Link href={`/play/${props.campaign.id}`}>
               <a>Play</a>
             </Link>
+            {RulesetManager.get(props.campaign.ruleset.id)?.name || <Loading/>}
           </Card.Body>
         </Col>
       </Row>
     </Card>
   );
-}
+});
 
 /**
- *
+ * Renders a page with the current user's campaigns
  * @param success Whether or not the initial props failed
  * @param message The success or error message indicating the error from the intial props
  * @param session The current user's session
  * @param campaigns The initial light campaign information fetched from the API
  */
-export default function MyCampaigns(props: MyCampaignsProps) {
+function MyCampaigns(props: MyCampaignsProps) {
+  React.useEffect(() => {
+    CampaignManager.load();
+    RulesetManager.load();
+
+    CampaignManager.setMany(props.myCampaigns);
+    const uniqueRulesets = CampaignManager.getUniques("ruleset.id");
+    RulesetManager.fetchMissing(uniqueRulesets);
+  }, []);
+
+  CampaignManager.setMany(props.myCampaigns);
+
   function searchCampaigns(values: SearchCampaignsArguments) {
     console.log(values);
   }
 
   const campaignTiles: JSX.Element[] = [];
-  props.myCampaigns.forEach((campaign: CampaignDocument) => {
+  CampaignManager.getPage().forEach((campaign: CampaignDocument) => {
     campaignTiles.push(
       <CampaignTile key={campaign.id} campaign={campaign}/>
     );
@@ -96,3 +117,5 @@ MyCampaigns.getInitialProps = async (ctx: NextPageContext) => {
     myCampaigns: result.data.campaigns,
   };
 };
+
+export default observer(MyCampaigns);

@@ -1,28 +1,20 @@
 
 import { FaunaLogicBuilder } from "server/faunaLogicBuilder/FaunaLogicBuilder";
-import { AnyDocument, CampaignDocument, UserDocument } from "types/documents";
+import { CampaignDocument, UserDocument } from "types/documents";
 import { MyUserDocument } from "types/security";
 import { myUserToTerm } from "./CoreModelLogic";
 import { isOwner } from "./security";
 
-const USER_VIEW_FIELDS = [
-  "banner.*",
-  "ruleset.*",
-  "players.*",
-  "lastPlayedAt",
+const USER_VIEW_FIELDS: string[] = [
 ];
-const CampaignLogicBuilder = new FaunaLogicBuilder("campaigns")
+const RulesetLogicBuilder = new FaunaLogicBuilder("rulesets")
   // Globals
   // Users are only able to view campaigns if they are a player, and all fields if they are an owner/GM
   .fields()
-    .guest([])
-    .user(userViewableFields)
-    .admin(["*"])
+    .guest(["*"])
   .done()
   .roles()
-    .guest(false)
-    .user(userViewable)
-    .admin(true)
+    .guest(true)
   .done()
 
   /**
@@ -38,34 +30,9 @@ const CampaignLogicBuilder = new FaunaLogicBuilder("campaigns")
   .fetchMany()
   .done()
 
-  /**
-   * Allows for specifically updating the campaign banner
-   */
-  .update("updateBanner")
-    .roles()
-      .user(isOwner)
-      .admin(true)
-    .done()
-    .setFields()
-      .user(["banner.ref", "banner.src"])
-    .done()
-  .done()
-
-  /**
-   * Allows for searching through all of a user's campaigns from last played to oldest played
-   * The index fields allow for base data to populate tiles
-   */
-  .search("fetchMyCampaigns", "my_campaigns_asc")
-    .preProcessTerms(myUserToTerm)
-    .indexFields(["lastPlayedAt", "ref", "name", "banner.src"])
-    // Explicitly allow the user since the index guarantees ownership/playing
-    .roles()
-      .user(true)
-    .done()
-  .done()
 
 .done();
-export const CampaignLogic = CampaignLogicBuilder.export();
+export const RulesetLogic = RulesetLogicBuilder.export();
 
 /**
  * Determines if a standard user is able to view any part of a document
@@ -73,10 +40,10 @@ export const CampaignLogic = CampaignLogicBuilder.export();
  * @param doc The document the user is attempting to view
  * @returns True if the user may view any part of the document, false otherwise
  */
-function userViewable(myUser: MyUserDocument, doc?: AnyDocument): boolean {
+function userViewable(myUser: MyUserDocument, doc?: CampaignDocument): boolean {
   if (!doc) { return false; }
   if (doc.ownedBy?.id === myUser.id) { return true; }
-  (doc as CampaignDocument).players?.forEach((player: UserDocument) => {
+  doc.players?.forEach((player: UserDocument) => {
     if (player.id === myUser.id) { return true; }
   });
 
@@ -89,14 +56,14 @@ function userViewable(myUser: MyUserDocument, doc?: AnyDocument): boolean {
  * @param doc The document the user is attempting to view
  * @returns An array of strings indicating what fields the user is able to see. *s indicate any field at that level
  */
-function userViewableFields(myUser: MyUserDocument, doc?: AnyDocument): string[] {
+function userViewableFields(myUser: MyUserDocument, doc?: CampaignDocument): string[] {
   if (!doc) { return []; }
 
   // Is owner check
   if (doc.ownedBy?.id === myUser.id) { return ["*"]; }
 
   // If a player, return the user view fields
-  (doc as CampaignDocument).players?.forEach((player: UserDocument) => {
+  doc.players?.forEach((player: UserDocument) => {
     if (player.id === myUser.id) { return USER_VIEW_FIELDS; }
   });
 

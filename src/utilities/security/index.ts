@@ -68,7 +68,9 @@ export function trimRestrictedFields(
 ) {
   docs.forEach((doc: AnyDocument) => {
     const selectedFields = determineAccessibleFields(doc, myUser, fields);
-    doc = trimRestrictedFields(doc as Record<string, unknown>, selectedFields, includeDefault);
+    doc = trimRestrictedFields(
+      doc as unknown as Record<string, unknown>, selectedFields, includeDefault
+    ) as unknown as AnyDocument;
   });
   return docs;
 }
