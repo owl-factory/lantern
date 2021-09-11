@@ -67,7 +67,7 @@ function MyContent(props: MyContentProps): JSX.Element {
   // Use this to prevent too many rerenders
   React.useEffect(() => {
     setContents(ContentManager.getPage({ match }));
-  }, ContentManager.getKeys());
+  }, [ContentManager]);
 
   function match(doc: AnyDocument) {
     if (!props.session) { return false; }

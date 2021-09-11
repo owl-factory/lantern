@@ -62,6 +62,11 @@ const CampaignTile = observer((props: CampaignTileProps) => {
  * @param campaigns The initial light campaign information fetched from the API
  */
 function MyCampaigns(props: MyCampaignsProps) {
+  const [ campaigns, setCampaigns ] = React.useState<CampaignDocument[]>([]);
+
+  CampaignManager.setMany(props.myCampaigns);
+
+  // Loads in data from the cache and fetches anything that's missing
   React.useEffect(() => {
     CampaignManager.load();
     RulesetManager.load();
@@ -71,14 +76,19 @@ function MyCampaigns(props: MyCampaignsProps) {
     RulesetManager.fetchMissing(uniqueRulesets);
   }, []);
 
-  CampaignManager.setMany(props.myCampaigns);
 
   function searchCampaigns(values: SearchCampaignsArguments) {
     console.log(values);
   }
 
+  // Use this to prevent too many rerenders
+  React.useEffect(() => {
+    setCampaigns(CampaignManager.getPage());
+  }, [CampaignManager]);
+
+  // Builds the tiles for listing out the campaigns
   const campaignTiles: JSX.Element[] = [];
-  CampaignManager.getPage().forEach((campaign: CampaignDocument) => {
+  campaigns.forEach((campaign: CampaignDocument) => {
     campaignTiles.push(
       <CampaignTile key={campaign.id} campaign={campaign}/>
     );

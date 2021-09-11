@@ -58,8 +58,12 @@ const CharacterCard = observer((props: CharacterCardProps) => {
  * @param characters The initial light campaign information fetched from the API
  */
 export function MyCharacters (props: MyCharactersProps) {
+  const [characters, setCharacters] = React.useState<CharacterDocument[]>([]);
+  const [rulesets, setRulesets] = React.useState<RulesetDocument[]>([]);
 
-  // Runs once on page instantiation
+  CharacterManager.setMany(props.characters);
+
+  // Loads in all data from the cache to the data managers
   React.useEffect(() => {
     // Loads in local storage data
     CharacterManager.load();
@@ -76,7 +80,16 @@ export function MyCharacters (props: MyCharactersProps) {
     RulesetManager.fetchMissing(uniqueRulesets);
   }, []);
 
-  CharacterManager.setMany(props.characters);
+  // Refreshes the characters to prevent too many rewrites
+  React.useEffect(() => {
+    setCharacters(CharacterManager.getPage());
+  }, [CharacterManager]);
+
+  // Refreshes the rulesets to prevent too many rewrites
+  React.useEffect(() => {
+    setRulesets(RulesetManager.getPage());
+  }, [RulesetManager]);
+
 
   const characterCards: JSX.Element[] = [];
 
@@ -84,13 +97,13 @@ export function MyCharacters (props: MyCharactersProps) {
   const rulesetOptions: JSX.Element[] = [
     <option key="_blank" value="">-- All Rulesets --</option>,
   ];
-  RulesetManager.getPage().forEach((ruleset: RulesetDocument) => {
+  rulesets.forEach((ruleset: RulesetDocument) => {
     rulesetOptions.push(
       <option key={ruleset.id} value={ruleset.id}>{ruleset.name || <Loading/>}</option>
     );
   });
 
-  CharacterManager.getPage().forEach((character: CharacterDocument) => {
+  characters.forEach((character: CharacterDocument) => {
     characterCards.push(<CharacterCard key={character.id} character={character}/>);
   });
   function searchCharacters(values: SearchCharacterValues) {
