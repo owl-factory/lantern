@@ -31,7 +31,7 @@ export async function $fetch(ref: string | DocumentReference, myUser: MyUserDocu
   if (result) { result = fromFauna(result as Record<string, unknown>); }
 
   // Validates that we recieved the result and that the user can act/view it
-  if (result === null || !canAct(result, myUser, config.roles)) {
+  if (result === null || !canAct(result as AnyDocument, myUser, config.roles)) {
     throw { code: 404, message: "The requested resource was not found." };
   }
 

@@ -26,7 +26,10 @@ export async function $create(doc: AnyDocument, myUser: MyUserDocument, config: 
 
   // Runs all pre-processing of the document before creating it
   doc = config.preprocess(doc);
-  doc = trimRestrictedFields(doc as Record<string, unknown>, config.setFields[getRole(myUser)]);
+  doc = trimRestrictedFields(
+    doc as unknown as Record<string, unknown>,
+    config.setFields[getRole(myUser)]
+  ) as unknown as AnyDocument;
   doc = preCreate(doc, myUser);
 
   const faunaDoc: FaunaDocument<unknown> = toFauna(doc);

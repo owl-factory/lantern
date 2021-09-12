@@ -22,7 +22,7 @@ export function ImageDetailsModal(
   { imageController, imageID, handleClose }: ImageDetailsModalProps
 ): JSX.Element | null {
   if (imageID === "") { return null; }
-  const [ image, setImage ] = React.useState<ImageDocument>({});
+  const [ image, setImage ] = React.useState<ImageDocument>({ id: "" });
 
   // The images that is guaranteed to be there
   const baseImage = imageController.images[imageID];
@@ -33,6 +33,7 @@ export function ImageDetailsModal(
   React.useEffect(() => {
     imageController.fetchImage(imageID)
     .then((fetchedImage) => {
+      if (!fetchedImage) { return; }
       setImage(fetchedImage);
     });},
     [ imageID ]

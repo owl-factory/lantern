@@ -7,5 +7,5 @@ export function idify(arg: string): string {
   return idArg;
 }
 
-export const isServer = (typeof process !== "undefined");
+export const isServer = (typeof window === "undefined");
 export const isClient = !isServer;

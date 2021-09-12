@@ -198,7 +198,7 @@ export class SceneController {
    * @param y The y coordinate of the new sprite
    */
   public async createSprite(textureSource: string, x: number, y: number): Promise<void> {
-    this.addProp(this, { src: textureSource }, x, y);
+    this.addProp(this, { id: "", src: textureSource }, x, y);
   }
 
   /**

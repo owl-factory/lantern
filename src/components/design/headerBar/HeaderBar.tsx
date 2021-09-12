@@ -1,9 +1,10 @@
 import React from "react";
 import Link from "next/link";
 import { Container, Nav, NavDropdown, Navbar } from "react-bootstrap";
-import { UserDocument } from "types/documents";
+import { CampaignDocument, UserDocument } from "types/documents";
 import { getSession, signOut } from "utilities/auth";
 import styles from "./HeaderBar.module.scss";
+import { CampaignManager } from "client/data";
 
 interface LoggedInNavProps {
   user: UserDocument;
@@ -24,6 +25,31 @@ function UserDisplay(props: LoggedInNavProps) {
   );
 }
 
+/**
+ * Renders up to three of the user's recent campaigns for fewer clicks to game
+ * @returns A component containing up to three campaigns for faster access
+ */
+function RecentCampaigns() {
+  const campaignLinks: JSX.Element[] = [];
+
+  React.useEffect(() => {
+    CampaignManager.load();
+  }, []);
+
+    const campaignDocs = CampaignManager.getPage({size: 3});
+    campaignDocs.forEach((doc: CampaignDocument) => {
+      campaignLinks.push(
+        <Link key={doc.id} href={`/play/${doc.id}`} passHref>
+          <NavDropdown.Item>{doc.name}</NavDropdown.Item>
+        </Link>
+      );
+    });
+  return (
+    <>
+      {campaignLinks}
+    </>
+  );
+}
 
 /**
  * The component for logged in navigation
@@ -37,9 +63,11 @@ function LoggedInNav(props: LoggedInNavProps) {
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="me-auto">
           <NavDropdown title={<UserDisplay user={props.user}/>}>
+            <RecentCampaigns/>
             <Link href="/my-campaigns" passHref>
               <NavDropdown.Item>My Campaigns</NavDropdown.Item>
             </Link>
+            <NavDropdown.Divider/>
             <Link href="/my-characters" passHref>
               <NavDropdown.Item >My Characters</NavDropdown.Item>
             </Link>

@@ -1,6 +1,9 @@
+import { CampaignManager, CharacterManager, RulesetManager } from "client/data";
 import { Page } from "components/design";
+import { Loading } from "components/style";
 import { Input, Select } from "components/style/forms";
 import { Formik } from "formik";
+import { observer } from "mobx-react-lite";
 import { NextPageContext } from "next";
 import React from "react";
 import { Button, ButtonGroup, Card, Col, Row } from "react-bootstrap";
@@ -24,9 +27,7 @@ interface CharacterCardProps {
   character: CharacterDocument;
 }
 
-function CharacterCard(props: CharacterCardProps) {
-  props.character.campaign.name = "Endless Sea";
-  props.character.ruleset.name = "Dungeons & Dragons, 5e";
+const CharacterCard = observer((props: CharacterCardProps) => {
   return (
     <Card>
       <Card.Body>
@@ -36,8 +37,8 @@ function CharacterCard(props: CharacterCardProps) {
           </Col>
           <Col sm={8}>
             <h3>{props.character.name}</h3><br/>
-            {props.character.campaign.name}<br/>
-            {props.character.ruleset.name}<br/>
+            {CampaignManager.get(props.character.campaign.id)?.name || <Loading/>}<br/>
+            {RulesetManager.get(props.character.ruleset.id)?.name || <Loading/>}<br/>
             <ButtonGroup>
               <Button>Duplicate</Button>
               <Button>Edit</Button>
@@ -47,15 +48,62 @@ function CharacterCard(props: CharacterCardProps) {
       </Card.Body>
     </Card>
   );
-}
+});
 
-export default function MyCharacters(props: MyCharactersProps) {
+/**
+ * Renders a page with the current user's characters
+ * @param success Whether or not the initial props failed
+ * @param message The success or error message indicating the error from the intial props
+ * @param session The current user's session
+ * @param characters The initial light campaign information fetched from the API
+ */
+export function MyCharacters (props: MyCharactersProps) {
+  const [characters, setCharacters] = React.useState<CharacterDocument[]>([]);
+  const [rulesets, setRulesets] = React.useState<RulesetDocument[]>([]);
+
+  CharacterManager.setMany(props.characters);
+
+  // Loads in all data from the cache to the data managers
+  React.useEffect(() => {
+    // Loads in local storage data
+    CharacterManager.load();
+    CampaignManager.load();
+    RulesetManager.load();
+
+    CharacterManager.setMany(props.characters);
+
+    // Fetches all missing campaigns and rulesets for the names
+    const uniqueCampaigns = CharacterManager.getUniques("campaign.id");
+    CampaignManager.fetchMissing(uniqueCampaigns);
+
+    const uniqueRulesets = CharacterManager.getUniques("ruleset.id");
+    RulesetManager.fetchMissing(uniqueRulesets);
+  }, []);
+
+  // Refreshes the characters to prevent too many rewrites
+  React.useEffect(() => {
+    setCharacters(CharacterManager.getPage());
+  }, [CharacterManager]);
+
+  // Refreshes the rulesets to prevent too many rewrites
+  React.useEffect(() => {
+    setRulesets(RulesetManager.getPage());
+  }, [RulesetManager]);
+
+
   const characterCards: JSX.Element[] = [];
+
+  // Loads all unique rulesets into the options
   const rulesetOptions: JSX.Element[] = [
     <option key="_blank" value="">-- All Rulesets --</option>,
   ];
+  rulesets.forEach((ruleset: RulesetDocument) => {
+    rulesetOptions.push(
+      <option key={ruleset.id} value={ruleset.id}>{ruleset.name || <Loading/>}</option>
+    );
+  });
 
-  props.characters.forEach((character: CharacterDocument) => {
+  characters.forEach((character: CharacterDocument) => {
     characterCards.push(<CharacterCard key={character.id} character={character}/>);
   });
   function searchCharacters(values: SearchCharacterValues) {
@@ -110,3 +158,5 @@ MyCharacters.getInitialProps = async (ctx: NextPageContext) => {
     campaigns: result.data.campaigns,
   };
 };
+
+export default observer(MyCharacters);
