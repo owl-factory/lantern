@@ -25,7 +25,7 @@ export async function $create(doc: AnyDocument, myUser: MyUserDocument, config: 
   if (!canActStatic(myUser, config.roles)) { throw {code: 401, message: "You cannot create this resource"}; }
 
   // Runs all pre-processing of the document before creating it
-  doc = config.preprocess(doc);
+  doc = config.preProcess(doc);
   doc = trimRestrictedFields(
     doc as unknown as Record<string, unknown>,
     config.setFields[getRole(myUser)]
@@ -37,7 +37,7 @@ export async function $create(doc: AnyDocument, myUser: MyUserDocument, config: 
 
   // TODO - how are errors thrown from fauna
   let result = fromFauna(faunaResult);
-  result = config.postprocess(result);
+  result = config.postProcess(result);
   result = trimRestrictedFields(result as Record<string, unknown>, config.fields[getRole(myUser)]);
 
   return result;

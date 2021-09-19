@@ -9,11 +9,11 @@ import { createEndpoint } from "server/utilities";
  * @param this The Handler class calling this function
  * @param req The request to the server
  */
-async function getRulesets(this: HTTPHandler, req: NextApiRequest) {
+async function getRuleset(this: HTTPHandler, req: NextApiRequest) {
   const myUser = getMyUser(req);
 
-  const rulesets = await RulesetLogic.fetchMany(req.body.ids, myUser);
-  this.returnSuccess({ rulesets: rulesets });
+  const ruleset = await RulesetLogic.fetch(req.query.id, myUser);
+  this.returnSuccess({ ruleset: ruleset });
 }
 
 /**
@@ -21,7 +21,7 @@ async function getRulesets(this: HTTPHandler, req: NextApiRequest) {
  * @param this The Handler class calling this function
  * @param req The request to the server
  */
-async function createRuleset(this: HTTPHandler, req: NextApiRequest) {
+async function updateRuleset(this: HTTPHandler, req: NextApiRequest) {
   const myUser = getMyUser(req);
 
   const ruleset = await RulesetLogic.create(req.body, myUser);
@@ -29,6 +29,6 @@ async function createRuleset(this: HTTPHandler, req: NextApiRequest) {
 }
 
 export default createEndpoint({
-  POST: getRulesets,
-  PUT: createRuleset,
+  GET: getRuleset,
+  PATCH: updateRuleset,
 });

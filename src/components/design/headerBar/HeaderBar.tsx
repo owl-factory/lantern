@@ -5,6 +5,9 @@ import { CampaignDocument, UserDocument } from "types/documents";
 import { getSession, signOut } from "utilities/auth";
 import styles from "./HeaderBar.module.scss";
 import { CampaignManager } from "client/data";
+import { isAdmin, isModerator } from "server/logic/security";
+import { MyUserDocument } from "types/security";
+import { ADMIN_ENDPOINT } from "utilities/globals";
 
 interface LoggedInNavProps {
   user: UserDocument;
@@ -49,6 +52,25 @@ function RecentCampaigns() {
       {campaignLinks}
     </>
   );
+}
+
+/**
+ * Builds a dropdown for accessing the admin portal
+ * @param user The currently logged in user
+ * @returns A dropdown section with links to the admin portal if the user is elevated. Nothing otherwise.
+ */
+function ElevatedDropdown(props: LoggedInNavProps) {
+  const navItems: JSX.Element[] = [];
+  if(isAdmin(props.user as MyUserDocument)) {
+    navItems.push(
+      <Link href={`${ADMIN_ENDPOINT}/rulesets`} passHref><NavDropdown.Item>Rulesets</NavDropdown.Item></Link>
+    );
+  }
+
+  if (navItems.length === 0) { return <></>; }
+
+  return <NavDropdown title="Admin Portal">{navItems}</NavDropdown>;
+
 }
 
 /**
@@ -124,7 +146,9 @@ function LoggedInNav(props: LoggedInNavProps) {
             <Link href="/report-a-bug" passHref>
               <NavDropdown.Item>Report a Bug</NavDropdown.Item>
             </Link>
-          </NavDropdown>
+          </NavDropdown >
+
+          <ElevatedDropdown {...props}/>
         </Nav>
       </Navbar.Collapse>
     </>

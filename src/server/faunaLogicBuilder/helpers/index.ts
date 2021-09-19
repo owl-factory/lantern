@@ -8,7 +8,7 @@ import { RoleConfig } from "../types";
  * @returns The highest role of the currently logged in user
  */
 export function getRole(myUser: MyUserDocument) {
-  if (!myUser.isLoggedIn) { return UserRole.GUEST; }
+  if (!myUser || !myUser.isLoggedIn) { return UserRole.GUEST; }
   let highestRole = UserRole.USER;
   myUser.roles.forEach((role: string) => {
     UserRoleReadable.forEach((readableRole: string, index: number) => {
@@ -40,6 +40,8 @@ export function checkConfig(config: unknown) {
  */
 export function canActStatic(myUser: MyUserDocument, roleConfig: RoleConfig) {
   // TODO - Check if role is not present in myUser?
+  console.log(myUser.role)
+  console.log(roleConfig[myUser.role])
   if (typeof roleConfig[myUser.role] === "boolean") { return roleConfig[myUser.role]; }
   return true;
 }
@@ -53,6 +55,7 @@ export function canActStatic(myUser: MyUserDocument, roleConfig: RoleConfig) {
  */
 export function canActOn(docs: AnyDocument[], myUser: MyUserDocument, roleConfig: RoleConfig): AnyDocument[] {
   const approvedDocs: AnyDocument[] = [];
+  console.log(myUser.roles)
   docs.forEach((doc: AnyDocument) => {
     if (canAct(doc, myUser, roleConfig)) { approvedDocs.push(doc); }
   });
@@ -67,6 +70,7 @@ export function canActOn(docs: AnyDocument[], myUser: MyUserDocument, roleConfig
  */
 export function canAct(doc: AnyDocument | null, myUser: MyUserDocument, roleConfig: RoleConfig) {
   if (doc === null) { return false; }
+  if (!myUser) { return false; }
 
   const roleCheck = roleConfig[myUser.role];
 

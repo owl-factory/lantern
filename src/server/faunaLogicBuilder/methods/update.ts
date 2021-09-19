@@ -23,7 +23,7 @@ export async function $update(
 ) {
   const client = getServerClient();
   const newRef = toFaunaRef(ref, config.collection);
-
+  console.log(doc)
   // Static checks that can exit out before anything is done
   if (config.login && !myUser.isLoggedIn) {
     throw { code: 401, message: "You must be logged in to update this resource." };
@@ -44,8 +44,8 @@ export async function $update(
   // Preprocesses, setting certain fields and doing any required steps before updating
   doc = config.preProcess(doc, myUser);
   doc = preUpdate(doc, myUser, config) as unknown as AnyDocument;
-
-  let result: FaunaDocument<unknown> | null = await client.query(q.Update(faunaDoc.ref as Expr, doc));
+  console.log(doc)
+  let result: FaunaDocument<unknown> | null = await client.query(q.Update(faunaDoc.ref as Expr, { data: doc}));
   if (result) { result = fromFauna(result as Record<string, unknown>); }
 
   // Validates that we recieved the result and that the user can act/view it
@@ -58,7 +58,7 @@ export async function $update(
   result = config.postProcess(result, myUser);
   const fields = determineAccessibleFields(result as AnyDocument, myUser, config.fields[getRole(myUser)]);
   result = trimRestrictedFields(result as Record<string, unknown>, fields, true);
-
+  console.log(result)
   return result;
 }
 
@@ -69,6 +69,7 @@ export async function $update(
  * @returns An updated document ready to be updated
  */
 function preUpdate(doc: AnyDocument, myUser: MyUserDocument, config: FunctionConfig) {
+  console.log(doc)
   const fields = determineAccessibleFields(doc, myUser, config.setFields[getRole(myUser)]);
   const newDoc = trimRestrictedFields(doc as unknown as Record<string, unknown>, fields, false);
 

@@ -1,0 +1,13 @@
+// Creates an index for listing either officially supported rulesets or unofficial rulesets
+CreateIndex({
+  name: "rulesets_by_official",
+  source: Collection("rulesets"),
+  terms: [{ field: ["data", "isOfficial"]} ],
+  values: [
+    { field: ["ref"], reverse: true},
+    { field: ["data", "name"]},
+    { field: ["data", "ownedBy"]},
+    { field: ["data", "isPublic"]},
+    { field: ["data", "isLocked"]},
+  ],
+})

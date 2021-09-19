@@ -6,9 +6,10 @@ import { toFaunaRef } from "utilities/fauna";
 export function getMyUser(req: NextApiRequest): MyUserDocument {
   // TODO - have this working on page refresh
   const myUser = getSession({req});
-
+  console.log(myUser)
   // If someone is not logged in
   if (myUser === null || !("user" in myUser)) {
+    console.log("WHHYYY")
     // TODO - until auth issues are resolved, we're going to fake an active user
     const myUser2: MyUserDocument = {
       id: "295863299256353286",
@@ -31,6 +32,10 @@ export function getMyUser(req: NextApiRequest): MyUserDocument {
   if (myUser.user.id) {
     myUser.user.isLoggedIn = true;
     myUser.user.role = UserRole.USER;
+  }
+
+  if (myUser.user.roles.includes("admin")) {
+    myUser.user.role = UserRole.ADMIN;
   }
 
   return myUser.user;
