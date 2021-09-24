@@ -1,16 +1,12 @@
-import { Form, Formik } from "formik";
 import React from "react";
 import { IndexTable, Page, fetchContentResponse } from "components/design";
-import { ErrorMessage } from "components/design/forms";
 import request from "utilities/request";
 import { MdBlock, MdBuild, MdInfo } from "react-icons/md";
 import { ContextMenuBuilder, TableBuilder } from "utilities/design";
 import { TableComponentProps } from "types/design";
-import { useRouter } from "next/router";
-import * as Yup from "yup";
 import { Input } from "components/style/forms";
 import { Modal } from "components/style/modals";
-import { Button, Col, Row } from "components/style";
+import { Button } from "components/style";
 import { Card, CardBody, CardHeader } from "components/style/card";
 
 // The props for the RulesetPage
@@ -62,7 +58,7 @@ async function queryRulesets(
       <Card>
         <CardHeader>Create a New Ruleset</CardHeader>
         <CardBody>
-          <CreateRulesetForm/>
+          {/* <CreateRulesetForm/> */}
         </CardBody>
       </Card>
     </Modal>
