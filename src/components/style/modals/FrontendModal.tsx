@@ -23,7 +23,7 @@ export default function FrontEndModal(props: ModalProps) {
   // Ensures that the state of props.open affects the Bootstrap open/close state
   React.useEffect(() => {
     if (props.open) {
-      // console.log(modalElement)
+      console.log(modalElement)
       const modal = new Modal(modalElement as (string | Element), {});
       modal.show();
     } else {

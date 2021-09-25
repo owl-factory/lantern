@@ -5,6 +5,15 @@ import { StorageTypeEnum } from "types/enums/storageType";
 import { rest } from "utilities/request";
 import { NextPageContext } from "next";
 import { ImageController } from "client/library/ImageController";
+import { getSession } from "utilities/auth";
+import { observer } from "mobx-react-lite";
+import { ImageDocument } from "types/documents";
+import { InitialProps } from "types/client";
+import { ImageManager } from "client/data";
+
+interface LibraryProps extends InitialProps {
+  images: ImageDocument[];
+}
 
 /**
  * Renders the liubrary of all user data
@@ -12,25 +21,43 @@ import { ImageController } from "client/library/ImageController";
  * @param message Failure message, if any.
  * @param data Contains the data.
  */
-export default function Library(props: any): JSX.Element {
+function Library(props: LibraryProps): JSX.Element {
   const maxAllowedStorage = 250 * 1024 * 1024;
   const usage = [
     { bytes: 15 * 1024 * 1024, storageType: StorageTypeEnum.Images },
     { bytes: 2500000, storageType: StorageTypeEnum.MusicTracks },
     { bytes: 10 * 1024 * 1024, storageType: StorageTypeEnum.AudioClips },
   ];
-  const imageController = new ImageController();
-  imageController.loadImages(props.data.images);
+
+  console.log(props)
+
+  React.useEffect(() => {
+    ImageManager.load();
+    ImageManager.setMany(props.images || []);
+  });
+
   return (
     <Page>
       <h1>Library</h1>
       <StorageUsage maxAllowedStorage={maxAllowedStorage} usage={usage}/>
-      <LibraryImageList imageController={imageController} listFormat={ListFormat.Icons}/>
+      <LibraryImageList listFormat={ListFormat.Icons}/>
     </Page>
   );
 }
 
+interface LibraryResponse {
+  images: ImageDocument[];
+}
+
 Library.getInitialProps = async (ctx: NextPageContext) => {
-  const libraryData = rest.get(`/api/library`);
-  return libraryData;
+  const session = getSession(ctx);
+  const result = await rest.get<LibraryResponse>(`/api/library`);
+  return {
+    session,
+    success: result.success,
+    message: result.message,
+    images: result.data.images,
+  };
 };
+
+export default observer(Library);

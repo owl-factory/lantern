@@ -1,3 +1,4 @@
+import { ImageManager } from "client/data";
 import { Col, Row } from "components/style";
 import { Card, CardBody } from "components/style/card";
 import { observer } from "mobx-react-lite";
@@ -41,13 +42,32 @@ function ImageThumbnail({ image, onClick }: ImageThumbnailProps) {
   );
 }
 
-export const ImageList = observer((props: any): JSX.Element => {
-  const imageThumbnails: JSX.Element[] = [];
+interface ImageListProps {
+  listFormat: ListFormat;
+  onClick: (image: ImageDocument) => void;
+}
 
+/**
+ * Renders a list of images in one of two formats.
+ * TODO - rename the dang formats to something you can understand xD
+ * @param listFormat The method to list the images
+ * @param onClick The action to run when the image tile is clicked
+ * @returns Returns a list of images as either Icons or Thumbnails
+ */
+function $ImageList(props: ImageListProps): JSX.Element {
+  const [ images, setImages ] = React.useState<ImageDocument[]>([]);
+
+  const imageThumbnails: JSX.Element[] = [];
   const onClick = props.onClick === undefined ? (() => {return;}) : props.onClick;
 
-  props.imageController.imageList.forEach((imageID: string) => {
-    const image = props.imageController.images[imageID];
+  // Updates the list of images when the image manager changes
+  React.useEffect(() => {
+    const newImages = ImageManager.getPage();
+    if (!newImages) { return; }
+    setImages(newImages);
+  }, [ImageManager.updatedAt]);
+
+  images.forEach((image: ImageDocument) => {
     if (!image) { return; }
     switch(props.listFormat) {
       case ListFormat.Thumbnails:
@@ -64,4 +84,6 @@ export const ImageList = observer((props: any): JSX.Element => {
       {imageThumbnails}
     </Row>
   );
-});
+}
+
+export const ImageList = observer($ImageList);

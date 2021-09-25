@@ -2,7 +2,7 @@ import { ContentTypeDocument } from "types/documents";
 import { rest } from "utilities/request";
 import { DataManager } from "./DataManager";
 
-export const ContentManager = new DataManager<ContentTypeDocument>(
+export const ContentTypeManager = new DataManager<ContentTypeDocument>(
   "contentType",
   {
     fetchMany,
