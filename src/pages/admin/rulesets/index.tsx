@@ -75,7 +75,7 @@ function RulesetOwner(props: RulesetOwnerProps) {
       return;
     }
 
-    const href = `/api/rulesets/${response.data.ruleset.id}`;
+    const href = `/admin/rulesets/${response.data.ruleset.id}`;
     router.push(href);
   }
 
