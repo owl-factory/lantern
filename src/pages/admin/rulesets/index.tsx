@@ -29,6 +29,11 @@ interface RulesetUpdateResponse {
   ruleset: RulesetDocument;
 }
 
+/**
+ * Updates a ruleset to a new public state.
+ * @param id The ID of the ruleset to update
+ * @param isPublic The new isPublic value
+ */
 async function setPublic(id: string, isPublic: boolean) {
   const result = await rest.post<RulesetUpdateResponse>(`/api/rulesets/${id}/public`, { isPublic });
   if (!result.success) {
@@ -44,6 +49,11 @@ interface RulesetOwnerProps {
   ownedBy?: UserDocument;
 }
 
+/**
+ * Renders the owner of a ruleset
+ * @param ownedBy The owner of a ruleset (if any)
+ * @returns Returns a JSX element with the name of the owner, a loading circle, or nothing if there is no owner
+ */
 function RulesetOwner(props: RulesetOwnerProps) {
   if (!props.ownedBy) { return <></>; }
 

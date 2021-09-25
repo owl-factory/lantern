@@ -40,8 +40,6 @@ export function checkConfig(config: unknown) {
  */
 export function canActStatic(myUser: MyUserDocument, roleConfig: RoleConfig) {
   // TODO - Check if role is not present in myUser?
-  console.log(myUser.role)
-  console.log(roleConfig[myUser.role])
   if (typeof roleConfig[myUser.role] === "boolean") { return roleConfig[myUser.role]; }
   return true;
 }
@@ -55,7 +53,6 @@ export function canActStatic(myUser: MyUserDocument, roleConfig: RoleConfig) {
  */
 export function canActOn(docs: AnyDocument[], myUser: MyUserDocument, roleConfig: RoleConfig): AnyDocument[] {
   const approvedDocs: AnyDocument[] = [];
-  console.log(myUser.roles)
   docs.forEach((doc: AnyDocument) => {
     if (canAct(doc, myUser, roleConfig)) { approvedDocs.push(doc); }
   });

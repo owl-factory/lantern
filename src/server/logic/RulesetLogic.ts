@@ -58,7 +58,7 @@ const RulesetLogicBuilder = new FaunaLogicBuilder("rulesets")
   .done()
 
   .search("fetchOfficialRulesets", "rulesets_by_official")
-    .indexFields(["ref", "name", "ownedBy", "isPublic", "isLocked"])
+    .indexFields(["updatedAt", "ref", "name", "ownedBy", "isPublic", "isLocked"])
   .done()
 
 

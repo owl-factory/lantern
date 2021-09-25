@@ -17,14 +17,23 @@ interface AdminRulesetProps extends InitialProps {
   ruleset: RulesetDocument;
 }
 
+/**
+ * Renders a single ruleset for admins to view and update
+ * @param success Whether or not the initial props failed
+ * @param message The success or error message indicating the error from the intial props
+ * @param session The current user's session
+ * @param ruleset The initial detailed ruleset information fetched from the API
+ */
 function AdminRuleset(props: AdminRulesetProps) {
   const [ ruleset, setRuleset ] = React.useState(props.ruleset);
 
+  // Loads the cached data in and updates with the details from the API
   React.useEffect(() => {
     RulesetManager.load();
     RulesetManager.set(props.ruleset);
   }, []);
 
+  // Updates the ruleset when something in the ruleset manager is updated
   React.useEffect(() => {
     const newRuleset = RulesetManager.get(ruleset.id);
     if (!newRuleset) { return; }
