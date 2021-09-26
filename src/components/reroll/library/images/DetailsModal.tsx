@@ -1,5 +1,4 @@
 import { ImageManager } from "client/data";
-import { ImageController } from "client/library";
 import { Button } from "components/style";
 import { Card, CardBody, CardHeader } from "components/style/card";
 import { Modal } from "components/style/modals";
@@ -16,7 +15,6 @@ interface ImageDetailsModalProps {
 
 /**
  * Renders a modal with the details of an image.
- * @param imageController The manager for the images and the state.
  * @param imageID The id of the image to fetch and render details for
  * @param handleClose Handles closing the modal
  */

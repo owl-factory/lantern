@@ -8,11 +8,11 @@ export interface UserDocument extends CoreDocument {
   username?: string;
   email?: string;
   displayName?: string;
-  icon?: ImageDocument;
+  icon: ImageDocument;
 
   roles?: string[];
 
-  recentPlayers?: UserDocument[];
+  recentPlayers: UserDocument[];
 
   badges?: {
     earnedAt?: Date;

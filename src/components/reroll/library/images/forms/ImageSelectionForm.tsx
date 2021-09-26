@@ -11,7 +11,6 @@ const tabs = [
 ];
 
 interface ImageSelectionFormProps {
-  imageController: ImageController;
   onSubmit: (image: ImageDocument, method: string) => Promise<unknown>;
   onSave: (result: unknown) => void;
 }
@@ -42,7 +41,6 @@ export const ImageSelectionForm = observer(({imageController, onSubmit, onSave}:
   return (
     <ImageForm
       defaultTab="link"
-      imageController={imageController}
       onSubmit={submit}
       tabs={tabs}
     />

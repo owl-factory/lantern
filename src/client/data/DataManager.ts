@@ -94,6 +94,16 @@ export class DataManager<T extends CoreDocument> {
     return undefined;
   }
 
+  public getMany(ids: string[]): T[] {
+    console.log(ids)
+    const docs: T[] = [];
+    ids.forEach((id: string) => {
+      if (id in this.data) { docs.push(this.data[id]); }
+    });
+
+    return docs;
+  }
+
   /**
    * Fetches a single page of documents
    * TODO - add options for the size and number of pages
