@@ -8,7 +8,6 @@ import { Formik, Form as FormikForm } from "formik";
 import { Button } from "components/style";
 import { useRouter } from "next/router";
 import { arrayToList } from "utilities/arrays";
-import { ImageController } from "client/library";
 import { ImageSelectionWrapper } from "components/reroll/library/images/ImageSelectionWrapper";
 import { Checkbox, Input } from "components/style/forms";
 import { observer } from "mobx-react-lite";
@@ -191,7 +190,6 @@ interface ProfileImageProps {
 
 /**
  * Renders the Profile image and any modification tools
- * @param imageController The image manager
  * @param user The current user
  * @param setUser Sets the user object to update information
  * @param isMyPage True if this is the current user's page

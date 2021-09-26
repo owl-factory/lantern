@@ -1,4 +1,3 @@
-import { ImageController } from "client/library";
 import { Modal } from "components/style/modals";
 import React from "react";
 import { ImageDocument } from "types/documents";

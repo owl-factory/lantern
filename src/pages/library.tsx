@@ -4,7 +4,6 @@ import { LibraryImageList, ListFormat, StorageUsage } from "components/reroll/li
 import { StorageTypeEnum } from "types/enums/storageType";
 import { rest } from "utilities/request";
 import { NextPageContext } from "next";
-import { ImageController } from "client/library/ImageController";
 import { getSession } from "utilities/auth";
 import { observer } from "mobx-react-lite";
 import { ImageDocument } from "types/documents";
@@ -28,8 +27,6 @@ function Library(props: LibraryProps): JSX.Element {
     { bytes: 2500000, storageType: StorageTypeEnum.MusicTracks },
     { bytes: 10 * 1024 * 1024, storageType: StorageTypeEnum.AudioClips },
   ];
-
-  console.log(props)
 
   React.useEffect(() => {
     ImageManager.load();

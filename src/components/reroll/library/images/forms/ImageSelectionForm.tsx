@@ -1,7 +1,6 @@
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { ImageDocument } from "types/documents";
-import { ImageController } from "client/library";
 import { ImageForm } from "./ImageForm";
 
 const tabs = [
@@ -17,11 +16,10 @@ interface ImageSelectionFormProps {
 
 /**
  * Renders a form to select an image
- * @param imageController The image manager containing and managing all of the images
  * @param setUser The function to update the user when a new profile image is selected
  * @param onSave The function to run after the profile image is changed
  */
-export const ImageSelectionForm = observer(({imageController, onSubmit, onSave}: ImageSelectionFormProps) => {
+export const ImageSelectionForm = observer(({onSubmit, onSave}: ImageSelectionFormProps) => {
 
   /**
    * Submits an image selection to the server

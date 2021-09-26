@@ -1,4 +1,3 @@
-import { ImageController } from "client/library";
 import { SelectionTabs } from "components/design";
 import React from "react";
 import { ImageDocument } from "types/documents";
