@@ -1,4 +1,4 @@
-import { ImageManager } from "client/data";
+import { ImageManager } from "client/data/managers";
 import { SceneController } from "client/scenes/SceneController";
 import { observer } from "mobx-react-lite";
 import { Application } from "pixi.js";

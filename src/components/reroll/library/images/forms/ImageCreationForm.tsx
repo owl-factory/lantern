@@ -1,4 +1,4 @@
-import { ImageManager } from "client/data";
+import { ImageManager } from "client/data/managers";
 import { Modal } from "components/style/modals";
 import { observer } from "mobx-react-lite";
 import React from "react";

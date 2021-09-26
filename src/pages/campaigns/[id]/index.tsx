@@ -11,7 +11,7 @@ import { read } from "utilities/objects";
 import { ImageSelectionWrapper } from "components/reroll/library/images/ImageSelectionWrapper";
 import { CampaignDocument, ImageDocument } from "types/documents";
 import { Tooltip } from "components/style/tooltips";
-import { ImageManager } from "client/data";
+import { ImageManager } from "client/data/managers";
 
 /**
  * Renders the campaign banner. Also renders the ability to set a new banner image, if the user is the owner
@@ -27,7 +27,6 @@ function Banner({ campaign, isOwner, setCampaign }: any) {
   }, []);
 
   if(isOwner) {
-    
 
     /**
      * Handles the post-save then functionality after setting an image.
