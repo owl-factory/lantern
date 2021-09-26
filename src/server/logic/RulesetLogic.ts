@@ -2,8 +2,6 @@
 import { FaunaLogicBuilder } from "server/faunaLogicBuilder/FaunaLogicBuilder";
 import { CampaignDocument, UserDocument } from "types/documents";
 import { MyUserDocument } from "types/security";
-import { myUserToTerm } from "./CoreModelLogic";
-import { isOwner } from "./security";
 
 const USER_VIEW_FIELDS: string[] = [
 ];
@@ -28,6 +26,39 @@ const RulesetLogicBuilder = new FaunaLogicBuilder("rulesets")
    * logic and security as the ordinary fetch fucntion
    */
   .fetchMany()
+  .done()
+
+  .create()
+    .roles()
+      .guest(false)
+      .user(false)
+      .moderator(false)
+      .admin(true)
+    .done()
+    .setFields()
+      .admin(["name", "isOfficial"])
+    .done()
+  .done()
+
+  .update("setPublic")
+    .roles()
+      .guest(false)
+      .user(false)
+      .moderator(false)
+      .admin(true)
+    .done()
+    .setFields()
+      .guest([])
+      .admin(["isPublic"])
+    .done()
+  .done()
+
+  .update("lockRuleset")
+
+  .done()
+
+  .search("fetchOfficialRulesets", "rulesets_by_official")
+    .indexFields(["updatedAt", "ref", "name", "ownedBy", "isPublic", "isLocked"])
   .done()
 
 

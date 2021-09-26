@@ -33,6 +33,8 @@ export function trimRestrictedFields(
   includeDefault=false
 ): Record<string, unknown> {
   const allowedFields: string[] = [...givenAllowedFields];
+
+  // Wildcard. Allows for returning all fields without needing to specify each one
   if (allowedFields.includes("*")) { return doc; }
 
   if (includeDefault) {

@@ -35,11 +35,14 @@ interface GetPageOptions {
 export class DataManager<T extends CoreDocument> {
   protected key: string;
   public data: Record<string, T> = {};
+  // Tracks when the data manager was last updated. Allows for more seamless tracking of 
+  public updatedAt: Date;
   protected $fetchMany: ((ids: string[]) => Promise<CoreDocument[]>) | undefined = undefined;
 
 
   constructor(key: string, options?: DataManagerOptions) {
     this.key = key;
+    this.updatedAt = new Date();
     if (!options) { return; }
     if ("fetchMany" in options && options.fetchMany) { this.$fetchMany = options.fetchMany; }
 
@@ -173,6 +176,7 @@ export class DataManager<T extends CoreDocument> {
     LOCAL_STORAGE.setItem(`${this.key}_${id}`, JSON.stringify(doc));
     // Sets the updated list of keys/ids in the local storage
     LOCAL_STORAGE.setItem(`${this.key}_ids`, JSON.stringify(Object.keys(this.data)));
+    this.updatedAt = new Date();
   }
 
   /**

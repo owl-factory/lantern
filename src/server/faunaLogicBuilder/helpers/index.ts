@@ -8,7 +8,7 @@ import { RoleConfig } from "../types";
  * @returns The highest role of the currently logged in user
  */
 export function getRole(myUser: MyUserDocument) {
-  if (!myUser.isLoggedIn) { return UserRole.GUEST; }
+  if (!myUser || !myUser.isLoggedIn) { return UserRole.GUEST; }
   let highestRole = UserRole.USER;
   myUser.roles.forEach((role: string) => {
     UserRoleReadable.forEach((readableRole: string, index: number) => {
@@ -67,6 +67,7 @@ export function canActOn(docs: AnyDocument[], myUser: MyUserDocument, roleConfig
  */
 export function canAct(doc: AnyDocument | null, myUser: MyUserDocument, roleConfig: RoleConfig) {
   if (doc === null) { return false; }
+  if (!myUser) { return false; }
 
   const roleCheck = roleConfig[myUser.role];
 

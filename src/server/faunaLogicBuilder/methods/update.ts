@@ -45,7 +45,7 @@ export async function $update(
   doc = config.preProcess(doc, myUser);
   doc = preUpdate(doc, myUser, config) as unknown as AnyDocument;
 
-  let result: FaunaDocument<unknown> | null = await client.query(q.Update(faunaDoc.ref as Expr, doc));
+  let result: FaunaDocument<unknown> | null = await client.query(q.Update(faunaDoc.ref as Expr, { data: doc}));
   if (result) { result = fromFauna(result as Record<string, unknown>); }
 
   // Validates that we recieved the result and that the user can act/view it
@@ -69,6 +69,7 @@ export async function $update(
  * @returns An updated document ready to be updated
  */
 function preUpdate(doc: AnyDocument, myUser: MyUserDocument, config: FunctionConfig) {
+
   const fields = determineAccessibleFields(doc, myUser, config.setFields[getRole(myUser)]);
   const newDoc = trimRestrictedFields(doc as unknown as Record<string, unknown>, fields, false);
 

@@ -39,8 +39,6 @@ export async function $search(
     ),
   );
 
-  console.log(result);
-  console.log(myUser);
   // Handles invalid results
   if (!result.data) {
     throw { code: 500, message: `An error occured while trying to search the ${config.index} index` };
@@ -48,7 +46,6 @@ export async function $search(
   let docs = parseIndexResponse(result.data, config.indexFields);
   // Returns a subset of docs that the current user can see
   docs = canActOn(docs, myUser, config.roles);
-
   docs.forEach((doc: AnyDocument) => {
     doc = config.postProcess(doc, myUser);
   });

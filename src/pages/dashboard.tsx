@@ -15,7 +15,7 @@ interface DashboardProps {
 const Dashboard: NextPage<DashboardProps> = (props: any) => {
   return (
     <Page error={props.error}>
-      <h3>Welcome back {props.session?.user.username}!</h3>
+      <h3>Welcome back {props.session?.user.displayName || props.session?.user.username}!</h3>
 
       <Button onClick={() => signOut()}>Log Out</Button>
       {/* Recent Games */}

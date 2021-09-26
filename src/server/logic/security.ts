@@ -10,6 +10,14 @@ export function isAdmin(myUser: MyUserDocument): boolean {
 }
 
 /**
+ * Checks if the current user is an admin
+ * @param myUser The current user object to check
+ */
+ export function isModerator(myUser: MyUserDocument): boolean {
+  return (myUser.roles.includes("moderator"));
+}
+
+/**
  * Checks if the current user is the owner of the current document
  * @param doc The document to check
  * @param myUser The current user owbject to check for ownership

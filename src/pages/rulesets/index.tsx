@@ -1,16 +1,12 @@
-import { Form, Formik } from "formik";
 import React from "react";
 import { IndexTable, Page, fetchContentResponse } from "components/design";
-import { ErrorMessage } from "components/design/forms";
 import request from "utilities/request";
 import { MdBlock, MdBuild, MdInfo } from "react-icons/md";
 import { ContextMenuBuilder, TableBuilder } from "utilities/design";
 import { TableComponentProps } from "types/design";
-import { useRouter } from "next/router";
-import * as Yup from "yup";
 import { Input } from "components/style/forms";
 import { Modal } from "components/style/modals";
-import { Button, Col, Row } from "components/style";
+import { Button } from "components/style";
 import { Card, CardBody, CardHeader } from "components/style/card";
 
 // The props for the RulesetPage
@@ -51,72 +47,18 @@ async function queryRulesets(
 }
 
 /**
- * Renders the form to create a new game system.
- */
-function CreateRulesetForm() {
-  const router = useRouter();
-
-  /**
-   * Runs the submit action of the create game system form and handles
-   * the success and failure results
-   *
-   * @param values The values from the form to submit
-   */
-  async function onSubmit(values: Record<string, string>) {
-    const response = await request.put<{ ruleset: any }>(
-      "/api/rulesets",
-      values
-    );
-    if (!response.success) {
-      return;
-    }
-
-    const href = `/rulesets`;
-    router.push(href);
-  }
-
-  return (
-    <Formik
-      initialErrors={ {} }
-      initialValues={ { name: "" } }
-      onSubmit={onSubmit}
-      validationSchema={Yup.object({
-        name: Yup.string()
-          .required("Required")
-          .max(100, "Maximum of 100 characters"),
-      })}
-    >
-      {() => (
-        <Form>
-          {/* Just name for now */}
-          <Row>
-            <Col xs={12} lg={6}>
-              <label>Ruleset Name</label>
-              <Input type="text" name="name"/>
-              <ErrorMessage name="name"/>
-            </Col>
-          </Row>
-
-          <Button type="submit">Submit!</Button>
-        </Form>
-      )}
-    </Formik>
-  );
-}
-
-/**
  * Renders a modal for the Rulesets Page to create a new ruleset
  *
  * @param handleClose The function that handles closing the modal
  * @param modal Boolean. Show the modal if true.
  */
-function RulesetModal({ handleClose, modal }: { handleClose: () => void, modal: boolean }) {
+ function RulesetModal({ handleClose, modal }: { handleClose: () => void, modal: boolean }) {
   return (
     <Modal open={modal} handleClose={handleClose}>
       <Card>
         <CardHeader>Create a New Ruleset</CardHeader>
         <CardBody>
-          <CreateRulesetForm/>
+          {/* <CreateRulesetForm/> */}
         </CardBody>
       </Card>
     </Modal>
