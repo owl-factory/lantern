@@ -13,7 +13,7 @@ async function getCampaigns(this: HTTPHandler, req: NextApiRequest) {
   const myUser = getMyUser(req);
   requireLogin(myUser);
   const campaigns = await CampaignLogic.fetchMany(req.body.ids, myUser);
-  this.returnSuccess({ campaigns: campaigns });
+  this.returnSuccess({ docs: campaigns });
 }
 
 export default createEndpoint({POST: getCampaigns});

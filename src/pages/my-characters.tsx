@@ -1,4 +1,5 @@
-import { CampaignManager, CharacterManager, RulesetManager } from "client/data";
+import { CampaignManager, CharacterManager, RulesetManager } from "client/data/managers";
+import { CampaignController, RulesetController } from "client/data/controllers";
 import { Page } from "components/design";
 import { Loading } from "components/style";
 import { Input, Select } from "components/style/forms";
@@ -74,10 +75,10 @@ export function MyCharacters (props: MyCharactersProps) {
 
     // Fetches all missing campaigns and rulesets for the names
     const uniqueCampaigns = CharacterManager.getUniques("campaign.id");
-    CampaignManager.fetchMissing(uniqueCampaigns);
+    CampaignController.readMissing(uniqueCampaigns);
 
     const uniqueRulesets = CharacterManager.getUniques("ruleset.id");
-    RulesetManager.fetchMissing(uniqueRulesets);
+    RulesetController.readMissing(uniqueRulesets);
   }, []);
 
   // Refreshes the characters to prevent too many rewrites

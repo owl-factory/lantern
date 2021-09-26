@@ -2,6 +2,7 @@ import { ImageDocument } from "types/documents";
 import { FaunaLogicBuilder } from "server/faunaLogicBuilder/FaunaLogicBuilder";
 import { isOwner } from "./security";
 import { MyUserDocument } from "types/security";
+import { myUserToTerm } from "./CoreModelLogic";
 
 const createFields = [
   "name",
@@ -57,6 +58,7 @@ export const ImageLogic = (new FaunaLogicBuilder("images")
    * Allows for searching through a users images in order of most recently created to oldest
    */
   .search("fetchMyImages", "my_images_asc")
+    .preProcessTerms(myUserToTerm)
     .indexFields(["ref", "name", "src"])
   .done()
 .done()).export();

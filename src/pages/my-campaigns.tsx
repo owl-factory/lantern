@@ -1,11 +1,10 @@
-import { CampaignManager } from "client/data/CampaignManager";
-import { RulesetManager } from "client/data/RulesetManager";
+import { RulesetController } from "client/data/controllers";
+import { CampaignManager, RulesetManager } from "client/data/managers";
 import { Page } from "components/design";
 import { Loading } from "components/style";
 import { Input } from "components/style/forms";
 import { Formik } from "formik";
 import { observer } from "mobx-react-lite";
-// import { observer } from "mobx-react-lite";
 import { NextPageContext } from "next";
 import Link from "next/link";
 import React from "react";
@@ -73,7 +72,7 @@ function MyCampaigns(props: MyCampaignsProps) {
 
     CampaignManager.setMany(props.myCampaigns);
     const uniqueRulesets = CampaignManager.getUniques("ruleset.id");
-    RulesetManager.fetchMissing(uniqueRulesets);
+    RulesetController.readMissing(uniqueRulesets);
   }, []);
 
 

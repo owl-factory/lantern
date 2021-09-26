@@ -12,7 +12,7 @@ import { createEndpoint } from "server/utilities";
 async function getContentTypes(this: HTTPHandler, req: NextApiRequest) {
   const myUser = getMyUser(req);
   const contentTypes = await ContentTypeLogic.fetchMany(req.body.ids, myUser);
-  this.returnSuccess({ contentTypes: contentTypes });
+  this.returnSuccess({ docs: contentTypes });
 }
 
 export default createEndpoint({POST: getContentTypes});

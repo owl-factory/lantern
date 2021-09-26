@@ -12,7 +12,7 @@ import { createEndpoint } from "server/utilities";
 async function getLibraryPage(this: HTTPHandler, req: NextApiRequest) {
   const myUser = getMyUser(req);
   requireLogin(myUser);
-  const images = await ImageLogic.fetchMyImages(myUser, { size: 100 });
+  const images = await ImageLogic.fetchMyImages([], { size: 100 }, myUser);
   this.returnSuccess({ images });
 }
 

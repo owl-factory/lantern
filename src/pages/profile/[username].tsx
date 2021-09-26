@@ -3,14 +3,17 @@ import { Page } from "components/design";
 import { NextPageContext } from "next";
 import { rest } from "utilities/request";
 import { getSession } from "utilities/auth";
-import { UserDocument } from "types/documents";
+import { ImageDocument, UserDocument } from "types/documents";
 import { Formik, Form as FormikForm } from "formik";
 import { Button } from "components/style";
 import { useRouter } from "next/router";
 import { arrayToList } from "utilities/arrays";
-import { ImageController } from "client/library";
 import { ImageSelectionWrapper } from "components/reroll/library/images/ImageSelectionWrapper";
 import { Checkbox, Input } from "components/style/forms";
+import { observer } from "mobx-react-lite";
+import { ImageManager, UserManager } from "client/data/managers";
+import { InitialProps } from "types/client";
+import { ImageController, UserController } from "client/data/controllers";
 
 /**
  * Renders a small section indicating how long a player has been a member, their hours played,
@@ -182,35 +185,35 @@ function RecentPlayer({ player }: { player: UserDocument }) {
 }
 
 interface ProfileImageProps {
-  imageController: ImageController;
   isMyPage: boolean;
   user: UserDocument;
-  setUser: Dispatch<UserDocument>;
 }
 
 /**
  * Renders the Profile image and any modification tools
- * @param imageController The image manager
  * @param user The current user
  * @param setUser Sets the user object to update information
  * @param isMyPage True if this is the current user's page
  */
-function ProfileImage({ imageController, user, isMyPage, setUser }: ProfileImageProps) {
-  let src = "";
-  if (user.icon && user.icon.src) { src = user.icon.src; }
+function ProfileImage({ user, isMyPage }: ProfileImageProps) {
+  const [ icon, setIcon ] = React.useState<ImageDocument>(user.icon);
 
-  let image = <img src={src} width="200px" height="200px"/>;
+  React.useEffect(() => {
+    const newIcon = ImageManager.get(user.icon.id);
+    if (!newIcon) { return; }
+    setIcon(newIcon);
+  }, [user, ImageManager.updatedAt]);
+
+  let image = <img src={icon.src} width="200px" height="200px"/>;
   const onSave = (result: unknown) => {
-    setUser(result as UserDocument);
+    // setUser(result as UserDocument);
   };
 
+  async function onSubmit(_: ImageDocument, method: string) { return; }
+
   if (isMyPage) {
-    React.useEffect(() => {
-      imageController.fetchImages();
-    }, []);
     image = (
-     <ImageSelectionWrapper
-      imageController={imageController} onSubmit={imageController.setProfileImage} onSave={onSave}>
+     <ImageSelectionWrapper onSubmit={onSubmit} onSave={onSave}>
         {image}
       </ImageSelectionWrapper>
     );
@@ -224,6 +227,10 @@ function ProfileImage({ imageController, user, isMyPage, setUser }: ProfileImage
   );
 }
 
+interface ProfileProps extends InitialProps {
+  user: UserDocument;
+}
+
 /**
  * Renders a user's profile page.
  * @param props.success True if the request succeeded. False otherwise
@@ -231,17 +238,47 @@ function ProfileImage({ imageController, user, isMyPage, setUser }: ProfileImage
  * @param props.message A message, if any, explaining the success value
  * @param props.session The current user's session, if any
  */
-export default function Profile(props: any): JSX.Element {
+function Profile(props: ProfileProps): JSX.Element {
   if (!props.success) {
     console.error(404);
 
     return <>Error</>;
   }
-  const [ imageController ] = React.useState(new ImageController());
   const router = useRouter();
-  const [ user, setUser ] = React.useState(props.data.user);
+  const [ user, setUser ] = React.useState(props.user);
   const [ isMyPage ] = React.useState(calculateIfUserIsOwner());
-  const [ players ] = React.useState(props.data.user.recentPlayers);
+  const [ players, setPlayers ] = React.useState<UserDocument[]>([]);
+
+  // Loads in everything from local storage and inserts new user ingo the Manager
+  React.useEffect(() => {
+    UserManager.load();
+    ImageManager.load();
+
+    UserManager.set(props.user);
+
+    const playerIDs: string[] = [];
+    props.user.recentPlayers.forEach((player: UserDocument) => {
+      playerIDs.push(player.id);
+    });
+    UserController.readMissing(playerIDs).then(() => {
+      setPlayers(UserManager.getMany(playerIDs));
+    });
+    ImageController.readMissing([props.user.icon.id]);
+  }, []);
+
+  // Updates the current user when they change
+  React.useEffect(() => {
+    const newUser = UserManager.get(router.query.id as string);
+    if (!newUser) { return; }
+    const playerIDs: string[] = [];
+    newUser.recentPlayers.forEach((player: UserDocument) => {
+      playerIDs.push(player.id);
+    });
+
+    setUser(newUser);
+    setPlayers(UserManager.getMany(playerIDs));
+    console.log(UserManager.getMany(playerIDs));
+  }, [UserManager.updatedAt]);
 
   /**
    * Determines if the current player is the owner of the profile page.
@@ -255,17 +292,18 @@ export default function Profile(props: any): JSX.Element {
 
   /**
    * A callback function that handles saving the user's information to the database
+   * TODO - replace with UserManager save
    * @param values The user document values to save to the database
    */
   async function saveUser(values: Record<string, unknown>) {
-    values.id = user.id;
-    values.ref = user.ref;
-    values.collection = user.collection;
-    const result = await rest.patch(`/api/profile/${router.query.username}`, values);
-    (result.data as any).user.players = user.players;
-    if (result.success) {
-      setUser((result.data as any).user);
-    }
+    // values.id = user.id;
+    // values.ref = user.ref;
+    // values.collection = user.collection;
+    // const result = await rest.patch(`/api/profile/${router.query.username}`, values);
+    // (result.data as any).user.players = user.players;
+    // if (result.success) {
+    //   setUser((result.data as any).user);
+    // }
   }
 
   return (
@@ -273,10 +311,8 @@ export default function Profile(props: any): JSX.Element {
       <div className="row">
         <div className="col-12 col-md-4">
           <ProfileImage
-            imageController={imageController}
             user={user}
             isMyPage={isMyPage}
-            setUser={setUser}
           />
           { isMyPage ? <MyOptions user={user} players={players}/> : <OtherOptions user={user}/>}
         </div>
@@ -289,9 +325,20 @@ export default function Profile(props: any): JSX.Element {
   );
 }
 
+interface ProfileResponse {
+  user: UserDocument;
+}
+
 Profile.getInitialProps = async (ctx: NextPageContext) => {
   const session = await getSession(ctx);
 
-  const result = await rest.get(`/api/profile/${ctx.query.username}`);
-  return { ...result, session};
+  const result = await rest.get<ProfileResponse>(`/api/profile/${ctx.query.username}`);
+  return {
+    session,
+    success: result.success,
+    message: result.message,
+    user: result.data.user,
+  };
 };
+
+export default observer(Profile);

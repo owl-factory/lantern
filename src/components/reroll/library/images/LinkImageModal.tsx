@@ -1,4 +1,3 @@
-import { ImageController } from "client/library";
 import { Button } from "components/style";
 import { Card, CardBody, CardHeader } from "components/style/card";
 import { Input } from "components/style/forms";
@@ -8,14 +7,13 @@ import { Formik, Form as FormikForm } from "formik";
 import React from "react";
 
 interface LinkImageModalProps {
-  imageController: ImageController;
   modal: boolean;
   handleClose: () => void;
 }
 
-export function LinkImageModal({ imageController, handleClose, modal }: LinkImageModalProps) {
+export function LinkImageModal({ handleClose, modal }: LinkImageModalProps) {
   function saveLinkedImage(values: any) {
-    imageController.saveLinkedImage(values);
+    // TODO - have linked image
     handleClose();
   }
 

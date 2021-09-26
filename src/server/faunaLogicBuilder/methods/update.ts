@@ -69,7 +69,6 @@ export async function $update(
  * @returns An updated document ready to be updated
  */
 function preUpdate(doc: AnyDocument, myUser: MyUserDocument, config: FunctionConfig) {
-
   const fields = determineAccessibleFields(doc, myUser, config.setFields[getRole(myUser)]);
   const newDoc = trimRestrictedFields(doc as unknown as Record<string, unknown>, fields, false);
 

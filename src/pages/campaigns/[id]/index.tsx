@@ -9,9 +9,9 @@ import { query as q } from "faunadb";
 import { rest } from "utilities/request";
 import { read } from "utilities/objects";
 import { ImageSelectionWrapper } from "components/reroll/library/images/ImageSelectionWrapper";
-import { ImageController } from "client/library";
 import { CampaignDocument, ImageDocument } from "types/documents";
 import { Tooltip } from "components/style/tooltips";
+import { ImageManager } from "client/data/managers";
 
 /**
  * Renders the campaign banner. Also renders the ability to set a new banner image, if the user is the owner
@@ -20,17 +20,17 @@ import { Tooltip } from "components/style/tooltips";
  * @param isOwner True if the current user is the owner. False otherwise.
  */
 function Banner({ campaign, isOwner, setCampaign }: any) {
-  const [ imageController ] = React.useState(new ImageController());
   let image = <img src={read<string>(campaign, "banner.src")}/>;
 
+  React.useEffect(() => {
+    ImageManager.load();
+  }, []);
+
   if(isOwner) {
-    React.useEffect(() => {
-      imageController.fetchImages();
-    }, []);
 
     /**
      * Handles the post-save then functionality after setting an image.
-     * @param result The result of the imageController set function
+     * @param result The result of the onSubmit function
      */
     const onSave = (result: unknown) => {
       const newCampaign = {...campaign, banner: (result as CampaignDocument).banner };
@@ -43,11 +43,11 @@ function Banner({ campaign, isOwner, setCampaign }: any) {
      * @param method The method to set the new image
      */
     const onSubmit = async (image2: ImageDocument, method: string) => {
-      return imageController.setCampaignBanner(campaign, image2, method);
+      // TODO - Save banner
     };
 
     image = (
-      <ImageSelectionWrapper imageController={imageController} onSubmit={onSubmit} onSave={onSave}>
+      <ImageSelectionWrapper onSubmit={onSubmit} onSave={onSave}>
         {image}
       </ImageSelectionWrapper>
     );

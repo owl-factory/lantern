@@ -1,7 +1,6 @@
-import { RulesetManager } from "client/data";
+import { RulesetManager } from "client/data/managers";
 import { Page } from "components/design";
 import { Button, ButtonGroup, Col, Loading } from "components/style";
-import { CardHeader } from "components/style/card";
 import { Input } from "components/style/forms";
 import { Modal } from "components/style/modals";
 import { Tooltip } from "components/style/tooltips";
@@ -12,12 +11,12 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
 import { Card, Row, Table } from "react-bootstrap";
-import { MdEdit, MdLockOpen, MdLockOutline, MdPageview, MdVisibility, MdVisibilityOff } from "react-icons/md";
+import { MdLockOpen, MdLockOutline, MdPageview, MdVisibility, MdVisibilityOff } from "react-icons/md";
+import { DocumentReference } from "server/logic";
 import { isAdmin } from "server/logic/security";
 import { InitialProps } from "types/client";
 import { RulesetDocument, UserDocument } from "types/documents";
 import { getSession } from "utilities/auth";
-import { ADMIN_ENDPOINT } from "utilities/globals";
 import { rest } from "utilities/request";
 
 interface AdminRulesetsProps extends InitialProps {
@@ -46,7 +45,7 @@ async function setPublic(id: string, isPublic: boolean) {
 }
 
 interface RulesetOwnerProps {
-  ownedBy?: UserDocument;
+  ownedBy?: UserDocument | DocumentReference;
 }
 
 /**

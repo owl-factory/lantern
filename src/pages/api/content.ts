@@ -13,7 +13,7 @@ async function getContents(this: HTTPHandler, req: NextApiRequest) {
   const myUser = getMyUser(req);
   requireLogin(myUser);
   const contents = await ContentLogic.fetchMany(req.body.ids, myUser);
-  this.returnSuccess({ contents: contents });
+  this.returnSuccess({ docs: contents });
 }
 
 export default createEndpoint({POST: getContents});

@@ -4,7 +4,7 @@ import { Container, Nav, NavDropdown, Navbar } from "react-bootstrap";
 import { CampaignDocument, UserDocument } from "types/documents";
 import { getSession, signOut } from "utilities/auth";
 import styles from "./HeaderBar.module.scss";
-import { CampaignManager } from "client/data";
+import { CampaignManager } from "client/data/managers";
 import { isAdmin, isModerator } from "server/logic/security";
 import { MyUserDocument } from "types/security";
 import { ADMIN_ENDPOINT } from "utilities/globals";
@@ -61,9 +61,11 @@ function RecentCampaigns() {
  */
 function ElevatedDropdown(props: LoggedInNavProps) {
   const navItems: JSX.Element[] = [];
-  if(isAdmin(props.user as MyUserDocument)) {
+  if(isAdmin(props.user as unknown as MyUserDocument)) {
     navItems.push(
-      <Link href={`${ADMIN_ENDPOINT}/rulesets`} passHref><NavDropdown.Item>Rulesets</NavDropdown.Item></Link>
+      <Link href={`${ADMIN_ENDPOINT}/rulesets`} passHref key="rulesets">
+        <NavDropdown.Item>Rulesets</NavDropdown.Item>
+      </Link>
     );
   }
 

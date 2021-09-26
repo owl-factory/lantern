@@ -1,4 +1,4 @@
-import { ImageController } from "client/library";
+import { ImageManager } from "client/data/managers";
 import { SceneController } from "client/scenes/SceneController";
 import { observer } from "mobx-react-lite";
 import { Application } from "pixi.js";
@@ -18,15 +18,14 @@ const app = new Application({
  */
 export const SceneBuilder = observer(() => {
   const [ sceneController ] = React.useState(new SceneController(app));
-  const [ imageController ] = React.useState(new ImageController());
 
   React.useEffect(() => {
-    imageController.fetchImages();
+    ImageManager.load();
   }, []);
 
   return (
     <div>
-      <SceneBuilderOverlay imageController={imageController} sceneController={sceneController}>
+      <SceneBuilderOverlay sceneController={sceneController}>
         <SceneRenderer sceneController={sceneController}/>
       </SceneBuilderOverlay>
     </div>
