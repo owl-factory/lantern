@@ -2,12 +2,7 @@ import { CampaignDocument } from "types/documents";
 import { rest } from "utilities/request";
 import { DataManager } from "./DataManager";
 
-export const CampaignManager = new DataManager<CampaignDocument>(
-  "campaign",
-  {
-    fetchMany,
-  }
-);
+export const CampaignManager = new DataManager<CampaignDocument>("campaign");
 
 
 interface FetchManyResult {

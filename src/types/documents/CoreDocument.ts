@@ -1,5 +1,9 @@
-import { UserDocument } from "types/documents";
 import { FaunaRef } from "types/fauna";
+
+interface DocumentReference extends Partial<CoreDocument> {
+  id: string;
+  collection: string;
+}
 
 export interface CoreDocument {
   id: string;
@@ -8,10 +12,10 @@ export interface CoreDocument {
   ts?: number;
 
   name?: string;
-  ownedBy?: UserDocument;
+  ownedBy?: DocumentReference;
   createdAt?: Date;
-  createdBy?: UserDocument;
+  createdBy?: DocumentReference;
   updatedAt?: Date;
-  updatedBy?: UserDocument;
+  updatedBy?: DocumentReference;
 }
 

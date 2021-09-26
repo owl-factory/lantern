@@ -11,7 +11,7 @@ import { GridForm } from "./forms/grid";
 /**
  * Renders a wrapper that surrounds a scene, applying UI for interaction with the Scene
  */
-export const SceneBuilderOverlay = observer(({ children, imageController, sceneController }: any): JSX.Element => {
+export const SceneBuilderOverlay = observer(({ children, sceneController }: any): JSX.Element => {
   function addSprite() {
     sceneController.createSprite(
       "http://192.168.0.195:3000/dev/images/sprites/waals_brodnen_death_sprite.png",
@@ -26,7 +26,6 @@ export const SceneBuilderOverlay = observer(({ children, imageController, sceneC
         <DrawerItem name="Grid Sizing" Icon={MdGridOn}><GridForm sceneController={sceneController}/></DrawerItem>
         <DrawerItem name="Images" Icon={MdImage}>
           <ImageList
-          imageController={imageController}
           listFormat={ListFormat.Icons}
           onClick={(image: ImageDocument) => sceneController.addProp(sceneController, image)}/>
         </DrawerItem>

@@ -28,6 +28,7 @@ interface GetPageOptions {
   size?: number;
 }
 
+
 /**
  * A data manager that can fetch and cache data in a storage system. This does nothing unique
  * for different document types. For that, a specific Controller is needed.
@@ -37,8 +38,11 @@ export class DataManager<T extends CoreDocument> {
   public data: Record<string, T> = {};
   // Tracks when the data manager was last updated. Allows for more seamless tracking of 
   public updatedAt: Date;
-  protected $fetchMany: ((ids: string[]) => Promise<CoreDocument[]>) | undefined = undefined;
 
+  protected $create: ((doc: Partial<T>) => Promise<T | undefined>) | undefined = undefined;
+  protected $deleteMany: ((ids: string[]) => Promise<Record<string, boolean>>) | undefined = undefined;
+  protected $fetchMany: ((ids: string[]) => Promise<CoreDocument[]>) | undefined = undefined;
+  protected $update: ((id: string, doc: Partial<T>) => Promise<T | undefined>) | undefined = undefined;
 
   constructor(key: string, options?: DataManagerOptions) {
     this.key = key;
@@ -47,6 +51,45 @@ export class DataManager<T extends CoreDocument> {
     if ("fetchMany" in options && options.fetchMany) { this.$fetchMany = options.fetchMany; }
 
     makeAutoObservable(this);
+  }
+
+  /**
+   * Creates a single new document
+   * @param doc The partial document to create
+   * @returns Returns the created document on success, nothing on failure
+   */
+  public async create(doc: Partial<T>): Promise<T | undefined> {
+    if (!this.$create) { return undefined; }
+
+    const newDoc = await this.$create(doc);
+    if (!newDoc) { return undefined; }
+    this.set(newDoc);
+    return newDoc;
+  }
+
+  /**
+   * Deletes a single document
+   * @param id The ID of the document to remove from the database and from the data manager.
+   */
+  public async delete(id: string) {
+    this.deleteMany([id]);
+  }
+
+  /**
+   * Deletes many documents from the database and removes them from the data manager on success
+   * @param ids The list of document IDs to delete
+   */
+  public async deleteMany(ids: string[]): Promise<void> {
+    if (!this.$deleteMany) { return; }
+    const deleteResponse = await this.$deleteMany(ids);
+    if (!deleteResponse) { return; }
+
+    const keys = Object.keys(deleteResponse);
+    keys.forEach((id: string) => {
+      // If this ID is false, it failed to delete. Exit out of this iteration
+      if (deleteResponse[id] === false) { return; }
+      this.remove(id);
+    });
   }
 
   /**
@@ -85,6 +128,20 @@ export class DataManager<T extends CoreDocument> {
   }
 
   /**
+   * Updates a single document
+   * @param id The ID of the document to update
+   * @param doc The changes to the document to make
+   */
+  public async update(id: string, doc: Partial<T>): Promise<void> {
+    if (this.$update === undefined) { return; }
+
+    const updatedDoc = await this.$update(id, doc);
+    if (!updatedDoc) { return; }
+    this.set(updatedDoc);
+    return;
+  }
+
+  /**
    * Gets a single document from the data manager. No external calls are made
    * @param id The id of the document to fetch from the manager
    * @returns A single document from the data manager
@@ -94,8 +151,20 @@ export class DataManager<T extends CoreDocument> {
     return undefined;
   }
 
+  /**
+   * Returns a list of all currently used ids in the manager
+   * @returns A list of all keys currently saved in the Manager
+   */
+   public getKeys() {
+    return Object.keys(this.data);
+  }
+
+  /**
+   * Finds and returns a list of documents from a list of given IDs
+   * @param ids The IDs of the documents to return
+   * @returns An array of documents. Undefined documents will not be present
+   */
   public getMany(ids: string[]): T[] {
-    console.log(ids)
     const docs: T[] = [];
     ids.forEach((id: string) => {
       if (id in this.data) { docs.push(this.data[id]); }
@@ -123,14 +192,6 @@ export class DataManager<T extends CoreDocument> {
       page.push(this.data[key]);
     });
     return page;
-  }
-
-  /**
-   * Returns a list of all currently used ids in the manager
-   * @returns A list of all keys currently saved in the Manager
-   */
-  public getKeys() {
-    return Object.keys(this.data);
   }
 
   /**
@@ -169,7 +230,23 @@ export class DataManager<T extends CoreDocument> {
       if (!storedDoc) { console.warn(`Expected a stored value for ID ${id} but none was found.`); }
       const doc = JSON.parse(storedDoc as string);
       this.set(doc);
-    })
+    });
+  }
+
+  /**
+   * Removes a single document from the Data Manager and Local Storage. Does not remove from the database
+   * @param id The ID of the document to remove
+   */
+  public remove(id: string) {
+    this.removeMany([id]);
+  }
+
+  public removeMany(ids: string[]) {
+    ids.forEach((id: string) => {
+      delete this.data[id];
+      LOCAL_STORAGE.removeItem(this.buildKey(id));
+    });
+    this.updateStorageKeys();
   }
 
   /**
@@ -183,9 +260,9 @@ export class DataManager<T extends CoreDocument> {
     // TODO - update indexes
 
     // Sets the document in the local storage
-    LOCAL_STORAGE.setItem(`${this.key}_${id}`, JSON.stringify(doc));
+    LOCAL_STORAGE.setItem(this.buildKey(id), JSON.stringify(doc));
     // Sets the updated list of keys/ids in the local storage
-    LOCAL_STORAGE.setItem(`${this.key}_ids`, JSON.stringify(Object.keys(this.data)));
+    this.updateStorageKeys();
     this.updatedAt = new Date();
   }
 
@@ -199,4 +276,15 @@ export class DataManager<T extends CoreDocument> {
     });
   }
 
+
+  private buildKey(id: string) {
+    return `${this.key}_${id}`;
+  }
+
+  /**
+   * Sets the updated list of keys/ids in local storage
+   */
+  private updateStorageKeys() {
+    LOCAL_STORAGE.setItem(`${this.key}_ids`, JSON.stringify(Object.keys(this.data)));
+  }
 }
