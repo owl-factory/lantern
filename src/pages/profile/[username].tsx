@@ -11,8 +11,9 @@ import { arrayToList } from "utilities/arrays";
 import { ImageSelectionWrapper } from "components/reroll/library/images/ImageSelectionWrapper";
 import { Checkbox, Input } from "components/style/forms";
 import { observer } from "mobx-react-lite";
-import { ImageManager, UserManager } from "client/data";
+import { ImageManager, UserManager } from "client/data/managers";
 import { InitialProps } from "types/client";
+import { ImageController, UserController } from "client/data/controllers";
 
 /**
  * Renders a small section indicating how long a player has been a member, their hours played,
@@ -259,10 +260,10 @@ function Profile(props: ProfileProps): JSX.Element {
     props.user.recentPlayers.forEach((player: UserDocument) => {
       playerIDs.push(player.id);
     });
-    UserManager.fetchMissing(playerIDs).then(() => {
+    UserController.readMissing(playerIDs).then(() => {
       setPlayers(UserManager.getMany(playerIDs));
     });
-    ImageManager.fetchMissing([props.user.icon.id]);
+    ImageController.readMissing([props.user.icon.id]);
   }, []);
 
   // Updates the current user when they change

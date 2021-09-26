@@ -4,7 +4,7 @@ import { Container, Nav, NavDropdown, Navbar } from "react-bootstrap";
 import { CampaignDocument, UserDocument } from "types/documents";
 import { getSession, signOut } from "utilities/auth";
 import styles from "./HeaderBar.module.scss";
-import { CampaignManager } from "client/data";
+import { CampaignManager } from "client/data/managers";
 import { isAdmin, isModerator } from "server/logic/security";
 import { MyUserDocument } from "types/security";
 import { ADMIN_ENDPOINT } from "utilities/globals";

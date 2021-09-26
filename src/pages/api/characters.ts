@@ -13,7 +13,7 @@ async function getCharacters(this: HTTPHandler, req: NextApiRequest) {
   const myUser = getMyUser(req);
   requireLogin(myUser);
   const characters = await CharacterLogic.fetchMany(req.body.ids, myUser);
-  this.returnSuccess({ characters: characters });
+  this.returnSuccess({ docs: characters });
 }
 
 export default createEndpoint({POST: getCharacters});

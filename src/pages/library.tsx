@@ -8,7 +8,7 @@ import { getSession } from "utilities/auth";
 import { observer } from "mobx-react-lite";
 import { ImageDocument } from "types/documents";
 import { InitialProps } from "types/client";
-import { ImageManager } from "client/data";
+import { ImageManager } from "client/data/managers";
 
 interface LibraryProps extends InitialProps {
   images: ImageDocument[];

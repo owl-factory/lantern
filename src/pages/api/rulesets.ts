@@ -13,7 +13,7 @@ async function getRulesets(this: HTTPHandler, req: NextApiRequest) {
   const myUser = getMyUser(req);
 
   const rulesets = await RulesetLogic.fetchMany(req.body.ids, myUser);
-  this.returnSuccess({ rulesets: rulesets });
+  this.returnSuccess({ docs: rulesets });
 }
 
 /**

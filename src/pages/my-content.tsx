@@ -10,7 +10,8 @@ import { GiAxeSword } from 'react-icons/gi';
 import { MdContentCopy, MdDeleteForever, MdEdit } from "react-icons/md";
 import { Loading } from "components/style";
 import { observer } from "mobx-react-lite";
-import { ContentManager, RulesetManager } from "client/data";
+import { ContentManager, RulesetManager } from "client/data/managers";
+import { RulesetController } from "client/data/controllers";
 
 interface MyContentProps extends InitialProps {
   contents: ContentDocument[];
@@ -61,7 +62,7 @@ function MyContent(props: MyContentProps): JSX.Element {
     ContentManager.setMany(props.contents);
 
     const uniqueRulesets = ContentManager.getUniques("ruleset.id");
-    RulesetManager.fetchMissing(uniqueRulesets);
+    RulesetController.readMissing(uniqueRulesets);
   }, []);
 
   // Use this to prevent too many rerenders

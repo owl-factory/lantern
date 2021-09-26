@@ -1,17 +1,22 @@
-import { DataManager } from "client/data/DataManager";
 import { CoreDocument } from "types/documents";
 import { rest } from "utilities/request";
+import { DataManager } from "../managers/DataManager";
 
 export abstract class DataController<T extends CoreDocument> {
   protected manager: DataManager<T>;
 
-  protected abstract createURI: string;
-  protected abstract deleteURI: string; // One or many
-  protected abstract readURI: string; // One or many
-  protected abstract updateURI: string;
+  protected createURI = "";
+  protected deleteURI = ""; // One or many
+  protected readURI = ""; // One or many
+  protected updateURI = "";
 
-  constructor(manager: DataManager<T>) {
+  constructor(manager: DataManager<T>, defaultURI = "") {
     this.manager = manager;
+    if (!this.createURI) { this.createURI = defaultURI;}
+    if (!this.deleteURI) { this.deleteURI = defaultURI;}
+    if (!this.readURI) { this.readURI = defaultURI;}
+    if (!this.updateURI) { this.updateURI = defaultURI;}
+    console.log(this.createURI)
   }
 
 
@@ -98,20 +103,22 @@ export abstract class DataController<T extends CoreDocument> {
   public async readMany(ids: string[]) {
     const result = await rest.post<{ docs: T[] }>(this.readURI, { ids: ids });
     if (!result.success) { return []; }
+    console.log(result)
     this.manager.setMany(result.data.docs);
     return result.data.docs;
   }
 
   /**
-   * 
+   * Reads documents that are missing from the data manager
    * @param ids All IDs, not necessarily missing ones, to check and fetch
-   * @returns A list of documents pulled from the database to replace 
+   * @returns A list of documents pulled from the database
    */
   public async readMissing(ids: string[]) {
     const missingIDs: string[] = [];
     ids.forEach((id) => {
       if (this.manager.get(id) === undefined) { missingIDs.push(id); }
     });
+    if (ids.length === 0) { return []; }
 
     return this.readMany(missingIDs);
   }

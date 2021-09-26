@@ -117,7 +117,7 @@ export default function Rulesets({ initialRulesets, rulesetCount }: RulesetProps
       <Button onClick={() => { setModal(true); }}>New Ruleset</Button>
       <RulesetModal modal={modal} handleClose={handleClose}/>
       <br/><br/>
-      <IndexTable
+      {/* <IndexTable
         tableBuilder={tableBuilder}
         content={initialRulesets}
         contentCount={rulesetCount}
@@ -127,7 +127,7 @@ export default function Rulesets({ initialRulesets, rulesetCount }: RulesetProps
         sort="name"
       >
         <RulesetFilter/>
-      </IndexTable>
+      </IndexTable> */}
     </Page>
   );
 }

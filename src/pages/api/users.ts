@@ -13,8 +13,7 @@ async function getUsers(this: HTTPHandler, req: NextApiRequest) {
   const myUser = getMyUser(req);
 
   const users = await UserLogic.fetchMany(req.body.ids, myUser);
-  console.log(users)
-  this.returnSuccess({ users: users });
+  this.returnSuccess({ docs: users });
 }
 
 

@@ -1,4 +1,4 @@
-import { RulesetManager } from "client/data";
+import { RulesetManager } from "client/data/managers";
 import { Page } from "components/design";
 import { Button, ButtonGroup, Col, Loading } from "components/style";
 import { Input } from "components/style/forms";
