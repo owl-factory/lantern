@@ -14,6 +14,7 @@ import { observer } from "mobx-react-lite";
 import { ImageManager, UserManager } from "client/data/managers";
 import { InitialProps } from "types/client";
 import { ImageController, UserController } from "client/data/controllers";
+import Link from "next/link";
 
 /**
  * Renders a small section indicating how long a player has been a member, their hours played,
@@ -176,10 +177,12 @@ function RecentPlayer({ player }: { player: UserDocument }) {
   if (player.icon && player.icon.src) { src = player.icon.src; }
   return (
     <div>
-      <a href={`/profile/${player.username}`}>
+      <Link href={`/profile/${player.username}`} passHref>
+        <a>
         <img width="30px" height="30px" src={src}/>
         <span style={{paddingLeft: "10px"}}>{player.displayName}</span>
-      </a>
+        </a>
+      </Link>
     </div>
   );
 }
@@ -246,39 +249,41 @@ function Profile(props: ProfileProps): JSX.Element {
   }
   const router = useRouter();
   const [ user, setUser ] = React.useState(props.user);
-  const [ isMyPage ] = React.useState(calculateIfUserIsOwner());
+  const [ isMyPage, setIsMyPage ] = React.useState(calculateIfUserIsOwner());
   const [ players, setPlayers ] = React.useState<UserDocument[]>([]);
 
   // Loads in everything from local storage and inserts new user ingo the Manager
   React.useEffect(() => {
+    console.log(props)
+
     UserManager.load();
     ImageManager.load();
 
     UserManager.set(props.user);
 
     const playerIDs: string[] = [];
-    props.user.recentPlayers.forEach((player: UserDocument) => {
+    props.user.recentPlayers?.forEach((player: UserDocument) => {
       playerIDs.push(player.id);
     });
     UserController.readMissing(playerIDs).then(() => {
       setPlayers(UserManager.getMany(playerIDs));
     });
     ImageController.readMissing([props.user.icon.id]);
-  }, []);
+  }, [props.user.id]);
 
   // Updates the current user when they change
   React.useEffect(() => {
-    const newUser = UserManager.get(router.query.id as string);
-    if (!newUser) { return; }
+    let newUser = UserManager.get(router.query.id as string);
+    if (!newUser) { newUser = props.user; }
     const playerIDs: string[] = [];
-    newUser.recentPlayers.forEach((player: UserDocument) => {
+    newUser.recentPlayers?.forEach((player: UserDocument) => {
       playerIDs.push(player.id);
     });
 
     setUser(newUser);
     setPlayers(UserManager.getMany(playerIDs));
     console.log(UserManager.getMany(playerIDs));
-  }, [UserManager.updatedAt]);
+  }, [UserManager.updatedAt, props.user.id]);
 
   /**
    * Determines if the current player is the owner of the profile page.
@@ -333,6 +338,7 @@ Profile.getInitialProps = async (ctx: NextPageContext) => {
   const session = await getSession(ctx);
 
   const result = await rest.get<ProfileResponse>(`/api/profile/${ctx.query.username}`);
+  console.log('runs')
   return {
     session,
     success: result.success,
