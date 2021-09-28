@@ -137,7 +137,7 @@ export abstract class DataController<T extends CoreDocument> {
     }
 
     // Validate doc
-    const result = await rest.put<{ doc: T }>(this.updateURI, { id, doc });
+    const result = await rest.patch<{ doc: T }>(this.updateURI, { id, doc });
     if (result.success === false) {
       // TODO - Post to AlertManager
       return undefined;

@@ -301,6 +301,7 @@ function Profile(props: ProfileProps): JSX.Element {
    * @param values The user document values to save to the database
    */
   async function saveUser(values: Record<string, unknown>) {
+    const result = await UserController.update(user.id, values);
     // values.id = user.id;
     // values.ref = user.ref;
     // values.collection = user.collection;

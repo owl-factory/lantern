@@ -17,6 +17,13 @@ async function getUsers(this: HTTPHandler, req: NextApiRequest) {
 }
 
 
+async function updateUser(this: HTTPHandler, req: NextApiRequest) {
+  const myUser = getMyUser(req);
+  const updatedUser = await UserLogic.update(req.body.id, req.body.doc, myUser);
+  this.returnSuccess({ doc: updatedUser });
+}
+
 export default createEndpoint({
   POST: getUsers,
+  PATCH: updateUser,
 });
