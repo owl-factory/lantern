@@ -177,10 +177,10 @@ function RecentPlayer({ player }: { player: UserDocument }) {
   if (player.icon && player.icon.src) { src = player.icon.src; }
   return (
     <div>
-      <Link href={`/profile/${player.username}`} passHref>
+      <Link href={`/profile/${player.username}`}>
         <a>
-        <img width="30px" height="30px" src={src}/>
-        <span style={{paddingLeft: "10px"}}>{player.displayName}</span>
+          <img width="30px" height="30px" src={src}/>
+          <span style={{paddingLeft: "10px"}}>{player.displayName}</span>
         </a>
       </Link>
     </div>
@@ -338,8 +338,8 @@ Profile.getInitialProps = async (ctx: NextPageContext) => {
   const session = await getSession(ctx);
 
   const result = await rest.get<ProfileResponse>(`/api/profile/${ctx.query.username}`);
-  console.log('runs')
   return {
+    key: ctx.query.username,
     session,
     success: result.success,
     message: result.message,
