@@ -2,7 +2,7 @@ import { DocumentReference } from "server/logic";
 import { AnyDocument } from "types/documents";
 import { FaunaDocument } from "types/fauna";
 import { getServerClient } from "utilities/db";
-import { fromFauna, toFaunaRef } from "utilities/fauna";
+import { fromFauna, toFauna, toFaunaRef } from "utilities/fauna";
 import { canAct, canActStatic, getRole } from "../helpers";
 import { FunctionConfig } from "../types";
 import { Expr, query as q } from "faunadb";
@@ -44,8 +44,8 @@ export async function $update(
   // Preprocesses, setting certain fields and doing any required steps before updating
   doc = config.preProcess(doc, myUser);
   doc = preUpdate(doc, myUser, config) as unknown as AnyDocument;
-
-  let result: FaunaDocument<unknown> | null = await client.query(q.Update(faunaDoc.ref as Expr, { data: doc}));
+  const patchDoc = toFauna(doc);
+  let result: FaunaDocument<unknown> | null = await client.query(q.Update(faunaDoc.ref as Expr, patchDoc));
   if (result) { result = fromFauna(result as Record<string, unknown>); }
 
   // Validates that we recieved the result and that the user can act/view it
@@ -71,7 +71,6 @@ export async function $update(
 function preUpdate(doc: AnyDocument, myUser: MyUserDocument, config: FunctionConfig) {
   const fields = determineAccessibleFields(doc, myUser, config.setFields[getRole(myUser)]);
   const newDoc = trimRestrictedFields(doc as unknown as Record<string, unknown>, fields, false);
-
   newDoc.updatedAt = new Date();
   newDoc.updatedBy = { id: myUser.id, collection: myUser.collection };
 

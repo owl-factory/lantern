@@ -166,16 +166,7 @@ export class DataManager<T extends CoreDocument> {
    * @param doc The document to add or update in the data manager
    */
   public set(doc: T): void {
-    if (!("id" in doc)) { return; }
-    const id = (doc as CoreDocument).id;
-    this.data[id] = doc;
-    // TODO - update indexes
-
-    // Sets the document in the local storage
-    LOCAL_STORAGE.setItem(this.buildKey(id), JSON.stringify(doc));
-    // Sets the updated list of keys/ids in the local storage
-    this.updateStorageKeys();
-    this.updatedAt = new Date();
+    this.setMany([doc]);
   }
 
   /**
@@ -184,8 +175,15 @@ export class DataManager<T extends CoreDocument> {
    */
   public setMany(docs: T[]): void {
     docs.forEach((doc: T) => {
-      this.set(doc);
+      if (!("id" in doc)) { return; }
+      const id = (doc as CoreDocument).id;
+      this.data[id] = doc;
+
+      // Sets the document in the local storage
+      LOCAL_STORAGE.setItem(this.buildKey(id), JSON.stringify(doc));
     });
+    this.updateStorageKeys();
+    this.updatedAt = new Date();
   }
 
 

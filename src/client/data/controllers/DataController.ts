@@ -16,7 +16,6 @@ export abstract class DataController<T extends CoreDocument> {
     if (!this.deleteURI) { this.deleteURI = defaultURI;}
     if (!this.readURI) { this.readURI = defaultURI;}
     if (!this.updateURI) { this.updateURI = defaultURI;}
-    console.log(this.createURI)
   }
 
 
@@ -131,7 +130,7 @@ export abstract class DataController<T extends CoreDocument> {
    * @returns Returns the updated document
    */
   public async update(id: string, doc: Partial<T>): Promise<T | undefined> {
-    if(!isUserLoggedIn()) {
+    if(!this.isUserLoggedIn()) {
       // TODO - post to AlertController
       return undefined;
     }
@@ -145,8 +144,10 @@ export abstract class DataController<T extends CoreDocument> {
     this.manager.set(result.data.doc);
     return result.data.doc;
   }
+
+  
+  protected isUserLoggedIn() {
+    return true;
+  }
 }
 
-function isUserLoggedIn() {
-  return true;
-}

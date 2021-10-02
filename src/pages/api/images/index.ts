@@ -9,11 +9,22 @@ import { createEndpoint } from "server/utilities";
  * @param this The Handler class calling this function
  * @param req The request to the server
  */
-async function getImages(this: HTTPHandler, req: NextApiRequest) {
+async function getMyImages(this: HTTPHandler, req: NextApiRequest) {
   const myUser = getMyUser(req);
   requireLogin(myUser);
   const images = await ImageLogic.fetchMyImages([myUser.ref], { size: 100 }, myUser);
   this.returnSuccess({ images });
+}
+
+/**
+ * Creates a single new ruleset
+ * @param this The Handler class calling this function
+ * @param req The request to the server
+ */
+ async function getImages(this: HTTPHandler, req: NextApiRequest) {
+  const myUser = getMyUser(req);
+  const images = await ImageLogic.fetchMany(req.body.ids, myUser);
+  this.returnSuccess({ docs: images });
 }
 
 /**
@@ -28,4 +39,4 @@ async function createImage(this: HTTPHandler, req: NextApiRequest) {
   this.returnSuccess({ image });
 }
 
-export default createEndpoint({GET: getImages, PUT: createImage});
+export default createEndpoint({GET: getMyImages, POST: getImages, PUT: createImage});

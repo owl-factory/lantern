@@ -94,7 +94,8 @@ interface BaseDocument {
  * @param doc The document or reference ID
  * @param collection The collection of the reference
  */
-export function toFaunaRef(doc: DocumentReference | FaunaRef | string, collection?: string): Expr {
+export function toFaunaRef(doc: DocumentReference | FaunaRef | string, collection?: string): Expr | undefined {
+  if (doc === null) { return undefined; }
   if (typeof doc === "string" && !collection) { throw "A given string reference requires a collection"; }
   if (typeof doc === "string") {
     return q.Ref(q.Collection(collection as string), doc);

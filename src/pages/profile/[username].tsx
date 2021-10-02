@@ -15,6 +15,7 @@ import { ImageManager, UserManager } from "client/data/managers";
 import { InitialProps } from "types/client";
 import { ImageController, UserController } from "client/data/controllers";
 import Link from "next/link";
+import { AssetUploadSource } from "types/enums/assetSource";
 
 /**
  * Renders a small section indicating how long a player has been a member, their hours played,
@@ -174,7 +175,7 @@ function OtherDetails({ user }: { user: UserDocument }) {
  */
 function RecentPlayer({ player }: { player: UserDocument }) {
   let src = "";
-  if (player.icon && player.icon.src) { src = player.icon.src; }
+  if (player.avatar && player.avatar.src) { src = player.avatar.src; }
   return (
     <div>
       <Link href={`/profile/${player.username}`}>
@@ -198,21 +199,20 @@ interface ProfileImageProps {
  * @param setUser Sets the user object to update information
  * @param isMyPage True if this is the current user's page
  */
-function ProfileImage({ user, isMyPage }: ProfileImageProps) {
-  const [ icon, setIcon ] = React.useState<ImageDocument>(user.icon);
+const ProfileImage = observer(({ user, isMyPage }: ProfileImageProps) => {
+  const [ avatar, setAvatar ] = React.useState<ImageDocument>(user.avatar as ImageDocument);
 
-  React.useEffect(() => {
-    const newIcon = ImageManager.get(user.icon.id);
-    if (!newIcon) { return; }
-    setIcon(newIcon);
-  }, [user, ImageManager.updatedAt]);
-
-  let image = <img src={icon.src} width="200px" height="200px"/>;
+  let image = <img src={avatar.src} width="200px" height="200px"/>;
   const onSave = (result: unknown) => {
     // setUser(result as UserDocument);
   };
 
-  async function onSubmit(_: ImageDocument, method: string) { return; }
+  async function onSubmit(imageDocument: ImageDocument, method: AssetUploadSource) {
+    const result = await UserController.updateAvatar(user.id, imageDocument, method);
+    if (!("user" in result)) { return; }
+    setAvatar(result.user.avatar);
+    return;
+  }
 
   if (isMyPage) {
     image = (
@@ -228,7 +228,7 @@ function ProfileImage({ user, isMyPage }: ProfileImageProps) {
       <hr/>
     </div>
   );
-}
+});
 
 interface ProfileProps extends InitialProps {
   user: UserDocument;
@@ -254,7 +254,6 @@ function Profile(props: ProfileProps): JSX.Element {
 
   // Loads in everything from local storage and inserts new user ingo the Manager
   React.useEffect(() => {
-    console.log(props)
 
     UserManager.load();
     ImageManager.load();
@@ -268,7 +267,7 @@ function Profile(props: ProfileProps): JSX.Element {
     UserController.readMissing(playerIDs).then(() => {
       setPlayers(UserManager.getMany(playerIDs));
     });
-    ImageController.readMissing([props.user.icon.id]);
+    ImageController.readMissing([props.user.avatar.id]);
   }, [props.user.id]);
 
   // Updates the current user when they change
@@ -282,7 +281,6 @@ function Profile(props: ProfileProps): JSX.Element {
 
     setUser(newUser);
     setPlayers(UserManager.getMany(playerIDs));
-    console.log(UserManager.getMany(playerIDs));
   }, [UserManager.updatedAt, props.user.id]);
 
   /**
