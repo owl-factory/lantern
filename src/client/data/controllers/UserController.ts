@@ -29,7 +29,6 @@ class $UserController extends DataController<UserDocument> {
     }
 
     UserManager.set(result.data.user);
-    console.log(UserManager.get(result.data.user.id)?.avatar.src)
     ImageManager.set(result.data.image);
     return { user: result.data.user, image: result.data.image };
   }

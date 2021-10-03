@@ -25,7 +25,7 @@ export abstract class DataController<T extends CoreDocument> {
    * @returns Returns the new document. Undefined if there was a failure
    */
   public async create(doc: Partial<T>): Promise<T | undefined> {
-    if(!isUserLoggedIn()) {
+    if(!this.isUserLoggedIn()) {
       // TODO - post to AlertController
       return undefined;
     }
@@ -63,7 +63,7 @@ export abstract class DataController<T extends CoreDocument> {
   public async deleteMany(ids: string[]): Promise<Record<string, boolean>> {
     const failResponse: Record<string, boolean> = {};
     ids.forEach((id: string) => { failResponse[id] = false; });
-    if(!isUserLoggedIn()) {
+    if(!this.isUserLoggedIn()) {
       // TODO - post to AlertController
       return failResponse;
     }
@@ -100,9 +100,9 @@ export abstract class DataController<T extends CoreDocument> {
    * @returns An unsorted array of all of the found documents
    */
   public async readMany(ids: string[]) {
+    if (ids.length === 0) { return []; }
     const result = await rest.post<{ docs: T[] }>(this.readURI, { ids: ids });
     if (!result.success) { return []; }
-    console.log(result)
     this.manager.setMany(result.data.docs);
     return result.data.docs;
   }
