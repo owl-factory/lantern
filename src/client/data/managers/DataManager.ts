@@ -33,11 +33,11 @@ export class DataManager<T extends CoreDocument> {
   protected key: string;
   public data: Record<string, T> = {};
   // Tracks when the data manager was last updated. Allows for more seamless tracking of 
-  public updatedAt: string;
+  public updatedAt: Date;
 
   constructor(key: string) {
     this.key = key;
-    this.updatedAt = (new Date()).toDateString();
+    this.updatedAt = (new Date());
 
     makeObservable(this, {
       data: observable,
@@ -180,7 +180,7 @@ export class DataManager<T extends CoreDocument> {
       LOCAL_STORAGE.setItem(this.buildKey(id), JSON.stringify(doc));
     });
     this.updateStorageKeys();
-    this.updatedAt = (new Date()).toDateString();
+    this.updatedAt = (new Date());
   }
 
 
