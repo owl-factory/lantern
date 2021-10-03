@@ -11,7 +11,7 @@ const tabs = [
 ];
 
 interface ImageSelectionFormProps {
-  onSubmit: (image: ImageDocument, method: AssetUploadSource) => Promise<unknown>;
+  onSubmit: (image: Partial<ImageDocument>, method: AssetUploadSource) => Promise<unknown>;
   onSave: (result: unknown) => void;
 }
 
@@ -27,7 +27,7 @@ export const ImageSelectionForm = observer(({onSubmit, onSave}: ImageSelectionFo
    * @param image The new image document to submit
    * @param method The method of selecting a new image
    */
-  async function submit(image: ImageDocument, method: AssetUploadSource): Promise<void> {
+  async function submit(image: Partial<ImageDocument>, method: AssetUploadSource): Promise<void> {
     onSubmit(image, method)
     .then((result: unknown) => {
       onSave(result);

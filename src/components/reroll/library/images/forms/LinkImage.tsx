@@ -6,7 +6,7 @@ import React from "react";
 import { ImageDocument } from "types/documents";
 
 interface LinkImageFormProps {
-  onSubmit?: (image: ImageDocument) => Promise<void>;
+  onSubmit?: (image: Partial<ImageDocument>) => Promise<void>;
   onSave?: () => void;
 }
 
@@ -17,7 +17,7 @@ interface LinkImageFormProps {
  *  original save function
  */
 export function LinkImageForm(props: LinkImageFormProps): JSX.Element {
-  let onSubmit: (Image: ImageDocument) => Promise<void>;
+  let onSubmit: (Image: Partial<ImageDocument>) => Promise<void>;
   if (props.onSubmit) { onSubmit = props.onSubmit; }
   else {
     onSubmit = async () => {

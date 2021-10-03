@@ -203,7 +203,7 @@ const Avatar = observer(({ user, isMyPage }: ProfileImageProps) => {
 
   let image = <img src={user.avatar.src} width="200px" height="200px"/>;
 
-  async function onSubmit(imageDocument: ImageDocument, method: AssetUploadSource) {
+  async function onSubmit(imageDocument: Partial<ImageDocument>, method: AssetUploadSource) {
     await UserController.updateAvatar(user.id, imageDocument, method);
   }
 

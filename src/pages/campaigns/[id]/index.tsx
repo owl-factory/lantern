@@ -38,7 +38,7 @@ const Banner = observer(({ campaign, isOwner }: any) => {
      * @param image The new image document to use as the banner image
      * @param method The method to set the new image
      */
-    const onSubmit = async (newBanner: ImageDocument, method: AssetUploadSource) => {
+    const onSubmit = async (newBanner: Partial<ImageDocument>, method: AssetUploadSource) => {
       // TODO - Save banner
       const result = CampaignController.updateBanner(campaign.id, newBanner, method);
     };

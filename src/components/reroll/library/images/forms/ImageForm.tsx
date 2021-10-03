@@ -25,7 +25,7 @@ function getApprovedTabs(requestedTabs: string[]) {
 
 interface ImageFormProps {
   defaultTab: string;
-  onSubmit: (image: ImageDocument, method: AssetUploadSource) => Promise<void>;
+  onSubmit: (image: Partial<ImageDocument>, method: AssetUploadSource) => Promise<void>;
   tabs: string[];
 }
 
@@ -43,7 +43,7 @@ export function ImageForm({defaultTab, onSubmit, tabs}: ImageFormProps) {
   switch(activeTab) {
     case "link":
       activeForm = (
-        <LinkImageForm onSubmit={(image: ImageDocument) => onSubmit(image, AssetUploadSource.ExternalLink)}/>
+        <LinkImageForm onSubmit={(image: Partial<ImageDocument>) => onSubmit(image, AssetUploadSource.ExternalLink)}/>
       );
       break;
     case "list":

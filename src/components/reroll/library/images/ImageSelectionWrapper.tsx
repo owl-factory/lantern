@@ -7,7 +7,7 @@ import style from "./ImageSelectionWrapper.module.scss";
 
 interface ImageSelectionWrapperProps {
   children: JSX.Element;
-  onSubmit: (image: ImageDocument, method: AssetUploadSource) => Promise<unknown>;
+  onSubmit: (image: Partial<ImageDocument>, method: AssetUploadSource) => Promise<unknown>;
   onSave?: (result: unknown) => void;
 }
 

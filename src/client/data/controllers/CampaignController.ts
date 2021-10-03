@@ -16,7 +16,7 @@ class $CampaignController extends DataController<CampaignDocument> {
    * @param newBanner The new banner to upload
    * @param method The method of uploading the new banner.
    */
-  public async updateBanner(id: string, newBanner: ImageDocument, method: AssetUploadSource) {
+  public async updateBanner(id: string, newBanner: Partial<ImageDocument>, method: AssetUploadSource) {
     const updateBannerURI = `/api/campaigns/${id}/banner`;
     if (!this.isUserLoggedIn()) {
       // TODO - push to alert controller

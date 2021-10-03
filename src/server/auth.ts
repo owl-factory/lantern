@@ -1,3 +1,4 @@
+import { Expr } from "faunadb";
 import { NextApiRequest } from "next";
 import { MyUserDocument, UserRole, UserRoleReadable } from "types/security";
 import { getSession } from "utilities/auth";
@@ -15,13 +16,12 @@ export function getMyUser(req: NextApiRequest): MyUserDocument {
       ref: toFaunaRef({
         id: "295863299256353286",
         collection: "users",
-      }),
+      }) as Expr,
       roles: [],
       role: UserRole.USER,
       isLoggedIn: true,
-
     };
-    myUser2.ref = toFaunaRef(myUser2);
+    myUser2.ref = toFaunaRef(myUser2) as Expr;
     myUser2.role = getHighestRole(myUser2);
     return myUser2;
     //  return {} as MyUserDocument;

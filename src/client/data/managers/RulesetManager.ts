@@ -5,7 +5,3 @@ import { DataManager } from "./DataManager";
 export const RulesetManager = new DataManager<RulesetDocument>(
   "ruleset"
 );
-
-interface FetchManyResult {
-  rulesets: RulesetDocument[];
-}

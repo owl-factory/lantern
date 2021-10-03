@@ -35,7 +35,6 @@ interface RulesetUpdateResponse {
  * @param isPublic The new isPublic value
  */
 async function setPublic(id: string, isPublic: boolean) {
-  
   const result = await rest.post<RulesetUpdateResponse>(`/api/rulesets/${id}/public`, { isPublic });
   if (!result.success) {
     // TODO - error handling/display
