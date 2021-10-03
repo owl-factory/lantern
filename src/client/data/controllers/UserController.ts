@@ -1,4 +1,5 @@
 import { ImageDocument, UserDocument } from "types/documents";
+import { AssetUploadSource } from "types/enums/assetSource";
 import { rest } from "utilities/request";
 import { ImageManager, UserManager } from "../managers";
 import { DataController } from "./DataController";
@@ -15,7 +16,7 @@ class $UserController extends DataController<UserDocument> {
    * @param image The image, new or existing, to set as the new profile image
    * @param method The method of creating or grabbing the image
    */
-  public async updateAvatar(id: string, image: ImageDocument, method: string):
+  public async updateAvatar(id: string, image: ImageDocument, method: AssetUploadSource):
     Promise<{user: UserDocument, image: ImageDocument} | undefined> {
     const updateProfileImageURI = `/api/users/${id}/avatar`;
     if (!this.isUserLoggedIn()) {
@@ -27,7 +28,9 @@ class $UserController extends DataController<UserDocument> {
       // TODO - push error to alert controller
       return;
     }
-
+    console.log("update?")
+    console.log(result.data.user.avatar.id)
+    console.log(result.data.image.id)
     UserManager.set(result.data.user);
     ImageManager.set(result.data.image);
     return { user: result.data.user, image: result.data.image };

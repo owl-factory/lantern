@@ -199,24 +199,17 @@ interface ProfileImageProps {
  * @param setUser Sets the user object to update information
  * @param isMyPage True if this is the current user's page
  */
-const ProfileImage = observer(({ user, isMyPage }: ProfileImageProps) => {
-  const [ avatar, setAvatar ] = React.useState<ImageDocument>(user.avatar as ImageDocument);
+const Avatar = observer(({ user, isMyPage }: ProfileImageProps) => {
 
-  let image = <img src={avatar.src} width="200px" height="200px"/>;
-  const onSave = (result: unknown) => {
-    // setUser(result as UserDocument);
-  };
+  let image = <img src={user.avatar.src} width="200px" height="200px"/>;
 
   async function onSubmit(imageDocument: ImageDocument, method: AssetUploadSource) {
-    const result = await UserController.updateAvatar(user.id, imageDocument, method);
-    if (!("user" in result)) { return; }
-    setAvatar(result.user.avatar);
-    return;
+    await UserController.updateAvatar(user.id, imageDocument, method);
   }
 
   if (isMyPage) {
     image = (
-     <ImageSelectionWrapper onSubmit={onSubmit} onSave={onSave}>
+     <ImageSelectionWrapper onSubmit={onSubmit}>
         {image}
       </ImageSelectionWrapper>
     );
@@ -268,20 +261,15 @@ function Profile(props: ProfileProps): JSX.Element {
       setPlayers(UserManager.getMany(playerIDs));
     });
     ImageController.readMissing([props.user.avatar.id]);
-  }, [props.user.id]);
+  }, []);
 
   // Updates the current user when they change
   React.useEffect(() => {
-    let newUser = UserManager.get(router.query.id as string);
-    if (!newUser) { newUser = props.user; }
-    const playerIDs: string[] = [];
-    newUser.recentPlayers?.forEach((player: UserDocument) => {
-      playerIDs.push(player.id);
-    });
+    const newUser = UserManager.get(props.user.id as string);
+    if (!newUser) { return; }
 
     setUser(newUser);
-    setPlayers(UserManager.getMany(playerIDs));
-  }, [UserManager.updatedAt, props.user.id]);
+  }, [UserManager.get(props.user.id)?.updatedAt]);
 
   /**
    * Determines if the current player is the owner of the profile page.
@@ -295,26 +283,17 @@ function Profile(props: ProfileProps): JSX.Element {
 
   /**
    * A callback function that handles saving the user's information to the database
-   * TODO - replace with UserManager save
    * @param values The user document values to save to the database
    */
   async function saveUser(values: Record<string, unknown>) {
-    const result = await UserController.update(user.id, values);
-    // values.id = user.id;
-    // values.ref = user.ref;
-    // values.collection = user.collection;
-    // const result = await rest.patch(`/api/profile/${router.query.username}`, values);
-    // (result.data as any).user.players = user.players;
-    // if (result.success) {
-    //   setUser((result.data as any).user);
-    // }
+    await UserController.update(user.id, values);
   }
 
   return (
     <Page>
       <div className="row">
         <div className="col-12 col-md-4">
-          <ProfileImage
+          <Avatar
             user={user}
             isMyPage={isMyPage}
           />
