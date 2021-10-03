@@ -45,10 +45,9 @@ export function trimRestrictedFields(
 
   const newDoc: any = {};
   allowedFields.forEach((allowedField: string) => {
-    if (!(allowedField in doc)) { return; }
-    if (allowedField.match(/\.\*$/g)) {
-      allowedField = allowedField.slice(0, -2);
-    }
+    if (allowedField.match(/\.\*$/g)) { allowedField = allowedField.slice(0, -2); }
+    const value = read(doc, allowedField);
+    if (value === undefined) { return; }
     set(newDoc, allowedField, read(doc, allowedField));
   });
 

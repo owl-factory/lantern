@@ -21,7 +21,7 @@ interface LoggedInNavProps {
 function UserDisplay(props: LoggedInNavProps) {
   return (
     <>
-      <img src={props.user.icon?.src} style={{maxHeight: "32px", maxWidth: "32px", position: "absolute"}}/>
+      <img src={props.user.avatar?.src} style={{maxHeight: "32px", maxWidth: "32px", position: "absolute"}}/>
       <div style={{width: "36px", display: "inline-flex"}}></div>
       {props.user.displayName || props.user.username}&nbsp;
     </>

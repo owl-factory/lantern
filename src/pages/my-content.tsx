@@ -80,7 +80,7 @@ function MyContent(props: MyContentProps): JSX.Element {
 
   const rows: JSX.Element[] = [];
   contents.forEach((content: ContentDocument) => {
-    rows.push(<ContentRow content={content}/>);
+    rows.push(<ContentRow key={content.id} content={content}/>);
   });
   return (
     <Page>

@@ -50,47 +50,6 @@ export class ImageController {
   }
 
   /**
-   * Deletes a single image and removes it from the ImageManager
-   * @param index The index of the image within the imageList to delete. Used over
-   * the ID so that we can quickly reference the array and remove it everywhere in
-   * as short a time as possible
-   */
-  public async deleteImage(imageID: string): Promise<void> {
-    let index = -1;
-    for(let i = 0; i < this.imageList.length; i++) {
-      if(this.imageList[i] === imageID) {
-        index = i;
-        break;
-      }
-    }
-
-    if (index === -1 || !this.images[this.imageList[index]]) { throw "The image to delete does not exist."; }
-
-    const image = this.images[this.imageList[index]];
-    if (this.isExternal(image)) {
-      this.client.query(q.Delete(image.ref as FaunaRef));
-    } else {
-      rest.delete(`/api/images/${image.id}`, {});
-    }
-    delete this.images[this.imageList[index]];
-    this.imageList.splice(index, 1);
-  }
-
-  /**
-   * Fetches an image. Returns nothing if the imageID does not exist in this manager, and pulls from fauna
-   * if it's only partially present.
-   * @param imageID The ID of the image to fetch
-   */
-  public async fetchImage(imageID: string ): Promise<ImageDocument | undefined> {
-    if (!this.images[imageID]) { return undefined; }
-    if (this.images[imageID].ownedBy !== undefined) { return this.images[imageID]; }
-    this.images[imageID] = fromFauna(
-      await this.client.query(q.Get(toFaunaRef({ id: imageID, collection: "images" })))
-    ) as ImageDocument;
-    return this.images[imageID];
-  }
-
-  /**
    * Saves a linked image to the database.
    * @param values The image values to save
    */
@@ -121,16 +80,6 @@ export class ImageController {
   public add(image: ImageDocument) {
     this.images[image.id as string] = image;
     this.imageList.splice(0, 0, image.id as string);
-  }
-
-  /**
-   * Checks if an image is external without a database call. If unknown, return false
-   * @param image The image to determine if external or not
-   */
-  public isExternal(image: ImageDocument): boolean {
-    if (image.isExternal) { return true; }
-    if (image.src && image.src.includes(this.ourCDNPrefex)) { return false; }
-    return true;
   }
 
   /**

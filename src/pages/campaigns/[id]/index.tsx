@@ -9,9 +9,19 @@ import { query as q } from "faunadb";
 import { rest } from "utilities/request";
 import { read } from "utilities/objects";
 import { ImageSelectionWrapper } from "components/reroll/library/images/ImageSelectionWrapper";
-import { CampaignDocument, ImageDocument } from "types/documents";
+import { CampaignDocument, ImageDocument, UserDocument } from "types/documents";
 import { Tooltip } from "components/style/tooltips";
-import { ImageManager } from "client/data/managers";
+import { CampaignManager, ImageManager, UserManager } from "client/data/managers";
+import { observer } from "mobx-react-lite";
+import { InitialProps } from "types/client";
+import { CampaignController, UserController } from "client/data/controllers";
+import { AssetUploadSource } from "types/enums/assetSource";
+import { observable } from "mobx";
+
+interface BannerProps {
+  campaign: CampaignDocument;
+  isOwner: boolean;
+}
 
 /**
  * Renders the campaign banner. Also renders the ability to set a new banner image, if the user is the owner
@@ -19,117 +29,146 @@ import { ImageManager } from "client/data/managers";
  * @param setCampaign Function to set the campaign with a new campaign, if applicable
  * @param isOwner True if the current user is the owner. False otherwise.
  */
-function Banner({ campaign, isOwner, setCampaign }: any) {
-  let image = <img src={read<string>(campaign, "banner.src")}/>;
-
-  React.useEffect(() => {
-    ImageManager.load();
-  }, []);
+const Banner = observer(({ campaign, isOwner }: any) => {
+  let image = <img src={campaign.banner.src}/>;
 
   if(isOwner) {
-
-    /**
-     * Handles the post-save then functionality after setting an image.
-     * @param result The result of the onSubmit function
-     */
-    const onSave = (result: unknown) => {
-      const newCampaign = {...campaign, banner: (result as CampaignDocument).banner };
-      setCampaign(newCampaign);
-    };
-
     /**
      * Wraps the function to set the campaign banner image to pass in the campaign
      * @param image The new image document to use as the banner image
      * @param method The method to set the new image
      */
-    const onSubmit = async (image2: ImageDocument, method: string) => {
+    const onSubmit = async (newBanner: Partial<ImageDocument>, method: AssetUploadSource) => {
       // TODO - Save banner
+      const result = CampaignController.updateBanner(campaign.id, newBanner, method);
     };
 
     image = (
-      <ImageSelectionWrapper onSubmit={onSubmit} onSave={onSave}>
+      <ImageSelectionWrapper onSubmit={onSubmit} >
         {image}
       </ImageSelectionWrapper>
     );
   }
   return image;
+});
+
+interface PlayerProps {
+  campaign: CampaignDocument;
+  player: UserDocument;
+}
+
+/**
+ * Renders a single player for the campaign page.
+ * @param campaign The current campaign being viewed
+ * @param player A player for the current game
+ */
+const Player = observer((props: PlayerProps) => {
+  const [ avatar, setAvatar ] = React.useState(props.player?.avatar.src);
+
+  return (
+    <div>
+      <img src={props.player.avatar.src} width="30px" height="30px"/>
+      {props.player.name || props.player.username}&nbsp;
+      {props.player.id === props.campaign.ownedBy?.id ? "(GM) ": ""}
+      <Link href={`/profile/${props.player.username}`}><a>Profile</a></Link>
+    </div>
+  );
+});
+
+interface PlayersProps {
+  campaign: CampaignDocument;
+  players: UserDocument[];
 }
 
 /**
  * Renders the list of players in this campaign
  * @param campaign The current campaign
  */
-function Players({ campaign }: any) {
-  const players: JSX.Element[] = [];
-  campaign.players.forEach((player: any) => {
-    players.push(
-      <div key={player.id}>
-        {player.name || player.username}&nbsp;
-        {player.id === campaign.ownedBy.id ? "(GM) " : ""}
-        <Link href={`/profile/${player.username}`}>Profile</Link>
-      </div>
+const Players = observer(({ campaign, players }: PlayersProps) => {
+  const playerElements: JSX.Element[] = [];
+  players.forEach((player: UserDocument) => {
+    playerElements.push(
+      <Player key={player.id} campaign={campaign} player={player}/>
     );
   });
+
   return (
     <div>
-      <Tooltip title="Hi there">
       <h2>Players</h2>
-      </Tooltip>
-      {players}
+      {playerElements}
     </div>
   );
+});
+
+interface CampaignViewProps extends InitialProps {
+  campaign: CampaignDocument;
 }
 
 /**
  * Renders a single campaign and the information inside
- * @param props
+ * @param campaign The campaign to view
  */
-export default function CampaignView(props: any): JSX.Element {
-  if (!props.campaign) { return <Page error={props.error}>Error</Page>; }
+function CampaignView(props: CampaignViewProps): JSX.Element {
   const [ campaign, setCampaign ] = React.useState(props.campaign);
+  const [ players, setPlayers ] = React.useState<UserDocument[]>([]);
   const [ isOwner ] = React.useState(calculateIfUserIsOwner());
-  const router = useRouter();
-  const client = getClient();
 
-  let src = "";
-  if (campaign.banner && campaign.banner.src) { src = campaign.banner.src; }
+  // Initializes the managers on page load
+  React.useEffect(() => {
+    CampaignManager.load();
+    ImageManager.load();
+    UserManager.load();
 
-  function createInviteLink() {
-    const inviteKey = "testAddress";
-    client.query(
-      q.Call(
-        `create_campaign_invite`,
-        [ props.campaign.id, inviteKey ]
-      )
-    ).then((res) => {
-      console.log("tmp");
+    CampaignManager.set(props.campaign);
+
+    const playerIDs: string[] = [];
+    campaign.players?.forEach((player: UserDocument) => {
+      playerIDs.push(player.id);
     });
-  }
+    UserController.readMissing(playerIDs)
+    .then(() => {
+      const newPlayers = UserManager.getMany(playerIDs);
+      setPlayers(newPlayers);
+    });
+  }, []);
+
+  // Updates the campaign each time the campaign is updated
+  React.useEffect(() => {
+    const newCampaign = CampaignManager.get(props.campaign.id);
+    if (newCampaign) { setCampaign(newCampaign); }
+  }, [CampaignManager.updatedAt, CampaignManager.get(props.campaign.id)?.updatedAt]);
 
   /**
    * Determines if the current player is the owner of the profile page.
    * Required to catch issue where unlogged players would cause an issue with the logic
+   * TODO - move elsewhere & make generic
    */
    function calculateIfUserIsOwner() {
     if (!props.session) { return false; }
-    if (props.session.user.id === campaign.ownedBy.id) { return true; }
+    if (campaign.ownedBy && props.session.user.id === campaign.ownedBy.id) { return true; }
     return false;
   }
 
   return (
-    <Page error={props.error}>
+    <Page>
       <Banner campaign={campaign} setCampaign={setCampaign} isOwner={isOwner}/>
       <h1>{campaign.name}</h1>
-      <Players campaign={campaign}/>
+      <Players campaign={campaign} players={players}/>
     </Page>
   );
+}
+
+interface CampaignViewResponse {
+  campaign: CampaignDocument;
 }
 
 CampaignView.getInitialProps = async (ctx: NextPageContext) => {
   const session = getSession(ctx);
   if (!requireClientLogin(session, ctx)) { return {}; }
 
-  const res = await rest.get(`/api/campaigns/${ctx.query.id}`);
+  const result = await rest.get<CampaignViewResponse>(`/api/campaigns/${ctx.query.id}`);
 
-  return { session, campaign: (res.data as any).campaign, error: res.message };
+  return { key: ctx.query.id, session, campaign: result.data.campaign, message: result.message };
 };
+
+export default observer(CampaignView);

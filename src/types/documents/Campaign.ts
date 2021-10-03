@@ -6,12 +6,18 @@ interface PartialRulesetDocument extends Partial<RulesetDocument> {
   id: string;
 }
 
+interface PartialBanner extends Partial<ImageDocument> {
+  id: string,
+  collection: string,
+  src: string
+}
+
 /**
  * Represents the campaign and all information contained therein
  */
 export interface CampaignDocument extends CoreDocument {
   ruleset: PartialRulesetDocument;
-  banner?: ImageDocument;
+  banner: PartialBanner;
   players?: UserDocument[];
   lastPlayed?: Date;
 

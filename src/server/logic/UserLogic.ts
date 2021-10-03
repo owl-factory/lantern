@@ -90,9 +90,9 @@ export const UserLogic = UserLogicBuilder
   /**
    * Allows for a user to update specifically a profile image
    */
-  .update("updateProfileImage")
+  .update("updateAvatar")
     .setFields()
-      .user(["icon.ref", "icon.src"])
+      .user(["avatar.ref", "avatar.src"])
     .done()
     .roles()
       .user(isOwner)

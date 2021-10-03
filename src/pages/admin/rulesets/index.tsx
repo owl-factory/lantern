@@ -1,3 +1,4 @@
+import { RulesetController } from "client/data/controllers";
 import { RulesetManager } from "client/data/managers";
 import { Page } from "components/design";
 import { Button, ButtonGroup, Col, Loading } from "components/style";
@@ -168,19 +169,23 @@ const RulesetRow = observer((props: RulesetRowProps) => {
           </Link>
           {
             props.ruleset.isPublic ? (
-              <Button onClick={() => setPublic(props.ruleset.id, false)}>
+              <Button onClick={() => RulesetController.updateIsPublic(props.ruleset.id, false)}>
                 <Tooltip title="Make Private"><MdVisibilityOff/></Tooltip>
               </Button>
             ) : (
-              <Button onClick={() => setPublic(props.ruleset.id, true)}>
+              <Button onClick={() => RulesetController.updateIsPublic(props.ruleset.id, true)}>
                 <Tooltip title="Make Public"><MdVisibility/></Tooltip>
               </Button>
             )
           }
           {
             props.ruleset.isLocked ?
-            <Button><Tooltip title="Unlock"><MdLockOpen/></Tooltip></Button> :
-            <Button><Tooltip title="Lock"><MdLockOutline/></Tooltip></Button>
+            <Button>
+              <Tooltip title="Unlock"><MdLockOpen/></Tooltip>
+            </Button> :
+            <Button>
+              <Tooltip title="Lock"><MdLockOutline/></Tooltip>
+            </Button>
           }
         </ButtonGroup>
       </td>

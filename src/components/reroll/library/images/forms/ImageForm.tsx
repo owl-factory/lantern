@@ -1,6 +1,7 @@
 import { SelectionTabs } from "components/design";
 import React from "react";
 import { ImageDocument } from "types/documents";
+import { AssetUploadSource } from "types/enums/assetSource";
 import { LinkImageForm, UploadImageForm } from ".";
 import { ImageList, ListFormat } from "..";
 
@@ -24,7 +25,7 @@ function getApprovedTabs(requestedTabs: string[]) {
 
 interface ImageFormProps {
   defaultTab: string;
-  onSubmit: (image: ImageDocument, method: string) => Promise<void>;
+  onSubmit: (image: Partial<ImageDocument>, method: AssetUploadSource) => Promise<void>;
   tabs: string[];
 }
 
@@ -41,13 +42,15 @@ export function ImageForm({defaultTab, onSubmit, tabs}: ImageFormProps) {
   let activeForm: JSX.Element;
   switch(activeTab) {
     case "link":
-      activeForm = <LinkImageForm onSubmit={(image: ImageDocument) => onSubmit(image, "link")}/>;
+      activeForm = (
+        <LinkImageForm onSubmit={(image: Partial<ImageDocument>) => onSubmit(image, AssetUploadSource.ExternalLink)}/>
+      );
       break;
     case "list":
       activeForm = (
         <ImageList
           listFormat={ListFormat.Icons}
-          onClick={(image:ImageDocument) => onSubmit(image, "list")}
+          onClick={(image:ImageDocument) => onSubmit(image, AssetUploadSource.Select)}
         />
       );
       break;

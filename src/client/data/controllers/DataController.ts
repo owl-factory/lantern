@@ -16,7 +16,6 @@ export abstract class DataController<T extends CoreDocument> {
     if (!this.deleteURI) { this.deleteURI = defaultURI;}
     if (!this.readURI) { this.readURI = defaultURI;}
     if (!this.updateURI) { this.updateURI = defaultURI;}
-    console.log(this.createURI)
   }
 
 
@@ -26,7 +25,7 @@ export abstract class DataController<T extends CoreDocument> {
    * @returns Returns the new document. Undefined if there was a failure
    */
   public async create(doc: Partial<T>): Promise<T | undefined> {
-    if(!isUserLoggedIn()) {
+    if(!this.isUserLoggedIn()) {
       // TODO - post to AlertController
       return undefined;
     }
@@ -64,7 +63,7 @@ export abstract class DataController<T extends CoreDocument> {
   public async deleteMany(ids: string[]): Promise<Record<string, boolean>> {
     const failResponse: Record<string, boolean> = {};
     ids.forEach((id: string) => { failResponse[id] = false; });
-    if(!isUserLoggedIn()) {
+    if(!this.isUserLoggedIn()) {
       // TODO - post to AlertController
       return failResponse;
     }
@@ -101,9 +100,9 @@ export abstract class DataController<T extends CoreDocument> {
    * @returns An unsorted array of all of the found documents
    */
   public async readMany(ids: string[]) {
+    if (ids.length === 0) { return []; }
     const result = await rest.post<{ docs: T[] }>(this.readURI, { ids: ids });
     if (!result.success) { return []; }
-    console.log(result)
     this.manager.setMany(result.data.docs);
     return result.data.docs;
   }
@@ -131,13 +130,13 @@ export abstract class DataController<T extends CoreDocument> {
    * @returns Returns the updated document
    */
   public async update(id: string, doc: Partial<T>): Promise<T | undefined> {
-    if(!isUserLoggedIn()) {
+    if(!this.isUserLoggedIn()) {
       // TODO - post to AlertController
       return undefined;
     }
 
     // Validate doc
-    const result = await rest.put<{ doc: T }>(this.updateURI, { id, doc });
+    const result = await rest.patch<{ doc: T }>(this.updateURI, { id, doc });
     if (result.success === false) {
       // TODO - Post to AlertManager
       return undefined;
@@ -145,8 +144,10 @@ export abstract class DataController<T extends CoreDocument> {
     this.manager.set(result.data.doc);
     return result.data.doc;
   }
+
+  
+  protected isUserLoggedIn() {
+    return true;
+  }
 }
 
-function isUserLoggedIn() {
-  return true;
-}

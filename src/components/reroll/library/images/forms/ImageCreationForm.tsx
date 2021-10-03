@@ -3,6 +3,7 @@ import { Modal } from "components/style/modals";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { ImageDocument } from "types/documents";
+import { AssetUploadSource } from "types/enums/assetSource";
 import { ImageForm } from "./ImageForm";
 
 /**
@@ -15,7 +16,7 @@ export const ImageCreationForm = observer(({onSave}: any) => {
     "upload",
   ];
 
-  const onSubmit = async (image: ImageDocument, method: string) => {
+  const onSubmit = async (image: Partial<ImageDocument>, method: AssetUploadSource) => {
     // ImageManager.createOne(image, method)
     // .then(() => {
     //   if (onSave) {

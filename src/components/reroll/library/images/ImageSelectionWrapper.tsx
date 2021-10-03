@@ -1,13 +1,14 @@
 import { Modal } from "components/style/modals";
 import React from "react";
 import { ImageDocument } from "types/documents";
+import { AssetUploadSource } from "types/enums/assetSource";
 import { ImageSelectionForm } from ".";
 import style from "./ImageSelectionWrapper.module.scss";
 
 interface ImageSelectionWrapperProps {
   children: JSX.Element;
-  onSubmit: (image: ImageDocument, method: string) => Promise<unknown>;
-  onSave: (result: unknown) => void;
+  onSubmit: (image: Partial<ImageDocument>, method: AssetUploadSource) => Promise<unknown>;
+  onSave?: (result: unknown) => void;
 }
 
 /**
@@ -22,7 +23,7 @@ export function ImageSelectionWrapper({ children, onSubmit, onSave }: ImageSelec
   const [ modal, setModal ] = React.useState(false);
 
   function closeModal() { setModal(false); }
-  function postSave(result: unknown) { onSave(result); closeModal(); }
+  function postSave(result: unknown) { if (onSave) {onSave(result);} closeModal(); }
   return (
     <div>
       <div className={`${style.profileImageWrapper}`} onClick={() => (setModal(true))}>

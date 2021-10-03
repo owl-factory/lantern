@@ -3,7 +3,7 @@
  * sorting and such.
  */
 
-import { makeAutoObservable } from "mobx";
+import { action, makeAutoObservable, makeObservable, observable } from "mobx";
 import { AnyDocument, CoreDocument } from "types/documents";
 import { read } from "utilities/objects";
 import { rest } from "utilities/request";
@@ -17,10 +17,6 @@ const mockLocalStorage = {
 };
 
 const LOCAL_STORAGE = isClient ? window.localStorage : mockLocalStorage;
-
-interface DataManagerOptions {
-  fetchMany?: (ids: string[]) => Promise<CoreDocument[]>;
-}
 
 interface GetPageOptions {
   match?: (doc: AnyDocument) => boolean;
@@ -39,18 +35,19 @@ export class DataManager<T extends CoreDocument> {
   // Tracks when the data manager was last updated. Allows for more seamless tracking of 
   public updatedAt: Date;
 
-  protected $create: ((doc: Partial<T>) => Promise<T | undefined>) | undefined = undefined;
-  protected $deleteMany: ((ids: string[]) => Promise<Record<string, boolean>>) | undefined = undefined;
-  protected $fetchMany: ((ids: string[]) => Promise<CoreDocument[]>) | undefined = undefined;
-  protected $update: ((id: string, doc: Partial<T>) => Promise<T | undefined>) | undefined = undefined;
-
-  constructor(key: string, options?: DataManagerOptions) {
+  constructor(key: string) {
     this.key = key;
-    this.updatedAt = new Date();
-    if (!options) { return; }
-    if ("fetchMany" in options && options.fetchMany) { this.$fetchMany = options.fetchMany; }
+    this.updatedAt = (new Date());
 
-    makeAutoObservable(this);
+    makeObservable(this, {
+      data: observable,
+      updatedAt: observable,
+      load: action,
+      remove: action,
+      removeMany: action,
+      set: action,
+      setMany: action,
+    });
   }
 
   /**
@@ -166,16 +163,7 @@ export class DataManager<T extends CoreDocument> {
    * @param doc The document to add or update in the data manager
    */
   public set(doc: T): void {
-    if (!("id" in doc)) { return; }
-    const id = (doc as CoreDocument).id;
-    this.data[id] = doc;
-    // TODO - update indexes
-
-    // Sets the document in the local storage
-    LOCAL_STORAGE.setItem(this.buildKey(id), JSON.stringify(doc));
-    // Sets the updated list of keys/ids in the local storage
-    this.updateStorageKeys();
-    this.updatedAt = new Date();
+    this.setMany([doc]);
   }
 
   /**
@@ -184,8 +172,15 @@ export class DataManager<T extends CoreDocument> {
    */
   public setMany(docs: T[]): void {
     docs.forEach((doc: T) => {
-      this.set(doc);
+      if (!("id" in doc)) { return; }
+      const id = (doc as CoreDocument).id;
+      this.data[id] = doc;
+
+      // Sets the document in the local storage
+      LOCAL_STORAGE.setItem(this.buildKey(id), JSON.stringify(doc));
     });
+    this.updateStorageKeys();
+    this.updatedAt = (new Date());
   }
 
 

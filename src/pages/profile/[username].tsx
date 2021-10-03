@@ -14,6 +14,8 @@ import { observer } from "mobx-react-lite";
 import { ImageManager, UserManager } from "client/data/managers";
 import { InitialProps } from "types/client";
 import { ImageController, UserController } from "client/data/controllers";
+import Link from "next/link";
+import { AssetUploadSource } from "types/enums/assetSource";
 
 /**
  * Renders a small section indicating how long a player has been a member, their hours played,
@@ -173,13 +175,15 @@ function OtherDetails({ user }: { user: UserDocument }) {
  */
 function RecentPlayer({ player }: { player: UserDocument }) {
   let src = "";
-  if (player.icon && player.icon.src) { src = player.icon.src; }
+  if (player.avatar && player.avatar.src) { src = player.avatar.src; }
   return (
     <div>
-      <a href={`/profile/${player.username}`}>
-        <img width="30px" height="30px" src={src}/>
-        <span style={{paddingLeft: "10px"}}>{player.displayName}</span>
-      </a>
+      <Link href={`/profile/${player.username}`}>
+        <a>
+          <img width="30px" height="30px" src={src}/>
+          <span style={{paddingLeft: "10px"}}>{player.displayName}</span>
+        </a>
+      </Link>
     </div>
   );
 }
@@ -195,25 +199,17 @@ interface ProfileImageProps {
  * @param setUser Sets the user object to update information
  * @param isMyPage True if this is the current user's page
  */
-function ProfileImage({ user, isMyPage }: ProfileImageProps) {
-  const [ icon, setIcon ] = React.useState<ImageDocument>(user.icon);
+const Avatar = observer(({ user, isMyPage }: ProfileImageProps) => {
 
-  React.useEffect(() => {
-    const newIcon = ImageManager.get(user.icon.id);
-    if (!newIcon) { return; }
-    setIcon(newIcon);
-  }, [user, ImageManager.updatedAt]);
+  let image = <img src={user.avatar.src} width="200px" height="200px"/>;
 
-  let image = <img src={icon.src} width="200px" height="200px"/>;
-  const onSave = (result: unknown) => {
-    // setUser(result as UserDocument);
-  };
-
-  async function onSubmit(_: ImageDocument, method: string) { return; }
+  async function onSubmit(imageDocument: Partial<ImageDocument>, method: AssetUploadSource) {
+    await UserController.updateAvatar(user.id, imageDocument, method);
+  }
 
   if (isMyPage) {
     image = (
-     <ImageSelectionWrapper onSubmit={onSubmit} onSave={onSave}>
+     <ImageSelectionWrapper onSubmit={onSubmit}>
         {image}
       </ImageSelectionWrapper>
     );
@@ -225,7 +221,7 @@ function ProfileImage({ user, isMyPage }: ProfileImageProps) {
       <hr/>
     </div>
   );
-}
+});
 
 interface ProfileProps extends InitialProps {
   user: UserDocument;
@@ -246,39 +242,34 @@ function Profile(props: ProfileProps): JSX.Element {
   }
   const router = useRouter();
   const [ user, setUser ] = React.useState(props.user);
-  const [ isMyPage ] = React.useState(calculateIfUserIsOwner());
+  const [ isMyPage, setIsMyPage ] = React.useState(calculateIfUserIsOwner());
   const [ players, setPlayers ] = React.useState<UserDocument[]>([]);
 
   // Loads in everything from local storage and inserts new user ingo the Manager
   React.useEffect(() => {
+
     UserManager.load();
     ImageManager.load();
 
     UserManager.set(props.user);
 
     const playerIDs: string[] = [];
-    props.user.recentPlayers.forEach((player: UserDocument) => {
+    props.user.recentPlayers?.forEach((player: UserDocument) => {
       playerIDs.push(player.id);
     });
     UserController.readMissing(playerIDs).then(() => {
       setPlayers(UserManager.getMany(playerIDs));
     });
-    ImageController.readMissing([props.user.icon.id]);
+    ImageController.readMissing([props.user.avatar.id]);
   }, []);
 
   // Updates the current user when they change
   React.useEffect(() => {
-    const newUser = UserManager.get(router.query.id as string);
+    const newUser = UserManager.get(props.user.id as string);
     if (!newUser) { return; }
-    const playerIDs: string[] = [];
-    newUser.recentPlayers.forEach((player: UserDocument) => {
-      playerIDs.push(player.id);
-    });
 
     setUser(newUser);
-    setPlayers(UserManager.getMany(playerIDs));
-    console.log(UserManager.getMany(playerIDs));
-  }, [UserManager.updatedAt]);
+  }, [UserManager.get(props.user.id)?.updatedAt]);
 
   /**
    * Determines if the current player is the owner of the profile page.
@@ -292,25 +283,17 @@ function Profile(props: ProfileProps): JSX.Element {
 
   /**
    * A callback function that handles saving the user's information to the database
-   * TODO - replace with UserManager save
    * @param values The user document values to save to the database
    */
   async function saveUser(values: Record<string, unknown>) {
-    // values.id = user.id;
-    // values.ref = user.ref;
-    // values.collection = user.collection;
-    // const result = await rest.patch(`/api/profile/${router.query.username}`, values);
-    // (result.data as any).user.players = user.players;
-    // if (result.success) {
-    //   setUser((result.data as any).user);
-    // }
+    await UserController.update(user.id, values);
   }
 
   return (
     <Page>
       <div className="row">
         <div className="col-12 col-md-4">
-          <ProfileImage
+          <Avatar
             user={user}
             isMyPage={isMyPage}
           />
@@ -334,6 +317,7 @@ Profile.getInitialProps = async (ctx: NextPageContext) => {
 
   const result = await rest.get<ProfileResponse>(`/api/profile/${ctx.query.username}`);
   return {
+    key: ctx.query.username,
     session,
     success: result.success,
     message: result.message,

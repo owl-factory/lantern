@@ -12,7 +12,7 @@ export interface TooltipProps {
 
 const FrontEndTooltip = dynamic(
   () => import('./FrontEndTooltip'),
-  { loading: () => <h1>...</h1>, ssr: false},
+  { loading: () => <span>...</span>, ssr: false},
 );
 
 /**

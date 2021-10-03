@@ -1,6 +1,6 @@
 import { NextApiRequest } from "next";
 import { getMyUser, requireLogin } from "server/auth";
-import { CampaignLogic, RulesetLogic } from "server/logic";
+import { RulesetLogic } from "server/logic";
 import { HTTPHandler } from "server/response";
 import { createEndpoint } from "server/utilities";
 
@@ -16,4 +16,4 @@ async function setRulesetIsPublic(this: HTTPHandler, req: NextApiRequest) {
   this.returnSuccess({ ruleset: ruleset });
 }
 
-export default createEndpoint({POST: setRulesetIsPublic});
+export default createEndpoint({PATCH: setRulesetIsPublic});
