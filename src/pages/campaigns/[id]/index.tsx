@@ -113,9 +113,8 @@ function CampaignView(props: CampaignViewProps): JSX.Element {
   const [ players, setPlayers ] = React.useState<UserDocument[]>([]);
   const [ isOwner ] = React.useState(calculateIfUserIsOwner());
 
+  // Initializes the managers on page load
   React.useEffect(() => {
-    console.log("first");
-
     CampaignManager.load();
     ImageManager.load();
     UserManager.load();
@@ -133,9 +132,9 @@ function CampaignView(props: CampaignViewProps): JSX.Element {
     });
   }, []);
 
+  // Updates the campaign each time the campaign is updated
   React.useEffect(() => {
     const newCampaign = CampaignManager.get(props.campaign.id);
-    console.log(newCampaign);
     if (newCampaign) { setCampaign(newCampaign); }
   }, [CampaignManager.updatedAt, CampaignManager.get(props.campaign.id)?.updatedAt]);
 

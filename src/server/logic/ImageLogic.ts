@@ -72,6 +72,13 @@ export const ImageLogic = (new FaunaLogicBuilder("images")
   .done()
 .done()).export();
 
+/**
+ * Creates a new image in the given method. Supercedes the generic 'create' function
+ * @param image The image document to create
+ * @param method The method by which the image is being created
+ * @param myUser The user attempting to create this image
+ * @returns The created image document
+ */
 ImageLogic.create = async (image: Partial<ImageDocument>, method: AssetUploadSource, myUser: MyUserDocument) => {
   let result: unknown;
   switch(method) {

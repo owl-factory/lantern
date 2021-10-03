@@ -4,6 +4,13 @@ import { RulesetManager } from "../managers";
 import { DataController } from "./DataController";
 
 class $RulesetController extends DataController<RulesetDocument> {
+  /**
+   * Updates the isPublic field of a ruleset
+   *
+   * @param id The ID of the Ruleset to update
+   * @param isPublic The new isPublic value
+   * @returns The updated ruleset
+   */
   public async updateIsPublic(id: string, isPublic: boolean) {
     const isPublicEndpoint = `/api/rulesets/${id}/public`;
     if (!this.isUserLoggedIn()) {
