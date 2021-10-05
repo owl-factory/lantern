@@ -65,15 +65,6 @@ export const AlertMessages = observer(() => {
         {alertElements}
         <TotalAlerts size={AlertController.alerts.length}/>
       </div>
-      <Formik
-        initialValues={{ message: "" }}
-        onSubmit={onSubmit}
-      >
-        <Form>
-          <Input type="text" name="message"/>
-          <Button type="submit">Submit</Button>
-        </Form>
-      </Formik>
     </>
   );
 });
