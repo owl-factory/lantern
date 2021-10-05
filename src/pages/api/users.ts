@@ -16,7 +16,11 @@ async function getUsers(this: HTTPHandler, req: NextApiRequest) {
   this.returnSuccess({ docs: users });
 }
 
-
+/**
+ * Updates a single user
+ * @param this The Handler class calling this function
+ * @param req The request to the servert
+ */
 async function updateUser(this: HTTPHandler, req: NextApiRequest) {
   const myUser = getMyUser(req);
   const updatedUser = await UserLogic.update(req.body.id, req.body.doc, myUser);

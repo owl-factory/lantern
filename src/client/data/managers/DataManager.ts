@@ -30,7 +30,7 @@ interface GetPageOptions {
  * for different document types. For that, a specific Controller is needed.
  */
 export class DataManager<T extends CoreDocument> {
-  protected key: string;
+  public readonly key: string;
   public data: Record<string, T> = {};
   // Tracks when the data manager was last updated. Allows for more seamless tracking of 
   public updatedAt: Date;

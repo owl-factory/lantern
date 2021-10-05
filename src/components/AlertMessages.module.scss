@@ -1,0 +1,13 @@
+.alertContainer {
+  display: flex;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+
+  width: 22.5em;
+  height: 100%;
+  
+  padding: 10px;
+
+  flex-direction: column;
+}

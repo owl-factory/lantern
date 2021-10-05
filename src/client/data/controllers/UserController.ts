@@ -1,3 +1,4 @@
+import { AlertController } from "client/AlertController";
 import { ImageDocument, UserDocument } from "types/documents";
 import { AssetUploadSource } from "types/enums/assetSource";
 import { rest } from "utilities/request";
@@ -20,17 +21,21 @@ class $UserController extends DataController<UserDocument> {
     Promise<{user: UserDocument, image: ImageDocument} | undefined> {
     const updateProfileImageURI = `/api/users/${id}/avatar`;
     if (!this.isUserLoggedIn()) {
-      // TODO - push to alert controller
+      AlertController.error(`You must be logged in to update a user avatar.`);
       return;
     }
     const result = await rest.patch<UpdateProfileImageResponse>(updateProfileImageURI, { image, method });
     if (!result.success) {
-      // TODO - push error to alert controller
+      AlertController.error(`An error occured while setting an avatar: ${result.message}`);
       return;
     }
 
+
     UserManager.set(result.data.user);
     ImageManager.set(result.data.image);
+    AlertController.success(
+      `The avatar for ${result.data.user.name || result.data.user.username} has been updated.`
+    );
     return { user: result.data.user, image: result.data.image };
   }
 }

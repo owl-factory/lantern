@@ -1,3 +1,4 @@
+import { AlertController } from "client/AlertController";
 import { RulesetDocument } from "types/documents";
 import { rest } from "utilities/request";
 import { RulesetManager } from "../managers";
@@ -14,15 +15,17 @@ class $RulesetController extends DataController<RulesetDocument> {
   public async updateIsPublic(id: string, isPublic: boolean) {
     const isPublicEndpoint = `/api/rulesets/${id}/public`;
     if (!this.isUserLoggedIn()) {
-      // TODO - alert controller
+      AlertController.error(`You must be logged in to update the Public status.`);
       return;
     }
     const result = await rest.patch<{ruleset: RulesetDocument}>(isPublicEndpoint, { isPublic });
     if (!result.success) {
-      // TODO - alert controller
+      AlertController.error(`An error occured while setting the Public status: ${result.message}`);
       return;
     }
     RulesetManager.set(result.data.ruleset);
+    AlertController.success(`The Public status for ${result.data.ruleset.name} has been set to ${isPublic}`);
+
     return result.data.ruleset;
   }
 }

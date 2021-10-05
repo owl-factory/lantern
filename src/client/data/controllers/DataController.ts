@@ -1,3 +1,4 @@
+import { AlertController } from "client/AlertController";
 import { CoreDocument } from "types/documents";
 import { rest } from "utilities/request";
 import { DataManager } from "../managers/DataManager";
@@ -26,7 +27,7 @@ export abstract class DataController<T extends CoreDocument> {
    */
   public async create(doc: Partial<T>): Promise<T | undefined> {
     if(!this.isUserLoggedIn()) {
-      // TODO - post to AlertController
+      AlertController.error(`You must be logged in to create ${this.manager.key}.`);
       return undefined;
     }
 
@@ -35,11 +36,12 @@ export abstract class DataController<T extends CoreDocument> {
     const result = await rest.put<{ doc: T }>(this.createURI, { doc });
 
     if (result.success === false) {
-      // TODO - Post Error to AlertController & return
+      AlertController.error(`An error occured while creating ${this.manager.key}: ${result.message}`);
       return undefined;
     }
 
     this.manager.set(result.data.doc);
+    AlertController.success(`${result.data.doc.name} has been successfully created.`);
     return result.data.doc;
   }
 
@@ -64,13 +66,13 @@ export abstract class DataController<T extends CoreDocument> {
     const failResponse: Record<string, boolean> = {};
     ids.forEach((id: string) => { failResponse[id] = false; });
     if(!this.isUserLoggedIn()) {
-      // TODO - post to AlertController
+      AlertController.error(`You must be logged in to delete ${this.manager.key}.`);
       return failResponse;
     }
 
     const result = await rest.delete<{ deleted: Record<string, boolean> }>(this.deleteURI, { ids: ids });
     if (result.success === false) {
-      // TODO - post to AlertController
+      AlertController.error(`An error occured while creating ${this.manager.key}: ${result.message}`);
       return failResponse;
     }
 
@@ -131,21 +133,22 @@ export abstract class DataController<T extends CoreDocument> {
    */
   public async update(id: string, doc: Partial<T>): Promise<T | undefined> {
     if(!this.isUserLoggedIn()) {
-      // TODO - post to AlertController
+      AlertController.error(`You must be logged in to update ${this.manager.key}.`);
       return undefined;
     }
 
     // Validate doc
     const result = await rest.patch<{ doc: T }>(this.updateURI, { id, doc });
     if (result.success === false) {
-      // TODO - Post to AlertManager
+      AlertController.error(`An error occured while updating ${this.manager.key}: ${result.message}`);
       return undefined;
     }
     this.manager.set(result.data.doc);
+    AlertController.success(`${result.data.doc.name} has been successfully updated.`);
     return result.data.doc;
   }
 
-  
+
   protected isUserLoggedIn() {
     return true;
   }

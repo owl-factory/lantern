@@ -1,3 +1,4 @@
+import { AlertController } from "client/AlertController";
 import { CampaignDocument, ImageDocument } from "types/documents";
 import { AssetUploadSource } from "types/enums/assetSource";
 import { rest } from "utilities/request";
@@ -19,17 +20,18 @@ class $CampaignController extends DataController<CampaignDocument> {
   public async updateBanner(id: string, newBanner: Partial<ImageDocument>, method: AssetUploadSource) {
     const updateBannerURI = `/api/campaigns/${id}/banner`;
     if (!this.isUserLoggedIn()) {
-      // TODO - push to alert controller
+      AlertController.error("You must be logged in to update the banner.");
       return;
     }
     const result = await rest.patch<UpdateBannerResponse>(updateBannerURI, { image: newBanner, method });
     if (!result.success) {
-      // TODO - push error to alert controller
+      AlertController.error(`An error occured while updating the banner: ${result.message}`);
       return;
     }
 
     CampaignManager.set(result.data.campaign);
     ImageManager.set(result.data.image);
+    AlertController.success(`The banner for ${result.data.campaign.name} has been successfully updated.`);
     return { campaign: result.data.campaign, image: result.data.image };
   }
 

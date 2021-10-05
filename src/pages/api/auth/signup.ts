@@ -28,7 +28,7 @@ export default async function SignUp(req: NextApiRequest, res: NextApiResponse):
         data: {
           username: normalize(username),
           email: normalize(email),
-          displayName: username,
+          name: username,
           icon: "",
           roles: [],
         },
