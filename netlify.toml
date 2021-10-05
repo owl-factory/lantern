@@ -1,0 +1,10 @@
+[[redirects]]
+  from = "/"
+  to = "/dashboard"
+  status = 301
+
+[[redirects]]
+  from = "/dashboard"
+  to = "/"
+  status = 200
+  conditions = {Cookie = ["session"]}
