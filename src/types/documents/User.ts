@@ -13,7 +13,6 @@ interface PartialImageDocument extends Partial<ImageDocument> {
 export interface UserDocument extends CoreDocument {
   username: string;
   email: string;
-  displayName?: string;
   avatar: PartialImageDocument;
 
   roles?: string[];

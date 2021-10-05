@@ -20,7 +20,7 @@ export interface Ref {
 export interface UserData {
   email?: string;
   username?: string;
-  displayName?: string;
+  name?: string;
   icon?: string;
 }
 

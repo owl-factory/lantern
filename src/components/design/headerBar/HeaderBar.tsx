@@ -23,7 +23,7 @@ function UserDisplay(props: LoggedInNavProps) {
     <>
       <img src={props.user.avatar?.src} style={{maxHeight: "32px", maxWidth: "32px", position: "absolute"}}/>
       <div style={{width: "36px", display: "inline-flex"}}></div>
-      {props.user.displayName || props.user.username}&nbsp;
+      {props.user.name || props.user.username}&nbsp;
     </>
   );
 }

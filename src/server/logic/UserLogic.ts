@@ -3,7 +3,7 @@ import { isOwner } from "./security";
 
 const guestFields = [
   "username",
-  "displayName",
+  "name",
   "icon",
   "bio",
   "enjoysPlaying",
@@ -12,7 +12,7 @@ const guestFields = [
   "badges",
 ];
 const updateFields = [
-  "displayName",
+  "name",
   "bio",
   "enjoysPlaying",
   "activelySeeking",

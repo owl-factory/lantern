@@ -95,7 +95,7 @@ function MyDetails({ user, saveUser }: { user: UserDocument, saveUser: (values: 
         onSubmit={(values: Record<string, unknown>) => (saveUser(values))}
       >
         <FormikForm>
-          <Input type="text" name="displayName"/>
+          <Input type="text" name="name"/>
           <MemberSince user={user}/>
           <span>Badges</span>
           <div><i>None yet! Check back soon!</i></div>
@@ -132,7 +132,7 @@ function OtherOptions({ user }: { user: UserDocument }) {
       <a href="#">View Marketplace Items</a><br/>
       <a href="#">View Topics</a><br/>
       <a href="#">View Replies</a><br/>
-      <a href="#">Block {user.displayName}</a><br/>
+      <a href="#">Block {user.name}</a><br/>
     </div>
   );
 }
@@ -144,7 +144,7 @@ function OtherOptions({ user }: { user: UserDocument }) {
 function OtherDetails({ user }: { user: UserDocument }) {
   return (
     <div>
-      <h1>{user.displayName}</h1>
+      <h1>{user.name}</h1>
       <MemberSince user={user}/>
       <Badges user={user}/>
 
@@ -181,7 +181,7 @@ function RecentPlayer({ player }: { player: UserDocument }) {
       <Link href={`/profile/${player.username}`}>
         <a>
           <img width="30px" height="30px" src={src}/>
-          <span style={{paddingLeft: "10px"}}>{player.displayName}</span>
+          <span style={{paddingLeft: "10px"}}>{player.name || player.username}</span>
         </a>
       </Link>
     </div>

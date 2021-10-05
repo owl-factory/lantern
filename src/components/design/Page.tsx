@@ -1,5 +1,6 @@
 import React, { ReactNode } from "react";
 import ErrorPage from "next/error";
+import { AlertMessages } from "components/AlertMessages";
 
 interface PageProps {
   children: ReactNode;
@@ -14,6 +15,8 @@ function parseError(error: any): string {
     return "An unknown error has occured";
   }
 }
+
+
 
 /**
  * The page component is used to wrap the content of a page to apply uniform
@@ -32,6 +35,7 @@ export function Page(props: PageProps): JSX.Element {
     <div className="container mt-3">
       { props.error ? <>{parseError(props.error)}</> : <></>}
       {props.children}
+      <AlertMessages/>
     </div>
   );
 }
