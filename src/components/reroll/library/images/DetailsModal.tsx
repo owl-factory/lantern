@@ -1,4 +1,4 @@
-import { ImageManager } from "client/data/managers";
+import { ImageManager } from "controllers/data/image";
 import { Button } from "components/style";
 import { Card, CardBody, CardHeader } from "components/style/card";
 import { Modal } from "components/style/modals";

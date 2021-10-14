@@ -1,4 +1,4 @@
-import { GridType, SceneController } from "client/scenes/SceneController";
+import { GridType, SceneController } from "controllers/scenes/SceneController";
 import { Button } from "components/style";
 import { Formik, Form as FormikForm, FormikProps } from "formik";
 import React from "react";

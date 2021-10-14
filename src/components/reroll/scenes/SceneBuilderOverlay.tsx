@@ -1,4 +1,4 @@
-import { SceneModeReadable as SCENE_MODE_READABLE, SceneMode } from "client/scenes/SceneController";
+import { SceneModeReadable as SCENE_MODE_READABLE, SceneMode } from "controllers/scenes/SceneController";
 import { Button } from "components/style";
 import { Drawer, DrawerItem } from "components/style/drawer/Drawer";
 import { observer } from "mobx-react-lite";

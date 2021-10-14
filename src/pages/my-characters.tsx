@@ -1,5 +1,3 @@
-import { CampaignManager, CharacterManager, RulesetManager } from "client/data/managers";
-import { CampaignController, RulesetController } from "client/data/controllers";
 import { Page } from "components/design";
 import { Loading } from "components/style";
 import { Input, Select } from "components/style/forms";
@@ -12,6 +10,9 @@ import { InitialProps } from "types/client";
 import { CampaignDocument, CharacterDocument, RulesetDocument } from "types/documents";
 import { getSession } from "utilities/auth";
 import { rest } from "utilities/request";
+import { CampaignController, CampaignManager } from "controllers/data/campaign";
+import { CharacterManager } from "controllers/data/character";
+import { RulesetController, RulesetManager } from "controllers/data/ruleset";
 
 interface MyCharactersProps extends InitialProps {
   characters: CharacterDocument[];

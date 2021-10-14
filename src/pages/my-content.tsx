@@ -10,8 +10,8 @@ import { GiAxeSword } from 'react-icons/gi';
 import { MdContentCopy, MdDeleteForever, MdEdit } from "react-icons/md";
 import { Loading } from "components/style";
 import { observer } from "mobx-react-lite";
-import { ContentManager, RulesetManager } from "client/data/managers";
-import { RulesetController } from "client/data/controllers";
+import { ContentManager } from "controllers/data/content";
+import { RulesetController, RulesetManager } from "controllers/data/ruleset";
 
 interface MyContentProps extends InitialProps {
   contents: ContentDocument[];

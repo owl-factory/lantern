@@ -1,22 +1,17 @@
 import { Page } from "components/design";
 import { NextPageContext } from "next";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import React from "react";
 import { getSession, requireClientLogin } from "utilities/auth";
-import { getClient } from "utilities/db";
-import { query as q } from "faunadb";
 import { rest } from "utilities/request";
-import { read } from "utilities/objects";
 import { ImageSelectionWrapper } from "components/reroll/library/images/ImageSelectionWrapper";
 import { CampaignDocument, ImageDocument, UserDocument } from "types/documents";
-import { Tooltip } from "components/style/tooltips";
-import { CampaignManager, ImageManager, UserManager } from "client/data/managers";
+import { ImageManager } from "controllers/data/image";
 import { observer } from "mobx-react-lite";
 import { InitialProps } from "types/client";
-import { CampaignController, UserController } from "client/data/controllers";
 import { AssetUploadSource } from "types/enums/assetSource";
-import { observable } from "mobx";
+import { CampaignController, CampaignManager } from "controllers/data/campaign";
+import { UserController, UserManager } from "controllers/data/user";
 
 interface BannerProps {
   campaign: CampaignDocument;
