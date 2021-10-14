@@ -8,10 +8,6 @@ class $PixiController {
 
   constructor() {
     this.app = new Application({});
-    // makeObservable(this, {
-    //   app: observable,
-    //   setApp: action,
-    // });
   }
 
   /**
@@ -20,14 +16,21 @@ class $PixiController {
    */
   public setApp(app: Application) {
     this.app = app;
-    // this.map.init();
+    MapController.init();
   }
 
+  /**
+   * Adds one or many children to the app's stage
+   * @param children The children to add to the app
+   */
   public addChild<T extends DisplayObject[]>(...children: T) {
     this.requireApp();
     return this.app?.stage.addChild<T>(...children);
   }
 
+  /**
+   * Safety function to ensure that the App is loaded
+   */
   protected requireApp() {
     if (this.app === undefined) {
       throw "The Application is required to run PixiJS";

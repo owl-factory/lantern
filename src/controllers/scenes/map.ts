@@ -2,24 +2,23 @@ import { Texture } from "@pixi/core";
 import { Container } from "@pixi/display";
 import { Sprite } from "@pixi/sprite";
 import { action, makeObservable, observable } from "mobx";
+import { BackgroundController } from "./background";
+import { GridController } from "./GridController";
 import { PixiController } from "./pixi";
+import { ViewportController } from "./viewport";
 
 
 class $MapController {
   public height: number;
   public width: number;
-  public backgroundColor: string;
 
-  protected map: Container;
-  protected background: Sprite;
+  public map: Container;
 
   constructor() {
-    this.height = 100;
-    this.width = 100;
-    this.backgroundColor = "FFFFFF";
+    this.height = 640;
+    this.width = 640;
 
     this.map = new Container();
-    this.background = new Sprite(Texture.WHITE);
 
     makeObservable(this, {
       height: observable,
@@ -29,8 +28,12 @@ class $MapController {
   }
 
   public init() {
-    // this.pixi.addChild(this.map);
+    ViewportController.init();
+    ViewportController.viewport.addChild(this.map);
+    BackgroundController.init();
+    GridController.init();
   }
+
 
   /**
    * Loads in map data to the controller and runs any code to reload the map

@@ -2,14 +2,13 @@ import { action, makeObservable, observable } from "mobx";
 import { Graphics } from "pixi.js";
 import { COS_30 } from "./consts";
 import { MapController } from "./map";
-import { PixiController } from "./pixi";
 import { GridType } from "./SceneController";
 
 
-export class GridController {
+class $GridController {
 
-  public type: GridType = GridType.None;
-  public size = 0;
+  public type: GridType = GridType.Squares;
+  public size = 64;
 
   public grid: Graphics;
 
@@ -21,6 +20,12 @@ export class GridController {
       size: observable,
       load: action,
     });
+  }
+
+  public init() {
+    this.buildGrid();
+
+    MapController.map.addChild(this.grid);
   }
 
   /**
@@ -271,9 +276,4 @@ export class GridController {
 
 }
 
-
-let gridController: GridController | undefined;
-export function getGridController() {
-  if (gridController) { gridController = new GridController(); }
-  return gridController;
-}
+export const GridController = new $GridController();
