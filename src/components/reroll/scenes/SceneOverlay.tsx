@@ -1,5 +1,5 @@
 import { Button } from "components/style";
-import { Drawer, DrawerItem } from "components/style/drawer/Drawer";
+import { Drawer, DrawerContent } from "components/style/drawer/Drawer";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { MdGridOn, MdImage, MdSupervisorAccount } from "react-icons/md";
@@ -13,15 +13,15 @@ import { ButtonGroup } from "react-bootstrap";
 function SceneDrawer() {
   return (
     <Drawer >
-      <DrawerItem name="Grid Sizing" Icon={MdGridOn}><GridForm/></DrawerItem>
-      <DrawerItem name="Images" Icon={MdImage}>
+      <DrawerContent name="Grid Sizing" Icon={MdGridOn}><GridForm/></DrawerContent>
+      <DrawerContent name="Images" Icon={MdImage}>
         {/* <ImageList
         listFormat={ListFormat.Icons}
         onClick={(image: ImageDocument) => sceneController.addProp(sceneController, image)}/> */}
-      </DrawerItem>
-      <DrawerItem name="Characters" Icon={MdSupervisorAccount}>
+      </DrawerContent>
+      <DrawerContent name="Characters" Icon={MdSupervisorAccount}>
         Nothing yet
-      </DrawerItem>
+      </DrawerContent>
     </Drawer>
   );
 }

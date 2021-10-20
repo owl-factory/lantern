@@ -1,73 +1,3 @@
-// .drawer {
-//   display: block;
-//   position: fixed;
-//   right: 0;
-//   width: 15em;
-
-
-
-//   height: 92.5%;
-//   background-color: pink;
-
-//   .tabContainer {
-//     background-color: lightblue;
-//     position: relative;
-//     width: 15rem;
-//     overflow: visible;
-//     height: 100%;
-//     padding-top: 1.5rem;
-
-//     &.open {
-
-//     }
-
-//     .tab {
-//       overflow: visible;
-//       position: relative;
-//       left: -2.5rem;
-//       background-color: pink;
-
-//       padding: 0.5rem;
-//       padding-left: 1rem;
-
-//       border-style: solid;
-//       border-width: thin;
-//       border-color: lightblue;
-
-//       &:hover {
-//         left: -12.5rem;
-//       }
-
-//       &.active {
-//         border-color: blue;
-//       }
-      
-
-//       .tabIcon {
-//         padding-right: 1.5rem;
-//       }
-//     }
-//   }
-
-//   .contentContainer {
-//     // display: none;
-//     padding: 0.75rem;
-//     background-color: #EEE;
-  
-//     border-style: solid;
-//     border-width: thin;
-    
-//     min-width: 15rem;
-//     max-width: 20rem;
-//     width: 20rem;
-//     height: 92.5vh;
-  
-//     &.open {
-//       display: block;
-//     }
-//   }  
-// }
-
 $drawer-width: 15em;
 
 .drawer {
@@ -126,11 +56,29 @@ $drawer-width: 15em;
     width: 15em;
 
     background-color: lightgreen;
-
-    z-index: 1;
+    z-index: 2;
 
     .content {
+      position: absolute;
+      visibility: hidden;
+      height: 100%;
+      width: $drawer-width;
+
+      background-color: lavender;
+
       padding: 0.75em;
+
+      z-index: 1;
+
+      transition: visibility 0.5s;
+
+      &.open {
+        visibility: visible;
+
+        z-index: 3;
+
+        transition-delay: 0s;
+      }
     }
   }
 }
