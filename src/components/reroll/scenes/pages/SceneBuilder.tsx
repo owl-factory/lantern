@@ -4,6 +4,7 @@ import { Application } from "pixi.js";
 import React from "react";
 import { PixiController } from "controllers/scenes/pixi";
 import { SceneOverlay } from "../SceneOverlay";
+import { MapController } from "controllers/scenes/map";
 
 const app = new Application({
   width: window.innerWidth,
@@ -11,6 +12,14 @@ const app = new Application({
   backgroundColor: 0xAAAAAA,
   antialias: true,
 });
+
+function allowDrop(event: any) {
+  event.preventDefault();
+}
+
+function drop(event: any) {
+  MapController.drop(event);
+}
 
 function SceneRenderer(): JSX.Element {
   const ref = React.useRef(null);
@@ -26,7 +35,7 @@ function SceneRenderer(): JSX.Element {
     };
   }, []);
 
-  return <div ref={ref} />;
+  return <div onDragOver={allowDrop} onDrop={drop} ref={ref} />;
 }
 
 /**

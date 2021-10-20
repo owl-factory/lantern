@@ -10,11 +10,18 @@ import { MapModeReadable as MAP_MODE_READABLE, MapMode, ModeController } from "c
 import styles from "./SceneOverlay.module.scss";
 import { ButtonGroup } from "react-bootstrap";
 
+function dragStart(event: any) {
+  event.dataTransfer.setData("dragID", event.target.id);
+}
+
 function SceneDrawer() {
   return (
     <Drawer >
       <DrawerContent name="Grid Sizing" Icon={MdGridOn}><GridForm/></DrawerContent>
       <DrawerContent name="Images" Icon={MdImage}>
+        <div draggable="true" id="302509464430313988" onDragStart={dragStart}>
+          <img src="/dev/images/sprites/waals_brodnen_death_sprite.png"/>Waals Brodnen
+        </div>
         {/* <ImageList
         listFormat={ListFormat.Icons}
         onClick={(image: ImageDocument) => sceneController.addProp(sceneController, image)}/> */}

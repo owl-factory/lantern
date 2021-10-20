@@ -2,6 +2,7 @@ import { Texture } from "@pixi/core";
 import { Container } from "@pixi/display";
 import { Sprite } from "@pixi/sprite";
 import { GridFormValues } from "components/reroll/scenes/forms/grid";
+import { ImageManager } from "controllers/data/image";
 import { action, makeObservable, observable } from "mobx";
 import { BackgroundController } from "./background";
 import { GridController } from "./grid";
@@ -87,6 +88,17 @@ class $MapController {
     BackgroundController.setSize(values.height, values.width);
     GridController.setAll(values.gridSize, values.gridType);
     return;
+  }
+
+  public async drop(event: any) {
+    const image = ImageManager.get(event.dataTransfer.getData("dragID"));
+    if (!image) { return; }
+    const sprite = new Sprite(await Texture.fromURL(image.src));
+    sprite.x = 0;
+    sprite.y = 0;
+    sprite.zIndex = 1000000;
+
+    this.map.addChild(sprite);
   }
 }
 
