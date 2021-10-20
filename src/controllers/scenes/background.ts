@@ -35,13 +35,17 @@ class $BackgroundController {
   }
 
   public init() {
-    this.height = MapController.height;
-    this.width = MapController.width;
+    this.setSize(MapController.height, MapController.width);
+
+    MapController.map.addChild(this.background);
+  }
+
+  public setSize(height: number, width: number) {
+    this.height = height;
+    this.width = width;
 
     this.backgroundColor.height = this.height;
     this.backgroundColor.width = this.width;
-
-    MapController.map.addChild(this.background);
   }
 }
 

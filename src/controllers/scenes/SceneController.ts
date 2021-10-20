@@ -7,7 +7,7 @@ import { InteractionData, InteractionEvent, Point, Sprite } from "pixi.js";
 import { ImageDocument } from "types/documents";
 
 import * as events from "./events";
-import * as grid from "./grid";
+import * as grid from "./grid_old";
 import * as initialize from "./initialize";
 import * as snap from "./snap";
 import { subscribeProp } from "./subscribe";
@@ -48,29 +48,9 @@ export enum GridType {
   HorizontalHex
 }
 
-/**
- * Describes the different kinds of button modes that may be used
- */
-export enum SceneMode {
-  Select,
-  Pan,
-}
 
-/**
- * The readable text for the different scene modes
- */
-export const SceneModeReadable: string[] = [
-  "Select",
-  "Pan",
-];
 
-/**
- * The buttons to be used for selecting the scene modes (not implemented)
- */
-export const SceneModeButtons: string[] = [
-  "v",
-  " ",
-];
+
 
 /**
  * Any interactable pixi item

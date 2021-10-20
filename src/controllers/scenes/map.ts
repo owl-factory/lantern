@@ -1,9 +1,10 @@
 import { Texture } from "@pixi/core";
 import { Container } from "@pixi/display";
 import { Sprite } from "@pixi/sprite";
+import { GridFormValues } from "components/reroll/scenes/forms/grid";
 import { action, makeObservable, observable } from "mobx";
 import { BackgroundController } from "./background";
-import { GridController } from "./GridController";
+import { GridController } from "./grid";
 import { PixiController } from "./pixi";
 import { ViewportController } from "./viewport";
 
@@ -24,6 +25,7 @@ class $MapController {
       height: observable,
       width: observable,
       setSize: action,
+      setMap: action,
     });
   }
 
@@ -78,6 +80,13 @@ class $MapController {
   public setSize(height: number, width: number) {
     this.height = height;
     this.width = width;
+  }
+
+  public setMap(values: GridFormValues) {
+    this.setSize(values.height, values.width);
+    BackgroundController.setSize(values.height, values.width);
+    GridController.setAll(values.gridSize, values.gridType);
+    return;
   }
 }
 

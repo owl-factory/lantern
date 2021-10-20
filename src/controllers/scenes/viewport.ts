@@ -12,8 +12,6 @@ class $ViewportController {
 
   public init(): void {
     this.viewport = new Viewport({
-      screenWidth: 1000,
-      screenHeight: 1000,
       worldWidth: 1000,
       worldHeight: 1000,
 

@@ -3,6 +3,7 @@ import { observer } from "mobx-react-lite";
 import { Application } from "pixi.js";
 import React from "react";
 import { PixiController } from "controllers/scenes/pixi";
+import { SceneOverlay } from "../SceneOverlay";
 
 const app = new Application({
   width: window.innerWidth,
@@ -32,7 +33,6 @@ function SceneRenderer2(): JSX.Element {
  * The page for rendering a standalone scene builder
  */
 export const SceneBuilder = observer(() => {
-  // const [ sceneController ] = React.useState(new SceneController(app));
 
   React.useEffect(() => {
     ImageManager.load();
@@ -40,7 +40,9 @@ export const SceneBuilder = observer(() => {
 
   return (
     <div>
-      <SceneRenderer2 />
+      <SceneOverlay>
+        <SceneRenderer2 />
+      </SceneOverlay>
       {/* <SceneBuilderOverlay sceneController={sceneController}>
         <SceneRenderer sceneController={sceneController}/>
         <
