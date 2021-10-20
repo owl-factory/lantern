@@ -8,6 +8,7 @@ class $PixiController {
 
   constructor() {
     this.app = new Application({});
+    window.addEventListener('resize', (event) => resizeApp(this.app, event));
   }
 
   /**
@@ -28,6 +29,8 @@ class $PixiController {
     return this.app?.stage.addChild<T>(...children);
   }
 
+  
+
   /**
    * Safety function to ensure that the App is loaded
    */
@@ -36,6 +39,22 @@ class $PixiController {
       throw "The Application is required to run PixiJS";
     }
   }
+}
+
+/**
+ * Resizes the Pixi application to match the current window size
+ * @param app The Pixi Application to resize
+ * @param event The window resize event
+ */
+function resizeApp(app: Application, event: Event) {
+  if (event === null || event.target === null) { return; }
+  if (!app.renderer) { return; }
+
+  app.renderer.resize(
+    (event.target as any).innerWidth || app.renderer.width,
+    (event.target as any).innerHeight - 62 || app.renderer.height,
+  );
+
 }
 
 export const PixiController = new $PixiController();

@@ -12,7 +12,7 @@ const app = new Application({
   antialias: true,
 });
 
-function SceneRenderer2(): JSX.Element {
+function SceneRenderer(): JSX.Element {
   const ref = React.useRef(null);
 
   React.useEffect(() => {
@@ -41,7 +41,7 @@ export const SceneBuilder = observer(() => {
   return (
     <div>
       <SceneOverlay>
-        <SceneRenderer2 />
+        <SceneRenderer />
       </SceneOverlay>
       {/* <SceneBuilderOverlay sceneController={sceneController}>
         <SceneRenderer sceneController={sceneController}/>

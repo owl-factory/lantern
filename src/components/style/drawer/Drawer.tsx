@@ -83,60 +83,6 @@ export function DrawerContent({ children, name, Icon }: DrawerContentProps): JSX
   );
 }
 
-// interface DrawerProps {
-//   children: any;
-// }
-
-// /**
-//  * Renders a drawer with one or multiple pages to switch between
-//  * @param children The drawer items to render. They contain the information to render the tabs
-//  */
-// export function Drawer({ children }: DrawerProps): JSX.Element {
-//   const [ activeTab, setActiveTab ] = React.useState(-1);
-//   const drawerItems: JSX.Element[] = [];
-//   const drawerTabs: JSX.Element[] = [];
-
-//   let drawerItemArray: JSX.Element[] = [];
-
-//   if (!children) { return <></>; }
-//   if (!Array.isArray(children)) { drawerItemArray.push(children); }
-//   else { drawerItemArray = children; }
-
-//   drawerItemArray.forEach((drawerItem: JSX.Element, index: number) => {
-//     if (drawerItem.type.name !== "DrawerItem") { return; }
-//     drawerTabs.push(
-//       <DrawerTab
-//         key={index}
-//         _key={index}
-//         Icon={drawerItem.props.Icon}
-//         name={drawerItem.props.name}
-//         activeTab={activeTab}
-//         setActiveTab={setActiveTab}
-//       />);
-//     drawerItems.push(
-//       <DrawerItemWrapper
-//         key={index}
-//         _key={index}
-//         activeTab={activeTab}
-//       >
-//         {drawerItem}
-//       </DrawerItemWrapper>
-//     );
-//   });
-
-//   return (
-//     <div className={style.drawer}>
-//         <div className={style.tabContainer}>
-//           {drawerTabs}
-//         </div>
-
-//         <div>
-//           { drawerItems }
-//         </div>
-//     </div>
-//   );
-// }
-
 interface DrawerProps {
   children: any;
 }
@@ -151,7 +97,7 @@ export function Drawer({children}: DrawerProps) {
   if (!children) { return <></>; }
   if (!Array.isArray(children)) { childrenArray.push(children); }
   else { childrenArray = children; }
-  console.log(childrenArray)
+
   childrenArray.forEach((child: JSX.Element, index: number) => {
     if (child.type?.name !== "DrawerContent") { return; }
     drawerTabs.push(
@@ -184,20 +130,5 @@ export function Drawer({children}: DrawerProps) {
         {drawerTabs}
       </div>
     </div>
-    // <div className={`${style.drawer} ${tab !== -1 ? style.open : "" }`}>
-    //   <div className={style.contentContainer}>
-    //     <div className={style.content}>
-    //       Hi! This is some test content!
-    //     </div>
-    //   </div>
-    //   <div className={style.tabContainer}>
-    //     <div className={style.tab} onClick={() => setTab(-1 * (tab + 1))}>
-    //       <div className={style.tabIcon}>
-    //         <MdGridOn/>
-    //       </div>
-    //       Test Text
-    //     </div>
-    //   </div>
-    // </div>
   );
 }
