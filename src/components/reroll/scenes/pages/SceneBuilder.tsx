@@ -18,7 +18,7 @@ function allowDrop(event: any) {
 }
 
 function drop(event: any) {
-  MapController.drop(event);
+  MapController.addUsingDrag(event);
 }
 
 function SceneRenderer(): JSX.Element {
@@ -28,7 +28,15 @@ function SceneRenderer(): JSX.Element {
     PixiController.setApp(app);
     if (!ref || !ref.current) { return; }
     (ref.current as any).appendChild(app.view);
+
     app.start();
+
+    const yOffset = window.innerHeight - ((ref.current as any).clientHeight || 0);
+    const xOffset = window.innerWidth - ((ref.current as any).clientWidth || 0);
+
+    console.log(xOffset);
+    console.log(yOffset);
+    MapController.setOffset(xOffset, yOffset);
 
     return () => {
       app.stop();

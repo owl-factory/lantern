@@ -9,9 +9,12 @@ import { GridForm } from "./forms/grid";
 import { MapModeReadable as MAP_MODE_READABLE, MapMode, ModeController } from "controllers/scenes/mode";
 import styles from "./SceneOverlay.module.scss";
 import { ButtonGroup } from "react-bootstrap";
+import { MapDraggable } from "controllers/scenes/map";
+
 
 function dragStart(event: any) {
-  event.dataTransfer.setData("dragID", event.target.id);
+  event.dataTransfer.setData("id", event.target.id);
+  event.dataTransfer.setData("type", MapDraggable.Image);
 }
 
 function SceneDrawer() {
@@ -20,7 +23,7 @@ function SceneDrawer() {
       <DrawerContent name="Grid Sizing" Icon={MdGridOn}><GridForm/></DrawerContent>
       <DrawerContent name="Images" Icon={MdImage}>
         <div draggable="true" id="302509464430313988" onDragStart={dragStart}>
-          <img src="/dev/images/sprites/waals_brodnen_death_sprite.png"/>Waals Brodnen
+          <img draggable="false" src="/dev/images/sprites/waals_brodnen_death_sprite.png"/>Waals Brodnen
         </div>
         {/* <ImageList
         listFormat={ListFormat.Icons}

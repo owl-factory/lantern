@@ -6,8 +6,10 @@ import { ImageManager } from "controllers/data/image";
 import { action, makeObservable, observable } from "mobx";
 import { BackgroundController } from "./background";
 import { GridController } from "./grid";
+import { TokenController } from "./token";
 import { PixiController } from "./pixi";
 import { ViewportController } from "./viewport";
+import { CharacterController } from "./character";
 
 
 class $MapController {
@@ -16,11 +18,17 @@ class $MapController {
 
   public map: Container;
 
+  public xOffset: number; // The distance between the map and the left side of the page
+  public yOffset: number; // The distance between the map and the left size of the page
+
   constructor() {
     this.height = 640;
     this.width = 640;
 
     this.map = new Container();
+
+    this.xOffset = 0;
+    this.yOffset = 0;
 
     makeObservable(this, {
       height: observable,
@@ -83,6 +91,10 @@ class $MapController {
     this.width = width;
   }
 
+  /**
+   * Sets the map size and grid values for Map, Background, and Grid controllers
+   * @param values The values from the grid form to update the current map
+   */
   public setMap(values: GridFormValues) {
     this.setSize(values.height, values.width);
     BackgroundController.setSize(values.height, values.width);
@@ -90,16 +102,40 @@ class $MapController {
     return;
   }
 
-  public async drop(event: any) {
-    const image = ImageManager.get(event.dataTransfer.getData("dragID"));
-    if (!image) { return; }
-    const sprite = new Sprite(await Texture.fromURL(image.src));
-    sprite.x = 0;
-    sprite.y = 0;
-    sprite.zIndex = 1000000;
-
-    this.map.addChild(sprite);
+  public setOffset(xOffset: number, yOffset: number) {
+    this.xOffset = xOffset;
+    this.yOffset = yOffset;
   }
+
+  public addUsingDrag(event: any) {
+    const id = event.dataTransfer.getData("id");
+    const type = event.dataTransfer.getData("type");
+
+    // The raw drop position of the event
+    const x = event.clientX - this.xOffset;
+    const y = event.clientY - this.yOffset;
+
+    switch(parseInt(type)) {
+      case MapDraggable.Image:
+        this.addImage(id, x, y);
+        break;
+      default:
+        console.error("Not supported");
+    }
+  }
+
+  private addImage(id: string, x: number, y: number) {
+    // TODO - hook up with a temporary character
+    const token = TokenController.add(id, x, y);
+  }
+}
+
+// TODO - move to somewhere more important
+export enum MapDraggable {
+  Image, // A plain image
+  Character,
+  CharacterTemplate, // A variable template of an NPC. Adding it populates the data and creates an ephemeral character
+  Sound, // A reference to a sound to be dragged onto the map, either music or ambient sounds
 }
 
 export const MapController = new $MapController();
