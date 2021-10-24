@@ -3,7 +3,6 @@ import { Container } from "@pixi/display";
 interface LayerSubdocument {
   name: string,
   key: string,
-
 }
 
 
@@ -19,8 +18,11 @@ class $LayerController {
     this.layers = {};
   }
 
+  /**
+   * Initializes the layers controller
+   */
   public init() {
-    this.add("")
+    this.reset();
   }
 
   /**
@@ -28,26 +30,22 @@ class $LayerController {
    * @param data The layer data to import into the controller
    */
   public load(data: LayerData) {
-
+    return;
   }
 
   /**
    * Packages the data into a format that can be saved to the database and returns it
    */
   public save(): LayerData {
+    throw "Function not implemented";
+  }
 
+  public reset(): void {
+    return;
   }
 
   public add(name: string) {
-
-  }
-
-  private _create(name: string, key: string) {
-    const layer = new Container();
-    layer.name = 
-    
-    this.layers[key] = new Container();
-
+    return;
   }
 }
 
