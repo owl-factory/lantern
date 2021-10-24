@@ -2,7 +2,9 @@ import { Viewport } from "pixi-viewport";
 import { MapController } from "./map";
 import { PixiController } from "./pixi";
 
-
+/**
+ * Handles creating and managing the viewport of the map
+ */
 class $ViewportController {
   public viewport: Viewport;
 
@@ -10,6 +12,9 @@ class $ViewportController {
     this.viewport = new Viewport();
   }
 
+  /**
+   * Initializes the viewport
+   */
   public init(): void {
     this.viewport = new Viewport({
       worldWidth: 1000,
@@ -24,6 +29,8 @@ class $ViewportController {
       .wheel()
       .decelerate({ friction: 0.95, minSpeed: 0.5 });
     PixiController.addChild(this.viewport);
+    this.viewport.addChild(MapController.map);
+
   }
 
   /**

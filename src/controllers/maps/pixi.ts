@@ -2,7 +2,9 @@ import { Application } from "@pixi/app";
 import { DisplayObject } from "@pixi/display";
 import { MapController } from "./map";
 
-
+/**
+ * Handles the Pixi Application integration of the Map.
+ */
 class $PixiController {
   public app: Application;
 
@@ -28,8 +30,6 @@ class $PixiController {
     this.requireApp();
     return this.app?.stage.addChild<T>(...children);
   }
-
-  
 
   /**
    * Safety function to ensure that the App is loaded

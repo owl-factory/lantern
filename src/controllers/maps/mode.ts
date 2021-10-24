@@ -36,6 +36,10 @@ class $ModeController {
     });
   }
 
+  /**
+   * Sets the new mode for determining how the user can interact with the map
+   * @param mode The new mode to utilize
+   */
   public setMode(mode: MapMode) {
     this.mode = mode;
     // TODO - actions on mode change

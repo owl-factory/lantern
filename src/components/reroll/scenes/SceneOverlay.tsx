@@ -6,10 +6,10 @@ import { MdGridOn, MdImage, MdSupervisorAccount } from "react-icons/md";
 import { ImageDocument } from "types/documents";
 import { ImageList, ListFormat } from "../library";
 import { GridForm } from "./forms/grid";
-import { MapModeReadable as MAP_MODE_READABLE, MapMode, ModeController } from "controllers/scenes/mode";
+import { MapModeReadable as MAP_MODE_READABLE, MapMode, ModeController } from "controllers/maps/mode";
 import styles from "./SceneOverlay.module.scss";
 import { ButtonGroup } from "react-bootstrap";
-import { MapDraggable } from "controllers/scenes/map";
+import { MapDraggable } from "controllers/maps/map";
 
 
 function dragStart(event: any) {

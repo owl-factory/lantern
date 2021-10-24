@@ -2,9 +2,9 @@ import { ImageManager } from "controllers/data/image";
 import { observer } from "mobx-react-lite";
 import { Application } from "pixi.js";
 import React from "react";
-import { PixiController } from "controllers/scenes/pixi";
+import { PixiController } from "controllers/maps/pixi";
 import { SceneOverlay } from "../SceneOverlay";
-import { MapController } from "controllers/scenes/map";
+import { MapController } from "controllers/maps/map";
 
 const app = new Application({
   width: window.innerWidth,

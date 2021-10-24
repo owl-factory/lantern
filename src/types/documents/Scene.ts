@@ -1,4 +1,4 @@
-import { GridType } from "controllers/scenes/SceneController";
+import { GridType } from "controllers/maps/SceneController";
 import { CharacterDocument, CoreDocument, ImageDocument } from ".";
 
 interface MapImage {

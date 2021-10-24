@@ -34,12 +34,20 @@ class $BackgroundController {
     this.background.zIndex = Number.MIN_SAFE_INTEGER;
   }
 
+  /**
+   * Initializes the background container
+   */
   public init() {
     this.setSize(MapController.height, MapController.width);
 
     MapController.map.addChild(this.background);
   }
 
+  /**
+   * Sets the new size of the background and updates everything necessary to align with it
+   * @param height The new height of the background
+   * @param width The new width of the background
+   */
   public setSize(height: number, width: number) {
     this.height = height;
     this.width = width;

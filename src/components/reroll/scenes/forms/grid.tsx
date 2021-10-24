@@ -1,11 +1,11 @@
-import { GridType, SceneController } from "controllers/scenes/SceneController";
+import { GridType, SceneController } from "controllers/maps/SceneController";
 import { Button } from "components/style";
 import { Formik, Form as FormikForm, FormikProps } from "formik";
 import React from "react";
 import { Input } from "components/style/forms";
 import { Select } from "components/style/forms/Select";
-import { MapController } from "controllers/scenes/map";
-import { GridController } from "controllers/scenes/grid";
+import { MapController } from "controllers/maps/map";
+import { GridController } from "controllers/maps/grid";
 import { observer } from "mobx-react-lite";
 
 // The default width of the grid count inputs

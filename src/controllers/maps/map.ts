@@ -11,12 +11,15 @@ import { PixiController } from "./pixi";
 import { ViewportController } from "./viewport";
 import { CharacterController } from "./character";
 
-
+/**
+ * The base controller that connects and manages the Map. That is, everything that can be or may be rendered
+ * within a Pixi canvas and anything that may affect it internally
+ */
 class $MapController {
-  public height: number;
-  public width: number;
+  public height: number; // The height of the map
+  public width: number; // The width of the map
 
-  public map: Container;
+  public map: Container; // The container holding everything within the map
 
   public xOffset: number; // The distance between the map and the left side of the page
   public yOffset: number; // The distance between the map and the left size of the page
@@ -38,9 +41,11 @@ class $MapController {
     });
   }
 
+  /**
+   * Initializes all controllers directly dependent on this map controller
+   */
   public init() {
     ViewportController.init();
-    ViewportController.viewport.addChild(this.map);
     BackgroundController.init();
     GridController.init();
   }
@@ -102,11 +107,20 @@ class $MapController {
     return;
   }
 
+  /**
+   * Sets the offset of the canvas from the upper left corner of the browser window
+   * @param xOffset The offset in pixels from the left side of the browser window
+   * @param yOffset The offset in pixels from the top of the browser window
+   */
   public setOffset(xOffset: number, yOffset: number) {
     this.xOffset = xOffset;
     this.yOffset = yOffset;
   }
 
+  /**
+   * Adds an object to the map via a drag option
+   * @param event The event that causes an object to be added to the map via a drag action
+   */
   public addUsingDrag(event: any) {
     const id = event.dataTransfer.getData("id");
     const type = event.dataTransfer.getData("type");
@@ -124,6 +138,12 @@ class $MapController {
     }
   }
 
+  /**
+   * Adds an image to the map
+   * @param id The ID of the image to add
+   * @param x The x position of where the image should be placed
+   * @param y The y position of where the image should be placed
+   */
   private addImage(id: string, x: number, y: number) {
     // TODO - hook up with a temporary character
     const token = TokenController.add(id, x, y);

@@ -3,24 +3,18 @@ import { InteractionEvent, Sprite, Texture } from "pixi.js";
 import { MapController } from "./map";
 import { ViewportController } from "./viewport";
 
-enum LayerType {
-  Background,
-  Playground,
-  GmScreen,
-  Custom,
-}
-
 interface Token extends Sprite {
   layer?: any;
 }
 
-// Entity Controller? Token Controller?
+/**
+ * Handles the creation and management of all Tokens on the map, that is any image that exists as a sprite
+ */
 class $TokenController {
   public tokens: Record<string, Token> = {};
 
-
   /**
-   * Drops a new entity onto the map
+   * Adds a new token onto the map
    */
   public async add(id: string, x: number, y: number) {
     const image = ImageManager.get(id);
@@ -43,6 +37,8 @@ class $TokenController {
     MapController.map.addChild(sprite);
   }
 }
+
+// TODO - move this to SelectionController
 
 /**
  * Handles all events that occur when clicking down on a prop
@@ -81,7 +77,10 @@ export function onPointerUp(event: InteractionEvent, token: any): void {
   resetClickedAnchor(event, token);
 }
 
-export function onPointerMove(event: InteractionEvent, token: any): void {
+/**
+ * Handles the repositoning of the token while dragging
+ */
+export function onPointerMove(_event: InteractionEvent, token: any): void {
   if (!token.dragging || !token.data) { return; }
   const newPosition = token.data.getLocalPosition(token.parent);
   token.x = newPosition.x;
