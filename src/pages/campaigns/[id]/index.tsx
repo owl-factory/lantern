@@ -10,7 +10,7 @@ import { ImageManager } from "controllers/data/image";
 import { observer } from "mobx-react-lite";
 import { InitialProps } from "types/client";
 import { AssetUploadSource } from "types/enums/assetSource";
-import { CampaignController, CampaignManager } from "controllers/data/campaign";
+import { CampaignDataController, CampaignManager } from "controllers/data/campaign";
 import { UserController, UserManager } from "controllers/data/user";
 
 interface BannerProps {
@@ -35,7 +35,7 @@ const Banner = observer(({ campaign, isOwner }: any) => {
      */
     const onSubmit = async (newBanner: Partial<ImageDocument>, method: AssetUploadSource) => {
       // TODO - Save banner
-      const result = CampaignController.updateBanner(campaign.id, newBanner, method);
+      const result = CampaignDataController.updateBanner(campaign.id, newBanner, method);
     };
 
     image = (

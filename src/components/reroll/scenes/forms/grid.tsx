@@ -54,8 +54,8 @@ type onChangeEvent = React.ChangeEvent<any>;
  * @param gridType The type of grid
  */
 function updateGridHeight(formikProps: FormikGridProps, pixelHeight: number, gridSize: number, gridType: GridType) {
-  const height = SceneController.calculateGridCount(pixelHeight, gridSize, gridType, "vertical");
-  const expectedHeight = SceneController.calculateGridToPixels(gridSize, height, gridType, "vertical");
+  const height = GridController.calculateGridCount(pixelHeight, gridSize, gridType, "vertical");
+  const expectedHeight = GridController.calculateGridToPixels(gridSize, height, gridType, "vertical");
   formikProps.setFieldValue("gridHeight", height);
   formikProps.setFieldValue("expectedHeight", expectedHeight);
 }
@@ -68,8 +68,8 @@ function updateGridHeight(formikProps: FormikGridProps, pixelHeight: number, gri
  * @param gridType The type of grid
  */
 function updateGridWidth(formikProps: FormikGridProps, pixelWidth: number, gridSize: number, gridType: GridType) {
-  const width = SceneController.calculateGridCount(pixelWidth, gridSize, gridType, "horizontal");
-  const expectedWidth = SceneController.calculateGridToPixels(gridSize, width, gridType, "horizontal");
+  const width = GridController.calculateGridCount(pixelWidth, gridSize, gridType, "horizontal");
+  const expectedWidth = GridController.calculateGridToPixels(gridSize, width, gridType, "horizontal");
   formikProps.setFieldValue("gridWidth", width);
   formikProps.setFieldValue("expectedWidth", expectedWidth);
 }
@@ -138,7 +138,7 @@ function onWidthChange(e: onChangeEvent, formikProps: FormikGridProps) {
  * @param formikProps The formik props containing values and update functions
  */
 function onHeightGridChange(e: onChangeEvent, formikProps: FormikGridProps) {
-  const expectedHeight = SceneController.calculateGridToPixels(
+  const expectedHeight = GridController.calculateGridToPixels(
     formikProps.values.gridSize,
     e.currentTarget.value,
     formikProps.values.gridType,
@@ -155,7 +155,7 @@ function onHeightGridChange(e: onChangeEvent, formikProps: FormikGridProps) {
  * @param formikProps The formik props containing values and update functions
  */
 function onWidthGridChange(e: onChangeEvent, formikProps: FormikGridProps) {
-  const expectedWidth = SceneController.calculateGridToPixels(
+  const expectedWidth = GridController.calculateGridToPixels(
     formikProps.values.gridSize,
     e.currentTarget.value,
     formikProps.values.gridType,
@@ -428,7 +428,7 @@ export const GridForm = observer((): JSX.Element => {
             GridController.type,
             "horizontal"
           ),
-          gridHeight: SceneController.calculateGridCount(
+          gridHeight: GridController.calculateGridCount(
             MapController.height,
             GridController.size,
             GridController.type,

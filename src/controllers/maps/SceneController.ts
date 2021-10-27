@@ -7,8 +7,6 @@ import { InteractionData, InteractionEvent, Point, Sprite } from "pixi.js";
 import { ImageDocument } from "types/documents";
 
 import * as events from "./events";
-import * as grid from "./grid_old";
-import * as initialize from "./initialize";
 import * as snap from "./snap";
 import { subscribeProp } from "./subscribe";
 
@@ -75,8 +73,6 @@ export class SceneController {
 
   protected grid: Graphics;
 
-  public mode: SceneMode;
-
   protected gridType: GridType = GridType.None;
   public gridSize = 0;
 
@@ -91,14 +87,13 @@ export class SceneController {
     this.scene = new Container();
     this.grid = new Graphics();
 
-    this.initializeBackground();
-    this.initializeViewport();
-    this.initializeScene();
-    this.initializeGrid();
+    // this.initializeBackground();
+    // this.initializeViewport();
+    // this.initializeScene();
+    // this.initializeGrid();
 
     this.centerViewport();
 
-    this.mode = SceneMode.Select;
 
     makeAutoObservable(this);
   }
@@ -125,31 +120,31 @@ export class SceneController {
   /**
    * Runs the action to unset any settings for the current mode
    */
-  public unsetMode(): void {
-    // TODO - throw events ending current action if mode changed
-    switch (this.mode) {
-      case SceneMode.Select:
-        break;
-      case SceneMode.Pan:
-        this.scene.buttonMode = false;
-        break;
-    }
-  }
+  // public unsetMode(): void {
+  //   // TODO - throw events ending current action if mode changed
+  //   switch (this.mode) {
+  //     case SceneMode.Select:
+  //       break;
+  //     case SceneMode.Pan:
+  //       this.scene.buttonMode = false;
+  //       break;
+  //   }
+  // }
 
   /**
    * Sets any settings required for the new mode
    * @param mode The new mode
    */
-  public setMode(mode: SceneMode): void {
-    this.unsetMode();
-    this.mode = mode;
-    switch (this.mode) {
-      case SceneMode.Select:
-        break;
-      case SceneMode.Pan:
-        this.scene.buttonMode = true;
-        break;
-    }
+  public setMode(mode: unknown): void {
+    // this.unsetMode();
+    // this.mode = mode;
+    // switch (this.mode) {
+    //   case SceneMode.Select:
+    //     break;
+    //   case SceneMode.Pan:
+    //     this.scene.buttonMode = true;
+    //     break;
+    // }
   }
 
   public addProp(sceneController: SceneController, image: ImageDocument, x?: number, y?: number): void {
@@ -199,12 +194,12 @@ export class SceneController {
    * @param sceneController The scene, as `this` is unavailable
    */
   protected onPointerDown(event: InteractionEvent, target: Interactable, sceneController: SceneController): void {
-    switch(this.mode) {
-      case SceneMode.Select:
-        return this.onSelectStart(event, target, sceneController);
-      case SceneMode.Pan:
-        return this.onPanStart(event, target, sceneController);
-    }
+    // switch(this.mode) {
+    //   case SceneMode.Select:
+    //     return this.onSelectStart(event, target, sceneController);
+    //   case SceneMode.Pan:
+    //     return this.onPanStart(event, target, sceneController);
+    // }
   }
 
   /**
@@ -215,12 +210,12 @@ export class SceneController {
    */
   protected onPointerUp(event: InteractionEvent, target: Interactable, sceneController: SceneController): void {
     // Check button
-    switch(this.mode) {
-      case SceneMode.Select:
-        return this.onSelectEnd(event, target, sceneController);
-      case SceneMode.Pan:
-        return this.onPanEnd(event, target, sceneController);
-    }
+    // switch(this.mode) {
+    //   case SceneMode.Select:
+    //     return this.onSelectEnd(event, target, sceneController);
+    //   case SceneMode.Pan:
+    //     return this.onPanEnd(event, target, sceneController);
+    // }
   }
 
   /**
@@ -231,12 +226,12 @@ export class SceneController {
    */
   protected onPointerMove(event: InteractionEvent, target: Interactable, sceneController: SceneController): void {
     // Check button
-    switch(this.mode) {
-      case SceneMode.Select:
-        return this.onSelectMove(event, target, sceneController);
-      case SceneMode.Pan:
-        return this.onPanMove(event, target, sceneController);
-    }
+    // switch(this.mode) {
+    //   case SceneMode.Select:
+    //     return this.onSelectMove(event, target, sceneController);
+    //   case SceneMode.Pan:
+    //     return this.onPanMove(event, target, sceneController);
+    // }
   }
 
   // EVENTS
@@ -249,24 +244,6 @@ export class SceneController {
   protected onSelectMove = events.select.onSelectMove;
 
 
-  // GRID BUILDING
-  protected buildGrid = grid.buildGrid;
-  protected buildHorizontalHexGrid = grid.buildHorizontalHexGrid;
-  protected buildVerticalHexGrid = grid.buildVerticalHexGrid;
-  protected buildHorizontalHex = grid.buildHorizontalHex;
-  protected buildVerticalHex = grid.buildVerticalHex;
-  protected buildSquareGrid = grid.buildSquareGrid;
-  public static calculateGridCount = grid.calculateGridCount;
-  public static calculateGridToPixels = grid.calculateGridToPixels;
-  public getGridTypeReadable = grid.getGridTypeReadable;
-  public setGridType = grid.setGridType;
-
-  // INITIALIZE
-  protected initializeBackground = initialize.initializeBackground;
-  protected initializeViewport = initialize.initializeViewport;
-  protected initializeScene = initialize.initializeScene;
-  protected initializeGrid = initialize.initializeGrid;
-
   public setSceneSize(values: any, sceneController: SceneController): void {
     // TODO - balance the values
 
@@ -277,7 +254,6 @@ export class SceneController {
     sceneController.gridSize = parseInt(values.gridSize);
     sceneController.gridType = parseInt(values.gridType);
     sceneController.centerViewport();
-    sceneController.buildGrid();
 
   }
 

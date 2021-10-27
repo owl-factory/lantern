@@ -1,5 +1,10 @@
 import { GridType } from "controllers/maps/SceneController";
-import { CharacterDocument, CoreDocument, ImageDocument } from ".";
+import { CampaignDocument, CharacterDocument, CoreDocument, ImageDocument } from ".";
+
+interface PartialCampaignDocument extends Partial<CampaignDocument> {
+  id: string;
+  collection: string;
+}
 
 interface MapImage {
   image: Partial<ImageDocument>;
@@ -16,6 +21,8 @@ interface SceneCharacter extends Partial<CharacterDocument> {
 }
 
 export interface SceneDocument extends CoreDocument {
+  campaign: PartialCampaignDocument;
+
   // Defines the base map and size of the scene
   map: {
     height: number;
@@ -32,6 +39,4 @@ export interface SceneDocument extends CoreDocument {
 
   // A list of all characters in this scene
   characters: SceneCharacter[],
-
-
 }

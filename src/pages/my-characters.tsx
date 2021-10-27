@@ -10,7 +10,7 @@ import { InitialProps } from "types/client";
 import { CampaignDocument, CharacterDocument, RulesetDocument } from "types/documents";
 import { getSession } from "utilities/auth";
 import { rest } from "utilities/request";
-import { CampaignController, CampaignManager } from "controllers/data/campaign";
+import { CampaignDataController, CampaignManager } from "controllers/data/campaign";
 import { CharacterManager } from "controllers/data/character";
 import { RulesetController, RulesetManager } from "controllers/data/ruleset";
 
@@ -76,7 +76,7 @@ export function MyCharacters (props: MyCharactersProps) {
 
     // Fetches all missing campaigns and rulesets for the names
     const uniqueCampaigns = CharacterManager.getUniques("campaign.id");
-    CampaignController.readMissing(uniqueCampaigns);
+    CampaignDataController.readMissing(uniqueCampaigns);
 
     const uniqueRulesets = CharacterManager.getUniques("ruleset.id");
     RulesetController.readMissing(uniqueRulesets);

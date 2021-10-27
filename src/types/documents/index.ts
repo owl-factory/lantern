@@ -7,6 +7,7 @@ export * from "types/documents/Content";
 export * from "types/documents/ContentType";
 export * from "types/documents/Message";
 export * from "types/documents/Ruleset";
+export * from "types/documents/Scene";
 export * from "types/documents/User";
 export * from "types/documents/misc";
 
@@ -21,5 +22,6 @@ export type AnyDocument = (
   type.ContentTypeDocument |
   type.MessageDocument |
   type.RulesetDocument |
+  type.SceneDocument |
   type.UserDocument
 );

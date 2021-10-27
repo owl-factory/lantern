@@ -39,4 +39,4 @@ export class $CampaignController extends DataController<CampaignDocument> {
 }
 
 export const CampaignManager = new DataManager<CampaignDocument>("campaign");
-export const CampaignController = new $CampaignController(CampaignManager, "/api/campaigns");
+export const CampaignDataController = new $CampaignController(CampaignManager, "/api/campaigns");

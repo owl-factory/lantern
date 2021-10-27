@@ -95,7 +95,7 @@ interface BaseDocument {
  * @param collection The collection of the reference
  */
 export function toFaunaRef(doc: DocumentReference | FaunaRef | string, collection?: string): Expr {
-  if (doc === null) { throw "The document or ID given was null"; }
+  if (doc === null || doc === undefined) { throw "The document or ID given was null"; }
   if (typeof doc === "string" && !collection) { throw "A given string reference requires a collection"; }
   if (typeof doc === "string") {
     return q.Ref(q.Collection(collection as string), doc);

@@ -102,7 +102,7 @@ class $GridController {
    * @param gridType The type of grid
    * @param direction The direction of the grid, either "vertical" or "horizontal"
    */
-  protected calculateGridToPixels(
+  public calculateGridToPixels(
     gridSize: number,
     gridCount: number,
     gridType: GridType,
