@@ -1,60 +1,84 @@
-.drawer {
-  display: block;
-  position: fixed;
-  right: 0;
+$drawer-width: 20em;
 
-  height: 92.5%;
+.drawer {
+  position: absolute;
+  right: -1 * $drawer-width;
+
+  height: 100%; 
+  width: $drawer-width; // TODO - media query & variable for the width
+
+  background-color: pink;
+
+  transition: right 0.5s;
+
+  &.open {
+    right: 0;
+
+    transition: right 0.5s;
+  }
 
   .tabContainer {
-    position: absolute;
-    left: -15rem;
-    width: 15rem;
-    overflow: hidden;
-    height: 100%;
-    padding-top: 1.5rem;
+    position: relative;
+    top: 1em;
+
+    z-index: 0;
 
     .tab {
       position: relative;
-      left: 12.5rem;
+      left: -2.5em;
 
-      padding: 0.5rem;
-      padding-left: 1rem;
+      background-color: lightblue;
 
-      border-style: solid;
-      border-width: thin;
-      border-color: lightblue;
+      transition: left 0.75s;
 
       &:hover {
-        left: 0rem;
+        left: -10em;
+        transition: left 0.25s;
       }
-
-      &.active {
-        border-color: blue;
-      }
-      
 
       .tabIcon {
-        padding-right: 1.5rem;
+        display: inline-block;
+        width: 2.5em;
+        height: 2.5em;
+
+        margin-right: 0.5em;
+
+        text-align: center;
+        line-height: 2.5em;
       }
     }
   }
 
   .contentContainer {
-    display: none;
-    padding: 0.75rem;
-    background-color: #EEE;
-  
-    border-style: solid;
-    border-width: thin;
-    
-    min-width: 15rem;
-    max-width: 20rem;
-    width: 20rem;
-    height: 92.5vh;
-  
-    &.open {
-      display: block;
-    }
-  }  
-}
+    position: absolute;
 
+    height: 100%;
+    width: 15em;
+
+    background-color: lightgreen;
+    z-index: 2;
+
+    .content {
+      position: absolute;
+      visibility: hidden;
+      height: 100%;
+      width: $drawer-width;
+
+      background-color: lavender;
+
+      padding: 0.75em;
+
+      z-index: 1;
+
+      transition: visibility 0.5s;
+
+      &.open {
+        visibility: visible;
+
+        z-index: 3;
+
+        transition-delay: 0s;
+      }
+    }
+  }
+}

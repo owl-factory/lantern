@@ -1,7 +1,7 @@
 import { DataConnection } from "peerjs";
 import { GameState, HostPriorityQueue } from "types/reroll/play";
-import * as host from "client/play/host";
-import * as logging from "client/play/logging";
+import * as host from "controllers/play/host";
+import * as logging from "controllers/play/logging";
 
 /**
  * A mock game server for testing purposes. This does not have any of the connection code

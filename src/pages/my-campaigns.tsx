@@ -1,5 +1,4 @@
-import { RulesetController } from "client/data/controllers";
-import { CampaignManager, RulesetManager } from "client/data/managers";
+import { RulesetController, RulesetManager } from "controllers/data/ruleset";
 import { Page } from "components/design";
 import { Loading } from "components/style";
 import { Input } from "components/style/forms";
@@ -13,6 +12,7 @@ import { InitialProps } from "types/client";
 import { CampaignDocument } from "types/documents";
 import { getSession } from "utilities/auth";
 import { rest } from "utilities/request";
+import { CampaignManager } from "controllers/data/campaign";
 
 interface MyCampaignsProps extends InitialProps {
   myCampaigns: CampaignDocument[];

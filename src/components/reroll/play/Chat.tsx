@@ -3,7 +3,7 @@ import { Form, Formik } from "formik";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { MessageDocument } from "types/documents";
-import { GameServer } from "client/play";
+import { GameServer } from "controllers/play";
 import { Input, Select } from "components/style/forms";
 
 interface ChatProps {

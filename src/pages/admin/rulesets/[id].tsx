@@ -1,4 +1,4 @@
-import { RulesetManager } from "client/data/managers";
+import { RulesetManager } from "controllers/data/ruleset";
 import { Page } from "components/design";
 import { Col } from "components/style";
 import { Tooltip } from "components/style/tooltips";

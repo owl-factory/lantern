@@ -3,7 +3,7 @@ import { observer } from "mobx-react-lite";
 import styles from "./AlertMessages.module.scss";
 import { Alert, Button } from "react-bootstrap";
 import { Form, Formik } from "formik";
-import { AlertController, AlertMessage } from "client/AlertController";
+import { AlertController, AlertMessage } from "controllers/AlertController";
 import { Input } from "./style/forms";
 
 function onSubmit(values: any) {

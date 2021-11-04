@@ -1,4 +1,4 @@
-import React, { Dispatch } from "react";
+import React from "react";
 import { Page } from "components/design";
 import { NextPageContext } from "next";
 import { rest } from "utilities/request";
@@ -11,9 +11,9 @@ import { arrayToList } from "utilities/arrays";
 import { ImageSelectionWrapper } from "components/reroll/library/images/ImageSelectionWrapper";
 import { Checkbox, Input } from "components/style/forms";
 import { observer } from "mobx-react-lite";
-import { ImageManager, UserManager } from "client/data/managers";
+import { UserController, UserManager } from "controllers/data/user";
 import { InitialProps } from "types/client";
-import { ImageController, UserController } from "client/data/controllers";
+import { ImageController, ImageManager } from "controllers/data/image";
 import Link from "next/link";
 import { AssetUploadSource } from "types/enums/assetSource";
 

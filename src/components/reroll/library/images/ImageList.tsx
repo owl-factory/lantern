@@ -1,4 +1,4 @@
-import { ImageManager } from "client/data/managers";
+import { ImageManager } from "controllers/data/image";
 import { Col, Row } from "components/style";
 import { Card, CardBody } from "components/style/card";
 import { observer } from "mobx-react-lite";
