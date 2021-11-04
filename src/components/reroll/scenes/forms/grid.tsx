@@ -1,9 +1,12 @@
-import { GridType, SceneController } from "client/scenes/SceneController";
+import { GridType, SceneController } from "controllers/maps/SceneController";
 import { Button } from "components/style";
 import { Formik, Form as FormikForm, FormikProps } from "formik";
 import React from "react";
 import { Input } from "components/style/forms";
 import { Select } from "components/style/forms/Select";
+import { MapController } from "controllers/maps/map";
+import { GridController } from "controllers/maps/grid";
+import { observer } from "mobx-react-lite";
 
 // The default width of the grid count inputs
 const DEFAULT_GRID_INPUT_WIDTH="4.5em";
@@ -27,7 +30,8 @@ const GRID_SIZE_OPTIONS = [
   { label: "Custom", value: "custom" },
 ];
 
-interface GridFormValues {
+// TODO - move elsewhere?
+export interface GridFormValues {
   height: number;
   width: number;
   expectedHeight: number;
@@ -50,8 +54,8 @@ type onChangeEvent = React.ChangeEvent<any>;
  * @param gridType The type of grid
  */
 function updateGridHeight(formikProps: FormikGridProps, pixelHeight: number, gridSize: number, gridType: GridType) {
-  const height = SceneController.calculateGridCount(pixelHeight, gridSize, gridType, "vertical");
-  const expectedHeight = SceneController.calculateGridToPixels(gridSize, height, gridType, "vertical");
+  const height = GridController.calculateGridCount(pixelHeight, gridSize, gridType, "vertical");
+  const expectedHeight = GridController.calculateGridToPixels(gridSize, height, gridType, "vertical");
   formikProps.setFieldValue("gridHeight", height);
   formikProps.setFieldValue("expectedHeight", expectedHeight);
 }
@@ -64,8 +68,8 @@ function updateGridHeight(formikProps: FormikGridProps, pixelHeight: number, gri
  * @param gridType The type of grid
  */
 function updateGridWidth(formikProps: FormikGridProps, pixelWidth: number, gridSize: number, gridType: GridType) {
-  const width = SceneController.calculateGridCount(pixelWidth, gridSize, gridType, "horizontal");
-  const expectedWidth = SceneController.calculateGridToPixels(gridSize, width, gridType, "horizontal");
+  const width = GridController.calculateGridCount(pixelWidth, gridSize, gridType, "horizontal");
+  const expectedWidth = GridController.calculateGridToPixels(gridSize, width, gridType, "horizontal");
   formikProps.setFieldValue("gridWidth", width);
   formikProps.setFieldValue("expectedWidth", expectedWidth);
 }
@@ -134,7 +138,7 @@ function onWidthChange(e: onChangeEvent, formikProps: FormikGridProps) {
  * @param formikProps The formik props containing values and update functions
  */
 function onHeightGridChange(e: onChangeEvent, formikProps: FormikGridProps) {
-  const expectedHeight = SceneController.calculateGridToPixels(
+  const expectedHeight = GridController.calculateGridToPixels(
     formikProps.values.gridSize,
     e.currentTarget.value,
     formikProps.values.gridType,
@@ -151,7 +155,7 @@ function onHeightGridChange(e: onChangeEvent, formikProps: FormikGridProps) {
  * @param formikProps The formik props containing values and update functions
  */
 function onWidthGridChange(e: onChangeEvent, formikProps: FormikGridProps) {
-  const expectedWidth = SceneController.calculateGridToPixels(
+  const expectedWidth = GridController.calculateGridToPixels(
     formikProps.values.gridSize,
     e.currentTarget.value,
     formikProps.values.gridType,
@@ -189,7 +193,7 @@ interface GridSubformProps {
 function GridTypeDropdown({ formikProps }: GridSubformProps) {
   const options: JSX.Element[] = [];
   GRID_TYPE_OPTIONS.forEach((option) => {
-    options.push(<option value={option.value}>{option.label}</option>);
+    options.push(<option key={option.value} value={option.value}>{option.label}</option>);
   });
   return (
     <span>
@@ -214,7 +218,7 @@ function GridTypeDropdown({ formikProps }: GridSubformProps) {
 function GridSize({ formikProps }: GridSubformProps): JSX.Element {
   const options: JSX.Element[] = [];
   GRID_SIZE_OPTIONS.forEach((option) => {
-    options.push(<option value={option.value}>{option.label}</option>);
+    options.push(<option key={option.value} value={option.value}>{option.label}</option>);
   });
   return (
     <div>
@@ -405,40 +409,36 @@ function VerticalHexGridForm({ formikProps }: GridSubformProps): JSX.Element {
   );
 }
 
-interface GridFormProps {
-  sceneController: SceneController;
-}
-
 /**
  * Renders a form for setting and selecting the grid type of the current scene
  * @param formikProps The formik props containing values and update functions
  */
-export function GridForm({ sceneController }: GridFormProps): JSX.Element {
+export const GridForm = observer((): JSX.Element => {
   return (
     <div>
       <Formik
         initialValues={{
-          width: sceneController.background.width,
-          height: sceneController.background.height,
-          expectedWidth: sceneController.background.width,
-          expectedHeight: sceneController.background.height,
-          gridWidth: SceneController.calculateGridCount(
-            sceneController.background.width,
-            sceneController.gridSize,
-            sceneController.getGridType(),
+          width: MapController.width,
+          height: MapController.height,
+          expectedWidth: MapController.width,
+          expectedHeight: MapController.height,
+          gridWidth: GridController.calculateGridCount(
+            MapController.width,
+            GridController.size,
+            GridController.type,
             "horizontal"
           ),
-          gridHeight: SceneController.calculateGridCount(
-            sceneController.background.height,
-            sceneController.gridSize,
-            sceneController.getGridType(),
+          gridHeight: GridController.calculateGridCount(
+            MapController.height,
+            GridController.size,
+            GridController.type,
             "vertical"
           ),
-          gridSize: sceneController.gridSize,
-          gridSizeSelect: sceneController.gridSize,
-          gridType: sceneController.getGridType(),
+          gridSize: GridController.size,
+          gridSizeSelect: GridController.size.toString(),
+          gridType: GridController.type,
         }}
-        onSubmit={(values) => sceneController.setSceneSize(values, sceneController)}
+        onSubmit={(values: GridFormValues) => MapController.setMap(values)}
       >
         { (props: any) => (
           <FormikForm>
@@ -452,4 +452,4 @@ export function GridForm({ sceneController }: GridFormProps): JSX.Element {
       </Formik>
     </div>
   );
-}
+});

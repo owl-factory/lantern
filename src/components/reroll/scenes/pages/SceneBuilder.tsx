@@ -1,23 +1,55 @@
-import { ImageManager } from "client/data/managers";
-import { SceneController } from "client/scenes/SceneController";
+import { ImageManager } from "controllers/data/image";
 import { observer } from "mobx-react-lite";
 import { Application } from "pixi.js";
 import React from "react";
-import { SceneBuilderOverlay } from "../SceneBuilderOverlay";
-import { SceneRenderer } from "../SceneRenderer";
+import { PixiController } from "controllers/maps/pixi";
+import { SceneOverlay } from "../SceneOverlay";
+import { MapController } from "controllers/maps/map";
 
 const app = new Application({
-  width: 500,
-  height: 500,
+  width: window.innerWidth,
+  height: window.innerHeight - 62,
   backgroundColor: 0xAAAAAA,
   antialias: true,
 });
+
+function allowDrop(event: any) {
+  event.preventDefault();
+}
+
+function drop(event: any) {
+  MapController.addUsingDrag(event);
+}
+
+function SceneRenderer(): JSX.Element {
+  const ref = React.useRef(null);
+
+  React.useEffect(() => {
+    PixiController.setApp(app);
+    if (!ref || !ref.current) { return; }
+    (ref.current as any).appendChild(app.view);
+
+    app.start();
+
+    const yOffset = window.innerHeight - ((ref.current as any).clientHeight || 0);
+    const xOffset = window.innerWidth - ((ref.current as any).clientWidth || 0);
+
+    console.log(xOffset);
+    console.log(yOffset);
+    MapController.setOffset(xOffset, yOffset);
+
+    return () => {
+      app.stop();
+    };
+  }, []);
+
+  return <div onDragOver={allowDrop} onDrop={drop} ref={ref} />;
+}
 
 /**
  * The page for rendering a standalone scene builder
  */
 export const SceneBuilder = observer(() => {
-  const [ sceneController ] = React.useState(new SceneController(app));
 
   React.useEffect(() => {
     ImageManager.load();
@@ -25,9 +57,13 @@ export const SceneBuilder = observer(() => {
 
   return (
     <div>
-      <SceneBuilderOverlay sceneController={sceneController}>
+      <SceneOverlay>
+        <SceneRenderer />
+      </SceneOverlay>
+      {/* <SceneBuilderOverlay sceneController={sceneController}>
         <SceneRenderer sceneController={sceneController}/>
-      </SceneBuilderOverlay>
+        <
+      </SceneBuilderOverlay> */}
     </div>
   );
 });
