@@ -72,7 +72,7 @@ abstract class $RoleBuilder {
    * @param value The boolean or a function to evaluate into a boolean for the Moderator role
    * @returns Returns the current RoleBuilder
    */
-  public moderator(value: RoleValue) { this.config[UserRole.MOD] = value; return this; }
+  public moderator(value: RoleValue) { this.config[UserRole.MODERATOR] = value; return this; }
   /**
    * Sets the a boolean or a function that evaluate to a boolean that determines if the
    * User role can access this functionality what the

@@ -1,14 +1,14 @@
 import { Expr } from "faunadb";
 import { FaunaRef } from "types/fauna";
-
+// TODO - move role stuff to proper enum files
 /**
  * The different kinds of roles a user may have
  */
 export enum UserRole {
-  GUEST = 0,
-  USER,
-  MOD,
-  ADMIN
+  GUEST = -1,
+  USER = 0,
+  MODERATOR=75,
+  ADMIN=100
 }
 
 /**
@@ -28,7 +28,6 @@ export interface MyUserDocument {
   id: string,
   collection: "users",
   ref: FaunaRef | Expr,
-  roles: string[];
   role: UserRole,
   isLoggedIn: boolean;
 }

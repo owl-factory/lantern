@@ -1,9 +1,7 @@
 import { Client, query as q } from "faunadb";
 import { makeAutoObservable } from "mobx";
 import { CampaignDocument, ImageDocument } from "types/documents";
-import { FaunaRef } from "types/fauna";
 import { getClient } from "utilities/db";
-import { fromFauna, toFaunaRef } from "utilities/fauna";
 import { rest } from "utilities/request";
 
 /**

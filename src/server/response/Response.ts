@@ -1,3 +1,4 @@
+import { SecurityController } from "controllers/security";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Context } from "types/server";
 
@@ -33,6 +34,7 @@ export class HTTPHandler {
       // TODO - ensure that we can access the user DB
       // seperately with or without disconnecting
       // databaseSetup();
+      SecurityController.fromReq(this.req);
 
       // Checks that this method is present
       const method = this.req.method as PossibleMethods;

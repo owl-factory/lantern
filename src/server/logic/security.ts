@@ -1,3 +1,4 @@
+import { SecurityController } from "controllers/security";
 import { AnyDocument } from "types/documents";
 import { MyUserDocument } from "types/security";
 
@@ -22,8 +23,8 @@ export function isAdmin(myUser: MyUserDocument): boolean {
  * @param doc The document to check
  * @param myUser The current user owbject to check for ownership
  */
-export function isOwner(myUser: MyUserDocument, doc?: AnyDocument): boolean {
+export function isOwner(doc?: AnyDocument): boolean {
   if (!doc) { return false; }
-  return (!doc.ownedBy || doc.ownedBy.id === myUser.id);
+  return (!doc.ownedBy || doc.ownedBy.id === SecurityController.currentUser?.id);
 }
 

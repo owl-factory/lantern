@@ -3,7 +3,6 @@ import { HTTPHandler } from "server/response";
 import { RulesetLogic } from "server/logic";
 import { createEndpoint } from "server/utilities";
 import { getMyUser } from "server/auth";
-import { query as q } from "faunadb";
 
 /**
  * Creates a single new ruleset

@@ -1,25 +1,29 @@
 import { AnyDocument } from "types/documents";
-import { requireLogin } from "./actions";
 
 const DEFAULT_READ_FIELDS = ["id"];
 
+// A generic type for determining what sort of access a user can have to a resource. This can be a boolean for absolute
+// access or a list of strings for field access
+// TODO - needs a rename
+type AccessCheck<T> = ((doc: AnyDocument) => T) | T;
+interface RoleAccess<T> {
+  guest?: AccessCheck<T>;
+  user?: AccessCheck<T>;
+  moderator?: AccessCheck<T>;
+  admin?: AccessCheck<T>;
+}
+
+interface ParentItem extends RoleAccess<boolean> {
+  key: string;
+}
+
 interface Descriptor {
+  parent?: Record<Collection, ParentItem>;
   requireLogin?: boolean;
   readFields?: string[] | ((doc: AnyDocument) => string[]);
 }
 
 const USER_LEVELS = ["guest", "user", "moderator", "admin"];
-
-/**
- * Decorator that indicates the function is to require a login
- * @param required If the user is required to be logged in. Defaults to true.
- * @returns The decorator function that sets the requirement
- */
-export function RequireLogin(required = true) {
-  return (_target: any, _name: string, descriptor: any) => {
-    descriptor.requireLogin = required;
-  };
-}
 
 type AccessArgument = boolean | ((doc: AnyDocument) => boolean);
 interface AccessType {
@@ -29,8 +33,50 @@ interface AccessType {
   admin?: AccessArgument;
 }
 
+/**
+ * 
+ * @param roles The 
+ * @returns 
+ */
 export function Access(roles: AccessArgument | AccessType) {
   return setFieldAccess(roles, "access");
+}
+
+/**
+ * Decorator that indicates the function is to require a login or not.
+ * @param required If the user is required to be logged in. Defaults to true.
+ * @returns The decorator function that sets the requirement
+ */
+export function RequireLogin(required = true) {
+  return (_target: any, _name: string, descriptor: any) => {
+    descriptor.requireLogin = required;
+  };
+}
+
+// TODO - build out and put somewhere better
+enum Collection {
+
+}
+
+/**
+ * Ensures that the current user has access to the children of a collection, such as Entities for a Campaign.
+ * This should generally only be used in the case of creating a document, as it requires pulling a document
+ * from the database
+ * @param collection The collection that the parent of the target element belongs to.
+ *  (If the target is Apple, the Parent collection is Tree.)
+ * @param key The input field containing the parent collection ID
+ *
+ * TODO - all of this
+ */
+export function Parent(collection: Collection, key: string, roles: AccessArgument | AccessType) {
+  return (_target: any, _name: string, descriptor: Descriptor) => {
+    // Ensures that the parent descriptor object is present
+    if (!("parent" in descriptor)) { descriptor.parent = {}; }
+    descriptor.parent[collection] = {
+      key, roles,
+    };
+  }
+  return;
 }
 
 type SingleField = string[] | ((doc: AnyDocument) => string[]);
@@ -110,57 +156,4 @@ function setFieldAccess(fields: any, fieldKey: string) {
       }
     });
   };
-}
-
-/**
- * Handles running pre- and post-pull processing for running a fetch function
- * @param _target The target class
- * @param _name The name of the function
- * @param descriptor The properties of the function
- */
-export function Fetch(_target: any, _name: string, descriptor: any) {
-  const original = descriptor.value;
-  if (typeof original === 'function') {
-    descriptor.value = function(...args: any) {
-      try {
-        requireLogin(descriptor);
-        // Static access check
-        const result = original.apply(this, args);
-        // Dynamic access check
-        // ReadFields
-        return result;
-      } catch (e) {
-        console.log(`Error: ${e}`);
-        throw e;
-      }
-    };
-  }
-}
-
-/**
- * Handles running pre- and post-pull processing for running an index search function
- * @param _target The target class
- * @param _name The name of the function
- * @param descriptor The properties of the function
- */
-export function Index(_target: any, _name: string, descriptor: any) {
-  const original = descriptor.value;
-  if (typeof original === 'function') {
-    descriptor.value = function(...args: any) {
-      try {
-        requireLogin(descriptor);
-        // Static access check
-        checkStaticAccess(descriptor);
-        let result = original.apply(this, args);
-        // Dynamic access check
-        result = checkDynamicAccess(descriptor, result);
-        // ReadFields
-        result = trimReadFields(descriptor, result);
-        return result;
-      } catch (e) {
-        console.log(`Error: ${e}`);
-        throw e;
-      }
-    }
-  }
 }

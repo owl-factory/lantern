@@ -1,26 +1,13 @@
+import { SecurityController } from "controllers/security";
 import { NextApiRequest } from "next";
-import { CampaignLogic } from "server/logic";
 import { isOwner } from "server/logic/security";
 import { HTTPHandler } from "server/response";
 import { createEndpoint } from "server/utilities";
-import { RequireLogin } from "src/database/decorators";
+import { RequireLogin } from "src/database/dectorators/decorators";
+import { CampaignLogic } from "src/database/logic/CampaignLogic";
 import { read, set } from "utilities/objects";
 
 const DEFAULT_READ_FIELDS = ["id"];
-
-function $Roles(_target: any, _name: string, descriptor: any, required: boolean, roles: any) {
-  const keys = ["guest", "user", "moderator", "admin"];
-  // const 
-  // keys.forEach((key: string) => {
-    
-  // });
-}
-
-// function Roles(roles: any) {
-//   return (target: any, name: string, descriptor: any) => $Roles(target, name, descriptor, roles);
-// }
-
-
 
 
 function indexWrapper(this: any) {
@@ -42,8 +29,7 @@ function Test2(target: any, name: string, descriptor: any) {
  * @param req The request to the servert
  */
 async function test(this: HTTPHandler, req: NextApiRequest) {
-  const thing = new CampaignLogic();
-  thing.indexSearch();
+  CampaignLogic.findByID();
   this.returnSuccess({ hi: "" });
 }
 

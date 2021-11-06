@@ -83,7 +83,7 @@ abstract class $FieldBuilder {
    * @param value The list of fields or a function to determine the list of fields for the Moderator role
    * @returns Returns the current FieldBuilder
    */
-  public moderator(value: FieldValue) { this.config[UserRole.MOD] = value; return this; }
+  public moderator(value: FieldValue) { this.config[UserRole.MODERATOR] = value; return this; }
 
   /**
    * Sets the list of fields or a function that evaluate to a list of fields that determine what the

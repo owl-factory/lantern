@@ -1,14 +1,20 @@
-import { Index, RequireLogin } from "../decorators";
+import { isOwner } from "server/logic/security";
+import { Index } from "../decorators/crud";
+import { Access, RequireLogin } from "../decorators/modifiers";
 
-class CampaignLogic{
+class $CampaignLogic{
 
   @Index
-  @RequireLogin(false)
-  // @Roles({ user: isOwner, admin: true })
+  @Access({ user: isOwner, admin: true })
   // @ReadFields(["name"])
-  public indexSearch() {
+  public search() {
     console.log("Index run");
-    console.log(this);
+    return;
+  }
+
+  public findByID(id: string) {
     return;
   }
 }
+
+export const CampaignLogic = new $CampaignLogic();
