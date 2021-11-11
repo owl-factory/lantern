@@ -1,14 +1,20 @@
 import { SecurityController } from "controllers/security";
 import { AnyDocument } from "types/documents";
 import { UserRole } from "types/security";
-import { read, set } from "utilities/objects";
 import { trimFields } from "utilities/security";
 
-type PerRoleAccess<T> = T | ((doc: AnyDocument) => T);
-type RoleAccess<T> = Record<UserRole, PerRoleAccess<T> | undefined>;
-interface Descriptor {
+export type PerRoleAccess<T> = T | ((doc: AnyDocument) => T);
+export interface RoleAccess<T> {
+  [UserRole.Guest]?: (PerRoleAccess<T> | undefined);
+  [UserRole.User]?: (PerRoleAccess<T> | undefined);
+  [UserRole.Moderator]?: (PerRoleAccess<T> | undefined);
+  [UserRole.Admin]?: (PerRoleAccess<T> | undefined);
+}
+
+export interface Descriptor {
   access?: RoleAccess<boolean>;
   requireLogin?: boolean;
+  parent?: any;
   readFields?: RoleAccess<string[]>;
   setFields?: RoleAccess<string[]>;
 }
@@ -121,7 +127,7 @@ export function checkManyDynamicAccess(descriptor: Descriptor, docs: AnyDocument
 export function checkParentAccess(descriptor: Descriptor, args: unknown): void {
   return;
 }
-  
+
 export function fetchTargetDoc(descriptor: Descriptor, doc: AnyDocument): AnyDocument {
   return doc;
 }

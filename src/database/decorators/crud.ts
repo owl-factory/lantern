@@ -41,7 +41,8 @@ import {
 
 
 /**
- * Handles running pre- and post-pull processing for running a fetch function
+ * Handles running pre- and post-pull processing for running a fetch function.
+ * Fetch uses the @Access, @RequireLogin, and @ReadFields decorators
  * @param _target The target class
  * @param _name The name of the function
  * @param descriptor The properties of the function
@@ -52,13 +53,13 @@ import {
     return;
   }
 
-  descriptor.value = function(...args: any) {
+  descriptor.value = async function(...args: any) {
     checkLogin(descriptor);
     checkStaticAccess(descriptor);
 
-    let result = original.apply(this, args);
+    let result = await original.apply(this, args);
 
-    result = checkDynamicAccess(descriptor, result);
+    checkDynamicAccess(descriptor, result);
     result = trimReadFields(descriptor, result);
     return result;
   };
@@ -76,11 +77,11 @@ import {
     return;
   }
 
-  descriptor.value = function(...args: any) {
+  descriptor.value = async function(...args: any) {
     checkLogin(descriptor);
     checkStaticAccess(descriptor);
 
-    let result = original.apply(this, args);
+    let result = await original.apply(this, args);
 
     result = checkManyDynamicAccess(descriptor, result);
     result = trimManyReadFields(descriptor, result);
@@ -100,11 +101,11 @@ export function Index(_target: any, _name: string, descriptor: any) {
     return;
   }
 
-  descriptor.value = function(...args: any) {
+  descriptor.value = async function(...args: any) {
     checkLogin(descriptor);
     checkStaticAccess(descriptor);
 
-    let result = original.apply(this, args);
+    let result = await original.apply(this, args);
 
     result = checkManyDynamicAccess(descriptor, result);
     result = trimManyReadFields(descriptor, result);
@@ -124,14 +125,14 @@ export function Index(_target: any, _name: string, descriptor: any) {
     return;
   }
 
-  descriptor.value = function(...args: any) {
+  descriptor.value = async function(...args: any) {
     checkLogin(descriptor);
     checkStaticAccess(descriptor);
     const targetDoc = fetchTargetDoc(descriptor, args);
     checkDynamicAccess(descriptor, targetDoc);
     args.doc = trimSetFields(descriptor, args.doc);
 
-    let result = original.apply(this, args);
+    let result = await original.apply(this, args);
 
     result = trimManyReadFields(descriptor, result);
     return result;

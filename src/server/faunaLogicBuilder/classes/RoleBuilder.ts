@@ -58,28 +58,28 @@ abstract class $RoleBuilder {
    * @param value The boolean or a function to evaluate into a boolean for the Admin role
    * @returns Returns the current RoleBuilder
    */
-  public admin(value: RoleValue) { this.config[UserRole.ADMIN] = value; return this; }
+  public admin(value: RoleValue) { this.config[UserRole.Admin] = value; return this; }
   /**
    * Sets the a boolean or a function that evaluate to a boolean that determines if the
    * Guest role can access this functionality what the
    * @param value The boolean or a function to evaluate into a boolean for the Guest role
    * @returns Returns the current RoleBuilder
    */
-  public guest(value: RoleValue) { this.config[UserRole.GUEST] = value; return this; }
+  public guest(value: RoleValue) { this.config[UserRole.Guest] = value; return this; }
   /**
    * Sets the a boolean or a function that evaluate to a boolean that determines if the
    * Moderator role can access this functionality what the
    * @param value The boolean or a function to evaluate into a boolean for the Moderator role
    * @returns Returns the current RoleBuilder
    */
-  public moderator(value: RoleValue) { this.config[UserRole.MODERATOR] = value; return this; }
+  public moderator(value: RoleValue) { this.config[UserRole.Moderator] = value; return this; }
   /**
    * Sets the a boolean or a function that evaluate to a boolean that determines if the
    * User role can access this functionality what the
    * @param value The boolean or a function to evaluate into a boolean for the User role
    * @returns Returns the current RoleBuilder
    */
-  public user(value: RoleValue) { this.config[UserRole.USER] = value; return this; }
+  public user(value: RoleValue) { this.config[UserRole.User] = value; return this; }
 }
 
 /**

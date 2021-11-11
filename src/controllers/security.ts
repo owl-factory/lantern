@@ -14,7 +14,7 @@ class $SecurityController {
   public activeRole: UserRole;
 
   constructor() {
-    this.activeRole = UserRole.GUEST;
+    this.activeRole = UserRole.Guest;
   }
 
   /**
@@ -30,7 +30,7 @@ class $SecurityController {
    */
   public fromReq(req: NextApiRequest) {
     const session = getSession({req});
-    if (session.user === undefined || session.user === null) { this.currentUser = undefined; }
+    if (!session || session.user === undefined || session.user === null) { this.currentUser = undefined; }
     else { this.currentUser = session.user; }
 
     this.update();
@@ -40,9 +40,8 @@ class $SecurityController {
    * Updates everything that might need to change ifw the current user changes
    */
   protected update() {
-    console.log(this.currentUser);
     if (!this.currentUser) {
-      this.activeRole = UserRole.GUEST;
+      this.activeRole = UserRole.Guest;
       return;
     }
 
@@ -70,7 +69,7 @@ class $SecurityController {
   //   });
   //   return highest as UserRole;
   // }
-    return UserRole.USER;
+    return UserRole.User;
   }
 }
 

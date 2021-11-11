@@ -1,5 +1,5 @@
 import { FaunaLogicBuilder } from "server/faunaLogicBuilder/FaunaLogicBuilder";
-import { isOwner } from "./security";
+import { isOwner_old } from "./security";
 
 const guestFields = [
   "username",
@@ -79,7 +79,7 @@ export const UserLogic = UserLogicBuilder
    */
   .update()
     .roles()
-      .user(isOwner)
+      .user(isOwner_old)
       .admin(true)
     .done()
     .setFields()
@@ -95,7 +95,7 @@ export const UserLogic = UserLogicBuilder
       .user(["avatar.ref", "avatar.src"])
     .done()
     .roles()
-      .user(isOwner)
+      .user(isOwner_old)
       .admin(true)
     .done()
   .done()

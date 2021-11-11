@@ -1,45 +1,26 @@
 import { AnyDocument } from "types/documents";
+import { UserRole } from "types/security";
+import { Descriptor, PerRoleAccess, RoleAccess } from "./actions";
 
 const DEFAULT_READ_FIELDS = ["id"];
 
-// A generic type for determining what sort of access a user can have to a resource. This can be a boolean for absolute
-// access or a list of strings for field access
-// TODO - needs a rename
-type AccessCheck<T> = ((doc: AnyDocument) => T) | T;
-interface RoleAccess<T> {
-  guest?: AccessCheck<T>;
-  user?: AccessCheck<T>;
-  moderator?: AccessCheck<T>;
-  admin?: AccessCheck<T>;
-}
-
-interface ParentItem extends RoleAccess<boolean> {
-  key: string;
-}
-
-interface Descriptor {
-  parent?: Record<Collection, ParentItem>;
-  requireLogin?: boolean;
-  readFields?: string[] | ((doc: AnyDocument) => string[]);
-}
-
+// TODO - generate naturally
 const USER_LEVELS = ["guest", "user", "moderator", "admin"];
 
-type AccessArgument = boolean | ((doc: AnyDocument) => boolean);
-interface AccessType {
-  guest?: AccessArgument;
-  user?: AccessArgument;
-  moderator?: AccessArgument;
-  admin?: AccessArgument;
+
+// TODO - build out and put somewhere better
+enum Collection {
+
 }
 
+
 /**
- * 
- * @param roles The 
- * @returns 
+ * Sets which roles may access this resource, either a boolean or a function that evaluates to a boolean
+ * @param roles Each of the per-role access that is a boolean or returns a boolean
  */
-export function Access(roles: AccessArgument | AccessType) {
-  return setFieldAccess(roles, "access");
+export function Access(roles: RoleAccess<boolean>) {
+  console.log(roles)
+  return setFieldRoleAccess<boolean>(roles, "access");
 }
 
 /**
@@ -53,10 +34,6 @@ export function RequireLogin(required = true) {
   };
 }
 
-// TODO - build out and put somewhere better
-enum Collection {
-
-}
 
 /**
  * Ensures that the current user has access to the children of a collection, such as Entities for a Campaign.
@@ -68,23 +45,14 @@ enum Collection {
  *
  * TODO - all of this
  */
-export function Parent(collection: Collection, key: string, roles: AccessArgument | AccessType) {
+export function Parent(collection: Collection, key: string, roles: any) {
   return (_target: any, _name: string, descriptor: Descriptor) => {
     // Ensures that the parent descriptor object is present
     if (!("parent" in descriptor)) { descriptor.parent = {}; }
     descriptor.parent[collection] = {
       key, roles,
     };
-  }
-  return;
-}
-
-type SingleField = string[] | ((doc: AnyDocument) => string[]);
-interface RoleFields {
-  guest?: SingleField;
-  user?: SingleField;
-  moderator?: SingleField;
-  admin?: SingleField;
+  };
 }
 
 /**
@@ -93,8 +61,11 @@ interface RoleFields {
  * @param fields A list of fields, a function that evaluates to a list of fields, or a role-delimited dictionary
  *  that is or evaluates to a list of fields.
  */
-export function ReadFields(fields: SingleField | RoleFields) {
-  return setFieldAccess(fields, "readFields");
+export function ReadFields(fields: PerRoleAccess<string[]> | RoleAccess<string[]>) {
+  if (Array.isArray(fields) || typeof fields === "function") {
+    return setFieldRoleAccess<string[]>({[UserRole.Guest]: fields}, "readFields");
+  }
+  return setFieldRoleAccess<string[]>(fields, "readFields");
 }
 
 /**
@@ -103,9 +74,13 @@ export function ReadFields(fields: SingleField | RoleFields) {
  * @param fields A list of fields, a function that evaluates to a list of fields, or a role-delimited dictionary
  *  that is or evaluates to a list of fields.
  */
- export function SetFields(fields: SingleField | RoleFields) {
-  return setFieldAccess(fields, "setFields");
+ export function SetFields(fields: PerRoleAccess<string[]> | RoleAccess<string[]>) {
+  if (Array.isArray(fields) || typeof fields === "function") {
+    return setFieldRoleAccess<string[]>({[UserRole.Guest]: fields}, "setFields");
+  }
+  return setFieldRoleAccess<string[]>(fields, "setFields");
 }
+
 
 /**
  * A helper function to set field access for both read and set field functions
@@ -114,7 +89,7 @@ export function ReadFields(fields: SingleField | RoleFields) {
  * @param fieldKey The key to save the fields in
  * @returns The decorator function to wrap around the function proper
  */
-function setFieldAccess(fields: any, fieldKey: string) {
+function setFieldRoleAccess<T>(fields: RoleAccess<T>, fieldKey: string) {
   return (_target: any, _name: string, descriptor: any) => {
     // Ensures that we have the empty read fields if none is present so far
     if (!(fieldKey in descriptor)) {
@@ -133,9 +108,9 @@ function setFieldAccess(fields: any, fieldKey: string) {
       return;
     }
 
-    let lastField: SingleField | AccessType | undefined = undefined;
-    USER_LEVELS.forEach((level: (string)) => {
-      const targetField = fields[level as any];
+    let lastField: PerRoleAccess<T> | undefined = undefined;
+    USER_LEVELS.forEach((level: string) => {
+      const targetField = (fields as any)[level];
       const savedField = descriptor[fieldKey][level];
 
       if (savedField !== undefined) {

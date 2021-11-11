@@ -3,7 +3,7 @@ import { FaunaLogicBuilder } from "server/faunaLogicBuilder/FaunaLogicBuilder";
 import { AnyDocument, CampaignDocument, UserDocument } from "types/documents";
 import { MyUserDocument } from "types/security";
 import { myUserToTerm } from "./CoreModelLogic";
-import { isOwner } from "./security";
+import { isOwner_old } from "./security";
 
 const USER_VIEW_FIELDS = [
   "banner.*",
@@ -43,7 +43,7 @@ const CampaignLogicBuilder = new FaunaLogicBuilder("campaigns")
    */
   .update("updateBanner")
     .roles()
-      .user(isOwner)
+      .user(isOwner_old as any)
       .admin(true)
     .done()
     .setFields()

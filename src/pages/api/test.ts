@@ -1,10 +1,9 @@
 import { SecurityController } from "controllers/security";
 import { NextApiRequest } from "next";
-import { isOwner } from "server/logic/security";
 import { HTTPHandler } from "server/response";
 import { createEndpoint } from "server/utilities";
-import { RequireLogin } from "src/database/dectorators/decorators";
 import { CampaignLogic } from "src/database/logic/CampaignLogic";
+import { decode, encode } from "utilities/encoding";
 import { read, set } from "utilities/objects";
 
 const DEFAULT_READ_FIELDS = ["id"];
@@ -29,8 +28,8 @@ function Test2(target: any, name: string, descriptor: any) {
  * @param req The request to the servert
  */
 async function test(this: HTTPHandler, req: NextApiRequest) {
-  CampaignLogic.findByID();
-  this.returnSuccess({ hi: "" });
+  const campaign = await CampaignLogic.findByID(encode("295957071440904710", "campaigns"));
+  this.returnSuccess({campaign: campaign});
 }
 
 export default createEndpoint({

@@ -8,15 +8,15 @@ import { RoleConfig } from "../types";
  * @returns The highest role of the currently logged in user
  */
 export function getRole(myUser: MyUserDocument) {
-  if (!myUser || !myUser.isLoggedIn) { return UserRole.GUEST; }
-  let highestRole = UserRole.USER;
-  myUser.roles.forEach((role: string) => {
-    UserRoleReadable.forEach((readableRole: string, index: number) => {
-      if (role.toLowerCase() === readableRole && index > highestRole) {
-        highestRole = index;
-      }
-    });
-  });
+  if (!myUser || !myUser.isLoggedIn) { return UserRole.Guest; }
+  const highestRole = UserRole.User;
+  // myUser.roles.forEach((role: string) => {
+  //   UserRoleReadable.forEach((readableRole: string, index: number) => {
+  //     if (role.toLowerCase() === readableRole && index > highestRole) {
+  //       highestRole = index;
+  //     }
+  //   });
+  // });
   return highestRole;
 }
 

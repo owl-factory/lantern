@@ -5,10 +5,10 @@ import { FaunaRef } from "types/fauna";
  * The different kinds of roles a user may have
  */
 export enum UserRole {
-  GUEST = -1,
-  USER = 0,
-  MODERATOR=75,
-  ADMIN=100
+  Guest="guest",
+  User="user",
+  Moderator="moderator",
+  Admin="admin"
 }
 
 /**
@@ -29,5 +29,6 @@ export interface MyUserDocument {
   collection: "users",
   ref: FaunaRef | Expr,
   role: UserRole,
+  roles: UserRole[],
   isLoggedIn: boolean;
 }
