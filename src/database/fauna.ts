@@ -11,11 +11,11 @@ enum Collection {
 
 }
 
-enum FaunaIndex {
-  search="search",
+export enum FaunaIndex {
+  CampaignsByUser="my_campaigns_asc",
 }
-const FaunaIndexTerms = {
-  [FaunaIndex.search]: ["ref"],
+export const FaunaIndexTerms = {
+  [FaunaIndex.CampaignsByUser]: ["lastPlayedAt", "ref", "name", "banner.src"],
 };
 
 /**
@@ -23,7 +23,7 @@ const FaunaIndexTerms = {
  * @param ref64ID The Ref64 ID to convert into the original fauna ref.
  * @returns A Fauna Ref expr.
  */
-function idToRef(ref64ID: Ref64): Expr {
+export function idToRef(ref64ID: Ref64): Expr {
   const { id, collection } = decode(ref64ID);
   const ref = q.Ref(q.Collection(collection as string), id);
   return ref;
@@ -47,6 +47,22 @@ export async function createOne(collection: Collection, doc: Record<string, unkn
 }
 
 /**
+ * Deletes a single document from the database
+ * @param id The ref64 ID to convert into a proper reference
+ * @returns The deleted document
+ */
+export async function deleteOne<T>(id: Ref64): Promise<T | undefined> {
+  const client = getServerClient();
+  const ref = idToRef(id);
+
+  const faunaResult = await client.query(q.Delete(ref));
+  // const parsedDoc = fromFauna(faunaResult as Record<string, unknown>);
+  console.log(faunaResult);
+  // return parsedDoc;
+  return faunaResult as any;
+}
+
+/**
  * Finds a document in fauna by a given ID and returns it (if any) in a usable JS object
  * @param id The ref64 ID to convert into a proper reference
  */
@@ -65,7 +81,7 @@ export async function findByID<T>(id: string): Promise<T | undefined> {
  * @param ids An array of Ref64 ids of documents to fetch
  * @returns A list of documents
  */
-export async function findManyByID<T>(ids: Ref64[]): Promise<T[]> {
+export async function findManyByIDs<T>(ids: Ref64[]): Promise<T[]> {
   const docs: Promise<T>[] = [];
   ids.forEach((id: Ref64) => {
 

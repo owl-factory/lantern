@@ -1,7 +1,10 @@
 import { SecurityController } from "controllers/security";
+import { GiFairyWand } from "react-icons/gi";
 import { AnyDocument } from "types/documents";
 import { UserRole } from "types/security";
 import { trimFields } from "utilities/security";
+import { Ref64 } from "../fauna";
+import * as fauna from "../fauna";
 
 export type PerRoleAccess<T> = T | ((doc: AnyDocument) => T);
 export interface RoleAccess<T> {
@@ -26,9 +29,10 @@ export interface Descriptor {
  export function checkLogin(descriptor: Descriptor): void {
   // Nabs the login requirement. If requireLogin is present, use it, but then default to true
   const isLoginRequired = descriptor.requireLogin !== undefined ?  descriptor.requireLogin : false;
-
+  console.log(SecurityController)
   if (isLoginRequired === false) { return; }
   if (!SecurityController.loggedIn) {
+    console.log("oops")
     throw { code: 401, message: "You must be logged in to view this resource."};
   }
 }
@@ -128,7 +132,8 @@ export function checkParentAccess(descriptor: Descriptor, args: unknown): void {
   return;
 }
 
-export function fetchTargetDoc(descriptor: Descriptor, doc: AnyDocument): AnyDocument {
+export async function fetchTargetDoc(descriptor: Descriptor, id: Ref64): Promise<AnyDocument | undefined> {
+  const doc = await fauna.findByID<AnyDocument>(id);
   return doc;
 }
 

@@ -19,7 +19,6 @@ enum Collection {
  * @param roles Each of the per-role access that is a boolean or returns a boolean
  */
 export function Access(roles: RoleAccess<boolean>) {
-  console.log(roles)
   return setFieldRoleAccess<boolean>(roles, "access");
 }
 

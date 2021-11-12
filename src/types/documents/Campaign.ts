@@ -7,8 +7,7 @@ interface PartialRulesetDocument extends Partial<RulesetDocument> {
 }
 
 interface PartialBanner extends Partial<ImageDocument> {
-  id: string,
-  collection: string,
+  id: Ref64,
   src: string
 }
 

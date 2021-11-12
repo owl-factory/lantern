@@ -7,8 +7,6 @@ interface DocumentReference extends Partial<CoreDocument> {
 
 export interface CoreDocument {
   id: string;
-  collection?: string
-  ref?: FaunaRef;
   ts?: number;
 
   name?: string;

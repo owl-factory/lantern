@@ -5,6 +5,7 @@ import {
   checkManyDynamicAccess,
   checkParentAccess,
   checkStaticAccess,
+  Descriptor,
   fetchTargetDoc,
   trimManyReadFields,
   trimReadFields,
@@ -36,6 +37,27 @@ import {
     result = trimReadFields(descriptor, result);
 
     return result;
+  };
+}
+
+/**
+ * Handles running pre- and post-pull processing for running a delete function. Uses @RequireLogin, @Access, @
+ * @param _target The target class
+ * @param _name The name of the function
+ * @param descriptor The properties of the function
+ */
+export function Delete(_target: any, _name: string, descriptor: any) {
+  const original = descriptor.value;
+  if (typeof original !== "function") { return; }
+
+  descriptor.value = async function(...args: any) {
+    checkLogin(descriptor);
+    checkStaticAccess(descriptor);
+    const targetDoc = await fetchTargetDoc(descriptor, args);
+    if (targetDoc === undefined) { return undefined; }
+    checkDynamicAccess(descriptor, targetDoc);
+
+    return original.apply(this, args);
   };
 }
 
@@ -104,7 +126,6 @@ export function Index(_target: any, _name: string, descriptor: any) {
   descriptor.value = async function(...args: any) {
     checkLogin(descriptor);
     checkStaticAccess(descriptor);
-
     let result = await original.apply(this, args);
 
     result = checkManyDynamicAccess(descriptor, result);

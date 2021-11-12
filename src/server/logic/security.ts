@@ -7,7 +7,7 @@ import { MyUserDocument, UserRole } from "types/security";
  * @param myUser The current user object to check
  */
 export function isAdmin(myUser: MyUserDocument): boolean {
-  return (myUser.roles.includes(UserRole.Admin));
+  return (myUser.roles?.includes(UserRole.Admin));
 }
 
 /**
