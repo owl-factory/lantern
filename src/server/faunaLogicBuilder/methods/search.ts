@@ -45,12 +45,12 @@ export async function $search(
   }
   let docs = parseIndexResponse(result.data, config.indexFields);
   // Returns a subset of docs that the current user can see
-  docs = canActOn(docs, myUser, config.roles);
-  docs.forEach((doc: AnyDocument) => {
+  docs = canActOn(docs as any, myUser, config.roles);
+  docs.forEach((doc: any) => {
     doc = config.postProcess(doc, myUser);
   });
-  docs = trimRestrictedFieldsOn(docs, myUser, config.fields[getRole(myUser)]);
-  return docs;
+  docs = trimRestrictedFieldsOn(docs as any, myUser, config.fields[getRole(myUser)]);
+  return docs as any;
 }
 
 /**

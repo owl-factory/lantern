@@ -149,7 +149,8 @@ export function Index(_target: any, _name: string, descriptor: any) {
   descriptor.value = async function(...args: any) {
     checkLogin(descriptor);
     checkStaticAccess(descriptor);
-    const targetDoc = fetchTargetDoc(descriptor, args);
+    const targetDoc = await fetchTargetDoc(descriptor, args);
+    if (targetDoc === undefined) { throw { code: 404, message: "Document could not be found"}}
     checkDynamicAccess(descriptor, targetDoc);
     args.doc = trimSetFields(descriptor, args.doc);
 

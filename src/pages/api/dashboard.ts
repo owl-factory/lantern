@@ -11,7 +11,7 @@ import { getMyUser } from "server/auth";
  */
 async function getDashboardPage(this: HTTPHandler, req: NextApiRequest) {
   const myUser = getMyUser(req);
-  const campaigns = await CampaignLogic.fetchMyCampaigns([], { size: 6 }, myUser);
+  const campaigns = await CampaignLogic.fetchMyCampaigns({ size: 6 });
   this.returnSuccess({ campaigns: campaigns });
 }
 

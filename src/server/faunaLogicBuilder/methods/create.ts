@@ -38,7 +38,9 @@ export async function $create(doc: AnyDocument, myUser: MyUserDocument, config: 
   // TODO - how are errors thrown from fauna
   let result = fromFauna(faunaResult);
   result = config.postProcess(result);
-  result = trimRestrictedFields(result as Record<string, unknown>, config.fields[getRole(myUser)]);
+  result = trimRestrictedFields(
+    result as unknown as Record<string, unknown>, config.fields[getRole(myUser)]
+  ) as unknown as AnyDocument;
 
   return result;
 }

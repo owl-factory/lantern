@@ -1,4 +1,5 @@
 
+import { Ref64 } from "src/database/fauna";
 import { CoreDocument, RulesetDocument, UserDocument } from "types/documents";
 import { ImageDocument } from "./assets";
 

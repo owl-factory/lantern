@@ -11,7 +11,7 @@ import { getMyUser } from "server/auth";
  */
 async function getCampaignPage(this: HTTPHandler, req: NextApiRequest) {
   const myUser = getMyUser(req);
-  const campaign = await CampaignLogic.fetch(req.query.id, myUser);
+  const campaign = await CampaignLogic.findByID(req.query.id as string);
   campaign.players = await UserLogic.fetchMany(campaign.players, myUser);
 
   this.returnSuccess({ campaign: campaign });

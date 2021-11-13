@@ -1,5 +1,6 @@
 import { Expr, query as q } from "faunadb";
 import { parse } from "path";
+import { AnyDocument } from "types/documents";
 import { FaunaDocument, FaunaIndexOptions, FaunaIndexResponse } from "types/fauna";
 import { getClient, getServerClient } from "utilities/db";
 import { decode } from "utilities/encoding";
@@ -35,7 +36,7 @@ export function idToRef(ref64ID: Ref64): Expr {
  * @param doc The Javascript object document to place into the database
  * @returns The created document
  */
-export async function createOne(collection: Collection, doc: Record<string, unknown>): Promise<Record<string, unknown>>{
+export async function createOne(collection: Collection, doc: Record<string, unknown>): Promise<AnyDocument>{
   const client = getServerClient();
   const faunaDoc: FaunaDocument<unknown> = toFauna(doc);
 
@@ -73,7 +74,7 @@ export async function findByID<T>(id: string): Promise<T | undefined> {
 
   if (!doc) { return undefined; }
   const parsedDoc = fromFauna(doc as Record<string, unknown>);
-  return parsedDoc;
+  return parsedDoc as unknown as T;
 }
 
 /**
@@ -119,7 +120,7 @@ export async function searchByIndex<T>(
     throw { code: 500, message: `An error occured while trying to search the ${index} index` };
   }
   const docs = parseIndexResponse(result.data, FaunaIndexTerms[index]);
-  return docs;
+  return docs as unknown as T[];
 }
 
 /**
@@ -140,5 +141,5 @@ export async function updateOne<T>(id: Ref64, doc: Partial<T>): Promise<T> {
   }
 
   const parsedResult = fromFauna(result);
-  return parsedResult;
+  return parsedResult as unknown as T;
 }

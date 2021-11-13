@@ -63,7 +63,7 @@ function parseFaunaItem(item: unknown) {
   // If a Fauna Ref, parse into an object with the ID and Collection
   // TODO - remove this eventually. A ref should always be inside an object (eg: { image: { ref: [ref]}})
   if (isFaunaRef(item)) {
-    const ref: AnyDocument = { id: parseFaunaRef(item) };
+    const ref: AnyDocument = { id: parseFaunaRef(item) as string };
     return ref;
   }
 
@@ -145,7 +145,7 @@ export function parseIndexResponse(
         set(parsedDoc as Record<string, unknown>, valueKey, value);
       });
     }
-    parsedDocs.push(parsedDoc);
+    parsedDocs.push(parsedDoc as any);
   });
 
   return parsedDocs;
