@@ -6,7 +6,7 @@ import { MyUserDocument } from "types/security";
  * @param myUser The current user object to check
  */
 export function isAdmin(myUser: MyUserDocument): boolean {
-  return (myUser.roles.includes("admin"));
+  return (myUser.roles?.includes("admin"));
 }
 
 /**
@@ -14,7 +14,7 @@ export function isAdmin(myUser: MyUserDocument): boolean {
  * @param myUser The current user object to check
  */
  export function isModerator(myUser: MyUserDocument): boolean {
-  return (myUser.roles.includes("moderator"));
+  return (myUser.roles?.includes("moderator"));
 }
 
 /**
