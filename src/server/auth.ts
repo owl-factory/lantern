@@ -1,9 +1,8 @@
+import { toFaunaRef } from "database/conversion/fauna/to";
 import { Expr } from "faunadb";
 import { NextApiRequest } from "next";
 import { MyUserDocument, UserRole, UserRoleReadable } from "types/security";
 import { getSession } from "utilities/auth";
-import { toFaunaRef } from "utilities/fauna";
-
 export function getMyUser(req: NextApiRequest): MyUserDocument {
   // TODO - have this working on page refresh
   const myUser = getSession({req});
@@ -54,7 +53,7 @@ function getHighestRole(myUser: MyUserDocument): UserRole {
 
   const highest = UserRole.User;
   return highest;
-  
+
 }
 
 export function requireLogin(myUser: MyUserDocument): void {

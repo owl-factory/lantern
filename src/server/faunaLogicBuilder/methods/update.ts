@@ -2,12 +2,13 @@ import { DocumentReference } from "server/logic";
 import { AnyDocument } from "types/documents";
 import { FaunaDocument } from "types/fauna";
 import { getServerClient } from "utilities/db";
-import { fromFauna, toFauna, toFaunaRef } from "utilities/fauna";
 import { canAct, canActStatic, getRole } from "../helpers";
 import { FunctionConfig } from "../types";
 import { Expr, query as q } from "faunadb";
 import { MyUserDocument } from "types/security";
 import { determineAccessibleFields, trimRestrictedFields } from "utilities/security";
+import { toFauna, toFaunaRef } from "database/conversion/fauna/to";
+import { fromFauna } from "database/conversion/fauna/from";
 
 /**
  * Deletes a single document from the database

@@ -1,17 +1,19 @@
+import { fromFauna, parseIndexResponse } from "database/conversion/fauna/from";
+import { toFauna } from "database/conversion/fauna/to";
 import { Expr, query as q } from "faunadb";
 import { parse } from "path";
+import { Ref64 } from "types";
 import { AnyDocument } from "types/documents";
 import { FaunaDocument, FaunaIndexOptions, FaunaIndexResponse } from "types/fauna";
 import { getClient, getServerClient } from "utilities/db";
 import { decode } from "utilities/encoding";
-import { fromFauna, parseIndexResponse, toFauna } from "utilities/fauna";
 
 // Defines an ID placed into our custom Ref64 format
-export type Ref64 = string;
 enum Collection {
 
 }
 
+// TODO - move these
 export enum FaunaIndex {
   CampaignsByUser="my_campaigns_asc",
 }

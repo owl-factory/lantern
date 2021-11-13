@@ -15,8 +15,7 @@ const USER_VIEW_FIELDS = [
 
 import { isOwner } from "server/logic/security";
 import { UserRole } from "types/security";
-import * as fauna from "src/database/fauna";
-import { FaunaIndex, Ref64 } from "src/database/fauna";
+import * as fauna from "database/integration/fauna";
 import { Access, ReadFields, RequireLogin, SetFields } from "src/database/decorators/modifiers";
 import { Fetch, FetchMany, Index, Update } from "src/database/decorators/crud";
 import { Collection, DatabaseLogic } from "./AbstractDatabaseLogic";
@@ -24,6 +23,8 @@ import { SecurityController } from "controllers/security";
 import { Expr } from "faunadb";
 import { decode } from "utilities/encoding";
 import { FaunaIndexOptions } from "types/fauna";
+import { Ref64 } from "types";
+import { FaunaIndex } from "database/integration/fauna";
 
 function isPlayer(doc?: AnyDocument): boolean {
   if (doc === undefined) { return false; }

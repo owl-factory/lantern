@@ -2,8 +2,8 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { setSession } from "utilities/auth";
 import { getServerClient } from "utilities/db";
 import { query as q } from "faunadb";
-import { fromFauna } from "utilities/fauna";
 import { normalize } from "utilities/strings";
+import { fromFauna } from "database/conversion/fauna/from";
 
 const checkEmail = /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i;
 

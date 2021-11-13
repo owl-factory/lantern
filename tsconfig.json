@@ -27,6 +27,8 @@
       "controllers/*": ["src/controllers/*"],
       "components": ["src/components"],
       "components/*": ["src/components/*"],
+      "database": ["src/database"], // Remove this when the database is extracted out into a new package
+      "database/*": ["src/database/*"],
       "server": ["src/server"],
       "server/*": ["src/server/*"],
       "tests": ["src/tests"],

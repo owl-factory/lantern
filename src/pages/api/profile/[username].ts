@@ -1,3 +1,4 @@
+import { toFaunaRef } from "database/conversion/fauna/to";
 import { NextApiRequest } from "next";
 import { getMyUser } from "server/auth";
 import { UserLogic } from "server/logic";
@@ -5,7 +6,6 @@ import { DocumentReference } from "server/logic/CoreModelLogic";
 import { HTTPHandler } from "server/response";
 import { createEndpoint } from "server/utilities";
 import { UserDocument } from "types/documents";
-import { toFaunaRef } from "utilities/fauna";
 
 /**
  * Gets a single profile for the profile page

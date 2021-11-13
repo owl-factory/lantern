@@ -1,4 +1,4 @@
-import { Ref64 } from "src/database/fauna";
+import { Ref64 } from "types";
 
 export enum Collection {
   Campaign = "campaigns",

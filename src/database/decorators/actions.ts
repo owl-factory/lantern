@@ -3,8 +3,8 @@ import { GiFairyWand } from "react-icons/gi";
 import { AnyDocument } from "types/documents";
 import { UserRole } from "types/security";
 import { trimFields } from "utilities/security";
-import { Ref64 } from "../fauna";
-import * as fauna from "../fauna";
+import { Ref64 } from "types";
+import * as fauna from "../integration/fauna";
 
 export type PerRoleAccess<T> = T | ((doc: AnyDocument) => T);
 export interface RoleAccess<T> {

@@ -3,11 +3,11 @@ import { AnyDocument } from "types/documents";
 import { getServerClient } from "utilities/db";
 import { IndexConfig } from "../types";
 import { query as q } from "faunadb";
-import { parseIndexResponse } from "utilities/fauna";
 import { FaunaIndexOptions, FaunaIndexResponse } from "types/fauna";
 import { canActOn, getRole } from "../helpers";
 import { MyUserDocument } from "types/security";
 import { trimRestrictedFieldsOn } from "utilities/security";
+import { parseIndexResponse } from "database/conversion/fauna/from";
 
 /**
  * Runs a standardized search function for looking through indexes with minimal hassle. This should not be used directly

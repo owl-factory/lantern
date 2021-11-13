@@ -2,7 +2,7 @@ import { Expr, query as q } from "faunadb";
 import { DocumentReference } from "server/logic/CoreModelLogic";
 import { FaunaRef } from "types/fauna";
 import { decode } from "utilities/encoding";
-import { parseFaunaRef } from "./fromFauna";
+import { parseFaunaRef } from "./from";
 
 type AnyDocument = any;
 type AnyFaunaDocument = any; // TODO - make this a proper document

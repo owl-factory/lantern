@@ -1,6 +1,5 @@
 import { FaunaDocument } from "types/fauna";
 import { getServerClient } from "utilities/db";
-import { fromFauna, toFaunaRef } from "utilities/fauna";
 import { canAct, canActStatic, checkConfig, getRole } from "../helpers";
 import { FunctionConfig } from "../types";
 import { query as q } from "faunadb";
@@ -8,6 +7,8 @@ import { AnyDocument } from "types/documents";
 import { DocumentReference } from "server/logic";
 import { MyUserDocument } from "types/security";
 import { determineAccessibleFields, trimRestrictedFields } from "utilities/security";
+import { toFaunaRef } from "database/conversion/fauna/to";
+import { fromFauna } from "database/conversion/fauna/from";
 
 /**
  * A standard function that fetches a single document by ID from the database

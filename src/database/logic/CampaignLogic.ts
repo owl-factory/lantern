@@ -3,9 +3,8 @@ import { CampaignDocument } from "types/documents";
 import { UserRole } from "types/security";
 import { Fetch, Index } from "../decorators/crud";
 import { Access, ReadFields, RequireLogin } from "../decorators/modifiers";
-import * as fauna from "src/database/fauna";
-import { Ref64 } from "../fauna";
-
+import { Ref64 } from "types";
+import * as fauna from "../integration/fauna";
 
 class $CampaignLogic {
   /**

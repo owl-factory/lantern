@@ -1,12 +1,13 @@
 import { AnyDocument } from "types/documents";
 import { FaunaDocument } from "types/fauna";
 import { getServerClient } from "utilities/db";
-import { fromFauna, toFauna } from "utilities/fauna";
 import { FunctionConfig } from "../types";
 import { canActStatic, getRole } from "../helpers";
 import { query as q } from "faunadb";
 import { MyUserDocument } from "types/security";
 import { trimRestrictedFields } from "utilities/security";
+import { toFauna } from "database/conversion/fauna/to";
+import { fromFauna } from "database/conversion/fauna/from";
 
 /**
  * Creates a document in the configured collection

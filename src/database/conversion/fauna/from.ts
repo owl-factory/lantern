@@ -1,9 +1,9 @@
-import { Ref64 } from "src/database/fauna";
+import { Ref64 } from "types";
 import { AnyDocument } from "types/documents";
 import { FaunaIndexResponseDocument } from "types/fauna";
 import { encode } from "utilities/encoding";
-import { isFaunaDate, isFaunaRef } from "utilities/fauna";
 import { set } from "utilities/objects";
+import { isFaunaDate, isFaunaRef } from "./fauna";
 
 /**
  * Maps fauna into a flatter data format for easier readability and accessibility.

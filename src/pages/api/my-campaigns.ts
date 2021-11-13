@@ -3,7 +3,7 @@ import { getMyUser, requireLogin } from "server/auth";
 import { CampaignLogic } from "server/logic";
 import { HTTPHandler } from "server/response";
 import { createEndpoint } from "server/utilities";
-import { Ref64 } from "src/database/fauna";
+import { Ref64 } from "types";
 import { AnyDocument } from "types/documents";
 
 function parseIDsFromDocuments(docs: Partial<AnyDocument>[]) {
