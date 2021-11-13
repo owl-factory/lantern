@@ -1,6 +1,7 @@
 import { Expr, query as q } from "faunadb";
 import { DocumentReference } from "server/logic/CoreModelLogic";
 import { FaunaRef } from "types/fauna";
+import { decode } from "utilities/encoding";
 import { parseFaunaRef } from "./fromFauna";
 
 type AnyDocument = any;
@@ -103,7 +104,7 @@ export function toFaunaRef(doc: DocumentReference | FaunaRef | string, collectio
   if ("ref" in doc && doc.ref) {
     if (doc.ref instanceof Expr) { return doc.ref; }
     if (typeof doc.ref === "object" && "@ref" in doc.ref) {
-      const collectionAndID = parseFaunaRef(doc.ref);
+      const collectionAndID = decode(parseFaunaRef(doc.ref) as string);
       return q.Ref(q.Collection(collectionAndID.collection), collectionAndID.id);
     } else {
       return doc.ref as Expr;

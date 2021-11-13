@@ -63,14 +63,14 @@ const CampaignTile = observer((props: CampaignTileProps) => {
 function MyCampaigns(props: MyCampaignsProps) {
   const [ campaigns, setCampaigns ] = React.useState<CampaignDocument[]>([]);
 
-  CampaignManager.setMany(props.myCampaigns);
+  CampaignManager.setMany(props.myCampaigns || []);
 
   // Loads in data from the cache and fetches anything that's missing
   React.useEffect(() => {
     CampaignManager.load();
     RulesetManager.load();
 
-    CampaignManager.setMany(props.myCampaigns);
+    CampaignManager.setMany(props.myCampaigns || []);
     const uniqueRulesets = CampaignManager.getUniques("ruleset.id");
     RulesetController.readMissing(uniqueRulesets);
   }, []);

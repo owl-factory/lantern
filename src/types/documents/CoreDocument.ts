@@ -7,8 +7,8 @@ interface DocumentReference extends Partial<CoreDocument> {
 
 export interface CoreDocument {
   id: string;
-  collection?: string
-  ref?: FaunaRef;
+  collection?: string; // Deprecated. Will be removed with the database changes
+  ref?: any; // Deprecated. Will be removed with the database changes
   ts?: number;
 
   name?: string;

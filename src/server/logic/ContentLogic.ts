@@ -3,7 +3,7 @@ import { FaunaLogicBuilder } from "server/faunaLogicBuilder/FaunaLogicBuilder";
 import { AnyDocument, CampaignDocument } from "types/documents";
 import { MyUserDocument } from "types/security";
 import { myUserToTerm } from "./CoreModelLogic";
-import { isOwner } from "./security";
+import { isOwner_old } from "./security";
 
 const ContentLogicBuilder = new FaunaLogicBuilder("contents")
   // Globals
@@ -35,7 +35,7 @@ const ContentLogicBuilder = new FaunaLogicBuilder("contents")
   .fetchMany("fetchManyMyContent")
     .roles()
       .guest(false)
-      .user(isOwner)
+      .user(isOwner_old)
       .admin(true)
     .done()
     .fields()
@@ -83,7 +83,7 @@ function postProcessMyContent(doc: AnyDocument, myUser: MyUserDocument) {
  */
 function userViewable(myUser: MyUserDocument, doc?: AnyDocument): boolean {
   if (!doc) { return false; }
-  if (isOwner(myUser, doc)) { return true; }
+  if (isOwner_old(myUser, doc)) { return true; }
 
   return false;
 }
@@ -98,7 +98,7 @@ function userViewableFields(myUser: MyUserDocument, doc?: AnyDocument): string[]
   if (!doc) { return []; }
 
   // Is owner check
-  if (isOwner(myUser, doc)) { return ["*"]; }
+  if (isOwner_old(myUser, doc)) { return ["*"]; }
 
   // Edge case
   // TODO - can campaigns be public? Or should pre-generated campaigns be their own document type?

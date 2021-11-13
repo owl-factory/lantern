@@ -67,7 +67,7 @@ abstract class $FieldBuilder {
    * @param value The list of fields or a function to determine the list of fields for the Admin role
    * @returns Returns the current FieldBuilder
    */
-  public admin(value: FieldValue) { this.config[UserRole.ADMIN] = value; return this; }
+  public admin(value: FieldValue) { this.config[UserRole.Admin] = value; return this; }
 
   /**
    * Sets the list of fields or a function that evaluate to a list of fields that determine what the
@@ -75,7 +75,7 @@ abstract class $FieldBuilder {
    * @param value The list of fields or a function to determine the list of fields for the Guest role
    * @returns Returns the current FieldBuilder
    */
-  public guest(value: FieldValue) { this.config[UserRole.GUEST] = value; return this; }
+  public guest(value: FieldValue) { this.config[UserRole.Guest] = value; return this; }
 
   /**
    * Sets the list of fields or a function that evaluate to a list of fields that determine what the
@@ -83,7 +83,7 @@ abstract class $FieldBuilder {
    * @param value The list of fields or a function to determine the list of fields for the Moderator role
    * @returns Returns the current FieldBuilder
    */
-  public moderator(value: FieldValue) { this.config[UserRole.MOD] = value; return this; }
+  public moderator(value: FieldValue) { this.config[UserRole.Moderator] = value; return this; }
 
   /**
    * Sets the list of fields or a function that evaluate to a list of fields that determine what the
@@ -91,7 +91,7 @@ abstract class $FieldBuilder {
    * @param value The list of fields or a function to determine the list of fields for the User role
    * @returns Returns the current FieldBuilder
    */
-  public user(value: FieldValue) { this.config[UserRole.USER] = value; return this; }
+  public user(value: FieldValue) { this.config[UserRole.User] = value; return this; }
 }
 
 /**

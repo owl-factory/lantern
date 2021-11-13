@@ -17,8 +17,8 @@ export function getMyUser(req: NextApiRequest): MyUserDocument {
         id: "295863299256353286",
         collection: "users",
       }) as Expr,
-      roles: [],
-      role: UserRole.USER,
+      role: UserRole.User,
+      roles: [UserRole.User],
       isLoggedIn: true,
     };
     myUser2.ref = toFaunaRef(myUser2) as Expr;
@@ -27,13 +27,17 @@ export function getMyUser(req: NextApiRequest): MyUserDocument {
     //  return {} as MyUserDocument;
   }
   myUser.user.ref = toFaunaRef({ id: myUser.user.id, collection: "users" });
+  myUser.user.roles = [];
   if (myUser.user.id) {
     myUser.user.isLoggedIn = true;
-    myUser.user.role = UserRole.USER;
+    myUser.user.role = UserRole.User;
+    myUser.user.roles.push(UserRole.User);
   }
 
   if (myUser.user.roles.includes("admin")) {
-    myUser.user.role = UserRole.ADMIN;
+    myUser.user.role = UserRole.Admin;
+    myUser.user.roles.push(UserRole.Admin);
+
   }
 
   return myUser.user;
@@ -45,19 +49,12 @@ export function getMyUser(req: NextApiRequest): MyUserDocument {
  */
 function getHighestRole(myUser: MyUserDocument): UserRole {
   // Base cases. If not logged in or missing roles, Guest. If logged in but no roles set, User
-  if (!myUser.roles || !myUser.isLoggedIn) { return UserRole.GUEST; }
-  if (myUser.roles.length === 0 && myUser.isLoggedIn) { return UserRole.USER; }
+  if (!myUser.roles || !myUser.isLoggedIn) { return UserRole.Guest; }
+  if (myUser.roles.length === 0 && myUser.isLoggedIn) { return UserRole.User; }
 
-  let highest = 0;
-
-  myUser.roles.forEach((role: string) => {
-    UserRoleReadable.forEach((readableRole: string, index: number) => {
-      if (role.toLowerCase() === readableRole && index > highest) {
-        highest = index;
-      }
-    });
-  });
-  return highest as UserRole;
+  const highest = UserRole.User;
+  return highest;
+  
 }
 
 export function requireLogin(myUser: MyUserDocument): void {

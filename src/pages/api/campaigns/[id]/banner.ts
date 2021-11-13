@@ -13,15 +13,15 @@ import { CampaignDocument } from "types/documents";
 async function updateCampaignBanner(this: HTTPHandler, req: NextApiRequest) {
   const myUser = getMyUser(req);
   requireLogin(myUser);
-
-  const campaign = await CampaignLogic.fetch(req.query.id, myUser);
+// TODO - move this logic into the CampaignLogic
+  const campaign = await CampaignLogic.findByID(req.query.id as string);
   if (!campaign) { this.returnError(404, "Campaign not found."); return; }
   const image = await ImageLogic.create(req.body.image, req.body.method, myUser);
   if (!image) {  this.returnError(404, "Image not found."); return; }
   const campaignPatch: Partial<CampaignDocument> = { banner:
-    { id: image.id, collection: image.collection, ref: image.ref, src: image.src },
+    { id: image.id, src: image.src },
   };
-  const updatedCampaign = await CampaignLogic.updateBanner(campaign.id, campaignPatch, myUser);
+  const updatedCampaign = await CampaignLogic.updateBanner(campaign.id, campaignPatch);
 
   this.returnSuccess({ campaign: updatedCampaign, image: image });
 }

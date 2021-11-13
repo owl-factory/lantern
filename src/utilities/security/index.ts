@@ -27,6 +27,28 @@ import { read, set } from "utilities/objects";
  * @param doc The document to trim
  * @param givenAllowedFields The given fields to keep, if any
  */
+ export function trimFields<T extends {}>(doc: T, fields: string[]): Partial<T> {
+  // Wildcard. Allows for returning all fields without needing to specify each one
+  if (fields.includes("*")) { return doc; }
+
+  const approvedDoc: Partial<T> = {};
+  fields.forEach((field: string) => {
+    if (field.match(/\.\*$/g)) {
+      const tempField = field.slice(0, -2);
+      set(approvedDoc, tempField, read(doc as Record<string, unknown>, tempField));
+      return;
+    }
+    set(approvedDoc, field, read(doc as Record<string, unknown>, field));
+  });
+
+  return approvedDoc;
+}
+
+/**
+ * Trims the given document to only have the given fields. All others are discarded.
+ * @param doc The document to trim
+ * @param givenAllowedFields The given fields to keep, if any
+ */
 export function trimRestrictedFields(
   doc: Record<string, unknown>,
   givenAllowedFields: string[],

@@ -1,4 +1,5 @@
 
+import { Ref64 } from "src/database/fauna";
 import { CoreDocument, RulesetDocument, UserDocument } from "types/documents";
 import { ImageDocument } from "./assets";
 
@@ -7,8 +8,7 @@ interface PartialRulesetDocument extends Partial<RulesetDocument> {
 }
 
 interface PartialBanner extends Partial<ImageDocument> {
-  id: string,
-  collection: string,
+  id: Ref64,
   src: string
 }
 

@@ -2,7 +2,7 @@ import { FaunaLogicBuilder } from "server/faunaLogicBuilder/FaunaLogicBuilder";
 import { AnyDocument, CharacterDocument } from "types/documents";
 import { MyUserDocument } from "types/security";
 import { myUserToTerm } from "./CoreModelLogic";
-import { isOwner } from "./security";
+import { isOwner_old } from "./security";
 
 const USER_VIEW_FIELDS = [];
 
@@ -42,12 +42,12 @@ const CharacterLogicBuilder = new FaunaLogicBuilder("characters")
 .done();
 
 function userViewableFields(myUser: MyUserDocument, doc?: AnyDocument) {
-  if (isOwner(myUser, doc)) { return ["*"]; }
+  if (isOwner_old(myUser, doc)) { return ["*"]; }
   return [];
 }
 
 function userViewable(myUser: MyUserDocument, doc?: AnyDocument) {
-  if (isOwner(myUser, doc)) { return true; }
+  if (isOwner_old(myUser, doc)) { return true; }
   return false;
 }
 

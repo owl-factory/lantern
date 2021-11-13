@@ -1,6 +1,6 @@
 import { AnyDocument, ImageDocument } from "types/documents";
 import { FaunaLogicBuilder } from "server/faunaLogicBuilder/FaunaLogicBuilder";
-import { isOwner } from "./security";
+import { isOwner_old } from "./security";
 import { MyUserDocument } from "types/security";
 import { myUserToTerm } from "./CoreModelLogic";
 import { AssetSource, AssetUploadSource } from "types/enums/assetSource";
@@ -46,7 +46,7 @@ export const ImageLogic = (new FaunaLogicBuilder("images")
    */
   .delete()
     .roles()
-      .user(isOwner)
+      .user(isOwner_old)
       .admin(true)
     .done()
   .done()
