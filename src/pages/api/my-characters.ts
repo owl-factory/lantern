@@ -16,7 +16,7 @@ async function getMyCharacters(this: HTTPHandler, req: NextApiRequest) {
   requireLogin(myUser);
   const characters = await CharacterLogic.fetchMyCharacters([], { size: 20 }, myUser);
   const campaignIDs = getUniques(characters, "campaign.id");
-  const campaigns = CampaignLogic.fetchMany(campaignIDs, myUser);
+  const campaigns = CampaignLogic.findManyByIDs(campaignIDs);
   this.returnSuccess({ characters: characters, campaigns });
 }
 

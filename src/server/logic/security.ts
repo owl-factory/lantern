@@ -1,12 +1,13 @@
+import { SecurityController } from "controllers/security";
 import { AnyDocument } from "types/documents";
-import { MyUserDocument } from "types/security";
+import { MyUserDocument, UserRole } from "types/security";
 
 /**
  * Checks if the current user is an admin
  * @param myUser The current user object to check
  */
 export function isAdmin(myUser: MyUserDocument): boolean {
-  return (myUser.roles.includes("admin"));
+  return (myUser.roles?.includes(UserRole.Admin));
 }
 
 /**
@@ -14,16 +15,26 @@ export function isAdmin(myUser: MyUserDocument): boolean {
  * @param myUser The current user object to check
  */
  export function isModerator(myUser: MyUserDocument): boolean {
-  return (myUser.roles.includes("moderator"));
+  return (myUser.roles.includes(UserRole.Moderator));
 }
 
 /**
  * Checks if the current user is the owner of the current document
  * @param doc The document to check
- * @param myUser The current user owbject to check for ownership
+ * @param myUser The current user object to check for ownership
  */
-export function isOwner(myUser: MyUserDocument, doc?: AnyDocument): boolean {
+export function isOwner_old(myUser: MyUserDocument, doc?: AnyDocument): boolean {
   if (!doc) { return false; }
   return (!doc.ownedBy || doc.ownedBy.id === myUser.id);
+}
+
+/**
+ * Checks if the current user is the owner of the current document
+ * @param doc The document to check
+ * @param myUser The current user object to check for ownership
+ */
+ export function isOwner(doc?: AnyDocument): boolean {
+  if (!doc) { return false; }
+  return (!doc.ownedBy || doc.ownedBy.id === SecurityController.currentUser?.id);
 }
 

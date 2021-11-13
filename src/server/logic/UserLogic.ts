@@ -1,5 +1,12 @@
 import { FaunaLogicBuilder } from "server/faunaLogicBuilder/FaunaLogicBuilder";
-import { isOwner } from "./security";
+import { Ref64 } from "src/database/fauna";
+import { UserDocument } from "types/documents";
+import { isOwner, isOwner_old } from "./security";
+import * as fauna from "src/database/fauna";
+import { UserRole } from "types/security";
+import { Collection, DatabaseLogic } from "./AbstractDatabaseLogic";
+import { Delete, Fetch } from "src/database/decorators/crud";
+import { Access, ReadFields } from "src/database/decorators/modifiers";
 
 const guestFields = [
   "username",
@@ -18,6 +25,30 @@ const updateFields = [
   "activelySeeking",
   "isPrivate",
 ];
+
+class $UserLogic implements DatabaseLogic<UserDocument> {
+  public collection = Collection.User;
+
+  @Delete
+  @Access({[UserRole.User]: isOwner, [UserRole.Admin]: true})
+  public async delete(id: Ref64): Promise<UserDocument> {
+    const user = await fauna.deleteOne<UserDocument>(id);
+    if (user === undefined) { throw {code: 500, message: "An unexpected error occured while deleting the document"}; }
+    return user;
+  }
+
+
+  @Fetch
+  @Access({[UserRole.Guest]: true})
+  @ReadFields(["*"])
+  public async findByID(id: Ref64): Promise<UserDocument> {
+    const user = await fauna.findByID<UserDocument>(id);
+    if (user === undefined) { throw { code: 404, message: `A user with ID ${id} could not be found` }; }
+    return user;
+  }
+
+}
+
 const UserLogicBuilder = new FaunaLogicBuilder("users");
 export const UserLogic = UserLogicBuilder
   // Globals
@@ -79,7 +110,7 @@ export const UserLogic = UserLogicBuilder
    */
   .update()
     .roles()
-      .user(isOwner)
+      .user(isOwner_old)
       .admin(true)
     .done()
     .setFields()
@@ -95,7 +126,7 @@ export const UserLogic = UserLogicBuilder
       .user(["avatar.ref", "avatar.src"])
     .done()
     .roles()
-      .user(isOwner)
+      .user(isOwner_old)
       .admin(true)
     .done()
   .done()

@@ -12,7 +12,7 @@ import { createEndpoint } from "server/utilities";
 async function getCampaigns(this: HTTPHandler, req: NextApiRequest) {
   const myUser = getMyUser(req);
   requireLogin(myUser);
-  const campaigns = await CampaignLogic.fetchMany(req.body.ids, myUser);
+  const campaigns = await CampaignLogic.findManyByIDs(req.body.ids);
   this.returnSuccess({ docs: campaigns });
 }
 
