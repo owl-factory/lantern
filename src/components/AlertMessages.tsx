@@ -41,7 +41,7 @@ function TotalAlerts({ size }: TotalAlertsProps) {
   if (size <= 3) { return <></>; }
   return (
     <div>
-      And {size} more alerts.&nbsp;
+      And {size - 3} more alert{ size > 3 + 1 ? "s" : ""}.&nbsp;
       <a href="#" onClick={() => AlertController.clear()}>Clear?</a>
     </div>
   );

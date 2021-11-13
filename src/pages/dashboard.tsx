@@ -7,6 +7,7 @@ import { NextPage, NextPageContext } from "next";
 import { rest } from "utilities/request";
 import { Button, Col, Row } from "components/style";
 import { Card } from "components/style/card";
+import { AlertController } from "controllers/AlertController";
 
 interface DashboardProps {
   session?: any;
@@ -25,6 +26,7 @@ const Dashboard: NextPage<DashboardProps> = (props: any) => {
       <h4>My Characters</h4>
 
       <h4>Temp Profile Stuff</h4>
+      <Button onClick={() =>AlertController.success("Testing")}>Test Alerts</Button>
     </Page>
   );
 };
