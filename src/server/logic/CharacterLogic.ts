@@ -1,10 +1,62 @@
 import { FaunaLogicBuilder } from "server/faunaLogicBuilder/FaunaLogicBuilder";
+import { Ref64 } from "types";
+import * as fauna from "database/integration/fauna";
 import { AnyDocument, CharacterDocument } from "types/documents";
-import { MyUserDocument } from "types/security";
+import { MyUserDocument, UserRole } from "types/security";
+import { DatabaseLogic } from "./AbstractDatabaseLogic";
 import { myUserToTerm } from "./CoreModelLogic";
-import { isOwner_old } from "./security";
+import { isOwner, isOwner_old } from "./security";
+import { Collection, FaunaIndex } from "fauna";
+import { Fetch, FetchMany, Index } from "database/decorators/crud";
+import { Access, ReadFields } from "database/decorators/modifiers";
+import { FaunaIndexOptions } from "types/fauna";
+import { SecurityController } from "controllers/security";
 
 const USER_VIEW_FIELDS = [];
+
+class $CharacterLogic implements DatabaseLogic<CharacterDocument> {
+  public collection = Collection.Characters;
+
+  @Fetch
+  @Access({[UserRole.User]: userViewable, [UserRole.Admin]: true})
+  @ReadFields({[UserRole.User]: userViewableFields, [UserRole.Admin]: ["*"]})
+  public async findByID(id: Ref64): Promise<CharacterDocument> {
+    const character = await fauna.findByID<CharacterDocument>(id);
+    if (character === undefined) { throw { code: 404, message: `The character with id ${id} could not be found.`}; }
+    return character;
+  }
+
+  @FetchMany
+  @Access({[UserRole.User]: userViewable, [UserRole.Admin]: true})
+  @ReadFields({[UserRole.User]: userViewableFields, [UserRole.Admin]: ["*"]})
+  public async findManyByIDs(ids: Ref64[]): Promise<CharacterDocument[]> {
+    const characters = await fauna.findManyByIDs<CharacterDocument>(ids);
+    return characters;
+  }
+
+  @Index
+  @Access({[UserRole.Admin]: true})
+  @ReadFields(["*"])
+  public async searchCharactersByUser(userID: Ref64, options?: FaunaIndexOptions): Promise<CharacterDocument[]> {
+    return this._searchCharactersByUser(userID, options);
+  }
+
+  @Index
+  @Access({[UserRole.User]: true})
+  @ReadFields(["*"])
+  public async searchMyCharacters(options?: FaunaIndexOptions): Promise<CharacterDocument[]> {
+    const userID = SecurityController.currentUser?.id;
+    if (!userID) { return []; }
+    return this._searchCharactersByUser(userID, options);
+  }
+
+  private async _searchCharactersByUser(userID: Ref64, options?: FaunaIndexOptions): Promise<CharacterDocument[]> {
+    const characters = await fauna.searchByIndex<CharacterDocument>(FaunaIndex.CharactersByUser, [userID], options);
+    return characters;
+  }
+}
+
+export const CharacterLogic = new $CharacterLogic();
 
 const CharacterLogicBuilder = new FaunaLogicBuilder("characters")
   .fields()
@@ -41,14 +93,14 @@ const CharacterLogicBuilder = new FaunaLogicBuilder("characters")
   .done()
 .done();
 
-function userViewableFields(myUser: MyUserDocument, doc?: AnyDocument) {
-  if (isOwner_old(myUser, doc)) { return ["*"]; }
+function userViewableFields(doc?: AnyDocument) {
+  if (isOwner(doc)) { return ["*"]; }
   return [];
 }
 
-function userViewable(myUser: MyUserDocument, doc?: AnyDocument) {
-  if (isOwner_old(myUser, doc)) { return true; }
+function userViewable(doc?: AnyDocument) {
+  if (isOwner(doc)) { return true; }
   return false;
 }
 
-export const CharacterLogic = CharacterLogicBuilder.export();
+// export const CharacterLogic = CharacterLogicBuilder.export();

@@ -3,10 +3,12 @@ import { Ref64 } from "types";
 import { UserDocument } from "types/documents";
 import { isOwner, isOwner_old } from "./security";
 import * as fauna from "database/integration/fauna";
+import { FaunaIndex } from "fauna";
 import { UserRole } from "types/security";
 import { Collection, DatabaseLogic } from "./AbstractDatabaseLogic";
-import { Delete, Fetch } from "src/database/decorators/crud";
-import { Access, ReadFields } from "src/database/decorators/modifiers";
+import { Delete, Fetch, FetchMany, Index, Update } from "database/decorators/crud";
+import { Access, ReadFields, SetFields } from "database/decorators/modifiers";
+import { FaunaIndexOptions } from "types/fauna";
 
 const guestFields = [
   "username",
@@ -47,10 +49,39 @@ class $UserLogic implements DatabaseLogic<UserDocument> {
     return user;
   }
 
+  @FetchMany
+  @Access({[UserRole.Guest]: true})
+  @ReadFields(["*"])
+  public async findManyByIDs(ids: Ref64[]): Promise<UserDocument[]> {
+    const users = await fauna.findManyByIDs<UserDocument>(ids);
+    return users;
+  }
+
+  @Index
+  @Access({[UserRole.Guest]: true})
+  @ReadFields(["*"])
+  public async findByUsername(username: string, options?: FaunaIndexOptions): Promise<UserDocument[]> {
+    const users = await fauna.searchByIndex<UserDocument>(FaunaIndex.UsersByUsername, [username], options);
+    return users;
+  }
+
+  @Update
+  @Access({[UserRole.User]: isOwner, [UserRole.Admin]: true})
+  @ReadFields(["*"])
+  @SetFields({[UserRole.User]: updateFields})
+  public async updateOne(id: Ref64, doc: Partial<UserDocument>): Promise<UserDocument> {
+    const user = await fauna.updateOne<UserDocument>(id, doc);
+    if (user === undefined) { 
+      throw { code: 500, message: "An unexpected error occured while attepting to update the user."};
+    }
+    return user;
+  }
 }
 
+export const UserLogic = new $UserLogic();
+
 const UserLogicBuilder = new FaunaLogicBuilder("users");
-export const UserLogic = UserLogicBuilder
+export const UserLogic_old = UserLogicBuilder
   // Globals
   .fields()
     .guest(guestFields)

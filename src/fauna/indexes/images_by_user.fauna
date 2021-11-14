@@ -1,0 +1,10 @@
+CreateIndex({
+  name: "images_by_user",
+  source: Collection("images"),
+  terms: [{ field: ["data", "ownedBy", "ref"]} ],
+  values: [
+    { field: ["ref"], reverse: true},
+    { field: ["data", "name"]},
+    { field: ["data", "src"]}
+  ],
+})

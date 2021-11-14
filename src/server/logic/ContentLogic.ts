@@ -1,9 +1,62 @@
 
+import { Fetch, FetchMany, Index } from "database/decorators/crud";
+import { Access, ReadFields } from "database/decorators/modifiers";
+import { Collection, FaunaIndex } from "fauna";
 import { FaunaLogicBuilder } from "server/faunaLogicBuilder/FaunaLogicBuilder";
-import { AnyDocument, CampaignDocument } from "types/documents";
-import { MyUserDocument } from "types/security";
+import { Ref64 } from "types";
+import { AnyDocument, CampaignDocument, ContentDocument } from "types/documents";
+import { MyUserDocument, UserRole } from "types/security";
+import { DatabaseLogic } from "./AbstractDatabaseLogic";
 import { myUserToTerm } from "./CoreModelLogic";
-import { isOwner_old } from "./security";
+import { isOwner, isOwner_old } from "./security";
+import * as fauna from "database/integration/fauna";
+import { FaunaIndexOptions } from "types/fauna";
+import { SecurityController } from "controllers/security";
+
+class $ContentLogic implements DatabaseLogic<ContentDocument> {
+  public collection = Collection.Contents;
+
+  @Fetch
+  @Access({[UserRole.User]: userViewable, [UserRole.Admin]: true})
+  @ReadFields({[UserRole.User]: userViewableFields, [UserRole.Admin]: ["*"]})
+  public async findByID(id: Ref64): Promise<ContentDocument> {
+    const content = await fauna.findByID<ContentDocument>(id);
+    if (content === undefined) { throw { code: 404, message: `The content with id ${id} could not be found`}; }
+    return content;
+  }
+
+  @FetchMany
+  @Access({[UserRole.User]: userViewable, [UserRole.Admin]: true})
+  @ReadFields({[UserRole.User]: userViewableFields, [UserRole.Admin]: ["*"]})
+  public async findManyByIDs(ids: Ref64[]): Promise<ContentDocument[]> {
+    const contents = await fauna.findManyByIDs<ContentDocument>(ids);
+    return contents;
+  }
+
+
+  @Index
+  @Access({[UserRole.Admin]: true})
+  @ReadFields(["*"])
+  public async searchntByUser(userID: Ref64, options?: FaunaIndexOptions): Promise<ContentDocument[]> {
+    return this._searchContentByUser(userID, options);
+  }
+
+  @Index
+  @Access({[UserRole.User]: isOwner, [UserRole.Admin]: true})
+  @ReadFields(["*"])
+  public async searchMyContent(options?: FaunaIndexOptions): Promise<ContentDocument[]> {
+    const userID = SecurityController.currentUser?.id;
+    if (!userID) { return []; }
+    return this._searchContentByUser(userID, options);
+  }
+
+  private async _searchContentByUser(userID: Ref64, options?: FaunaIndexOptions): Promise<ContentDocument[]> {
+    const content = await fauna.searchByIndex<ContentDocument>(FaunaIndex.ContentByUser, [userID], options);
+    return content;
+  }
+}
+
+
 
 const ContentLogicBuilder = new FaunaLogicBuilder("contents")
   // Globals
@@ -81,9 +134,9 @@ function postProcessMyContent(doc: AnyDocument, myUser: MyUserDocument) {
  * @param doc The document the user is attempting to view
  * @returns True if the user may view any part of the document, false otherwise
  */
-function userViewable(myUser: MyUserDocument, doc?: AnyDocument): boolean {
+function userViewable(doc?: AnyDocument): boolean {
   if (!doc) { return false; }
-  if (isOwner_old(myUser, doc)) { return true; }
+  if (isOwner(doc)) { return true; }
 
   return false;
 }
@@ -94,11 +147,11 @@ function userViewable(myUser: MyUserDocument, doc?: AnyDocument): boolean {
  * @param doc The document the user is attempting to view
  * @returns An array of strings indicating what fields the user is able to see. *s indicate any field at that level
  */
-function userViewableFields(myUser: MyUserDocument, doc?: AnyDocument): string[] {
+function userViewableFields(doc?: AnyDocument): string[] {
   if (!doc) { return []; }
 
   // Is owner check
-  if (isOwner_old(myUser, doc)) { return ["*"]; }
+  if (isOwner(doc)) { return ["*"]; }
 
   // Edge case
   // TODO - can campaigns be public? Or should pre-generated campaigns be their own document type?

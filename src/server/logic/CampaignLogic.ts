@@ -20,11 +20,9 @@ import { Access, ReadFields, RequireLogin, SetFields } from "src/database/decora
 import { Fetch, FetchMany, Index, Update } from "src/database/decorators/crud";
 import { Collection, DatabaseLogic } from "./AbstractDatabaseLogic";
 import { SecurityController } from "controllers/security";
-import { Expr } from "faunadb";
-import { decode } from "utilities/encoding";
 import { FaunaIndexOptions } from "types/fauna";
 import { Ref64 } from "types";
-import { FaunaIndex } from "database/integration/fauna";
+import { FaunaIndex } from "fauna";
 
 function isPlayer(doc?: AnyDocument): boolean {
   if (doc === undefined) { return false; }
