@@ -1,6 +1,6 @@
+import { SecurityController } from "controllers/security";
 import { NextApiRequest } from "next";
-import { getMyUser, requireLogin } from "server/auth";
-import { UserLogic } from "server/logic";
+import { ImageLogic, UserLogic } from "server/logic";
 import { HTTPHandler } from "server/response";
 import { createEndpoint } from "server/utilities";
 
@@ -10,14 +10,13 @@ import { createEndpoint } from "server/utilities";
  * @param req The request to the server
  */
 async function updateProfileImage(this: HTTPHandler, req: NextApiRequest) {
-  const myUser = getMyUser(req);
-  requireLogin(myUser);
-
-  const user = await UserLogic.fetchUser(myUser, myUser);
+  const user = await UserLogic.findByID(SecurityController.currentUser?.id || "");
   if (!user) { this.returnError(404, "User not found."); return; }
-  const newImageAndUser = await UserLogic.updateUserImage(user, req.body, myUser);
+  const image = await ImageLogic.findByID(req.body.avatar.id);
+  if (!image) { this.returnError(404, "Image not found"); return; }
+  const newUser = await UserLogic.updateAvatar(user.id, req.body);
 
-  this.returnSuccess({ user: newImageAndUser.user, image: newImageAndUser.image });
+  this.returnSuccess({ user: newUser });
 }
 
 export default createEndpoint({PATCH: updateProfileImage});

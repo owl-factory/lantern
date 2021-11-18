@@ -1,11 +1,10 @@
-import { toFaunaRef } from "database/conversion/fauna/to";
 import { NextApiRequest } from "next";
 import { getMyUser } from "server/auth";
 import { UserLogic } from "server/logic";
-import { DocumentReference } from "server/logic/CoreModelLogic";
 import { HTTPHandler } from "server/response";
 import { createEndpoint } from "server/utilities";
 import { UserDocument } from "types/documents";
+import { getUniques } from "utilities/arrays";
 
 /**
  * Gets a single profile for the profile page
@@ -13,15 +12,13 @@ import { UserDocument } from "types/documents";
  * @param req The request to the server
  */
 async function getProfile(this: HTTPHandler, req: NextApiRequest) {
-  const myUser = getMyUser(req);
-
-  const userSearch = await UserLogic.findByUsername(req.query.username as string, {}, myUser) as UserDocument[];
+  const userSearch = await UserLogic.searchByUsername(req.query.username as string) as UserDocument[];
   if (userSearch.length === 0) { this.returnError(404, "The given profile was not found."); }
 
-  const user = await UserLogic.fetch(userSearch[0].id, myUser);
+  const user = await UserLogic.findByID(userSearch[0].id);
 
   if (user.recentPlayers) {
-    user.recentPlayers = await UserLogic.fetchMany(user.recentPlayers as DocumentReference[], myUser);
+    user.recentPlayers = await UserLogic.findManyByIDs(getUniques(user.recentPlayers, "id"));
   }
 
   this.returnSuccess({ user });
@@ -33,10 +30,7 @@ async function getProfile(this: HTTPHandler, req: NextApiRequest) {
  * @param req The request to the server
  */
 async function updateProfile(this: HTTPHandler, req: NextApiRequest) {
-  const myUser = getMyUser(req);
-
-  req.body.ref = toFaunaRef({ id: req.body.id, collection: "users" });
-  const user = await UserLogic.update(req.body.id, req.body, myUser);
+  const user = await UserLogic.updateOne(req.body.id, req.body);
   this.returnSuccess({ user });
 }
 

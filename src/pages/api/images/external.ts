@@ -10,9 +10,7 @@ import { getMyUser, requireLogin } from "server/auth";
  * @param req The request to the server
  */
 async function createExternalImage(this: HTTPHandler, req: NextApiRequest) {
-  const myUser = getMyUser(req);
-  requireLogin(myUser);
-  const image = await ImageLogic.createExternalImage(req.body, myUser);
+  const image = await ImageLogic.createExternalLink(req.body);
 
   this.returnSuccess({ image });
 }

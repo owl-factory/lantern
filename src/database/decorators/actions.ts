@@ -29,10 +29,8 @@ export interface Descriptor {
  export function checkLogin(descriptor: Descriptor): void {
   // Nabs the login requirement. If requireLogin is present, use it, but then default to true
   const isLoginRequired = descriptor.requireLogin !== undefined ?  descriptor.requireLogin : false;
-  console.log(SecurityController)
   if (isLoginRequired === false) { return; }
   if (!SecurityController.loggedIn) {
-    console.log("oops")
     throw { code: 401, message: "You must be logged in to view this resource."};
   }
 }

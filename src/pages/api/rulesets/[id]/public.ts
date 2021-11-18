@@ -1,5 +1,4 @@
 import { NextApiRequest } from "next";
-import { getMyUser, requireLogin } from "server/auth";
 import { RulesetLogic } from "server/logic";
 import { HTTPHandler } from "server/response";
 import { createEndpoint } from "server/utilities";
@@ -10,9 +9,7 @@ import { createEndpoint } from "server/utilities";
  * @param req The request to the server
  */
 async function setRulesetIsPublic(this: HTTPHandler, req: NextApiRequest) {
-  const myUser = getMyUser(req);
-  requireLogin(myUser);
-  const ruleset = await RulesetLogic.setPublic(req.query.id, req.body, myUser);
+  const ruleset = await RulesetLogic.updateIsPublic(req.query.id as string, req.body);
   this.returnSuccess({ ruleset: ruleset });
 }
 

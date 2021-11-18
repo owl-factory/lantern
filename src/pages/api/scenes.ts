@@ -1,6 +1,6 @@
 import { NextApiRequest } from "next";
 import { getMyUser, requireLogin } from "server/auth";
-import { CampaignLogic, RulesetLogic } from "server/logic";
+import { CampaignLogic } from "server/logic";
 import { SceneLogic } from "server/logic/SceneLogic";
 import { HTTPHandler } from "server/response";
 import { createEndpoint } from "server/utilities";
@@ -19,7 +19,7 @@ async function createScene(this: HTTPHandler, req: NextApiRequest) {
     throw { code: 404, message: "The campaign does not exist" };
   }
 
-  const scene = await SceneLogic.create(req.body, myUser);
+  const scene = await SceneLogic.createOne(req.body);
   this.returnSuccess({ scene });
 }
 

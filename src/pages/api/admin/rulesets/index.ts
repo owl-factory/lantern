@@ -10,8 +10,7 @@ import { getMyUser } from "server/auth";
  * @param req The request to the server
  */
 async function getRulesets(this: HTTPHandler, req: NextApiRequest) {
-  const myUser = getMyUser(req);
-  const rulesets = await RulesetLogic.fetchOfficialRulesets([true], {}, myUser);
+  const rulesets = await RulesetLogic.searchRulesetsByOfficial(true);
 
   this.returnSuccess({ rulesets: rulesets });
 }

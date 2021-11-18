@@ -1,10 +1,74 @@
 
+import { Collection, FaunaIndex } from "fauna";
 import { FaunaLogicBuilder } from "server/faunaLogicBuilder/FaunaLogicBuilder";
-import { CampaignDocument, UserDocument } from "types/documents";
-import { MyUserDocument } from "types/security";
+import { Ref64 } from "types";
+import { CampaignDocument, RulesetDocument, UserDocument } from "types/documents";
+import { MyUserDocument, UserRole } from "types/security";
+import { DatabaseLogic } from "./AbstractDatabaseLogic";
+import * as fauna from "database/integration/fauna";
+import { Create, Fetch, FetchMany, Index, Update } from "database/decorators/crud";
+import { Access, ReadFields, SetFields } from "database/decorators/modifiers";
+import { FaunaIndexOptions } from "types/fauna";
 
 const USER_VIEW_FIELDS: string[] = [
 ];
+
+class $RulesetLogic implements DatabaseLogic<RulesetDocument> {
+  public collection = Collection.Rulesets;
+
+  @Create
+  @Access({[UserRole.Admin]: true})
+  @ReadFields(["*"])
+  @SetFields(["name", "isOfficial"])
+  public async createOne(doc: Partial<RulesetDocument>): Promise<RulesetDocument> {
+    const ruleset = await fauna.createOne<RulesetDocument>(this.collection, doc);
+    if (ruleset === undefined) {
+      throw {code: 500, message: "An unexpected error occured while creating the document"};
+    }
+    return ruleset;
+  }
+
+  @Fetch
+  @Access({[UserRole.Guest]: true})
+  @ReadFields(["*"])
+  public async findByID(id: Ref64): Promise<RulesetDocument> {
+    const ruleset = await fauna.findByID<RulesetDocument>(id);
+    if (ruleset === undefined) { throw { code: 404, message: `A ruleset with ID ${id} could not be found` }; }
+    return ruleset;
+  }
+
+  @FetchMany
+  @Access({[UserRole.Guest]: true})
+  @ReadFields(["*"])
+  public async findManyByIDs(ids: Ref64[]): Promise<RulesetDocument[]> {
+    const rulesets = await fauna.findManyByIDs<RulesetDocument>(ids);
+    return rulesets;
+  }
+
+  @Update
+  @Access({[UserRole.Admin]: true})
+  @ReadFields({[UserRole.Admin]: ["*"]})
+  @SetFields({[UserRole.Admin]: ["isPublic"]})
+  public async updateIsPublic(id: Ref64, doc: Partial<RulesetDocument>): Promise<RulesetDocument> {
+    const ruleset = await fauna.updateOne(id, doc);
+    if (ruleset === undefined) {
+      throw {code: 500, message: "An unexpected error occured while updating the document"};
+    }
+    return ruleset;
+  }
+
+  @Index
+  @Access({[UserRole.Guest]: true})
+  @ReadFields(["*"])
+  public async searchRulesetsByOfficial(isOfficial: boolean, options?: FaunaIndexOptions) {
+    const rulesets = fauna.searchByIndex(FaunaIndex.RulesetsByOfficial, [isOfficial], options);
+    return rulesets;
+  }
+
+}
+
+export const RulesetLogic = new $RulesetLogic();
+
 const RulesetLogicBuilder = new FaunaLogicBuilder("rulesets")
   // Globals
   // Users are only able to view campaigns if they are a player, and all fields if they are an owner/GM
@@ -63,7 +127,7 @@ const RulesetLogicBuilder = new FaunaLogicBuilder("rulesets")
 
 
 .done();
-export const RulesetLogic = RulesetLogicBuilder.export();
+// export const RulesetLogic = RulesetLogicBuilder.export();
 
 /**
  * Determines if a standard user is able to view any part of a document

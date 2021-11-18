@@ -3,9 +3,9 @@ import { Ref64 } from "types";
 import { UserDocument } from "types/documents";
 import { isOwner, isOwner_old } from "./security";
 import * as fauna from "database/integration/fauna";
-import { FaunaIndex } from "fauna";
+import { Collection, FaunaIndex } from "fauna";
 import { UserRole } from "types/security";
-import { Collection, DatabaseLogic } from "./AbstractDatabaseLogic";
+import { DatabaseLogic } from "./AbstractDatabaseLogic";
 import { Delete, Fetch, FetchMany, Index, Update } from "database/decorators/crud";
 import { Access, ReadFields, SetFields } from "database/decorators/modifiers";
 import { FaunaIndexOptions } from "types/fauna";
@@ -29,7 +29,7 @@ const updateFields = [
 ];
 
 class $UserLogic implements DatabaseLogic<UserDocument> {
-  public collection = Collection.User;
+  public collection = Collection.Users;
 
   @Delete
   @Access({[UserRole.User]: isOwner, [UserRole.Admin]: true})
@@ -60,7 +60,7 @@ class $UserLogic implements DatabaseLogic<UserDocument> {
   @Index
   @Access({[UserRole.Guest]: true})
   @ReadFields(["*"])
-  public async findByUsername(username: string, options?: FaunaIndexOptions): Promise<UserDocument[]> {
+  public async searchByUsername(username: string, options?: FaunaIndexOptions): Promise<UserDocument[]> {
     const users = await fauna.searchByIndex<UserDocument>(FaunaIndex.UsersByUsername, [username], options);
     return users;
   }
@@ -76,90 +76,18 @@ class $UserLogic implements DatabaseLogic<UserDocument> {
     }
     return user;
   }
+
+  @Update
+  @Access({[UserRole.User]: isOwner, [UserRole.Admin]: true})
+  @ReadFields(["*"])
+  @SetFields({[UserRole.User]: ["avatar.ref", "avatar.src"]})
+  public async updateAvatar(id: Ref64, doc: Partial<UserDocument>): Promise<UserDocument> {
+    const user = await fauna.updateOne<UserDocument>(id, doc);
+    if (user === undefined) { 
+      throw { code: 500, message: "An unexpected error occured while attepting to update the user."};
+    }
+    return user;
+  }
 }
 
 export const UserLogic = new $UserLogic();
-
-const UserLogicBuilder = new FaunaLogicBuilder("users");
-export const UserLogic_old = UserLogicBuilder
-  // Globals
-  .fields()
-    .guest(guestFields)
-    .user(["*"]) // TODO
-    .admin(["*"])
-  .done()
-  .roles()
-    .admin(true)
-  .done()
-
-  /**
-   * Disables the delete functionality for users. Users cannot be deleted, as they are far too complex,
-   * but we can disable them and retire them in the future using specific functions
-   */
-  .delete()
-    .roles()
-      .admin(false)
-    .done()
-  .done()
-
-  /**
-   * Initializes the fetch function. Guests and above can view. The fields allowed are inherited.
-   */
-  .fetch()
-    .roles()
-      .guest(true)
-    .done()
-  .done()
-
-  /**
-   * Creates a function for fetching many user documents at once. It should use the same
-   * logic and security as the ordinary fetch fucntion
-   */
-  .fetchMany()
-    .roles()
-      .guest(true)
-    .done()
-  .done()
-
-  /**
-   * Creates a function to find by username. This can be used for searches of multiple users,
-   * running login functionality, and viewing a user's page with their username in the URL
-   */
-  .search("findByUsername", "users_by_username")
-    .indexFields(["ref"])
-    .fields()
-      .guest(["*"])
-    .done()
-    .roles()
-      .guest(true)
-    .done()
-  .done()
-
-  /**
-   * Creates the update function. Only a user (or admin) can update themselves. This updates a small selection
-   * of fields
-   */
-  .update()
-    .roles()
-      .user(isOwner_old)
-      .admin(true)
-    .done()
-    .setFields()
-      .user(updateFields)
-    .done()
-  .done()
-
-  /**
-   * Allows for a user to update specifically a profile image
-   */
-  .update("updateAvatar")
-    .setFields()
-      .user(["avatar.ref", "avatar.src"])
-    .done()
-    .roles()
-      .user(isOwner_old)
-      .admin(true)
-    .done()
-  .done()
-
-.done().export();

@@ -18,11 +18,11 @@ import { UserRole } from "types/security";
 import * as fauna from "database/integration/fauna";
 import { Access, ReadFields, RequireLogin, SetFields } from "src/database/decorators/modifiers";
 import { Fetch, FetchMany, Index, Update } from "src/database/decorators/crud";
-import { Collection, DatabaseLogic } from "./AbstractDatabaseLogic";
+import { DatabaseLogic } from "./AbstractDatabaseLogic";
 import { SecurityController } from "controllers/security";
 import { FaunaIndexOptions } from "types/fauna";
 import { Ref64 } from "types";
-import { FaunaIndex } from "fauna";
+import { Collection, FaunaIndex } from "fauna";
 
 function isPlayer(doc?: AnyDocument): boolean {
   if (doc === undefined) { return false; }
@@ -36,7 +36,7 @@ function isPlayer(doc?: AnyDocument): boolean {
 }
 
 class $CampaignLogic implements DatabaseLogic<CampaignDocument> {
-  public collection = Collection.Campaign;
+  public collection = Collection.Campaigns;
 
   /**
    * Fetches one campaign from its ID

@@ -25,7 +25,7 @@ export function idToRef(ref64ID: Ref64): Expr {
  * @param doc The Javascript object document to place into the database
  * @returns The created document
  */
-export async function createOne(collection: Collection, doc: Record<string, unknown>): Promise<AnyDocument>{
+export async function createOne<T>(collection: Collection, doc: Record<string, unknown>): Promise<T | undefined>{
   const client = getServerClient();
   const faunaDoc: FaunaDocument<unknown> = toFauna(doc);
 
@@ -33,7 +33,7 @@ export async function createOne(collection: Collection, doc: Record<string, unkn
 
   // TODO - how are errors thrown from fauna
   const parsedResult = fromFauna(faunaResult);
-  return parsedResult;
+  return parsedResult as unknown as T;
 }
 
 /**
@@ -92,7 +92,7 @@ export async function findManyByIDs<T>(ids: Ref64[]): Promise<T[]> {
  * @returns An array of documents found by the search
  */
 export async function searchByIndex<T>(
-  index: FaunaIndex, terms: (string | Expr)[], options?: FaunaIndexOptions
+  index: FaunaIndex, terms: (string | boolean | Expr)[], options?: FaunaIndexOptions
 ): Promise<T[]> {
   const client = getServerClient();
 

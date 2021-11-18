@@ -11,12 +11,10 @@ import { CampaignDocument } from "types/documents";
  * @param req The request to the server
  */
 async function updateCampaignBanner(this: HTTPHandler, req: NextApiRequest) {
-  const myUser = getMyUser(req);
-  requireLogin(myUser);
 // TODO - move this logic into the CampaignLogic
   const campaign = await CampaignLogic.findByID(req.query.id as string);
   if (!campaign) { this.returnError(404, "Campaign not found."); return; }
-  const image = await ImageLogic.create(req.body.image, req.body.method, myUser);
+  const image = await ImageLogic.create(req.body.method, req.body.image);
   if (!image) {  this.returnError(404, "Image not found."); return; }
   const campaignPatch: Partial<CampaignDocument> = { banner:
     { id: image.id, src: image.src },
