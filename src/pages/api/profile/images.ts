@@ -1,6 +1,7 @@
 import { SecurityController } from "controllers/security";
 import { NextApiRequest } from "next";
-import { ImageLogic, UserLogic } from "server/logic";
+import { ImageLogic } from "server/logic/ImageLogic";
+import { UserLogic } from "server/logic/UserLogic";
 import { HTTPHandler } from "server/response";
 import { createEndpoint } from "server/utilities";
 

@@ -1,8 +1,7 @@
 import { NextApiRequest } from "next";
 import { HTTPHandler } from "server/response";
-import { RulesetLogic } from "server/logic";
 import { createEndpoint } from "server/utilities";
-import { getMyUser } from "server/auth";
+import { RulesetLogic } from "server/logic/RulesetLogic";
 
 /**
  * Creates a single new ruleset

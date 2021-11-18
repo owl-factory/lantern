@@ -95,6 +95,7 @@ export async function searchByIndex<T>(
   index: FaunaIndex, terms: (string | boolean | Expr)[], options?: FaunaIndexOptions
 ): Promise<T[]> {
   const client = getServerClient();
+  console.log()
 
   // Queries the given index. This is automatically set up for pagination
   const result: FaunaIndexResponse = await client.query(
@@ -109,6 +110,7 @@ export async function searchByIndex<T>(
     throw { code: 500, message: `An error occured while trying to search the ${index} index` };
   }
   const docs = parseIndexResponse(result.data, FaunaIndexTerms[index]);
+  console.log(docs)
   return docs as unknown as T[];
 }
 

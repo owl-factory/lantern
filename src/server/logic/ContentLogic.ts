@@ -2,13 +2,11 @@
 import { Fetch, FetchMany, Index } from "database/decorators/crud";
 import { Access, ReadFields } from "database/decorators/modifiers";
 import { Collection, FaunaIndex } from "fauna";
-import { FaunaLogicBuilder } from "server/faunaLogicBuilder/FaunaLogicBuilder";
 import { Ref64 } from "types";
-import { AnyDocument, CampaignDocument, ContentDocument } from "types/documents";
-import { MyUserDocument, UserRole } from "types/security";
+import { AnyDocument, ContentDocument } from "types/documents";
+import { UserRole } from "types/security";
 import { DatabaseLogic } from "./AbstractDatabaseLogic";
-import { myUserToTerm } from "./CoreModelLogic";
-import { isOwner, isOwner_old } from "./security";
+import { isOwner } from "./security";
 import * as fauna from "database/integration/fauna";
 import { FaunaIndexOptions } from "types/fauna";
 import { SecurityController } from "controllers/security";
@@ -62,7 +60,7 @@ class $ContentLogic implements DatabaseLogic<ContentDocument> {
    * @returns An array of campaign document partials
    */
   @Index
-  @Access({[UserRole.User]: isOwner, [UserRole.Admin]: true})
+  @Access({[UserRole.User]: true, [UserRole.Admin]: true})
   @ReadFields(["*"])
   public async searchMyContent(options?: FaunaIndexOptions): Promise<ContentDocument[]> {
     const userID = SecurityController.currentUser?.id;
@@ -76,7 +74,9 @@ class $ContentLogic implements DatabaseLogic<ContentDocument> {
    * @returns An array of campaign document partials
    */
   private async _searchContentByUser(userID: Ref64, options?: FaunaIndexOptions): Promise<ContentDocument[]> {
-    const content = await fauna.searchByIndex<ContentDocument>(FaunaIndex.ContentByUser, [userID], options);
+    const userRef = fauna.idToRef(userID);
+    const content = await fauna.searchByIndex<ContentDocument>(FaunaIndex.ContentByUser, [userRef], options);
+    console.log(content)
     return content;
   }
 }

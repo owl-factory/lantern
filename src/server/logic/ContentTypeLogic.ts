@@ -1,4 +1,3 @@
-import { FaunaLogicBuilder } from "server/faunaLogicBuilder/FaunaLogicBuilder";
 import * as fauna from "database/integration/fauna";
 import { Fetch, FetchMany } from "database/decorators/crud";
 import { Access, ReadFields } from "database/decorators/modifiers";

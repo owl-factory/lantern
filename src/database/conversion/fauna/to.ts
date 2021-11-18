@@ -1,5 +1,4 @@
 import { Expr, query as q } from "faunadb";
-import { DocumentReference } from "server/logic/CoreModelLogic";
 import { FaunaRef } from "types/fauna";
 import { decode } from "utilities/encoding";
 import { parseFaunaRef } from "./from";
@@ -95,7 +94,7 @@ interface BaseDocument {
  * @param doc The document or reference ID
  * @param collection The collection of the reference
  */
-export function toFaunaRef(doc: DocumentReference | FaunaRef | string, collection?: string): Expr {
+export function toFaunaRef(doc: any | FaunaRef | string, collection?: string): Expr {
   if (doc === null || doc === undefined) { throw "The document or ID given was null"; }
   if (typeof doc === "string" && !collection) { throw "A given string reference requires a collection"; }
   if (typeof doc === "string") {

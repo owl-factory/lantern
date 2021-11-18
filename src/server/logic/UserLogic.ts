@@ -1,12 +1,11 @@
-import { FaunaLogicBuilder } from "server/faunaLogicBuilder/FaunaLogicBuilder";
 import { Ref64 } from "types";
 import { UserDocument } from "types/documents";
-import { isOwner, isOwner_old } from "./security";
+import { isOwner } from "./security";
 import * as fauna from "database/integration/fauna";
 import { Collection, FaunaIndex } from "fauna";
 import { UserRole } from "types/security";
 import { DatabaseLogic } from "./AbstractDatabaseLogic";
-import { Delete, Fetch, FetchMany, Index, Update } from "database/decorators/crud";
+import { Fetch, FetchMany, Index, Update } from "database/decorators/crud";
 import { Access, ReadFields, SetFields } from "database/decorators/modifiers";
 import { FaunaIndexOptions } from "types/fauna";
 

@@ -1,10 +1,8 @@
-import { FaunaLogicBuilder } from "server/faunaLogicBuilder/FaunaLogicBuilder";
 import { Ref64 } from "types";
 import * as fauna from "database/integration/fauna";
 import { AnyDocument, CharacterDocument } from "types/documents";
 import { UserRole } from "types/security";
 import { DatabaseLogic } from "./AbstractDatabaseLogic";
-import { myUserToTerm } from "./CoreModelLogic";
 import { isOwner } from "./security";
 import { Collection, FaunaIndex } from "fauna";
 import { Fetch, FetchMany, Index } from "database/decorators/crud";

@@ -1,6 +1,5 @@
 import { NextApiRequest } from "next";
-import { getMyUser } from "server/auth";
-import { UserLogic } from "server/logic";
+import { UserLogic } from "server/logic/UserLogic";
 import { HTTPHandler } from "server/response";
 import { createEndpoint } from "server/utilities";
 import { UserDocument } from "types/documents";

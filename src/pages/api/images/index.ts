@@ -1,5 +1,5 @@
 import { NextApiRequest } from "next";
-import { ImageLogic } from "server/logic";
+import { ImageLogic } from "server/logic/ImageLogic";
 import { HTTPHandler } from "server/response";
 import { createEndpoint } from "server/utilities";
 

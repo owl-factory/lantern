@@ -1,17 +1,13 @@
 
 import { Collection, FaunaIndex } from "fauna";
-import { FaunaLogicBuilder } from "server/faunaLogicBuilder/FaunaLogicBuilder";
 import { Ref64 } from "types";
-import { CampaignDocument, RulesetDocument, UserDocument } from "types/documents";
-import { MyUserDocument, UserRole } from "types/security";
+import { RulesetDocument } from "types/documents";
+import { UserRole } from "types/security";
 import { DatabaseLogic } from "./AbstractDatabaseLogic";
 import * as fauna from "database/integration/fauna";
 import { Create, Fetch, FetchMany, Index, Update } from "database/decorators/crud";
 import { Access, ReadFields, SetFields } from "database/decorators/modifiers";
 import { FaunaIndexOptions } from "types/fauna";
-
-const USER_VIEW_FIELDS: string[] = [
-];
 
 class $RulesetLogic implements DatabaseLogic<RulesetDocument> {
   public collection = Collection.Rulesets;

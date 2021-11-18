@@ -1,5 +1,5 @@
 import { NextApiRequest } from "next";
-import { CharacterLogic } from "server/logic";
+import { CharacterLogic } from "server/logic/CharacterLogic";
 import { HTTPHandler } from "server/response";
 import { createEndpoint } from "server/utilities";
 

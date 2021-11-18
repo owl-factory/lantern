@@ -1,5 +1,5 @@
 import { NextApiRequest } from "next";
-import { RulesetLogic } from "server/logic";
+import { RulesetLogic } from "server/logic/RulesetLogic";
 import { HTTPHandler } from "server/response";
 import { createEndpoint } from "server/utilities";
 
@@ -9,7 +9,7 @@ import { createEndpoint } from "server/utilities";
  * @param req The request to the server
  */
 async function getRulesets(this: HTTPHandler, req: NextApiRequest) {
-  const rulesets = await RulesetLogic.findManyByIDs(req.body.id);
+  const rulesets = await RulesetLogic.findManyByIDs(req.body.ids);
   this.returnSuccess({ docs: rulesets });
 }
 

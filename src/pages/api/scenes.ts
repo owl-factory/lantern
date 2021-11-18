@@ -1,6 +1,5 @@
 import { NextApiRequest } from "next";
-import { getMyUser, requireLogin } from "server/auth";
-import { CampaignLogic } from "server/logic";
+import { CampaignLogic } from "server/logic/CampaignLogic";
 import { SceneLogic } from "server/logic/SceneLogic";
 import { HTTPHandler } from "server/response";
 import { createEndpoint } from "server/utilities";
@@ -12,8 +11,6 @@ import { createEndpoint } from "server/utilities";
  * @param req The request to the server
  */
 async function createScene(this: HTTPHandler, req: NextApiRequest) {
-  const myUser = getMyUser(req);
-
   const campaign = CampaignLogic.findByID(req.body.campaignID);
   if (!campaign) {
     throw { code: 404, message: "The campaign does not exist" };

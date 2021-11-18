@@ -1,5 +1,4 @@
 
-import { FaunaLogicBuilder } from "server/faunaLogicBuilder/FaunaLogicBuilder";
 import * as fauna from "database/integration/fauna";
 import { UserRole } from "types/security";
 import { Create } from "database/decorators/crud";
@@ -7,11 +6,8 @@ import { Access, ReadFields, SetFields } from "database/decorators/modifiers";
 import { SceneDocument } from "types/documents";
 import { Collection } from "fauna";
 
-const USER_VIEW_FIELDS: string[] = [
-];
 
 const CREATE_FIELDS: string[] = ["name", "campaignID"];
-const UPDATE_FIELDS: string[] = ["name", "campaignID", ]
 
 class $SceneLogic {
   public collection = Collection.Scenes;

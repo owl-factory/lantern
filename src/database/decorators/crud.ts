@@ -127,7 +127,7 @@ export function Index(_target: any, _name: string, descriptor: any) {
     checkLogin(descriptor);
     checkStaticAccess(descriptor);
     let result = await original.apply(this, args);
-
+    console.log(result)
     result = checkManyDynamicAccess(descriptor, result);
     result = trimManyReadFields(descriptor, result);
     return result;

@@ -1,6 +1,6 @@
 import { NextApiRequest } from "next";
-import { getMyUser, requireLogin } from "server/auth";
-import { ImageLogic, UserLogic } from "server/logic";
+import { ImageLogic } from "server/logic/ImageLogic";
+import { UserLogic } from "server/logic/UserLogic";
 import { HTTPHandler } from "server/response";
 import { createEndpoint } from "server/utilities";
 import { UserDocument } from "types/documents";
