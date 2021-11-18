@@ -2,21 +2,24 @@ import { FaunaLogicBuilder } from "server/faunaLogicBuilder/FaunaLogicBuilder";
 import { Ref64 } from "types";
 import * as fauna from "database/integration/fauna";
 import { AnyDocument, CharacterDocument } from "types/documents";
-import { MyUserDocument, UserRole } from "types/security";
+import { UserRole } from "types/security";
 import { DatabaseLogic } from "./AbstractDatabaseLogic";
 import { myUserToTerm } from "./CoreModelLogic";
-import { isOwner, isOwner_old } from "./security";
+import { isOwner } from "./security";
 import { Collection, FaunaIndex } from "fauna";
 import { Fetch, FetchMany, Index } from "database/decorators/crud";
 import { Access, ReadFields } from "database/decorators/modifiers";
 import { FaunaIndexOptions } from "types/fauna";
 import { SecurityController } from "controllers/security";
 
-const USER_VIEW_FIELDS = [];
-
 class $CharacterLogic implements DatabaseLogic<CharacterDocument> {
   public collection = Collection.Characters;
 
+  /**
+   * Fetches one character from its ID
+   * @param id The Ref64 ID of the document to fetch
+   * @returns The character document
+   */
   @Fetch
   @Access({[UserRole.User]: userViewable, [UserRole.Admin]: true})
   @ReadFields({[UserRole.User]: userViewableFields, [UserRole.Admin]: ["*"]})
@@ -26,6 +29,11 @@ class $CharacterLogic implements DatabaseLogic<CharacterDocument> {
     return character;
   }
 
+  /**
+   * Fetches many characters from their IDs
+   * @param ids The Ref64 IDs of the documents to fetch
+   * @returns The found and allowed character documents
+   */
   @FetchMany
   @Access({[UserRole.User]: userViewable, [UserRole.Admin]: true})
   @ReadFields({[UserRole.User]: userViewableFields, [UserRole.Admin]: ["*"]})
@@ -34,6 +42,11 @@ class $CharacterLogic implements DatabaseLogic<CharacterDocument> {
     return characters;
   }
 
+  /**
+   * Fetches the partial character documents for any given user
+   * @param options Any additional options for filtering the data retrieved from the database
+   * @returns An array of character document partials
+   */
   @Index
   @Access({[UserRole.Admin]: true})
   @ReadFields(["*"])
@@ -41,6 +54,11 @@ class $CharacterLogic implements DatabaseLogic<CharacterDocument> {
     return this._searchCharactersByUser(userID, options);
   }
 
+  /**
+   * Fetches the partial character documents for the current user
+   * @param options Any additional options for filtering the data retrieved from the database
+   * @returns An array of character document partials
+   */
   @Index
   @Access({[UserRole.User]: true})
   @ReadFields(["*"])
@@ -50,6 +68,11 @@ class $CharacterLogic implements DatabaseLogic<CharacterDocument> {
     return this._searchCharactersByUser(userID, options);
   }
 
+  /**
+   * Fetches the partial campaign documents for any given user for the my characters and characters by user functions
+   * @param options Any additional options for filtering the data retrieved from the database
+   * @returns An array of campaign document partials
+   */
   private async _searchCharactersByUser(userID: Ref64, options?: FaunaIndexOptions): Promise<CharacterDocument[]> {
     const characters = await fauna.searchByIndex<CharacterDocument>(FaunaIndex.CharactersByUser, [userID], options);
     return characters;
@@ -58,40 +81,6 @@ class $CharacterLogic implements DatabaseLogic<CharacterDocument> {
 
 export const CharacterLogic = new $CharacterLogic();
 
-const CharacterLogicBuilder = new FaunaLogicBuilder("characters")
-  .fields()
-    .guest([])
-    .user(userViewableFields)
-    .admin(["*"])
-  .done()
-  .roles()
-    .guest(false)
-    .user(userViewable)
-    .admin(true)
-  .done()
-
-  /**
-   * Initializes the fetch function from defaults
-   */
-  .fetch()
-  .done()
-
-  .fetchMany()
-  .done()
-
-  /**
-   * Allows for searching through all of a user's campaigns from last played to oldest played
-   * The index fields allow for base data to populate tiles
-   */
-   .search("fetchMyCharacters", "my_characters_asc")
-    .preProcessTerms(myUserToTerm)
-    .indexFields(["updatedAt", "ref", "name", "ruleset.ref", "campaign.ref", "profile.src"])
-    // Explicitly allow the user since the index guarantees ownership/playing
-    .roles()
-      .user(true)
-    .done()
-  .done()
-.done();
 
 function userViewableFields(doc?: AnyDocument) {
   if (isOwner(doc)) { return ["*"]; }
@@ -103,4 +92,3 @@ function userViewable(doc?: AnyDocument) {
   return false;
 }
 
-// export const CharacterLogic = CharacterLogicBuilder.export();

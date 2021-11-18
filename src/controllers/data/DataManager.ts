@@ -161,6 +161,7 @@ export class DataManager<T extends CoreDocument> {
    * @param docs The documents to set in the data manager and the storage method
    */
   public setMany(docs: T[]): void {
+    if (docs === undefined) { return; }
     docs.forEach((doc: T) => {
       if (!("id" in doc)) { return; }
       const id = (doc as CoreDocument).id;

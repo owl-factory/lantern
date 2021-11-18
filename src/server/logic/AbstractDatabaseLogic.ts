@@ -1,6 +1,9 @@
 import { Collection } from "fauna";
 import { Ref64 } from "types";
 
+/**
+ * Defines the core functionality that can remain consistent between different implementations of the API logic
+ */
 export abstract class DatabaseLogic<T> {
   public abstract collection: Collection;
 

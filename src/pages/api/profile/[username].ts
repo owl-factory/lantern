@@ -15,7 +15,7 @@ async function getProfile(this: HTTPHandler, req: NextApiRequest) {
   const userSearch = await UserLogic.searchByUsername(req.query.username as string) as UserDocument[];
   if (userSearch.length === 0) { this.returnError(404, "The given profile was not found."); }
 
-  const user = await UserLogic.findByID(userSearch[0].id);
+  const user = await UserLogic.findByID(userSearch[0].id, "temp!");
 
   if (user.recentPlayers) {
     user.recentPlayers = await UserLogic.findManyByIDs(getUniques(user.recentPlayers, "id"));

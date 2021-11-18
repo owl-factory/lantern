@@ -11,6 +11,11 @@ import { Collection } from "fauna";
 class $ContentTypeLogic implements DatabaseLogic<ContentTypeDocument> {
   public collection = Collection.ContentTypes;
 
+  /**
+   * Fetches one content type from its ID
+   * @param id The Ref64 ID of the document to fetch
+   * @returns The content type document
+   */
   @Fetch
   @Access({[UserRole.User]: true})
   @ReadFields(["*"])
@@ -20,6 +25,11 @@ class $ContentTypeLogic implements DatabaseLogic<ContentTypeDocument> {
     return contentType;
   }
 
+  /**
+   * Fetches many content types from their IDs
+   * @param ids The Ref64 IDs of the documents to fetch
+   * @returns The found and allowed content type documents
+   */
   @FetchMany
   @Access({[UserRole.User]: true})
   @ReadFields(["*"])
@@ -30,32 +40,3 @@ class $ContentTypeLogic implements DatabaseLogic<ContentTypeDocument> {
 }
 
 export const ContentTypeLogic = new $ContentTypeLogic();
-
-const ContentTypeLogicBuilder = new FaunaLogicBuilder("contentTypes")
-  // Globals
-  // Users are only able to view campaigns if they are a player, and all fields if they are an owner/GM
-  .fields()
-    .guest([])
-    .user(["*"])
-    .admin(["*"])
-  .done()
-  .roles()
-    .guest(false)
-    .user(true)
-    .admin(true)
-  .done()
-
-  /**
-   * Initializes the fetch function from defaults
-   */
-  .fetch()
-  .done()
-
-  /**
-   * Creates a function for fetching many campaign documents at once. It should use the same
-   * logic and security as the ordinary fetch fucntion
-   */
-  .fetchMany()
-  .done()
-.done();
-// export const ContentTypeLogic = ContentTypeLogicBuilder.export();

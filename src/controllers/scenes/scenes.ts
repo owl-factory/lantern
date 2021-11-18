@@ -94,7 +94,7 @@ class $SceneController {
     const scene = await SceneDataController.create(
       { name: "Untitled", campaign: {id: this.campaignID, collection: "campaigns" }}
     );
-    console.log(scene);
+
     if (!scene) { return; }
     this.scene = scene;
     this.sceneID = scene?.id;

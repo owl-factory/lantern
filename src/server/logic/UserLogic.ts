@@ -30,25 +30,25 @@ const updateFields = [
 
 class $UserLogic implements DatabaseLogic<UserDocument> {
   public collection = Collection.Users;
-
-  @Delete
-  @Access({[UserRole.User]: isOwner, [UserRole.Admin]: true})
-  public async delete(id: Ref64): Promise<UserDocument> {
-    const user = await fauna.deleteOne<UserDocument>(id);
-    if (user === undefined) { throw {code: 500, message: "An unexpected error occured while deleting the document"}; }
-    return user;
-  }
-
-
+  /**
+   * Fetches one user from its ID
+   * @param id The Ref64 ID of the document to fetch
+   * @returns The user document
+   */
   @Fetch
   @Access({[UserRole.Guest]: true})
   @ReadFields(["*"])
-  public async findByID(id: Ref64): Promise<UserDocument> {
+  public async findByID(id: Ref64, temp?: string): Promise<UserDocument> {
     const user = await fauna.findByID<UserDocument>(id);
     if (user === undefined) { throw { code: 404, message: `A user with ID ${id} could not be found` }; }
     return user;
   }
 
+  /**
+   * Fetches many users from their IDs
+   * @param ids The Ref64 IDs of the documents to fetch
+   * @returns The found and allowed user documents
+   */
   @FetchMany
   @Access({[UserRole.Guest]: true})
   @ReadFields(["*"])
@@ -65,6 +65,12 @@ class $UserLogic implements DatabaseLogic<UserDocument> {
     return users;
   }
 
+  /**
+   * Updates a single user
+   * @param id The Ref64 ID of the document to update
+   * @param doc The user partial to update
+   * @returns The new, updated document
+   */
   @Update
   @Access({[UserRole.User]: isOwner, [UserRole.Admin]: true})
   @ReadFields(["*"])
@@ -77,6 +83,12 @@ class $UserLogic implements DatabaseLogic<UserDocument> {
     return user;
   }
 
+  /**
+   * Updates a single user's avatar
+   * @param id The Ref64 ID of the document to update
+   * @param doc The user partial to update
+   * @returns The new, updated document
+   */
   @Update
   @Access({[UserRole.User]: isOwner, [UserRole.Admin]: true})
   @ReadFields(["*"])

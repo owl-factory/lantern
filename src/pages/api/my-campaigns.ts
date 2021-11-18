@@ -21,12 +21,9 @@ function parseIDsFromDocuments(docs: Partial<AnyDocument>[]) {
  * @param req The request to the server
  */
 async function getMyCampaigns(this: HTTPHandler, req: NextApiRequest) {
-  console.log('hi')
   const fetchedCampaigns = await CampaignLogic.fetchMyCampaigns({ size: 20 });
-  console.log(fetchedCampaigns)
   const ids = parseIDsFromDocuments(fetchedCampaigns);
   const campaigns = await CampaignLogic.findManyByIDs(ids);
-  console.log(campaigns)
   this.returnSuccess({ campaigns: campaigns });
 }
 

@@ -16,6 +16,11 @@ const UPDATE_FIELDS: string[] = ["name", "campaignID", ]
 class $SceneLogic {
   public collection = Collection.Scenes;
 
+  /**
+   * Creates a single new scene document 
+   * @param doc The document partial to create
+   * @returns The new scene document
+   */
   @Create
   @Access({[UserRole.User]: true})
   @ReadFields(["*"])
@@ -30,34 +35,3 @@ class $SceneLogic {
 }
 
 export const SceneLogic = new $SceneLogic();
-
-const SceneLogicBuilder = new FaunaLogicBuilder("scenes")
-  // Globals
-  // Users are only able to view campaigns if they are a player, and all fields if they are an owner/GM
-  .fields()
-    .guest(["*"])
-  .done()
-  .roles()
-    .guest(true)
-  .done()
-
-  // .search("findByRuleset", "find_by_ruleset")
-    
-  // .done()
-
-  /**
-   * Creates a single new scene
-   */
-  .create()
-    .roles()
-      .guest(false)
-      .user(true)
-    .done()
-    .setFields()
-      .user(CREATE_FIELDS)
-    .done()
-  .done()
-
-  
-.done();
-// export const SceneLogic = SceneLogicBuilder.export();

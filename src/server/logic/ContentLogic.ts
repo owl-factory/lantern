@@ -16,6 +16,11 @@ import { SecurityController } from "controllers/security";
 class $ContentLogic implements DatabaseLogic<ContentDocument> {
   public collection = Collection.Contents;
 
+  /**
+   * Fetches one content from its ID
+   * @param id The Ref64 ID of the document to fetch
+   * @returns The content document
+   */
   @Fetch
   @Access({[UserRole.User]: userViewable, [UserRole.Admin]: true})
   @ReadFields({[UserRole.User]: userViewableFields, [UserRole.Admin]: ["*"]})
@@ -25,6 +30,11 @@ class $ContentLogic implements DatabaseLogic<ContentDocument> {
     return content;
   }
 
+  /**
+   * Fetches many contents from their IDs
+   * @param ids The Ref64 IDs of the documents to fetch
+   * @returns The found and allowed content documents
+   */
   @FetchMany
   @Access({[UserRole.User]: userViewable, [UserRole.Admin]: true})
   @ReadFields({[UserRole.User]: userViewableFields, [UserRole.Admin]: ["*"]})
@@ -34,13 +44,23 @@ class $ContentLogic implements DatabaseLogic<ContentDocument> {
   }
 
 
+  /**
+   * Fetches the partial content documents for any given user
+   * @param options Any additional options for filtering the data retrieved from the database
+   * @returns An array of content document partials
+   */
   @Index
   @Access({[UserRole.Admin]: true})
   @ReadFields(["*"])
-  public async searchntByUser(userID: Ref64, options?: FaunaIndexOptions): Promise<ContentDocument[]> {
+  public async searchContentByUser(userID: Ref64, options?: FaunaIndexOptions): Promise<ContentDocument[]> {
     return this._searchContentByUser(userID, options);
   }
 
+  /**
+   * Fetches the partial campaign documents for any given user
+   * @param options Any additional options for filtering the data retrieved from the database
+   * @returns An array of campaign document partials
+   */
   @Index
   @Access({[UserRole.User]: isOwner, [UserRole.Admin]: true})
   @ReadFields(["*"])
@@ -50,83 +70,18 @@ class $ContentLogic implements DatabaseLogic<ContentDocument> {
     return this._searchContentByUser(userID, options);
   }
 
+  /**
+   * Fetches the partial content documents for any given user for the content by user and my content functions
+   * @param options Any additional options for filtering the data retrieved from the database
+   * @returns An array of campaign document partials
+   */
   private async _searchContentByUser(userID: Ref64, options?: FaunaIndexOptions): Promise<ContentDocument[]> {
     const content = await fauna.searchByIndex<ContentDocument>(FaunaIndex.ContentByUser, [userID], options);
     return content;
   }
 }
 
-
-
-const ContentLogicBuilder = new FaunaLogicBuilder("contents")
-  // Globals
-  // Users are only able to view campaigns if they are a player, and all fields if they are an owner/GM
-  .fields()
-    .guest([])
-    .user(userViewableFields)
-    .admin(["*"])
-  .done()
-  .roles()
-    .guest(false)
-    .user(userViewable)
-    .admin(true)
-  .done()
-
-  /**
-   * Initializes the fetch function from defaults
-   */
-  .fetch()
-  .done()
-
-  /**
-   * Creates a function for fetching many campaign documents at once. It should use the same
-   * logic and security as the ordinary fetch fucntion
-   */
-  .fetchMany()
-  .done()
-
-  .fetchMany("fetchManyMyContent")
-    .roles()
-      .guest(false)
-      .user(isOwner_old)
-      .admin(true)
-    .done()
-    .fields()
-      .guest([])
-      .user(["*"])
-    .done()
-  .done()
-
-  /**
-   * Allows for searching through all of a user's campaigns from last played to oldest played
-   * The index fields allow for base data to populate tiles
-   */
-  .search("fetchMyContent", "my_content_asc")
-    .preProcessTerms(myUserToTerm)
-    .indexFields(["updatedAt", "ref", "name", "type.ref", "ruleset.ref"])
-    // Explicitly allow the user since the index guarantees ownership/playing
-    .roles()
-      .user(true)
-    .done()
-    .postProcess(postProcessMyContent)
-  .done()
-
-.done();
-export const ContentLogic = ContentLogicBuilder.export();
-
-/**
- * Updates a user's documents fetched using the my content index search
- * @param doc The document to update
- * @param myUser The current user fetching these documents
- * @returns The updated document
- */
-function postProcessMyContent(doc: AnyDocument, myUser: MyUserDocument) {
-  doc.ownedBy = {
-    id: myUser.id,
-    collection: myUser.collection,
-  };
-  return doc;
-}
+export const ContentLogic = new $ContentLogic();
 
 /**
  * Determines if a standard user is able to view any part of a document

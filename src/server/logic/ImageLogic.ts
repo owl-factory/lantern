@@ -1,9 +1,7 @@
-import { AnyDocument, ImageDocument } from "types/documents";
-import { FaunaLogicBuilder } from "server/faunaLogicBuilder/FaunaLogicBuilder";
-import { isOwner, isOwner_old } from "./security";
-import { MyUserDocument, UserRole } from "types/security";
-import { myUserToTerm } from "./CoreModelLogic";
-import { AssetSource, AssetUploadSource } from "types/enums/assetSource";
+import { ImageDocument } from "types/documents";
+import { isOwner } from "./security";
+import { UserRole } from "types/security";
+import { AssetUploadSource } from "types/enums/assetSource";
 import { Collection, FaunaIndex } from "fauna";
 import { DatabaseLogic } from "./AbstractDatabaseLogic";
 import * as fauna from "database/integration/fauna";
@@ -25,6 +23,12 @@ const createFields = [
 class $ImageLogic implements DatabaseLogic<ImageDocument> {
   public collection = Collection.Images;
 
+  /**
+   * Creates a single new image document
+   * @param doc The image document partial to create
+   * @param doc The image document partial to create
+   * @returns The new image document
+   */
   public async create(method: AssetUploadSource, doc: Partial<ImageDocument>): Promise<ImageDocument> {
     let result: ImageDocument;
     switch(method) {
@@ -49,6 +53,11 @@ class $ImageLogic implements DatabaseLogic<ImageDocument> {
     }
   }
 
+  /**
+   * Creates a single new image document linking to an external image
+   * @param doc The image document partial to create
+   * @returns The new image document
+   */
   @Create
   @Access({[UserRole.User]: true})
   @ReadFields(["*"])
@@ -59,6 +68,11 @@ class $ImageLogic implements DatabaseLogic<ImageDocument> {
     return image;
   }
 
+  /**
+   * Deletes a single image document from the database and wherever it is stored
+   * @param id The ID of the image document to delete
+   * @returns The deleted image document
+   */
   @Delete
   @Access({[UserRole.User]: isOwner, [UserRole.Admin]: true})
   @ReadFields(["*"])
@@ -68,6 +82,11 @@ class $ImageLogic implements DatabaseLogic<ImageDocument> {
     return image;
   }
 
+  /**
+   * Fetches one image from its ID
+   * @param id The Ref64 ID of the document to fetch
+   * @returns The image document
+   */
   @Fetch
   @Access({[UserRole.User]: true})
   @ReadFields(["*"])
@@ -77,6 +96,11 @@ class $ImageLogic implements DatabaseLogic<ImageDocument> {
     return image;
   }
 
+  /**
+   * Fetches many images from their IDs
+   * @param ids The Ref64 IDs of the documents to fetch
+   * @returns The found and allowed image documents
+   */
   @FetchMany
   @Access({[UserRole.User]: true})
   @ReadFields(["*"])
@@ -85,6 +109,11 @@ class $ImageLogic implements DatabaseLogic<ImageDocument> {
     return images;
   }
 
+  /**
+   * Fetches the partial images documents for any given user
+   * @param options Any additional options for filtering the data retrieved from the database
+   * @returns An array of image document partials
+   */
   @Index
   @Access({[UserRole.Admin]: true})
   @ReadFields(["*"])
@@ -92,6 +121,11 @@ class $ImageLogic implements DatabaseLogic<ImageDocument> {
     return this._searchImagesByUser(userID, options);
   }
 
+  /**
+   * Fetches the partial image documents for the current user
+   * @param options Any additional options for filtering the data retrieved from the database
+   * @returns An array of image document partials
+   */
   @Index
   @Access({[UserRole.User]: true})
   @ReadFields(["*"])
@@ -101,6 +135,11 @@ class $ImageLogic implements DatabaseLogic<ImageDocument> {
     return this._searchImagesByUser(userID, options);
   }
 
+  /**
+   * Fetches the partial image documents for any given user for the images by user and my images functions
+   * @param options Any additional options for filtering the data retrieved from the database
+   * @returns An array of campaign document partials
+   */
   private async _searchImagesByUser(userID: Ref64, options?: FaunaIndexOptions): Promise<ImageDocument[]> {
     const characters = await fauna.searchByIndex<ImageDocument>(FaunaIndex.ImagesByUser, [userID], options);
     return characters;
@@ -108,86 +147,3 @@ class $ImageLogic implements DatabaseLogic<ImageDocument> {
 }
 
 export const ImageLogic = new $ImageLogic();
-
-const ImageLogic2 = (new FaunaLogicBuilder("images")
-  // Globals
-  .fields()
-    .guest([])
-    .user(["*"])
-    .admin(["*"])
-  .done()
-  .roles()
-    .guest(false)
-    .user(true)
-    .admin(true)
-  .done()
-
-  /**
-   * Creates a link to an external image
-   */
-  .create("createExternalLink")
-    .roles()
-      .user(true)
-    .done()
-    .setFields()
-      .user(createFields.concat([]))
-    .done()
-    .preProcess(createExternalPreprocess)
-  .done()
-
-  /**
-   * Allows an owner or admin to delete an image.
-   * TODO - different delete functions for different kinds of images
-   */
-  .delete()
-    .roles()
-      .user(isOwner_old)
-      .admin(true)
-    .done()
-  .done()
-
-  /**
-   * Initializes the fetch function. Everything is inherited from globals
-   */
-  .fetch()
-  .done()
-
-  /**
-   * Initializes the fetch many function. Everything is inherited from globals
-   */
-   .fetchMany()
-   .done()
-
-  /**
-   * Allows for searching through a users images in order of most recently created to oldest
-   */
-  .search("fetchMyImages", "my_images_asc")
-    .preProcessTerms(myUserToTerm)
-    .indexFields(["ref", "name", "src"])
-  .done()
-.done()).export();
-
-/**
- * Creates a new image in the given method. Supercedes the generic 'create' function
- * @param image The image document to create
- * @param method The method by which the image is being created
- * @param myUser The user attempting to create this image
- * @returns The created image document
- */
-
-
-
-/**
- * Adds fields marking this image document as an external image.
- * TODO - allow for setting an image as 'pixiLoadable', as some are and some are not
- * @param doc The image document that is being prepared for creation
- * @param myUser The current user creating this document
- * @returns Returns an updated document
- */
-function createExternalPreprocess(doc: AnyDocument, _: MyUserDocument) {
-  const updatedDoc = doc as ImageDocument;
-  updatedDoc.source = AssetSource.ExternalLink;
-  updatedDoc.sizeInBytes = 0;
-
-  return doc;
-}
