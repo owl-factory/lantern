@@ -1,54 +1,92 @@
-import { FaunaLogicBuilder } from "server/faunaLogicBuilder/FaunaLogicBuilder";
+import { Ref64 } from "types";
+import * as fauna from "database/integration/fauna";
 import { AnyDocument, CharacterDocument } from "types/documents";
-import { MyUserDocument } from "types/security";
-import { myUserToTerm } from "./CoreModelLogic";
-import { isOwner_old } from "./security";
+import { UserRole } from "types/security";
+import { DatabaseLogic } from "./AbstractDatabaseLogic";
+import { isOwner } from "./security";
+import { Collection, FaunaIndex } from "fauna";
+import { Fetch, FetchMany, Index } from "database/decorators/crud";
+import { Access, ReadFields } from "database/decorators/modifiers";
+import { FaunaIndexOptions } from "types/fauna";
+import { SecurityController } from "controllers/security";
 
-const USER_VIEW_FIELDS = [];
-
-const CharacterLogicBuilder = new FaunaLogicBuilder("characters")
-  .fields()
-    .guest([])
-    .user(userViewableFields)
-    .admin(["*"])
-  .done()
-  .roles()
-    .guest(false)
-    .user(userViewable)
-    .admin(true)
-  .done()
+class $CharacterLogic implements DatabaseLogic<CharacterDocument> {
+  public collection = Collection.Characters;
 
   /**
-   * Initializes the fetch function from defaults
+   * Fetches one character from its ID
+   * @param id The Ref64 ID of the document to fetch
+   * @returns The character document
    */
-  .fetch()
-  .done()
-
-  .fetchMany()
-  .done()
+  @Fetch
+  @Access({[UserRole.User]: userViewable, [UserRole.Admin]: true})
+  @ReadFields({[UserRole.User]: userViewableFields, [UserRole.Admin]: ["*"]})
+  public async findByID(id: Ref64): Promise<CharacterDocument> {
+    const character = await fauna.findByID<CharacterDocument>(id);
+    if (character === undefined) { throw { code: 404, message: `The character with id ${id} could not be found.`}; }
+    return character;
+  }
 
   /**
-   * Allows for searching through all of a user's campaigns from last played to oldest played
-   * The index fields allow for base data to populate tiles
+   * Fetches many characters from their IDs
+   * @param ids The Ref64 IDs of the documents to fetch
+   * @returns The found and allowed character documents
    */
-   .search("fetchMyCharacters", "my_characters_asc")
-    .preProcessTerms(myUserToTerm)
-    .indexFields(["updatedAt", "ref", "name", "ruleset.ref", "campaign.ref", "profile.src"])
-    // Explicitly allow the user since the index guarantees ownership/playing
-    .roles()
-      .user(true)
-    .done()
-  .done()
-.done();
+  @FetchMany
+  @Access({[UserRole.User]: userViewable, [UserRole.Admin]: true})
+  @ReadFields({[UserRole.User]: userViewableFields, [UserRole.Admin]: ["*"]})
+  public async findManyByIDs(ids: Ref64[]): Promise<CharacterDocument[]> {
+    const characters = await fauna.findManyByIDs<CharacterDocument>(ids);
+    return characters;
+  }
 
-function userViewableFields(myUser: MyUserDocument, doc?: AnyDocument) {
-  if (isOwner_old(myUser, doc)) { return ["*"]; }
+  /**
+   * Fetches the partial character documents for any given user
+   * @param options Any additional options for filtering the data retrieved from the database
+   * @returns An array of character document partials
+   */
+  @Index
+  @Access({[UserRole.Admin]: true})
+  @ReadFields(["*"])
+  public async searchCharactersByUser(userID: Ref64, options?: FaunaIndexOptions): Promise<CharacterDocument[]> {
+    return this._searchCharactersByUser(userID, options);
+  }
+
+  /**
+   * Fetches the partial character documents for the current user
+   * @param options Any additional options for filtering the data retrieved from the database
+   * @returns An array of character document partials
+   */
+  @Index
+  @Access({[UserRole.User]: true})
+  @ReadFields(["*"])
+  public async searchMyCharacters(options?: FaunaIndexOptions): Promise<CharacterDocument[]> {
+    const userID = SecurityController.currentUser?.id;
+    if (!userID) { return []; }
+    return this._searchCharactersByUser(userID, options);
+  }
+
+  /**
+   * Fetches the partial campaign documents for any given user for the my characters and characters by user functions
+   * @param options Any additional options for filtering the data retrieved from the database
+   * @returns An array of campaign document partials
+   */
+  private async _searchCharactersByUser(userID: Ref64, options?: FaunaIndexOptions): Promise<CharacterDocument[]> {
+    const characters = await fauna.searchByIndex<CharacterDocument>(FaunaIndex.CharactersByUser, [userID], options);
+    return characters;
+  }
+}
+
+export const CharacterLogic = new $CharacterLogic();
+
+
+function userViewableFields(doc?: AnyDocument) {
+  if (isOwner(doc)) { return ["*"]; }
   return [];
 }
 
-function userViewable(myUser: MyUserDocument, doc?: AnyDocument) {
-  if (isOwner_old(myUser, doc)) { return true; }
+function userViewable(doc?: AnyDocument) {
+  if (isOwner(doc)) { return true; }
   return false;
 }
 
-export const CharacterLogic = CharacterLogicBuilder.export();

@@ -1,6 +1,5 @@
 import { NextApiRequest } from "next";
-import { getMyUser, requireLogin } from "server/auth";
-import { UserLogic } from "server/logic";
+import { UserLogic } from "server/logic/UserLogic";
 import { HTTPHandler } from "server/response";
 import { createEndpoint } from "server/utilities";
 
@@ -10,9 +9,7 @@ import { createEndpoint } from "server/utilities";
  * @param req The request to the server
  */
 async function getUsers(this: HTTPHandler, req: NextApiRequest) {
-  const myUser = getMyUser(req);
-
-  const users = await UserLogic.fetchMany(req.body.ids, myUser);
+  const users = await UserLogic.findManyByIDs(req.body.ids);
   this.returnSuccess({ docs: users });
 }
 
@@ -22,8 +19,7 @@ async function getUsers(this: HTTPHandler, req: NextApiRequest) {
  * @param req The request to the servert
  */
 async function updateUser(this: HTTPHandler, req: NextApiRequest) {
-  const myUser = getMyUser(req);
-  const updatedUser = await UserLogic.update(req.body.id, req.body.doc, myUser);
+  const updatedUser = await UserLogic.updateOne(req.body.id, req.body.doc);
   this.returnSuccess({ doc: updatedUser });
 }
 

@@ -1,25 +1,12 @@
 import { fromFauna, parseIndexResponse } from "database/conversion/fauna/from";
 import { toFauna } from "database/conversion/fauna/to";
+import { Collection, FaunaIndex, FaunaIndexTerms } from "fauna";
 import { Expr, query as q } from "faunadb";
-import { parse } from "path";
 import { Ref64 } from "types";
 import { AnyDocument } from "types/documents";
 import { FaunaDocument, FaunaIndexOptions, FaunaIndexResponse } from "types/fauna";
-import { getClient, getServerClient } from "utilities/db";
+import { getServerClient } from "utilities/db";
 import { decode } from "utilities/encoding";
-
-// Defines an ID placed into our custom Ref64 format
-enum Collection {
-
-}
-
-// TODO - move these
-export enum FaunaIndex {
-  CampaignsByUser="my_campaigns_asc",
-}
-export const FaunaIndexTerms = {
-  [FaunaIndex.CampaignsByUser]: ["lastPlayedAt", "ref", "name", "banner.src"],
-};
 
 /**
  * Converts a ref64 ID back into a Fauna ref
@@ -38,7 +25,7 @@ export function idToRef(ref64ID: Ref64): Expr {
  * @param doc The Javascript object document to place into the database
  * @returns The created document
  */
-export async function createOne(collection: Collection, doc: Record<string, unknown>): Promise<AnyDocument>{
+export async function createOne<T>(collection: Collection, doc: Record<string, unknown>): Promise<T | undefined>{
   const client = getServerClient();
   const faunaDoc: FaunaDocument<unknown> = toFauna(doc);
 
@@ -46,7 +33,7 @@ export async function createOne(collection: Collection, doc: Record<string, unkn
 
   // TODO - how are errors thrown from fauna
   const parsedResult = fromFauna(faunaResult);
-  return parsedResult;
+  return parsedResult as unknown as T;
 }
 
 /**
@@ -105,9 +92,10 @@ export async function findManyByIDs<T>(ids: Ref64[]): Promise<T[]> {
  * @returns An array of documents found by the search
  */
 export async function searchByIndex<T>(
-  index: FaunaIndex, terms: (string | Expr)[], options?: FaunaIndexOptions
+  index: FaunaIndex, terms: (string | boolean | Expr)[], options?: FaunaIndexOptions
 ): Promise<T[]> {
   const client = getServerClient();
+  console.log()
 
   // Queries the given index. This is automatically set up for pagination
   const result: FaunaIndexResponse = await client.query(
@@ -122,6 +110,7 @@ export async function searchByIndex<T>(
     throw { code: 500, message: `An error occured while trying to search the ${index} index` };
   }
   const docs = parseIndexResponse(result.data, FaunaIndexTerms[index]);
+  console.log(docs)
   return docs as unknown as T[];
 }
 

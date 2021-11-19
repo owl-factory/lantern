@@ -1,12 +1,11 @@
+import { Collection } from "fauna";
 import { Ref64 } from "types";
 
-export enum Collection {
-  Campaign = "campaigns",
-  User = "user"
-}
-
+/**
+ * Defines the core functionality that can remain consistent between different implementations of the API logic
+ */
 export abstract class DatabaseLogic<T> {
-  public abstract collection: Collection
+  public abstract collection: Collection;
 
   public abstract createOne?(doc: Partial<T>): Promise<T>;
   public abstract deleteOne?(id: Ref64): Promise<T>;

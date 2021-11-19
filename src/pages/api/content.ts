@@ -1,6 +1,6 @@
 import { NextApiRequest } from "next";
 import { getMyUser, requireLogin } from "server/auth";
-import { ContentLogic } from "server/logic";
+import { ContentLogic } from "server/logic/ContentLogic";
 import { HTTPHandler } from "server/response";
 import { createEndpoint } from "server/utilities";
 
@@ -12,7 +12,7 @@ import { createEndpoint } from "server/utilities";
 async function getContents(this: HTTPHandler, req: NextApiRequest) {
   const myUser = getMyUser(req);
   requireLogin(myUser);
-  const contents = await ContentLogic.fetchMany(req.body.ids, myUser);
+  const contents = await ContentLogic.findManyByIDs(req.body.ids);
   this.returnSuccess({ docs: contents });
 }
 

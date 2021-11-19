@@ -1,6 +1,5 @@
 import { NextApiRequest } from "next";
-import { getMyUser, requireLogin } from "server/auth";
-import { ImageLogic } from "server/logic";
+import { ImageLogic } from "server/logic/ImageLogic";
 import { HTTPHandler } from "server/response";
 import { createEndpoint } from "server/utilities";
 
@@ -10,9 +9,7 @@ import { createEndpoint } from "server/utilities";
  * @param req The request to the server
  */
 async function getMyImages(this: HTTPHandler, req: NextApiRequest) {
-  const myUser = getMyUser(req);
-  requireLogin(myUser);
-  const images = await ImageLogic.fetchMyImages([myUser.ref], { size: 100 }, myUser);
+  const images = await ImageLogic.searchMyImages({ size: 100 });
   this.returnSuccess({ images });
 }
 
@@ -22,8 +19,7 @@ async function getMyImages(this: HTTPHandler, req: NextApiRequest) {
  * @param req The request to the server
  */
  async function getImages(this: HTTPHandler, req: NextApiRequest) {
-  const myUser = getMyUser(req);
-  const images = await ImageLogic.fetchMany(req.body.ids, myUser);
+  const images = await ImageLogic.findManyByIDs(req.body.ids);
   this.returnSuccess({ docs: images });
 }
 
@@ -33,9 +29,7 @@ async function getMyImages(this: HTTPHandler, req: NextApiRequest) {
  * @param req The request to the server. In body, contains an image object and method.
  */
 async function createImage(this: HTTPHandler, req: NextApiRequest) {
-  const myUser = getMyUser(req);
-  requireLogin(myUser);
-  const image = await ImageLogic.createImageFromMethod(req.body.image, req.body.method, myUser);
+  const image = await ImageLogic.create(req.body.method, req.body.image);
   this.returnSuccess({ image });
 }
 

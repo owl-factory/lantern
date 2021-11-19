@@ -5,6 +5,7 @@
 
 import { action, makeAutoObservable, makeObservable, observable } from "mobx";
 import { AnyDocument, CoreDocument } from "types/documents";
+import { getUniques } from "utilities/arrays";
 import { read } from "utilities/objects";
 import { rest } from "utilities/request";
 import { isClient } from "utilities/tools";
@@ -74,6 +75,7 @@ export class DataManager<T extends CoreDocument> {
    * @returns An array of documents. Undefined documents will not be present
    */
   public getMany(ids: string[]): T[] {
+    if (ids === undefined) { return []; }
     const docs: T[] = [];
     ids.forEach((id: string) => {
       if (id in this.data) { docs.push(this.data[id]); }
@@ -109,19 +111,7 @@ export class DataManager<T extends CoreDocument> {
    * @returns An unsorted array of unique values
    */
   public getUniques(target: string): string[] {
-    const uniques: Record<string, number> = {};
-    const keys = Object.keys(this.data);
-    keys.forEach((key: string) => {
-      const item = this.data[key];
-      if (!item) { return; }
-      const value = read(item as Record<string, unknown>, target);
-
-      // Objects are not supported right now.
-      // TODO - implement dates if we need it
-      if (typeof value === "object") { return; }
-      uniques[value as (string | number)] = 1;
-    });
-    return Object.keys(uniques);
+    return getUniques(this.data, target);
   }
 
   /**
@@ -171,6 +161,7 @@ export class DataManager<T extends CoreDocument> {
    * @param docs The documents to set in the data manager and the storage method
    */
   public setMany(docs: T[]): void {
+    if (docs === undefined) { return; }
     docs.forEach((doc: T) => {
       if (!("id" in doc)) { return; }
       const id = (doc as CoreDocument).id;

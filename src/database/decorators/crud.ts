@@ -127,7 +127,7 @@ export function Index(_target: any, _name: string, descriptor: any) {
     checkLogin(descriptor);
     checkStaticAccess(descriptor);
     let result = await original.apply(this, args);
-
+    console.log(result)
     result = checkManyDynamicAccess(descriptor, result);
     result = trimManyReadFields(descriptor, result);
     return result;
@@ -149,14 +149,14 @@ export function Index(_target: any, _name: string, descriptor: any) {
   descriptor.value = async function(...args: any) {
     checkLogin(descriptor);
     checkStaticAccess(descriptor);
-    const targetDoc = await fetchTargetDoc(descriptor, args);
+    const targetDoc = await fetchTargetDoc(descriptor, args[0]);
     if (targetDoc === undefined) { throw { code: 404, message: "Document could not be found"}}
     checkDynamicAccess(descriptor, targetDoc);
-    args.doc = trimSetFields(descriptor, args.doc);
+    args[1] = trimSetFields(descriptor, args[1]);
 
     let result = await original.apply(this, args);
 
-    result = trimManyReadFields(descriptor, result);
+    result = trimReadFields(descriptor, result);
     return result;
   };
 }

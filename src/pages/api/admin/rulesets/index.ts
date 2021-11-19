@@ -1,8 +1,7 @@
 import { NextApiRequest } from "next";
 import { HTTPHandler } from "server/response";
-import { RulesetLogic } from "server/logic";
 import { createEndpoint } from "server/utilities";
-import { getMyUser } from "server/auth";
+import { RulesetLogic } from "server/logic/RulesetLogic";
 
 /**
  * Creates a single new ruleset
@@ -10,8 +9,7 @@ import { getMyUser } from "server/auth";
  * @param req The request to the server
  */
 async function getRulesets(this: HTTPHandler, req: NextApiRequest) {
-  const myUser = getMyUser(req);
-  const rulesets = await RulesetLogic.fetchOfficialRulesets([true], {}, myUser);
+  const rulesets = await RulesetLogic.searchRulesetsByOfficial(true);
 
   this.returnSuccess({ rulesets: rulesets });
 }

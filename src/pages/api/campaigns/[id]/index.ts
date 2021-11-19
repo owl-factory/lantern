@@ -1,8 +1,9 @@
 import { NextApiRequest } from "next";
+import { CampaignLogic } from "server/logic/CampaignLogic";
+import { UserLogic } from "server/logic/UserLogic";
 import { HTTPHandler } from "server/response";
-import { CampaignLogic, UserLogic } from "server/logic";
 import { createEndpoint } from "server/utilities";
-import { getMyUser } from "server/auth";
+import { getUniques } from "utilities/arrays";
 
 /**
  * Creates a single new ruleset
@@ -10,9 +11,8 @@ import { getMyUser } from "server/auth";
  * @param req The request to the server
  */
 async function getCampaignPage(this: HTTPHandler, req: NextApiRequest) {
-  const myUser = getMyUser(req);
   const campaign = await CampaignLogic.findByID(req.query.id as string);
-  campaign.players = await UserLogic.fetchMany(campaign.players, myUser);
+  campaign.players = await UserLogic.findManyByIDs(getUniques(campaign.players, "id"));
 
   this.returnSuccess({ campaign: campaign });
 }

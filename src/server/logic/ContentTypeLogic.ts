@@ -1,30 +1,41 @@
-import { FaunaLogicBuilder } from "server/faunaLogicBuilder/FaunaLogicBuilder";
+import * as fauna from "database/integration/fauna";
+import { Fetch, FetchMany } from "database/decorators/crud";
+import { Access, ReadFields } from "database/decorators/modifiers";
+import { UserRole } from "types/security";
+import { DatabaseLogic } from "./AbstractDatabaseLogic";
+import { ContentTypeDocument } from "types/documents";
+import { Ref64 } from "types";
+import { Collection } from "fauna";
 
-const ContentTypeLogicBuilder = new FaunaLogicBuilder("contentTypes")
-  // Globals
-  // Users are only able to view campaigns if they are a player, and all fields if they are an owner/GM
-  .fields()
-    .guest([])
-    .user(["*"])
-    .admin(["*"])
-  .done()
-  .roles()
-    .guest(false)
-    .user(true)
-    .admin(true)
-  .done()
+class $ContentTypeLogic implements DatabaseLogic<ContentTypeDocument> {
+  public collection = Collection.ContentTypes;
 
   /**
-   * Initializes the fetch function from defaults
+   * Fetches one content type from its ID
+   * @param id The Ref64 ID of the document to fetch
+   * @returns The content type document
    */
-  .fetch()
-  .done()
+  @Fetch
+  @Access({[UserRole.User]: true})
+  @ReadFields(["*"])
+  public async findByID(id: Ref64): Promise<ContentTypeDocument> {
+    const contentType = await fauna.findByID<ContentTypeDocument>(id);
+    if (contentType === undefined) { throw { code: 404, message: `The content type with id ${id} could not be found.`};}
+    return contentType;
+  }
 
   /**
-   * Creates a function for fetching many campaign documents at once. It should use the same
-   * logic and security as the ordinary fetch fucntion
+   * Fetches many content types from their IDs
+   * @param ids The Ref64 IDs of the documents to fetch
+   * @returns The found and allowed content type documents
    */
-  .fetchMany()
-  .done()
-.done();
-export const ContentTypeLogic = ContentTypeLogicBuilder.export();
+  @FetchMany
+  @Access({[UserRole.User]: true})
+  @ReadFields(["*"])
+  public async findManyByIDs(ids: Ref64[]): Promise<ContentTypeDocument[]> {
+    const contentTypes = await fauna.findManyByIDs<ContentTypeDocument>(ids);
+    return contentTypes;
+  }
+}
+
+export const ContentTypeLogic = new $ContentTypeLogic();

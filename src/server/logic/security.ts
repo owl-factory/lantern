@@ -34,6 +34,7 @@ export function isOwner_old(myUser: MyUserDocument, doc?: AnyDocument): boolean 
  * @param myUser The current user object to check for ownership
  */
  export function isOwner(doc?: AnyDocument): boolean {
+   console.log(doc)
   if (!doc) { return false; }
   return (!doc.ownedBy || doc.ownedBy.id === SecurityController.currentUser?.id);
 }

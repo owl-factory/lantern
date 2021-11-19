@@ -12,7 +12,6 @@ import { useRouter } from "next/router";
 import React from "react";
 import { Card, Row, Table } from "react-bootstrap";
 import { MdLockOpen, MdLockOutline, MdPageview, MdVisibility, MdVisibilityOff } from "react-icons/md";
-import { DocumentReference } from "server/logic";
 import { isAdmin } from "server/logic/security";
 import { InitialProps } from "types/client";
 import { RulesetDocument, UserDocument } from "types/documents";
@@ -45,7 +44,7 @@ async function setPublic(id: string, isPublic: boolean) {
 }
 
 interface RulesetOwnerProps {
-  ownedBy?: UserDocument | DocumentReference;
+  ownedBy?: Partial<UserDocument>;
 }
 
 /**
