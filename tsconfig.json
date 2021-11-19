@@ -23,19 +23,44 @@
     "strict": true,
     "baseUrl": ".",
     "paths": {
-      "controllers": ["src/controllers"],
-      "controllers/*": ["src/controllers/*"],
-      "components": ["src/components"],
-      "components/*": ["src/components/*"],
-      "server": ["src/server"],
-      "server/*": ["src/server/*"],
-      "tests": ["src/tests"],
-      "tests/*": ["src/tests/*"],
-      "types": ["src/types"],
-      "types/*": ["src/types/*"],
-      "utilities": ["src/utilities"],
-      "utilities/*": ["src/utilities/*"],
-    }
+      "controllers": [
+        "src/controllers"
+      ],
+      "controllers/*": [
+        "src/controllers/*"
+      ],
+      "components": [
+        "src/components"
+      ],
+      "components/*": [
+        "src/components/*"
+      ],
+      "server": [
+        "src/server"
+      ],
+      "server/*": [
+        "src/server/*"
+      ],
+      "tests": [
+        "src/tests"
+      ],
+      "tests/*": [
+        "src/tests/*"
+      ],
+      "types": [
+        "src/types"
+      ],
+      "types/*": [
+        "src/types/*"
+      ],
+      "utilities": [
+        "src/utilities"
+      ],
+      "utilities/*": [
+        "src/utilities/*"
+      ]
+    },
+    "incremental": true
   },
   "exclude": [
     "node_modules",

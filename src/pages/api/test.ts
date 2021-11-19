@@ -8,7 +8,6 @@ import { read, set } from "utilities/objects";
 
 const DEFAULT_READ_FIELDS = ["id"];
 
-
 function indexWrapper(this: any) {
   console.log(this);
 }
@@ -16,11 +15,8 @@ function indexWrapper(this: any) {
 function Test2(target: any, name: string, descriptor: any) {
   console.log("run test2");
   console.log(descriptor);
-  descriptor.boop = "boop!"
-
+  descriptor.boop = "boop!";
 }
-
-
 
 /**
  * Updates a single user
