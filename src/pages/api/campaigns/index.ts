@@ -1,5 +1,4 @@
 import { NextApiRequest } from "next";
-import { getMyUser, requireLogin } from "server/auth";
 import { CampaignLogic } from "server/logic/CampaignLogic";
 import { HTTPHandler } from "server/response";
 import { createEndpoint } from "server/utilities";
@@ -10,8 +9,6 @@ import { createEndpoint } from "server/utilities";
  * @param req The request to the server
  */
 async function getCampaigns(this: HTTPHandler, req: NextApiRequest) {
-  const myUser = getMyUser(req);
-  requireLogin(myUser);
   const campaigns = await CampaignLogic.findManyByIDs(req.body.ids);
   this.returnSuccess({ docs: campaigns });
 }

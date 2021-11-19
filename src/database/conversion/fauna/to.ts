@@ -1,136 +1,116 @@
-import { Expr, query as q } from "faunadb";
-import { FaunaRef } from "types/fauna";
-import { decode } from "utilities/encoding";
-import { parseFaunaRef } from "./from";
-
-type AnyDocument = any;
-type AnyFaunaDocument = any; // TODO - make this a proper document
+import { Expr, query as q, ToArray, ToDate } from "faunadb";
+import { decode, isEncoding } from "utilities/encoding";
+import { fromRef } from "./from";
+import { Ref64 } from "types";
+import { FaunaDocument } from "database/types/fauna";
 
 /**
  * Converts a Javascript document into a Fauna document for saving to the database
  * @param doc The JS document to convert into a Fauna Document
  */
-export function toFauna(doc: AnyDocument): AnyFaunaDocument {
-  const faunaDoc: Record<string, unknown> = {};
+export function toFauna(doc: Record<string, unknown>): FaunaDocument {
+  const faunaDoc: Partial<FaunaDocument> = {};
 
   // Sets the ref
-  if (doc.ref) { faunaDoc.ref = doc.ref; }
-  else if (doc.id && doc.collection) { faunaDoc.ref = toFaunaRef(doc); }
+  if (doc.ref) { faunaDoc.ref = toRef(doc.ref as string); }
+  if (doc.ts) { faunaDoc.ts = doc.ts as number; }
+  if (doc.ttl) { faunaDoc.ts = doc.ttl as number; }
 
-  if (doc.ttl) { faunaDoc.ttl = doc.ttl; }
-
-  faunaDoc.data = layerToFauna(doc);
-  return faunaDoc;
+  faunaDoc.data = toRecord(doc);
+  return faunaDoc as FaunaDocument;
 }
 
-function layerToFauna(doc: any, faunaDoc: any = {}) {
-  // Edge case handling
-  if (typeof doc !== "object") { return doc; }
-  const keys = Object.keys(doc);
-  keys.forEach((key: string) => {
-    // Skip item if it's a special case
-    if (["id", "ref", "collection", "ts", "ttl"].includes(key)) { return; }
-    const data = doc[key];
-    faunaDoc[key] = itemToFauna(data);
+/**
+ * Converts an array of JSON data items into a format compatible with fauna
+ * @param data The array with JSON items to convert into a usable fauna format
+ * @returns A converted Fauna array
+ */
+function toArray(data: unknown[]): unknown[] {
+  const faunaData: unknown[] = [];
+
+  data.forEach((item: unknown) => {
+    const faunaItem = toItem(item);
+    if (faunaItem === undefined) { return; }
+    faunaData.push(faunaItem);
   });
-  return faunaDoc;
+
+  return faunaData;
 }
 
 /**
- * Maps a single layer of items to a fauna document. This step skip
- * @param doc The document to map
+ * Converts a Javascript Date object to a Fauna date
+ * @param data The Javascript date object to convert
+ * @returns A converted Fauna date
  */
-function itemToFauna(item: unknown): unknown {
-  // Base case. Do nothing if the item is null/undefined.
-  // Do not change; the different values act different in Fauna
-  if (item === null || item === undefined) {
-    return item;
-  }
-
-  // Do nothing if simple type
-  if (typeof item !== "object") {
-    return item;
-  }
-
-  // If this is an array, loop through and parse as well
-  if (Array.isArray(item)) {
-    item.forEach((subItem: unknown, index: number) => {
-      item[index] = itemToFauna(subItem);
-    });
-    return item;
-  }
-
-  // Date type
-  if (isDateObject(item)) {
-    return toFaunaDate(item as Date);
-  }
-  else if (isReferenceDocument(item)) {
-    // fauna object
-    return toFauna(item);
-    return;
-  } else {
-    return itemToFauna(item);
-  }
-
+function toDate(data: Date) {
+  return q.Time(data.toISOString());
 }
 
 /**
- * Returns a FaunaDate object
- * @param date The JS object to convert into a Fauna date
+ * Converts a Javascript object to a saveable Fauna object
+ * @param data The Javascript object to convert
+ * @returns A converted Fauna record
  */
-export function toFaunaDate(date: Date): Expr {
-  return q.Time(date.toISOString());
-}
+function toRecord(data: Record<string, unknown>): Record<string, unknown> {
+  const faunaData: Record<string, unknown> = {};
+  const dataKeys = Object.keys(data);
 
-interface BaseDocument {
-  id?: string;
-  collection?: string;
-  ref?: Expr;
-}
+  dataKeys.forEach((dataKey: string) => {
+    data[dataKey] = toItem(data[dataKey]);
+  }); 
 
-
-/**
- * Converts an id and collection to a Fauna Reference
- * @param doc The document or reference ID
- * @param collection The collection of the reference
- */
-export function toFaunaRef(doc: any | FaunaRef | string, collection?: string): Expr {
-  if (doc === null || doc === undefined) { throw "The document or ID given was null"; }
-  if (typeof doc === "string" && !collection) { throw "A given string reference requires a collection"; }
-  if (typeof doc === "string") {
-    return q.Ref(q.Collection(collection as string), doc);
-  }
-  if ("ref" in doc && doc.ref) {
-    if (doc.ref instanceof Expr) { return doc.ref; }
-    if (typeof doc.ref === "object" && "@ref" in doc.ref) {
-      const collectionAndID = decode(parseFaunaRef(doc.ref) as string);
-      return q.Ref(q.Collection(collectionAndID.collection), collectionAndID.id);
-    } else {
-      return doc.ref as Expr;
-    }
-  } else if ("id" in doc && "collection" in doc) {
-    return q.Ref(q.Collection(doc.collection as string), doc.id as string);
-  }
-  throw "Cannot build fauna reference.";
+  return faunaData;
 }
 
 /**
- * Determines if a given item is a date object. Returns true if it is, false otherwise
- * TODO - test this!
- * @param item The possible date object to test
+ * Converts a Javascript item of unknown type into the appropriate Fauna format
+ * @param data The item to convert
+ * @returns A converted Fauna item
  */
-function isDateObject(item: unknown) {
-  if (!item || typeof item !== "object") { return false; }
-  if (item instanceof Date) { return true; }
-  return false;
+function toItem(data: unknown): unknown {
+  const dataType: string = getDataType(data);
+  switch(dataType) {
+    case "boolean":
+    case "number":
+    case "bigint":
+    case "symbol":
+      return data;
+    case "undefined": 
+      return undefined;
+    case "array":
+      return toArray(data as unknown[]);
+    case "date":
+      return toDate(data as Date);
+    case "ref":
+      return toRef(data as string);
+    case "object":
+      return toRecord(data as Record<string, unknown>);
+  }
+
+  return data;
 }
 
-function isReferenceDocument(item: unknown) {
-  if (item === null) { return false; }
-  if (!item || typeof item !== "object") { return false; }
-  const castedItem = item as object;
-  if (("id" in castedItem && "collection" in castedItem) || "ref" in castedItem) {
-    return true;
-  }
-  return false;
+/**
+ * Converts a ref64 ID back into a Fauna ref
+ * @param ref64ID The Ref64 ID to convert into the original fauna ref.
+ * @returns A Fauna Ref expr.
+ */
+ export function toRef(ref64ID: Ref64): Expr {
+  const { id, collection } = decode(ref64ID);
+  const ref = q.Ref(q.Collection(collection as string), id);
+  return ref;
+}
+
+/**
+ * Determines the type of the given data item
+ * @param data The Javascript object to determine the type of
+ * @returns The type of the given data item
+ */
+function getDataType(data: unknown) {
+  if (data === undefined || data === null) { return "undefined"; }
+  else if (typeof data === "string" && isEncoding(data)) { return "ref64"; }
+  else if (typeof data !== "object") { return typeof data; }
+  else if (Array.isArray(data)) { return "array"; }
+  else if (Object.prototype.toString.call(data) === '[object Date]') { return "date"; }
+  else { return "object"; }
 }

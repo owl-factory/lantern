@@ -1,6 +1,5 @@
 import { Collection } from "fauna";
 import { NextApiRequest } from "next";
-import { getMyUser } from "server/auth";
 import { UserDocument } from "types/documents";
 import { UserRole } from "types/security";
 import { getSession } from "utilities/auth";

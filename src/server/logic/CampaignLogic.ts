@@ -10,6 +10,7 @@ import { SecurityController } from "controllers/security";
 import { FaunaIndexOptions } from "types/fauna";
 import { Ref64 } from "types";
 import { Collection, FaunaIndex } from "fauna";
+import { toRef } from "database/conversion/fauna/to";
 
 /**
  * Checks if the current user is a player for the given document
@@ -82,7 +83,7 @@ class $CampaignLogic implements DatabaseLogic<CampaignDocument> {
   @RequireLogin()
   @ReadFields(["*"])
   public async fetchCampaignsByUser(userID: Ref64, options?: FaunaIndexOptions) {
-    const ref = fauna.idToRef(userID);
+    const ref = toRef(userID);
     const campaigns = fauna.searchByIndex(FaunaIndex.CampaignsByUser, [ref], options);
     return campaigns;
   }
@@ -100,7 +101,7 @@ class $CampaignLogic implements DatabaseLogic<CampaignDocument> {
     const id = SecurityController.currentUser?.id;
 
     if (!id) { return []; }
-    const ref = fauna.idToRef(id);
+    const ref = toRef(id);
     const campaigns = fauna.searchByIndex<Partial<CampaignDocument>>(FaunaIndex.CampaignsByUser, [ref], options);
     return campaigns;
   }
