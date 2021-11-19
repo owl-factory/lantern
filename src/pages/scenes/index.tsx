@@ -31,8 +31,8 @@ const SceneSelection = observer(() => {
       {scenes}
       <a href="#" onClick={() => SceneController.newScene()}>Create Scene</a>
     </div>
-  )
-})
+  );
+});
 
 const SceneBreadcrumbs = observer(() => {
   if (!SceneController.campaignID) {
