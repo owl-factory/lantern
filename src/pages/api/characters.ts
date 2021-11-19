@@ -9,7 +9,7 @@ import { createEndpoint } from "server/utilities";
  * @param req The request to the server
  */
 async function getCharacters(this: HTTPHandler, req: NextApiRequest) {
-  const characters = await CharacterLogic.findManyByIDs(req.body.ids);
+  const characters = await CharacterLogic.findManyByIDs(req.body.refs);
   this.returnSuccess({ docs: characters });
 }
 

@@ -9,7 +9,7 @@ import { createEndpoint } from "server/utilities";
  * @param req The request to the server
  */
 async function getRulesets(this: HTTPHandler, req: NextApiRequest) {
-  const rulesets = await RulesetLogic.findManyByIDs(req.body.ids);
+  const rulesets = await RulesetLogic.findManyByIDs(req.body.refs);
   this.returnSuccess({ docs: rulesets });
 }
 

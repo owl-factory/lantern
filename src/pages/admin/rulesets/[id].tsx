@@ -35,10 +35,10 @@ function AdminRuleset(props: AdminRulesetProps) {
 
   // Updates the ruleset when something in the ruleset manager is updated
   React.useEffect(() => {
-    const newRuleset = RulesetManager.get(ruleset.id);
+    const newRuleset = RulesetManager.get(ruleset.ref);
     if (!newRuleset) { return; }
     setRuleset(newRuleset);
-  }, [RulesetManager.get(ruleset.id), RulesetManager.updatedAt]);
+  }, [RulesetManager.get(ruleset.ref), RulesetManager.updatedAt]);
 
   return (
     <Page>

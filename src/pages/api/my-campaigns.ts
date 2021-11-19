@@ -8,8 +8,8 @@ import { AnyDocument } from "types/documents";
 function parseIDsFromDocuments(docs: Partial<AnyDocument>[]) {
   const ids: Ref64[] = [];
   docs.forEach((doc: Partial<AnyDocument>) => {
-    if(!doc.id) { return; }
-    ids.push(doc.id);
+    if(!doc.ref) { return; }
+    ids.push(doc.ref);
   });
   return ids;
 }

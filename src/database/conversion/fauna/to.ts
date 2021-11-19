@@ -72,6 +72,7 @@ function toItem(data: unknown): unknown {
   switch(dataType) {
     case "boolean":
     case "number":
+    case "string":
     case "bigint":
     case "symbol":
       return data;

@@ -9,7 +9,7 @@ import { createEndpoint } from "server/utilities";
  * @param req The request to the server
  */
 async function getCampaigns(this: HTTPHandler, req: NextApiRequest) {
-  const campaigns = await CampaignLogic.findManyByIDs(req.body.ids);
+  const campaigns = await CampaignLogic.findManyByIDs(req.body.refs);
   this.returnSuccess({ docs: campaigns });
 }
 

@@ -9,7 +9,7 @@ import { createEndpoint } from "server/utilities";
  * @param req The request to the server
  */
 async function getContents(this: HTTPHandler, req: NextApiRequest) {
-  const contents = await ContentLogic.findManyByIDs(req.body.ids);
+  const contents = await ContentLogic.findManyByIDs(req.body.refs);
   this.returnSuccess({ docs: contents });
 }
 

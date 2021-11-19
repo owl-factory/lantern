@@ -1,3 +1,4 @@
+import { Ref64 } from "types";
 import { CoreDocument } from "types/documents";
 import { UserRole } from "types/security";
 import { ImageDocument } from "./assets";
@@ -14,7 +15,7 @@ interface PartialImageDocument extends Partial<ImageDocument> {
 export interface UserDocument extends CoreDocument {
   username: string;
   email: string;
-  avatar: PartialImageDocument;
+  avatar: { ref: Ref64; src: string; };
 
   role: UserRole;
 

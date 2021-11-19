@@ -83,7 +83,7 @@ function RulesetOwner(props: RulesetOwnerProps) {
       return;
     }
 
-    const href = `/admin/rulesets/${response.data.ruleset.id}`;
+    const href = `/admin/rulesets/${response.data.ruleset.ref}`;
     router.push(href);
   }
 
@@ -162,16 +162,16 @@ const RulesetRow = observer((props: RulesetRowProps) => {
       </td>
       <td>
         <ButtonGroup>
-          <Link href={`/admin/rulesets/${props.ruleset.id}`} passHref>
+          <Link href={`/admin/rulesets/${props.ruleset.ref}`} passHref>
             <Button><Tooltip title="View"><MdPageview/></Tooltip></Button>
           </Link>
           {
             props.ruleset.isPublic ? (
-              <Button onClick={() => RulesetController.updateIsPublic(props.ruleset.id, false)}>
+              <Button onClick={() => RulesetController.updateIsPublic(props.ruleset.ref, false)}>
                 <Tooltip title="Make Private"><MdVisibilityOff/></Tooltip>
               </Button>
             ) : (
-              <Button onClick={() => RulesetController.updateIsPublic(props.ruleset.id, true)}>
+              <Button onClick={() => RulesetController.updateIsPublic(props.ruleset.ref, true)}>
                 <Tooltip title="Make Public"><MdVisibility/></Tooltip>
               </Button>
             )
@@ -216,7 +216,7 @@ function AdminRulesets(props: AdminRulesetsProps) {
   }, [RulesetManager.updatedAt]);
 
   rulesets.forEach((ruleset: RulesetDocument, index: number) => {
-    rulesetRows.push(<RulesetRow key={ruleset.id} index={index + 1} ruleset={ruleset}/>);
+    rulesetRows.push(<RulesetRow key={ruleset.ref} index={index + 1} ruleset={ruleset}/>);
   });
 
   // TODO - single liner for ensuring admin

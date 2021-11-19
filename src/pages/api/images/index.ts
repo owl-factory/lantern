@@ -18,8 +18,8 @@ async function getMyImages(this: HTTPHandler, req: NextApiRequest) {
  * @param this The Handler class calling this function
  * @param req The request to the server
  */
- async function getImages(this: HTTPHandler, req: NextApiRequest) {
-  const images = await ImageLogic.findManyByIDs(req.body.ids);
+async function getImages(this: HTTPHandler, req: NextApiRequest) {
+  const images = await ImageLogic.findManyByIDs(req.body.refs);
   this.returnSuccess({ docs: images });
 }
 

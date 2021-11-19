@@ -9,7 +9,7 @@ import { createEndpoint } from "server/utilities";
  * @param req The request to the server
  */
 async function getContentTypes(this: HTTPHandler, req: NextApiRequest) {
-  const contentTypes = await ContentTypeLogic.findManyByIDs(req.body.ids);
+  const contentTypes = await ContentTypeLogic.findManyByIDs(req.body.refs);
   this.returnSuccess({ docs: contentTypes });
 }
 

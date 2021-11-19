@@ -70,6 +70,7 @@ function fromItem(data: unknown) {
   switch(dataType) {
     case "boolean":
     case "number":
+    case "string":
     case "bigint":
     case "symbol":
       return data;
@@ -119,7 +120,7 @@ function getFaunaDataType(data: unknown): string {
   else if (isFaunaRef(data)) { return "ref"; }
   else if (isFaunaDate(data)) { return "date"; }
   else { return "object"; }
-} 
+}
 
 /**
  * Parses an index response from a 2D array of strings, numbers, and unknowns into a list of documents
@@ -141,7 +142,8 @@ export function fromIndex(faunaDocs: unknown[], fields: string[]): Record<string
 
     faunaDoc.forEach((faunaItem: unknown, index: number) => {
       const key = fields[index];
-      set(convertedDoc, key, fromItem(faunaItem));
+      const item = fromItem(faunaItem);
+      set(convertedDoc, key, item);
     });
     convertedDocs.push(convertedDoc);
   });

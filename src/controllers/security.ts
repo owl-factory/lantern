@@ -31,14 +31,14 @@ class $SecurityController {
    */
   public fromReq(req: NextApiRequest) {
     const session = getSession({req});
-    if (!session || session.user === undefined || session.user === null) { 
-      // this.currentUser = undefined; 
+    if (!session || session.user === undefined || session.user === null) {
+      // this.currentUser = undefined;
       this.currentUser = {
-        id: encode("295863299256353286", Collection.Users),
+        ref: encode("295863299256353286", Collection.Users),
         username: "laurasaura",
 
         role: UserRole.User,
-      }
+      };
     }
     else { this.currentUser = session.user; }
 

@@ -22,8 +22,8 @@ function isPlayer(doc?: AnyDocument): boolean {
   if (isOwner(doc)) { return true; }
   if (!("players" in doc) || doc.players === undefined) { return false; }
   let success = false;
-  doc.players.forEach((player: UserDocument) => {
-    if (SecurityController.currentUser?.id === player.id) { success = true; }
+  doc.players.forEach((player: { ref: Ref64 }) => {
+    if (SecurityController.currentUser?.ref === player.ref) { success = true; }
   });
   return success;
 }
@@ -67,7 +67,7 @@ class $CampaignLogic implements DatabaseLogic<CampaignDocument> {
   @Update
   @Access({[UserRole.User]: isOwner, [UserRole.Admin]: true})
   @RequireLogin()
-  @SetFields(["banner.id", "banner.src"])
+  @SetFields(["banner.ref", "banner.src"])
   public async updateBanner(id: Ref64, doc: Partial<CampaignDocument>) {
     const campaign = await fauna.updateOne<CampaignDocument>(id, doc);
     return campaign;
@@ -98,7 +98,7 @@ class $CampaignLogic implements DatabaseLogic<CampaignDocument> {
   @RequireLogin()
   @ReadFields(["*"])
   public async fetchMyCampaigns(options?: FaunaIndexOptions) {
-    const id = SecurityController.currentUser?.id;
+    const id = SecurityController.currentUser?.ref;
 
     if (!id) { return []; }
     const ref = toRef(id);

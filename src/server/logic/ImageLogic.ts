@@ -10,6 +10,7 @@ import { Access, ReadFields, SetFields } from "database/decorators/modifiers";
 import { Create, Delete, Fetch, FetchMany, Index } from "database/decorators/crud";
 import { FaunaIndexOptions } from "types/fauna";
 import { SecurityController } from "controllers/security";
+import { toRef } from "database/conversion/fauna/to";
 
 const createFields = [
   "name",
@@ -33,8 +34,8 @@ class $ImageLogic implements DatabaseLogic<ImageDocument> {
     let result: ImageDocument;
     switch(method) {
       case AssetUploadSource.Select:
-        if (!doc.id) { throw {code: 500, message: "An image ID is required for the Select create method." }; }
-        result = await this.findByID(doc.id);
+        if (!doc.ref) { throw {code: 500, message: "An image ID is required for the Select create method." }; }
+        result = await this.findByID(doc.ref);
         if (!result) { throw { code: 404, message: "Image not found."}; }
         return result;
 
@@ -130,7 +131,7 @@ class $ImageLogic implements DatabaseLogic<ImageDocument> {
   @Access({[UserRole.User]: true})
   @ReadFields(["*"])
   public async searchMyImages(options?: FaunaIndexOptions): Promise<ImageDocument[]> {
-    const userID = SecurityController.currentUser?.id;
+    const userID = SecurityController.currentUser?.ref;
     if (!userID) { return []; }
     return this._searchImagesByUser(userID, options);
   }
@@ -141,8 +142,9 @@ class $ImageLogic implements DatabaseLogic<ImageDocument> {
    * @returns An array of campaign document partials
    */
   private async _searchImagesByUser(userID: Ref64, options?: FaunaIndexOptions): Promise<ImageDocument[]> {
-    const characters = await fauna.searchByIndex<ImageDocument>(FaunaIndex.ImagesByUser, [userID], options);
-    return characters;
+    const ref = toRef(userID);
+    const images = await fauna.searchByIndex<ImageDocument>(FaunaIndex.ImagesByUser, [ref], options);
+    return images;
   }
 }
 

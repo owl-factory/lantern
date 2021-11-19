@@ -42,7 +42,7 @@ function RecentCampaigns() {
     const campaignDocs = CampaignManager.getPage({size: 3});
     campaignDocs.forEach((doc: CampaignDocument) => {
       campaignLinks.push(
-        <Link key={doc.id} href={`/play/${doc.id}`} passHref>
+        <Link key={doc.ref} href={`/play/${doc.ref}`} passHref>
           <NavDropdown.Item>{doc.name}</NavDropdown.Item>
         </Link>
       );

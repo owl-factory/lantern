@@ -4,6 +4,7 @@
  */
 
 import { action, makeAutoObservable, makeObservable, observable } from "mobx";
+import { Ref64 } from "types";
 import { AnyDocument, CoreDocument } from "types/documents";
 import { getUniques } from "utilities/arrays";
 import { read } from "utilities/objects";
@@ -53,11 +54,11 @@ export class DataManager<T extends CoreDocument> {
 
   /**
    * Gets a single document from the data manager. No external calls are made
-   * @param id The id of the document to fetch from the manager
+   * @param ref The id of the document to fetch from the manager
    * @returns A single document from the data manager
    */
-  public get(id: string): T | undefined {
-    if (id in this.data) { return this.data[id]; }
+  public get(ref: Ref64): T | undefined {
+    if (ref in this.data) { return this.data[ref]; }
     return undefined;
   }
 
@@ -71,14 +72,14 @@ export class DataManager<T extends CoreDocument> {
 
   /**
    * Finds and returns a list of documents from a list of given IDs
-   * @param ids The IDs of the documents to return
+   * @param refs The IDs of the documents to return
    * @returns An array of documents. Undefined documents will not be present
    */
-  public getMany(ids: string[]): T[] {
-    if (ids === undefined) { return []; }
+  public getMany(refs: Ref64[]): T[] {
+    if (refs === undefined) { return []; }
     const docs: T[] = [];
-    ids.forEach((id: string) => {
-      if (id in this.data) { docs.push(this.data[id]); }
+    refs.forEach((ref: string) => {
+      if (ref in this.data) { docs.push(this.data[ref]); }
     });
 
     return docs;
@@ -123,10 +124,10 @@ export class DataManager<T extends CoreDocument> {
     if (!storedIDs) { return; }
 
     // Loop through each ID and load it in from local storage
-    const ids = JSON.parse(storedIDs);
-    ids.forEach((id: string) => {
-      const storedDoc: string | null | undefined = LOCAL_STORAGE.getItem(`${this.key}_${id}`);
-      if (!storedDoc) { console.warn(`Expected a stored value for ID ${id} but none was found.`); }
+    const refs = JSON.parse(storedIDs);
+    refs.forEach((ref: string) => {
+      const storedDoc: string | null | undefined = LOCAL_STORAGE.getItem(`${this.key}_${ref}`);
+      if (!storedDoc) { console.warn(`Expected a stored value for ID ${ref} but none was found.`); }
       const doc = JSON.parse(storedDoc as string);
       this.set(doc);
     });
@@ -134,16 +135,16 @@ export class DataManager<T extends CoreDocument> {
 
   /**
    * Removes a single document from the Data Manager and Local Storage. Does not remove from the database
-   * @param id The ID of the document to remove
+   * @param ref The ID of the document to remove
    */
-  public remove(id: string) {
-    this.removeMany([id]);
+  public remove(ref: string) {
+    this.removeMany([ref]);
   }
 
-  public removeMany(ids: string[]) {
-    ids.forEach((id: string) => {
-      delete this.data[id];
-      LOCAL_STORAGE.removeItem(this.buildKey(id));
+  public removeMany(refs: string[]) {
+    refs.forEach((ref: string) => {
+      delete this.data[ref];
+      LOCAL_STORAGE.removeItem(this.buildKey(ref));
     });
     this.updateStorageKeys();
   }
@@ -163,20 +164,20 @@ export class DataManager<T extends CoreDocument> {
   public setMany(docs: T[]): void {
     if (docs === undefined) { return; }
     docs.forEach((doc: T) => {
-      if (!("id" in doc)) { return; }
-      const id = (doc as CoreDocument).id;
-      this.data[id] = doc;
+      if (!("ref" in doc)) { return; }
+      const ref = (doc as CoreDocument).ref;
+      this.data[ref] = doc;
 
       // Sets the document in the local storage
-      LOCAL_STORAGE.setItem(this.buildKey(id), JSON.stringify(doc));
+      LOCAL_STORAGE.setItem(this.buildKey(ref), JSON.stringify(doc));
     });
     this.updateStorageKeys();
     this.updatedAt = (new Date());
   }
 
 
-  private buildKey(id: string) {
-    return `${this.key}_${id}`;
+  private buildKey(ref: string) {
+    return `${this.key}_${ref}`;
   }
 
   /**

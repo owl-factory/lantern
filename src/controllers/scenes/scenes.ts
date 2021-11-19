@@ -2,6 +2,7 @@ import { AlertController } from "controllers/AlertController";
 import { CampaignDataController } from "controllers/data/campaign";
 import { SceneDataController, SceneManager } from "controllers/data/scene";
 import { action, makeObservable, observable } from "mobx";
+import { Ref64 } from "types";
 import { CampaignDocument, SceneDocument } from "types/documents";
 
 class $SceneController {
@@ -55,14 +56,14 @@ class $SceneController {
       return;
     }
 
-    const campaign = await CampaignDataController.read(scene.campaign.id);
+    const campaign = await CampaignDataController.read(scene.campaign.ref);
     if (campaign === undefined) {
       AlertController.error("An error occured while trying to load the campaign");
       return;
     }
 
     this.sceneID = id;
-    this.campaignID = campaign.id;
+    this.campaignID = campaign.ref;
 
     this.scene = scene;
     this.campaign = campaign;
@@ -72,18 +73,18 @@ class $SceneController {
     return;
   }
 
-  public async setCampaign(id: string) {
-    const campaign = await CampaignDataController.read(id);
+  public async setCampaign(ref: Ref64) {
+    const campaign = await CampaignDataController.read(ref);
     if (campaign === undefined) {
       AlertController.error("An error occured while trying to load the campaign");
       return;
     }
     this.campaign = campaign;
-    this.campaignID = campaign.id;
+    this.campaignID = campaign.ref;
   }
 
-  public async setScene(id: string) {
-    const scene = await SceneDataController.read(id);
+  public async setScene(ref: Ref64) {
+    const scene = await SceneDataController.read(ref);
     if (scene === undefined) {
       AlertController.error("The scene could not be found or you do not have permission to view.");
     }
@@ -92,12 +93,12 @@ class $SceneController {
   public async newScene() {
     if (!this.campaignID) { return; }
     const scene = await SceneDataController.create(
-      { name: "Untitled", campaign: {id: this.campaignID, collection: "campaigns" }}
+      { name: "Untitled", campaign: {ref: this.campaignID }}
     );
 
     if (!scene) { return; }
     this.scene = scene;
-    this.sceneID = scene?.id;
+    this.sceneID = scene?.ref;
   }
 }
 

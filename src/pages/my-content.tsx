@@ -12,6 +12,7 @@ import { Loading } from "components/style";
 import { observer } from "mobx-react-lite";
 import { ContentManager } from "controllers/data/content";
 import { RulesetController, RulesetManager } from "controllers/data/ruleset";
+import { ContentTypeManager } from "controllers/data/contentType";
 
 interface MyContentProps extends InitialProps {
   contents: ContentDocument[];
@@ -32,8 +33,8 @@ const ContentRow = observer((props: ContentRowProps) => {
     <tr>
       <td><GiAxeSword/></td>
       <td>{props.content.name}</td>
-      <td>{props.content.type.name || <Loading/>}</td>
-      <td>{RulesetManager.get(props.content.ruleset.id)?.name || <Loading/>}</td>
+      <td>{ContentTypeManager.get(props.content.type.ref)?.name || <Loading/>}</td>
+      <td>{RulesetManager.get(props.content.ruleset.ref)?.name || <Loading/>}</td>
       <td>
         <ButtonGroup>
           <Button><MdContentCopy/></Button>
@@ -61,7 +62,7 @@ function MyContent(props: MyContentProps): JSX.Element {
 
     ContentManager.setMany(props.contents);
 
-    const uniqueRulesets = ContentManager.getUniques("ruleset.id");
+    const uniqueRulesets = ContentManager.getUniques("ruleset.ref");
     RulesetController.readMissing(uniqueRulesets);
   }, []);
 
@@ -72,7 +73,7 @@ function MyContent(props: MyContentProps): JSX.Element {
 
   function match(doc: AnyDocument) {
     if (!props.session) { return false; }
-    if (props.session.user.id === doc.ownedBy?.id) { return true; }
+    if (props.session.user.ref === doc.ownedBy?.ref) { return true; }
     return false;
   }
 
@@ -80,7 +81,7 @@ function MyContent(props: MyContentProps): JSX.Element {
 
   const rows: JSX.Element[] = [];
   contents.forEach((content: ContentDocument) => {
-    rows.push(<ContentRow key={content.id} content={content}/>);
+    rows.push(<ContentRow key={content.ref} content={content}/>);
   });
   return (
     <Page>

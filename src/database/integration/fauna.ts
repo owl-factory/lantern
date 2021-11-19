@@ -1,5 +1,5 @@
 import { fromFauna, fromIndex } from "database/conversion/fauna/from";
-import { toRef, toFauna } from "database/conversion/fauna/to";
+import { toFauna, toRef } from "database/conversion/fauna/to";
 import { FaunaDocument } from "database/types/fauna";
 import { Collection, FaunaIndex, FaunaIndexTerms } from "fauna";
 import { Expr, query as q } from "faunadb";
@@ -91,6 +91,8 @@ export async function searchByIndex<T>(
       options
     ),
   );
+
+  console.log(terms)
 
   // Handles invalid results
   if (!result.data) {
