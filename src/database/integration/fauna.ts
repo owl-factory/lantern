@@ -35,7 +35,6 @@ export async function deleteOne<T>(id: Ref64): Promise<T | undefined> {
 
   const faunaResult = await client.query(q.Delete(ref));
   // const parsedDoc = fromFauna(faunaResult as Record<string, unknown>);
-  console.log(faunaResult);
   // return parsedDoc;
   return faunaResult as any;
 }
@@ -92,14 +91,11 @@ export async function searchByIndex<T>(
     ),
   );
 
-  console.log(terms)
-
   // Handles invalid results
   if (!result.data) {
     throw { code: 500, message: `An error occured while trying to search the ${index} index` };
   }
   const docs = fromIndex(result.data, FaunaIndexTerms[index]);
-  console.log(docs)
   return docs as unknown as T[];
 }
 

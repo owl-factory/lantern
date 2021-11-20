@@ -131,7 +131,6 @@ export function checkParentAccess(descriptor: Descriptor, args: unknown): void {
 }
 
 export async function fetchTargetDoc(descriptor: Descriptor, id: Ref64): Promise<AnyDocument | undefined> {
-  console.log(id)
   const doc = await fauna.findByID<AnyDocument>(id);
   return doc;
 }

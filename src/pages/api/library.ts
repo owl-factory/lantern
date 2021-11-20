@@ -10,7 +10,6 @@ import { createEndpoint } from "server/utilities";
  */
 async function getLibraryPage(this: HTTPHandler, _req: NextApiRequest) {
   const images = await ImageLogic.searchMyImages({ size: 100 });
-  console.log(images)
   this.returnSuccess({ images });
 }
 

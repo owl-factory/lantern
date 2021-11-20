@@ -56,8 +56,8 @@ function toRecord(data: Record<string, unknown>): Record<string, unknown> {
   const dataKeys = Object.keys(data);
 
   dataKeys.forEach((dataKey: string) => {
-    data[dataKey] = toItem(data[dataKey]);
-  }); 
+    faunaData[dataKey] = toItem(data[dataKey]);
+  });
 
   return faunaData;
 }
@@ -76,7 +76,7 @@ function toItem(data: unknown): unknown {
     case "bigint":
     case "symbol":
       return data;
-    case "undefined": 
+    case "undefined":
       return undefined;
     case "array":
       return toArray(data as unknown[]);

@@ -11,8 +11,7 @@ import { UserDocument } from "types/documents";
  * @param req The request to the server
  */
 async function updateProfileImage(this: HTTPHandler, req: NextApiRequest) {
-
-  const user = await UserLogic.findByID(req.query.ref as string);
+  const user = await UserLogic.findByID(req.query.id as string);
   if (!user) { this.returnError(404, "User not found."); return; }
   const image = await ImageLogic.create(req.body.method, req.body.image);
   const userPatch: Partial<UserDocument> = { avatar:

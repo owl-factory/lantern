@@ -270,7 +270,7 @@ function Profile(props: ProfileProps): JSX.Element {
     if (!newUser) { return; }
 
     setUser(newUser);
-  }, [UserManager.get(props.user.ref)?.updatedAt]);
+  }, [UserManager.get(props.user.ref)?.updatedAt, UserManager.updatedAt]);
 
   /**
    * Determines if the current player is the owner of the profile page.

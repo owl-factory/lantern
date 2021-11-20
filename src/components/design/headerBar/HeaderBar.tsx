@@ -8,6 +8,8 @@ import { isAdmin, isModerator } from "server/logic/security";
 import { MyUserDocument } from "types/security";
 import { ADMIN_ENDPOINT } from "utilities/globals";
 import { CampaignManager } from "controllers/data/campaign";
+import { observer } from "mobx-react-lite";
+import { UserManager } from "controllers/data/user";
 
 interface LoggedInNavProps {
   user: UserDocument;
@@ -18,15 +20,29 @@ interface LoggedInNavProps {
  * @param user The currently logged in user
  * @returns A JSX.Element displaying the user's profile image and name
  */
-function UserDisplay(props: LoggedInNavProps) {
+const UserDisplay = observer((props: LoggedInNavProps) => {
+  const [ user, setUser ] = React.useState(props.user);
+  React.useEffect(() => {
+    UserManager.load();
+  }, []);
+
+  React.useEffect(() => {
+    const newUser = UserManager.get(props.user.ref);
+    if (!newUser) { return; }
+    setUser(newUser);
+  }, [UserManager.updatedAt]);
+
   return (
     <>
-      <img src={props.user.avatar?.src} style={{maxHeight: "32px", maxWidth: "32px", position: "absolute"}}/>
+      <img
+        src={user.avatar.src}
+        style={{maxHeight: "32px", maxWidth: "32px", position: "absolute"}}
+      />
       <div style={{width: "36px", display: "inline-flex"}}></div>
       {props.user.name || props.user.username}&nbsp;
     </>
   );
-}
+});
 
 /**
  * Renders up to three of the user's recent campaigns for fewer clicks to game

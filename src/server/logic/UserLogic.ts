@@ -94,7 +94,7 @@ class $UserLogic implements DatabaseLogic<UserDocument> {
   @SetFields({[UserRole.User]: ["avatar.ref", "avatar.src"]})
   public async updateAvatar(id: Ref64, doc: Partial<UserDocument>): Promise<UserDocument> {
     const user = await fauna.updateOne<UserDocument>(id, doc);
-    if (user === undefined) { 
+    if (user === undefined) {
       throw { code: 500, message: "An unexpected error occured while attepting to update the user."};
     }
     return user;
