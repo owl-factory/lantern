@@ -32,7 +32,7 @@ export const Play = observer(() => {
 
   // ON LOAD
   React.useEffect(() => {
-    rest.get(`/api/play/${router.query.id}`)
+    rest.get(`/api/play/${router.query.ref}`)
     .then((res: any) => {
       if (res.success) {
         gameServer.state.messages = res.data.messages;

@@ -1,26 +1,14 @@
 import React from "react";
 import { Page } from "components/design";
 import { Form, Formik } from "formik";
-import { CampaignDocument } from "types/documents";
 import { useRouter } from "next/router";
 import { NextPageContext } from "next";
 import { getSession, requireClientLogin } from "utilities/auth";
-import { getClient, getID, readQuery, unwrapRefs } from "utilities/db";
+import { getClient, readQuery } from "utilities/db";
 import { query as q } from "faunadb";
 import { Button } from "components/style";
 import { Input } from "components/style/forms";
 import { Select } from "components/style/forms/Select";
-
-
-interface RestResponse<T> {
-  success: boolean;
-  message: string;
-  data: T;
-}
-
-interface CreateTableResponse {
-  campaign: CampaignDocument;
-}
 
 export default function NewCampaign(props: any): JSX.Element {
   const router = useRouter();
@@ -37,10 +25,9 @@ export default function NewCampaign(props: any): JSX.Element {
         [ values ]
       )
     ));
-    if (data) {
-      const href = `/campaigns/${getID((data as any).ref)}`;
-      router.push(href);
-    }
+    // if (data) {
+    //   router.push(href);
+    // }
   }
 
   const options: JSX.Element[] = [];
@@ -77,15 +64,7 @@ NewCampaign.getInitialProps = async (ctx: NextPageContext) => {
   const session = getSession(ctx);
   if (!requireClientLogin(session, ctx)) { return {}; }
   const client = getClient(ctx);
-  const rulesets: any = await client.query(
-    q.Paginate(
-      q.Match(
-        q.Index(`rulesets_dropdown`)
-      )
-    )
-  ) as any;
 
-  rulesets.data = unwrapRefs(rulesets.data, 1);
 
-  return { session, rulesets: rulesets.data };
+  return { session, rulesets: {} };
 };

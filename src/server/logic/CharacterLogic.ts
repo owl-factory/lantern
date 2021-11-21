@@ -61,7 +61,7 @@ class $CharacterLogic implements DatabaseLogic<CharacterDocument> {
   @Access({[UserRole.User]: true})
   @ReadFields(["*"])
   public async searchMyCharacters(options?: FaunaIndexOptions): Promise<CharacterDocument[]> {
-    const userID = SecurityController.currentUser?.id;
+    const userID = SecurityController.currentUser?.ref;
     if (!userID) { return []; }
     return this._searchCharactersByUser(userID, options);
   }

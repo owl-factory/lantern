@@ -39,8 +39,8 @@ const CharacterCard = observer((props: CharacterCardProps) => {
           </Col>
           <Col sm={8}>
             <h3>{props.character.name}</h3><br/>
-            {CampaignManager.get(props.character.campaign.id)?.name || <Loading/>}<br/>
-            {RulesetManager.get(props.character.ruleset.id)?.name || <Loading/>}<br/>
+            {CampaignManager.get(props.character.campaign.ref)?.name || <Loading/>}<br/>
+            {RulesetManager.get(props.character.ruleset.ref)?.name || <Loading/>}<br/>
             <ButtonGroup>
               <Button>Duplicate</Button>
               <Button>Edit</Button>
@@ -75,10 +75,10 @@ export function MyCharacters (props: MyCharactersProps) {
     CharacterManager.setMany(props.characters);
 
     // Fetches all missing campaigns and rulesets for the names
-    const uniqueCampaigns = CharacterManager.getUniques("campaign.id");
+    const uniqueCampaigns = CharacterManager.getUniques("campaign.ref");
     CampaignDataController.readMissing(uniqueCampaigns);
 
-    const uniqueRulesets = CharacterManager.getUniques("ruleset.id");
+    const uniqueRulesets = CharacterManager.getUniques("ruleset.ref");
     RulesetController.readMissing(uniqueRulesets);
   }, []);
 
@@ -101,12 +101,12 @@ export function MyCharacters (props: MyCharactersProps) {
   ];
   rulesets.forEach((ruleset: RulesetDocument) => {
     rulesetOptions.push(
-      <option key={ruleset.id} value={ruleset.id}>{ruleset.name || <Loading/>}</option>
+      <option key={ruleset.ref} value={ruleset.ref}>{ruleset.name || <Loading/>}</option>
     );
   });
 
   characters.forEach((character: CharacterDocument) => {
-    characterCards.push(<CharacterCard key={character.id} character={character}/>);
+    characterCards.push(<CharacterCard key={character.ref} character={character}/>);
   });
   function searchCharacters(values: SearchCharacterValues) {
     // TODO - do something

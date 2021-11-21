@@ -40,8 +40,8 @@ export class ImageController {
 
     const newImageList: string[] = [];
     images.forEach((image: ImageDocument) => {
-      this.images[image.id as string] = image;
-      newImageList.push(image.id as string);
+      this.images[image.ref as string] = image;
+      newImageList.push(image.ref as string);
     });
 
     this.imageList = this.imageList.concat(newImageList);
@@ -53,7 +53,7 @@ export class ImageController {
    */
   public saveLinkedImage(values: ImageDocument): void {
     const tempID = "temp";
-    values.id = tempID;
+    values.ref = tempID;
     this.images[tempID] = values;
     this.imageList.splice(0, 0, tempID);
     rest.put(`/api/images/external`, values as unknown as Record<string, unknown>)
@@ -64,8 +64,8 @@ export class ImageController {
         return;
       }
 
-      this.images[res.data.image.id] = res.data.image;
-      this.imageList[0] = res.data.image.id;
+      this.images[res.data.image.ref] = res.data.image;
+      this.imageList[0] = res.data.image.ref;
       delete this.images[tempID];
 
     });
@@ -76,8 +76,8 @@ export class ImageController {
    * @param image The image to add to the top of the image list
    */
   public add(image: ImageDocument) {
-    this.images[image.id as string] = image;
-    this.imageList.splice(0, 0, image.id as string);
+    this.images[image.ref as string] = image;
+    this.imageList.splice(0, 0, image.ref as string);
   }
 
   /**
@@ -146,7 +146,7 @@ export class ImageController {
    * @param method The method that we are using to set the banner
    */
   public async setCampaignBanner(campaign: CampaignDocument, image: ImageDocument, method: string) {
-    const result = await this.setImage(image, method, `/api/campaigns/${campaign.id}/banner`);
+    const result = await this.setImage(image, method, `/api/campaigns/${campaign.ref}/banner`);
     return result.campaign;
   }
 }

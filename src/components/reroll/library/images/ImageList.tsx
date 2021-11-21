@@ -72,10 +72,10 @@ function $ImageList(props: ImageListProps): JSX.Element {
     switch(props.listFormat) {
       case ListFormat.Thumbnails:
       case undefined:
-        imageThumbnails.push(<ImageThumbnail key={image.id} image={image} onClick={onClick}/>);
+        imageThumbnails.push(<ImageThumbnail key={image.ref} image={image} onClick={onClick}/>);
         break;
       case ListFormat.Icons:
-        imageThumbnails.push(<ImageIcon key={image.id} image={image} onClick={onClick}/>);
+        imageThumbnails.push(<ImageIcon key={image.ref} image={image} onClick={onClick}/>);
         break;
     }
   });

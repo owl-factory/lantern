@@ -1,6 +1,5 @@
+import { FaunaDocument } from "database/types/fauna";
 import { Ref64 } from "types";
-import { AnyDocument } from "types/documents";
-import { FaunaIndexResponseDocument } from "types/fauna";
 import { encode } from "utilities/encoding";
 import { set } from "utilities/objects";
 import { isFaunaDate, isFaunaRef } from "./fauna";
@@ -10,68 +9,82 @@ import { isFaunaDate, isFaunaRef } from "./fauna";
  * @param faunaDoc The document to map from Fauna into a flat function
  * @param format The format to return the fauna function as. Valid options are 'class' or 'struct'.
  */
- export function fromFauna(faunaDoc: Record<string, unknown>): AnyDocument  {
-  const mappedDoc: Record<string, unknown> = parseFaunaLayer(faunaDoc.data || {}, {});
+export function fromFauna(faunaDoc: FaunaDocument): Record<string, unknown> {
+  const convertedDoc: Record<string, unknown> = fromRecord((faunaDoc.data || {}) as Record<string, unknown>);
 
   // Parse ref after the fact to ensure we have accurate values
-  const id = parseFaunaRef(faunaDoc.ref);
-  mappedDoc.id = id;
-  mappedDoc.ts = faunaDoc.ts;
-  mappedDoc.ttl = faunaDoc.ttl;
+  convertedDoc.ref = fromRef(faunaDoc.ref);
 
-  return mappedDoc as unknown as AnyDocument;
+  return convertedDoc;
 }
 
 /**
- * Maps a document layer to a provided intitial document and returns it
- * @param faunaDoc The document to parse through
- * @param mappedDoc The document we would like to map the current layer to
+ * Converts an array of Fauna data into a usable array of JSON data
+ * @param data The data of data items to convert into usable JSON data
+ * @returns An array of converted JSON data
  */
- function parseFaunaLayer(faunaDoc: any, mappedDoc: any = {}): Record<string, unknown> {
-  const keys = Object.keys(faunaDoc);
-  keys.forEach((key: string) => {
-    const data = faunaDoc[key];
-    mappedDoc[key] = parseFaunaItem(data);
+function fromArray(data: unknown[]): unknown[] {
+  const convertedData: unknown[] = [];
+
+  data.forEach((item: unknown) => {
+    const convertedItem = fromItem(item);
+    if (convertedItem === undefined) { return; }
+    convertedData.push(convertedItem);
   });
 
-  return mappedDoc;
+  return convertedData;
 }
 
 /**
- * Processes and maps a single item from a document object.
- * @param item The data to process and map
+ * Parses a Fauna date into a common javascript date
+ * @param date The Fauna date to parse into a Date
  */
-function parseFaunaItem(item: unknown) {
-  // If null, simply return the null
-  if (item === null || item === undefined) { return item; }
+ function fromDate(date: Record<string, unknown>): Date {
+  if ("@ts" in date && date["@ts"]) { return new Date(date["@ts"] as string | number | Date); }
+  return new Date(date.value as string | number | Date);
+}
 
-  // If not an object, this is a simple type. Return the item as-is
-  if (typeof item !== "object") { return item; }
+/**
+ * Converts a Fauna data object to a usable JSON object
+ * @param data The data record to convert into a usable JSON object
+ * @returns A converted JSON object
+ */
+function fromRecord(data: Record<string, unknown>): Record<string, unknown> {
+  const convertedData: Record<string, unknown> = {};
+  const dataKeys = Object.keys(data);
 
-  // If this is an array, loop through each item and parse it as well
-  if (Array.isArray(item)) {
-    item.forEach((subItem: unknown, index: number) => {
-      // TODO - map layer item?
-      item[index] = parseFaunaItem(subItem);
-    });
-    return item;
+  dataKeys.forEach((dataKey: string) => {
+    convertedData[dataKey] = fromItem(data[dataKey]);
+  });
+
+  return convertedData;
+}
+
+/**
+ * Converts a single piece of Fauna data into usable JSON data
+ * @param data The single item to convert from Fauna to a JSON item
+ * @returns The converted data
+ */
+function fromItem(data: unknown) {
+  const dataType: string = getFaunaDataType(data);
+  switch(dataType) {
+    case "boolean":
+    case "number":
+    case "string":
+    case "bigint":
+    case "symbol":
+      return data;
+    case "undefined": 
+      return undefined;
+    case "array":
+      return fromArray(data as unknown[]);
+    case "ref":
+      return fromRef(data);
+    case "date":
+      return fromDate(data as Record<string, unknown>);
+    case "object":
+      return fromRecord(data as Record<string, unknown>);
   }
-
-  // If a Fauna date, parse into a Javascript Date
-  if (isFaunaDate(item)) { return parseFaunaDate(item as Record<string, unknown>); }
-
-  // If a Fauna Ref, parse into an object with the ID and Collection
-  // TODO - remove this eventually. A ref should always be inside an object (eg: { image: { ref: [ref]}})
-  if (isFaunaRef(item)) {
-    const ref: AnyDocument = { id: parseFaunaRef(item) as string };
-    return ref;
-  }
-
-  // If this contains a ref object, it is a fauna document
-  if (item !== null && "ref" in item) { return fromFauna(item as Record<string, unknown>); }
-
-  // If nothing else is matched, this is a simple object
-  return parseFaunaLayer(item, {});
 }
 
 /**
@@ -79,7 +92,7 @@ function parseFaunaItem(item: unknown) {
  * id and collection of the ref.
  * @param ref The ref object to parse
  */
- export function parseFaunaRef(ref: any): Ref64 | undefined {
+ export function fromRef(ref: any): Ref64 | undefined {
   let id, collection = "";
   if (ref === null)
     return undefined;
@@ -92,61 +105,48 @@ function parseFaunaItem(item: unknown) {
     collection = ref.collection.id;
   }
 
-
   return encode(id, collection);
 }
 
 /**
- * Parses a Fauna date into a common javascript date
- * @param date The Fauna date to parse into a Date
+ * Determines the type of Fauna data that was passed in
+ * @param data The data to infer type from
+ * @returns The type of the data as a string
  */
-function parseFaunaDate(date: Record<string, unknown>): Date {
-  if ("@ts" in date && date["@ts"]) { return new Date(date["@ts"] as string | number | Date); }
-  return new Date(date.value as string | number | Date);
+function getFaunaDataType(data: unknown): string {
+  if (data === undefined || data === null) { return "undefined"; }
+  else if (typeof data !== "object") { return typeof data; }
+  else if (Array.isArray(data)) { return "array"; }
+  else if (isFaunaRef(data)) { return "ref"; }
+  else if (isFaunaDate(data)) { return "date"; }
+  else { return "object"; }
 }
 
 /**
  * Parses an index response from a 2D array of strings, numbers, and unknowns into a list of documents
- * @param faunaIndexDocuments The index documents returned from a fauna index search
+ * @param faunaDocs The index documents returned from a fauna index search
  * @param fields A list of fields in order that represent the output of the index
  * @returns Returns a list of documents
  */
-export function parseIndexResponse(
-  faunaIndexDocuments: FaunaIndexResponseDocument[], fields: string[]
-): Partial<AnyDocument>[] {
-  const parsedDocs: AnyDocument[] = [];
-  faunaIndexDocuments.forEach((indexDocument: (string | number | unknown)[]) => {
-    const parsedDoc: Partial<AnyDocument> = {};
+export function fromIndex(faunaDocs: unknown[], fields: string[]): Record<string, unknown>[] {
+  const convertedDocs: Record<string, unknown>[] = [];
 
-    if (!Array.isArray(indexDocument)) {
-      const id = parseFaunaRef(indexDocument);
-      // parsedDoc.ref = indexDocument;
-      parsedDoc.id = id;
-    } else {
-      // For each item, there is a given term that maps it. The end result should
-      // resemble a mapped object
-      indexDocument.forEach((value: (string | number | unknown), index: number) => {
-        const valueKey = fields[index];
-        // (parsedDoc as Record<string, unknown>)[valueKey] = value;
-        if (valueKey === undefined) { return; }
-        if (valueKey === "ref") {
-          const id = parseFaunaRef(value);
-          parsedDoc.id = id;
-          // Skip adding the ref itself to the object; it's messy
-          return;
-        } else if (valueKey.match(/.+\.ref$/)) {
-          const starterKey = valueKey.slice(0, -3);
-          const id= parseFaunaRef(value);
-          set(parsedDoc, starterKey + "id", id);
-          // Skip adding the ref itself to the object; it's messy
-          return;
-        }
-        // Deep sets, deliminating the value key's periods
-        set(parsedDoc as Record<string, unknown>, valueKey, value);
-      });
+  faunaDocs.forEach((faunaDoc: unknown | unknown[]) => {
+    const convertedDoc: Record<string, unknown> = {};
+
+    if (!Array.isArray(faunaDoc)) { 
+      convertedDoc.ref = fromRef(faunaDoc);
+      convertedDocs.push(convertedDoc);
+      return;
     }
-    parsedDocs.push(parsedDoc as any);
+
+    faunaDoc.forEach((faunaItem: unknown, index: number) => {
+      const key = fields[index];
+      const item = fromItem(faunaItem);
+      set(convertedDoc, key, item);
+    });
+    convertedDocs.push(convertedDoc);
   });
 
-  return parsedDocs;
+  return convertedDocs;
 }

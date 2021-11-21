@@ -14,7 +14,7 @@ async function getProfile(this: HTTPHandler, req: NextApiRequest) {
   const userSearch = await UserLogic.searchByUsername(req.query.username as string) as UserDocument[];
   if (userSearch.length === 0) { this.returnError(404, "The given profile was not found."); }
 
-  const user = await UserLogic.findByID(userSearch[0].id, "temp!");
+  const user = await UserLogic.findByID(userSearch[0].ref);
 
   if (user.recentPlayers) {
     user.recentPlayers = await UserLogic.findManyByIDs(getUniques(user.recentPlayers, "id"));
@@ -29,7 +29,7 @@ async function getProfile(this: HTTPHandler, req: NextApiRequest) {
  * @param req The request to the server
  */
 async function updateProfile(this: HTTPHandler, req: NextApiRequest) {
-  const user = await UserLogic.updateOne(req.body.id, req.body);
+  const user = await UserLogic.updateOne(req.body.ref, req.body);
   this.returnSuccess({ user });
 }
 

@@ -54,21 +54,6 @@ export function useQuery(expr: ExprArg, options?: QueryOptions | undefined): Use
   return [ result, loading, error ];
 }
 
-/**
- * Unwraps Fauna references into ID strings
- * @param data The array of data to unwrap references for
- * @param key The key the reference is located at
- */
-export function unwrapRefs(data: Record<string | number, unknown>[], key: string | number): unknown {
-  data.forEach((item: Record<string | number, unknown>) => {
-    if (item[key] && (item[key] as Record<string, string>).id) {
-      item[key] = (item[key] as Record<string, string>).id;
-    }
-  });
-
-  return data;
-}
-
 export async function readQuery(query: Promise<object>): Promise<{ data: any | null, error: object | null}> {
   try {
     return {

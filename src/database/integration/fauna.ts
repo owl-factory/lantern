@@ -1,23 +1,11 @@
-import { fromFauna, parseIndexResponse } from "database/conversion/fauna/from";
-import { toFauna } from "database/conversion/fauna/to";
+import { fromFauna, fromIndex } from "database/conversion/fauna/from";
+import { toFauna, toRef } from "database/conversion/fauna/to";
+import { FaunaDocument } from "database/types/fauna";
 import { Collection, FaunaIndex, FaunaIndexTerms } from "fauna";
 import { Expr, query as q } from "faunadb";
 import { Ref64 } from "types";
-import { AnyDocument } from "types/documents";
-import { FaunaDocument, FaunaIndexOptions, FaunaIndexResponse } from "types/fauna";
+import { FaunaIndexOptions, FaunaIndexResponse } from "types/fauna";
 import { getServerClient } from "utilities/db";
-import { decode } from "utilities/encoding";
-
-/**
- * Converts a ref64 ID back into a Fauna ref
- * @param ref64ID The Ref64 ID to convert into the original fauna ref.
- * @returns A Fauna Ref expr.
- */
-export function idToRef(ref64ID: Ref64): Expr {
-  const { id, collection } = decode(ref64ID);
-  const ref = q.Ref(q.Collection(collection as string), id);
-  return ref;
-}
 
 /**
  * Creates a single document in the Fauna database
@@ -27,9 +15,9 @@ export function idToRef(ref64ID: Ref64): Expr {
  */
 export async function createOne<T>(collection: Collection, doc: Record<string, unknown>): Promise<T | undefined>{
   const client = getServerClient();
-  const faunaDoc: FaunaDocument<unknown> = toFauna(doc);
+  const faunaDoc: FaunaDocument = toFauna(doc);
 
-  const faunaResult = await client.query(q.Create(collection, faunaDoc)) as Record<string, unknown>;
+  const faunaResult: FaunaDocument = await client.query(q.Create(collection, faunaDoc));
 
   // TODO - how are errors thrown from fauna
   const parsedResult = fromFauna(faunaResult);
@@ -43,11 +31,10 @@ export async function createOne<T>(collection: Collection, doc: Record<string, u
  */
 export async function deleteOne<T>(id: Ref64): Promise<T | undefined> {
   const client = getServerClient();
-  const ref = idToRef(id);
+  const ref = toRef(id);
 
   const faunaResult = await client.query(q.Delete(ref));
   // const parsedDoc = fromFauna(faunaResult as Record<string, unknown>);
-  console.log(faunaResult);
   // return parsedDoc;
   return faunaResult as any;
 }
@@ -57,12 +44,12 @@ export async function deleteOne<T>(id: Ref64): Promise<T | undefined> {
  * @param id The ref64 ID to convert into a proper reference
  */
 export async function findByID<T>(id: string): Promise<T | undefined> {
-  const ref = idToRef(id);
+  const ref = toRef(id);
   const client = getServerClient();
-  const doc: FaunaDocument<unknown> | null = await client.query(q.Get(ref));
+  const doc: FaunaDocument | null = await client.query(q.Get(ref));
 
   if (!doc) { return undefined; }
-  const parsedDoc = fromFauna(doc as Record<string, unknown>);
+  const parsedDoc = fromFauna(doc);
   return parsedDoc as unknown as T;
 }
 
@@ -95,7 +82,6 @@ export async function searchByIndex<T>(
   index: FaunaIndex, terms: (string | boolean | Expr)[], options?: FaunaIndexOptions
 ): Promise<T[]> {
   const client = getServerClient();
-  console.log()
 
   // Queries the given index. This is automatically set up for pagination
   const result: FaunaIndexResponse = await client.query(
@@ -109,8 +95,7 @@ export async function searchByIndex<T>(
   if (!result.data) {
     throw { code: 500, message: `An error occured while trying to search the ${index} index` };
   }
-  const docs = parseIndexResponse(result.data, FaunaIndexTerms[index]);
-  console.log(docs)
+  const docs = fromIndex(result.data, FaunaIndexTerms[index]);
   return docs as unknown as T[];
 }
 
@@ -122,10 +107,10 @@ export async function searchByIndex<T>(
  */
 export async function updateOne<T>(id: Ref64, doc: Partial<T>): Promise<T> {
   const client = getServerClient();
-  const ref = idToRef(id);
+  const ref = toRef(id);
   const patchDoc = toFauna(doc);
 
-  const result: Record<string, unknown> = await client.query(q.Update(ref, patchDoc));
+  const result: FaunaDocument = await client.query(q.Update(ref, patchDoc));
 
   if (!result) {
     throw "An error occured while updating a document";

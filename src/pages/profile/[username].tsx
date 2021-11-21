@@ -62,7 +62,7 @@ function Badges({ user }: { user: UserDocument }) {
 function MyOptions({ user, players}: { user: UserDocument, players: UserDocument[] }) {
   const recentPlayers: JSX.Element[] = [];
   players.forEach((player: UserDocument) => {
-    recentPlayers.push(<RecentPlayer key={player.id} player={player}/>);
+    recentPlayers.push(<RecentPlayer key={player.ref} player={player}/>);
   });
 
   return (
@@ -204,7 +204,7 @@ const Avatar = observer(({ user, isMyPage }: ProfileImageProps) => {
   let image = <img src={user.avatar.src} width="200px" height="200px"/>;
 
   async function onSubmit(imageDocument: Partial<ImageDocument>, method: AssetUploadSource) {
-    await UserController.updateAvatar(user.id, imageDocument, method);
+    await UserController.updateAvatar(user.ref, imageDocument, method);
   }
 
   if (isMyPage) {
@@ -255,21 +255,22 @@ function Profile(props: ProfileProps): JSX.Element {
 
     const playerIDs: string[] = [];
     props.user.recentPlayers?.forEach((player: UserDocument) => {
-      playerIDs.push(player.id);
+      playerIDs.push(player.ref);
     });
     UserController.readMissing(playerIDs).then(() => {
       setPlayers(UserManager.getMany(playerIDs));
     });
-    ImageController.readMissing([props.user.avatar.id]);
+
+    ImageController.readMissing([props.user.avatar.ref]);
   }, []);
 
   // Updates the current user when they change
   React.useEffect(() => {
-    const newUser = UserManager.get(props.user.id as string);
+    const newUser = UserManager.get(props.user.ref as string);
     if (!newUser) { return; }
 
     setUser(newUser);
-  }, [UserManager.get(props.user.id)?.updatedAt]);
+  }, [UserManager.get(props.user.ref)?.updatedAt, UserManager.updatedAt]);
 
   /**
    * Determines if the current player is the owner of the profile page.
@@ -277,7 +278,7 @@ function Profile(props: ProfileProps): JSX.Element {
    */
   function calculateIfUserIsOwner() {
     if (!props.session) { return false; }
-    if (props.session.user.id === user.id) { return true; }
+    if (props.session.user.ref === user.ref) { return true; }
     return false;
   }
 
@@ -286,7 +287,7 @@ function Profile(props: ProfileProps): JSX.Element {
    * @param values The user document values to save to the database
    */
   async function saveUser(values: Record<string, unknown>) {
-    await UserController.update(user.id, values);
+    await UserController.update(user.ref, values);
   }
 
   return (

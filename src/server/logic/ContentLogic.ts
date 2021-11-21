@@ -10,6 +10,7 @@ import { isOwner } from "./security";
 import * as fauna from "database/integration/fauna";
 import { FaunaIndexOptions } from "types/fauna";
 import { SecurityController } from "controllers/security";
+import { toRef } from "database/conversion/fauna/to";
 
 class $ContentLogic implements DatabaseLogic<ContentDocument> {
   public collection = Collection.Contents;
@@ -63,7 +64,7 @@ class $ContentLogic implements DatabaseLogic<ContentDocument> {
   @Access({[UserRole.User]: true, [UserRole.Admin]: true})
   @ReadFields(["*"])
   public async searchMyContent(options?: FaunaIndexOptions): Promise<ContentDocument[]> {
-    const userID = SecurityController.currentUser?.id;
+    const userID = SecurityController.currentUser?.ref;
     if (!userID) { return []; }
     return this._searchContentByUser(userID, options);
   }
@@ -74,9 +75,9 @@ class $ContentLogic implements DatabaseLogic<ContentDocument> {
    * @returns An array of campaign document partials
    */
   private async _searchContentByUser(userID: Ref64, options?: FaunaIndexOptions): Promise<ContentDocument[]> {
-    const userRef = fauna.idToRef(userID);
+    const userRef = toRef(userID);
     const content = await fauna.searchByIndex<ContentDocument>(FaunaIndex.ContentByUser, [userRef], options);
-    console.log(content)
+
     return content;
   }
 }

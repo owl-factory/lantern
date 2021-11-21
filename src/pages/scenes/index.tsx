@@ -11,7 +11,7 @@ const CampaignSelection = observer(() => {
   const campaigns: JSX.Element[] = [];
   CampaignManager.getPage().forEach((campaign: CampaignDocument) => {
     campaigns.push(
-      <a href="#" onClick={() => SceneController.setCampaign(campaign.id)}>{campaign.name}</a>
+      <a href="#" onClick={() => SceneController.setCampaign(campaign.ref)}>{campaign.name}</a>
     );
   });
   return (
@@ -24,15 +24,15 @@ const CampaignSelection = observer(() => {
 const SceneSelection = observer(() => {
   const scenes: JSX.Element[] = [];
   SceneManager.getPage().forEach((scene: SceneDocument) => {
-    scenes.push(<a href="#" onClick={() => SceneController.setCampaign(scene.id)}>{scene.name}</a>);
+    scenes.push(<a href="#" onClick={() => SceneController.setCampaign(scene.ref)}>{scene.name}</a>);
   });
   return (
     <div>
       {scenes}
       <a href="#" onClick={() => SceneController.newScene()}>Create Scene</a>
     </div>
-  )
-})
+  );
+});
 
 const SceneBreadcrumbs = observer(() => {
   if (!SceneController.campaignID) {

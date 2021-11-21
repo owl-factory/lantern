@@ -19,7 +19,7 @@ interface ImageDetailsModalProps {
  * @param handleClose Handles closing the modal
  */
 function $ImageDetailsModal({ imageID, open, handleClose }: ImageDetailsModalProps): JSX.Element | null {
-  const [ image, setImage ] = React.useState<ImageDocument>({ id: "" } as ImageDocument);
+  const [ image, setImage ] = React.useState<ImageDocument>({ ref: "" } as ImageDocument);
 
   // Ensures that this only runs when the imageID changes
   React.useEffect(() => {

@@ -11,11 +11,11 @@ import { createEndpoint } from "server/utilities";
  * @param req The request to the server
  */
 async function updateProfileImage(this: HTTPHandler, req: NextApiRequest) {
-  const user = await UserLogic.findByID(SecurityController.currentUser?.id || "");
+  const user = await UserLogic.findByID(SecurityController.currentUser?.ref || "");
   if (!user) { this.returnError(404, "User not found."); return; }
-  const image = await ImageLogic.findByID(req.body.avatar.id);
+  const image = await ImageLogic.findByID(req.body.avatar.ref);
   if (!image) { this.returnError(404, "Image not found"); return; }
-  const newUser = await UserLogic.updateAvatar(user.id, req.body);
+  const newUser = await UserLogic.updateAvatar(user.ref, req.body);
 
   this.returnSuccess({ user: newUser });
 }

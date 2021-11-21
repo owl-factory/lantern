@@ -1,21 +1,14 @@
-import { FaunaRef } from "types/fauna";
-
-interface DocumentReference extends Partial<CoreDocument> {
-  id: string;
-  collection: string;
-}
+import { Ref64 } from "types";
 
 export interface CoreDocument {
-  id: string;
-  collection?: string; // Deprecated. Will be removed with the database changes
-  ref?: any; // Deprecated. Will be removed with the database changes
+  ref: Ref64;
   ts?: number;
 
   name?: string;
-  ownedBy?: DocumentReference;
+  ownedBy?: { ref: Ref64; };
   createdAt?: Date;
-  createdBy?: DocumentReference;
+  createdBy?: { ref: Ref64; };
   updatedAt?: Date;
-  updatedBy?: DocumentReference;
+  updatedBy?: { ref: Ref64; };
 }
 

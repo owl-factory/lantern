@@ -1,11 +1,8 @@
-import { RulesetDocument } from ".";
-import { ImageDocument } from "./assets";
-import { CampaignDocument } from "./Campaign";
+import { Ref64 } from "types";
 import { CoreDocument } from "./CoreDocument";
 
-
 export interface CharacterDocument extends CoreDocument {
-  ruleset: RulesetDocument;
-  campaign: CampaignDocument;
-  profile: ImageDocument;
+  ruleset: { ref: Ref64; };
+  campaign: { ref: Ref64; };
+  profile: { ref: Ref64; src: string; };
 }

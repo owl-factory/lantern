@@ -12,6 +12,7 @@ import { InitialProps } from "types/client";
 import { AssetUploadSource } from "types/enums/assetSource";
 import { CampaignDataController, CampaignManager } from "controllers/data/campaign";
 import { UserController, UserManager } from "controllers/data/user";
+import { Ref64 } from "types";
 
 interface BannerProps {
   campaign: CampaignDocument;
@@ -35,7 +36,7 @@ const Banner = observer(({ campaign, isOwner }: any) => {
      */
     const onSubmit = async (newBanner: Partial<ImageDocument>, method: AssetUploadSource) => {
       // TODO - Save banner
-      const result = CampaignDataController.updateBanner(campaign.id, newBanner, method);
+      const result = CampaignDataController.updateBanner(campaign.ref, newBanner, method);
     };
 
     image = (
@@ -64,7 +65,7 @@ const Player = observer((props: PlayerProps) => {
     <div>
       <img src={props.player.avatar.src} width="30px" height="30px"/>
       {props.player.name || props.player.username}&nbsp;
-      {props.player.id === props.campaign.ownedBy?.id ? "(GM) ": ""}
+      {props.player.ref === props.campaign.ownedBy?.ref ? "(GM) ": ""}
       <Link href={`/profile/${props.player.username}`}><a>Profile</a></Link>
     </div>
   );
@@ -83,7 +84,7 @@ const Players = observer(({ campaign, players }: PlayersProps) => {
   const playerElements: JSX.Element[] = [];
   players.forEach((player: UserDocument) => {
     playerElements.push(
-      <Player key={player.id} campaign={campaign} player={player}/>
+      <Player key={player.ref} campaign={campaign} player={player}/>
     );
   });
 
@@ -117,8 +118,8 @@ function CampaignView(props: CampaignViewProps): JSX.Element {
     CampaignManager.set(props.campaign);
 
     const playerIDs: string[] = [];
-    campaign.players?.forEach((player: UserDocument) => {
-      playerIDs.push(player.id);
+    campaign.players?.forEach((player: { ref: Ref64 }) => {
+      playerIDs.push(player.ref);
     });
     UserController.readMissing(playerIDs)
     .then(() => {
@@ -129,9 +130,9 @@ function CampaignView(props: CampaignViewProps): JSX.Element {
 
   // Updates the campaign each time the campaign is updated
   React.useEffect(() => {
-    const newCampaign = CampaignManager.get(props.campaign.id);
+    const newCampaign = CampaignManager.get(props.campaign.ref);
     if (newCampaign) { setCampaign(newCampaign); }
-  }, [CampaignManager.updatedAt, CampaignManager.get(props.campaign.id)?.updatedAt]);
+  }, [CampaignManager.updatedAt, CampaignManager.get(props.campaign.ref)?.updatedAt]);
 
   /**
    * Determines if the current player is the owner of the profile page.
@@ -140,7 +141,7 @@ function CampaignView(props: CampaignViewProps): JSX.Element {
    */
    function calculateIfUserIsOwner() {
     if (!props.session) { return false; }
-    if (campaign.ownedBy && props.session.user.id === campaign.ownedBy.id) { return true; }
+    if (campaign.ownedBy && props.session.user.ref === campaign.ownedBy.ref) { return true; }
     return false;
   }
 

@@ -39,13 +39,13 @@ const CampaignTile = observer((props: CampaignTileProps) => {
         </Col>
         <Col sm={8}>
           <Card.Body>
-            <Link href={`/campaigns/${props.campaign.id}`} passHref>
+            <Link href={`/campaigns/${props.campaign.ref}`} passHref>
               <a><h3>{props.campaign.name}</h3></a>
             </Link><br/>
-            <Link href={`/play/${props.campaign.id}`}>
+            <Link href={`/play/${props.campaign.ref}`}>
               <a>Play</a>
             </Link>
-            {RulesetManager.get(props.campaign.ruleset.id)?.name || <Loading/>}
+            {RulesetManager.get(props.campaign.ruleset.ref)?.name || <Loading/>}
           </Card.Body>
         </Col>
       </Row>
@@ -71,7 +71,7 @@ function MyCampaigns(props: MyCampaignsProps) {
     RulesetManager.load();
 
     CampaignManager.setMany(props.myCampaigns || []);
-    const uniqueRulesets = CampaignManager.getUniques("ruleset.id");
+    const uniqueRulesets = CampaignManager.getUniques("ruleset.ref");
     RulesetController.readMissing(uniqueRulesets);
   }, []);
 
@@ -89,7 +89,7 @@ function MyCampaigns(props: MyCampaignsProps) {
   const campaignTiles: JSX.Element[] = [];
   campaigns.forEach((campaign: CampaignDocument) => {
     campaignTiles.push(
-      <CampaignTile key={campaign.id} campaign={campaign}/>
+      <CampaignTile key={campaign.ref} campaign={campaign}/>
     );
   });
 
