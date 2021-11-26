@@ -16,7 +16,6 @@ import { getServerClient } from "utilities/db";
 export async function createOne<T>(collection: Collection, doc: Record<string, unknown>): Promise<T | undefined>{
   const client = getServerClient();
   const faunaDoc: FaunaDocument = toFauna(doc);
-
   const faunaResult: FaunaDocument = await client.query(q.Create(collection, faunaDoc));
 
   // TODO - how are errors thrown from fauna

@@ -18,7 +18,9 @@ interface PartialBanner extends Partial<ImageDocument> {
 export interface CampaignDocument extends CoreDocument {
   ruleset: { ref: Ref64; };
   banner: { ref: Ref64; src: string; };
-  players?: { ref: Ref64; }[];
+  players: { ref: Ref64; }[];
+  activeScene?: { ref: Ref64 };
+  scenes: { ref: Ref64; }[];
   lastPlayed?: Date;
 
   allowLinkInvitation?: boolean;

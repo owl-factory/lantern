@@ -22,11 +22,11 @@ class $SceneLogic {
   @ReadFields(["*"])
   @SetFields(CREATE_FIELDS)
   public async createOne(doc: Partial<SceneDocument>): Promise<SceneDocument> {
-    const ruleset = await fauna.createOne<SceneDocument>(this.collection, doc);
-    if (ruleset === undefined) {
+    const scene = await fauna.createOne<SceneDocument>(this.collection, doc);
+    if (scene === undefined) {
       throw {code: 500, message: "An unexpected error occured while creating the document"};
     }
-    return ruleset;
+    return scene;
   }
 }
 

@@ -58,6 +58,15 @@ class $CampaignLogic implements DatabaseLogic<CampaignDocument> {
     return campaigns;
   }
 
+  @Update
+  @Access({[UserRole.User]: isOwner, [UserRole.Admin]: true})
+  @RequireLogin()
+  @SetFields(["*"])
+  public async updateOne(id: Ref64, doc: Partial<CampaignDocument>) {
+    const campaign = await fauna.updateOne<CampaignDocument>(id, doc);
+    return campaign;
+  }
+
   /**
    * Updates the banner image for a campaign
    * @param id The Ref64 ID of the document to update

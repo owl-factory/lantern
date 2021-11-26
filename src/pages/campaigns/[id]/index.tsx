@@ -132,7 +132,7 @@ function CampaignView(props: CampaignViewProps): JSX.Element {
   React.useEffect(() => {
     const newCampaign = CampaignManager.get(props.campaign.ref);
     if (newCampaign) { setCampaign(newCampaign); }
-  }, [CampaignManager.updatedAt, CampaignManager.get(props.campaign.ref)?.updatedAt]);
+  }, [CampaignManager.updatedAt, CampaignManager.get(props.campaign?.ref)?.updatedAt]);
 
   /**
    * Determines if the current player is the owner of the profile page.
@@ -141,9 +141,12 @@ function CampaignView(props: CampaignViewProps): JSX.Element {
    */
    function calculateIfUserIsOwner() {
     if (!props.session) { return false; }
-    if (campaign.ownedBy && props.session.user.ref === campaign.ownedBy.ref) { return true; }
+    if (!props.campaign) { return false; }
+    if (campaign?.ownedBy && props.session.user.ref === campaign.ownedBy.ref) { return true; }
     return false;
   }
+
+  if (!campaign) { return <></>; }
 
   return (
     <Page>
@@ -163,7 +166,6 @@ CampaignView.getInitialProps = async (ctx: NextPageContext) => {
   if (!requireClientLogin(session, ctx)) { return {}; }
 
   const result = await rest.get<CampaignViewResponse>(`/api/campaigns/${ctx.query.id}`);
-
   return { key: ctx.query.id, session, campaign: result.data.campaign, message: result.message };
 };
 

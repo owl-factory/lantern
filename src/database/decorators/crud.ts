@@ -25,15 +25,14 @@ import {
     return;
   }
 
-  descriptor.value = function(...args: any) {
+  descriptor.value = async function(...args: any) {
     checkLogin(descriptor);
     checkStaticAccess(descriptor);
     checkParentAccess(descriptor, args);
     args.doc = trimSetFields(descriptor, args.doc);
 
-    let result = original.apply(this, args);
-
-    result = checkDynamicAccess(descriptor, result);
+    let result = await original.apply(this, args);
+    checkDynamicAccess(descriptor, result);
     result = trimReadFields(descriptor, result);
 
     return result;

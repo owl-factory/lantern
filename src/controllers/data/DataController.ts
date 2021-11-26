@@ -144,6 +144,8 @@ export abstract class DataController<T extends CoreDocument> {
       AlertController.error(`An error occured while updating ${this.manager.key}: ${result.message}`);
       return undefined;
     }
+    console.log(result)
+    return result.data.doc
     this.manager.set(result.data.doc);
     AlertController.success(`${result.data.doc.name} has been successfully updated.`);
     return result.data.doc;

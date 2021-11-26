@@ -36,19 +36,6 @@ interface InteractiveContainer extends Container {
   }
 }
 
-/**
- * Describes the different kinds of grids that may be drawn
- */
-export enum GridType {
-  None,
-  Squares,
-  VerticalHex,
-  HorizontalHex
-}
-
-
-
-
 
 /**
  * Any interactable pixi item

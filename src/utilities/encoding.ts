@@ -6,6 +6,7 @@ export const collections = [
   { id: "E", string: "rulesets" },
   { id: "F", string: "campaign_invites" },
   { id: "G", string: "contents" },
+  { id: "H", string: "scenes" },
 ];
 
 export const rixits = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";

@@ -13,4 +13,9 @@ async function getCampaigns(this: HTTPHandler, req: NextApiRequest) {
   this.returnSuccess({ docs: campaigns });
 }
 
-export default createEndpoint({POST: getCampaigns});
+async function updateCampaign(this: HTTPHandler, req: NextApiRequest) {
+  const campaign = await CampaignLogic.updateOne(req.body.ref, req.body.doc);
+  this.returnSuccess({ doc: campaign })
+}
+
+export default createEndpoint({POST: getCampaigns, PATCH: updateCampaign});

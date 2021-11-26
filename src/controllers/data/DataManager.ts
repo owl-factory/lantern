@@ -7,8 +7,6 @@ import { action, makeAutoObservable, makeObservable, observable } from "mobx";
 import { Ref64 } from "types";
 import { AnyDocument, CoreDocument } from "types/documents";
 import { getUniques } from "utilities/arrays";
-import { read } from "utilities/objects";
-import { rest } from "utilities/request";
 import { isClient } from "utilities/tools";
 
 const mockLocalStorage = {
@@ -164,7 +162,7 @@ export class DataManager<T extends CoreDocument> {
   public setMany(docs: T[]): void {
     if (docs === undefined) { return; }
     docs.forEach((doc: T) => {
-      if (!("ref" in doc)) { return; }
+      if (doc === undefined || !("ref" in doc)) { return; }
       const ref = (doc as CoreDocument).ref;
       this.data[ref] = doc;
 

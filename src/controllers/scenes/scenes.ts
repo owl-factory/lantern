@@ -1,34 +1,65 @@
 import { AlertController } from "controllers/AlertController";
 import { CampaignDataController } from "controllers/data/campaign";
 import { SceneDataController, SceneManager } from "controllers/data/scene";
+import { BaseGameController } from "controllers/multiplayer/BaseGameController";
 import { action, makeObservable, observable } from "mobx";
 import { Ref64 } from "types";
-import { CampaignDocument, SceneDocument } from "types/documents";
+import { SceneDocument } from "types/documents";
+import { GridType } from "types/enums/gridType";
 
 class $SceneController {
-  public campaignID: string;
-  public sceneID: string;
-
-  public campaign: CampaignDocument | null;
-  public scene: SceneDocument | null;
+  public parent: BaseGameController | null = null;
+  public $scene: SceneDocument | null = null;
+  public allScenes: Ref64[] = [];
 
   constructor() {
-    this.campaignID = "";
-    this.sceneID = "";
-
-    this.campaign = null;
     this.scene = null;
 
     makeObservable(this, {
-      campaignID: observable,
-      sceneID: observable,
-      campaign: observable,
-      scene: observable,
+      parent: observable,
+      $scene: observable,
+      new: action,
       reset: action,
       resetScene: action,
       load: action,
-      setCampaign: action,
     });
+  }
+
+  public get scene() { return this.$scene; }
+  public set scene(value: SceneDocument | null) {
+    this.$scene = value;
+  }
+
+  public async new() {
+    this.save();
+
+    if (this.parent === null || this.parent.campaign === null) { 
+      return;
+    }
+
+    // TODO - this should be it's own document
+    const scene: Partial<SceneDocument> = {
+      name: "Untitled Scene",
+      campaign: { ref: this.parent?.campaign?.ref },
+      map: {
+        height: 640,
+        width: 640,
+        backgroundColor: "#555555",
+      },
+      grid: {
+        type: GridType.Squares,
+        size: 64,
+      },
+      characters: [],
+    }
+    const newScene = await SceneDataController.create(scene);
+    if (!newScene) { return; }
+    this.scene = newScene;
+    this.parent.addScene(this.scene);
+  }
+
+  public async save() {
+    // TODO - write to Manager
   }
 
   public init() {
@@ -37,12 +68,11 @@ class $SceneController {
   }
 
   public reset() {
-    this.campaignID = "";
     this.resetScene();
   }
 
   public resetScene() {
-    this.sceneID = "";
+    this.scene = null;
   }
 
   /**
@@ -62,28 +92,12 @@ class $SceneController {
       return;
     }
 
-    this.sceneID = id;
-    this.campaignID = campaign.ref;
-
     this.scene = scene;
-    this.campaign = campaign;
   }
 
-  public async save() {
-    return;
-  }
-
-  public async setCampaign(ref: Ref64) {
-    const campaign = await CampaignDataController.read(ref);
-    if (campaign === undefined) {
-      AlertController.error("An error occured while trying to load the campaign");
-      return;
-    }
-    this.campaign = campaign;
-    this.campaignID = campaign.ref;
-  }
-
-  public async setScene(ref: Ref64) {
+  public async setScene(ref?: Ref64) {
+    this.reset();
+    if (ref === undefined || ref === null) { return; }
     const scene = await SceneDataController.read(ref);
     if (scene === undefined) {
       AlertController.error("The scene could not be found or you do not have permission to view.");
@@ -91,14 +105,6 @@ class $SceneController {
   }
 
   public async newScene() {
-    if (!this.campaignID) { return; }
-    const scene = await SceneDataController.create(
-      { name: "Untitled", campaign: {ref: this.campaignID }}
-    );
-
-    if (!scene) { return; }
-    this.scene = scene;
-    this.sceneID = scene?.ref;
   }
 }
 
