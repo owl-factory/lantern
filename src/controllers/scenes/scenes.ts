@@ -1,6 +1,4 @@
-import { AlertController } from "controllers/AlertController";
-import { CampaignDataController } from "controllers/data/campaign";
-import { SceneDataController, SceneManager } from "controllers/data/scene";
+import { SceneDataController } from "controllers/data/scene";
 import { BaseGameController } from "controllers/multiplayer/BaseGameController";
 import { action, makeObservable, observable } from "mobx";
 import { Ref64 } from "types";
@@ -10,7 +8,8 @@ import { GridType } from "types/enums/gridType";
 class $SceneController {
   public parent: BaseGameController | null = null;
   public $scene: SceneDocument | null = null;
-  public allScenes: Ref64[] = [];
+  public $allScenes: Partial<SceneDocument>[] = [];
+  public $allScenesUpdatedAt: number = 0;
 
   constructor() {
     this.scene = null;
@@ -18,10 +17,14 @@ class $SceneController {
     makeObservable(this, {
       parent: observable,
       $scene: observable,
+      $allScenes: observable,
+      $allScenesUpdatedAt: observable, 
+
+      
       new: action,
       reset: action,
-      resetScene: action,
       load: action,
+      setScene: action,
     });
   }
 
@@ -29,6 +32,10 @@ class $SceneController {
   public set scene(value: SceneDocument | null) {
     this.$scene = value;
   }
+
+  public get allScenes() { return this.$allScenes; }
+  public set allScenes(value: Partial<SceneDocument>[]) { this.$allScenes = value; }
+  public get allScenesUpdatedAt() { return this.$allScenesUpdatedAt; }
 
   public async new() {
     this.save();
@@ -68,43 +75,23 @@ class $SceneController {
   }
 
   public reset() {
-    this.resetScene();
-  }
-
-  public resetScene() {
     this.scene = null;
+    this.allScenes = [];
   }
 
   /**
    * Loads a scene into the scene controller from the database
    * @param id The ID of the scene to load into the SceneController
    */
-  public async load(id: string) {
-    const scene = await SceneDataController.read(id);
-    if (scene === undefined) {
-      AlertController.error("The scene could not be found or you do not have permission to view.");
-      return;
-    }
-
-    const campaign = await CampaignDataController.read(scene.campaign.ref);
-    if (campaign === undefined) {
-      AlertController.error("An error occured while trying to load the campaign");
-      return;
-    }
-
-    this.scene = scene;
+  public async load() {
+    
   }
 
-  public async setScene(ref?: Ref64) {
+  public async setScene(scene: SceneDocument | null) {
     this.reset();
-    if (ref === undefined || ref === null) { return; }
-    const scene = await SceneDataController.read(ref);
-    if (scene === undefined) {
-      AlertController.error("The scene could not be found or you do not have permission to view.");
-    }
-  }
-
-  public async newScene() {
+    if (scene === undefined || scene === null) { return; }
+    this.scene = scene;
+    this.load();
   }
 }
 

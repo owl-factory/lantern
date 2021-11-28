@@ -7,28 +7,27 @@ import { SceneController } from "controllers/scenes/scenes";
 import { observer } from "mobx-react-lite";
 import { NextPageContext } from "next";
 import React from "react";
-import { Ref64 } from "types";
 import { SceneDocument } from "types/documents";
-import { getUniques } from "utilities/arrays";
 import { rest } from "utilities/request";
 
-function SceneList() {
-  const [ scenes, setScenes ] = React.useState<SceneDocument[]>([]);
+const SceneList = observer(() => {
+  const [ scenes, setScenes ] = React.useState<Partial<SceneDocument>[]>([]);
 
   React.useEffect(() => {
-    // SceneManager.load();
-    if (!GameController.campaign || !GameController.campaign.scenes) { return; }
-    const sceneRefs: Ref64[] = getUniques(GameController.campaign.scenes, "ref");
-    console.log(sceneRefs);
-    SceneDataController.readMissing(sceneRefs);
-  }, []);
+    const newScenes = SceneController.allScenes;
+    if (newScenes === undefined) { return; }
 
+    setScenes(newScenes);
 
-  GameController.campaign?.scenes.forEach((scene: {ref: Ref64}) => {
+  }, [SceneController.allScenes]);
+
+  const sceneJSX: JSX.Element[] = [];
+  scenes.forEach((scene: Partial<SceneDocument>) => {
+    sceneJSX.push(<span key={scene.ref}>{scene.name}<br/></span>);
   });
 
-  return <>Nothing</>
-}
+  return <>{sceneJSX}</>
+});
 
 export function PlayPage(props: any): JSX.Element {
   React.useEffect(() => {

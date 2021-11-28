@@ -1,3 +1,4 @@
+import { timeStamp } from "console";
 import { CampaignManager } from "controllers/data/campaign";
 import { RulesetManager } from "controllers/data/ruleset";
 import { SceneManager } from "controllers/data/scene";
@@ -8,6 +9,7 @@ import { rest } from "utilities/request";
 import { BaseGameController, GameMode, GameStatus } from "./BaseGameController";
 
 class $GameController extends BaseGameController {
+  protected apiPath: string = `/api/play`;
   protected $mode: GameMode = GameMode.Multiplayer;
 
   public $ruleset: RulesetDocument | null = null;
@@ -78,21 +80,45 @@ class $GameController extends BaseGameController {
     }
 
     // TODO - load in the full campaign information
-    const game = await rest.post<any>(`/api/play`, { ref: this.campaign?.ref });
-    if (game.success === false) {
+    const res = await rest.post<any>(this.apiPath, { ref: this.campaign?.ref, defer: false });
+    if (res.success === false) {
       this.status = GameStatus.Error;
-      
-      throw game.message;
+      throw res.message;
     }
+    this.loadDeferred();
 
-    RulesetManager.set(game.data.ruleset);
-    this.loadRuleset(game.data.ruleset.ref);
+    CampaignManager.set(res.data.campaign);
+    RulesetManager.set(res.data.ruleset);
+    this.loadRuleset(res.data.ruleset.ref);
 
-    SceneController.setScene(this.campaign?.activeScene?.ref)
+    SceneController.setScene(res.data.scene);
+    SceneManager.set(res.data.scene);
+    
   }
 
+  /**
+   * Runs the action to load in any deferred data that is not 
+   */
+  protected async loadDeferred(): Promise<void> {
+    if (!this.campaign) { return; }
+    const res = await rest.post<any>(this.apiPath, { ref: this.campaign.ref, defer: true });
+    if (!res.success) { throw res.message; }
+    SceneController.allScenes = res.data.scenes || [];
+  }
+
+  /**
+   * Resets the current game controller and everything downstream
+   */
   public reset() {
     // TODO - reset everything immediately downstream
+    this.status = GameStatus.Loading;
+    this.campaign = null;
+    this.ruleset = null;
+    SceneController.reset();
+  }
+
+  public async save() {
+
   }
 }
 
