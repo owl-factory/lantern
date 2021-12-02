@@ -17,8 +17,9 @@ enum PassiveReadLevel {
 }
 
 interface Metadata {
-  isLoaded: boolean;
-  loadedAt: number;
+  isLoaded: boolean; // If the full item was loaded in from the database, or partially
+  loadedAt: number; // The last time that this item was loaded in from the database
+  updatedAt: number; // The last time that this item was updated
 }
 
 interface CacheData<T> {
@@ -60,7 +61,7 @@ export abstract class CacheController<T extends RefRequired> {
   }
 
   /**
-   * 
+   * Fetches a single item from the database
    * @param ref The ref of the item
    * @param readLevel The Passive Read Level rule for when to fetch the object from the database
    * @param staleTime The amount of time in milliseconds that the cache should wait before attempting to fetch 
@@ -100,6 +101,13 @@ export abstract class CacheController<T extends RefRequired> {
     }
   }
 
+  /**
+   * Reads the updated version of an item from the database if it is stale, otherwise returns the existing item
+   * @param item The currently existing item, if any
+   * @param meta The metadata for the current item
+   * @param staleTime The maximum time allowed since the last load
+   * @returns The item
+   */
   protected async $readIfStale(
     item: Partial<T> | undefined,
     meta: Metadata,
@@ -113,6 +121,12 @@ export abstract class CacheController<T extends RefRequired> {
     return item;
   }
 
+  /**
+   * Reads the full version of an item from the database if it is unloaded, otherwise returns the existing item
+   * @param item The currently existing item, if any
+   * @param meta The metadata for the current item
+   * @returns The item
+   */
   protected async $readIfUnloaded(
     item: Partial<T> | undefined,
     meta: Metadata | undefined
@@ -137,11 +151,23 @@ export abstract class CacheController<T extends RefRequired> {
    * @param docs The documents to set in the data manager and the storage method
    */
   public setMany(docs: Partial<T>[]): void {
+    const metas: Partial<Metadata>[] = [];
+    docs.forEach((doc: Partial<T>) => {
+      const meta = { updatedAt: Date.now(), loadedAt: 0, isLoaded: false };
+      metas.push(meta);
+    });
+    this.$setMany(docs, metas);
+  }
+
+  protected $setMany(docs: Partial<T>[], metas: Partial<Metadata>[]) {
     if (docs === undefined) { return; }
-    docs.forEach((doc: (Partial<T>)) => {
+    docs.forEach((doc: (Partial<T>), index: number) => {
       if (doc === undefined || !("ref" in doc)) { return; }
+      const meta = metas[index];
+
       const ref = doc.ref as string;
       this.data[ref] = doc;
+      this.metadata[ref] = merge<Metadata>(this.metadata[ref], meta);
 
       // Sets the document in the local storage
       LOCAL_STORAGE.setItem(this.buildKey(ref), JSON.stringify(doc));
@@ -149,8 +175,6 @@ export abstract class CacheController<T extends RefRequired> {
     this.updateStorageKeys();
     this.touch();
   }
-
-  protected $setMany(docs: Partial<T>[])
 
   /**
    * Reads one document from the database
@@ -201,4 +225,8 @@ export abstract class CacheController<T extends RefRequired> {
     LOCAL_STORAGE.setItem(`${this.key}_ids`, JSON.stringify(Object.keys(this.data)));
   }
 
+}
+
+function merge<T>(obj1: Partial<T>, obj2: Partial<T>): Partial<T> {
+  return obj2;
 }
