@@ -9,6 +9,7 @@
 import { Ref64 } from "types";
 import { isClient } from "utilities/tools";
 
+// A set of different levels for when the cache should passively refresh a document
 enum PassiveReadLevel {
   Never,
   IfUnloaded,
@@ -22,9 +23,10 @@ interface Metadata {
   updatedAt: number; // The last time that this item was updated
 }
 
-interface CacheData<T> {
-  data: T;
-  $meta: Metadata;
+// The standard package of data stored within the cache
+interface CacheItem<T> {
+  doc: Partial<T>; // The document data for business logic
+  meta: Metadata; // Metadata about the document
 }
 
 interface RefRequired {
@@ -43,18 +45,27 @@ const LOCAL_STORAGE = isClient ? window.localStorage : mockLocalStorage;
 export abstract class CacheController<T extends RefRequired> {
   public readonly key: string; // The key used for differentiating the data in storage
 
+  // A settable function for reading one document
+  public read: (ref: Ref64) => Promise<T | undefined> = async (ref) => ((await this.readMany([ref]))[0]);
+  // A settable function for reading many documents at once
   public readMany: (refs: Ref64[]) => Promise<T[]> = async (_) => [];
+  // A settable function for creating a single document
   public create: (doc: Partial<T>) => (Promise<T | undefined>) = async (_) => (undefined);
+  // A settable function for deleting a single document
+  public delete: (ref: Ref64) => Promise<T | undefined> = async (ref) => ((await this.deleteMany([ref]))[0]);
+  // A settable function for deleting many documents
   public deleteMany: (refs: Ref64[]) => Promise<T[]> = async (_) => [];
+  // A settable function for updating a single document
   public update: (ref: Ref64, doc: Partial<T>) => (Promise<T | undefined>) = async (_1, _2) => (undefined);
 
-  protected data: Record<string, Partial<T>> = {};
-  protected metadata: Record<string, Metadata> = {};
+  // An object that contains all of the data currently cached
+  protected data: Record<string, CacheItem<T>> = {};
 
-  protected staleTime = 1000 * 60 * 30;
+  protected staleTime = 1000 * 60 * 30; // The time until a document becomes stale, in milliseconds
+  // A flag that informs the cache when a document should be pulled from the database again
   protected passiveReadLevel = PassiveReadLevel.Never;
 
-  protected lastTouched = 0;
+  protected lastTouched = 0; // The last time that the cache was touched. Used for observables
 
   constructor(key: string) {
     this.key = key;
@@ -64,7 +75,7 @@ export abstract class CacheController<T extends RefRequired> {
    * Fetches a single item from the database
    * @param ref The ref of the item
    * @param readLevel The Passive Read Level rule for when to fetch the object from the database
-   * @param staleTime The amount of time in milliseconds that the cache should wait before attempting to fetch 
+   * @param staleTime The amount of time in milliseconds that the cache should wait before attempting to fetch
    *  fresh data (ReadLevel.IfStale only)
    * @returns The item, either a partial or a full document
    */
@@ -75,29 +86,29 @@ export abstract class CacheController<T extends RefRequired> {
   ): Promise<Partial<T> | undefined> {
     // Fetches the ref if it's not present in the cache
     if (!(ref in this.data)) {
-      const item = await this.$read(ref);
-      return item;
+      const cacheItem: CacheItem<T> | undefined = await this.$read(ref);
+      return cacheItem?.doc;
     }
 
-    let item: Partial<T> | undefined = this.data[ref];
-    const meta = this.getMeta(ref);
+    let cacheItem: CacheItem<T> | undefined = this.data[ref];
+    const meta = cacheItem.meta;
 
     switch(readLevel) {
       case PassiveReadLevel.Never:
-        return item;
+        return cacheItem.doc;
 
       case PassiveReadLevel.IfUnloaded:
-        item = await this.$readIfUnloaded(item, meta);
-        return item;
+        cacheItem = await this.$readIfUnloaded(cacheItem);
+        return cacheItem?.doc;
 
       case PassiveReadLevel.IfStale:
-        item = await this.$readIfStale(item, meta, staleTime);
-        item = await this.$readIfUnloaded(item, meta);
-        return item;
+        cacheItem = await this.$readIfStale(cacheItem, staleTime);
+        cacheItem = await this.$readIfUnloaded(cacheItem);
+        return cacheItem?.doc;
 
       case PassiveReadLevel.Force:
-        item = await this.$read(ref);
-        return item;
+        cacheItem = await this.$read(ref);
+        return cacheItem?.doc;
     }
   }
 
@@ -108,17 +119,13 @@ export abstract class CacheController<T extends RefRequired> {
    * @param staleTime The maximum time allowed since the last load
    * @returns The item
    */
-  protected async $readIfStale(
-    item: Partial<T> | undefined,
-    meta: Metadata,
-    staleTime: number
-  ): Promise<Partial<T> | undefined> {
+  protected async $readIfStale(cacheItem: CacheItem<T>, staleTime: number): Promise<CacheItem<T> | undefined> {
     // If it's not loaded right now, then we'll assume that there's an issue elsewhere
-    if (item === undefined || meta === undefined) { return item; }
-    if (!("ref" in item)) { return item; }
-    if (meta.loadedAt > Date.now() - staleTime) { return item; }
-    item = await this.$read(item.ref as string);
-    return item;
+    if (!cacheItem || !cacheItem.doc || cacheItem.doc.ref) { return cacheItem; }
+
+    if (cacheItem.meta.loadedAt > Date.now() - staleTime) { return cacheItem; }
+    const newCacheItem = await this.$read(cacheItem.doc.ref as string);
+    return newCacheItem;
   }
 
   /**
@@ -127,15 +134,14 @@ export abstract class CacheController<T extends RefRequired> {
    * @param meta The metadata for the current item
    * @returns The item
    */
-  protected async $readIfUnloaded(
-    item: Partial<T> | undefined,
-    meta: Metadata | undefined
-  ): Promise<Partial<T> | undefined> {
-    if (item === undefined || meta === undefined) { return item; }
-    if (!("ref" in item)) { return item; }
-    if (meta.isLoaded) { return item; }
-    item = await this.$read(item.ref as string);
-    return item;
+  protected async $readIfUnloaded(cacheItem?: CacheItem<T>): Promise<CacheItem<T> | undefined> {
+    // Base case: undefined item
+    if (!cacheItem) { return cacheItem; }
+    // Base case: return if no ref is present (somehow)
+    if (!cacheItem.doc || !("ref" in cacheItem.doc)) { return cacheItem; }
+    if (cacheItem.meta.isLoaded) { return cacheItem; }
+    const newCacheItem = await this.$read(cacheItem.doc.ref as string);
+    return newCacheItem;
   }
 
   /**
@@ -151,26 +157,40 @@ export abstract class CacheController<T extends RefRequired> {
    * @param docs The documents to set in the data manager and the storage method
    */
   public setMany(docs: Partial<T>[]): void {
-    const metas: Partial<Metadata>[] = [];
+    const cacheItems: CacheItem<T>[] = [];
+
+    // Converts the given doc into the proper cache format
     docs.forEach((doc: Partial<T>) => {
-      const meta = { updatedAt: Date.now(), loadedAt: 0, isLoaded: false };
-      metas.push(meta);
+      const cacheItem: CacheItem<T> = {
+        doc: doc,
+        meta: {
+          isLoaded: false,
+          loadedAt: 0,
+          updatedAt: Date.now(),
+        },
+      };
+
+      cacheItems.push(cacheItem);
     });
-    this.$setMany(docs, metas);
+
+    this.$setMany(cacheItems);
   }
 
-  protected $setMany(docs: Partial<T>[], metas: Partial<Metadata>[]) {
-    if (docs === undefined) { return; }
-    docs.forEach((doc: (Partial<T>), index: number) => {
-      if (doc === undefined || !("ref" in doc)) { return; }
-      const meta = metas[index];
+  /**
+   * Saves the given items and their metadata into the cache. This is the internal method
+   * @param cacheItems The items to place or update in the cache, in the standard cache format
+   */
+  protected $setMany(cacheItems: CacheItem<T>[]): void {
+    if (cacheItems === undefined || cacheItems.length === 0) { return; }
 
-      const ref = doc.ref as string;
-      this.data[ref] = doc;
-      this.metadata[ref] = merge<Metadata>(this.metadata[ref], meta);
+    cacheItems.forEach((cacheItem: CacheItem<T>) => {
+      if (!cacheItem || !cacheItem.doc || !("ref" in cacheItem.doc)) { return; }
+
+      const ref = cacheItem.doc.ref as string;
+      this.data[ref] = cacheItem;
 
       // Sets the document in the local storage
-      LOCAL_STORAGE.setItem(this.buildKey(ref), JSON.stringify(doc));
+      LOCAL_STORAGE.setItem(this.buildKey(ref), JSON.stringify(cacheItem));
     });
     this.updateStorageKeys();
     this.touch();
@@ -180,7 +200,7 @@ export abstract class CacheController<T extends RefRequired> {
    * Reads one document from the database
    * @param ref The ID of the document to read
    */
-  protected async $read(ref: Ref64): Promise<T | undefined> {
+  protected async $read(ref: Ref64): Promise<CacheItem<T> | undefined> {
     const docs = await this.$readMany([ref]);
     if (docs.length === 0) { return undefined; }
     return docs[0];
@@ -191,11 +211,31 @@ export abstract class CacheController<T extends RefRequired> {
    * @param refs The refs of the documents to read
    * @returns An unsorted array of all of the found documents
    */
-   protected async $readMany(refs: string[]) {
+   protected async $readMany(refs: string[]): Promise<CacheItem<T>[]> {
+    // Base case: skip any logic if no refs are present
     if (refs.length === 0) { return []; }
-    const docs = await this.readMany(refs);
 
-    return docs;
+    const docs = await this.readMany(refs);
+    const cacheItems: CacheItem<T>[] = [];
+
+    docs.forEach((doc: Partial<T>) => {
+      // Skip if the doc is undefined or no ref is present
+      if (!doc || !doc.ref) { return; }
+      const cacheItem: CacheItem<T> = {
+        doc: doc,
+        meta: {
+          isLoaded: true,
+          loadedAt: Date.now(),
+          updatedAt: Date.now(),
+        },
+      };
+
+      cacheItems.push(cacheItem);
+    });
+
+    this.$setMany(cacheItems);
+
+    return cacheItems;
   }
 
   protected touch() {
@@ -204,18 +244,6 @@ export abstract class CacheController<T extends RefRequired> {
 
   protected buildKey(ref: string) {
     return `${this.key}_${ref}`;
-  }
-
-  protected getMeta(ref: Ref64): Metadata {
-    if ((ref in this.metadata)) { return this.metadata[ref]; }
-    const meta = this.newMeta(ref, 0, false);
-    return meta;
-  }
-
-  protected newMeta(ref: Ref64, loadedAt: number, isLoaded: boolean) {
-    const meta: Metadata = { loadedAt: loadedAt, isLoaded: isLoaded };
-    this.metadata[ref] = meta;
-    return meta;
   }
 
   /**
