@@ -99,13 +99,10 @@ class $CampaignLogic implements DatabaseLogic<CampaignDocument> {
   @ReadFields(["*"])
   public async fetchMyCampaigns(options?: FaunaIndexOptions) {
     const id = SecurityController.currentUser?.ref;
-
     if (!id) { return []; }
-    const ref = toRef(id);
-    const campaigns = fauna.searchByIndex<Partial<CampaignDocument>>(FaunaIndex.CampaignsByUser, [ref], options);
+    const campaigns = fauna.searchByIndex<Partial<CampaignDocument>>(FaunaIndex.CampaignsByUser, [id], options);
     return campaigns;
   }
-
 }
 
 export const CampaignLogic = new $CampaignLogic();

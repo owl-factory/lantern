@@ -82,7 +82,6 @@ export async function searchByIndex<T>(
   index: FaunaIndex, terms: (string | boolean | Expr)[], options?: FaunaIndexOptions
 ): Promise<T[]> {
   const client = getServerClient();
-
   // Queries the given index. This is automatically set up for pagination
   const result: FaunaIndexResponse = await client.query(
     q.Paginate(

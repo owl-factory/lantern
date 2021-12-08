@@ -8,6 +8,11 @@
 
 import { Ref64 } from "types";
 import { isClient } from "utilities/tools";
+import { load, save } from "@owl-factory/cache/storage/localStorage";
+import { CacheItem } from "@owl-factory/cache/types";
+import { rest } from "utilities/request";
+import { Errors, isError } from "@owl-factory/types/errors";
+import { action, makeObservable } from "mobx";
 
 // A set of different levels for when the cache should passively refresh a document
 enum PassiveReadLevel {
@@ -17,46 +22,13 @@ enum PassiveReadLevel {
   Force
 }
 
-interface Metadata {
-  isLoaded: boolean; // If the full item was loaded in from the database, or partially
-  loadedAt: number; // The last time that this item was loaded in from the database
-  updatedAt: number; // The last time that this item was updated
-}
-
-// The standard package of data stored within the cache
-interface CacheItem<T> {
-  doc: Partial<T>; // The document data for business logic
-  meta: Metadata; // Metadata about the document
-}
-
 interface RefRequired {
   ref: Ref64;
 }
 
-const mockLocalStorage = {
-  clear: () => { return; },
-  getItem: (_key: string) => { return undefined; },
-  removeItem: (_key: string) => { return; },
-  setItem: (_key: string, _value: any) => { return; },
-};
-
-const LOCAL_STORAGE = isClient ? window.localStorage : mockLocalStorage;
-
 export abstract class CacheController<T extends RefRequired> {
-  public readonly key: string; // The key used for differentiating the data in storage
-
-  // A settable function for reading one document
-  public read: (ref: Ref64) => Promise<T | undefined> = async (ref) => ((await this.readMany([ref]))[0]);
-  // A settable function for reading many documents at once
-  public readMany: (refs: Ref64[]) => Promise<T[]> = async (_) => [];
-  // A settable function for creating a single document
-  public create: (doc: Partial<T>) => (Promise<T | undefined>) = async (_) => (undefined);
-  // A settable function for deleting a single document
-  public delete: (ref: Ref64) => Promise<T | undefined> = async (ref) => ((await this.deleteMany([ref]))[0]);
-  // A settable function for deleting many documents
-  public deleteMany: (refs: Ref64[]) => Promise<T[]> = async (_) => [];
-  // A settable function for updating a single document
-  public update: (ref: Ref64, doc: Partial<T>) => (Promise<T | undefined>) = async (_1, _2) => (undefined);
+  public abstract readonly key: string; // The key used for differentiating the data in storage
+  public abstract readonly apiURL: string; // The API endpoint for accessing data
 
   // An object that contains all of the data currently cached
   protected data: Record<string, CacheItem<T>> = {};
@@ -67,8 +39,23 @@ export abstract class CacheController<T extends RefRequired> {
 
   protected lastTouched = 0; // The last time that the cache was touched. Used for observables
 
-  constructor(key: string) {
-    this.key = key;
+  constructor() {
+    // Runs the cache load only on the client
+    if (isClient) {
+      document.addEventListener('DOMContentLoaded', () => this.loadCache(), false);
+    }
+
+    makeObservable(this, {
+      loadCache: action,
+    });
+  }
+
+  public loadCache() {
+    // TODO - rip out this code and put it elsewhere
+    const docs = load<T>(this.key);
+    this.$setMany(docs, false);
+    console.log(docs)
+    console.log("Data", this.data);
   }
 
   /**
@@ -110,6 +97,100 @@ export abstract class CacheController<T extends RefRequired> {
         cacheItem = await this.$read(ref);
         return cacheItem?.doc;
     }
+  }
+
+  /**
+   * Creates a new document from the database
+   * @param doc The document to create from the database
+   * @returns The completed document or an error explaining why it failed
+   */
+  protected async create(doc: Partial<T>): Promise<Partial<T> | Errors> {
+    const docs = await this.createMany([doc]);
+    if (docs.length === 0) { return { errors: ["An unexpected error has occured"]}; }
+    return docs[0];
+  }
+
+  /**
+   * Creates one or more documents from the database
+   * @param docs The documents to create from the database
+   * @returns An array of documents or errors explaining why they failed
+   */
+  protected async createMany(docs: Partial<T>[]): Promise<(Partial<T> | Errors)[]> {
+    return [];
+  }
+
+  /**
+   * Deletes a single document from the database
+   * @param ref The ref of the document to delete from the database
+   * @returns The deleted document or an error explaining why it could not be deleted
+   */
+  protected async delete(ref: Ref64): Promise<Partial<T> | Errors> {
+    const docs = await this.deleteMany([ref]);
+    if (docs.length === 0) { return { errors: ["An unexpected error has occured"]}; }
+    return docs[0];
+  }
+
+  /**
+   * Deletes one or more documents from the database
+   * @param refs The refs of the documents to delete from the database
+   * @returns An array of the deleted documents or errors explaining why they could not be deleted
+   */
+  protected async deleteMany(refs: Ref64[]): Promise<(Partial<T> | Errors)[]> {
+    return [];
+  }
+
+  /**
+   * Reads a single document from the database
+   * @param ref The ref of the document to read
+   * @returns The document or an error explaining why the document could not be read
+   */
+  protected async read(ref: Ref64): Promise<Partial<T> | Errors> {
+    const docs = await this.readMany([ref]);
+    if (docs.length === 0) { return { errors: ["An unexpected error has occured"]}; }
+    return docs[0];
+  }
+
+  /**
+   * Reads one or more documents from the database
+   * @param refs The refs of the documents to read from the database
+   * @returns The documents or errors explaining why the document could not be read
+   */
+  protected async readMany(refs: Ref64[]): Promise<Partial<T>[]> {
+    return [];
+  }
+
+  /**
+   * Reads any documents in the given list of refs if they are not in the cache
+   * @param refs The refs of the documents to read if they are not present in the cache
+   * @param readLevel Determines at which point the documents should be fetched from the database
+   * @returns An array of documents or errors explaining why they could not be read
+   */
+  protected async readMissing(
+    refs: Ref64[], 
+    readLevel: PassiveReadLevel = this.passiveReadLevel
+  ): Promise<(Partial<T> | Error)[]> {
+    return [];
+  }
+
+  /**
+   * Updates a single document in the database
+   * @param ref The ref of the document to update
+   * @param doc The changed fields in the document to update
+   * @returns The updated document or an error explaining why it could not be updated
+   */
+  protected async update(ref: Ref64, doc: Partial<T>): Promise<Partial<T> | Errors> {
+    const docs = await this.updateMany([{ ref, doc }]);
+    if (docs.length === 0) { return { errors: ["An unexpected error has occured"]}; }
+    return docs[0];
+  }
+
+  /**
+   * Updates one or many documents in the database
+   * @param docs An array of document packages with a ref and changed fields instructing what documents to update
+   * @returns An array of updated documents or errors explaining why they could not be updated
+   */
+  protected async updateMany(docs: { ref: Ref64, doc: Partial<T> }[]): Promise<(Partial<T> | Errors)[]> {
+    return [];
   }
 
   /**
@@ -161,7 +242,9 @@ export abstract class CacheController<T extends RefRequired> {
 
     // Converts the given doc into the proper cache format
     docs.forEach((doc: Partial<T>) => {
+      if (!("ref" in doc) || !doc.ref) { return; }
       const cacheItem: CacheItem<T> = {
+        ref: doc.ref,
         doc: doc,
         meta: {
           isLoaded: false,
@@ -180,7 +263,7 @@ export abstract class CacheController<T extends RefRequired> {
    * Saves the given items and their metadata into the cache. This is the internal method
    * @param cacheItems The items to place or update in the cache, in the standard cache format
    */
-  protected $setMany(cacheItems: CacheItem<T>[]): void {
+  protected $setMany(cacheItems: CacheItem<T>[], saveList = true): void {
     if (cacheItems === undefined || cacheItems.length === 0) { return; }
 
     cacheItems.forEach((cacheItem: CacheItem<T>) => {
@@ -188,11 +271,10 @@ export abstract class CacheController<T extends RefRequired> {
 
       const ref = cacheItem.doc.ref as string;
       this.data[ref] = cacheItem;
-
-      // Sets the document in the local storage
-      LOCAL_STORAGE.setItem(this.buildKey(ref), JSON.stringify(cacheItem));
     });
-    this.updateStorageKeys();
+
+    // Saves this list to the cache
+    if (saveList) { save<CacheItem<T>>(this.key, cacheItems); }
     this.touch();
   }
 
@@ -222,6 +304,7 @@ export abstract class CacheController<T extends RefRequired> {
       // Skip if the doc is undefined or no ref is present
       if (!doc || !doc.ref) { return; }
       const cacheItem: CacheItem<T> = {
+        ref: doc.ref,
         doc: doc,
         meta: {
           isLoaded: true,
@@ -238,21 +321,27 @@ export abstract class CacheController<T extends RefRequired> {
     return cacheItems;
   }
 
+  /**
+   * Updates the last touched time
+   */
   protected touch() {
     this.lastTouched = Date.now();
   }
 
-  protected buildKey(ref: string) {
-    return `${this.key}_${ref}`;
-  }
-
   /**
-   * Sets the updated list of keys/ids in local storage
+   * 
+   * @param refs A list of refs to fetch
+   * @returns 
    */
-  protected updateStorageKeys() {
-    LOCAL_STORAGE.setItem(`${this.key}_ids`, JSON.stringify(Object.keys(this.data)));
+  protected async $readManyAPI(refs: string[]): Promise<Partial<T>[]> {
+    if (refs.length === 0) { return []; }
+    const result = await rest.post<{ docs: T[] }>(this.apiURL, { refs: refs });
+    if (!result.success) { return []; }
+    this.setMany(result.data.docs);
+    return result.data.docs;
   }
 
+  // protected async $createOneAPI
 }
 
 function merge<T>(obj1: Partial<T>, obj2: Partial<T>): Partial<T> {

@@ -13,6 +13,7 @@ import { CampaignDocument } from "types/documents";
 import { getSession } from "utilities/auth";
 import { rest } from "utilities/request";
 import { CampaignManager } from "controllers/data/campaign";
+import { CampaignCache } from "controllers/cache/CampaignCache";
 
 interface MyCampaignsProps extends InitialProps {
   myCampaigns: CampaignDocument[];
@@ -67,6 +68,7 @@ function MyCampaigns(props: MyCampaignsProps) {
 
   // Loads in data from the cache and fetches anything that's missing
   React.useEffect(() => {
+    console.log(CampaignCache.key);
     CampaignManager.load();
     RulesetManager.load();
 
