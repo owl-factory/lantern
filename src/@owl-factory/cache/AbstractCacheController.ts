@@ -9,7 +9,7 @@
 import { Ref64 } from "types";
 import { isClient } from "utilities/tools";
 import { load, save } from "@owl-factory/cache/storage/localStorage";
-import { CacheItem } from "@owl-factory/cache/types";
+import { CacheItem, CacheItemMetadata } from "@owl-factory/cache/types";
 import { rest } from "utilities/request";
 import { Errors, isError } from "@owl-factory/types/errors";
 import { action, makeObservable } from "mobx";
@@ -50,12 +50,12 @@ export abstract class CacheController<T extends RefRequired> {
     });
   }
 
+  /**
+   * Loads documents from the cache into memory
+   */
   public loadCache() {
-    // TODO - rip out this code and put it elsewhere
     const docs = load<T>(this.key);
     this.$setMany(docs, false);
-    console.log(docs)
-    console.log("Data", this.data);
   }
 
   /**
@@ -104,7 +104,7 @@ export abstract class CacheController<T extends RefRequired> {
    * @param doc The document to create from the database
    * @returns The completed document or an error explaining why it failed
    */
-  protected async create(doc: Partial<T>): Promise<Partial<T> | Errors> {
+  public async create(doc: Partial<T>): Promise<Partial<T> | Errors> {
     const docs = await this.createMany([doc]);
     if (docs.length === 0) { return { errors: ["An unexpected error has occured"]}; }
     return docs[0];
@@ -115,8 +115,16 @@ export abstract class CacheController<T extends RefRequired> {
    * @param docs The documents to create from the database
    * @returns An array of documents or errors explaining why they failed
    */
-  protected async createMany(docs: Partial<T>[]): Promise<(Partial<T> | Errors)[]> {
+  public async createMany(docs: Partial<T>[]): Promise<(Partial<T> | Errors)[]> {
+    const createdDocs = this.$createMany(docs);
     return [];
+  }
+
+  protected async $createMany(docs: Partial<T>[]) {
+    const result = await rest.put<{docs: Partial<T>[]}>(this.apiURL, { docs: docs });
+    if (!result.success) { return []; }
+    const createdDocs = result.data.docs;
+    this.setMany(createdDocs);
   }
 
   /**
@@ -257,6 +265,29 @@ export abstract class CacheController<T extends RefRequired> {
     });
 
     this.$setMany(cacheItems);
+  }
+
+  protected $toCacheItem(docs: Partial<T>[], meta?: CacheItemMetadata): CacheItem<T>[] {
+    const cacheItems: CacheItem<T>[] = [];
+
+    const metadata = meta !== undefined ? { ...meta } : {
+      isLoaded: false,
+      loadedAt: 0,
+      updatedAt: 0,
+    };
+    metadata.updatedAt = Date.now();
+
+    docs.forEach((doc: Partial<T>) => {
+      if (!doc.ref) { return; }
+      const cacheItem: CacheItem<T> = {
+        ref: doc.ref,
+        doc: doc,
+        meta: metadata,
+      };
+      cacheItems.push(cacheItem);
+    });
+
+    return cacheItems;
   }
 
   /**
