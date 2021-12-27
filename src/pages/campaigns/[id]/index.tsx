@@ -6,7 +6,6 @@ import { getSession, requireClientLogin } from "utilities/auth";
 import { rest } from "utilities/request";
 import { ImageSelectionWrapper } from "components/reroll/library/images/ImageSelectionWrapper";
 import { CampaignDocument, ImageDocument, UserDocument } from "types/documents";
-import { ImageManager } from "controllers/data/image";
 import { observer } from "mobx-react-lite";
 import { InitialProps } from "types/client";
 import { AssetUploadSource } from "types/enums/assetSource";
@@ -111,7 +110,6 @@ function CampaignView(props: CampaignViewProps): JSX.Element {
 
   // Initializes the managers on page load
   React.useEffect(() => {
-    ImageManager.load();
     UserManager.load();
 
     CampaignCache.set(props.campaign);

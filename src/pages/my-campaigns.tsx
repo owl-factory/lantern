@@ -1,4 +1,3 @@
-import { RulesetController, RulesetManager } from "controllers/data/ruleset";
 import { Page } from "components/design";
 import { Loading } from "components/style";
 import { Input } from "components/style/forms";
@@ -13,6 +12,7 @@ import { CampaignDocument } from "types/documents";
 import { getSession } from "utilities/auth";
 import { rest } from "utilities/request";
 import { CampaignCache } from "controllers/cache/CampaignCache";
+import { RulesetCache } from "controllers/cache/RulesetCache";
 
 interface MyCampaignsProps extends InitialProps {
   myCampaigns: CampaignDocument[];
@@ -45,7 +45,7 @@ const CampaignTile = observer((props: CampaignTileProps) => {
             <Link href={`/play/${props.campaign.ref}`}>
               <a>Play</a>
             </Link>
-            {RulesetManager.get(props.campaign?.ruleset?.ref as string)?.name || <Loading/>}
+            {RulesetCache.get(props.campaign?.ruleset?.ref as string)?.name || <Loading/>}
           </Card.Body>
         </Col>
       </Row>

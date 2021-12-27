@@ -1,7 +1,9 @@
+import { PassiveReadLevel } from "@owl-factory/cache/enums";
 import { isError } from "@owl-factory/errors";
 import { AlertController } from "controllers/AlertController";
 import { CampaignCache } from "controllers/cache/CampaignCache";
-import { SceneDataController, SceneManager } from "controllers/data/scene";
+import { SceneCache } from "controllers/cache/SceneCache";
+import { SceneDataController } from "controllers/data/scene";
 import { action, makeObservable, observable } from "mobx";
 import { Ref64 } from "types";
 import { CampaignDocument, SceneDocument } from "types/documents";
@@ -11,7 +13,7 @@ class $SceneController {
   public sceneID: string;
 
   public campaign: Partial<CampaignDocument> | null;
-  public scene: SceneDocument | null;
+  public scene: Partial<SceneDocument> | null;
 
   constructor() {
     this.campaignID = "";
@@ -51,13 +53,13 @@ class $SceneController {
    * @param id The ID of the scene to load into the SceneController
    */
   public async load(id: string) {
-    const scene = await SceneDataController.read(id);
+    const scene = await SceneCache.get(id, PassiveReadLevel.Force);
     if (scene === undefined) {
       AlertController.error("The scene could not be found or you do not have permission to view.");
       return;
     }
 
-    const campaign = await CampaignCache.read(scene.campaign.ref) as Partial<CampaignDocument>;
+    const campaign = await CampaignCache.read(scene.campaign?.ref as string) as Partial<CampaignDocument>;
     if (campaign === undefined || isError(campaign)) {
       AlertController.error("An error occured while trying to load the campaign");
       return;

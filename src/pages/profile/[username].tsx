@@ -13,9 +13,9 @@ import { Checkbox, Input } from "components/style/forms";
 import { observer } from "mobx-react-lite";
 import { UserController, UserManager } from "controllers/data/user";
 import { InitialProps } from "types/client";
-import { ImageController, ImageManager } from "controllers/data/image";
 import Link from "next/link";
 import { AssetUploadSource } from "types/enums/assetSource";
+import { ImageCache } from "controllers/cache/ImageCache";
 
 /**
  * Renders a small section indicating how long a player has been a member, their hours played,
@@ -249,7 +249,6 @@ function Profile(props: ProfileProps): JSX.Element {
   React.useEffect(() => {
 
     UserManager.load();
-    ImageManager.load();
 
     UserManager.set(props.user);
 
@@ -261,7 +260,7 @@ function Profile(props: ProfileProps): JSX.Element {
       setPlayers(UserManager.getMany(playerIDs));
     });
 
-    ImageController.readMissing([props.user.avatar.ref]);
+    ImageCache.readMissing([props.user.avatar.ref]);
   }, []);
 
   // Updates the current user when they change

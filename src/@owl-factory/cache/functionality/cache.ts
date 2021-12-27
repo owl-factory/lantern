@@ -8,10 +8,7 @@ import { CacheItem, CacheItemMetadata, RefRequired } from "../types";
  * Loads documents from the cache into memory
  */
 export function loadCache<T extends RefRequired>(this: CacheController<T>) {
-  console.log("Load");
-
   const docs = load<T>(this.key);
-  console.log("load", docs)
   this.$setMany(docs, false);
 }
 
@@ -95,9 +92,7 @@ export function $setMany<T extends RefRequired>(
   saveToCacheStorage = true
 ): void {
   if (cacheItems === undefined || cacheItems.length === 0) { return; }
-  console.log("preloop")
   cacheItems.forEach((cacheItem: CacheItem<T>) => {
-    console.log("cacheItem", cacheItem)
     if (!cacheItem || !cacheItem.doc || !("ref" in cacheItem.doc)) { console.log("fail");return; }
 
     const ref = cacheItem.doc.ref as string;
@@ -107,7 +102,6 @@ export function $setMany<T extends RefRequired>(
   // Saves this list to the cache
   if (saveToCacheStorage) { save<CacheItem<T>>(this.key, cacheItems); }
   this.touch();
-  console.log("final data", this.data)
 }
 
 

@@ -74,7 +74,6 @@ function RecentCampaigns() {
   const campaignLinks: JSX.Element[] = [];
 
   React.useEffect(() => {
-    console.log("hi")
     setCampaigns(CampaignCache.getPage({size: 3}));
   }, [CampaignCache]);
 

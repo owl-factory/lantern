@@ -8,7 +8,7 @@ import { getSession } from "utilities/auth";
 import { observer } from "mobx-react-lite";
 import { ImageDocument } from "types/documents";
 import { InitialProps } from "types/client";
-import { ImageManager } from "controllers/data/image";
+import { ImageCache } from "controllers/cache/ImageCache";
 
 interface LibraryProps extends InitialProps {
   images: ImageDocument[];
@@ -29,8 +29,7 @@ function Library(props: LibraryProps): JSX.Element {
   ];
 
   React.useEffect(() => {
-    ImageManager.load();
-    ImageManager.setMany(props.images || []);
+    ImageCache.setMany(props.images || []);
   });
 
   return (

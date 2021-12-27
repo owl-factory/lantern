@@ -5,5 +5,5 @@ import { DataManager } from "controllers/data/DataManager";
 class $CharacterController extends DataController<CharacterDocument> {
 }
 
-export const CharacterManager = new DataManager<CharacterDocument>("character");
-export const CharacterController = new $CharacterController(CharacterManager, "/api/characters");
+// export const CharacterManager = new DataManager<CharacterDocument>("character");
+// export const CharacterController = new $CharacterController(CharacterManager, "/api/characters");

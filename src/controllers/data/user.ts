@@ -30,7 +30,7 @@ class $UserController extends DataController<UserDocument> {
       AlertController.error(`An error occured while setting an avatar: ${result.message}`);
       return;
     }
-    console.log(result.data.user)
+
     UserManager.set(result.data.user);
     ImageManager.set(result.data.image);
     AlertController.success(

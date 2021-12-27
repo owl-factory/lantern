@@ -1,10 +1,10 @@
-import { ImageManager } from "controllers/data/image";
 import { Col, Row } from "components/style";
 import { Card, CardBody } from "components/style/card";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { ImageDocument } from "types/documents";
 import style from "./ImageList.module.scss";
+import { ImageCache } from "controllers/cache/ImageCache";
 
 export enum ListFormat {
   Thumbnails,
@@ -12,8 +12,8 @@ export enum ListFormat {
 }
 
 interface ImageThumbnailProps {
-  image: ImageDocument;
-  onClick: (image: ImageDocument) => void
+  image: Partial<ImageDocument>;
+  onClick: (image: Partial<ImageDocument>) => void
 }
 
 function ImageIcon({ image, onClick }: ImageThumbnailProps) {
@@ -44,7 +44,7 @@ function ImageThumbnail({ image, onClick }: ImageThumbnailProps) {
 
 interface ImageListProps {
   listFormat: ListFormat;
-  onClick: (image: ImageDocument) => void;
+  onClick: (image: Partial<ImageDocument>) => void;
 }
 
 /**
@@ -55,19 +55,17 @@ interface ImageListProps {
  * @returns Returns a list of images as either Icons or Thumbnails
  */
 function $ImageList(props: ImageListProps): JSX.Element {
-  const [ images, setImages ] = React.useState<ImageDocument[]>([]);
+  const [ images, setImages ] = React.useState<Partial<ImageDocument>[]>([]);
 
   const imageThumbnails: JSX.Element[] = [];
   const onClick = props.onClick === undefined ? (() => {return;}) : props.onClick;
 
   // Updates the list of images when the image manager changes
   React.useEffect(() => {
-    const newImages = ImageManager.getPage();
-    if (!newImages) { return; }
-    setImages(newImages);
-  }, [ImageManager.updatedAt]);
+    setImages(ImageCache.getPage());
+  }, [ImageCache]);
 
-  images.forEach((image: ImageDocument) => {
+  images.forEach((image: Partial<ImageDocument>) => {
     if (!image) { return; }
     switch(props.listFormat) {
       case ListFormat.Thumbnails:

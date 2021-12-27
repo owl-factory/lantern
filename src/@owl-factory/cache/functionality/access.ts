@@ -89,7 +89,8 @@ export function set<T extends RefRequired>(this: CacheController<T>, doc: Partia
  * Sets many documents in the data manager and the storage method
  * @param docs The documents to set in the data manager and the storage method
  */
-export function setMany<T extends RefRequired>(this: CacheController<T>, docs: Partial<T>[]): void {
+export function setMany<T extends RefRequired>(this: CacheController<T>, docs?: Partial<T>[]): void {
+  if (docs === undefined) { docs = []; }
   const cacheItems: CacheItem<T>[] = this.$toCacheItem(docs, { isLoaded: false, loadedAt: 0, updatedAt: Date.now()});
 
   this.$setMany(cacheItems);
