@@ -1,5 +1,9 @@
 import { Ref64 } from "types";
 
+export interface RefRequired {
+  ref: Ref64;
+}
+
 // The standard package of data stored within the cache
 export interface CacheItem<T> {
   ref: Ref64;

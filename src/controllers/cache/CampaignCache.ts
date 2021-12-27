@@ -7,4 +7,3 @@ class $CampaignCache extends CacheController<CampaignDocument> {
 }
 
 export const CampaignCache = new $CampaignCache();
-
