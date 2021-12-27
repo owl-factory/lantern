@@ -8,16 +8,13 @@
 
 import { Ref64 } from "types";
 import { isClient } from "utilities/tools";
-import { load, save } from "@owl-factory/cache/storage/localStorage";
-import { CacheItem, CacheItemMetadata, RefRequired } from "@owl-factory/cache/types";
-import { rest } from "utilities/request";
+import { CacheItem, RefRequired } from "@owl-factory/cache/types";
 import { action, makeObservable } from "mobx";
 
 import * as access from "./functionality/access";
 import * as cache from "./functionality/cache";
 import * as crud from "./functionality/crud";
 import { PassiveReadLevel } from "./enums";
-import { isError } from "@owl-factory/errors";
 
 export abstract class CacheController<T extends RefRequired> {
   public abstract readonly key: string; // The key used for differentiating the data in storage
@@ -35,7 +32,9 @@ export abstract class CacheController<T extends RefRequired> {
   constructor() {
     // Runs the cache load only on the client
     if (isClient) {
-      document.addEventListener('DOMContentLoaded', () => this.loadCache(), false);
+      window.addEventListener('load', () => {
+        this.loadCache();
+      });
     }
 
     makeObservable(this, {
@@ -45,6 +44,8 @@ export abstract class CacheController<T extends RefRequired> {
 
   // ACCESS
   public get = access.get;
+  public getPage = access.getPage;
+  public readMissing = access.readMissing;
   public set = access.set;
   public setMany = access.setMany;
 
@@ -78,6 +79,3 @@ export abstract class CacheController<T extends RefRequired> {
   }
 }
 
-function merge<T>(obj1: Partial<T>, obj2: Partial<T>): Partial<T> {
-  return obj2;
-}

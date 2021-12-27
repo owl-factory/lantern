@@ -1,4 +1,4 @@
-import { CampaignManager } from "controllers/data/campaign";
+import { CampaignCache } from "controllers/cache/CampaignCache";
 import { UserManager } from "controllers/data/user";
 import { observer } from "mobx-react-lite";
 import Link from "next/link";
@@ -70,20 +70,21 @@ interface LoggedInNavProps {
  * @returns A component containing up to three campaigns for faster access
  */
 function RecentCampaigns() {
+  const [ campaigns, setCampaigns ] = React.useState<Partial<CampaignDocument>[]>([]);
   const campaignLinks: JSX.Element[] = [];
 
   React.useEffect(() => {
-    CampaignManager.load();
-  }, []);
+    console.log("hi")
+    setCampaigns(CampaignCache.getPage({size: 3}));
+  }, [CampaignCache]);
 
-    const campaignDocs = CampaignManager.getPage({size: 3});
-    campaignDocs.forEach((doc: CampaignDocument) => {
-      campaignLinks.push(
-        <Link key={doc.ref} href={`/play/${doc.ref}`} passHref>
-          <NavDropdown.Item>{doc.name}</NavDropdown.Item>
-        </Link>
-      );
-    });
+  campaigns.forEach((doc: Partial<CampaignDocument>) => {
+    campaignLinks.push(
+      <Link key={doc.ref} href={`/play/${doc.ref}`} passHref>
+        <NavDropdown.Item>{doc.name}</NavDropdown.Item>
+      </Link>
+    );
+  });
   return (
     <>
       {campaignLinks}

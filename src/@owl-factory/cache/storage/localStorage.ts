@@ -145,5 +145,5 @@ function idListKey(key: string) {
  * @returns A key for the location a document will be stored
  */
 function itemKey(key: string, ref: Ref64) {
-  return `${key}_${ref}`;
+  return `v2_${key}_${ref}`;
 }

@@ -10,9 +10,9 @@ import { ImageManager } from "controllers/data/image";
 import { observer } from "mobx-react-lite";
 import { InitialProps } from "types/client";
 import { AssetUploadSource } from "types/enums/assetSource";
-import { CampaignDataController, CampaignManager } from "controllers/data/campaign";
 import { UserController, UserManager } from "controllers/data/user";
 import { Ref64 } from "types";
+import { CampaignCache } from "controllers/cache/CampaignCache";
 
 interface BannerProps {
   campaign: CampaignDocument;
@@ -36,7 +36,7 @@ const Banner = observer(({ campaign, isOwner }: any) => {
      */
     const onSubmit = async (newBanner: Partial<ImageDocument>, method: AssetUploadSource) => {
       // TODO - Save banner
-      const result = CampaignDataController.updateBanner(campaign.ref, newBanner, method);
+      const result = CampaignCache.updateBanner(campaign.ref, newBanner, method);
     };
 
     image = (
@@ -49,7 +49,7 @@ const Banner = observer(({ campaign, isOwner }: any) => {
 });
 
 interface PlayerProps {
-  campaign: CampaignDocument;
+  campaign: Partial<CampaignDocument>;
   player: UserDocument;
 }
 
@@ -72,7 +72,7 @@ const Player = observer((props: PlayerProps) => {
 });
 
 interface PlayersProps {
-  campaign: CampaignDocument;
+  campaign: Partial<CampaignDocument>;
   players: UserDocument[];
 }
 
@@ -105,17 +105,16 @@ interface CampaignViewProps extends InitialProps {
  * @param campaign The campaign to view
  */
 function CampaignView(props: CampaignViewProps): JSX.Element {
-  const [ campaign, setCampaign ] = React.useState(props.campaign);
+  const [ campaign, setCampaign ] = React.useState<Partial<CampaignDocument>>(props.campaign);
   const [ players, setPlayers ] = React.useState<UserDocument[]>([]);
   const [ isOwner ] = React.useState(calculateIfUserIsOwner());
 
   // Initializes the managers on page load
   React.useEffect(() => {
-    CampaignManager.load();
     ImageManager.load();
     UserManager.load();
 
-    CampaignManager.set(props.campaign);
+    CampaignCache.set(props.campaign);
 
     const playerIDs: string[] = [];
     campaign.players?.forEach((player: { ref: Ref64 }) => {
@@ -130,9 +129,9 @@ function CampaignView(props: CampaignViewProps): JSX.Element {
 
   // Updates the campaign each time the campaign is updated
   React.useEffect(() => {
-    const newCampaign = CampaignManager.get(props.campaign.ref);
+    const newCampaign = CampaignCache.get(props.campaign.ref);
     if (newCampaign) { setCampaign(newCampaign); }
-  }, [CampaignManager.updatedAt, CampaignManager.get(props.campaign.ref)?.updatedAt]);
+  }, [CampaignCache]);
 
   /**
    * Determines if the current player is the owner of the profile page.

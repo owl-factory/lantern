@@ -12,7 +12,6 @@ import { InitialProps } from "types/client";
 import { CampaignDocument } from "types/documents";
 import { getSession } from "utilities/auth";
 import { rest } from "utilities/request";
-import { CampaignManager } from "controllers/data/campaign";
 import { CampaignCache } from "controllers/cache/CampaignCache";
 
 interface MyCampaignsProps extends InitialProps {
@@ -24,7 +23,7 @@ interface SearchCampaignsArguments {
 }
 
 interface CampaignTileProps {
-  campaign: CampaignDocument;
+  campaign: Partial<CampaignDocument>;
 }
 
 /**
@@ -46,7 +45,7 @@ const CampaignTile = observer((props: CampaignTileProps) => {
             <Link href={`/play/${props.campaign.ref}`}>
               <a>Play</a>
             </Link>
-            {RulesetManager.get(props.campaign.ruleset.ref)?.name || <Loading/>}
+            {RulesetManager.get(props.campaign?.ruleset?.ref as string)?.name || <Loading/>}
           </Card.Body>
         </Col>
       </Row>
@@ -62,21 +61,11 @@ const CampaignTile = observer((props: CampaignTileProps) => {
  * @param campaigns The initial light campaign information fetched from the API
  */
 function MyCampaigns(props: MyCampaignsProps) {
-  const [ campaigns, setCampaigns ] = React.useState<CampaignDocument[]>([]);
+  const [ campaigns, setCampaigns ] = React.useState<Partial<CampaignDocument>[]>([]);
 
-  CampaignManager.setMany(props.myCampaigns || []);
-
-  // Loads in data from the cache and fetches anything that's missing
   React.useEffect(() => {
-    console.log(CampaignCache.key);
-    CampaignManager.load();
-    RulesetManager.load();
-
-    CampaignManager.setMany(props.myCampaigns || []);
-    const uniqueRulesets = CampaignManager.getUniques("ruleset.ref");
-    RulesetController.readMissing(uniqueRulesets);
+    CampaignCache.setMany(props.myCampaigns || []);
   }, []);
-
 
   function searchCampaigns(values: SearchCampaignsArguments) {
     console.log(values);
@@ -84,12 +73,12 @@ function MyCampaigns(props: MyCampaignsProps) {
 
   // Use this to prevent too many rerenders
   React.useEffect(() => {
-    setCampaigns(CampaignManager.getPage());
-  }, [CampaignManager]);
+    setCampaigns(CampaignCache.getPage());
+  }, [CampaignCache]);
 
   // Builds the tiles for listing out the campaigns
   const campaignTiles: JSX.Element[] = [];
-  campaigns.forEach((campaign: CampaignDocument) => {
+  campaigns.forEach((campaign: Partial<CampaignDocument>) => {
     campaignTiles.push(
       <CampaignTile key={campaign.ref} campaign={campaign}/>
     );

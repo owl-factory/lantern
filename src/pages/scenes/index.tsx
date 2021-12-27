@@ -3,20 +3,26 @@ import React from "react";
 import { observer } from "mobx-react-lite";
 import { Page } from "components/design";
 import { SceneController } from "controllers/scenes/scenes";
-import { CampaignManager } from "controllers/data/campaign";
 import { CampaignDocument, SceneDocument } from "types/documents";
 import { SceneManager } from "controllers/data/scene";
+import { CampaignCache } from "controllers/cache/CampaignCache";
 
 const CampaignSelection = observer(() => {
-  const campaigns: JSX.Element[] = [];
-  CampaignManager.getPage().forEach((campaign: CampaignDocument) => {
-    campaigns.push(
-      <a href="#" onClick={() => SceneController.setCampaign(campaign.ref)}>{campaign.name}</a>
+  const [ campaigns, setCampaigns ] = React.useState<Partial<CampaignDocument>[]>([]);
+
+  React.useEffect(() => {
+    setCampaigns(CampaignCache.getPage());
+  }, [CampaignCache]);
+
+  const campaignElements: JSX.Element[] = [];
+  campaigns.forEach((campaign: Partial<CampaignDocument>) => {
+    campaignElements.push(
+      <a href="#" onClick={() => SceneController.setCampaign(campaign.ref as string)}>{campaign.name}</a>
     );
   });
   return (
     <div>
-      {campaigns}
+      {campaignElements}
     </div>
   );
 });
@@ -51,7 +57,6 @@ const SceneBreadcrumbs = observer(() => {
 
 function Scenes() {
   React.useEffect(() => {
-    CampaignManager.load();
     SceneManager.load();
   }, []);
   return (

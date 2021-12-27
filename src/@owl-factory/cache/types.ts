@@ -18,3 +18,9 @@ export interface CacheItemMetadata {
   updatedAt: number; // The last time that this item was updated
 }
 
+export interface GetPageOptions {
+  match?: (doc: unknown) => boolean;
+  page?: number;
+  size?: number;
+}
+

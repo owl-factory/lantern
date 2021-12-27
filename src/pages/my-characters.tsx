@@ -10,9 +10,9 @@ import { InitialProps } from "types/client";
 import { CampaignDocument, CharacterDocument, RulesetDocument } from "types/documents";
 import { getSession } from "utilities/auth";
 import { rest } from "utilities/request";
-import { CampaignDataController, CampaignManager } from "controllers/data/campaign";
 import { CharacterManager } from "controllers/data/character";
 import { RulesetController, RulesetManager } from "controllers/data/ruleset";
+import { CampaignCache } from "controllers/cache/CampaignCache";
 
 interface MyCharactersProps extends InitialProps {
   characters: CharacterDocument[];
@@ -39,7 +39,7 @@ const CharacterCard = observer((props: CharacterCardProps) => {
           </Col>
           <Col sm={8}>
             <h3>{props.character.name}</h3><br/>
-            {CampaignManager.get(props.character.campaign.ref)?.name || <Loading/>}<br/>
+            {CampaignCache.get(props.character.campaign.ref)?.name || <Loading/>}<br/>
             {RulesetManager.get(props.character.ruleset.ref)?.name || <Loading/>}<br/>
             <ButtonGroup>
               <Button>Duplicate</Button>
@@ -69,14 +69,13 @@ export function MyCharacters (props: MyCharactersProps) {
   React.useEffect(() => {
     // Loads in local storage data
     CharacterManager.load();
-    CampaignManager.load();
     RulesetManager.load();
 
     CharacterManager.setMany(props.characters);
 
     // Fetches all missing campaigns and rulesets for the names
     const uniqueCampaigns = CharacterManager.getUniques("campaign.ref");
-    CampaignDataController.readMissing(uniqueCampaigns);
+    CampaignCache.readMissing(uniqueCampaigns);
 
     const uniqueRulesets = CharacterManager.getUniques("ruleset.ref");
     RulesetController.readMissing(uniqueRulesets);

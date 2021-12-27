@@ -1,5 +1,6 @@
+import { isError } from "@owl-factory/errors";
 import { AlertController } from "controllers/AlertController";
-import { CampaignDataController } from "controllers/data/campaign";
+import { CampaignCache } from "controllers/cache/CampaignCache";
 import { SceneDataController, SceneManager } from "controllers/data/scene";
 import { action, makeObservable, observable } from "mobx";
 import { Ref64 } from "types";
@@ -9,7 +10,7 @@ class $SceneController {
   public campaignID: string;
   public sceneID: string;
 
-  public campaign: CampaignDocument | null;
+  public campaign: Partial<CampaignDocument> | null;
   public scene: SceneDocument | null;
 
   constructor() {
@@ -56,14 +57,14 @@ class $SceneController {
       return;
     }
 
-    const campaign = await CampaignDataController.read(scene.campaign.ref);
-    if (campaign === undefined) {
+    const campaign = await CampaignCache.read(scene.campaign.ref) as Partial<CampaignDocument>;
+    if (campaign === undefined || isError(campaign)) {
       AlertController.error("An error occured while trying to load the campaign");
       return;
     }
 
     this.sceneID = id;
-    this.campaignID = campaign.ref;
+    this.campaignID = campaign.ref as string;
 
     this.scene = scene;
     this.campaign = campaign;
@@ -74,13 +75,13 @@ class $SceneController {
   }
 
   public async setCampaign(ref: Ref64) {
-    const campaign = await CampaignDataController.read(ref);
+    const campaign = await CampaignCache.read(ref);
     if (campaign === undefined) {
       AlertController.error("An error occured while trying to load the campaign");
       return;
     }
     this.campaign = campaign;
-    this.campaignID = campaign.ref;
+    this.campaignID = this.campaign?.ref as string;
   }
 
   public async setScene(ref: Ref64) {
