@@ -1,4 +1,3 @@
-import { ImageManager } from "controllers/data/image";
 import { observer } from "mobx-react-lite";
 import { Application } from "pixi.js";
 import React from "react";
@@ -50,10 +49,6 @@ function SceneRenderer(): JSX.Element {
  * The page for rendering a standalone scene builder
  */
 export const SceneBuilder = observer(() => {
-
-  React.useEffect(() => {
-    ImageManager.load();
-  }, []);
 
   return (
     <div>

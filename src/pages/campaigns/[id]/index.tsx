@@ -6,13 +6,12 @@ import { getSession, requireClientLogin } from "utilities/auth";
 import { rest } from "utilities/request";
 import { ImageSelectionWrapper } from "components/reroll/library/images/ImageSelectionWrapper";
 import { CampaignDocument, ImageDocument, UserDocument } from "types/documents";
-import { ImageManager } from "controllers/data/image";
 import { observer } from "mobx-react-lite";
 import { InitialProps } from "types/client";
 import { AssetUploadSource } from "types/enums/assetSource";
-import { CampaignDataController, CampaignManager } from "controllers/data/campaign";
-import { UserController, UserManager } from "controllers/data/user";
 import { Ref64 } from "types";
+import { CampaignCache } from "controllers/cache/CampaignCache";
+import { UserCache } from "controllers/cache/UserCache";
 
 interface BannerProps {
   campaign: CampaignDocument;
@@ -36,7 +35,7 @@ const Banner = observer(({ campaign, isOwner }: any) => {
      */
     const onSubmit = async (newBanner: Partial<ImageDocument>, method: AssetUploadSource) => {
       // TODO - Save banner
-      const result = CampaignDataController.updateBanner(campaign.ref, newBanner, method);
+      const result = CampaignCache.updateBanner(campaign.ref, newBanner, method);
     };
 
     image = (
@@ -49,8 +48,8 @@ const Banner = observer(({ campaign, isOwner }: any) => {
 });
 
 interface PlayerProps {
-  campaign: CampaignDocument;
-  player: UserDocument;
+  campaign: Partial<CampaignDocument>;
+  player: Partial<UserDocument>;
 }
 
 /**
@@ -59,11 +58,9 @@ interface PlayerProps {
  * @param player A player for the current game
  */
 const Player = observer((props: PlayerProps) => {
-  const [ avatar, setAvatar ] = React.useState(props.player?.avatar.src);
-
   return (
     <div>
-      <img src={props.player.avatar.src} width="30px" height="30px"/>
+      <img src={props.player?.avatar?.src} width="30px" height="30px"/>
       {props.player.name || props.player.username}&nbsp;
       {props.player.ref === props.campaign.ownedBy?.ref ? "(GM) ": ""}
       <Link href={`/profile/${props.player.username}`}><a>Profile</a></Link>
@@ -72,8 +69,8 @@ const Player = observer((props: PlayerProps) => {
 });
 
 interface PlayersProps {
-  campaign: CampaignDocument;
-  players: UserDocument[];
+  campaign: Partial<CampaignDocument>;
+  players: Partial<UserDocument>[];
 }
 
 /**
@@ -82,7 +79,7 @@ interface PlayersProps {
  */
 const Players = observer(({ campaign, players }: PlayersProps) => {
   const playerElements: JSX.Element[] = [];
-  players.forEach((player: UserDocument) => {
+  players.forEach((player: Partial<UserDocument>) => {
     playerElements.push(
       <Player key={player.ref} campaign={campaign} player={player}/>
     );
@@ -105,34 +102,30 @@ interface CampaignViewProps extends InitialProps {
  * @param campaign The campaign to view
  */
 function CampaignView(props: CampaignViewProps): JSX.Element {
-  const [ campaign, setCampaign ] = React.useState(props.campaign);
-  const [ players, setPlayers ] = React.useState<UserDocument[]>([]);
+  const [ campaign, setCampaign ] = React.useState<Partial<CampaignDocument>>(props.campaign);
+  const [ players, setPlayers ] = React.useState<Partial<UserDocument>[]>([]);
   const [ isOwner ] = React.useState(calculateIfUserIsOwner());
 
   // Initializes the managers on page load
   React.useEffect(() => {
-    CampaignManager.load();
-    ImageManager.load();
-    UserManager.load();
-
-    CampaignManager.set(props.campaign);
+    CampaignCache.set(props.campaign);
 
     const playerIDs: string[] = [];
     campaign.players?.forEach((player: { ref: Ref64 }) => {
       playerIDs.push(player.ref);
     });
-    UserController.readMissing(playerIDs)
+    UserCache.readMissing(playerIDs)
     .then(() => {
-      const newPlayers = UserManager.getMany(playerIDs);
+      const newPlayers = UserCache.getMany(playerIDs);
       setPlayers(newPlayers);
     });
   }, []);
 
   // Updates the campaign each time the campaign is updated
   React.useEffect(() => {
-    const newCampaign = CampaignManager.get(props.campaign.ref);
+    const newCampaign = CampaignCache.get(props.campaign.ref);
     if (newCampaign) { setCampaign(newCampaign); }
-  }, [CampaignManager.updatedAt, CampaignManager.get(props.campaign.ref)?.updatedAt]);
+  }, [CampaignCache]);
 
   /**
    * Determines if the current player is the owner of the profile page.

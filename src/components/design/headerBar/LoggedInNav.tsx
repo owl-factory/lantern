@@ -1,5 +1,5 @@
-import { CampaignManager } from "controllers/data/campaign";
-import { UserManager } from "controllers/data/user";
+import { CampaignCache } from "controllers/cache/CampaignCache";
+import { UserCache } from "controllers/cache/UserCache";
 import { observer } from "mobx-react-lite";
 import Link from "next/link";
 import React from "react";
@@ -42,21 +42,18 @@ interface LoggedInNavProps {
  * @returns A JSX.Element displaying the user's profile image and name
  */
  const UserDisplay = observer((props: LoggedInNavProps) => {
-  const [ user, setUser ] = React.useState(props.user);
-  React.useEffect(() => {
-    UserManager.load();
-  }, []);
+  const [ user, setUser ] = React.useState<Partial<UserDocument>>(props.user);
 
   React.useEffect(() => {
-    const newUser = UserManager.get(props.user.ref);
+    const newUser = UserCache.get(props.user.ref);
     if (!newUser) { return; }
     setUser(newUser);
-  }, [UserManager.updatedAt]);
+  }, [UserCache]);
 
   return (
     <>
       <img
-        src={user.avatar.src}
+        src={user?.avatar?.src}
         style={{maxHeight: "32px", maxWidth: "32px", position: "absolute"}}
       />
       <div style={{width: "36px", display: "inline-flex"}}></div>
@@ -70,20 +67,20 @@ interface LoggedInNavProps {
  * @returns A component containing up to three campaigns for faster access
  */
 function RecentCampaigns() {
+  const [ campaigns, setCampaigns ] = React.useState<Partial<CampaignDocument>[]>([]);
   const campaignLinks: JSX.Element[] = [];
 
   React.useEffect(() => {
-    CampaignManager.load();
-  }, []);
+    setCampaigns(CampaignCache.getPage({size: 3}));
+  }, [CampaignCache]);
 
-    const campaignDocs = CampaignManager.getPage({size: 3});
-    campaignDocs.forEach((doc: CampaignDocument) => {
-      campaignLinks.push(
-        <Link key={doc.ref} href={`/play/${doc.ref}`} passHref>
-          <NavDropdown.Item>{doc.name}</NavDropdown.Item>
-        </Link>
-      );
-    });
+  campaigns.forEach((doc: Partial<CampaignDocument>) => {
+    campaignLinks.push(
+      <Link key={doc.ref} href={`/play/${doc.ref}`} passHref>
+        <NavDropdown.Item>{doc.name}</NavDropdown.Item>
+      </Link>
+    );
+  });
   return (
     <>
       {campaignLinks}

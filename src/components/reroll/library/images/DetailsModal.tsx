@@ -1,4 +1,3 @@
-import { ImageManager } from "controllers/data/image";
 import { Button } from "components/style";
 import { Card, CardBody, CardHeader } from "components/style/card";
 import { Modal } from "components/style/modals";
@@ -6,6 +5,7 @@ import { observer } from "mobx-react-lite";
 import React from "react";
 import { MdClose } from "react-icons/md";
 import { ImageDocument } from "types/documents";
+import { ImageCache } from "controllers/cache/ImageCache";
 
 interface ImageDetailsModalProps {
   imageID: string;
@@ -19,19 +19,16 @@ interface ImageDetailsModalProps {
  * @param handleClose Handles closing the modal
  */
 function $ImageDetailsModal({ imageID, open, handleClose }: ImageDetailsModalProps): JSX.Element | null {
-  const [ image, setImage ] = React.useState<ImageDocument>({ ref: "" } as ImageDocument);
+  const [ image, setImage ] = React.useState<Partial<ImageDocument>>({ ref: "" } as ImageDocument);
 
   // Ensures that this only runs when the imageID changes
   React.useEffect(() => {
-    const newImage = ImageManager.get(imageID);
-    if (!newImage) { return; }
-    setImage(newImage);
-  }, [ imageID, ImageManager.updatedAt ]);
+    setImage(ImageCache.get(imageID) || {});
+  }, [ ImageCache ]);
 
 
 
   function deleteImage() {
-    // ImageManager.deleteOne(imageID);
     handleClose();
   }
 

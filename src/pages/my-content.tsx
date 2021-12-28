@@ -10,16 +10,17 @@ import { GiAxeSword } from 'react-icons/gi';
 import { MdContentCopy, MdDeleteForever, MdEdit } from "react-icons/md";
 import { Loading } from "components/style";
 import { observer } from "mobx-react-lite";
-import { ContentManager } from "controllers/data/content";
-import { RulesetController, RulesetManager } from "controllers/data/ruleset";
-import { ContentTypeManager } from "controllers/data/contentType";
+import { ContentCache } from "controllers/cache/ContentCache";
+import { getUniques } from "utilities/arrays";
+import { ContentTypeCache } from "controllers/cache/ContentTypeCache";
+import { RulesetCache } from "controllers/cache/RulesetCache";
 
 interface MyContentProps extends InitialProps {
   contents: ContentDocument[];
 }
 
 interface ContentRowProps {
-  content: ContentDocument;
+  content: Partial<ContentDocument>;
 }
 
 /**
@@ -33,8 +34,8 @@ const ContentRow = observer((props: ContentRowProps) => {
     <tr>
       <td><GiAxeSword/></td>
       <td>{props.content.name}</td>
-      <td>{ContentTypeManager.get(props.content.type.ref)?.name || <Loading/>}</td>
-      <td>{RulesetManager.get(props.content.ruleset.ref)?.name || <Loading/>}</td>
+      <td>{ContentTypeCache.get(props.content.type?.ref as string)?.name || <Loading/>}</td>
+      <td>{RulesetCache.get(props.content.ruleset?.ref as string)?.name || <Loading/>}</td>
       <td>
         <ButtonGroup>
           <Button><MdContentCopy/></Button>
@@ -55,21 +56,18 @@ const ContentRow = observer((props: ContentRowProps) => {
  * @param contents The current user's initially fetched contents
  */
 function MyContent(props: MyContentProps): JSX.Element {
-  const [ contents, setContents ] = React.useState<ContentDocument[]>([]);
+  const [ contents, setContents ] = React.useState<Partial<ContentDocument>[]>([]);
   React.useEffect(() => {
-    ContentManager.load();
-    RulesetManager.load();
+    ContentCache.setMany(props.contents);
 
-    ContentManager.setMany(props.contents);
-
-    const uniqueRulesets = ContentManager.getUniques("ruleset.ref");
-    RulesetController.readMissing(uniqueRulesets);
+    const uniqueRulesets = getUniques(props.contents, "ruleset.ref");
+    RulesetCache.readMissing(uniqueRulesets);
   }, []);
 
   // Use this to prevent too many rerenders
   React.useEffect(() => {
-    setContents(ContentManager.getPage({ match }));
-  }, [ContentManager]);
+    setContents(ContentCache.getPage());
+  }, [ContentCache]);
 
   function match(doc: AnyDocument) {
     if (!props.session) { return false; }
@@ -77,10 +75,8 @@ function MyContent(props: MyContentProps): JSX.Element {
     return false;
   }
 
-  ContentManager.setMany(props.contents);
-
   const rows: JSX.Element[] = [];
-  contents.forEach((content: ContentDocument) => {
+  contents.forEach((content: Partial<ContentDocument>) => {
     rows.push(<ContentRow key={content.ref} content={content}/>);
   });
   return (
