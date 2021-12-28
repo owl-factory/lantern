@@ -13,7 +13,7 @@ import { getUniques } from "utilities/arrays";
 async function getMyCharacters(this: HTTPHandler, _req: NextApiRequest) {
   const characters = await CharacterLogic.searchMyCharacters({ size: 20 });
   const campaignIDs = getUniques(characters, "campaign.ref");
-  const campaigns = CampaignLogic.findManyByIDs(campaignIDs);
+  const campaigns = CampaignLogic.findMany(campaignIDs);
   this.returnSuccess({ characters: characters, campaigns });
 }
 

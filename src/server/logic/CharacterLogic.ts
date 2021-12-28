@@ -5,13 +5,44 @@ import { UserRole } from "types/security";
 import { DatabaseLogic } from "./AbstractDatabaseLogic";
 import { isOwner } from "./security";
 import { Collection, FaunaIndex } from "fauna";
-import { Fetch, FetchMany, Index } from "database/decorators/crud";
-import { Access, ReadFields } from "database/decorators/modifiers";
+import { Create, Delete, Fetch, FetchMany, Index, Update } from "database/decorators/crud";
+import { Access, ReadFields, SetFields } from "database/decorators/modifiers";
 import { FaunaIndexOptions } from "types/fauna";
 import { SecurityController } from "controllers/security";
 
-class $CharacterLogic implements DatabaseLogic<CharacterDocument> {
+const PUT_FIELDS = ["*"];
+
+class $CharacterLogic extends DatabaseLogic<CharacterDocument> {
   public collection = Collection.Characters;
+
+  /**
+   * Creates a single character
+   * @param doc The character document to create
+   * @returns The created character, if successful
+   */
+  @Create
+  @Access({[UserRole.User]: true})
+  @SetFields(PUT_FIELDS)
+  public async createOne(doc: Partial<CharacterDocument>): Promise<CharacterDocument> {
+    const character = await fauna.createOne<CharacterDocument>(this.collection, doc);
+    if (character === undefined) {
+      throw { code: 500, message: `The character could not be created.`};
+    }
+    return character;
+  }
+
+  /**
+   * Deletes a single document, if present
+   * @param ref The ref of the document to delete
+   * @returns The deleted document
+   */
+  @Delete
+  @Access({[UserRole.User]: true})
+  public async deleteOne(ref: Ref64) {
+    const character = await fauna.deleteOne<CharacterDocument>(ref);
+    if (character === undefined) { throw { code: 404, message: `The character with id ${ref} could not be found.`}; }
+    return character;
+  }
 
   /**
    * Fetches one character from its ID
@@ -21,23 +52,27 @@ class $CharacterLogic implements DatabaseLogic<CharacterDocument> {
   @Fetch
   @Access({[UserRole.User]: userViewable, [UserRole.Admin]: true})
   @ReadFields({[UserRole.User]: userViewableFields, [UserRole.Admin]: ["*"]})
-  public async findByID(id: Ref64): Promise<CharacterDocument> {
+  public async findOne(id: Ref64): Promise<CharacterDocument> {
     const character = await fauna.findByID<CharacterDocument>(id);
     if (character === undefined) { throw { code: 404, message: `The character with id ${id} could not be found.`}; }
     return character;
   }
 
   /**
-   * Fetches many characters from their IDs
-   * @param ids The Ref64 IDs of the documents to fetch
-   * @returns The found and allowed character documents
+   * Updates the character document
+   * @param ref The ref of the document to update
+   * @param doc The new document partial to patch onto the old document
+   * @returns The updated document
    */
-  @FetchMany
-  @Access({[UserRole.User]: userViewable, [UserRole.Admin]: true})
+  @Update
+  @Access({[UserRole.User]: isOwner, [UserRole.Admin]: true})
   @ReadFields({[UserRole.User]: userViewableFields, [UserRole.Admin]: ["*"]})
-  public async findManyByIDs(ids: Ref64[]): Promise<CharacterDocument[]> {
-    const characters = await fauna.findManyByIDs<CharacterDocument>(ids);
-    return characters;
+  @SetFields(["*"])
+  public async updateOne(ref: Ref64, doc: Partial<CharacterDocument>) {
+    const character = await fauna.updateOne(ref, doc);
+    // TODO - better message
+    if (character === undefined) { throw { code: 404, message: `The character with id ${ref} could not be found.`}; }
+    return character;
   }
 
   /**

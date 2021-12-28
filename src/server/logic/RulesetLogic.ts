@@ -9,7 +9,7 @@ import { Create, Fetch, FetchMany, Index, Update } from "database/decorators/cru
 import { Access, ReadFields, SetFields } from "database/decorators/modifiers";
 import { FaunaIndexOptions } from "types/fauna";
 
-class $RulesetLogic implements DatabaseLogic<RulesetDocument> {
+class $RulesetLogic extends DatabaseLogic<RulesetDocument> {
   public collection = Collection.Rulesets;
 
   /**
@@ -37,7 +37,7 @@ class $RulesetLogic implements DatabaseLogic<RulesetDocument> {
   @Fetch
   @Access({[UserRole.Guest]: true})
   @ReadFields(["*"])
-  public async findByID(id: Ref64): Promise<RulesetDocument> {
+  public async findOne(id: Ref64): Promise<RulesetDocument> {
     const ruleset = await fauna.findByID<RulesetDocument>(id);
     if (ruleset === undefined) { throw { code: 404, message: `A ruleset with ID ${id} could not be found` }; }
     return ruleset;

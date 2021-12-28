@@ -22,7 +22,7 @@ function parseIDsFromDocuments(docs: Partial<AnyDocument>[]) {
 async function getMyCampaigns(this: HTTPHandler, req: NextApiRequest) {
   const fetchedCampaigns = await CampaignLogic.fetchMyCampaigns({ size: 20 });
   const ids = parseIDsFromDocuments(fetchedCampaigns);
-  const campaigns = await CampaignLogic.findManyByIDs(ids);
+  const campaigns = await CampaignLogic.findMany(ids);
   this.returnSuccess({ campaigns: campaigns });
 }
 

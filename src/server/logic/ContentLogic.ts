@@ -12,7 +12,7 @@ import { FaunaIndexOptions } from "types/fauna";
 import { SecurityController } from "controllers/security";
 import { toRef } from "database/conversion/fauna/to";
 
-class $ContentLogic implements DatabaseLogic<ContentDocument> {
+class $ContentLogic extends DatabaseLogic<ContentDocument> {
   public collection = Collection.Contents;
 
   /**
@@ -23,7 +23,7 @@ class $ContentLogic implements DatabaseLogic<ContentDocument> {
   @Fetch
   @Access({[UserRole.User]: userViewable, [UserRole.Admin]: true})
   @ReadFields({[UserRole.User]: userViewableFields, [UserRole.Admin]: ["*"]})
-  public async findByID(id: Ref64): Promise<ContentDocument> {
+  public async findOne(id: Ref64): Promise<ContentDocument> {
     const content = await fauna.findByID<ContentDocument>(id);
     if (content === undefined) { throw { code: 404, message: `The content with id ${id} could not be found`}; }
     return content;

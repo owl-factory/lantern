@@ -12,7 +12,7 @@ import { CampaignDocument } from "types/documents";
  */
 async function updateCampaignBanner(this: HTTPHandler, req: NextApiRequest) {
 // TODO - move this logic into the CampaignLogic
-  const campaign = await CampaignLogic.findByID(req.query.ref as string);
+  const campaign = await CampaignLogic.findOne(req.query.ref as string);
   if (!campaign) { this.returnError(404, "Campaign not found."); return; }
   const image = await ImageLogic.create(req.body.method, req.body.image);
   if (!image) {  this.returnError(404, "Image not found."); return; }

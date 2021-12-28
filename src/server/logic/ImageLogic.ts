@@ -21,7 +21,7 @@ const createFields = [
   "source",
 ];
 
-class $ImageLogic implements DatabaseLogic<ImageDocument> {
+class $ImageLogic extends DatabaseLogic<ImageDocument> {
   public collection = Collection.Images;
 
   /**
@@ -35,7 +35,7 @@ class $ImageLogic implements DatabaseLogic<ImageDocument> {
     switch(method) {
       case AssetUploadSource.Select:
         if (!doc.ref) { throw {code: 500, message: "An image ID is required for the Select create method." }; }
-        result = await this.findByID(doc.ref);
+        result = await this.findOne(doc.ref);
         if (!result) { throw { code: 404, message: "Image not found."}; }
         return result;
 
@@ -91,7 +91,7 @@ class $ImageLogic implements DatabaseLogic<ImageDocument> {
   @Fetch
   @Access({[UserRole.User]: true})
   @ReadFields(["*"])
-  public async findByID(id: Ref64): Promise<ImageDocument> {
+  public async findOne(id: Ref64): Promise<ImageDocument> {
     const image = await fauna.findByID<ImageDocument>(id);
     if (image === undefined) { throw { code: 404, message: `The image with id ${id} could not be found.`}; }
     return image;
