@@ -3,7 +3,6 @@ import { isError } from "@owl-factory/errors";
 import { AlertController } from "controllers/AlertController";
 import { CampaignCache } from "controllers/cache/CampaignCache";
 import { SceneCache } from "controllers/cache/SceneCache";
-import { SceneDataController } from "controllers/data/scene";
 import { action, makeObservable, observable } from "mobx";
 import { Ref64 } from "types";
 import { CampaignDocument, SceneDocument } from "types/documents";
@@ -87,7 +86,7 @@ class $SceneController {
   }
 
   public async setScene(ref: Ref64) {
-    const scene = await SceneDataController.read(ref);
+    const scene = await SceneCache.get(ref);
     if (scene === undefined) {
       AlertController.error("The scene could not be found or you do not have permission to view.");
     }
@@ -95,13 +94,13 @@ class $SceneController {
 
   public async newScene() {
     if (!this.campaignID) { return; }
-    const scene = await SceneDataController.create(
+    const scene = await SceneCache.create(
       { name: "Untitled", campaign: {ref: this.campaignID }}
-    );
+    ) as Partial<SceneDocument>;
 
     if (!scene) { return; }
     this.scene = scene;
-    this.sceneID = scene?.ref;
+    this.sceneID = scene?.ref as string;
   }
 }
 

@@ -13,10 +13,12 @@ import { CacheItem, GetPageOptions, RefRequired } from "../types";
  */
 export function get<T extends RefRequired>(
   this: CacheController<T>,
-  ref: Ref64,
+  ref: Ref64 | undefined,
   readLevel: PassiveReadLevel = this.passiveReadLevel,
   staleTime: number = this.staleTime
 ): Partial<T> | undefined {
+  if (ref === undefined) { return undefined; }
+
   // Fetches the ref if it's not present in the cache or if the read is forced
   if (!(ref in this.data)) {
     this.read(ref);
@@ -25,6 +27,8 @@ export function get<T extends RefRequired>(
 
   const cacheItem: CacheItem<T> | undefined = this.data[ref];
   if (cacheItem === undefined) { return undefined; } // Safety case, though it should never be hit
+
+  // TODO - security. Also prevent repeated attempts to access the data
 
   switch(readLevel) {
     case PassiveReadLevel.Never:
@@ -40,6 +44,23 @@ export function get<T extends RefRequired>(
       });
       return cacheItem?.doc;
   }
+}
+
+/**
+ * Gets many documents from a given list of refs
+ * @param refs The list of refs to fetch
+ * @returns A list of the requested partial documents
+ */
+export function getMany<T extends RefRequired>(this: CacheController<T>, refs: Ref64[]): Partial<T>[] {
+  const docs: Partial<T>[] = [];
+  refs.forEach((ref: Ref64) => {
+    const cacheItem = this.data[ref];
+    if (cacheItem && cacheItem.doc) {
+      docs.push(cacheItem.doc);
+    }
+  });
+
+  return docs;
 }
 
 /**

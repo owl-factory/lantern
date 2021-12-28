@@ -36,12 +36,12 @@ const CharacterCard = observer((props: CharacterCardProps) => {
       <Card.Body>
         <Row>
           <Col sm={4}>
-            <img className="image-fluid" src={props.character.profile.src}/>
+            <img className="image-fluid" src={props.character.profile?.src}/>
           </Col>
           <Col sm={8}>
             <h3>{props.character.name}</h3><br/>
-            {CampaignCache.get(props.character.campaign.ref)?.name || <Loading/>}<br/>
-            {RulesetCache.get(props.character.ruleset.ref)?.name || <Loading/>}<br/>
+            {CampaignCache.get(props.character.campaign?.ref)?.name || <Loading/>}<br/>
+            {RulesetCache.get(props.character.ruleset?.ref)?.name || <Loading/>}<br/>
             <ButtonGroup>
               <Button>Duplicate</Button>
               <Button>Edit</Button>
@@ -62,7 +62,7 @@ const CharacterCard = observer((props: CharacterCardProps) => {
  */
 export function MyCharacters (props: MyCharactersProps) {
   const [characters, setCharacters] = React.useState<Partial<CharacterDocument>[]>([]);
-  const [rulesets, setRulesets] = React.useState<RulesetDocument[]>([]);
+  const [rulesets, setRulesets] = React.useState<Partial<RulesetDocument>[]>([]);
 
   // Loads in all data from the cache to the data managers
   React.useEffect(() => {
@@ -93,7 +93,7 @@ export function MyCharacters (props: MyCharactersProps) {
   const rulesetOptions: JSX.Element[] = [
     <option key="_blank" value="">-- All Rulesets --</option>,
   ];
-  rulesets.forEach((ruleset: RulesetDocument) => {
+  rulesets.forEach((ruleset: Partial<RulesetDocument>) => {
     rulesetOptions.push(
       <option key={ruleset.ref} value={ruleset.ref}>{ruleset.name || <Loading/>}</option>
     );

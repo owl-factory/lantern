@@ -61,7 +61,7 @@ function MyContent(props: MyContentProps): JSX.Element {
     ContentCache.setMany(props.contents);
 
     const uniqueRulesets = getUniques(props.contents, "ruleset.ref");
-    RulesetController.readMissing(uniqueRulesets);
+    RulesetCache.readMissing(uniqueRulesets);
   }, []);
 
   // Use this to prevent too many rerenders

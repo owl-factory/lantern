@@ -1,4 +1,3 @@
-import { RulesetController, RulesetManager } from "controllers/data/ruleset";
 import { Page } from "components/design";
 import { Button, ButtonGroup, Col, Loading } from "components/style";
 import { Input } from "components/style/forms";
@@ -168,11 +167,11 @@ const RulesetRow = observer((props: RulesetRowProps) => {
           </Link>
           {
             props.ruleset.isPublic ? (
-              <Button onClick={() => RulesetController.updateIsPublic(props.ruleset.ref as string, false)}>
+              <Button onClick={() => RulesetCache.updateIsPublic(props.ruleset.ref as string, false)}>
                 <Tooltip title="Make Private"><MdVisibilityOff/></Tooltip>
               </Button>
             ) : (
-              <Button onClick={() => RulesetController.updateIsPublic(props.ruleset.ref as string, true)}>
+              <Button onClick={() => RulesetCache.updateIsPublic(props.ruleset.ref as string, true)}>
                 <Tooltip title="Make Public"><MdVisibility/></Tooltip>
               </Button>
             )
@@ -200,7 +199,7 @@ const RulesetRow = observer((props: RulesetRowProps) => {
  * @param rulesets The initial light ruleset information fetched from the API
  */
 function AdminRulesets(props: AdminRulesetsProps) {
-  const [ rulesets, setRulesets ] = React.useState<Partial<RulesetDocument>>([]);
+  const [ rulesets, setRulesets ] = React.useState<Partial<RulesetDocument>[]>([]);
   const [ modal, setModal ] = React.useState(false);
 
   function closeModal() { setModal(false); }

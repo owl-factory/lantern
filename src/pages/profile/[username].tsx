@@ -11,18 +11,18 @@ import { arrayToList } from "utilities/arrays";
 import { ImageSelectionWrapper } from "components/reroll/library/images/ImageSelectionWrapper";
 import { Checkbox, Input } from "components/style/forms";
 import { observer } from "mobx-react-lite";
-import { UserController, UserManager } from "controllers/data/user";
 import { InitialProps } from "types/client";
 import Link from "next/link";
 import { AssetUploadSource } from "types/enums/assetSource";
 import { ImageCache } from "controllers/cache/ImageCache";
+import { UserCache } from "controllers/cache/UserCache";
 
 /**
  * Renders a small section indicating how long a player has been a member, their hours played,
  * and their total games GMed
  * @param user The user to render member since information
  */
-function MemberSince({ user }: { user: UserDocument }) {
+function MemberSince({ user }: { user: Partial<UserDocument> }) {
   const joinDate = Intl.DateTimeFormat('en', {
     month: "short",
     day: "numeric",
@@ -45,7 +45,7 @@ function MemberSince({ user }: { user: UserDocument }) {
  * Renders the badges for the user
  * @param user The user to render the badges for
  */
-function Badges({ user }: { user: UserDocument }) {
+function Badges({ user }: { user: Partial<UserDocument> }) {
   return (
     <div>
       <span>Badges</span>
@@ -59,9 +59,9 @@ function Badges({ user }: { user: UserDocument }) {
  * @param user The current user's information for rendering proper links
  * @param players The current user's recently played with players
  */
-function MyOptions({ user, players}: { user: UserDocument, players: UserDocument[] }) {
+function MyOptions({ user, players}: { user: Partial<UserDocument>, players: Partial<UserDocument>[] }) {
   const recentPlayers: JSX.Element[] = [];
-  players.forEach((player: UserDocument) => {
+  players.forEach((player: Partial<UserDocument>) => {
     recentPlayers.push(<RecentPlayer key={player.ref} player={player}/>);
   });
 
@@ -87,7 +87,9 @@ function MyOptions({ user, players}: { user: UserDocument, players: UserDocument
  * @param user The user to render details for
  * @param saveUser A function to save the user's information to the database
  */
-function MyDetails({ user, saveUser }: { user: UserDocument, saveUser: (values: Record<string, unknown>) => void }) {
+function MyDetails(
+  { user, saveUser }: { user: Partial<UserDocument>, saveUser: (values: Record<string, unknown>) => void }
+) {
   return (
     <div>
       <Formik
@@ -123,7 +125,7 @@ function MyDetails({ user, saveUser }: { user: UserDocument, saveUser: (values: 
  * Renders the options when viewing another person's profile page
  * @param user The user information to render
  */
-function OtherOptions({ user }: { user: UserDocument }) {
+function OtherOptions({ user }: { user: Partial<UserDocument> }) {
   return (
     <div>
       <a href="#">Send Private Message</a><br/>
@@ -141,7 +143,7 @@ function OtherOptions({ user }: { user: UserDocument }) {
  * Renders another user's details
  * @param user The user information to render
  */
-function OtherDetails({ user }: { user: UserDocument }) {
+function OtherDetails({ user }: { user: Partial<UserDocument> }) {
   return (
     <div>
       <h1>{user.name}</h1>
@@ -173,7 +175,7 @@ function OtherDetails({ user }: { user: UserDocument }) {
  * Renders a recently played with user
  * @param player The recently played with user.
  */
-function RecentPlayer({ player }: { player: UserDocument }) {
+function RecentPlayer({ player }: { player: Partial<UserDocument> }) {
   let src = "";
   if (player.avatar && player.avatar.src) { src = player.avatar.src; }
   return (
@@ -190,7 +192,7 @@ function RecentPlayer({ player }: { player: UserDocument }) {
 
 interface ProfileImageProps {
   isMyPage: boolean;
-  user: UserDocument;
+  user: Partial<UserDocument>;
 }
 
 /**
@@ -201,10 +203,10 @@ interface ProfileImageProps {
  */
 const Avatar = observer(({ user, isMyPage }: ProfileImageProps) => {
 
-  let image = <img src={user.avatar.src} width="200px" height="200px"/>;
+  let image = <img src={user.avatar?.src} width="200px" height="200px"/>;
 
   async function onSubmit(imageDocument: Partial<ImageDocument>, method: AssetUploadSource) {
-    await UserController.updateAvatar(user.ref, imageDocument, method);
+    await UserCache.updateAvatar(user.ref, imageDocument, method);
   }
 
   if (isMyPage) {
@@ -241,23 +243,22 @@ function Profile(props: ProfileProps): JSX.Element {
     return <>Error</>;
   }
   const router = useRouter();
-  const [ user, setUser ] = React.useState(props.user);
+  const [ user, setUser ] = React.useState<Partial<UserDocument>>(props.user);
   const [ isMyPage, setIsMyPage ] = React.useState(calculateIfUserIsOwner());
-  const [ players, setPlayers ] = React.useState<UserDocument[]>([]);
+  const [ players, setPlayers ] = React.useState<Partial<UserDocument>[]>([]);
 
   // Loads in everything from local storage and inserts new user ingo the Manager
   React.useEffect(() => {
 
-    UserManager.load();
 
-    UserManager.set(props.user);
+    UserCache.set(props.user);
 
     const playerIDs: string[] = [];
-    props.user.recentPlayers?.forEach((player: UserDocument) => {
-      playerIDs.push(player.ref);
+    props.user.recentPlayers?.forEach((player: Partial<UserDocument>) => {
+      playerIDs.push(player.ref as string);
     });
-    UserController.readMissing(playerIDs).then(() => {
-      setPlayers(UserManager.getMany(playerIDs));
+    UserCache.readMissing(playerIDs).then(() => {
+      setPlayers(UserCache.getMany(playerIDs));
     });
 
     ImageCache.readMissing([props.user.avatar.ref]);
@@ -265,11 +266,11 @@ function Profile(props: ProfileProps): JSX.Element {
 
   // Updates the current user when they change
   React.useEffect(() => {
-    const newUser = UserManager.get(props.user.ref as string);
+    const newUser = UserCache.get(props.user.ref as string);
     if (!newUser) { return; }
 
     setUser(newUser);
-  }, [UserManager.get(props.user.ref)?.updatedAt, UserManager.updatedAt]);
+  }, [UserCache.get(props.user.ref)?.updatedAt, UserCache]);
 
   /**
    * Determines if the current player is the owner of the profile page.
@@ -286,7 +287,7 @@ function Profile(props: ProfileProps): JSX.Element {
    * @param values The user document values to save to the database
    */
   async function saveUser(values: Record<string, unknown>) {
-    await UserController.update(user.ref, values);
+    await UserCache.update(user.ref as string, values);
   }
 
   return (

@@ -44,6 +44,7 @@ export abstract class CacheController<T extends RefRequired> {
 
   // ACCESS
   public get = access.get;
+  public getMany = access.getMany;
   public getPage = access.getPage;
   public readMissing = access.readMissing;
   public set = access.set;
