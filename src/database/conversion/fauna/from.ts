@@ -74,7 +74,7 @@ function fromItem(data: unknown) {
     case "bigint":
     case "symbol":
       return data;
-    case "undefined": 
+    case "undefined":
       return undefined;
     case "array":
       return fromArray(data as unknown[]);
@@ -134,15 +134,18 @@ export function fromIndex(faunaDocs: unknown[], fields: string[]): Record<string
   faunaDocs.forEach((faunaDoc: unknown | unknown[]) => {
     const convertedDoc: Record<string, unknown> = {};
 
-    if (!Array.isArray(faunaDoc)) { 
+    if (!Array.isArray(faunaDoc)) {
       convertedDoc.ref = fromRef(faunaDoc);
       convertedDocs.push(convertedDoc);
       return;
     }
-
+    if (faunaDoc.length !== fields.length) {
+      throw { code: 500, message: `There is a mismatch between the number of index document fields and expected fields`}
+    }
     faunaDoc.forEach((faunaItem: unknown, index: number) => {
       const key = fields[index];
       const item = fromItem(faunaItem);
+      console.log("key", key)
       set(convertedDoc, key, item);
     });
     convertedDocs.push(convertedDoc);

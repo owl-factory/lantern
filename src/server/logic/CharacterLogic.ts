@@ -22,9 +22,11 @@ class $CharacterLogic extends DatabaseLogic<CharacterDocument> {
    */
   @Create
   @Access({[UserRole.User]: true})
+  @ReadFields(["*"])
   @SetFields(PUT_FIELDS)
   public async createOne(doc: Partial<CharacterDocument>): Promise<CharacterDocument> {
     const character = await fauna.createOne<CharacterDocument>(this.collection, doc);
+
     if (character === undefined) {
       throw { code: 500, message: `The character could not be created.`};
     }

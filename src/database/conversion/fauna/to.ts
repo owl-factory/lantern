@@ -96,7 +96,7 @@ function toItem(data: unknown): unknown {
  * @param ref64ID The Ref64 ID to convert into the original fauna ref.
  * @returns A Fauna Ref expr.
  */
- export function toRef(ref64ID: Ref64): Expr {
+export function toRef(ref64ID: Ref64): Expr {
   const { id, collection } = decode(ref64ID);
   const ref = q.Ref(q.Collection(collection as string), id);
   return ref;

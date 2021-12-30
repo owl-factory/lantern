@@ -4,31 +4,20 @@ import { Input, Select } from "components/style/forms";
 import { Button } from "components/style";
 import { CharacterDocument, RulesetDocument } from "types/documents";
 import { RulesetCache } from "controllers/cache/RulesetCache";
+import { observer } from "mobx-react-lite";
+import { RulesetSelect } from "../rulesets/RulesetSelect";
+import { CampaignSelect } from "../campaigns/CampaignSelect";
+import { CharacterCache } from "controllers/cache/CharacterCache";
 
 interface NewCharacterFormValues {
   character: Partial<CharacterDocument>;
 }
 
-
-function RulesetSelect(props: any) {
-  const [ rulesets, setRulesets ] = React.useState<Partial<RulesetDocument>[]>([]);
-
-  React.useEffect(() => {
-    const cachedRulesets = RulesetCache.getPage({ sort: "name" });
-    console.log(cachedRulesets);
-    setRulesets(cachedRulesets);
-  }, [RulesetCache]);
-
-  return (
-    <Select name={props.name}>
-      
-    </Select>
-  )
-}
-
 export function NewCharacterForm(props: any) {
-  function createNewCharacter(values: NewCharacterFormValues) {
+  async function createNewCharacter(values: NewCharacterFormValues) {
     console.log(values);
+    const character = await CharacterCache.create(values.character);
+    console.log(character)
   }
 
   return (
@@ -45,6 +34,8 @@ export function NewCharacterForm(props: any) {
       <Form>
         <Input type="text" name="character.name"/>
         <RulesetSelect name="character.ruleset.ref" />
+        <CampaignSelect name="character.ruleset.ref" />
+
         <Button type="submit">Create</Button>
       </Form>
     </Formik>

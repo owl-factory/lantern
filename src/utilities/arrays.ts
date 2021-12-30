@@ -23,6 +23,7 @@ export function arrayToList(arr?: string[]): string {
  * @returns An unsorted array of unique values
  */
 export function getUniques(data: any, target: string): string[] {
+  if (data === undefined) { return []; }
   const uniques: Record<string, number> = {};
   const keys = Object.keys(data);
   keys.forEach((key: string) => {

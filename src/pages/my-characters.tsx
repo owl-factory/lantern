@@ -31,7 +31,11 @@ interface CharacterCardProps {
   character: Partial<CharacterDocument>;
 }
 
-
+function CharacterList() {
+  return (
+    <>List</>
+  );
+}
 
 const CharacterCard = observer((props: CharacterCardProps) => {
   return (
@@ -68,22 +72,6 @@ export function MyCharacters (props: MyCharactersProps) {
   const [ open, setOpen ] = React.useState(false);
   const [characters, setCharacters] = React.useState<Partial<CharacterDocument>[]>([]);
   const [rulesets, setRulesets] = React.useState<Partial<RulesetDocument>[]>([]);
-
-  async function createNewCharacter(values: NewCharacterFormValues) {
-    const characterPartial = {
-      name: values.characterName,
-      campaign: values.campaign,
-
-    }
-    // TODO - set loading
-    const newCharacter = await CharacterCache.create(values);
-    // TODO - unset loading
-    if (isError(newCharacter)) {
-      // TODO - handle error
-    }
-    closeModal();
-  }
-
 
   function closeModal() {
     // Do other things, like clear out the modal form content
@@ -157,6 +145,8 @@ export function MyCharacters (props: MyCharactersProps) {
       <div className="row">
         <div className="col-12 col-md-4">
           List of Characters
+          <hr/>
+          <CharacterList/>
         </div>
 
         <div className="d-none d-md-block col-md-8">

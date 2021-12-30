@@ -81,10 +81,13 @@ export abstract class DatabaseLogic<T> {
    */
    public async createMany(docs: Partial<T>[]) {
     const promises: Promise<Partial<T>>[] = [];
+
     docs.forEach((doc: Partial<T>) => {
       if (this.createOne === undefined) { return; }
-      promises.push(this.createOne(doc));
+      const promise = this.createOne(doc);
+      promises.push(promise);
     });
+
     const createdDocs = await Promise.all(promises);
     return createdDocs;
   }
@@ -100,7 +103,7 @@ export abstract class DatabaseLogic<T> {
       if (this.deleteOne === undefined) { return; }
       promises.push(this.deleteOne(ref));
     });
-    const deletedDocs = await Promise.all(promises);
+    const deletedDocs = Promise.all(promises);
     return deletedDocs;
   }
 

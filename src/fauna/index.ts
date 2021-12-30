@@ -23,7 +23,7 @@ export enum FaunaIndex {
 
 export const FaunaIndexTerms = {
   [FaunaIndex.CampaignsByUser]: ["lastPlayedAt", "ref", "name", "banner.src"],
-  [FaunaIndex.CharactersByUser]: ["updatedAt", "ref", "name", "campaign.ref", "profile.src"],
+  [FaunaIndex.CharactersByUser]: ["updatedAt", "ref", "name", "ruleset.ref", "campaign.ref", "profile.src"],
   [FaunaIndex.ContentByUser]: ["updatedAt", "ref", "name", "type.ref", "ruleset.ref", "ownedBy.ref"],
   [FaunaIndex.ImagesByUser]: ["ref", "name", "src"],
   [FaunaIndex.RulesetsByOfficial]: ["updatedAt", "ref", "name", "ownedBy", "isPublic", "isLocked"],

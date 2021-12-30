@@ -31,6 +31,7 @@ export async function createMany<T extends RefRequired>(
   const createdDocs = await this.$createMany(docs);
   const validDocs = pruneErrors<T>(createdDocs);
   const cacheItemDocs = this.$toCacheItem(validDocs, { isLoaded: true, loadedAt: Date.now(), updatedAt: Date.now() });
+
   this.$setMany(cacheItemDocs);
   return createdDocs;
 }
@@ -139,7 +140,6 @@ export async function $createMany<T extends RefRequired>(this: CacheController<T
   const result = await rest.put<StandardApiResponse<T>>(this.apiURL, { docs: docs });
   if (!result.success) { return []; }
   const createdDocs = result.data.docs;
-
   return createdDocs;
 }
 

@@ -30,7 +30,7 @@ export function loadCache<T extends RefRequired>(this: CacheController<T>) {
   if (cacheItem.meta.loadedAt > Date.now() - staleTime) { return cacheItem; }
   const newCacheItem = await this.read(cacheItem.doc.ref as string);
   if (newCacheItem === undefined) { return undefined; }
-  const retrievedCacheItem = this.data[cacheItem.doc.ref as string];
+  const retrievedCacheItem = this.$data[cacheItem.doc.ref as string];
   return retrievedCacheItem;
 }
 
@@ -52,7 +52,7 @@ export async function $readIfUnloaded<T extends RefRequired>(
 
   const newCacheItem = await this.read(cacheItem.doc.ref as string);
   if (isError(newCacheItem)) { return undefined; }
-  const retrievedCacheItem = this.data[cacheItem.doc.ref as string];
+  const retrievedCacheItem = this.$data[cacheItem.doc.ref as string];
   return retrievedCacheItem;
 }
 
@@ -70,8 +70,8 @@ export function $removeMany<T extends RefRequired>(
   if (refs === undefined || refs.length === 0) { return; }
 
   refs.forEach((ref: Ref64) => {
-    if (this.data[ref]) {
-      delete this.data[ref];
+    if (this.$data[ref]) {
+      delete this.$data[ref];
     }
   });
 
@@ -96,12 +96,12 @@ export function $setMany<T extends RefRequired>(
     if (!cacheItem || !cacheItem.doc || !("ref" in cacheItem.doc)) { console.log("fail");return; }
 
     const ref = cacheItem.doc.ref as string;
-    this.data[ref] = cacheItem;
+    this.$data[ref] = cacheItem;
   });
 
   // Saves this list to the cache
   if (saveToCacheStorage) { save<CacheItem<T>>(this.key, cacheItems); }
-  this.touch();
+  this.$touch();
 }
 
 

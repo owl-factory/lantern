@@ -9,8 +9,9 @@ import { createEndpoint } from "server/utilities";
  * @param this The Handler class calling this function
  * @param req The request to the server
  */
- async function createCharacters(this: HTTPHandler, req: NextApiRequest) {
-  const characters = await CharacterLogic.createMany(req.body.refs);
+async function createCharacters(this: HTTPHandler, req: NextApiRequest) {
+  const characters = await CharacterLogic.createMany(req.body.docs);
+  console.log(characters)
   this.returnSuccess({ docs: characters });
 }
 
