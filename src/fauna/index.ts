@@ -16,6 +16,7 @@ export enum FaunaIndex {
   ContentByUser="content_by_user",
   ImagesByUser="images_by_user",
   RulesetsByOfficial="rulesets_by_official",
+  RulesetsByOfficialPublic="rulesets_by_official_public",
   UsersByEmail="users_by_email",
   UsersByUsername="users_by_username",
 }
@@ -26,6 +27,7 @@ export const FaunaIndexTerms = {
   [FaunaIndex.ContentByUser]: ["updatedAt", "ref", "name", "type.ref", "ruleset.ref", "ownedBy.ref"],
   [FaunaIndex.ImagesByUser]: ["ref", "name", "src"],
   [FaunaIndex.RulesetsByOfficial]: ["updatedAt", "ref", "name", "ownedBy", "isPublic", "isLocked"],
+  [FaunaIndex.RulesetsByOfficialPublic]: ["updatedAt", "ref", "name", "ownedBy", "isPublic", "isLocked"],
   [FaunaIndex.UsersByEmail]: ["ref"],
   [FaunaIndex.UsersByUsername]: ["ref"],
 };
