@@ -41,6 +41,18 @@
       "components/*": [
         "src/components/*"
       ],
+      "database": [
+        "src/database"
+      ],
+      "database/*": [
+        "src/database/*"
+      ],
+      "fauna": [
+        "src/fauna"
+      ],
+      "fauna/*": [
+        "src/fauna/*"
+      ],
       "server": [
         "src/server"
       ],
