@@ -1,6 +1,5 @@
 import { NextApiRequest } from "next";
-import { getMyUser, requireLogin } from "server/auth";
-import { CampaignLogic, RulesetLogic } from "server/logic";
+import { RulesetLogic } from "server/logic/RulesetLogic";
 import { HTTPHandler } from "server/response";
 import { createEndpoint } from "server/utilities";
 
@@ -10,9 +9,7 @@ import { createEndpoint } from "server/utilities";
  * @param req The request to the server
  */
 async function getRuleset(this: HTTPHandler, req: NextApiRequest) {
-  const myUser = getMyUser(req);
-
-  const ruleset = await RulesetLogic.fetch(req.query.id, myUser);
+  const ruleset = await RulesetLogic.findOne(req.query.id as string);
   this.returnSuccess({ ruleset: ruleset });
 }
 
@@ -22,9 +19,7 @@ async function getRuleset(this: HTTPHandler, req: NextApiRequest) {
  * @param req The request to the server
  */
 async function updateRuleset(this: HTTPHandler, req: NextApiRequest) {
-  const myUser = getMyUser(req);
-
-  const ruleset = await RulesetLogic.create(req.body, myUser);
+  const ruleset = await RulesetLogic.createOne(req.body);
   this.returnSuccess({ ruleset });
 }
 

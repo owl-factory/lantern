@@ -1,4 +1,3 @@
-import { RulesetController, RulesetManager } from "controllers/data/ruleset";
 import { Page } from "components/design";
 import { Loading } from "components/style";
 import { Input } from "components/style/forms";
@@ -12,7 +11,8 @@ import { InitialProps } from "types/client";
 import { CampaignDocument } from "types/documents";
 import { getSession } from "utilities/auth";
 import { rest } from "utilities/request";
-import { CampaignManager } from "controllers/data/campaign";
+import { CampaignCache } from "controllers/cache/CampaignCache";
+import { RulesetCache } from "controllers/cache/RulesetCache";
 
 interface MyCampaignsProps extends InitialProps {
   myCampaigns: CampaignDocument[];
@@ -23,7 +23,7 @@ interface SearchCampaignsArguments {
 }
 
 interface CampaignTileProps {
-  campaign: CampaignDocument;
+  campaign: Partial<CampaignDocument>;
 }
 
 /**
@@ -39,13 +39,13 @@ const CampaignTile = observer((props: CampaignTileProps) => {
         </Col>
         <Col sm={8}>
           <Card.Body>
-            <Link href={`/campaigns/${props.campaign.id}`} passHref>
+            <Link href={`/campaigns/${props.campaign.ref}`} passHref>
               <a><h3>{props.campaign.name}</h3></a>
             </Link><br/>
-            <Link href={`/play/${props.campaign.id}`}>
+            <Link href={`/play/${props.campaign.ref}`}>
               <a>Play</a>
             </Link>
-            {RulesetManager.get(props.campaign.ruleset.id)?.name || <Loading/>}
+            {RulesetCache.get(props.campaign?.ruleset?.ref as string)?.name || <Loading/>}
           </Card.Body>
         </Col>
       </Row>
@@ -61,20 +61,11 @@ const CampaignTile = observer((props: CampaignTileProps) => {
  * @param campaigns The initial light campaign information fetched from the API
  */
 function MyCampaigns(props: MyCampaignsProps) {
-  const [ campaigns, setCampaigns ] = React.useState<CampaignDocument[]>([]);
+  const [ campaigns, setCampaigns ] = React.useState<Partial<CampaignDocument>[]>([]);
 
-  CampaignManager.setMany(props.myCampaigns || []);
-
-  // Loads in data from the cache and fetches anything that's missing
   React.useEffect(() => {
-    CampaignManager.load();
-    RulesetManager.load();
-
-    CampaignManager.setMany(props.myCampaigns || []);
-    const uniqueRulesets = CampaignManager.getUniques("ruleset.id");
-    RulesetController.readMissing(uniqueRulesets);
+    CampaignCache.setMany(props.myCampaigns || []);
   }, []);
-
 
   function searchCampaigns(values: SearchCampaignsArguments) {
     console.log(values);
@@ -82,14 +73,14 @@ function MyCampaigns(props: MyCampaignsProps) {
 
   // Use this to prevent too many rerenders
   React.useEffect(() => {
-    setCampaigns(CampaignManager.getPage());
-  }, [CampaignManager]);
+    setCampaigns(CampaignCache.getPage());
+  }, [CampaignCache]);
 
   // Builds the tiles for listing out the campaigns
   const campaignTiles: JSX.Element[] = [];
-  campaigns.forEach((campaign: CampaignDocument) => {
+  campaigns.forEach((campaign: Partial<CampaignDocument>) => {
     campaignTiles.push(
-      <CampaignTile key={campaign.id} campaign={campaign}/>
+      <CampaignTile key={campaign.ref} campaign={campaign}/>
     );
   });
 

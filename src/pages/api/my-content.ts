@@ -1,6 +1,5 @@
 import { NextApiRequest } from "next";
-import { getMyUser, requireLogin } from "server/auth";
-import { ContentLogic } from "server/logic";
+import { ContentLogic } from "server/logic/ContentLogic";
 import { HTTPHandler } from "server/response";
 import { createEndpoint } from "server/utilities";
 
@@ -9,10 +8,8 @@ import { createEndpoint } from "server/utilities";
  * @param this The Handler class calling this function
  * @param req The request to the server
  */
-async function getMyContent(this: HTTPHandler, req: NextApiRequest) {
-  const myUser = getMyUser(req);
-  requireLogin(myUser);
-  const contents = await ContentLogic.fetchMyContent([], { size: 20 }, myUser);
+async function getMyContent(this: HTTPHandler, _req: NextApiRequest) {
+  const contents = await ContentLogic.searchMyContent({ size: 20 });
   this.returnSuccess({ contents: contents });
 }
 

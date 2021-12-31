@@ -1,15 +1,18 @@
+import { PassiveReadLevel } from "@owl-factory/cache/enums";
+import { isError } from "@owl-factory/errors";
 import { AlertController } from "controllers/AlertController";
-import { CampaignDataController } from "controllers/data/campaign";
-import { SceneDataController, SceneManager } from "controllers/data/scene";
+import { CampaignCache } from "controllers/cache/CampaignCache";
+import { SceneCache } from "controllers/cache/SceneCache";
 import { action, makeObservable, observable } from "mobx";
+import { Ref64 } from "types";
 import { CampaignDocument, SceneDocument } from "types/documents";
 
 class $SceneController {
   public campaignID: string;
   public sceneID: string;
 
-  public campaign: CampaignDocument | null;
-  public scene: SceneDocument | null;
+  public campaign: Partial<CampaignDocument> | null;
+  public scene: Partial<SceneDocument> | null;
 
   constructor() {
     this.campaignID = "";
@@ -49,20 +52,20 @@ class $SceneController {
    * @param id The ID of the scene to load into the SceneController
    */
   public async load(id: string) {
-    const scene = await SceneDataController.read(id);
+    const scene = await SceneCache.get(id, PassiveReadLevel.Force);
     if (scene === undefined) {
       AlertController.error("The scene could not be found or you do not have permission to view.");
       return;
     }
 
-    const campaign = await CampaignDataController.read(scene.campaign.id);
-    if (campaign === undefined) {
+    const campaign = await CampaignCache.read(scene.campaign?.ref as string) as Partial<CampaignDocument>;
+    if (campaign === undefined || isError(campaign)) {
       AlertController.error("An error occured while trying to load the campaign");
       return;
     }
 
     this.sceneID = id;
-    this.campaignID = campaign.id;
+    this.campaignID = campaign.ref as string;
 
     this.scene = scene;
     this.campaign = campaign;
@@ -72,18 +75,18 @@ class $SceneController {
     return;
   }
 
-  public async setCampaign(id: string) {
-    const campaign = await CampaignDataController.read(id);
+  public async setCampaign(ref: Ref64) {
+    const campaign = await CampaignCache.read(ref);
     if (campaign === undefined) {
       AlertController.error("An error occured while trying to load the campaign");
       return;
     }
     this.campaign = campaign;
-    this.campaignID = campaign.id;
+    this.campaignID = this.campaign?.ref as string;
   }
 
-  public async setScene(id: string) {
-    const scene = await SceneDataController.read(id);
+  public async setScene(ref: Ref64) {
+    const scene = await SceneCache.get(ref);
     if (scene === undefined) {
       AlertController.error("The scene could not be found or you do not have permission to view.");
     }
@@ -91,13 +94,13 @@ class $SceneController {
 
   public async newScene() {
     if (!this.campaignID) { return; }
-    const scene = await SceneDataController.create(
-      { name: "Untitled", campaign: {id: this.campaignID, collection: "campaigns" }}
-    );
-    console.log(scene);
+    const scene = await SceneCache.create(
+      { name: "Untitled", campaign: {ref: this.campaignID }}
+    ) as Partial<SceneDocument>;
+
     if (!scene) { return; }
     this.scene = scene;
-    this.sceneID = scene?.id;
+    this.sceneID = scene?.ref as string;
   }
 }
 

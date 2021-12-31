@@ -1,9 +1,16 @@
-import { AnyDocument, ImageDocument } from "types/documents";
-import { FaunaLogicBuilder } from "server/faunaLogicBuilder/FaunaLogicBuilder";
-import { isOwner_old } from "./security";
-import { MyUserDocument } from "types/security";
-import { myUserToTerm } from "./CoreModelLogic";
-import { AssetSource, AssetUploadSource } from "types/enums/assetSource";
+import { ImageDocument } from "types/documents";
+import { isOwner } from "./security";
+import { UserRole } from "types/security";
+import { AssetUploadSource } from "types/enums/assetSource";
+import { Collection, FaunaIndex } from "fauna";
+import { DatabaseLogic } from "./AbstractDatabaseLogic";
+import * as fauna from "database/integration/fauna";
+import { Ref64 } from "types";
+import { Access, ReadFields, SetFields } from "database/decorators/modifiers";
+import { Create, Delete, Fetch, FetchMany, Index } from "database/decorators/crud";
+import { FaunaIndexOptions } from "types/fauna";
+import { SecurityController } from "controllers/security";
+import { toRef } from "database/conversion/fauna/to";
 
 const createFields = [
   "name",
@@ -14,107 +21,131 @@ const createFields = [
   "source",
 ];
 
-export const ImageLogic = (new FaunaLogicBuilder("images")
-  // Globals
-  .fields()
-    .guest([])
-    .user(["*"])
-    .admin(["*"])
-  .done()
-  .roles()
-    .guest(false)
-    .user(true)
-    .admin(true)
-  .done()
+class $ImageLogic extends DatabaseLogic<ImageDocument> {
+  public collection = Collection.Images;
 
   /**
-   * Creates a link to an external image
+   * Creates a single new image document
+   * @param doc The image document partial to create
+   * @param doc The image document partial to create
+   * @returns The new image document
    */
-  .create("createExternalLink")
-    .roles()
-      .user(true)
-    .done()
-    .setFields()
-      .user(createFields.concat([]))
-    .done()
-    .preProcess(createExternalPreprocess)
-  .done()
+  public async create(method: AssetUploadSource, doc: Partial<ImageDocument>): Promise<ImageDocument> {
+    let result: ImageDocument;
+    switch(method) {
+      case AssetUploadSource.Select:
+        if (!doc.ref) { throw {code: 500, message: "An image ID is required for the Select create method." }; }
+        result = await this.findOne(doc.ref);
+        if (!result) { throw { code: 404, message: "Image not found."}; }
+        return result;
 
-  /**
-   * Allows an owner or admin to delete an image.
-   * TODO - different delete functions for different kinds of images
-   */
-  .delete()
-    .roles()
-      .user(isOwner_old)
-      .admin(true)
-    .done()
-  .done()
+      case AssetUploadSource.ExternalLink:
+        result = await this.createExternalLink(doc);
+        return result;
 
-  /**
-   * Initializes the fetch function. Everything is inherited from globals
-   */
-  .fetch()
-  .done()
+      case AssetUploadSource.InternalLink:
+      case AssetUploadSource.Purchased:
+      case AssetUploadSource.Upload:
+      case AssetUploadSource.Created:
+        throw { code: 501, message: "This method is not currently implemented." };
 
-  /**
-   * Initializes the fetch many function. Everything is inherited from globals
-   */
-   .fetchMany()
-   .done()
-
-  /**
-   * Allows for searching through a users images in order of most recently created to oldest
-   */
-  .search("fetchMyImages", "my_images_asc")
-    .preProcessTerms(myUserToTerm)
-    .indexFields(["ref", "name", "src"])
-  .done()
-.done()).export();
-
-/**
- * Creates a new image in the given method. Supercedes the generic 'create' function
- * @param image The image document to create
- * @param method The method by which the image is being created
- * @param myUser The user attempting to create this image
- * @returns The created image document
- */
-ImageLogic.create = async (image: Partial<ImageDocument>, method: AssetUploadSource, myUser: MyUserDocument) => {
-  let result: unknown;
-  switch(method) {
-    case AssetUploadSource.Select:
-      if (!image.id) { throw {code: 500, message: "An image ID is required for the Select create method." }; }
-      result = await ImageLogic.fetch(image.id, myUser);
-      if (!result) { throw { code: 404, message: "Image not found."}; }
-      return result;
-
-    case AssetUploadSource.ExternalLink:
-      result = await ImageLogic.createExternalLink(image);
-      return result;
-
-    case AssetUploadSource.InternalLink:
-    case AssetUploadSource.Purchased:
-    case AssetUploadSource.Upload:
-    case AssetUploadSource.Created:
-      throw { code: 501, message: "This method is not currently implemented." };
-
-    default:
-      throw { code: 400, message: "This creation method is not allowed." };
+      default:
+        throw { code: 400, message: "This creation method is not allowed." };
+    }
   }
-};
 
+  /**
+   * Creates a single new image document linking to an external image
+   * @param doc The image document partial to create
+   * @returns The new image document
+   */
+  @Create
+  @Access({[UserRole.User]: true})
+  @ReadFields(["*"])
+  @SetFields(createFields)
+  public async createExternalLink(doc: Partial<ImageDocument>): Promise<ImageDocument> {
+    const image = await fauna.createOne<ImageDocument>(this.collection, doc);
+    if (image === undefined) { throw { code: 500, message: "An unexpected error occured while creating the image"}; }
+    return image;
+  }
 
-/**
- * Adds fields marking this image document as an external image.
- * TODO - allow for setting an image as 'pixiLoadable', as some are and some are not
- * @param doc The image document that is being prepared for creation
- * @param myUser The current user creating this document
- * @returns Returns an updated document
- */
-function createExternalPreprocess(doc: AnyDocument, _: MyUserDocument) {
-  const updatedDoc = doc as ImageDocument;
-  updatedDoc.source = AssetSource.ExternalLink;
-  updatedDoc.sizeInBytes = 0;
+  /**
+   * Deletes a single image document from the database and wherever it is stored
+   * @param id The ID of the image document to delete
+   * @returns The deleted image document
+   */
+  @Delete
+  @Access({[UserRole.User]: isOwner, [UserRole.Admin]: true})
+  @ReadFields(["*"])
+  public async deleteOne(id: Ref64): Promise<ImageDocument> {
+    const image = await fauna.deleteOne<ImageDocument>(id);
+    if (image === undefined) { throw {code: 500, message: "An unexpected error occured while deleting the document"}; }
+    return image;
+  }
 
-  return doc;
+  /**
+   * Fetches one image from its ID
+   * @param id The Ref64 ID of the document to fetch
+   * @returns The image document
+   */
+  @Fetch
+  @Access({[UserRole.User]: true})
+  @ReadFields(["*"])
+  public async findOne(id: Ref64): Promise<ImageDocument> {
+    const image = await fauna.findByID<ImageDocument>(id);
+    if (image === undefined) { throw { code: 404, message: `The image with id ${id} could not be found.`}; }
+    return image;
+  }
+
+  /**
+   * Fetches many images from their IDs
+   * @param ids The Ref64 IDs of the documents to fetch
+   * @returns The found and allowed image documents
+   */
+  @FetchMany
+  @Access({[UserRole.User]: true})
+  @ReadFields(["*"])
+  public async findManyByIDs(ids: Ref64[]): Promise<ImageDocument[]> {
+    const images = await fauna.findManyByIDs<ImageDocument>(ids);
+    return images;
+  }
+
+  /**
+   * Fetches the partial images documents for any given user
+   * @param options Any additional options for filtering the data retrieved from the database
+   * @returns An array of image document partials
+   */
+  @Index
+  @Access({[UserRole.Admin]: true})
+  @ReadFields(["*"])
+  public async searchImagesByUser(userID: Ref64, options?: FaunaIndexOptions): Promise<ImageDocument[]> {
+    return this._searchImagesByUser(userID, options);
+  }
+
+  /**
+   * Fetches the partial image documents for the current user
+   * @param options Any additional options for filtering the data retrieved from the database
+   * @returns An array of image document partials
+   */
+  @Index
+  @Access({[UserRole.User]: true})
+  @ReadFields(["*"])
+  public async searchMyImages(options?: FaunaIndexOptions): Promise<ImageDocument[]> {
+    const userID = SecurityController.currentUser?.ref;
+    if (!userID) { return []; }
+    return this._searchImagesByUser(userID, options);
+  }
+
+  /**
+   * Fetches the partial image documents for any given user for the images by user and my images functions
+   * @param options Any additional options for filtering the data retrieved from the database
+   * @returns An array of campaign document partials
+   */
+  private async _searchImagesByUser(userID: Ref64, options?: FaunaIndexOptions): Promise<ImageDocument[]> {
+    const ref = toRef(userID);
+    const images = await fauna.searchByIndex<ImageDocument>(FaunaIndex.ImagesByUser, [ref], options);
+    return images;
+  }
 }
+
+export const ImageLogic = new $ImageLogic();

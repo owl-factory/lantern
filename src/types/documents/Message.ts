@@ -1,3 +1,4 @@
+import { Ref64 } from "types";
 import { CampaignDocument, CoreDocument, UserDocument } from "types/documents";
 
 export enum MessageType {
@@ -5,10 +6,10 @@ export enum MessageType {
 }
 
 export interface MessageDocument extends CoreDocument {
-  campaign?: CampaignDocument;
+  campaign?: { ref: Ref64; };
 
   // The user who sent the message
-  author?: UserDocument;
+  author?: { ref: Ref64; };
 
   // Name used for the messager name
   sendAs?: string;

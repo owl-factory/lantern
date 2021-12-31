@@ -26,7 +26,7 @@ export function LibraryImageList(props: ImageListProps): JSX.Element {
         <h2>Images</h2>
         <Button type="button" onClick={() => setModal(true)}>+</Button>
         <ImageList
-        onClick={(image: ImageDocument) => setImageDetailsModal(image.id as string)}
+        onClick={(image: Partial<ImageDocument>) => setImageDetailsModal(image.ref as string)}
           listFormat={props.listFormat || ListFormat.Icons}
         />
 

@@ -1,27 +1,16 @@
 import { GridType } from "controllers/maps/SceneController";
-import { CampaignDocument, CharacterDocument, CoreDocument, ImageDocument } from ".";
-
-interface PartialCampaignDocument extends Partial<CampaignDocument> {
-  id: string;
-  collection: string;
-}
+import { Ref64 } from "types";
+import { CoreDocument } from "./CoreDocument";
 
 interface MapImage {
-  image: Partial<ImageDocument>;
+  image: { ref: Ref64; src: string; };
   x: number;
   y: number;
   scale: number;
 }
 
-// Describes a character stored within a scene. Should have 
-// enough information for referencing a character document
-interface SceneCharacter extends Partial<CharacterDocument> {
-  id: string,
-  collection: "characters",
-}
-
 export interface SceneDocument extends CoreDocument {
-  campaign: PartialCampaignDocument;
+  campaign: { ref: Ref64; };
 
   // Defines the base map and size of the scene
   map: {
@@ -38,5 +27,5 @@ export interface SceneDocument extends CoreDocument {
   },
 
   // A list of all characters in this scene
-  characters: SceneCharacter[],
+  characters: { ref: Ref64; }[],
 }

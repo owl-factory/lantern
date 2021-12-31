@@ -1,6 +1,5 @@
 import { NextApiRequest } from "next";
-import { getMyUser, requireLogin } from "server/auth";
-import { ImageLogic } from "server/logic";
+import { ImageLogic } from "server/logic/ImageLogic";
 import { HTTPHandler } from "server/response";
 import { createEndpoint } from "server/utilities";
 
@@ -9,10 +8,8 @@ import { createEndpoint } from "server/utilities";
  * @param this The Handler class calling this function
  * @param req The request to the server
  */
-async function getLibraryPage(this: HTTPHandler, req: NextApiRequest) {
-  const myUser = getMyUser(req);
-  requireLogin(myUser);
-  const images = await ImageLogic.fetchMyImages([], { size: 100 }, myUser);
+async function getLibraryPage(this: HTTPHandler, _req: NextApiRequest) {
+  const images = await ImageLogic.searchMyImages({ size: 100 });
   this.returnSuccess({ images });
 }
 

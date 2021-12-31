@@ -55,8 +55,8 @@ export const AlertMessages = observer(() => {
     setAlerts(AlertController.getTopAlerts());
   }, [AlertController.alerts.length]);
 
-  alerts.forEach((alert: any, index: number) => {
-    alertElements.push(<AlertElement alert={alert} index={index}/>);
+  alerts.forEach((alert: AlertMessage, index: number) => {
+    alertElements.push(<AlertElement key={alert.key} alert={alert} index={index}/>);
   });
 
   return (

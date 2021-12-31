@@ -1,4 +1,3 @@
-import { RulesetController, RulesetManager } from "controllers/data/ruleset";
 import { Page } from "components/design";
 import { Button, ButtonGroup, Col, Loading } from "components/style";
 import { Input } from "components/style/forms";
@@ -12,12 +11,12 @@ import { useRouter } from "next/router";
 import React from "react";
 import { Card, Row, Table } from "react-bootstrap";
 import { MdLockOpen, MdLockOutline, MdPageview, MdVisibility, MdVisibilityOff } from "react-icons/md";
-import { DocumentReference } from "server/logic";
 import { isAdmin } from "server/logic/security";
 import { InitialProps } from "types/client";
 import { RulesetDocument, UserDocument } from "types/documents";
 import { getSession } from "utilities/auth";
 import { rest } from "utilities/request";
+import { RulesetCache } from "controllers/cache/RulesetCache";
 
 interface AdminRulesetsProps extends InitialProps {
   rulesets: RulesetDocument[];
@@ -40,12 +39,12 @@ async function setPublic(id: string, isPublic: boolean) {
     return;
   }
 
-  RulesetManager.set(result.data.ruleset);
+  RulesetCache.set(result.data.ruleset);
   return;
 }
 
 interface RulesetOwnerProps {
-  ownedBy?: UserDocument | DocumentReference;
+  ownedBy?: Partial<UserDocument>;
 }
 
 /**
@@ -84,7 +83,7 @@ function RulesetOwner(props: RulesetOwnerProps) {
       return;
     }
 
-    const href = `/admin/rulesets/${response.data.ruleset.id}`;
+    const href = `/admin/rulesets/${response.data.ruleset.ref}`;
     router.push(href);
   }
 
@@ -133,7 +132,7 @@ function RulesetOwner(props: RulesetOwnerProps) {
 
 interface RulesetRowProps {
   index: number;
-  ruleset: RulesetDocument;
+  ruleset: Partial<RulesetDocument>;
 }
 
 /**
@@ -163,16 +162,16 @@ const RulesetRow = observer((props: RulesetRowProps) => {
       </td>
       <td>
         <ButtonGroup>
-          <Link href={`/admin/rulesets/${props.ruleset.id}`} passHref>
+          <Link href={`/admin/rulesets/${props.ruleset.ref}`} passHref>
             <Button><Tooltip title="View"><MdPageview/></Tooltip></Button>
           </Link>
           {
             props.ruleset.isPublic ? (
-              <Button onClick={() => RulesetController.updateIsPublic(props.ruleset.id, false)}>
+              <Button onClick={() => RulesetCache.updateIsPublic(props.ruleset.ref as string, false)}>
                 <Tooltip title="Make Private"><MdVisibilityOff/></Tooltip>
               </Button>
             ) : (
-              <Button onClick={() => RulesetController.updateIsPublic(props.ruleset.id, true)}>
+              <Button onClick={() => RulesetCache.updateIsPublic(props.ruleset.ref as string, true)}>
                 <Tooltip title="Make Public"><MdVisibility/></Tooltip>
               </Button>
             )
@@ -200,7 +199,7 @@ const RulesetRow = observer((props: RulesetRowProps) => {
  * @param rulesets The initial light ruleset information fetched from the API
  */
 function AdminRulesets(props: AdminRulesetsProps) {
-  const [ rulesets, setRulesets ] = React.useState(RulesetManager.getPage());
+  const [ rulesets, setRulesets ] = React.useState<Partial<RulesetDocument>[]>([]);
   const [ modal, setModal ] = React.useState(false);
 
   function closeModal() { setModal(false); }
@@ -208,16 +207,15 @@ function AdminRulesets(props: AdminRulesetsProps) {
   const rulesetRows: JSX.Element[] = [];
 
   React.useEffect(() => {
-    RulesetManager.load();
-    RulesetManager.setMany(props.rulesets);
+    RulesetCache.setMany(props.rulesets);
   }, []);
 
   React.useEffect(() => {
-    setRulesets(RulesetManager.getPage());
-  }, [RulesetManager.updatedAt]);
+    setRulesets(RulesetCache.getPage());
+  }, [RulesetCache]);
 
-  rulesets.forEach((ruleset: RulesetDocument, index: number) => {
-    rulesetRows.push(<RulesetRow key={ruleset.id} index={index + 1} ruleset={ruleset}/>);
+  rulesets.forEach((ruleset: Partial<RulesetDocument>, index: number) => {
+    rulesetRows.push(<RulesetRow key={ruleset.ref} index={index + 1} ruleset={ruleset}/>);
   });
 
   // TODO - single liner for ensuring admin

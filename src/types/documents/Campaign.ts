@@ -1,5 +1,5 @@
 
-import { Ref64 } from "src/database/fauna";
+import { Ref64 } from "types";
 import { CoreDocument, RulesetDocument, UserDocument } from "types/documents";
 import { ImageDocument } from "./assets";
 
@@ -16,9 +16,9 @@ interface PartialBanner extends Partial<ImageDocument> {
  * Represents the campaign and all information contained therein
  */
 export interface CampaignDocument extends CoreDocument {
-  ruleset: PartialRulesetDocument;
-  banner: PartialBanner;
-  players?: UserDocument[];
+  ruleset: { ref: Ref64; };
+  banner: { ref: Ref64; src: string; };
+  players?: { ref: Ref64; }[];
   lastPlayed?: Date;
 
   allowLinkInvitation?: boolean;

@@ -50,7 +50,7 @@ export function ImageForm({defaultTab, onSubmit, tabs}: ImageFormProps) {
       activeForm = (
         <ImageList
           listFormat={ListFormat.Icons}
-          onClick={(image:ImageDocument) => onSubmit(image, AssetUploadSource.Select)}
+          onClick={(image:Partial<ImageDocument>) => onSubmit(image, AssetUploadSource.Select)}
         />
       );
       break;

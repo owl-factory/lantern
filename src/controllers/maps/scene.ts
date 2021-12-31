@@ -2,10 +2,10 @@
  * The primary handler for all scene-related stuff.
  */
 class $ActiveSceneController {
-  public id: string;
+  public ref: string;
 
   constructor() {
-    this.id = "";
+    this.ref = "";
   }
 
   public new() {

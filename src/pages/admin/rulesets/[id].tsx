@@ -1,7 +1,7 @@
-import { RulesetManager } from "controllers/data/ruleset";
 import { Page } from "components/design";
 import { Col } from "components/style";
 import { Tooltip } from "components/style/tooltips";
+import { RulesetCache } from "controllers/cache/RulesetCache";
 import { observer } from "mobx-react-lite";
 import { NextPageContext } from "next";
 import React from "react";
@@ -25,20 +25,19 @@ interface AdminRulesetProps extends InitialProps {
  * @param ruleset The initial detailed ruleset information fetched from the API
  */
 function AdminRuleset(props: AdminRulesetProps) {
-  const [ ruleset, setRuleset ] = React.useState(props.ruleset);
+  const [ ruleset, setRuleset ] = React.useState<Partial<RulesetDocument>>(props.ruleset);
 
   // Loads the cached data in and updates with the details from the API
   React.useEffect(() => {
-    RulesetManager.load();
-    RulesetManager.set(props.ruleset);
+    RulesetCache.set(props.ruleset);
   }, []);
 
   // Updates the ruleset when something in the ruleset manager is updated
   React.useEffect(() => {
-    const newRuleset = RulesetManager.get(ruleset.id);
+    const newRuleset = RulesetCache.get(ruleset.ref as string);
     if (!newRuleset) { return; }
     setRuleset(newRuleset);
-  }, [RulesetManager.get(ruleset.id), RulesetManager.updatedAt]);
+  }, [RulesetCache.get(ruleset.ref as string)]);
 
   return (
     <Page>

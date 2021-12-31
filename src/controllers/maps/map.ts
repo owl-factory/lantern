@@ -1,15 +1,10 @@
-import { Texture } from "@pixi/core";
 import { Container } from "@pixi/display";
-import { Sprite } from "@pixi/sprite";
 import { GridFormValues } from "components/reroll/scenes/forms/grid";
-import { ImageManager } from "controllers/data/image";
 import { action, makeObservable, observable } from "mobx";
 import { BackgroundController } from "./background";
 import { GridController } from "./grid";
 import { TokenController } from "./token";
-import { PixiController } from "./pixi";
 import { ViewportController } from "./viewport";
-import { CharacterController } from "./character";
 
 /**
  * The base controller that connects and manages the Map. That is, everything that can be or may be rendered

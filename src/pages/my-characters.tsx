@@ -1,18 +1,23 @@
 import { Page } from "components/design";
-import { Loading } from "components/style";
-import { Input, Select } from "components/style/forms";
-import { Formik } from "formik";
+import { Button, Loading } from "components/style";
 import { observer } from "mobx-react-lite";
 import { NextPageContext } from "next";
 import React from "react";
-import { Button, ButtonGroup, Card, Col, Row } from "react-bootstrap";
+import { ButtonGroup, Card, Col, Row } from "react-bootstrap";
 import { InitialProps } from "types/client";
 import { CampaignDocument, CharacterDocument, RulesetDocument } from "types/documents";
 import { getSession } from "utilities/auth";
 import { rest } from "utilities/request";
-import { CampaignDataController, CampaignManager } from "controllers/data/campaign";
-import { CharacterManager } from "controllers/data/character";
-import { RulesetController, RulesetManager } from "controllers/data/ruleset";
+import { CampaignCache } from "controllers/cache/CampaignCache";
+import { CharacterCache } from "controllers/cache/CharacterCache";
+import { getUniques } from "utilities/arrays";
+import { RulesetCache } from "controllers/cache/RulesetCache";
+import { Modal } from "components/style/modals";
+import { isError } from "@owl-factory/errors";
+import { NewCharacterForm } from "components/reroll/characters/NewCharacterForm";
+import { PassiveReadLevel } from "@owl-factory/cache/enums";
+import { Ref64 } from "@owl-factory/types";
+import { CharacterSheet } from "components/reroll/characters/character-sheet/CharacterSheet";
 
 interface MyCharactersProps extends InitialProps {
   characters: CharacterDocument[];
@@ -26,8 +31,36 @@ interface SearchCharacterValues {
 }
 
 interface CharacterCardProps {
-  character: CharacterDocument;
+  character: Partial<CharacterDocument>;
 }
+
+/**
+ * 
+ * @returns 
+ */
+const CharacterList = observer((props: any) => {
+  const [ characters, setCharacters ] = React.useState<Partial<CharacterDocument>[]>([]);
+  const characterElements: JSX.Element[] = [];
+
+  React.useEffect(() => {
+    const cachedCharacters = CharacterCache.getPage();
+    setCharacters(cachedCharacters);
+  }, [CharacterCache.lastTouched]);
+
+  characters.forEach((character: Partial<CharacterDocument>) => {
+    characterElements.push(
+      <div key={character.ref} onClick={() => props.onClick(character.ref)}>
+        {character.name}
+        <span style={{float: "right"}} onClick={() => CharacterCache.delete(character.ref)}>X</span>
+      </div>
+    );
+  });
+
+  return (
+    <>{characterElements}</>
+  );
+});
+
 
 const CharacterCard = observer((props: CharacterCardProps) => {
   return (
@@ -35,12 +68,12 @@ const CharacterCard = observer((props: CharacterCardProps) => {
       <Card.Body>
         <Row>
           <Col sm={4}>
-            <img className="image-fluid" src={props.character.profile.src}/>
+            <img className="image-fluid" src={props.character.profile?.src}/>
           </Col>
           <Col sm={8}>
             <h3>{props.character.name}</h3><br/>
-            {CampaignManager.get(props.character.campaign.id)?.name || <Loading/>}<br/>
-            {RulesetManager.get(props.character.ruleset.id)?.name || <Loading/>}<br/>
+            {CampaignCache.get(props.character.campaign?.ref)?.name || <Loading/>}<br/>
+            {RulesetCache.get(props.character.ruleset?.ref)?.name || <Loading/>}<br/>
             <ButtonGroup>
               <Button>Duplicate</Button>
               <Button>Edit</Button>
@@ -52,6 +85,7 @@ const CharacterCard = observer((props: CharacterCardProps) => {
   );
 });
 
+
 /**
  * Renders a page with the current user's characters
  * @param success Whether or not the initial props failed
@@ -60,37 +94,35 @@ const CharacterCard = observer((props: CharacterCardProps) => {
  * @param characters The initial light campaign information fetched from the API
  */
 export function MyCharacters (props: MyCharactersProps) {
-  const [characters, setCharacters] = React.useState<CharacterDocument[]>([]);
-  const [rulesets, setRulesets] = React.useState<RulesetDocument[]>([]);
+  const [ open, setOpen ] = React.useState(false);
+  const [ activeCharacter, setActiveCharacter ] = React.useState<string | undefined>(undefined);
+  const [rulesets, setRulesets] = React.useState<Partial<RulesetDocument>[]>([]);
 
-  CharacterManager.setMany(props.characters);
+  function setActive(ref: Ref64) {
+    setActiveCharacter(ref);
+  }
+
+  function closeModal() {
+    // Do other things, like clear out the modal form content
+    setOpen(false);
+  }
 
   // Loads in all data from the cache to the data managers
   React.useEffect(() => {
-    // Loads in local storage data
-    CharacterManager.load();
-    CampaignManager.load();
-    RulesetManager.load();
-
-    CharacterManager.setMany(props.characters);
+    CharacterCache.setMany(props.characters);
 
     // Fetches all missing campaigns and rulesets for the names
-    const uniqueCampaigns = CharacterManager.getUniques("campaign.id");
-    CampaignDataController.readMissing(uniqueCampaigns);
+    const uniqueCampaigns = getUniques(props.characters, "campaign.ref");
+    CampaignCache.readMissing(uniqueCampaigns);
 
-    const uniqueRulesets = CharacterManager.getUniques("ruleset.id");
-    RulesetController.readMissing(uniqueRulesets);
+    const uniqueRulesets = getUniques(props.characters, "ruleset.ref");
+    RulesetCache.readMissing(uniqueRulesets);
   }, []);
-
-  // Refreshes the characters to prevent too many rewrites
-  React.useEffect(() => {
-    setCharacters(CharacterManager.getPage());
-  }, [CharacterManager]);
 
   // Refreshes the rulesets to prevent too many rewrites
   React.useEffect(() => {
-    setRulesets(RulesetManager.getPage());
-  }, [RulesetManager]);
+    setRulesets(RulesetCache.getPage());
+  }, [RulesetCache]);
 
 
   const characterCards: JSX.Element[] = [];
@@ -99,36 +131,61 @@ export function MyCharacters (props: MyCharactersProps) {
   const rulesetOptions: JSX.Element[] = [
     <option key="_blank" value="">-- All Rulesets --</option>,
   ];
-  rulesets.forEach((ruleset: RulesetDocument) => {
+  rulesets.forEach((ruleset: Partial<RulesetDocument>) => {
     rulesetOptions.push(
-      <option key={ruleset.id} value={ruleset.id}>{ruleset.name || <Loading/>}</option>
+      <option key={ruleset.ref} value={ruleset.ref}>{ruleset.name || <Loading/>}</option>
     );
   });
 
-  characters.forEach((character: CharacterDocument) => {
-    characterCards.push(<CharacterCard key={character.id} character={character}/>);
-  });
   function searchCharacters(values: SearchCharacterValues) {
     // TODO - do something
   }
   return (
     <Page>
       <h1>My Characters</h1>
-      <Formik
+      {/* <Formik
         initialValues={{
           search: "",
           ruleset: "",
         }}
         onSubmit={searchCharacters}
       >
-        <div className="form-inline">
-          <Input type="text" name="search" label="Search" placeholder="Search"/>
-          <Select name="ruleset" label="Ruleset" >
-            {rulesetOptions}
-          </Select>
+        <Input type="text" name="search" label="Search" placeholder="Search"/>
+        <Select name="ruleset" label="Ruleset" >
+          {rulesetOptions}
+        </Select>
+      </Formik> */}
+
+      {/* {characterCards} */}
+
+      <div>
+        Various Tool Stuff for Characters<br/>
+        <Button onClick={() => setOpen(true)}>New Character</Button>
+      </div>
+
+      <div className="row">
+        <div className="col-12 col-md-4">
+          List of Characters
+          <hr/>
+          <CharacterList onClick={setActive}/>
         </div>
-      </Formik>
-      {characterCards}
+
+        <div className="d-none d-md-block col-md-8">
+          Character Sheet
+          <hr/>
+          <CharacterSheet activeCharacter={activeCharacter}/>
+        </div>
+      </div>
+
+      <Modal open={open} handleClose={closeModal}>
+        <div className="modal-header">
+          New Character
+        </div>
+
+        <div className="modal-body">
+          <NewCharacterForm/>
+        </div>
+      </Modal>
     </Page>
   );
 }

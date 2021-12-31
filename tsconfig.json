@@ -23,6 +23,12 @@
     "strict": true,
     "baseUrl": ".",
     "paths": {
+      "@owl-factory": [
+        "src/@owl-factory"
+      ],
+      "@owl-factory/*": [
+        "src/@owl-factory/*"
+      ],
       "controllers": [
         "src/controllers"
       ],
@@ -34,6 +40,18 @@
       ],
       "components/*": [
         "src/components/*"
+      ],
+      "database": [
+        "src/database"
+      ],
+      "database/*": [
+        "src/database/*"
+      ],
+      "fauna": [
+        "src/fauna"
+      ],
+      "fauna/*": [
+        "src/fauna/*"
       ],
       "server": [
         "src/server"

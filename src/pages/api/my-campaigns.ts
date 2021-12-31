@@ -1,16 +1,15 @@
 import { NextApiRequest } from "next";
-import { getMyUser, requireLogin } from "server/auth";
-import { CampaignLogic } from "server/logic";
+import { CampaignLogic } from "server/logic/CampaignLogic";
 import { HTTPHandler } from "server/response";
 import { createEndpoint } from "server/utilities";
-import { Ref64 } from "src/database/fauna";
+import { Ref64 } from "types";
 import { AnyDocument } from "types/documents";
 
 function parseIDsFromDocuments(docs: Partial<AnyDocument>[]) {
   const ids: Ref64[] = [];
   docs.forEach((doc: Partial<AnyDocument>) => {
-    if(!doc.id) { return; }
-    ids.push(doc.id);
+    if(!doc.ref) { return; }
+    ids.push(doc.ref);
   });
   return ids;
 }
@@ -21,12 +20,9 @@ function parseIDsFromDocuments(docs: Partial<AnyDocument>[]) {
  * @param req The request to the server
  */
 async function getMyCampaigns(this: HTTPHandler, req: NextApiRequest) {
-  console.log('hi');
   const fetchedCampaigns = await CampaignLogic.fetchMyCampaigns({ size: 20 });
-  console.log(fetchedCampaigns);
   const ids = parseIDsFromDocuments(fetchedCampaigns);
-  const campaigns = await CampaignLogic.findManyByIDs(ids);
-  console.log(campaigns);
+  const campaigns = await CampaignLogic.findMany(ids);
   this.returnSuccess({ campaigns: campaigns });
 }
 

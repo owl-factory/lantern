@@ -2,8 +2,8 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { setSession } from "utilities/auth";
 import { query as q } from "faunadb";
 import { getServerClient } from "utilities/db";
-import { fromFauna } from "utilities/fauna";
 import { normalize } from "utilities/strings";
+import { fromFauna } from "database/conversion/fauna/from";
 
 /**
  * Handles the signup authorization endpoint

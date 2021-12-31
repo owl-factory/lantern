@@ -1,6 +1,5 @@
 import { NextApiRequest } from "next";
-import { getMyUser, requireLogin } from "server/auth";
-import { ContentTypeLogic } from "server/logic";
+import { ContentTypeLogic } from "server/logic/ContentTypeLogic";
 import { HTTPHandler } from "server/response";
 import { createEndpoint } from "server/utilities";
 
@@ -10,8 +9,7 @@ import { createEndpoint } from "server/utilities";
  * @param req The request to the server
  */
 async function getContentTypes(this: HTTPHandler, req: NextApiRequest) {
-  const myUser = getMyUser(req);
-  const contentTypes = await ContentTypeLogic.fetchMany(req.body.ids, myUser);
+  const contentTypes = await ContentTypeLogic.findManyByIDs(req.body.refs);
   this.returnSuccess({ docs: contentTypes });
 }
 
