@@ -39,6 +39,7 @@ export abstract class CacheController<T extends RefRequired> {
 
     makeObservable(this, {
       loadCache: action,
+      $removeMany: action,
       $setMany: action,
       $touch: action,
 
@@ -61,7 +62,7 @@ export abstract class CacheController<T extends RefRequired> {
   public loadCache = cache.loadCache;
   protected $readIfStale = cache.$readIfStale;
   protected $readIfUnloaded = cache.$readIfUnloaded;
-  protected $removeMany = cache.$removeMany;
+  public $removeMany = cache.$removeMany;
   public $setMany = cache.$setMany;
   protected $toCacheItem = cache.$toCacheItem;
 

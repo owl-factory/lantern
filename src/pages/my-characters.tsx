@@ -15,6 +15,9 @@ import { RulesetCache } from "controllers/cache/RulesetCache";
 import { Modal } from "components/style/modals";
 import { isError } from "@owl-factory/errors";
 import { NewCharacterForm } from "components/reroll/characters/NewCharacterForm";
+import { PassiveReadLevel } from "@owl-factory/cache/enums";
+import { Ref64 } from "@owl-factory/types";
+import { CharacterSheet } from "components/reroll/characters/character-sheet/CharacterSheet";
 
 interface MyCharactersProps extends InitialProps {
   characters: CharacterDocument[];
@@ -31,11 +34,33 @@ interface CharacterCardProps {
   character: Partial<CharacterDocument>;
 }
 
-function CharacterList() {
+/**
+ * 
+ * @returns 
+ */
+const CharacterList = observer((props: any) => {
+  const [ characters, setCharacters ] = React.useState<Partial<CharacterDocument>[]>([]);
+  const characterElements: JSX.Element[] = [];
+
+  React.useEffect(() => {
+    const cachedCharacters = CharacterCache.getPage();
+    setCharacters(cachedCharacters);
+  }, [CharacterCache.lastTouched]);
+
+  characters.forEach((character: Partial<CharacterDocument>) => {
+    characterElements.push(
+      <div key={character.ref} onClick={() => props.onClick(character.ref)}>
+        {character.name}
+        <span style={{float: "right"}} onClick={() => CharacterCache.delete(character.ref)}>X</span>
+      </div>
+    );
+  });
+
   return (
-    <>List</>
+    <>{characterElements}</>
   );
-}
+});
+
 
 const CharacterCard = observer((props: CharacterCardProps) => {
   return (
@@ -70,8 +95,12 @@ const CharacterCard = observer((props: CharacterCardProps) => {
  */
 export function MyCharacters (props: MyCharactersProps) {
   const [ open, setOpen ] = React.useState(false);
-  const [characters, setCharacters] = React.useState<Partial<CharacterDocument>[]>([]);
+  const [ activeCharacter, setActiveCharacter ] = React.useState<string | undefined>(undefined);
   const [rulesets, setRulesets] = React.useState<Partial<RulesetDocument>[]>([]);
+
+  function setActive(ref: Ref64) {
+    setActiveCharacter(ref);
+  }
 
   function closeModal() {
     // Do other things, like clear out the modal form content
@@ -89,11 +118,6 @@ export function MyCharacters (props: MyCharactersProps) {
     const uniqueRulesets = getUniques(props.characters, "ruleset.ref");
     RulesetCache.readMissing(uniqueRulesets);
   }, []);
-
-  // Refreshes the characters to prevent too many rewrites
-  React.useEffect(() => {
-    setCharacters(CharacterCache.getPage());
-  }, [CharacterCache]);
 
   // Refreshes the rulesets to prevent too many rewrites
   React.useEffect(() => {
@@ -113,9 +137,6 @@ export function MyCharacters (props: MyCharactersProps) {
     );
   });
 
-  characters.forEach((character: Partial<CharacterDocument>) => {
-    characterCards.push(<CharacterCard key={character.ref} character={character}/>);
-  });
   function searchCharacters(values: SearchCharacterValues) {
     // TODO - do something
   }
@@ -146,11 +167,13 @@ export function MyCharacters (props: MyCharactersProps) {
         <div className="col-12 col-md-4">
           List of Characters
           <hr/>
-          <CharacterList/>
+          <CharacterList onClick={setActive}/>
         </div>
 
         <div className="d-none d-md-block col-md-8">
           Character Sheet
+          <hr/>
+          <CharacterSheet activeCharacter={activeCharacter}/>
         </div>
       </div>
 
@@ -185,7 +208,6 @@ MyCharacters.getInitialProps = async (ctx: NextPageContext) => {
   }
 
   const result = await rest.get<MyCharactersResult>(`/api/my-characters`);
-  console.log(result)
 
   return {
     session,

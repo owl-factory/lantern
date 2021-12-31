@@ -8,6 +8,7 @@ import {
   Descriptor,
   fetchTargetDoc,
   setCreateFields,
+  setUpdateFields,
   trimManyReadFields,
   trimReadFields,
   trimSetFields,
@@ -30,7 +31,6 @@ import {
     checkLogin(descriptor);
     checkStaticAccess(descriptor);
     checkParentAccess(descriptor, args);
-    console.log("args", args)
     args[0] = trimSetFields(descriptor, args[0]);
     args[0] = setCreateFields(descriptor, args[0]);
 
@@ -55,7 +55,7 @@ export function Delete(_target: any, _name: string, descriptor: any) {
   descriptor.value = async function(...args: any) {
     checkLogin(descriptor);
     checkStaticAccess(descriptor);
-    const targetDoc = await fetchTargetDoc(descriptor, args);
+    const targetDoc = await fetchTargetDoc(descriptor, args[0]);
     if (targetDoc === undefined) { return undefined; }
     checkDynamicAccess(descriptor, targetDoc);
 
@@ -152,9 +152,11 @@ export function Index(_target: any, _name: string, descriptor: any) {
     checkLogin(descriptor);
     checkStaticAccess(descriptor);
     const targetDoc = await fetchTargetDoc(descriptor, args[0]);
-    if (targetDoc === undefined) { throw { code: 404, message: "Document could not be found"}}
+    if (targetDoc === undefined) { throw { code: 404, message: "Document could not be found"}; }
     checkDynamicAccess(descriptor, targetDoc);
     args[1] = trimSetFields(descriptor, args[1]);
+    args[1] = setUpdateFields(descriptor, args[1]);
+
 
     let result = await original.apply(this, args);
 

@@ -11,7 +11,6 @@ import { createEndpoint } from "server/utilities";
  */
 async function createCharacters(this: HTTPHandler, req: NextApiRequest) {
   const characters = await CharacterLogic.createMany(req.body.docs);
-  console.log(characters)
   this.returnSuccess({ docs: characters });
 }
 

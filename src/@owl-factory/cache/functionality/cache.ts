@@ -78,6 +78,7 @@ export function $removeMany<T extends RefRequired>(
   if (saveToCacheStorage) {
     remove(this.key, refs);
   }
+  this.$touch();
   return;
 }
 

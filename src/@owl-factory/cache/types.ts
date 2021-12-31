@@ -22,6 +22,6 @@ export interface GetPageOptions {
   match?: (doc: unknown) => boolean;
   page?: number;
   size?: number;
-  sort: string | string[];
+  sort?: string | string[];
 }
 

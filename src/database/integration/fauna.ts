@@ -33,10 +33,10 @@ export async function deleteOne<T>(id: Ref64): Promise<T | undefined> {
   const client = getServerClient();
   const ref = toRef(id);
 
-  const faunaResult = await client.query(q.Delete(ref));
-  // const parsedDoc = fromFauna(faunaResult as Record<string, unknown>);
+  const faunaResult: FaunaDocument = await client.query(q.Delete(ref));
+  const parsedDoc = fromFauna(faunaResult);
   // return parsedDoc;
-  return faunaResult as any;
+  return parsedDoc as unknown as T;
 }
 
 /**
