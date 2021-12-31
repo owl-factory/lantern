@@ -26,9 +26,9 @@ class $PixiController {
    * Adds one or many children to the app's stage
    * @param children The children to add to the app
    */
-  public addChild<T extends DisplayObject[]>(...children: T) {
+  public addChild<T extends DisplayObject>(child: T) {
     this.requireApp();
-    return this.app?.stage.addChild<T>(...children);
+    return this.app?.stage.addChild(child);
   }
 
   /**

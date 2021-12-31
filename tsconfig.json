@@ -23,25 +23,50 @@
     "strict": true,
     "baseUrl": ".",
     "paths": {
-      "@owl-factory": ["src/@owl-factory"],
-      "@owl-factory/*": ["src/@owl-factory/*"],
-      "controllers": ["src/controllers"],
-      "controllers/*": ["src/controllers/*"],
-      "components": ["src/components"],
-      "components/*": ["src/components/*"],
-      "database": ["src/database"], // Remove this when the database is extracted out into a new package
-      "database/*": ["src/database/*"],
-      "fauna": ["src/fauna"],
-      "fauna/*": ["src/fauna/*"],
-      "server": ["src/server"],
-      "server/*": ["src/server/*"],
-      "tests": ["src/tests"],
-      "tests/*": ["src/tests/*"],
-      "types": ["src/types"],
-      "types/*": ["src/types/*"],
-      "utilities": ["src/utilities"],
-      "utilities/*": ["src/utilities/*"],
-    }
+      "@owl-factory": [
+        "src/@owl-factory"
+      ],
+      "@owl-factory/*": [
+        "src/@owl-factory/*"
+      ],
+      "controllers": [
+        "src/controllers"
+      ],
+      "controllers/*": [
+        "src/controllers/*"
+      ],
+      "components": [
+        "src/components"
+      ],
+      "components/*": [
+        "src/components/*"
+      ],
+      "server": [
+        "src/server"
+      ],
+      "server/*": [
+        "src/server/*"
+      ],
+      "tests": [
+        "src/tests"
+      ],
+      "tests/*": [
+        "src/tests/*"
+      ],
+      "types": [
+        "src/types"
+      ],
+      "types/*": [
+        "src/types/*"
+      ],
+      "utilities": [
+        "src/utilities"
+      ],
+      "utilities/*": [
+        "src/utilities/*"
+      ]
+    },
+    "incremental": true
   },
   "exclude": [
     "node_modules",
