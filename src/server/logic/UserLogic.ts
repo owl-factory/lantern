@@ -27,7 +27,7 @@ const updateFields = [
   "isPrivate",
 ];
 
-class $UserLogic implements DatabaseLogic<UserDocument> {
+class $UserLogic extends DatabaseLogic<UserDocument> {
   public collection = Collection.Users;
   /**
    * Fetches one user from its ID
@@ -37,7 +37,7 @@ class $UserLogic implements DatabaseLogic<UserDocument> {
   @Fetch
   @Access({[UserRole.Guest]: true})
   @ReadFields(["*"])
-  public async findByID(id: Ref64): Promise<UserDocument> {
+  public async findOne(id: Ref64): Promise<UserDocument> {
     const user = await fauna.findByID<UserDocument>(id);
     if (user === undefined) { throw { code: 404, message: `A user with ID ${id} could not be found` }; }
     return user;

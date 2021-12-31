@@ -8,7 +8,7 @@ import { ResponseDoc } from "@owl-factory/types/object";
  export function isError(potentialError: unknown) {
   if (typeof potentialError !== "object" || potentialError === null) { return false; }
   if (Array.isArray(potentialError)) { return false; }
-  if ("context" in potentialError && "reasons" in potentialError && "code" in potentialError) { return true; }
+  if ("$error" in potentialError) { return true; }
   return false;
 }
 

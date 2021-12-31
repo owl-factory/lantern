@@ -9,7 +9,7 @@ import { Create, Fetch, FetchMany, Index, Update } from "database/decorators/cru
 import { Access, ReadFields, SetFields } from "database/decorators/modifiers";
 import { FaunaIndexOptions } from "types/fauna";
 
-class $RulesetLogic implements DatabaseLogic<RulesetDocument> {
+class $RulesetLogic extends DatabaseLogic<RulesetDocument> {
   public collection = Collection.Rulesets;
 
   /**
@@ -37,7 +37,8 @@ class $RulesetLogic implements DatabaseLogic<RulesetDocument> {
   @Fetch
   @Access({[UserRole.Guest]: true})
   @ReadFields(["*"])
-  public async findByID(id: Ref64): Promise<RulesetDocument> {
+  public async findOne(id: Ref64): Promise<RulesetDocument> {
+    console.log(id)
     const ruleset = await fauna.findByID<RulesetDocument>(id);
     if (ruleset === undefined) { throw { code: 404, message: `A ruleset with ID ${id} could not be found` }; }
     return ruleset;
@@ -80,12 +81,25 @@ class $RulesetLogic implements DatabaseLogic<RulesetDocument> {
    * @returns An array of campaign document partials
    */
   @Index
-  @Access({[UserRole.Guest]: true})
+  @Access({[UserRole.Admin]: true})
   @ReadFields(["*"])
   public async searchRulesetsByOfficial(isOfficial: boolean, options?: FaunaIndexOptions) {
     const rulesets = fauna.searchByIndex(FaunaIndex.RulesetsByOfficial, [isOfficial], options);
     return rulesets;
   }
+
+  /**
+   * Fetches the partial ruleset documents by their official status
+   * @param options Any additional options for filtering the data retrieved from the database
+   * @returns An array of campaign document partials
+   */
+   @Index
+   @Access({[UserRole.Guest]: true})
+   @ReadFields(["*"])
+   public async searchRulesetsByOfficialPublic(isOfficial: boolean, isPublic: boolean, options?: FaunaIndexOptions) {
+     const rulesets = fauna.searchByIndex(FaunaIndex.RulesetsByOfficialPublic, [isOfficial, isPublic], options);
+     return rulesets;
+   }
 
 }
 

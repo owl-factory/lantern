@@ -11,7 +11,7 @@ import { createEndpoint } from "server/utilities";
  * @param req The request to the server
  */
 async function createScene(this: HTTPHandler, req: NextApiRequest) {
-  const campaign = CampaignLogic.findByID(req.body.campaignID);
+  const campaign = CampaignLogic.findOne(req.body.campaignID);
   if (!campaign) {
     throw { code: 404, message: "The campaign does not exist" };
   }

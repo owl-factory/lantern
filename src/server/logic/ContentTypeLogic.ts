@@ -7,7 +7,8 @@ import { ContentTypeDocument } from "types/documents";
 import { Ref64 } from "types";
 import { Collection } from "fauna";
 
-class $ContentTypeLogic implements DatabaseLogic<ContentTypeDocument> {
+
+class $ContentTypeLogic extends DatabaseLogic<ContentTypeDocument> {
   public collection = Collection.ContentTypes;
 
   /**
@@ -18,7 +19,7 @@ class $ContentTypeLogic implements DatabaseLogic<ContentTypeDocument> {
   @Fetch
   @Access({[UserRole.User]: true})
   @ReadFields(["*"])
-  public async findByID(id: Ref64): Promise<ContentTypeDocument> {
+  public async findOne(id: Ref64): Promise<ContentTypeDocument> {
     const contentType = await fauna.findByID<ContentTypeDocument>(id);
     if (contentType === undefined) { throw { code: 404, message: `The content type with id ${id} could not be found.`};}
     return contentType;

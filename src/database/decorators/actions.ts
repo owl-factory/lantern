@@ -76,11 +76,12 @@ export function checkStaticAccess(descriptor: Descriptor): void {
  * @param descriptor The descriptor of the database logic function being processsed
  * @param doc The document to check the access for
  */
-export function checkDynamicAccess(descriptor: Descriptor, doc: AnyDocument): void {
+export function checkDynamicAccess(descriptor: Descriptor, doc: AnyDocument): AnyDocument {
   const docs = checkManyDynamicAccess(descriptor, [doc]);
   if (docs.length === 0) {
     throw { code: 401, message: "You do not have access to view this resource." };
   }
+  return docs[0];
 }
 
 /**
@@ -134,6 +135,21 @@ export async function fetchTargetDoc(descriptor: Descriptor, id: Ref64): Promise
   const doc = await fauna.findByID<AnyDocument>(id);
   return doc;
 }
+
+export function setCreateFields(_descriptor: Descriptor, doc: Partial<AnyDocument>): Partial<AnyDocument> {
+  doc.createdAt = new Date();
+  doc.createdBy = { ref: SecurityController.currentUser?.ref || "" };
+  doc.ownedBy = { ref: SecurityController.currentUser?.ref || "" };
+  doc = setUpdateFields(_descriptor, doc);
+  return doc;
+}
+
+export function setUpdateFields(_descriptor: Descriptor, doc: Partial<AnyDocument>): Partial<AnyDocument> {
+  doc.updatedAt = new Date();
+  doc.updatedBy = { ref: SecurityController.currentUser?.ref || "" };
+  return doc;
+}
+
 
 /**
  * Trims out the fields of a given document a user is not allowed to read

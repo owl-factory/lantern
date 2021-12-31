@@ -20,12 +20,12 @@ export function get<T extends RefRequired>(
   if (ref === undefined) { return undefined; }
 
   // Fetches the ref if it's not present in the cache or if the read is forced
-  if (!(ref in this.data)) {
+  if (!(ref in this.$data)) {
     this.read(ref);
     return undefined;
   }
 
-  const cacheItem: CacheItem<T> | undefined = this.data[ref];
+  const cacheItem: CacheItem<T> | undefined = this.$data[ref];
   if (cacheItem === undefined) { return undefined; } // Safety case, though it should never be hit
 
   // TODO - security. Also prevent repeated attempts to access the data
@@ -54,7 +54,7 @@ export function get<T extends RefRequired>(
 export function getMany<T extends RefRequired>(this: CacheController<T>, refs: Ref64[]): Partial<T>[] {
   const docs: Partial<T>[] = [];
   refs.forEach((ref: Ref64) => {
-    const cacheItem = this.data[ref];
+    const cacheItem = this.$data[ref];
     if (cacheItem && cacheItem.doc) {
       docs.push(cacheItem.doc);
     }
@@ -70,16 +70,16 @@ export function getMany<T extends RefRequired>(this: CacheController<T>, refs: R
  */
 export function getPage<T extends RefRequired>(this: CacheController<T>, options: GetPageOptions = {}): Partial<T>[] {
   const page: Partial<T>[] = [];
-  Object.keys(this.data).forEach((key: string) => {
+  Object.keys(this.$data).forEach((key: string) => {
     if (options.size !== undefined && page.length >= options.size) { return; }
     if (options.match) {
-      if (options.match(this.data[key])) {
-        page.push(this.data[key].doc);
+      if (options.match(this.$data[key])) {
+        page.push(this.$data[key].doc);
       }
       return;
     }
 
-    page.push(this.data[key].doc);
+    page.push(this.$data[key].doc);
   });
   return page;
 }
@@ -91,7 +91,7 @@ export function getPage<T extends RefRequired>(this: CacheController<T>, options
 export async function readMissing<T extends RefRequired>(this: CacheController<T>, refs: string[]) {
   const missingRefs: string[] = [];
   refs.forEach((ref: Ref64) => {
-    if (!(ref in this.data)) { missingRefs.push(ref); }
+    if (!(ref in this.$data)) { missingRefs.push(ref); }
   });
   if (refs.length === 0) { return []; }
 

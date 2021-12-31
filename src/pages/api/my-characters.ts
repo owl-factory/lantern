@@ -11,9 +11,9 @@ import { getUniques } from "utilities/arrays";
  * @param req The request to the server
  */
 async function getMyCharacters(this: HTTPHandler, _req: NextApiRequest) {
-  const characters = await CharacterLogic.searchMyCharacters({ size: 20 });
+  const characters = await CharacterLogic.searchMyCharacters({ size: 200 });
   const campaignIDs = getUniques(characters, "campaign.ref");
-  const campaigns = CampaignLogic.findManyByIDs(campaignIDs);
+  const campaigns = CampaignLogic.findMany(campaignIDs);
   this.returnSuccess({ characters: characters, campaigns });
 }
 

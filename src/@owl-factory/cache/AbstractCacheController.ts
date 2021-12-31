@@ -9,7 +9,7 @@
 import { Ref64 } from "types";
 import { isClient } from "utilities/tools";
 import { CacheItem, RefRequired } from "@owl-factory/cache/types";
-import { action, makeObservable } from "mobx";
+import { action, makeObservable, observable } from "mobx";
 
 import * as access from "./functionality/access";
 import * as cache from "./functionality/cache";
@@ -21,13 +21,13 @@ export abstract class CacheController<T extends RefRequired> {
   public abstract readonly apiURL: string; // The API endpoint for accessing data
 
   // An object that contains all of the data currently cached
-  protected data: Record<string, CacheItem<T>> = {};
+  public $data: Record<string, CacheItem<T>> = {};
 
   protected staleTime = 1000 * 60 * 30; // The time until a document becomes stale, in milliseconds
   // A flag that informs the cache when a document should be pulled from the database again
   protected passiveReadLevel = PassiveReadLevel.Never;
 
-  protected lastTouched = 0; // The last time that the cache was touched. Used for observables
+  public $lastTouched = 0; // The last time that the cache was touched. Used for observables
 
   constructor() {
     // Runs the cache load only on the client
@@ -39,8 +39,16 @@ export abstract class CacheController<T extends RefRequired> {
 
     makeObservable(this, {
       loadCache: action,
+      $removeMany: action,
+      $setMany: action,
+      $touch: action,
+
+      $data: observable,
+      $lastTouched: observable,
     });
   }
+
+  get lastTouched() { return this.$lastTouched; }
 
   // ACCESS
   public get = access.get;
@@ -54,8 +62,8 @@ export abstract class CacheController<T extends RefRequired> {
   public loadCache = cache.loadCache;
   protected $readIfStale = cache.$readIfStale;
   protected $readIfUnloaded = cache.$readIfUnloaded;
-  protected $removeMany = cache.$removeMany;
-  protected $setMany = cache.$setMany;
+  public $removeMany = cache.$removeMany;
+  public $setMany = cache.$setMany;
   protected $toCacheItem = cache.$toCacheItem;
 
   // CRUD
@@ -75,8 +83,8 @@ export abstract class CacheController<T extends RefRequired> {
   /**
    * Updates the last touched time
    */
-  protected touch() {
-    this.lastTouched = Date.now();
+  public $touch() {
+    this.$lastTouched = Date.now();
   }
 }
 

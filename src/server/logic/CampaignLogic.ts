@@ -4,7 +4,7 @@ import { isOwner } from "server/logic/security";
 import { UserRole } from "types/security";
 import * as fauna from "database/integration/fauna";
 import { Access, ReadFields, RequireLogin, SetFields } from "src/database/decorators/modifiers";
-import { Fetch, FetchMany, Index, Update } from "src/database/decorators/crud";
+import { Create, Delete, Fetch, FetchMany, Index, Update } from "src/database/decorators/crud";
 import { DatabaseLogic } from "./AbstractDatabaseLogic";
 import { SecurityController } from "controllers/security";
 import { FaunaIndexOptions } from "types/fauna";
@@ -28,35 +28,8 @@ function isPlayer(doc?: AnyDocument): boolean {
   return success;
 }
 
-class $CampaignLogic implements DatabaseLogic<CampaignDocument> {
+class $CampaignLogic extends DatabaseLogic<CampaignDocument> {
   public collection = Collection.Campaigns;
-
-  /**
-   * Fetches one campaign from its ID
-   * @param id The Ref64 ID of the document to fetch
-   * @returns The campaign document
-   */
-  @Fetch
-  @Access({[UserRole.User]: isPlayer, [UserRole.Admin]: true})
-  @RequireLogin()
-  public async findByID(id: Ref64): Promise<CampaignDocument> {
-    const campaign = await fauna.findByID<CampaignDocument>(id);
-    if (campaign === undefined) { throw { code: 404, message: `A campaign with ID ${id} could not be found` }; }
-    return campaign;
-  }
-
-  /**
-   * Fetches many campaigns from their IDs
-   * @param ids The Ref64 IDs of the documents to fetch
-   * @returns The found and allowed campaign documents
-   */
-  @FetchMany
-  @Access({[UserRole.User]: isPlayer, [UserRole.Admin]: true})
-  @RequireLogin()
-  public async findManyByIDs(ids: Ref64[]): Promise<CampaignDocument[]> {
-    const campaigns = await fauna.findManyByIDs<CampaignDocument>(ids);
-    return campaigns;
-  }
 
   /**
    * Updates the banner image for a campaign

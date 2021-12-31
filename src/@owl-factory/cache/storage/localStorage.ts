@@ -22,7 +22,7 @@ export function load<T>(key: string): CacheItem<T>[]  {
 
   const refs = getRefList(key);
   refs.forEach((ref: Ref64) => {
-    const doc = get(key, ref);
+    const doc = $get(key, ref);
     if (!doc) { return; }
     docs.push(doc);
   });
@@ -79,12 +79,33 @@ export function save<T>(key: string, docs: CacheItem<T>[]): number {
 }
 
 /**
+ * Looks up a value in the local storage. Returns the found value in a stringified format if found. Undefined if not
+ * @param key The key to look up in local storage
+ * @returns The stored value in a stringified format
+ */
+export function get(key: string): string | null | undefined {
+  const storedValue = LOCAL_STORAGE.getItem(key);
+  return storedValue;
+}
+
+/**
+ * Converts a value into a JSON string and stored at a location in Local Storage
+ * @param key The key to store a value at in local storage
+ * @param value The value to convert into a string and store in local storage
+ */
+export function set(key: string, value: unknown): void {
+  const stringifiedValue = JSON.stringify(value);
+  LOCAL_STORAGE.setItem(key, stringifiedValue);
+}
+
+
+/**
  * Gets a single document from the cache
  * @param key The document type key
  * @param ref The ref64 of the document to fetch
  * @returns A CacheItem document
  */
-function get(key: string, ref: Ref64) {
+function $get(key: string, ref: Ref64) {
   const storedDoc = LOCAL_STORAGE.getItem(itemKey(key, ref));
   if (!storedDoc) { return undefined; }
   const doc = JSON.parse(storedDoc);
@@ -98,7 +119,7 @@ function get(key: string, ref: Ref64) {
  * @returns The deleted CacheItem document, if found. Undefined if the document did not exist
  */
 function removeItem<T>(key: string, ref: Ref64): CacheItem<T> | undefined {
-  const doc = get(key, ref);
+  const doc = $get(key, ref);
   if (!doc) { return undefined; }
   LOCAL_STORAGE.removeItem(itemKey(key, ref));
   return doc;
@@ -145,5 +166,5 @@ function idListKey(key: string) {
  * @returns A key for the location a document will be stored
  */
 function itemKey(key: string, ref: Ref64) {
-  return `v2_${key}_${ref}`;
+  return `${key}_${ref}`;
 }

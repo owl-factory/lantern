@@ -36,7 +36,7 @@ export function decodeId(ref64: string): string {
 
 export function decodeCollection(ref64: string): string {
   const collection = collections.find((item) => item.id === ref64[0])?.string || "";
-  if (!collection) throw Error(`Invalid encoded document referance "${ref64}".`);
+  if (!collection) throw Error(`Invalid encoded document reference "${ref64}".`);
   return collection;
 }
 

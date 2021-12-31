@@ -31,6 +31,7 @@ export async function createMany<T extends RefRequired>(
   const createdDocs = await this.$createMany(docs);
   const validDocs = pruneErrors<T>(createdDocs);
   const cacheItemDocs = this.$toCacheItem(validDocs, { isLoaded: true, loadedAt: Date.now(), updatedAt: Date.now() });
+
   this.$setMany(cacheItemDocs);
   return createdDocs;
 }
@@ -40,7 +41,11 @@ export async function createMany<T extends RefRequired>(
  * @param ref The ref of the document to delete from the database
  * @returns The deleted document or an error explaining why it could not be deleted
  */
-export async function del<T extends RefRequired>(this: CacheController<T>, ref: Ref64): Promise<ResponseDoc<T>> {
+export async function del<T extends RefRequired>(
+  this: CacheController<T>,
+  ref: Ref64 | undefined
+): Promise<ResponseDoc<T>> {
+  if (!ref) { return {}; }
   const docs = await this.deleteMany([ref]);
   return docs[0];
 }
@@ -139,7 +144,6 @@ export async function $createMany<T extends RefRequired>(this: CacheController<T
   const result = await rest.put<StandardApiResponse<T>>(this.apiURL, { docs: docs });
   if (!result.success) { return []; }
   const createdDocs = result.data.docs;
-
   return createdDocs;
 }
 

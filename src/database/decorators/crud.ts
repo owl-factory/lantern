@@ -7,6 +7,8 @@ import {
   checkStaticAccess,
   Descriptor,
   fetchTargetDoc,
+  setCreateFields,
+  setUpdateFields,
   trimManyReadFields,
   trimReadFields,
   trimSetFields,
@@ -25,14 +27,14 @@ import {
     return;
   }
 
-  descriptor.value = function(...args: any) {
+  descriptor.value = async function(...args: any) {
     checkLogin(descriptor);
     checkStaticAccess(descriptor);
     checkParentAccess(descriptor, args);
-    args.doc = trimSetFields(descriptor, args.doc);
+    args[0] = trimSetFields(descriptor, args[0]);
+    args[0] = setCreateFields(descriptor, args[0]);
 
-    let result = original.apply(this, args);
-
+    let result = await original.apply(this, args);
     result = checkDynamicAccess(descriptor, result);
     result = trimReadFields(descriptor, result);
 
@@ -53,7 +55,7 @@ export function Delete(_target: any, _name: string, descriptor: any) {
   descriptor.value = async function(...args: any) {
     checkLogin(descriptor);
     checkStaticAccess(descriptor);
-    const targetDoc = await fetchTargetDoc(descriptor, args);
+    const targetDoc = await fetchTargetDoc(descriptor, args[0]);
     if (targetDoc === undefined) { return undefined; }
     checkDynamicAccess(descriptor, targetDoc);
 
@@ -76,6 +78,7 @@ export function Delete(_target: any, _name: string, descriptor: any) {
   }
 
   descriptor.value = async function(...args: any) {
+    if (args[0] === "") { return { $error: true }; } // TODO - change to empty/error value
     checkLogin(descriptor);
     checkStaticAccess(descriptor);
 
@@ -149,9 +152,11 @@ export function Index(_target: any, _name: string, descriptor: any) {
     checkLogin(descriptor);
     checkStaticAccess(descriptor);
     const targetDoc = await fetchTargetDoc(descriptor, args[0]);
-    if (targetDoc === undefined) { throw { code: 404, message: "Document could not be found"}}
+    if (targetDoc === undefined) { throw { code: 404, message: "Document could not be found"}; }
     checkDynamicAccess(descriptor, targetDoc);
     args[1] = trimSetFields(descriptor, args[1]);
+    args[1] = setUpdateFields(descriptor, args[1]);
+
 
     let result = await original.apply(this, args);
 
