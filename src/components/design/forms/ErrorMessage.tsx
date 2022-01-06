@@ -1,4 +1,4 @@
-import { Alert } from "components/style/Alert";
+import { Alert } from "@owl-factory/components/alert/Alert";
 import { ErrorMessage as FormikErrorMessage } from "formik";
 import React from "react";
 

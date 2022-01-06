@@ -5,10 +5,10 @@ enum ErrorCode {
 
 // A standard error
 interface Error<T, U> {
-  context: U;
-  reasons: string[];
-  code: ErrorCode | T;
+  context: U; // Any context passed along in the error for better understanding what happened
+  reasons: string[]; // A list of reasons why the error occured, like validation errors
+  code: ErrorCode | T; // The error code being thrown for tracking the issue proper
 }
 
-// Shorthand for an error where the additional codes or contained data are unknown
+// Shorthand for an error where the additional codes and contained data are unknown
 export type UnknownError = Error<unknown, unknown>;

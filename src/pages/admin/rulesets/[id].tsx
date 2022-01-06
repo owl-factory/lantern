@@ -1,6 +1,6 @@
 import { Page } from "components/design";
 import { Col } from "components/style";
-import { Tooltip } from "components/style/tooltips";
+import { Tooltip } from "@owl-factory/components/tooltip";
 import { RulesetCache } from "controllers/cache/RulesetCache";
 import { observer } from "mobx-react-lite";
 import { NextPageContext } from "next";

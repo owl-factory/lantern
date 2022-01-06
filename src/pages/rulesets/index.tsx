@@ -7,7 +7,7 @@ import { TableComponentProps } from "types/design";
 import { Input } from "components/style/forms";
 import { Modal } from "components/style/modals";
 import { Button } from "components/style";
-import { Card, CardBody, CardHeader } from "components/style/card";
+import { Card, CardBody, CardHeader } from "@owl-factory/components/card";
 
 // The props for the RulesetPage
 interface RulesetProps {

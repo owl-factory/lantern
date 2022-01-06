@@ -1,5 +1,5 @@
 import { Col, Row } from "components/style";
-import { Card, CardBody } from "components/style/card";
+import { Card, CardBody } from "@owl-factory/components/card";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { ImageDocument } from "types/documents";

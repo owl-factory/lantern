@@ -12,7 +12,7 @@ import { CampaignCache } from "controllers/cache/CampaignCache";
 import { CharacterCache } from "controllers/cache/CharacterCache";
 import { getUniques } from "utilities/arrays";
 import { RulesetCache } from "controllers/cache/RulesetCache";
-import { Modal } from "components/style/modals";
+import { Modal } from "@owl-factory/components/modal";
 import { isError } from "@owl-factory/errors";
 import { NewCharacterForm } from "components/reroll/characters/NewCharacterForm";
 import { PassiveReadLevel } from "@owl-factory/cache/enums";

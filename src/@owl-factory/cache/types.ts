@@ -1,5 +1,6 @@
 import { Ref64 } from "types";
-
+// Defines a base object that must have a reference element. 
+// Used to extend other interfaces (eg <T extends RefRequired>)
 export interface RefRequired {
   ref: Ref64;
 }
@@ -8,7 +9,7 @@ export interface RefRequired {
 export interface CacheItem<T> {
   ref: Ref64;
   doc: Partial<T>; // The document data for business logic
-  meta: CacheItemMetadata
+  meta: CacheItemMetadata;
 }
 
 // The metadata for a cache item
@@ -18,6 +19,8 @@ export interface CacheItemMetadata {
   updatedAt: number; // The last time that this item was updated
 }
 
+// Search options for searching through a page from the cache
+// WORK IN PROGRESS
 export interface GetPageOptions {
   match?: (doc: unknown) => boolean;
   page?: number;

@@ -1,6 +1,6 @@
 import { IndexTable, Page } from "components/design";
 import { Breadcrumbs, Button, Col, Row } from "components/style";
-import { Card, CardBody, CardHeader } from "components/style/card";
+import { Card, CardBody, CardHeader } from "@owl-factory/components/card";
 import { Input } from "components/style/forms";
 import { Modal } from "components/style/modals";
 import { ErrorMessage, Form, Formik } from "formik";

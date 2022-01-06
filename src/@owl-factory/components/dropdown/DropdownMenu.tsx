@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, ButtonGroup } from "../buttons";
+import { Button, ButtonGroup } from "../../../@owl-factory/components/buttons";
 
 interface DropdownProps {
   ariaLabel?: string;

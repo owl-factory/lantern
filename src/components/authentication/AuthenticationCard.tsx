@@ -1,6 +1,6 @@
 import React, { ReactNode, useState } from "react";
 import { SignInForm, SignUpForm } from "components/authentication";
-import { Card, CardBody } from "components/style/card";
+import { Card, CardBody } from "@owl-factory/components/card";
 import { Button } from "components/style";
 
 interface AuthenticationCardProps {
