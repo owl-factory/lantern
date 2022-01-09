@@ -1,8 +1,8 @@
 import { Button, Col, Row } from "components/style";
 import { Card, CardBody, CardHeader } from "@owl-factory/components/card";
-import { Input } from "components/style/forms";
-import { Modal } from "components/style/modals";
-import { Tooltip } from "components/style/tooltips";
+import { Input } from "@owl-factory/components/form";
+import { Modal } from "@owl-factory/components/modal";
+import { Tooltip } from "@owl-factory/components/tooltip";
 import { Formik, Form as FormikForm } from "formik";
 import React from "react";
 import { rest } from "utilities/request";

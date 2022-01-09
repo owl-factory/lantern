@@ -1,4 +1,4 @@
-import { Select } from "components/style/forms";
+import { Select } from "@owl-factory/components/form";
 import { RulesetCache } from "controllers/cache/RulesetCache";
 import { observer } from "mobx-react-lite";
 import React from "react";

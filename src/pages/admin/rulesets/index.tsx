@@ -1,8 +1,8 @@
 import { Page } from "components/design";
 import { Button, ButtonGroup, Col, Loading } from "components/style";
-import { Input } from "components/style/forms";
-import { Modal } from "components/style/modals";
-import { Tooltip } from "components/style/tooltips";
+import { Input } from "@owl-factory/components/form";
+import { Modal } from "@owl-factory/components/modal";
+import { Tooltip } from "@owl-factory/components/tooltip";
 import { Form, Formik } from "formik";
 import { observer } from "mobx-react-lite";
 import { NextPageContext } from "next";

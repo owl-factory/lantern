@@ -4,8 +4,8 @@ import request from "utilities/request";
 import { MdBlock, MdBuild, MdInfo } from "react-icons/md";
 import { ContextMenuBuilder, TableBuilder } from "utilities/design";
 import { TableComponentProps } from "types/design";
-import { Input } from "components/style/forms";
-import { Modal } from "components/style/modals";
+import { Input } from "@owl-factory/components/form";
+import { Modal } from "@owl-factory/components/modal";
 import { Button } from "components/style";
 import { Card, CardBody, CardHeader } from "@owl-factory/components/card";
 

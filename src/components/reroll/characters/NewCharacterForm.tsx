@@ -1,6 +1,6 @@
 import React from "react";
 import { Form, Formik } from "formik";
-import { Input, Select } from "components/style/forms";
+import { Input, Select } from "@owl-factory/components/form";
 import { Button } from "components/style";
 import { CharacterDocument, RulesetDocument } from "types/documents";
 import { RulesetCache } from "controllers/cache/RulesetCache";

@@ -7,8 +7,8 @@ import { getSession, requireClientLogin } from "utilities/auth";
 import { getClient, readQuery } from "utilities/db";
 import { query as q } from "faunadb";
 import { Button } from "components/style";
-import { Input } from "components/style/forms";
-import { Select } from "components/style/forms/Select";
+import { Input } from "@owl-factory/components/form";
+import { Select } from "@owl-factory/components/form/Select";
 
 export default function NewCampaign(props: any): JSX.Element {
   const router = useRouter();

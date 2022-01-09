@@ -1,6 +1,6 @@
 import { PassiveReadLevel } from "@owl-factory/cache/enums";
 import { isError } from "@owl-factory/errors";
-import { AlertController } from "controllers/AlertController";
+import { AlertController } from "@owl-factory/components/alert/AlertController";
 import { CampaignCache } from "controllers/cache/CampaignCache";
 import { SceneCache } from "controllers/cache/SceneCache";
 import { action, makeObservable, observable } from "mobx";

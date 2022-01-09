@@ -9,7 +9,7 @@ import { Button } from "components/style";
 import { useRouter } from "next/router";
 import { arrayToList } from "utilities/arrays";
 import { ImageSelectionWrapper } from "components/reroll/library/images/ImageSelectionWrapper";
-import { Checkbox, Input } from "components/style/forms";
+import { Checkbox, Input } from "@owl-factory/components/form";
 import { observer } from "mobx-react-lite";
 import { InitialProps } from "types/client";
 import Link from "next/link";

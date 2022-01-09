@@ -1,8 +1,8 @@
 import { IndexTable, Page } from "components/design";
 import { Breadcrumbs, Button, Col, Row } from "components/style";
 import { Card, CardBody, CardHeader } from "@owl-factory/components/card";
-import { Input } from "components/style/forms";
-import { Modal } from "components/style/modals";
+import { Input } from "@owl-factory/components/form";
+import { Modal } from "@owl-factory/components/modal";
 import { ErrorMessage, Form, Formik } from "formik";
 import { NextPageContext } from "next";
 import Error from 'next/error';

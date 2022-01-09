@@ -7,7 +7,7 @@ import { NextPage, NextPageContext } from "next";
 import { rest } from "utilities/request";
 import { Button, Col, Row } from "components/style";
 import { Card } from "@owl-factory/components/card";
-import { AlertController } from "controllers/AlertController";
+import { AlertController } from "@owl-factory/components/alert/AlertController";
 
 interface DashboardProps {
   session?: any;

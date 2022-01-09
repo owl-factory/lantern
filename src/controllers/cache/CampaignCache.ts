@@ -1,5 +1,5 @@
 import { CacheController } from "@owl-factory/cache/AbstractCacheController";
-import { AlertController } from "controllers/AlertController";
+import { AlertController } from "@owl-factory/components/alert/AlertController";
 import { CampaignDocument, ImageDocument } from "types/documents";
 import { AssetUploadSource } from "types/enums/assetSource";
 import { rest } from "utilities/request";
