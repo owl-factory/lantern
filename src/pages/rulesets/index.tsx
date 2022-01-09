@@ -6,7 +6,7 @@ import { ContextMenuBuilder, TableBuilder } from "utilities/design";
 import { TableComponentProps } from "types/design";
 import { Input } from "@owl-factory/components/form";
 import { Modal } from "@owl-factory/components/modal";
-import { Button } from "components/style";
+import { Button } from "@owl-factory/components/button";
 import { Card, CardBody, CardHeader } from "@owl-factory/components/card";
 
 // The props for the RulesetPage

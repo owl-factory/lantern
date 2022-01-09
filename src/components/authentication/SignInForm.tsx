@@ -2,7 +2,7 @@ import React from "react";
 import { ErrorMessage, Formik, Form as FormikForm } from "formik";
 import * as Yup from "yup";
 import { signIn } from "utilities/auth";
-import { Button } from "components/style";
+import { Button } from "@owl-factory/components/button";
 import { Input } from "@owl-factory/components/form";
 
 /** Initial form values */

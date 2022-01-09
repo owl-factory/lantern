@@ -1,5 +1,4 @@
 import { IndexTable, Page } from "components/design";
-import { Breadcrumbs, Button, Col, Row } from "components/style";
 import { Card, CardBody, CardHeader } from "@owl-factory/components/card";
 import { Input } from "@owl-factory/components/form";
 import { Modal } from "@owl-factory/components/modal";
@@ -13,6 +12,9 @@ import { TableComponentProps } from "types/design";
 import { ContextMenuBuilder, TableBuilder } from "utilities/design";
 import { rest } from "utilities/request";
 import * as Yup from "yup";
+import { Col, Row } from "@owl-factory/components/flex";
+import { Button } from "@owl-factory/components/button";
+import { Breadcrumbs } from "@owl-factory/components/Breadcrumbs";
 
 interface FetchContentTypeData {
   contentTypes: any[];

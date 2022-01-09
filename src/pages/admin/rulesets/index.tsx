@@ -1,5 +1,5 @@
 import { Page } from "components/design";
-import { Button, ButtonGroup, Col, Loading } from "components/style";
+import { Button, ButtonGroup } from "@owl-factory/components/button";
 import { Input } from "@owl-factory/components/form";
 import { Modal } from "@owl-factory/components/modal";
 import { Tooltip } from "@owl-factory/components/tooltip";
@@ -17,6 +17,8 @@ import { RulesetDocument, UserDocument } from "types/documents";
 import { getSession } from "utilities/auth";
 import { rest } from "utilities/request";
 import { RulesetCache } from "controllers/cache/RulesetCache";
+import { Col } from "@owl-factory/components/flex";
+import { Loading } from "@owl-factory/components/loading";
 
 interface AdminRulesetsProps extends InitialProps {
   rulesets: RulesetDocument[];

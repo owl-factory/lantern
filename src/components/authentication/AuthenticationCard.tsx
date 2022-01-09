@@ -1,7 +1,7 @@
 import React, { ReactNode, useState } from "react";
 import { SignInForm, SignUpForm } from "components/authentication";
 import { Card, CardBody } from "@owl-factory/components/card";
-import { Button } from "components/style";
+import { Button } from "@owl-factory/components/button";
 
 interface AuthenticationCardProps {
   initialState?: AuthCardSection;

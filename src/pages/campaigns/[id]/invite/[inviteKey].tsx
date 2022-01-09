@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "components/style";
+import { Button } from "@owl-factory/components/button";
 import { Page } from "components/design";
 import { NextPageContext } from "next";
 import Link from "next/link";

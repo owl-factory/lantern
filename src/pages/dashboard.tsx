@@ -5,7 +5,8 @@ import { CampaignDocument } from "types/documents";
 import { getSession, signOut } from "utilities/auth";
 import { NextPage, NextPageContext } from "next";
 import { rest } from "utilities/request";
-import { Button, Col, Row } from "components/style";
+import { Button } from "@owl-factory/components/button";
+import { Col, Row } from "@owl-factory/components/flex";
 import { Card } from "@owl-factory/components/card";
 import { AlertController } from "@owl-factory/components/alert/AlertController";
 

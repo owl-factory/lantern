@@ -1,5 +1,5 @@
-import { GridType, SceneController } from "controllers/maps/SceneController";
-import { Button } from "components/style";
+import { GridType } from "controllers/maps/SceneController";
+import { Button } from "@owl-factory/components/button";
 import { Formik, Form as FormikForm, FormikProps } from "formik";
 import React from "react";
 import { Input } from "@owl-factory/components/form";

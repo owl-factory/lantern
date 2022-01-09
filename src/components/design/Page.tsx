@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
 import ErrorPage from "next/error";
-import { AlertMessages } from "components/AlertMessages";
+import { AlertMessages } from "@owl-factory/components/alert";
 
 interface PageProps {
   children: ReactNode;

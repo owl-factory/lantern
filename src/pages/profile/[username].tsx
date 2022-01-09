@@ -5,7 +5,7 @@ import { rest } from "utilities/request";
 import { getSession } from "utilities/auth";
 import { ImageDocument, UserDocument } from "types/documents";
 import { Formik, Form as FormikForm } from "formik";
-import { Button } from "components/style";
+import { Button } from "@owl-factory/components/button";
 import { useRouter } from "next/router";
 import { arrayToList } from "utilities/arrays";
 import { ImageSelectionWrapper } from "components/reroll/library/images/ImageSelectionWrapper";

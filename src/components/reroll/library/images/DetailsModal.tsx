@@ -1,4 +1,4 @@
-import { Button } from "components/style";
+import { Button } from "@owl-factory/components/button";
 import { Card, CardBody, CardHeader } from "@owl-factory/components/card";
 import { Modal } from "@owl-factory/components/modal";
 import { observer } from "mobx-react-lite";

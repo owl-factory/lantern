@@ -1,5 +1,5 @@
 import { Page } from "components/design";
-import { Col } from "components/style";
+import { Col } from "@owl-factory/components/flex";
 import { Tooltip } from "@owl-factory/components/tooltip";
 import { RulesetCache } from "controllers/cache/RulesetCache";
 import { observer } from "mobx-react-lite";

@@ -1,5 +1,5 @@
 import { Page } from "components/design";
-import { Loading } from "components/style";
+import { Loading } from "@owl-factory/components/loading";
 import { Input } from "@owl-factory/components/form";
 import { Formik } from "formik";
 import { observer } from "mobx-react-lite";

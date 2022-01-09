@@ -1,5 +1,6 @@
 import { Page } from "components/design";
-import { Button, Loading } from "components/style";
+import { Button } from "@owl-factory/components/button";
+import { Loading } from "@owl-factory/components/loading";
 import { observer } from "mobx-react-lite";
 import { NextPageContext } from "next";
 import React from "react";

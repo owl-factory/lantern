@@ -6,7 +6,7 @@ import { NextPageContext } from "next";
 import { getSession, requireClientLogin } from "utilities/auth";
 import { getClient, readQuery } from "utilities/db";
 import { query as q } from "faunadb";
-import { Button } from "components/style";
+import { Button } from "@owl-factory/components/button";
 import { Input } from "@owl-factory/components/form";
 import { Select } from "@owl-factory/components/form/Select";
 

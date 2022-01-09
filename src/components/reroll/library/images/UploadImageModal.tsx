@@ -1,4 +1,4 @@
-import { Button, Col, Row } from "components/style";
+import { Col, Row } from "@owl-factory/components/flex";
 import { Card, CardBody, CardHeader } from "@owl-factory/components/card";
 import { Input } from "@owl-factory/components/form";
 import { Modal } from "@owl-factory/components/modal";
@@ -6,6 +6,7 @@ import { Tooltip } from "@owl-factory/components/tooltip";
 import { Formik, Form as FormikForm } from "formik";
 import React from "react";
 import { rest } from "utilities/request";
+import { Button } from "@owl-factory/components/button";
 
 interface UploadImageModalProps {
   modal: boolean;

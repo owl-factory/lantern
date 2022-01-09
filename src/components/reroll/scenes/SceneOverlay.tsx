@@ -1,10 +1,8 @@
-import { Button } from "components/style";
+import { Button } from "@owl-factory/components/button";
 import { Drawer, DrawerContent } from "@owl-factory/components/drawer/Drawer";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { MdGridOn, MdImage, MdSupervisorAccount } from "react-icons/md";
-import { ImageDocument } from "types/documents";
-import { ImageList, ListFormat } from "../library";
 import { GridForm } from "./forms/grid";
 import { MapModeReadable as MAP_MODE_READABLE, MapMode, ModeController } from "controllers/maps/mode";
 import styles from "./SceneOverlay.module.scss";

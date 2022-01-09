@@ -8,7 +8,7 @@ import { getSession } from "utilities/auth";
 import { rest } from "utilities/request";
 import { GiAxeSword } from 'react-icons/gi';
 import { MdContentCopy, MdDeleteForever, MdEdit } from "react-icons/md";
-import { Loading } from "components/style";
+import { Loading } from "@owl-factory/components/loading";
 import { observer } from "mobx-react-lite";
 import { ContentCache } from "controllers/cache/ContentCache";
 import { getUniques } from "utilities/arrays";
