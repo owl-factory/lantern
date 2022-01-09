@@ -2,15 +2,15 @@
 import { AnyDocument, CampaignDocument, UserDocument } from "types/documents";
 import { isOwner } from "server/logic/security";
 import { UserRole } from "types/security";
-import * as fauna from "database/integration/fauna";
-import { Access, ReadFields, RequireLogin, SetFields } from "src/database/decorators/modifiers";
-import { Create, Delete, Fetch, FetchMany, Index, Update } from "src/database/decorators/crud";
+import * as fauna from "@owl-factory/database/integration/fauna";
+import { Access, ReadFields, RequireLogin, SetFields } from "@owl-factory/database/decorators/modifiers";
+import { Create, Delete, Fetch, FetchMany, Index, Update } from "@owl-factory/database/decorators/crud";
 import { DatabaseLogic } from "./AbstractDatabaseLogic";
 import { SecurityController } from "controllers/security";
 import { FaunaIndexOptions } from "types/fauna";
 import { Ref64 } from "types";
-import { Collection, FaunaIndex } from "fauna";
-import { toRef } from "database/conversion/fauna/to";
+import { Collection, FaunaIndex } from "@owl-factory/fauna";
+import { toRef } from "@owl-factory/database/conversion/fauna/to";
 
 /**
  * Checks if the current user is a player for the given document

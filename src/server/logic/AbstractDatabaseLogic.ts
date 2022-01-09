@@ -1,9 +1,9 @@
-import { Create, Delete, Fetch, Update } from "database/decorators/crud";
-import { Access, ReadFields, RequireLogin, SetFields } from "database/decorators/modifiers";
-import { Collection } from "fauna";
+import { Create, Delete, Fetch, Update } from "@owl-factory/database/decorators/crud";
+import { Access, ReadFields, RequireLogin, SetFields } from "@owl-factory/database/decorators/modifiers";
+import { Collection } from "@owl-factory/fauna";
 import { Ref64 } from "types";
 import { UserRole } from "types/security";
-import * as fauna from "database/integration/fauna";
+import * as fauna from "@owl-factory/database/integration/fauna";
 import { isOwner } from "./security";
 
 /**

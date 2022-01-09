@@ -1,12 +1,12 @@
 
-import { Collection, FaunaIndex } from "fauna";
+import { Collection, FaunaIndex } from "@owl-factory/fauna";
 import { Ref64 } from "types";
 import { RulesetDocument } from "types/documents";
 import { UserRole } from "types/security";
 import { DatabaseLogic } from "./AbstractDatabaseLogic";
-import * as fauna from "database/integration/fauna";
-import { Create, Fetch, FetchMany, Index, Update } from "database/decorators/crud";
-import { Access, ReadFields, SetFields } from "database/decorators/modifiers";
+import * as fauna from "@owl-factory/database/integration/fauna";
+import { Create, Fetch, FetchMany, Index, Update } from "@owl-factory/database/decorators/crud";
+import { Access, ReadFields, SetFields } from "@owl-factory/database/decorators/modifiers";
 import { FaunaIndexOptions } from "types/fauna";
 
 class $RulesetLogic extends DatabaseLogic<RulesetDocument> {

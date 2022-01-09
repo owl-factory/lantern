@@ -2,7 +2,7 @@ import { Expr, query as q, ToArray, ToDate } from "faunadb";
 import { decode, isEncoding } from "utilities/encoding";
 import { fromRef } from "./from";
 import { Ref64 } from "types";
-import { FaunaDocument } from "database/types/fauna";
+import { FaunaDocument } from "@owl-factory/database/types/fauna";
 
 /**
  * Converts a Javascript document into a Fauna document for saving to the database

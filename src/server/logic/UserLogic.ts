@@ -1,12 +1,12 @@
 import { Ref64 } from "types";
 import { UserDocument } from "types/documents";
 import { isOwner } from "./security";
-import * as fauna from "database/integration/fauna";
-import { Collection, FaunaIndex } from "fauna";
+import * as fauna from "@owl-factory/database/integration/fauna";
+import { Collection, FaunaIndex } from "@owl-factory/fauna";
 import { UserRole } from "types/security";
 import { DatabaseLogic } from "./AbstractDatabaseLogic";
-import { Fetch, FetchMany, Index, Update } from "database/decorators/crud";
-import { Access, ReadFields, SetFields } from "database/decorators/modifiers";
+import { Fetch, FetchMany, Index, Update } from "@owl-factory/database/decorators/crud";
+import { Access, ReadFields, SetFields } from "@owl-factory/database/decorators/modifiers";
 import { FaunaIndexOptions } from "types/fauna";
 
 const guestFields = [

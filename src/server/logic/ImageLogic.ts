@@ -2,15 +2,15 @@ import { ImageDocument } from "types/documents";
 import { isOwner } from "./security";
 import { UserRole } from "types/security";
 import { AssetUploadSource } from "types/enums/assetSource";
-import { Collection, FaunaIndex } from "fauna";
+import { Collection, FaunaIndex } from "@owl-factory/fauna";
 import { DatabaseLogic } from "./AbstractDatabaseLogic";
-import * as fauna from "database/integration/fauna";
+import * as fauna from "@owl-factory/database/integration/fauna";
 import { Ref64 } from "types";
-import { Access, ReadFields, SetFields } from "database/decorators/modifiers";
-import { Create, Delete, Fetch, FetchMany, Index } from "database/decorators/crud";
+import { Access, ReadFields, SetFields } from "@owl-factory/database/decorators/modifiers";
+import { Create, Delete, Fetch, FetchMany, Index } from "@owl-factory/database/decorators/crud";
 import { FaunaIndexOptions } from "types/fauna";
 import { SecurityController } from "controllers/security";
-import { toRef } from "database/conversion/fauna/to";
+import { toRef } from "@owl-factory/database/conversion/fauna/to";
 
 const createFields = [
   "name",

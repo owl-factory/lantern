@@ -1,12 +1,12 @@
 import { Ref64 } from "types";
-import * as fauna from "database/integration/fauna";
+import * as fauna from "@owl-factory/database/integration/fauna";
 import { AnyDocument, CharacterDocument } from "types/documents";
 import { UserRole } from "types/security";
 import { DatabaseLogic } from "./AbstractDatabaseLogic";
 import { isOwner } from "./security";
-import { Collection, FaunaIndex } from "fauna";
-import { Create, Delete, Fetch, FetchMany, Index, Update } from "database/decorators/crud";
-import { Access, ReadFields, SetFields } from "database/decorators/modifiers";
+import { Collection, FaunaIndex } from "@owl-factory/fauna";
+import { Create, Delete, Fetch, FetchMany, Index, Update } from "@owl-factory/database/decorators/crud";
+import { Access, ReadFields, SetFields } from "@owl-factory/database/decorators/modifiers";
 import { FaunaIndexOptions } from "types/fauna";
 import { SecurityController } from "controllers/security";
 

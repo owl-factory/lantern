@@ -3,7 +3,7 @@ import { setSession } from "utilities/auth";
 import { getServerClient } from "utilities/db";
 import { query as q } from "faunadb";
 import { normalize } from "utilities/strings";
-import { fromFauna } from "database/conversion/fauna/from";
+import { fromFauna } from "@owl-factory/database/conversion/fauna/from";
 
 const checkEmail = /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i;
 

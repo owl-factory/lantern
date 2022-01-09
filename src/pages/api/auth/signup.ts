@@ -3,7 +3,7 @@ import { setSession } from "utilities/auth";
 import { query as q } from "faunadb";
 import { getServerClient } from "utilities/db";
 import { normalize } from "utilities/strings";
-import { fromFauna } from "database/conversion/fauna/from";
+import { fromFauna } from "@owl-factory/database/conversion/fauna/from";
 
 /**
  * Handles the signup authorization endpoint

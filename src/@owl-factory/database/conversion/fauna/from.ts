@@ -1,4 +1,4 @@
-import { FaunaDocument } from "database/types/fauna";
+import { FaunaDocument } from "@owl-factory/database/types/fauna";
 import { Ref64 } from "types";
 import { encode } from "utilities/encoding";
 import { set } from "utilities/objects";
