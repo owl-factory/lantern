@@ -8,7 +8,7 @@ import { Collection, FaunaIndex } from "src/fauna";
 import { Create, Delete, Fetch, FetchMany, Index, Update } from "@owl-factory/database/decorators/crud";
 import { Access, ReadFields, SetFields } from "@owl-factory/database/decorators/modifiers";
 import { FaunaIndexOptions } from "types/fauna";
-import { SecurityController } from "controllers/security";
+import { SecurityController } from "@owl-factory/auth/security";
 
 const PUT_FIELDS = ["*"];
 

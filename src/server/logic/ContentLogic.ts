@@ -9,7 +9,7 @@ import { DatabaseLogic } from "./AbstractDatabaseLogic";
 import { isOwner } from "./security";
 import * as fauna from "@owl-factory/database/integration/fauna";
 import { FaunaIndexOptions } from "types/fauna";
-import { SecurityController } from "controllers/security";
+import { SecurityController } from "@owl-factory/auth/security";
 import { toRef } from "@owl-factory/database/conversion/fauna/to";
 
 class $ContentLogic extends DatabaseLogic<ContentDocument> {

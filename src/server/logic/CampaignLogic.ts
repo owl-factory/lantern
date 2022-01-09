@@ -6,7 +6,7 @@ import * as fauna from "@owl-factory/database/integration/fauna";
 import { Access, ReadFields, RequireLogin, SetFields } from "@owl-factory/database/decorators/modifiers";
 import { Create, Delete, Fetch, FetchMany, Index, Update } from "@owl-factory/database/decorators/crud";
 import { DatabaseLogic } from "./AbstractDatabaseLogic";
-import { SecurityController } from "controllers/security";
+import { SecurityController } from "@owl-factory/auth/security";
 import { FaunaIndexOptions } from "types/fauna";
 import { Ref64 } from "types";
 import { Collection, FaunaIndex } from "src/fauna";

@@ -1,4 +1,4 @@
-import { SecurityController } from "controllers/security";
+import { SecurityController } from "@owl-factory/auth/security";
 import { NextApiRequest } from "next";
 import { ImageLogic } from "server/logic/ImageLogic";
 import { UserLogic } from "server/logic/UserLogic";

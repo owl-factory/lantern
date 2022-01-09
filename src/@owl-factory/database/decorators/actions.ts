@@ -1,4 +1,4 @@
-import { SecurityController } from "controllers/security";
+import { SecurityController } from "@owl-factory/auth/security";
 import { GiFairyWand } from "react-icons/gi";
 import { AnyDocument } from "types/documents";
 import { UserRole } from "types/security";

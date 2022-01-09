@@ -1,4 +1,4 @@
-import { SecurityController } from "controllers/security";
+import { SecurityController } from "@owl-factory/auth/security";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Context } from "types/server";
 

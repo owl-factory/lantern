@@ -9,7 +9,7 @@ import { Ref64 } from "types";
 import { Access, ReadFields, SetFields } from "@owl-factory/database/decorators/modifiers";
 import { Create, Delete, Fetch, FetchMany, Index } from "@owl-factory/database/decorators/crud";
 import { FaunaIndexOptions } from "types/fauna";
-import { SecurityController } from "controllers/security";
+import { SecurityController } from "@owl-factory/auth/security";
 import { toRef } from "@owl-factory/database/conversion/fauna/to";
 
 const createFields = [
