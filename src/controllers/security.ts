@@ -1,4 +1,4 @@
-import { Collection } from "@owl-factory/fauna";
+import { Collection } from "src/fauna";
 import { NextApiRequest } from "next";
 import { UserDocument } from "types/documents";
 import { UserRole } from "types/security";

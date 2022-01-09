@@ -5,7 +5,7 @@ import { UserRole } from "types/security";
 import { DatabaseLogic } from "./AbstractDatabaseLogic";
 import { ContentTypeDocument } from "types/documents";
 import { Ref64 } from "types";
-import { Collection } from "@owl-factory/fauna";
+import { Collection } from "src/fauna";
 
 
 class $ContentTypeLogic extends DatabaseLogic<ContentTypeDocument> {

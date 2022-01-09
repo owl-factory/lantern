@@ -1,7 +1,7 @@
 import { fromFauna, fromIndex } from "@owl-factory/database/conversion/fauna/from";
 import { toFauna, toRef } from "@owl-factory/database/conversion/fauna/to";
 import { FaunaDocument } from "@owl-factory/database/types/fauna";
-import { Collection, FaunaIndex, FaunaIndexTerms } from "@owl-factory/fauna";
+import { Collection, FaunaIndex, FaunaIndexTerms } from "src/fauna";
 import { Expr, query as q } from "faunadb";
 import { Ref64 } from "types";
 import { FaunaIndexOptions, FaunaIndexResponse } from "types/fauna";

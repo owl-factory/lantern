@@ -1,7 +1,7 @@
 
 import { Fetch, FetchMany, Index } from "@owl-factory/database/decorators/crud";
 import { Access, ReadFields } from "@owl-factory/database/decorators/modifiers";
-import { Collection, FaunaIndex } from "@owl-factory/fauna";
+import { Collection, FaunaIndex } from "src/fauna";
 import { Ref64 } from "types";
 import { AnyDocument, ContentDocument } from "types/documents";
 import { UserRole } from "types/security";

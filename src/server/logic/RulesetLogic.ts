@@ -1,5 +1,5 @@
 
-import { Collection, FaunaIndex } from "@owl-factory/fauna";
+import { Collection, FaunaIndex } from "src/fauna";
 import { Ref64 } from "types";
 import { RulesetDocument } from "types/documents";
 import { UserRole } from "types/security";
@@ -13,7 +13,7 @@ class $RulesetLogic extends DatabaseLogic<RulesetDocument> {
   public collection = Collection.Rulesets;
 
   /**
-   * Creates a single new ruleset document 
+   * Creates a single new ruleset document
    * @param doc The document partial to create
    * @returns The new ruleset document
    */
@@ -38,7 +38,6 @@ class $RulesetLogic extends DatabaseLogic<RulesetDocument> {
   @Access({[UserRole.Guest]: true})
   @ReadFields(["*"])
   public async findOne(id: Ref64): Promise<RulesetDocument> {
-    console.log(id)
     const ruleset = await fauna.findByID<RulesetDocument>(id);
     if (ruleset === undefined) { throw { code: 404, message: `A ruleset with ID ${id} could not be found` }; }
     return ruleset;

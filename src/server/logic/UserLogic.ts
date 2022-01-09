@@ -2,7 +2,7 @@ import { Ref64 } from "types";
 import { UserDocument } from "types/documents";
 import { isOwner } from "./security";
 import * as fauna from "@owl-factory/database/integration/fauna";
-import { Collection, FaunaIndex } from "@owl-factory/fauna";
+import { Collection, FaunaIndex } from "src/fauna";
 import { UserRole } from "types/security";
 import { DatabaseLogic } from "./AbstractDatabaseLogic";
 import { Fetch, FetchMany, Index, Update } from "@owl-factory/database/decorators/crud";
@@ -76,7 +76,7 @@ class $UserLogic extends DatabaseLogic<UserDocument> {
   @SetFields({[UserRole.User]: updateFields})
   public async updateOne(id: Ref64, doc: Partial<UserDocument>): Promise<UserDocument> {
     const user = await fauna.updateOne<UserDocument>(id, doc);
-    if (user === undefined) { 
+    if (user === undefined) {
       throw { code: 500, message: "An unexpected error occured while attepting to update the user."};
     }
     return user;

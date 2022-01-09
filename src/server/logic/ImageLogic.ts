@@ -2,7 +2,7 @@ import { ImageDocument } from "types/documents";
 import { isOwner } from "./security";
 import { UserRole } from "types/security";
 import { AssetUploadSource } from "types/enums/assetSource";
-import { Collection, FaunaIndex } from "@owl-factory/fauna";
+import { Collection, FaunaIndex } from "src/fauna";
 import { DatabaseLogic } from "./AbstractDatabaseLogic";
 import * as fauna from "@owl-factory/database/integration/fauna";
 import { Ref64 } from "types";

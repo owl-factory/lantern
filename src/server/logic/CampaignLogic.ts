@@ -9,7 +9,7 @@ import { DatabaseLogic } from "./AbstractDatabaseLogic";
 import { SecurityController } from "controllers/security";
 import { FaunaIndexOptions } from "types/fauna";
 import { Ref64 } from "types";
-import { Collection, FaunaIndex } from "@owl-factory/fauna";
+import { Collection, FaunaIndex } from "src/fauna";
 import { toRef } from "@owl-factory/database/conversion/fauna/to";
 
 /**
