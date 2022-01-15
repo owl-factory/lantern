@@ -1,6 +1,6 @@
+import { read, set } from "@owl-factory/utilities/objects";
 import { AnyDocument } from "types/documents";
 import { MyUserDocument } from "types/security";
-import { read, set } from "utilities/objects";
 
 /**
  * Determines the fields accessible to the current user based on the given document and permissions

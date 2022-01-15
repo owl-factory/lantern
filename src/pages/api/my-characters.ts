@@ -1,8 +1,8 @@
 import { NextApiRequest } from "next";
 import { CampaignLogic } from "server/logic/CampaignLogic";
 import { CharacterLogic } from "server/logic/CharacterLogic";
-import { HTTPHandler } from "server/response";
-import { createEndpoint } from "server/utilities";
+
+import { HTTPHandler, createEndpoint } from "@owl-factory/https";
 import { getUniques } from "utilities/arrays";
 
 /**

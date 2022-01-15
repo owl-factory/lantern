@@ -30,10 +30,6 @@ export class HTTPHandler {
     };
 
     try {
-      // Handles initializing the database
-      // TODO - ensure that we can access the user DB
-      // seperately with or without disconnecting
-      // databaseSetup();
       SecurityController.fromReq(this.req);
 
       // Checks that this method is present

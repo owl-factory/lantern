@@ -1,6 +1,5 @@
 import { NextApiRequest } from "next";
-import { HTTPHandler } from "server/response";
-import { createEndpoint } from "server/utilities";
+import { HTTPHandler, createEndpoint } from "@owl-factory/https";
 import { RulesetLogic } from "server/logic/RulesetLogic";
 
 /**

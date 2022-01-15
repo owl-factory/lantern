@@ -6,8 +6,7 @@
  * This base controller should not contain any business logic and should be reorganized to the @owl-factory directory
  */
 
-import { Ref64 } from "types";
-import { isClient } from "utilities/tools";
+import { isClient } from "@owl-factory/utilities/client";
 import { CacheItem, RefRequired } from "@owl-factory/cache/types";
 import { action, makeObservable, observable } from "mobx";
 

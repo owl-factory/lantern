@@ -1,7 +1,7 @@
 import { Client, ExprArg, QueryOptions } from "faunadb";
 import { useEffect, useState } from "react";
 import { CtxReq, getSession } from "utilities/auth";
-import { isClient, isServer } from "utilities/tools";
+import { isClient, isServer } from "@owl-factory/utilities/client";
 
 const publicSecret = "fnAEGnar9QACAufk-juLojDn9IRNNa_HgdGHGZX6";
 let client: Client;
@@ -37,23 +37,7 @@ export function updateClient(newSecret?: string): void {
   client = new Client({ secret: newSecret || publicSecret });
 }
 
-type UseQueryType = [ object|undefined, boolean, Error | undefined ];
-
-export function useQuery(expr: ExprArg, options?: QueryOptions | undefined): UseQueryType {
-  const [ result, setResult ] = useState<object>();
-  const [ loading, setLoading ] = useState(true);
-  const [ error, setError ] = useState<Error>();
-
-  useEffect(() => {
-    getClient().query(expr, options).then((response) => {
-      setResult(response);
-      setLoading(false);
-    }).catch(err => setError(err));
-  }, []);
-
-  return [ result, loading, error ];
-}
-
+// TODO - try to remove this
 export async function readQuery(query: Promise<object>): Promise<{ data: any | null, error: object | null}> {
   try {
     return {
@@ -63,11 +47,4 @@ export async function readQuery(query: Promise<object>): Promise<{ data: any | n
   } catch (error: any) {
     return { data: null, error};
   }
-}
-export function getID(ref: any): string | undefined {
-  if ( typeof ref === "string") { return ref; }
-  if ( ref.id ) { return ref.id; }
-  if ( ref["@ref"].id ) { return ref["@ref"].id ; }
-  if ( ref.value.id ) { return ref.value.id ; }
-  return undefined;
 }

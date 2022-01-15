@@ -1,8 +1,8 @@
 import { NextApiRequest } from "next";
 import { CampaignLogic } from "server/logic/CampaignLogic";
 import { ImageLogic } from "server/logic/ImageLogic";
-import { HTTPHandler } from "server/response";
-import { createEndpoint } from "server/utilities";
+
+import { HTTPHandler, createEndpoint } from "@owl-factory/https";
 import { CampaignDocument } from "types/documents";
 
 /**

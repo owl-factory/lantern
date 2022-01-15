@@ -5,7 +5,7 @@ import { Collection, FaunaIndex, FaunaIndexTerms } from "src/fauna";
 import { Expr, query as q } from "faunadb";
 import { Ref64 } from "types";
 import { FaunaIndexOptions, FaunaIndexResponse } from "types/fauna";
-import { getServerClient } from "utilities/db";
+import { getServerClient } from "../client/fauna";
 
 /**
  * Creates a single document in the Fauna database

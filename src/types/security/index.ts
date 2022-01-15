@@ -27,7 +27,7 @@ export const UserRoleReadable = [
 export interface MyUserDocument {
   id: string,
   collection: "users",
-  ref: FaunaRef | Expr,
+  ref: FaunaRef | Expr, // TODO - see if we can't get rid of this or convert it into an id
   role: UserRole,
   roles: UserRole[],
   isLoggedIn: boolean;
