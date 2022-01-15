@@ -1,9 +1,9 @@
 import { Page } from "components/design";
 import { NextPageContext } from "next";
 import React from "react";
-import { getServerClient } from "utilities/db";
-import { decode, isEncoding } from "utilities/encoding";
 import { Collection, query as q } from "faunadb";
+import { decode, isEncoding } from "@owl-factory/utilities/ref";
+import { getServerClient } from "@owl-factory/database/client/fauna";
 
 interface RefTestProps {
   res: any;

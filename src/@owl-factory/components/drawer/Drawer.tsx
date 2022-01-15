@@ -1,6 +1,5 @@
 import React from "react";
 import { IconType } from "react-icons";
-import { MdGridOn } from "react-icons/md";
 import style from "./Drawer.module.scss";
 
 /**

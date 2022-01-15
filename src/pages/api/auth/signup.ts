@@ -1,9 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { setSession } from "utilities/auth";
 import { query as q } from "faunadb";
-import { getServerClient } from "utilities/db";
-import { normalize } from "utilities/strings";
 import { fromFauna } from "@owl-factory/database/conversion/fauna/from";
+import { getServerClient } from "@owl-factory/database/client/fauna";
+import { normalize } from "@owl-factory/utilities/strings";
+import { setSession } from "@owl-factory/auth/session";
 
 /**
  * Handles the signup authorization endpoint

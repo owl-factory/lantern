@@ -3,7 +3,7 @@ import { CampaignLogic } from "server/logic/CampaignLogic";
 import { UserLogic } from "server/logic/UserLogic";
 
 import { HTTPHandler, createEndpoint } from "@owl-factory/https";
-import { getUniques } from "utilities/arrays";
+import { getUniques } from "@owl-factory/utilities/arrays";
 
 /**
  * Creates a single new ruleset

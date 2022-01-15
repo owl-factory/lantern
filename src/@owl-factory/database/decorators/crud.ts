@@ -5,7 +5,6 @@ import {
   checkManyDynamicAccess,
   checkParentAccess,
   checkStaticAccess,
-  Descriptor,
   fetchTargetDoc,
   setCreateFields,
   setUpdateFields,

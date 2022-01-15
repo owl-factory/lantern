@@ -2,16 +2,16 @@ import { Page } from "components/design";
 import { NextPageContext } from "next";
 import Link from "next/link";
 import React from "react";
-import { getSession, requireClientLogin } from "utilities/auth";
-import { rest } from "utilities/request";
+import { rest } from "@owl-factory/https/rest";
 import { ImageSelectionWrapper } from "components/reroll/library/images/ImageSelectionWrapper";
 import { CampaignDocument, ImageDocument, UserDocument } from "types/documents";
 import { observer } from "mobx-react-lite";
 import { InitialProps } from "types/client";
 import { AssetUploadSource } from "types/enums/assetSource";
-import { Ref64 } from "types";
+import { Ref64 } from "@owl-factory/types";
 import { CampaignCache } from "controllers/cache/CampaignCache";
 import { UserCache } from "controllers/cache/UserCache";
+import { getSession, requireClientLogin } from "@owl-factory/auth/session";
 
 interface BannerProps {
   campaign: CampaignDocument;

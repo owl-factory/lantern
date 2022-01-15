@@ -1,4 +1,4 @@
-import { Ref64 } from "types";
+import { Ref64 } from "@owl-factory/types";
 import { CampaignDocument, CoreDocument, UserDocument } from "types/documents";
 
 export enum MessageType {

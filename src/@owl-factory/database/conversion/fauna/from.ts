@@ -1,7 +1,7 @@
 import { FaunaDocument } from "@owl-factory/database/types/fauna";
-import { Ref64 } from "types";
-import { encode } from "utilities/encoding";
-import { set } from "utilities/objects";
+import { Ref64 } from "@owl-factory/types";
+import { set } from "@owl-factory/utilities/objects";
+import { encode } from "@owl-factory/utilities/ref";
 import { isFaunaDate, isFaunaRef } from "./fauna";
 
 /**

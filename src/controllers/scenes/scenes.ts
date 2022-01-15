@@ -4,8 +4,8 @@ import { AlertController } from "@owl-factory/components/alert/AlertController";
 import { CampaignCache } from "controllers/cache/CampaignCache";
 import { SceneCache } from "controllers/cache/SceneCache";
 import { action, makeObservable, observable } from "mobx";
-import { Ref64 } from "types";
 import { CampaignDocument, SceneDocument } from "types/documents";
+import { Ref64 } from "@owl-factory/types";
 
 class $SceneController {
   public campaignID: string;

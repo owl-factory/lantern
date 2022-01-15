@@ -1,10 +1,10 @@
 import * as fauna from "@owl-factory/database/integration/fauna";
 import { Fetch, FetchMany } from "@owl-factory/database/decorators/crud";
 import { Access, ReadFields } from "@owl-factory/database/decorators/modifiers";
-import { UserRole } from "types/security";
+import { UserRole } from "@owl-factory/auth/enums";
 import { DatabaseLogic } from "./AbstractDatabaseLogic";
 import { ContentTypeDocument } from "types/documents";
-import { Ref64 } from "types";
+import { Ref64 } from "@owl-factory/types";
 import { Collection } from "src/fauna";
 
 

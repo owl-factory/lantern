@@ -1,17 +1,16 @@
 import { Collection } from "src/fauna";
 import { NextApiRequest } from "next";
-import { UserDocument } from "types/documents";
-import { UserRole } from "types/security";
-import { getSession } from "utilities/auth";
-import { encode } from "utilities/encoding";
+import { encode } from "@owl-factory/utilities/ref";
+import { getSession } from "./session";
+import { UserRole } from "./enums";
 
 /**
  * A controller for managing security, primarily for the backend. It's purpose is to take in
  * a NextApiRequest object, read the current user document, and parse it into usable fields,
  * such as a loggedIn flag or the active role.
  */
-class $SecurityController {
-  public currentUser: Partial<UserDocument> | undefined;
+export class $SecurityController<T> {
+  public currentUser: Partial<T> | undefined;
   public activeRole: UserRole;
 
   constructor() {
@@ -27,6 +26,7 @@ class $SecurityController {
 
   /**
    * Gets the user from the given NextApiRequest and stores it
+   * TODO - remove Fauna dependency.
    * @param req The NextApiRequest received from an API call
    */
   public fromReq(req: NextApiRequest) {
@@ -34,11 +34,11 @@ class $SecurityController {
     if (!session || session.user === undefined || session.user === null) {
       // this.currentUser = undefined;
       this.currentUser = {
-        ref: encode("295863299256353286", Collection.Users),
+        ref: encode("295863299256353286", Collection.Users), // TODO - collection.users should not require import
         username: "laurasaura",
 
         role: UserRole.User,
-      };
+      } as any;
     }
     else { this.currentUser = session.user; }
 
@@ -82,4 +82,3 @@ class $SecurityController {
   }
 }
 
-export const SecurityController = new $SecurityController();

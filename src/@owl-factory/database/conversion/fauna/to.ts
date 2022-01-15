@@ -1,8 +1,7 @@
-import { Expr, query as q, ToArray, ToDate } from "faunadb";
-import { decode, isEncoding } from "utilities/encoding";
-import { fromRef } from "./from";
-import { Ref64 } from "types";
+import { Expr, query as q } from "faunadb";
 import { FaunaDocument } from "@owl-factory/database/types/fauna";
+import { decode, isEncoding } from "@owl-factory/utilities/ref";
+import { Ref64 } from "@owl-factory/types";
 
 /**
  * Converts a Javascript document into a Fauna document for saving to the database

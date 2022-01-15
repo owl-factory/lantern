@@ -1,3 +1,4 @@
+import { signOut } from "@owl-factory/auth/session";
 import { CampaignCache } from "controllers/cache/CampaignCache";
 import { UserCache } from "controllers/cache/UserCache";
 import { observer } from "mobx-react-lite";
@@ -7,7 +8,6 @@ import { Nav, NavDropdown, Navbar } from "react-bootstrap";
 import { isAdmin } from "server/logic/security";
 import { CampaignDocument, UserDocument } from "types/documents";
 import { MyUserDocument } from "types/security";
-import { signOut } from "utilities/auth";
 import { ADMIN_ENDPOINT } from "utilities/globals";
 
 

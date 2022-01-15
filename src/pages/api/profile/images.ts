@@ -1,9 +1,10 @@
-import { SecurityController } from "@owl-factory/auth/security";
+
 import { NextApiRequest } from "next";
 import { ImageLogic } from "server/logic/ImageLogic";
 import { UserLogic } from "server/logic/UserLogic";
 
 import { HTTPHandler, createEndpoint } from "@owl-factory/https";
+import { SecurityController } from "controllers/SecurityController";
 
 /**
  * Updates a single profile image for the current user

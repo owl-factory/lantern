@@ -1,13 +1,12 @@
 import React from "react";
 import { Page } from "components/design";
 import { NextPageContext } from "next";
-import { rest } from "utilities/request";
-import { getSession } from "utilities/auth";
+import { rest } from "@owl-factory/https/rest";
+import { getSession } from "@owl-factory/auth/session";
 import { ImageDocument, UserDocument } from "types/documents";
 import { Formik, Form as FormikForm } from "formik";
 import { Button } from "@owl-factory/components/button";
 import { useRouter } from "next/router";
-import { arrayToList } from "utilities/arrays";
 import { ImageSelectionWrapper } from "components/reroll/library/images/ImageSelectionWrapper";
 import { Checkbox, Input } from "@owl-factory/components/form";
 import { observer } from "mobx-react-lite";
@@ -16,6 +15,7 @@ import Link from "next/link";
 import { AssetUploadSource } from "types/enums/assetSource";
 import { ImageCache } from "controllers/cache/ImageCache";
 import { UserCache } from "controllers/cache/UserCache";
+import { arrayToList } from "@owl-factory/utilities/arrays";
 
 /**
  * Renders a small section indicating how long a player has been a member, their hours played,

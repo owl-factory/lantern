@@ -1,6 +1,5 @@
 import React from "react";
-import { IndexTable, Page, fetchContentResponse } from "components/design";
-import request from "utilities/request";
+import { Page, fetchContentResponse } from "components/design";
 import { MdBlock, MdBuild, MdInfo } from "react-icons/md";
 import { ContextMenuBuilder, TableBuilder } from "utilities/design";
 import { TableComponentProps } from "types/design";
@@ -8,6 +7,7 @@ import { Input } from "@owl-factory/components/form";
 import { Modal } from "@owl-factory/components/modal";
 import { Button } from "@owl-factory/components/button";
 import { Card, CardBody, CardHeader } from "@owl-factory/components/card";
+import { rest } from "@owl-factory/https/rest";
 
 // The props for the RulesetPage
 interface RulesetProps {
@@ -41,7 +41,7 @@ async function queryRulesets(
     skip: skip,
     sort: sortBy,
   }};
-  const res = await request.post<any>("/api/rulesets", body);
+  const res = await rest.post<any>("/api/rulesets", body);
   if (res.success) { return { content: res.data.rulesets, count: res.data.rulesetCount }; }
   return { content: [], count: 0 };
 }
@@ -133,7 +133,7 @@ export default function Rulesets({ initialRulesets, rulesetCount }: RulesetProps
 }
 
 Rulesets.getInitialProps = async () => {
-  const res = await request.post<FetchRulesetsData>(
+  const res = await rest.post<FetchRulesetsData>(
     "/api/rulesets", { options: { limit: initialPerPage, sort: initialSortBy } }
   );
   return { initialRulesets: res.data.rulesets, rulesetCount: res.data.rulesetCount };

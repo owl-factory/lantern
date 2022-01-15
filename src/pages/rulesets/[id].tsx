@@ -10,7 +10,7 @@ import React from "react";
 import { MdBlock, MdBuild, MdInfo } from "react-icons/md";
 import { TableComponentProps } from "types/design";
 import { ContextMenuBuilder, TableBuilder } from "utilities/design";
-import { rest } from "utilities/request";
+import { rest } from "@owl-factory/https/rest";
 import * as Yup from "yup";
 import { Col, Row } from "@owl-factory/components/flex";
 import { Button } from "@owl-factory/components/button";

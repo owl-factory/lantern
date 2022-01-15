@@ -1,9 +1,9 @@
 import React from "react";
 import { ErrorMessage, Formik, Form as FormikForm } from "formik";
 import * as Yup from "yup";
-import { signIn } from "utilities/auth";
 import { Button } from "@owl-factory/components/button";
 import { Input } from "@owl-factory/components/form";
+import { signIn } from "@owl-factory/auth/session";
 
 /** Initial form values */
 const initialValues = {

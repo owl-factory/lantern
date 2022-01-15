@@ -1,6 +1,6 @@
 
 import * as fauna from "@owl-factory/database/integration/fauna";
-import { UserRole } from "types/security";
+import { UserRole } from "@owl-factory/auth/enums";
 import { Create } from "@owl-factory/database/decorators/crud";
 import { Access, ReadFields, SetFields } from "@owl-factory/database/decorators/modifiers";
 import { SceneDocument } from "types/documents";

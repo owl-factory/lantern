@@ -1,10 +1,10 @@
-import { SecurityController } from "@owl-factory/auth/security";
-import { GiFairyWand } from "react-icons/gi";
+
 import { AnyDocument } from "types/documents";
-import { UserRole } from "types/security";
 import { trimFields } from "utilities/security";
-import { Ref64 } from "types";
 import * as fauna from "../integration/fauna";
+import { SecurityController } from "controllers/SecurityController"; // TODO - reference without importing
+import { UserRole } from "@owl-factory/auth/enums";
+import { Ref64 } from "@owl-factory/types";
 
 export type PerRoleAccess<T> = T | ((doc: AnyDocument) => T);
 export interface RoleAccess<T> {

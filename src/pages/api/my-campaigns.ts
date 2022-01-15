@@ -2,8 +2,8 @@ import { NextApiRequest } from "next";
 import { CampaignLogic } from "server/logic/CampaignLogic";
 
 import { HTTPHandler, createEndpoint } from "@owl-factory/https";
-import { Ref64 } from "types";
 import { AnyDocument } from "types/documents";
+import { Ref64 } from "@owl-factory/types";
 
 function parseIDsFromDocuments(docs: Partial<AnyDocument>[]) {
   const ids: Ref64[] = [];

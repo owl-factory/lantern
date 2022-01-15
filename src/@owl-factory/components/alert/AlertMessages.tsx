@@ -1,10 +1,8 @@
 import React from "react";
 import { observer } from "mobx-react-lite";
 import styles from "./AlertMessages.module.scss";
-import { Alert, Button } from "react-bootstrap";
-import { Form, Formik } from "formik";
+import { Alert } from "react-bootstrap"; // TODO - remove React-Bootstrap
 import { AlertController, AlertMessage } from "@owl-factory/components/alert/AlertController";
-import { Input } from "../form";
 
 function onSubmit(values: any) {
   AlertController.success(values.message);

@@ -1,14 +1,14 @@
-import { Ref64 } from "types";
+import { Ref64 } from "@owl-factory/types";
 import * as fauna from "@owl-factory/database/integration/fauna";
 import { AnyDocument, CharacterDocument } from "types/documents";
-import { UserRole } from "types/security";
 import { DatabaseLogic } from "./AbstractDatabaseLogic";
 import { isOwner } from "./security";
 import { Collection, FaunaIndex } from "src/fauna";
 import { Create, Delete, Fetch, FetchMany, Index, Update } from "@owl-factory/database/decorators/crud";
 import { Access, ReadFields, SetFields } from "@owl-factory/database/decorators/modifiers";
-import { FaunaIndexOptions } from "types/fauna";
-import { SecurityController } from "@owl-factory/auth/security";
+import { SecurityController } from "controllers/SecurityController";
+import { FaunaIndexOptions } from "@owl-factory/database/types/fauna";
+import { UserRole } from "@owl-factory/auth/enums";
 
 const PUT_FIELDS = ["*"];
 

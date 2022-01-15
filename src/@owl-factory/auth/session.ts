@@ -3,8 +3,10 @@ import { NextApiRequest, NextApiResponse, NextPageContext } from "next";
 import Router from "next/router";
 import { destroyCookie, parseCookies, setCookie } from "nookies";
 import { useEffect, useState } from "react";
-import { getClient, updateClient } from "utilities/db";
 import { query as q } from "faunadb";
+import { getClient, updateClient } from "@owl-factory/database/client/fauna";
+
+// TODO - COMMENT AND REFACTOR
 
 export function signUp(username: string, email: string, password: string): void {
   fetch("/api/auth/signup", {

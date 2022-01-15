@@ -1,10 +1,9 @@
 import { fromFauna, fromIndex } from "@owl-factory/database/conversion/fauna/from";
 import { toFauna, toRef } from "@owl-factory/database/conversion/fauna/to";
-import { FaunaDocument } from "@owl-factory/database/types/fauna";
-import { Collection, FaunaIndex, FaunaIndexTerms } from "src/fauna";
+import { FaunaDocument, FaunaIndexOptions, FaunaIndexResponse } from "@owl-factory/database/types/fauna";
+import { Ref64 } from "@owl-factory/types";
 import { Expr, query as q } from "faunadb";
-import { Ref64 } from "types";
-import { FaunaIndexOptions, FaunaIndexResponse } from "types/fauna";
+import { Collection, FaunaIndex, FaunaIndexTerms } from "src/fauna"; // TODO - refactor and remove this
 import { getServerClient } from "../client/fauna";
 
 /**

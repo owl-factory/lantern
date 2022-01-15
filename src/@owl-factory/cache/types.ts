@@ -1,4 +1,5 @@
-import { Ref64 } from "types";
+import { Ref64 } from "@owl-factory/types";
+
 // Defines a base object that must have a reference element. 
 // Used to extend other interfaces (eg <T extends RefRequired>)
 export interface RefRequired {

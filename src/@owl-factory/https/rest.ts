@@ -1,5 +1,5 @@
 import fetch from "cross-fetch";
-import { ServerResponse } from "types/utilities";
+import { ServerResponse } from "./types";
 
 // The default request initialization.
 const defaultRequestInit: RequestInit = {
@@ -149,4 +149,3 @@ export const request = {
   delete: del,
 };
 export const rest = request;
-export default request;

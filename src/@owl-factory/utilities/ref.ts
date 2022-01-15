@@ -1,3 +1,4 @@
+// TODO - move back into non-Owl Factory areas
 export const collections = [
   { id: "A", string: "users" },
   { id: "B", string: "characters" },

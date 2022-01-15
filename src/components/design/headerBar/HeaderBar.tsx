@@ -1,9 +1,9 @@
 import React from "react";
 import Link from "next/link";
 import { Container, Navbar } from "react-bootstrap";
-import { getSession } from "utilities/auth";
 import styles from "./HeaderBar.module.scss";
 import dynamic from "next/dynamic";
+import { getSession } from "@owl-factory/auth/session";
 
 
 function LoggedInNavPlaceholder() {

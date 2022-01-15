@@ -7,18 +7,17 @@ import React from "react";
 import { ButtonGroup, Card, Col, Row } from "react-bootstrap";
 import { InitialProps } from "types/client";
 import { CampaignDocument, CharacterDocument, RulesetDocument } from "types/documents";
-import { getSession } from "utilities/auth";
-import { rest } from "utilities/request";
+import { getSession } from "@owl-factory/auth/session";
+import { rest } from "@owl-factory/https/rest";
 import { CampaignCache } from "controllers/cache/CampaignCache";
 import { CharacterCache } from "controllers/cache/CharacterCache";
-import { getUniques } from "utilities/arrays";
 import { RulesetCache } from "controllers/cache/RulesetCache";
 import { Modal } from "@owl-factory/components/modal";
-import { isError } from "@owl-factory/errors";
 import { NewCharacterForm } from "components/reroll/characters/NewCharacterForm";
 import { PassiveReadLevel } from "@owl-factory/cache/enums";
-import { Ref64 } from "@owl-factory/types";
 import { CharacterSheet } from "components/reroll/characters/character-sheet/CharacterSheet";
+import { Ref64 } from "@owl-factory/types";
+import { getUniques } from "@owl-factory/utilities/arrays";
 
 interface MyCharactersProps extends InitialProps {
   characters: CharacterDocument[];

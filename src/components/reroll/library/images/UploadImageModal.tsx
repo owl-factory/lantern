@@ -5,8 +5,8 @@ import { Modal } from "@owl-factory/components/modal";
 import { Tooltip } from "@owl-factory/components/tooltip";
 import { Formik, Form as FormikForm } from "formik";
 import React from "react";
-import { rest } from "utilities/request";
 import { Button } from "@owl-factory/components/button";
+import {rest} from "@owl-factory/https/rest";
 
 interface UploadImageModalProps {
   modal: boolean;

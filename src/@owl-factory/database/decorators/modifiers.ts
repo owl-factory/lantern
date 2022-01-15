@@ -1,5 +1,4 @@
-import { AnyDocument } from "types/documents";
-import { UserRole } from "types/security";
+import { UserRole } from "@owl-factory/auth/enums";
 import { Descriptor, PerRoleAccess, RoleAccess } from "./actions";
 
 const DEFAULT_READ_FIELDS = ["id"];

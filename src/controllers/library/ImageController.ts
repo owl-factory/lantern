@@ -1,8 +1,8 @@
+import { getClient } from "@owl-factory/database/client/fauna";
+import { rest } from "@owl-factory/https/rest";
 import { Client, query as q } from "faunadb";
 import { makeAutoObservable } from "mobx";
 import { CampaignDocument, ImageDocument } from "types/documents";
-import { getClient } from "utilities/db";
-import { rest } from "utilities/request";
 
 /**
  * Manages the state and massive list of images, allowing for fast

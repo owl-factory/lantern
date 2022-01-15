@@ -2,14 +2,14 @@
 import { Fetch, FetchMany, Index } from "@owl-factory/database/decorators/crud";
 import { Access, ReadFields } from "@owl-factory/database/decorators/modifiers";
 import { Collection, FaunaIndex } from "src/fauna";
-import { Ref64 } from "types";
+import { Ref64 } from "@owl-factory/types";
 import { AnyDocument, ContentDocument } from "types/documents";
-import { UserRole } from "types/security";
+import { UserRole } from "@owl-factory/auth/enums";
 import { DatabaseLogic } from "./AbstractDatabaseLogic";
 import { isOwner } from "./security";
 import * as fauna from "@owl-factory/database/integration/fauna";
-import { FaunaIndexOptions } from "types/fauna";
-import { SecurityController } from "@owl-factory/auth/security";
+import { FaunaIndexOptions } from "@owl-factory/database/types/fauna";
+import { SecurityController } from "controllers/SecurityController";
 import { toRef } from "@owl-factory/database/conversion/fauna/to";
 
 class $ContentLogic extends DatabaseLogic<ContentDocument> {
