@@ -1,6 +1,7 @@
-import { SecurityController } from "controllers/security";
+import { UserRole } from "@owl-factory/auth/enums";
+import { SecurityController } from "controllers/SecurityController";
 import { AnyDocument } from "types/documents";
-import { MyUserDocument, UserRole } from "types/security";
+import { MyUserDocument } from "types/security";
 
 /**
  * Checks if the current user is an admin

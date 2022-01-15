@@ -1,25 +1,8 @@
+import { UserRole } from "@owl-factory/auth/enums";
+import { FaunaRef } from "@owl-factory/database/types/fauna";
 import { Expr } from "faunadb";
-import { FaunaRef } from "types/fauna";
 // TODO - move role stuff to proper enum files
-/**
- * The different kinds of roles a user may have
- */
-export enum UserRole {
-  Guest="guest",
-  User="user",
-  Moderator="moderator",
-  Admin="admin"
-}
 
-/**
- * The readable names for the different kinds of user roles
- */
-export const UserRoleReadable = [
-  "guest",
-  "user",
-  "moderator",
-  "admin",
-];
 
 /**
  * A user document for easily verifying what a user has access to, if they are logged in, and their highest role
@@ -27,7 +10,7 @@ export const UserRoleReadable = [
 export interface MyUserDocument {
   id: string,
   collection: "users",
-  ref: FaunaRef | Expr,
+  ref: FaunaRef | Expr, // TODO - see if we can't get rid of this or convert it into an id
   role: UserRole,
   roles: UserRole[],
   isLoggedIn: boolean;

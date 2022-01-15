@@ -1,7 +1,7 @@
 import { NextApiRequest } from "next";
 import { ContentTypeLogic } from "server/logic/ContentTypeLogic";
-import { HTTPHandler } from "server/response";
-import { createEndpoint } from "server/utilities";
+
+import { HTTPHandler, createEndpoint } from "@owl-factory/https";
 
 /**
  * Fetches all of a user's campaigns

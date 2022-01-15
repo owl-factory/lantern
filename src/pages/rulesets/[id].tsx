@@ -1,8 +1,7 @@
 import { IndexTable, Page } from "components/design";
-import { Breadcrumbs, Button, Col, Row } from "components/style";
-import { Card, CardBody, CardHeader } from "components/style/card";
-import { Input } from "components/style/forms";
-import { Modal } from "components/style/modals";
+import { Card, CardBody, CardHeader } from "@owl-factory/components/card";
+import { Input } from "@owl-factory/components/form";
+import { Modal } from "@owl-factory/components/modal";
 import { ErrorMessage, Form, Formik } from "formik";
 import { NextPageContext } from "next";
 import Error from 'next/error';
@@ -11,8 +10,11 @@ import React from "react";
 import { MdBlock, MdBuild, MdInfo } from "react-icons/md";
 import { TableComponentProps } from "types/design";
 import { ContextMenuBuilder, TableBuilder } from "utilities/design";
-import { rest } from "utilities/request";
+import { rest } from "@owl-factory/https/rest";
 import * as Yup from "yup";
+import { Col, Row } from "@owl-factory/components/flex";
+import { Button } from "@owl-factory/components/button";
+import { Breadcrumbs } from "@owl-factory/components/Breadcrumbs";
 
 interface FetchContentTypeData {
   contentTypes: any[];

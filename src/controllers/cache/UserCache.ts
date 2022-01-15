@@ -1,5 +1,5 @@
 import { CacheController } from "@owl-factory/cache/AbstractCacheController";
-import { Ref64 } from "types";
+import { Ref64 } from "@owl-factory/types";
 import { UserDocument } from "types/documents";
 import { AssetUploadSource } from "types/enums/assetSource";
 

@@ -1,7 +1,7 @@
 import { NextApiRequest } from "next";
 import { ImageLogic } from "server/logic/ImageLogic";
-import { HTTPHandler } from "server/response";
-import { createEndpoint } from "server/utilities";
+
+import { HTTPHandler, createEndpoint } from "@owl-factory/https";
 
 /**
  * Creates a single new ruleset

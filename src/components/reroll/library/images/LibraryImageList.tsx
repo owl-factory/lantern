@@ -1,5 +1,5 @@
 
-import { Button } from "components/style";
+import { Button } from "@owl-factory/components/button";
 import React from "react";
 import { ImageDocument } from "types/documents";
 import { ImageDetailsModal, ImageList, ListFormat } from "components/reroll/library/images";

@@ -1,9 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`renders Page renders correctly 1`] = `
-<div
-  className="mt-3 container"
->
-  Testing
-</div>
-`;

@@ -1,7 +1,7 @@
 import { MessageDocument } from "types/documents";
 import { Dispatch, DispatchEvent, GameState, HostPriorityQueue } from "types/reroll/play";
-import { rest } from "utilities/request";
 import { GameServer } from "controllers/play";
+import { rest } from "@owl-factory/https/rest";
 
 /**
 * Updates the game state from the given action

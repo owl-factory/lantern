@@ -1,6 +1,6 @@
-import { Ref64 } from "types";
+import { Ref64 } from "@owl-factory/types";
 import { CoreDocument } from "types/documents";
-import { UserRole } from "types/security";
+import { UserRole } from "@owl-factory/auth/enums";
 import { ImageDocument } from "./assets";
 
 interface PartialImageDocument extends Partial<ImageDocument> {

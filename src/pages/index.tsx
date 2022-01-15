@@ -2,7 +2,8 @@ import { Page } from "components/design";
 import { AuthenticationCard } from "components/authentication";
 import Link from "next/link";
 import React from "react";
-import { Button, Col, Row } from "components/style";
+import { Button } from "@owl-factory/components/button";
+import { Col, Row } from "@owl-factory/components/flex";
 
 /**
  * Renders the not logged in index page

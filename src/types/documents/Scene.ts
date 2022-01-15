@@ -1,5 +1,5 @@
 import { GridType } from "controllers/maps/SceneController";
-import { Ref64 } from "types";
+import { Ref64 } from "@owl-factory/types";
 import { CoreDocument } from "./CoreDocument";
 
 interface MapImage {

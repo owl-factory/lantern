@@ -1,6 +1,6 @@
-import { Button } from "components/style";
-import { Card, CardBody, CardHeader } from "components/style/card";
-import { Modal } from "components/style/modals";
+import { Button } from "@owl-factory/components/button";
+import { Card, CardBody, CardHeader } from "@owl-factory/components/card";
+import { Modal } from "@owl-factory/components/modal";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { MdClose } from "react-icons/md";

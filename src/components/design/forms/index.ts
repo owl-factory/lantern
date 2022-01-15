@@ -1,1 +1,1 @@
-export * from "./ErrorMessage";
+export * from "../../../@owl-factory/components/form/ErrorMessage";
