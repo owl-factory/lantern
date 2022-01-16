@@ -1,4 +1,4 @@
-import { read } from "./objects";
+import { read } from "@owl-factory/utilities/objects";
 
 /**
  * Converts an array of strings into a comma-delimited list. Eg "a, b, c"
@@ -17,24 +17,55 @@ export function arrayToList(arr?: string[]): string {
   return list;
 }
 
+
 /**
  * Loops through each item in the storage manager and finds unique values for a given location.
  * @param target The object key (optionally deep nested) to scan through for unique values
  * @returns An unsorted array of unique values
  */
-export function getUniques(data: any, target: string): string[] {
-  if (data === undefined) { return []; }
-  const uniques: Record<string, number> = {};
-  const keys = Object.keys(data);
-  keys.forEach((key: string) => {
-    const item = data[key];
-    if (!item) { return; }
-    const value = read(item as Record<string, unknown>, target);
+export function getUniques(data: unknown[], target?: string): (number | string)[] {
+  // Base cases that would be hit by both functions
+  if (data === undefined || typeof data !== "object") { return []; }
+  if (Array.isArray(data) && data.length === 0) { return []; }
+  if (Object.keys(data).length === 0) { return []; }
 
-    // Objects are not supported right now.
-    // TODO - implement dates if we need it
-    if (typeof value === "object") { return; }
-    uniques[value as (string | number)] = 1;
+  if (target === undefined) {
+    return $getUniquesFromSimpleTypes(data);
+  }
+  return $getUniquesFromObjects(data, target);
+}
+
+/**
+ * Fetches the unique values that are nested within objects in an array
+ */
+export function $getUniquesFromObjects(data: unknown[], target: string) {
+  const uniques: (string | number)[] = [];
+  const uniqueEncounters: Record<string | number, boolean> = {};
+
+  data.forEach((item: unknown) => {
+    if (typeof item !== "object" || item === null) { return; }
+    const value = read(item as Record<string, unknown>, target);
+    if (typeof value === "object" || value as (number | string) in uniqueEncounters) { return; }
+    uniqueEncounters[value as (number | string)] = true;
+    uniques.push(value as (number | string));
   });
-  return Object.keys(uniques);
+
+  return uniques;
+}
+
+/**
+ * Fetches the unique values in an array of simple values
+ */
+export function $getUniquesFromSimpleTypes(data: (string | number)[]): (number | string)[] {
+  const uniques: (string | number)[] = [];
+  const uniqueEncounters: Record<string | number, boolean> = {};
+
+  data.forEach((item: (string | number)) => {
+    if (typeof item === "object") { return; }
+    if (item in uniqueEncounters) { return; }
+    uniqueEncounters[item] = true;
+    uniques.push (item);
+  });
+
+  return uniques;
 }

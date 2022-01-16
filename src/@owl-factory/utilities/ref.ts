@@ -1,4 +1,4 @@
-// TODO - move back into non-Owl Factory areas
+// TODO - move back into non-Owl Factory areas. Requires refactor
 export const collections = [
   { id: "A", string: "users" },
   { id: "B", string: "characters" },

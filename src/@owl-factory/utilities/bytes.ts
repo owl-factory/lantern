@@ -7,8 +7,8 @@ export function bytesToReadable(bytes: number): string {
   const units = [ "B", "KB", "MB", "GB" ];
   let readableBytes = bytes;
   for (let i = 0; i < units.length; i++) {
-    if (readableBytes < 1024) { return `${readableBytes.toFixed(2)} ${units[i]}`; }
+    if (readableBytes < 1024) { return `${readableBytes.toFixed(2).replace(/\.00/, "")} ${units[i]}`; }
     readableBytes = readableBytes / 1024;
   }
-  return `${readableBytes.toFixed(2)} TB`;
+  return `${readableBytes.toFixed(2).replace(/\.00/, "")} TB`;
 }
