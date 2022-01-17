@@ -28,6 +28,9 @@ function $ImageDetailsModal({ imageID, open, handleClose }: ImageDetailsModalPro
 
 
 
+  /**
+   * Deletes a single image using the Image Manager and closes the modal
+   */
   function deleteImage() {
     handleClose();
   }

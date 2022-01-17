@@ -11,6 +11,11 @@ interface LinkImageModalProps {
   handleClose: () => void;
 }
 
+/**
+ * Renders a modal and form to link an image
+ * @param handleClose The function to close this modal
+ * @param modal True if the modal should be open
+ */
 export function LinkImageModal({ handleClose, modal }: LinkImageModalProps) {
   function saveLinkedImage(values: any) {
     // TODO - have linked image

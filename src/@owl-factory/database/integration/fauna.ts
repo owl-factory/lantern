@@ -58,6 +58,8 @@ export async function findByID<T>(id: string): Promise<T | undefined> {
  * @returns A list of documents
  */
 export async function findManyByIDs<T>(ids: Ref64[]): Promise<T[]> {
+  if (ids === undefined) { return []; }
+
   const docs: Promise<T>[] = [];
   ids.forEach((id: Ref64) => {
 

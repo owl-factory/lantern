@@ -16,6 +16,11 @@ interface ImageThumbnailProps {
   onClick: (image: Partial<ImageDocument>) => void
 }
 
+/**
+ * Renders an icon and name of an image
+ * @param image The image document to render an icon for
+ * @param onClick A function to run when clicked
+ */
 function ImageIcon({ image, onClick }: ImageThumbnailProps) {
   return (
     <Col xs={12}>
@@ -29,6 +34,11 @@ function ImageIcon({ image, onClick }: ImageThumbnailProps) {
   );
 }
 
+/**
+ * Renders a thumbnail and name of an image
+ * @param image The image document to render a thumbnail for
+ * @param onClick A function to run on click
+ */
 function ImageThumbnail({ image, onClick }: ImageThumbnailProps) {
   return (
     <Col xs={6} sm={4} md={3} lg={2}>
