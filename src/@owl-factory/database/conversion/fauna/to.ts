@@ -24,11 +24,11 @@ export function toFauna(doc: Record<string, unknown>): FaunaDocument {
  * @param data The array with JSON items to convert into a usable fauna format
  * @returns A converted Fauna array
  */
-function toArray(data: unknown[]): unknown[] {
+export function $toArray(data: unknown[]): unknown[] {
   const faunaData: unknown[] = [];
 
   data.forEach((item: unknown) => {
-    const faunaItem = toItem(item);
+    const faunaItem = $toItem(item);
     if (faunaItem === undefined) { return; }
     faunaData.push(faunaItem);
   });
@@ -41,7 +41,7 @@ function toArray(data: unknown[]): unknown[] {
  * @param data The Javascript date object to convert
  * @returns A converted Fauna date
  */
-function toDate(data: Date) {
+export function $toDate(data: Date) {
   return q.Time(data.toISOString());
 }
 
@@ -55,7 +55,7 @@ function toRecord(data: Record<string, unknown>): Record<string, unknown> {
   const dataKeys = Object.keys(data);
 
   dataKeys.forEach((dataKey: string) => {
-    faunaData[dataKey] = toItem(data[dataKey]);
+    faunaData[dataKey] = $toItem(data[dataKey]);
   });
 
   return faunaData;
@@ -66,7 +66,7 @@ function toRecord(data: Record<string, unknown>): Record<string, unknown> {
  * @param data The item to convert
  * @returns A converted Fauna item
  */
-function toItem(data: unknown): unknown {
+export function $toItem(data: unknown): unknown {
   const dataType: string = getDataType(data);
   switch(dataType) {
     case "boolean":
@@ -78,9 +78,9 @@ function toItem(data: unknown): unknown {
     case "undefined":
       return undefined;
     case "array":
-      return toArray(data as unknown[]);
+      return $toArray(data as unknown[]);
     case "date":
-      return toDate(data as Date);
+      return $toDate(data as Date);
     case "ref":
       return toRef(data as string);
     case "object":
