@@ -13,7 +13,7 @@
     "noEmit": true,
     "esModuleInterop": true,
     "experimentalDecorators": true,
-    "target": "es5",
+    "target": "esnext",
     "sourceMap": true,
     "module": "esnext",
     "moduleResolution": "node",
@@ -23,17 +23,47 @@
     "strict": true,
     "baseUrl": ".",
     "paths": {
-      "client": ["src/client"],
-      "client/*": ["src/client/*"],
-      "components": ["src/components"],
-      "components/*": ["src/components/*"],
-      "server": ["src/server"],
-      "server/*": ["src/server/*"],
-      "types": ["src/types"],
-      "types/*": ["src/types/*"],
-      "utilities": ["src/utilities"],
-      "utilities/*": ["src/utilities/*"],
-    }
+      "@owl-factory/*": [
+        "src/@owl-factory/*"
+      ],
+      "controllers": [
+        "src/controllers"
+      ],
+      "controllers/*": [
+        "src/controllers/*"
+      ],
+      "components": [
+        "src/components"
+      ],
+      "components/*": [
+        "src/components/*"
+      ],
+      "server": [
+        "src/server"
+      ],
+      "server/*": [
+        "src/server/*"
+      ],
+      "tests": [
+        "src/tests"
+      ],
+      "tests/*": [
+        "src/tests/*"
+      ],
+      "types": [
+        "src/types"
+      ],
+      "types/*": [
+        "src/types/*"
+      ],
+      "utilities": [
+        "src/utilities"
+      ],
+      "utilities/*": [
+        "src/utilities/*"
+      ]
+    },
+    "incremental": true
   },
   "exclude": [
     "node_modules",

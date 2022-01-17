@@ -1,44 +1,27 @@
 
-export * from "./CoreDocument";
-export * from "./Campaign";
-export * from "./CommonContentType";
-export * from "./Content";
-export * from "./ContentType";
-export * from "./Entity";
-export * from "./Message";
-export * from "./Module";
-export * from "./Organization";
-export * from "./Ruleset";
-export * from "./Table";
-export * from "./UserProfile";
-export * from "./misc";
+export * from "types/documents/assets";
+export * from "types/documents/CoreDocument";
+export * from "types/documents/Campaign";
+export * from "types/documents/Character";
+export * from "types/documents/Content";
+export * from "types/documents/ContentType";
+export * from "types/documents/Message";
+export * from "types/documents/Ruleset";
+export * from "types/documents/Scene";
+export * from "types/documents/User";
+export * from "types/documents/misc";
 
-import { CampaignDoc } from "./Campaign";
-import { Content } from "./Content";
-import { ContentTypeDoc } from "./ContentType";
-import { Entity } from "./Entity";
-import { CoreDocument } from "./CoreDocument";
-import { MessageDoc } from "./Message";
-import { ModuleDoc } from "./Module";
-import { OrganizationDoc } from "./Organization";
-import { RulesetDoc } from "./Ruleset";
-import { TableDoc } from "./Table";
-import { UserProfileDoc } from "./UserProfile";
+import * as type from "types/documents";
 
-/**
- * A generic document type for any situation where we might be getting document data but
- * we're unsure of the source
- */
-export type GenericDocumentType = (
-  CampaignDoc |
-  Content |
-  ContentTypeDoc |
-  Entity |
-  CoreDocument |
-  MessageDoc |
-  ModuleDoc |
-  OrganizationDoc |
-  RulesetDoc |
-  TableDoc |
-  UserProfileDoc
+export type AnyDocument = (
+  type.AnyAssetDocument |
+  type.CoreDocument |
+  type.CampaignDocument |
+  type.CharacterDocument |
+  type.ContentDocument |
+  type.ContentTypeDocument |
+  type.MessageDocument |
+  type.RulesetDocument |
+  type.SceneDocument |
+  type.UserDocument
 );

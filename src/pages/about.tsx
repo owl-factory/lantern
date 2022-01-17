@@ -1,7 +1,7 @@
 import React from "react";
-import Page from "../components/design/Page";
+import Page from "components/design/Page";
 import Link from "next/link";
-import { Button } from "react-bootstrap";
+import { Button } from "@owl-factory/components/button";
 
 
 function About(): JSX.Element {
@@ -19,10 +19,12 @@ function About(): JSX.Element {
       <p>
         P.S. You are Cute, whoever you are.
       </p>
-      <Link href="../" passHref>
-        <Button title="Home" color="secondary">
+      <Link href="/" passHref>
+        <a>
+        <Button>
           Home
         </Button>
+        </a>
       </Link>
     </Page>
   );

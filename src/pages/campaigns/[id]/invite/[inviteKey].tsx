@@ -1,8 +1,11 @@
 import React from "react";
-import { Button, Page } from "components";
+import { Button } from "@owl-factory/components/button";
+import { Page } from "components/design";
 import { NextPageContext } from "next";
-import { rest } from "utilities";
 import Link from "next/link";
+import { query as q } from "faunadb";
+import { getSession, requireClientLogin } from "@owl-factory/auth/session";
+import { getClient, readQuery } from "@owl-factory/database/client/fauna";
 
 
 export default function InviteHandler(props: any) {
@@ -21,13 +24,13 @@ export default function InviteHandler(props: any) {
           <Button type="button">Back to the Campaign</Button>
         </Link>
       </>
-    )
+    );
   }
 
   function JoinFail() {
     return (
       <>
-        This game may not exist or the code is invalid.
+        This game may not exist or the code is invalid.<br/>
         <Link href="/">
           <Button type="button">Back Home</Button>
         </Link>
@@ -37,18 +40,22 @@ export default function InviteHandler(props: any) {
 
   return (
     <Page>
-      { props.success ?
+      { props.data ?
         <JoinSuccess/> : <JoinFail/>
       }
     </Page>
-  )
+  );
 }
 
 InviteHandler.getInitialProps = async (ctx: NextPageContext) => {
-  const res = await rest.patch(
-    `/api/campaigns/${ctx.query.id}/invite`,
-    { inviteKey: ctx.query.inviteKey }
-  );
-
-  return res;
+  const session = getSession(ctx);
+  if (!requireClientLogin(session, ctx)) { return {}; }
+  const client = getClient(ctx);
+  const { data, error } = await readQuery(client.query(
+    q.Call(
+      `join_campaign`,
+      [ctx.query.id as string, ctx.query.inviteKey as string]
+    )
+  ));
+  return { session, data, error };
 };

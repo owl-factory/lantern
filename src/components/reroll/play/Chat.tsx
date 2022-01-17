@@ -1,10 +1,10 @@
-import Tooltip from "components/design/Tooltip";
+import { Tooltip } from "@owl-factory/components/tooltip";
 import { Form, Formik } from "formik";
 import { observer } from "mobx-react-lite";
 import React from "react";
-import { MessageDoc } from "types";
-import { Input, Select, TextArea } from "../..";
-import { GameServer } from "../../../client";
+import { MessageDocument } from "types/documents";
+import { GameServer } from "controllers/play";
+import { Input, Select } from "@owl-factory/components/form";
 
 interface ChatProps {
   server: GameServer;
@@ -21,7 +21,7 @@ function MessageTime({ createdAt }: {createdAt?: Date}) {
     hour12: true,
     hour: "numeric",
     minute: "2-digit",
-    dayPeriod: "short",
+    // dayPeriod: "short",
   }
   ).format(createdAtDate);
   const now = new Date();
@@ -39,7 +39,7 @@ function MessageTime({ createdAt }: {createdAt?: Date}) {
       hour12: true,
       hour: "numeric",
       minute: "2-digit",
-      dayPeriod: "short",
+      // dayPeriod: "short",
     }
     ).format(createdAtDate);
   }
@@ -53,12 +53,12 @@ function MessageTime({ createdAt }: {createdAt?: Date}) {
   );
 }
 
-function shouldSmooth(message: MessageDoc, previousMessages: MessageDoc[], index: number) {
+function shouldSmooth(message: MessageDocument, previousMessages: MessageDocument[], index: number) {
   if (index === 0) { return false; }
 
   let count = 0;
   let smooth = false;
-  console.log(`${message.name}: ${message.content}`)
+  console.log(`${message.name}: ${message.content}`);
   for(let i = index - 1; i >= 0; i--) {
     count++;
     if (count > 4) { return smooth; }
@@ -78,7 +78,7 @@ function shouldSmooth(message: MessageDoc, previousMessages: MessageDoc[], index
  * Renders a single message
  * @param message The message doc object to render
  */
-function Message({ messages, index }: { messages: MessageDoc[], index: number }): JSX.Element {
+function Message({ messages, index }: { messages: MessageDocument[], index: number }): JSX.Element {
   const message = messages[index];
   if (typeof message.createdAt === "string") { message.createdAt = new Date(message.createdAt); }
 
@@ -107,20 +107,20 @@ function Message({ messages, index }: { messages: MessageDoc[], index: number })
  */
 export const Chat = observer((props: ChatProps) => {
   const { server } = props;
-  if (!server.isReady) { return <></>}
+  if (!server.isReady)
+    return <></>;
 
-  function sendMessage(values: MessageDoc) {
+  function sendMessage(values: MessageDocument) {
     // message.
     server?.fireTextMessage(values);
   }
 
   const messageBlock: JSX.Element[] = [];
-  const sendAsOptions = [
-    { value: '', label: server.user.name },
+  const options = [
+    <option value="">{server.user.name}</option>,
   ];
-  console.log(sendAsOptions)
 
-  server.state.messages.forEach((_: MessageDoc, index: number) => {
+  server.state.messages.forEach((_: MessageDocument, index: number) => {
     messageBlock.push(<Message messages={server.state.messages} index={index} key={index}/>);
   });
 
@@ -129,14 +129,15 @@ export const Chat = observer((props: ChatProps) => {
       <h2>Chat</h2>
       {messageBlock}
       <Formik
-        initialValues={{name: "", sendAs: "", content: ""} as MessageDoc}
-        onSubmit={(values: MessageDoc) => sendMessage(values)}
+        initialValues={{sendAs: "", content: ""} as MessageDocument}
+        onSubmit={(values: MessageDocument) => sendMessage(values)}
       >
       {() => (
         <Form>
-          <Input name="name"/>
-          <Select name="sendAs" options={sendAsOptions} includeEmpty={false} valueKey="value"/>
-          <TextArea name="content"/>
+          <Select name="sendAs">
+            {options}
+          </Select>
+          <Input type="textarea" name="content"/>
           <button type="submit">Submit</button>
         </Form>
       )}

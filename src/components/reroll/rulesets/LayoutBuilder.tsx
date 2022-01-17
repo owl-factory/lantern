@@ -1,5 +1,5 @@
 import React from "react";
-import { Toolbox } from "../..";
+import { Toolbox } from "components/design";
 
 interface LayoutBuilderProps {
   layout: any;
@@ -18,6 +18,7 @@ function ToolboxContent() {
   );
 }
 
+// TODO, use or remove these props
 export function LayoutBuilder(props: LayoutBuilderProps) {
   const [ open, setOpen ] = React.useState(false);
 

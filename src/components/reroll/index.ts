@@ -1,1 +1,1 @@
-export * from "./rulesets";
+export * from "components/reroll/rulesets";

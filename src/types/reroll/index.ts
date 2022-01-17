@@ -1,1 +1,1 @@
-export * from "./play";
+export * from "types/reroll/play";

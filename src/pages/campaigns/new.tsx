@@ -1,51 +1,56 @@
 import React from "react";
-import { useSession } from "next-auth/client";
-import { Button, Input, Page, Select } from "components";
+import { Page } from "components/design";
 import { Form, Formik } from "formik";
-import { rest } from "../../utilities";
-import { CampaignDoc } from "types";
 import { useRouter } from "next/router";
-
-interface RestResponse<T> {
-  success: boolean;
-  message: string;
-  data: T;
-}
-
-interface CreateTableResponse {
-  campaign: CampaignDoc;
-}
+import { NextPageContext } from "next";
+import { query as q } from "faunadb";
+import { Button } from "@owl-factory/components/button";
+import { Input } from "@owl-factory/components/form";
+import { Select } from "@owl-factory/components/form/Select";
+import { getClient, readQuery } from "@owl-factory/database/client/fauna";
+import { getSession, requireClientLogin } from "@owl-factory/auth/session";
 
 export default function NewCampaign(props: any): JSX.Element {
   const router = useRouter();
-  const [ session, loading ] = useSession();
-  if (!loading && !session) {
+  const client = getClient();
+
+  if (!props.session) {
     return <>You need to be logged in to create a campaign</>;
   }
 
   async function createCampaign(values: any) {
-    const res: RestResponse<CreateTableResponse> = await rest.put("/api/campaigns", values);
-
-    if (res.success) {
-      const href = `/campaigns/${res.data.campaign._id}`;
-      router.push(href);
-    }
+    const { data, error } = await readQuery(client.query(
+      q.Call(
+        "create_campaign",
+        [ values ]
+      )
+    ));
+    // if (data) {
+    //   router.push(href);
+    // }
   }
+
+  const options: JSX.Element[] = [];
+  props.rulesets.forEach((ruleset: any) => {
+    options.push(<option value={ruleset[1]}>{ruleset[0]}</option>);
+  });
 
   return (
     <Page>
       <h1>Create a New Campaign</h1>
       <Formik
-        initialValues={{ name: "" }}
-        onSubmit={(values: any) => {createCampaign(values)}}
+        initialValues={{ name: "", ruleset: "" }}
+        onSubmit={(values: any) => { createCampaign(values); }}
       >
         {() => (
         <Form>
           <label>Name</label>
-          <Input name="name"/>
+          <Input type="text" name="name"/>
 
           <label>Ruleset</label>
-          <Select name="rulesetID" options={props.data.initialRulesets} labelKey="name" valueKey="_id"/>
+          <Select name="ruleset" >
+            {options}
+          </Select>
 
           <Button type="submit">Create</Button>
         </Form>
@@ -55,6 +60,11 @@ export default function NewCampaign(props: any): JSX.Element {
   );
 }
 
-NewCampaign.getInitialProps = async () => {
-  return await rest.get("/api/pages/campaigns/new");
+NewCampaign.getInitialProps = async (ctx: NextPageContext) => {
+  const session = getSession(ctx);
+  if (!requireClientLogin(session, ctx)) { return {}; }
+  const client = getClient(ctx);
+
+
+  return { session, rulesets: {} };
 };

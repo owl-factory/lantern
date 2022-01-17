@@ -1,9 +1,8 @@
 import React from "react";
 import { Form, Formik } from "formik";
-import Table from "./Table";
-import Pagination, { PageState } from "../Pagination";
-import { TableBuilder } from "../../../utilities";
-import { GenericDocumentType } from "../../../types";
+import { Table } from "components/design/tables";
+import { TableBuilder } from "utilities/design";
+import Pagination, { PageState } from "@owl-factory/components/Pagination";
 
 
 interface newFilterState {
@@ -32,7 +31,7 @@ type fetchContentFunction = (
 // The props for the IndexTable
 interface IndexTableProps {
   children?: JSX.Element;
-  content: Record<string, unknown>[] | GenericDocumentType[];
+  content: Record<string, unknown>[] | any[];
   contentCount: number;
   fetchContent: fetchContentFunction;
   filters: Record<string, unknown>;

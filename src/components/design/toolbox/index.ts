@@ -1,1 +1,1 @@
-export * from "./Toolbox";
+export * from "components/design/toolbox/Toolbox";

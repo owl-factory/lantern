@@ -1,28 +1,34 @@
+import { IndexTable, Page } from "components/design";
+import { Card, CardBody, CardHeader } from "@owl-factory/components/card";
+import { Input } from "@owl-factory/components/form";
+import { Modal } from "@owl-factory/components/modal";
 import { ErrorMessage, Form, Formik } from "formik";
 import { NextPageContext } from "next";
 import Error from 'next/error';
 import { useRouter } from "next/router";
 import React from "react";
-import { Button, Card, Col, FormGroup, FormLabel, Row } from "react-bootstrap";
-import { MdInfo, MdBuild, MdBlock } from "react-icons/md";
-import { Breadcrumbs, ContextMenu, IndexTable, Input, Modal, Page } from "../../components";
-import { ContentTypeDoc, RulesetDoc, TableComponentProps } from "../../types";
-import { ContextMenuBuilder, TableBuilder, rest } from "../../utilities";
+import { MdBlock, MdBuild, MdInfo } from "react-icons/md";
+import { TableComponentProps } from "types/design";
+import { ContextMenuBuilder, TableBuilder } from "utilities/design";
+import { rest } from "@owl-factory/https/rest";
 import * as Yup from "yup";
+import { Col, Row } from "@owl-factory/components/flex";
+import { Button } from "@owl-factory/components/button";
+import { Breadcrumbs } from "@owl-factory/components/Breadcrumbs";
 
 interface FetchContentTypeData {
-  contentTypes: ContentTypeDoc[];
+  contentTypes: any[];
   contentTypeCount: number;
 }
 
 interface RulesetPageProps {
-  contentTypes: ContentTypeDoc[];
+  contentTypes: any[];
   contentTypeCount: number;
-  ruleset: RulesetDoc;
+  ruleset: any;
 }
 
 interface FetchRulesetData {
-  ruleset: RulesetDoc;
+  ruleset: any;
 }
 
 const initialContentTypeLimit = 10;
@@ -33,17 +39,15 @@ const initialContentTypeSort = "name";
  * Deletes a single context type
  * @param context the content type context that indicates relevant data for deleting
  */
-async function deleteContentType(context: ContentTypeDoc): Promise<void> {
-  if (confirm(`Are you sure you want to delete ${context.name}?`)) {
-    await rest.delete(`/api/content-types/${context._id}`, {});
-  }
+async function deleteContentType(context: any): Promise<void> {
+  // TODO - implement this
 }
 
 // Adds actions for the table builder
 const contentTypeActions = new ContextMenuBuilder()
 .addLink("Details", MdInfo, "/content-types/[alias]")
 .addLink("Edit", MdBuild, "/content-types/[alias]/edit")
-.addItem("Delete", MdBlock, (context: ContentTypeDoc) => (deleteContentType(context)));
+.addItem("Delete", MdBlock, (context: any) => (deleteContentType(context)));
 
 // Builds the table columns
 const contentTypeTableBuilder = new TableBuilder()
@@ -57,10 +61,7 @@ const contentTypeTableBuilder = new TableBuilder()
  */
 function ContentTypeActions({ data }: TableComponentProps) {
   return (
-    <ContextMenu
-      context={{_id: data._id, name: data.name, alias: data.alias || data._id, rulesetID: data.rulesetID}}
-      {...contentTypeActions.renderConfig()}
-    />
+    <></>
   );
 }
 
@@ -79,16 +80,9 @@ function NewContentTypeForm(): JSX.Element {
    */
   async function onSubmit(values: Record<string, string>) {
     values.rulesetID = rulesetID as string;
-    const response = await rest.put<{ contentType: ContentTypeDoc }>(
-      `/api/content-types`,
-      values
-    );
-    if (!response.success) {
-      alert(response.message);
-      return;
-    }
+    // TODO - implement this
 
-    const href = `/content-types/${response.data.contentType._id}`;
+    const href = `/content-types/content-type-here`;
     router.push(href);
   }
 
@@ -107,11 +101,11 @@ function NewContentTypeForm(): JSX.Element {
         <Form>
           {/* Just name for now */}
           <Row>
-            <FormGroup as={Col} xs={12} lg={6}>
-              <FormLabel>Content Type Name</FormLabel>
-              <Input name="name"/>
+            <Col xs={12} lg={6}>
+              <label>Content Type Name</label>
+              <Input type="text" name="name"/>
               <ErrorMessage name="name"/>
-            </FormGroup>
+            </Col>
           </Row>
 
           <Button type="submit">Submit!</Button>
@@ -131,10 +125,10 @@ function ContentTypeModal({ handleClose, modal }: { handleClose: () => void, mod
   return (
     <Modal open={modal} handleClose={handleClose}>
       <Card>
-        <Card.Header>Create a New Content Type</Card.Header>
-        <Card.Body>
+        <CardHeader>Create a New Content Type</CardHeader>
+        <CardBody>
           <NewContentTypeForm/>
-        </Card.Body>
+        </CardBody>
       </Card>
     </Modal>
   );
@@ -167,14 +161,8 @@ function RulesetPage({
     skip: number,
     sort: string
   ): Promise<any> {
-    const res = await rest.post<FetchContentTypeData>(
-      `/api/ruleset/${ruleset._id}/content-types`,
-      {
-        filters,
-        options: { limit, skip, sort },
-      }
-    );
-    return { content: res.data.contentTypes, count: 0 };
+    // TODO - implement
+    // return { content: res.data.contentTypes, count: 0 };
   }
 
   return (

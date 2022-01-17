@@ -1,0 +1,84 @@
+$drawer-width: 20em;
+
+.drawer {
+  position: absolute;
+  right: -1 * $drawer-width;
+
+  height: 100%; 
+  width: $drawer-width; // TODO - media query & variable for the width
+
+  background-color: pink;
+
+  transition: right 0.5s;
+
+  &.open {
+    right: 0;
+
+    transition: right 0.5s;
+  }
+
+  .tabContainer {
+    position: relative;
+    top: 1em;
+
+    z-index: 0;
+
+    .tab {
+      position: relative;
+      left: -2.5em;
+
+      background-color: lightblue;
+
+      transition: left 0.75s;
+
+      &:hover {
+        left: -10em;
+        transition: left 0.25s;
+      }
+
+      .tabIcon {
+        display: inline-block;
+        width: 2.5em;
+        height: 2.5em;
+
+        margin-right: 0.5em;
+
+        text-align: center;
+        line-height: 2.5em;
+      }
+    }
+  }
+
+  .contentContainer {
+    position: absolute;
+
+    height: 100%;
+    width: 15em;
+
+    background-color: lightgreen;
+    z-index: 2;
+
+    .content {
+      position: absolute;
+      visibility: hidden;
+      height: 100%;
+      width: $drawer-width;
+
+      background-color: lavender;
+
+      padding: 0.75em;
+
+      z-index: 1;
+
+      transition: visibility 0.5s;
+
+      &.open {
+        visibility: visible;
+
+        z-index: 3;
+
+        transition-delay: 0s;
+      }
+    }
+  }
+}

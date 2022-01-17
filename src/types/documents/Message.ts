@@ -1,30 +1,25 @@
-import { Ref, prop } from "@typegoose/typegoose";
-import { CoreDocument } from "types/documents/CoreDocument";
-import { CampaignDoc, UserProfileDoc } from "types";
+import { Ref64 } from "@owl-factory/types";
+import { CampaignDocument, CoreDocument, UserDocument } from "types/documents";
 
 export enum MessageType {
   Text,
 }
 
-export class MessageDoc extends CoreDocument {
-  @prop({ ref: "campaigns" })
-  campaign?: Ref<CampaignDoc>;
+export interface MessageDocument extends CoreDocument {
+  campaign?: { ref: Ref64; };
 
   // The user who sent the message
-  @prop({ ref: "userProfiles"})
-  author?: Ref<UserProfileDoc>;
-
-  @prop()
-  sentAs?: string;
+  author?: { ref: Ref64; };
 
   // Name used for the messager name
-  @prop({ enum: MessageType, type: Number })
+  sendAs?: string;
+
   type?: MessageType;
 
   // The text content of the message
-  @prop()
   content?: string;
 
   // A value for rendering messages
   isSmoothed?: boolean;
+
 }

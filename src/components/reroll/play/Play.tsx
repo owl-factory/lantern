@@ -1,11 +1,11 @@
 import React from "react";
-import { DispatchEvent } from "types";
-import { Chat } from "./Chat";
+import { DispatchEvent } from "types/reroll/play";
+import { Chat } from "components/reroll/play";
 
-import { GameServer } from "client";
+import { GameServer } from "controllers/play";
 import { observer } from "mobx-react-lite";
-import { rest } from "utilities";
 import { useRouter } from "next/router";
+import { rest } from "@owl-factory/https/rest";
 
 const gameServer = new GameServer();
 gameServer.state = {
@@ -32,16 +32,12 @@ export const Play = observer(() => {
 
   // ON LOAD
   React.useEffect(() => {
-    rest.get(`/api/play/${router.query.id}`)
+    rest.get(`/api/play/${router.query.ref}`)
     .then((res: any) => {
       if (res.success) {
         gameServer.state.messages = res.data.messages;
-        gameServer.state.entities = {
-          "123": {
-            name: "Cyri Garneaux",
-          }
-        }
-        console.log(gameServer.state.messages)
+        gameServer.state.entities = {};
+        console.log(gameServer.state.messages);
         gameServer.connect(res.data.campaign._id as string, res.data.userProfile);
 
       }

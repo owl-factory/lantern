@@ -1,3 +1,5 @@
+.vscode
+
 # dependencies
 node_modules
 
@@ -7,6 +9,9 @@ dist
 out_functions
 out_publish
 out
+
+# Non-Production Images
+public/images
 
 # testing
 coverage
