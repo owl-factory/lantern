@@ -1,0 +1,10 @@
+CreateIndex({
+  name: "campaigns_by_user",
+  source: Collection("campaigns"),
+  terms: [{ field: ["data", "players"]} ],
+  values: [
+    { field: ["data", "lastPlayedAt"], reverse: true },
+    { field: ["ref"]},
+    { field: ["data", "name"]},
+    { field: ["data", "banner", "data", "src"]}],
+})

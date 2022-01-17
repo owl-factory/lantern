@@ -1,142 +1,151 @@
-import { Expr } from "faunadb";
 import { ImageDocument } from "types/documents";
-import { FaunaRef } from "types/fauna";
-import { CoreModelLogic } from "./CoreModelLogic";
-import { query as q } from "faunadb";
-import { getServerClient } from "utilities/db";
-import { buildRef, mapFauna } from "utilities/fauna";
-import { AssetSource } from "types/enums/assetSource";
-import { AssetType } from "types/enums/assetType";
+import { isOwner } from "./security";
+import { UserRole } from "@owl-factory/auth/enums";
+import { Collection, FaunaIndex } from "src/fauna";
+import { DatabaseLogic } from "./AbstractDatabaseLogic";
+import * as fauna from "@owl-factory/database/integration/fauna";
+import { Ref64 } from "@owl-factory/types";
+import { Access, ReadFields, SetFields } from "@owl-factory/database/decorators/modifiers";
+import { Create, Delete, Fetch, FetchMany, Index } from "@owl-factory/database/decorators/crud";
+import { FaunaIndexOptions } from "@owl-factory/database/types/fauna";
+import { SecurityController } from "controllers/SecurityController";
+import { toRef } from "@owl-factory/database/conversion/fauna/to";
+import { AssetUploadSource } from "types/enums/assetSource";
 
 const createFields = [
   "name",
   "src",
   "height",
   "width",
+  "sizeInBytes",
+  "source",
 ];
 
-export class ImageLogic {
-  /**
-   * Validates the image document and saves to the database
-   * @param image The image document to save to the database
-   * @param myID The current user's id
-   */
-  public static async createExternalLink(image: ImageDocument, myID: string): Promise<ImageDocument> {
-    // Validate external image
-    image = CoreModelLogic.trimRestrictedFields(image, createFields);
-
-    image.assetSource = AssetSource.ExternalLink;
-    image.sizeInBytes = 0;
-
-    return this.createOne(image, myID) as ImageDocument;
-  }
+class $ImageLogic extends DatabaseLogic<ImageDocument> {
+  public collection = Collection.Images;
 
   /**
-   * 
-   * @param image The image document to create
-   * @param targetImage THe target image document that we're linking to
-   * @param myID 
-   * @returns 
+   * Creates a single new image document
+   * @param doc The image document partial to create
+   * @param doc The image document partial to create
+   * @returns The new image document
    */
-  public static async createInternalLink(
-    image: ImageDocument,
-    targetImage: ImageDocument,
-    myID: string
-  ): Promise<ImageDocument> {
-    let sourceImage = await this.fetchImageByRef(
-      buildRef(targetImage.id as string, targetImage.collection as string), myID, ["admin"]
-    );
+  public async create(method: AssetUploadSource, doc: Partial<ImageDocument>): Promise<ImageDocument> {
+    let result: ImageDocument;
+    switch(method) {
+      case AssetUploadSource.Select:
+        if (!doc.ref) { throw {code: 500, message: "An image ID is required for the Select create method." }; }
+        result = await this.findOne(doc.ref);
+        if (!result) { throw { code: 404, message: "Image not found."}; }
+        return result;
 
-    if (sourceImage === null) { throw { code: 404, message: "Source image does not exist" }; }
+      case AssetUploadSource.ExternalLink:
+        result = await this.createExternalLink(doc);
+        return result;
 
-    switch(sourceImage.assetSource) {
-      // In cases where the image is an external link, copy over the external link
-      // TODO - do we want to keep reference image information?
-      case AssetSource.ExternalLink:
-        image.src = sourceImage.src;
-        image.height = sourceImage.height;
-        image.width = sourceImage.width;
-        return this.createExternalLink(image, myID);
+      case AssetUploadSource.InternalLink:
+      case AssetUploadSource.Purchased:
+      case AssetUploadSource.Upload:
+      case AssetUploadSource.Created:
+        throw { code: 501, message: "This method is not currently implemented." };
 
-      // If this Asset is interally linked to another asset. Grab that asset directly
-      case AssetSource.InternalLink:
-        sourceImage = await this.fetchImageByRef(sourceImage.ref as FaunaRef, myID, ["admin"]);
-        if (sourceImage === null) { throw { code: 404, message: "Source image does not exist" }; }
-        break;
+      default:
+        throw { code: 400, message: "This creation method is not allowed." };
     }
-
-    image = CoreModelLogic.trimRestrictedFields(image, createFields);
-    image.assetSource = AssetSource.InternalLink;
-    image.sizeInBytes = 0;
-
-    return this.createOne(image, myID) as ImageDocument;
   }
 
   /**
-   * Creates a new Image document
-   * @param image The image document to create
-   * @param myID The current user's id
+   * Creates a single new image document linking to an external image
+   * @param doc The image document partial to create
+   * @returns The new image document
    */
-  public static async createOne(image: ImageDocument, myID: string): Promise<ImageDocument> {
-    image.assetType = AssetType.Image;
-
-    return mapFauna(await CoreModelLogic.createOne("images", myID, { data: image })) as ImageDocument;
+  @Create
+  @Access({[UserRole.User]: true})
+  @ReadFields(["*"])
+  @SetFields(createFields)
+  public async createExternalLink(doc: Partial<ImageDocument>): Promise<ImageDocument> {
+    const image = await fauna.createOne<ImageDocument>(this.collection, doc);
+    if (image === undefined) { throw { code: 500, message: "An unexpected error occured while creating the image"}; }
+    return image;
   }
 
   /**
-   * Deletes an image from the database and CDN (if present)
-   * @param ref The image ref to delete from the database and CDN
-   * @param myID The current user's id
-   * @param roles The current user's roles
+   * Deletes a single image document from the database and wherever it is stored
+   * @param id The ID of the image document to delete
+   * @returns The deleted image document
    */
-  public static async deleteImage(ref: FaunaRef | Expr, myID: string, roles: string[]): Promise<boolean> {
-    const image = await this.fetchImageByRef(ref, myID, roles);
-    if (!image) { throw { code: 404, status: "The image could not be found."}; }
-    return false;
+  @Delete
+  @Access({[UserRole.User]: isOwner, [UserRole.Admin]: true})
+  @ReadFields(["*"])
+  public async deleteOne(id: Ref64): Promise<ImageDocument> {
+    const image = await fauna.deleteOne<ImageDocument>(id);
+    if (image === undefined) { throw {code: 500, message: "An unexpected error occured while deleting the document"}; }
+    return image;
   }
 
   /**
-   * Fetches a user's images from an index
-   * @param myID The current user's id
-   * @param roles The roles for the current user
+   * Fetches one image from its ID
+   * @param id The Ref64 ID of the document to fetch
+   * @returns The image document
    */
-  public static async fetchMyImages(myID: string, roles?: string[]): Promise<ImageDocument[]> {
-    const images = await CoreModelLogic.fetchByIndex(
-      "my_images_asc",
-      [ q.Ref(q.Collection("users"), myID) ],
-      ["ref", "name", "src"],
-      { size: 100 }
-    );
+  @Fetch
+  @Access({[UserRole.User]: true})
+  @ReadFields(["*"])
+  public async findOne(id: Ref64): Promise<ImageDocument> {
+    const image = await fauna.findByID<ImageDocument>(id);
+    if (image === undefined) { throw { code: 404, message: `The image with id ${id} could not be found.`}; }
+    return image;
+  }
+
+  /**
+   * Fetches many images from their IDs
+   * @param ids The Ref64 IDs of the documents to fetch
+   * @returns The found and allowed image documents
+   */
+  @FetchMany
+  @Access({[UserRole.User]: true})
+  @ReadFields(["*"])
+  public async findManyByIDs(ids: Ref64[]): Promise<ImageDocument[]> {
+    const images = await fauna.findManyByIDs<ImageDocument>(ids);
     return images;
   }
 
   /**
-   * Fetches an image by its reference
-   * @param ref The ref of the image  to fetch
-   * @param myID The ID of the current user
-   * @param roles The roles of the current user
+   * Fetches the partial images documents for any given user
+   * @param options Any additional options for filtering the data retrieved from the database
+   * @returns An array of image document partials
    */
-  public static async fetchImageByRef(
-    ref: FaunaRef | Expr,
-    myID: string,
-    roles: string[]
-  ): Promise<ImageDocument | null> {
-    const client = getServerClient();
-    const image = await client.query(q.Get(ref));
-    if (!image) { return null; }
-    // TODO - add security here
-    return mapFauna(image) as ImageDocument;
+  @Index
+  @Access({[UserRole.Admin]: true})
+  @ReadFields(["*"])
+  public async searchImagesByUser(userID: Ref64, options?: FaunaIndexOptions): Promise<ImageDocument[]> {
+    return this._searchImagesByUser(userID, options);
   }
 
   /**
-   * Checks if the current user can delete the image
-   * @param image The image document to delete
-   * @param myID The current user's id
-   * @param roles The current user's roles
+   * Fetches the partial image documents for the current user
+   * @param options Any additional options for filtering the data retrieved from the database
+   * @returns An array of image document partials
    */
-  public static canDelete(image: ImageDocument, myID: string, roles: string[]): boolean {
-    if ("admin" in roles) { return true; }
-    if (myID === image.ownedBy?.id) { return true; }
-    return false;
+  @Index
+  @Access({[UserRole.User]: true})
+  @ReadFields(["*"])
+  public async searchMyImages(options?: FaunaIndexOptions): Promise<ImageDocument[]> {
+    const userID = SecurityController.currentUser?.ref;
+    if (!userID) { return []; }
+    return this._searchImagesByUser(userID, options);
+  }
+
+  /**
+   * Fetches the partial image documents for any given user for the images by user and my images functions
+   * @param options Any additional options for filtering the data retrieved from the database
+   * @returns An array of campaign document partials
+   */
+  private async _searchImagesByUser(userID: Ref64, options?: FaunaIndexOptions): Promise<ImageDocument[]> {
+    const ref = toRef(userID);
+    const images = await fauna.searchByIndex<ImageDocument>(FaunaIndex.ImagesByUser, [ref], options);
+    return images;
   }
 }
+
+export const ImageLogic = new $ImageLogic();

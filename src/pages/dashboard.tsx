@@ -1,12 +1,14 @@
 import { Page } from "components/design";
 import Link from "next/link";
 import React from "react";
-import { Button } from "react-bootstrap";
 import { CampaignDocument } from "types/documents";
-import { getSession, signOut } from "utilities/auth";
 import { NextPage, NextPageContext } from "next";
-import Router from "next/router";
-import { rest } from "utilities/request";
+import { rest } from "@owl-factory/https/rest";
+import { Button } from "@owl-factory/components/button";
+import { Col, Row } from "@owl-factory/components/flex";
+import { Card } from "@owl-factory/components/card";
+import { AlertController } from "@owl-factory/components/alert/AlertController";
+import { getSession, signOut } from "@owl-factory/auth/session";
 
 interface DashboardProps {
   session?: any;
@@ -15,7 +17,7 @@ interface DashboardProps {
 const Dashboard: NextPage<DashboardProps> = (props: any) => {
   return (
     <Page error={props.error}>
-      <h3>Welcome back {props.session?.user.username}!</h3>
+      <h3>Welcome back {props.session?.user.name || props.session?.user.username}!</h3>
 
       <Button onClick={() => signOut()}>Log Out</Button>
       {/* Recent Games */}
@@ -25,6 +27,7 @@ const Dashboard: NextPage<DashboardProps> = (props: any) => {
       <h4>My Characters</h4>
 
       <h4>Temp Profile Stuff</h4>
+      <Button onClick={() =>AlertController.success("Testing")}>Test Alerts</Button>
     </Page>
   );
 };
@@ -32,15 +35,22 @@ const Dashboard: NextPage<DashboardProps> = (props: any) => {
 export default Dashboard;
 
 function RecentGames(props: any) {
+  if (!props.campaigns) { return null; }
+
   const campaigns: JSX.Element[] = [];
   props.campaigns.forEach((campaign: CampaignDocument) => {
+    let src = "";
+    if (campaign.banner && campaign.banner.src) { src = campaign.banner.src; }
     campaigns.push(
-      <>
-        <h5>{campaign.name}</h5>
-        <Link href={`/campaigns/${campaign.id}`}>
-          Visit
-        </Link>
-      </>
+      <Col key={campaign.ref} xs={12} md={6} lg={3}>
+        <Card>
+          <img src={src}/>
+          <h5>{campaign.name}</h5>
+          <Link href={`/campaigns/${campaign.ref}`}>
+            Visit
+          </Link>
+        </Card>
+      </Col>
     );
   });
 
@@ -54,23 +64,16 @@ function RecentGames(props: any) {
           </Button>
         </Link>
       </h4>
-      {campaigns}
+      <br/>
+      <Row>
+        {campaigns}
+      </Row>
     </div>
   );
 }
 
 Dashboard.getInitialProps = async (ctx: NextPageContext) => {
   const session = getSession(ctx);
-  if (!session) {
-    if (ctx.res) {
-      ctx.res.writeHead(302, { Location: '/' });
-      ctx.res.end();
-    } else {
-      Router.push("/");
-    }
-    return {};
-  }
-
   const result = await rest.get(`/api/dashboard`);
 
   return { session, campaigns: (result as any).data.campaigns };

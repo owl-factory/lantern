@@ -1,6 +1,7 @@
 import React, { ReactNode, useState } from "react";
-import { Button, Card } from "react-bootstrap";
 import { SignInForm, SignUpForm } from "components/authentication";
+import { Card, CardBody } from "@owl-factory/components/card";
+import { Button } from "@owl-factory/components/button";
 
 interface AuthenticationCardProps {
   initialState?: AuthCardSection;
@@ -36,9 +37,9 @@ export function AuthenticationCard(props: AuthenticationCardProps): JSX.Element 
 
   return (
     <Card>
-      <Card.Body>
+      <CardBody>
         {cardBody}
-      </Card.Body>
+      </CardBody>
     </Card>
   );
 }

@@ -1,28 +1,30 @@
-
-import { Button, Col, Row } from "components/style";
-import React from "react";
-import { Card } from "react-bootstrap";
-import { ImageDocument } from "types/documents";
-import { ImageManager } from "client/library";
-import { ImageDetailsModal } from "components/reroll/library/images";
+import { Col, Row } from "@owl-factory/components/flex";
+import { Card, CardBody } from "@owl-factory/components/card";
 import { observer } from "mobx-react-lite";
-import { LinkImageModal } from "./LinkImageModal";
+import React from "react";
+import { ImageDocument } from "types/documents";
 import style from "./ImageList.module.scss";
+import { ImageCache } from "controllers/cache/ImageCache";
+
+export enum ListFormat {
+  Thumbnails,
+  Icons,
+}
 
 interface ImageThumbnailProps {
-  image: ImageDocument;
-  openModal: (imageID: string) => void
+  image: Partial<ImageDocument>;
+  onClick: (image: Partial<ImageDocument>) => void
 }
 
 /**
  * Renders an icon and name of an image
  * @param image The image document to render an icon for
- * @param openModal A function to open the image details modal
+ * @param onClick A function to run when clicked
  */
-function ImageIcon({ image, openModal }: ImageThumbnailProps) {
+function ImageIcon({ image, onClick }: ImageThumbnailProps) {
   return (
     <Col xs={12}>
-      <div className={style.icon} onClick={() => openModal(image.id as string)}>
+      <div className={style.icon} onClick={() => {onClick(image);}}>
         <img style={{height: "auto", width: "auto"}} src={image.src}/>
         &nbsp;
         {image.name}
@@ -35,74 +37,61 @@ function ImageIcon({ image, openModal }: ImageThumbnailProps) {
 /**
  * Renders a thumbnail and name of an image
  * @param image The image document to render a thumbnail for
- * @param openModal A function to open the image details modal
+ * @param onClick A function to run on click
  */
-function ImageThumbnail({ image, openModal }: ImageThumbnailProps) {
+function ImageThumbnail({ image, onClick }: ImageThumbnailProps) {
   return (
     <Col xs={6} sm={4} md={3} lg={2}>
-      <Card onClick={() => openModal(image.id as string)}>
-        <Card.Body >
+      <Card onClick={() => {onClick(image);}}>
+        <CardBody >
           {image.name} <br/>
           <img style={{maxWidth: "100%"}} height="auto" src={image.src}/>
-        </Card.Body>
+        </CardBody>
       </Card>
     </Col>
   );
 }
 
-export enum ListFormat {
-  Thumbnails,
-  Icons,
-}
-
 interface ImageListProps {
-  imageManager: ImageManager;
-  listFormat?: ListFormat;
+  listFormat: ListFormat;
+  onClick: (image: Partial<ImageDocument>) => void;
 }
 
 /**
- * Renders a list of images as thumbnails or as icons
- * @param imageManager The ImageManager containing all of the image information
- * @param listFormat The format to render the images as
+ * Renders a list of images in one of two formats.
+ * TODO - rename the dang formats to something you can understand xD
+ * @param listFormat The method to list the images
+ * @param onClick The action to run when the image tile is clicked
+ * @returns Returns a list of images as either Icons or Thumbnails
  */
-export const ImageList = observer((props: ImageListProps): JSX.Element =>{
-  const [ modal, setModal ] = React.useState(false);
-  const [ imageDetailsModal, setImageDetailsModal ] = React.useState("");
+function $ImageList(props: ImageListProps): JSX.Element {
+  const [ images, setImages ] = React.useState<Partial<ImageDocument>[]>([]);
+
   const imageThumbnails: JSX.Element[] = [];
+  const onClick = props.onClick === undefined ? (() => {return;}) : props.onClick;
 
-  function closeModal() { setModal(false); }
-  function closeImageDetailsModal() { setImageDetailsModal(""); }
+  // Updates the list of images when the image manager changes
+  React.useEffect(() => {
+    setImages(ImageCache.getPage());
+  }, [ImageCache]);
 
-  props.imageManager.imageList.forEach((imageID: string) => {
-    const image = props.imageManager.images[imageID];
+  images.forEach((image: Partial<ImageDocument>) => {
     if (!image) { return; }
     switch(props.listFormat) {
       case ListFormat.Thumbnails:
       case undefined:
-        imageThumbnails.push(<ImageThumbnail key={image.id} image={image} openModal={setImageDetailsModal}/>);
+        imageThumbnails.push(<ImageThumbnail key={image.ref} image={image} onClick={onClick}/>);
         break;
       case ListFormat.Icons:
-        imageThumbnails.push(<ImageIcon key={image.id} image={image} openModal={setImageDetailsModal}/>);
+        imageThumbnails.push(<ImageIcon key={image.ref} image={image} onClick={onClick}/>);
         break;
     }
   });
-
   return (
-    <div style={{marginTop: "20px"}}>
-      <div>
-        <h2>Images</h2>
-        <Button type="button" onClick={() => setModal(true)}>Upload</Button>
-        <Row>
-          {imageThumbnails}
-        </Row>
-
-      </div>
-      <ImageDetailsModal
-        imageManager={props.imageManager}
-        imageID={imageDetailsModal}
-        handleClose={closeImageDetailsModal}
-      />
-      <LinkImageModal imageManager={props.imageManager} modal={modal} handleClose={closeModal}/>
-    </div>
+    <Row>
+      {imageThumbnails}
+    </Row>
   );
-});
+}
+
+export const ImageList = observer($ImageList);

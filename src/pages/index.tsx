@@ -1,24 +1,15 @@
 import { Page } from "components/design";
 import { AuthenticationCard } from "components/authentication";
 import Link from "next/link";
-import { useRouter } from "next/router";
-import React, { useEffect } from "react";
-import { Button, Col, Row } from "react-bootstrap";
-import { useSession } from "utilities/auth";
+import React from "react";
+import { Button } from "@owl-factory/components/button";
+import { Col, Row } from "@owl-factory/components/flex";
 
 /**
  * Renders the not logged in index page
  * @param props ...
  */
 function Index(): JSX.Element {
-  const session = useSession();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (session) {
-      router.push("/dashboard");
-    }
-  }, [session]);
 
   return (
     <Page>
@@ -31,23 +22,23 @@ function Index(): JSX.Element {
       </p>
 
       <Row>
-        <Col md="8" sm="12">
+        <Col md={8} sm={12}>
           <p>
             This is some test home page content. Oh look, a button!
           </p>
           <Link href="/about" passHref>
-            <Button title="About">
+            <Button>
               About
             </Button>
           </Link>
 
           <Link href="/characters" passHref>
-            <Button title="Characters">
+            <Button>
               Characters
             </Button>
           </Link>
         </Col>
-        <Col md="4" sm="12">
+        <Col md={4} sm={12}>
           <AuthenticationCard />
         </Col>
       </Row>

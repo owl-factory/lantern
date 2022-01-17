@@ -1,4 +1,5 @@
 export interface Document<D> {
+  id: string | undefined;
   data: D;
   ref: Ref;
   ts: number;
@@ -19,7 +20,7 @@ export interface Ref {
 export interface UserData {
   email?: string;
   username?: string;
-  displayName?: string;
+  name?: string;
   icon?: string;
 }
 

@@ -1,99 +1,81 @@
-import { getServerClient } from "utilities/db";
-import { query as q } from "faunadb";
-import { mapFauna } from "utilities/fauna";
-import { CampaignDocument, UserDocument } from "types/documents";
-import { CoreModelLogic } from "server/logic";
-import { FaunaDocument } from "types/fauna";
 
-// The different levels of access for a campaign
-enum CampaignAccessLevels {
-  GUEST,
-  PLAYER,
-  OWNER,
-  ADMIN,
+import { AnyDocument, CampaignDocument } from "types/documents";
+import { isOwner } from "server/logic/security";
+import { UserRole } from "@owl-factory/auth/enums";
+import * as fauna from "@owl-factory/database/integration/fauna";
+import { Access, ReadFields, RequireLogin, SetFields } from "@owl-factory/database/decorators/modifiers";
+import { Index, Update } from "@owl-factory/database/decorators/crud";
+import { DatabaseLogic } from "./AbstractDatabaseLogic";
+import { Ref64 } from "@owl-factory/types";
+import { Collection, FaunaIndex } from "src/fauna";
+import { toRef } from "@owl-factory/database/conversion/fauna/to";
+import { SecurityController } from "controllers/SecurityController";
+import { FaunaIndexOptions } from "@owl-factory/database/types/fauna";
+
+/**
+ * Checks if the current user is a player for the given document
+ * @param doc The document to if the current user is a player of
+ * @returns True if the current user is a player
+ */
+function isPlayer(doc?: AnyDocument): boolean {
+  if (doc === undefined) { return false; }
+  if (isOwner(doc)) { return true; }
+  if (!("players" in doc) || doc.players === undefined) { return false; }
+  let success = false;
+  doc.players.forEach((player: { ref: Ref64 }) => {
+    if (SecurityController.currentUser?.ref === player.ref) { success = true; }
+  });
+  return success;
 }
 
-const allowedPlayerFields = [
-  "lastPlayed",
-  "players",
-];
+class $CampaignLogic extends DatabaseLogic<CampaignDocument> {
+  public collection = Collection.Campaigns;
 
-const allowedGuestFields: string[] = [];
-
-export class CampaignLogic {
   /**
-   * Fetches a campaign by the id and validates against the user's id
-   * @param id The id of the campaign to fetch
-   * @param myID The current user's ID
-   * @param roles The roles of the user, if any
-   * @TODO - change to fetchCampaignByRef. ByID becomes a wrapper to build
+   * Updates the banner image for a campaign
+   * @param id The Ref64 ID of the document to update
+   * @param doc The campaign partial with a new banner ID and src
+   * @returns The new, updated document
    */
-  public static async fetchCampaignByID(
-    id: string,
-    myID: string,
-    roles?: string[]
-  ): Promise<CampaignDocument | null> {
-    const client = getServerClient();
-    const rawCampaign: FaunaDocument<CampaignDocument> = await client.query(
-      q.Get(q.Ref(q.Collection("campaigns"), id))
-    );
-
-    if (!rawCampaign) { return null; }
-    let campaign = mapFauna(rawCampaign) as CampaignDocument;
-    const accessLevel = this.determineAccessLevel(campaign, myID, roles);
-    campaign = this.trimRestrictedFields(campaign as CampaignDocument, accessLevel);
-
+  @Update
+  @Access({[UserRole.User]: isOwner, [UserRole.Admin]: true})
+  @RequireLogin()
+  @SetFields(["banner.ref", "banner.src"])
+  public async updateBanner(id: Ref64, doc: Partial<CampaignDocument>) {
+    const campaign = await fauna.updateOne<CampaignDocument>(id, doc);
     return campaign;
   }
 
   /**
-   * Fetches a number of campaigns that the current user is a part of
-   * @param myID The current user's ID
-   * @param roles The current user's roles
+   * Fetches the partial campaign documents for any given user
+   * @param options Any additional options for filtering the data retrieved from the database
+   * @returns An array of campaign document partials
    */
-  public static async fetchMyCampaigns(myID: string, roles?: string[]): Promise<CampaignDocument[]> {
-    const campaigns = await CoreModelLogic.fetchByIndex(
-      "my_campaigns",
-      [q.Ref(q.Collection("users"), myID)],
-      ["ref", "name"],
-      { size: 6 }
-    );
-
+  @Index
+  @Access({[UserRole.Admin]: true})
+  @RequireLogin()
+  @ReadFields(["*"])
+  public async fetchCampaignsByUser(userID: Ref64, options?: FaunaIndexOptions) {
+    const ref = toRef(userID);
+    const campaigns = fauna.searchByIndex(FaunaIndex.CampaignsByUser, [ref], options);
     return campaigns;
   }
 
   /**
-   * Determines which access level the current user has access to
-   * @param campaign The campaign we are determining access level of
-   * @param myID The owner ID
-   * @param roles The roles of the user, if any
+   * Fetches the partial campaign documents for the current user
+   * @param options Any additional options for filtering the data retrieved from the database
+   * @returns An array of campaign document partials
    */
-  public static determineAccessLevel(
-    campaign: CampaignDocument,
-    myID: string,
-    roles: string[] = []
-  ): CampaignAccessLevels {
-    if ("ADMIN" in roles) { return CampaignAccessLevels.ADMIN; }
-    if (campaign.ownedBy && campaign.ownedBy.id === myID) { return CampaignAccessLevels.OWNER; }
-    if (!campaign.players || campaign.players.length === 0) { return CampaignAccessLevels.GUEST; }
-    campaign.players.forEach((player: UserDocument) => {
-      if (player.id === myID) { return CampaignAccessLevels.PLAYER; }
-    });
-
-    return CampaignAccessLevels.GUEST;
-  }
-
-  /**
-   * Determines which fields should be kept when trimming restricted fields
-   * @param campaign The campaign object to trim
-   * @param accessLevel The level to trim for
-   */
-  public static trimRestrictedFields(campaign: CampaignDocument, accessLevel: CampaignAccessLevels): CampaignDocument {
-    if (accessLevel === CampaignAccessLevels.ADMIN || accessLevel === CampaignAccessLevels.OWNER) {
-      return campaign;
-    } else if (accessLevel === CampaignAccessLevels.PLAYER) {
-      return CoreModelLogic.trimRestrictedFields(campaign, allowedPlayerFields);
-    }
-    return CoreModelLogic.trimRestrictedFields(campaign, allowedGuestFields);
+  @Index
+  @Access({[UserRole.User]: true})
+  @RequireLogin()
+  @ReadFields(["*"])
+  public async fetchMyCampaigns(options?: FaunaIndexOptions) {
+    const id = SecurityController.currentUser?.ref;
+    if (!id) { return []; }
+    const campaigns = fauna.searchByIndex<Partial<CampaignDocument>>(FaunaIndex.CampaignsByUser, [id], options);
+    return campaigns;
   }
 }
+
+export const CampaignLogic = new $CampaignLogic();

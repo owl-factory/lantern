@@ -1,9 +1,10 @@
 import React, { ReactNode } from "react";
-import { Container } from "react-bootstrap";
+import ErrorPage from "next/error";
+import { AlertMessages } from "@owl-factory/components/alert";
 
 interface PageProps {
   children: ReactNode;
-  error?: object; // An error to render
+  error?: any; // An error to render
 }
 
 function parseError(error: any): string {
@@ -15,6 +16,8 @@ function parseError(error: any): string {
   }
 }
 
+
+
 /**
  * The page component is used to wrap the content of a page to apply uniform
  * styling such as page margins.
@@ -23,11 +26,17 @@ function parseError(error: any): string {
  * These are passed automatically
  */
 export function Page(props: PageProps): JSX.Element {
+
+  if (props.error && typeof(props.error) === "number") {
+    return <ErrorPage statusCode={props.error} />;
+  }
+
   return (
-    <Container className="mt-3">
+    <div className="container mt-3">
       { props.error ? <>{parseError(props.error)}</> : <></>}
       {props.children}
-    </Container>
+      <AlertMessages/>
+    </div>
   );
 }
 

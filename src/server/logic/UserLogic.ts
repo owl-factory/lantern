@@ -1,13 +1,17 @@
-import {  Expr, query as q } from "faunadb";
+import { Ref64 } from "@owl-factory/types";
 import { UserDocument } from "types/documents";
-import { FaunaDocument, FaunaRef } from "types/fauna";
-import { mapFauna } from "utilities/fauna";
-import { getServerClient } from "utilities/db";
-import { CoreModelLogic } from "server/logic";
+import { isOwner } from "./security";
+import * as fauna from "@owl-factory/database/integration/fauna";
+import { Collection, FaunaIndex } from "src/fauna";
+import { UserRole } from "@owl-factory/auth/enums";
+import { DatabaseLogic } from "./AbstractDatabaseLogic";
+import { Fetch, FetchMany, Index, Update } from "@owl-factory/database/decorators/crud";
+import { Access, ReadFields, SetFields } from "@owl-factory/database/decorators/modifiers";
+import { FaunaIndexOptions } from "@owl-factory/database/types/fauna";
 
 const guestFields = [
   "username",
-  "displayName",
+  "name",
   "icon",
   "bio",
   "enjoysPlaying",
@@ -16,120 +20,85 @@ const guestFields = [
   "badges",
 ];
 const updateFields = [
-  "displayName",
+  "name",
   "bio",
   "enjoysPlaying",
   "activelySeeking",
   "isPrivate",
 ];
 
-// TODO - change findByIDs/Refs to find by ID. Nothing matters except that they are either
-// strings or structs containing { id } or { ref }. Validate refs. Build them from IDs
-// if possible. Another @TODO - manually build ref objects (or repair them).
-
-export class UserLogic {
+class $UserLogic extends DatabaseLogic<UserDocument> {
+  public collection = Collection.Users;
   /**
-   * Finds a user by their ID and returns sanitized values
-   * @param id The id of the user to find
-   * @param myID The ID of the current user
-   * @param roles The roles of the current user, if any
+   * Fetches one user from its ID
+   * @param id The Ref64 ID of the document to fetch
+   * @returns The user document
    */
-  public static async findUserByRef(
-    ref: FaunaRef | Expr,
-    myID: string,
-    roles?: string[]
-  ): Promise<UserDocument | null> {
-    // TODO - ref validation?
-    const client = getServerClient();
-    const rawUser: FaunaDocument<UserDocument> = await client.query(q.Get(ref));
-    if (!rawUser) { return null; }
-    const user: UserDocument = mapFauna(rawUser) as UserDocument;
-
-    if (this.isOwner(user, myID, roles)) { return user; }
-    // TODO - fix this mess ;~;
-    return CoreModelLogic.trimRestrictedFields(
-      user as unknown as Record<string, unknown>, guestFields
-    ) as unknown as UserDocument;
+  @Fetch
+  @Access({[UserRole.Guest]: true})
+  @ReadFields(["*"])
+  public async findOne(id: Ref64): Promise<UserDocument> {
+    const user = await fauna.findByID<UserDocument>(id);
+    if (user === undefined) { throw { code: 404, message: `A user with ID ${id} could not be found` }; }
+    return user;
   }
 
   /**
-   * Fetches a user by their username
-   * @param username The username to search for
-   * @param myID The current user's id
-   * @param roles The current user's roles
+   * Fetches many users from their IDs
+   * @param ids The Ref64 IDs of the documents to fetch
+   * @returns The found and allowed user documents
    */
-  public static async findUserByUsername(
-    username: string,
-    myID: string,
-    roles?: string[]
-  ): Promise<UserDocument | null> {
-    const rawIndex = await CoreModelLogic.fetchByIndex(
-      `users_by_username`,
-      [username],
-      ["ref"],
-      { size: 1 }
-    );
-    if (rawIndex.length === 0) { return null; }
+  @FetchMany
+  @Access({[UserRole.Guest]: true})
+  @ReadFields(["*"])
+  public async findManyByIDs(ids: Ref64[]): Promise<UserDocument[]> {
+    const users = await fauna.findManyByIDs<UserDocument>(ids);
+    return users;
+  }
 
-
-    return await this.findUserByRef(rawIndex[0].ref, myID, roles);
+  @Index
+  @Access({[UserRole.Guest]: true})
+  @ReadFields(["*"])
+  public async searchByUsername(username: string, options?: FaunaIndexOptions): Promise<UserDocument[]> {
+    const users = await fauna.searchByIndex<UserDocument>(FaunaIndex.UsersByUsername, [username], options);
+    return users;
   }
 
   /**
-   * Finds a collection of users by their refs
-   * @param refs The refs, given as an array of objects containing ref
-   * @param myID The current user's ID
-   * @param roles The current user's roles
-   * @TODO - combine the user id and roles into a single object? Good idea- do later
+   * Updates a single user
+   * @param id The Ref64 ID of the document to update
+   * @param doc The user partial to update
+   * @returns The new, updated document
    */
-  public static async findUsersByRefs(refs: UserDocument[], myID: string, roles?: string[]): Promise<UserDocument[]> {
-    const users: Promise<UserDocument>[] = [];
-    refs.forEach((ref: UserDocument) => {
-      if (!ref.ref) { return; }
-      const user = this.findUserByRef(ref.ref, myID, roles);
-      if (user === null) { return; }
-
-      users.push(user as Promise<UserDocument>);
-    });
-
-    return Promise.all(users);
-  }
-
-  /**
-   * Creates and returns a new user document in Fauna
-   * @param user The user to create into a document
-   * TODO - actually make this xD
-   */
-  public static async createUser(user: UserDocument): Promise<UserDocument> {
-    return {};
-  }
-
-  /**
-   * Updates a single user's document in Fauna
-   * @param user The partial user document to update
-   * @param myID The id of the current user, to determine access rights
-   * @param roles The roles of the current user, to determine access rights
-   */
-  public static async updateUser(user: UserDocument, myID: string, roles?: string[]): Promise<UserDocument> {
-    const fetchedUser = await this.findUserByRef(user.ref as FaunaRef, myID, roles);
-    if (!fetchedUser) { throw { code: 404, status: "User does not exist!" }; }
-    if (!this.isOwner(fetchedUser, myID, roles)) {
-      throw { code: 403, status: "You do not have permissions to edit this user!" };
+  @Update
+  @Access({[UserRole.User]: isOwner, [UserRole.Admin]: true})
+  @ReadFields(["*"])
+  @SetFields({[UserRole.User]: updateFields})
+  public async updateOne(id: Ref64, doc: Partial<UserDocument>): Promise<UserDocument> {
+    const user = await fauna.updateOne<UserDocument>(id, doc);
+    if (user === undefined) {
+      throw { code: 500, message: "An unexpected error occured while attepting to update the user."};
     }
-    const processedUser = CoreModelLogic.trimRestrictedFields(user, updateFields);
-    const updatedUser = mapFauna(
-      await CoreModelLogic.updateOne(user.ref as FaunaRef, processedUser, myID)
-    ) as UserDocument;
-    return updatedUser;
+    return user;
   }
 
   /**
-   * Determines if the current user has full permissions to access the user document
-   * @param user The user object to sanitize
-   * @param myID The current user ID
-   * @param roles The roles of the current user, if any
+   * Updates a single user's avatar
+   * @param id The Ref64 ID of the document to update
+   * @param doc The user partial to update
+   * @returns The new, updated document
    */
-  public static isOwner(user: UserDocument, myID: string, roles: string[] = []): boolean {
-    return (user.id === myID || "ADMIN" in roles);
+  @Update
+  @Access({[UserRole.User]: isOwner, [UserRole.Admin]: true})
+  @ReadFields(["*"])
+  @SetFields({[UserRole.User]: ["avatar.ref", "avatar.src"]})
+  public async updateAvatar(id: Ref64, doc: Partial<UserDocument>): Promise<UserDocument> {
+    const user = await fauna.updateOne<UserDocument>(id, doc);
+    if (user === undefined) {
+      throw { code: 500, message: "An unexpected error occured while attepting to update the user."};
+    }
+    return user;
   }
 }
+
+export const UserLogic = new $UserLogic();

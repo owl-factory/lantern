@@ -1,19 +1,27 @@
+import { Ref64 } from "@owl-factory/types";
 import { CoreDocument } from "types/documents";
+import { UserRole } from "@owl-factory/auth/enums";
+import { ImageDocument } from "./assets";
+
+interface PartialImageDocument extends Partial<ImageDocument> {
+  id: string;
+  src: string;
+}
+
 
 /**
  * The user object for the user's core data for use with NextAuth
  */
 export interface UserDocument extends CoreDocument {
-  username?: string;
-  email?: string;
-  displayName?: string;
-  icon?: string;
+  username: string;
+  email: string;
+  avatar: { ref: Ref64; src: string; };
 
-  roles?: string[];
+  role: UserRole;
 
-  recentPlayers?: UserDocument[];
+  recentPlayers: UserDocument[];
 
-  badges?: {
+  badges: {
     earnedAt?: Date;
     badge: any;
   }[];

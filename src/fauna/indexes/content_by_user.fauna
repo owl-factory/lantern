@@ -1,0 +1,14 @@
+// An index for searching through the current user's content. The content are sorted from last updated first
+CreateIndex({
+  name: "content_by_user",
+  source: Collection("contents"),
+  terms: [{ field: ["data", "ownedBy", "ref"]} ],
+  values: [
+    { field: ["data", "updatedAt"], reverse: true}, 
+    { field: ["ref"] },
+    { field: ["data", "name"]},
+    { field: ["data", "type", "ref"]},
+    { field: [ "data", "ruleset", "ref" ]},
+    { field: [ "data", "ownedBy", "ref" ]}
+  ],
+})

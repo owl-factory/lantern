@@ -1,10 +1,10 @@
-import Tooltip from "components/design/Tooltip";
+import { Tooltip } from "@owl-factory/components/tooltip";
 import { Form, Formik } from "formik";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { MessageDocument } from "types/documents";
-import { Select, TextArea } from "components/design/forms";
-import { GameServer } from "client/play";
+import { GameServer } from "controllers/play";
+import { Input, Select } from "@owl-factory/components/form";
 
 interface ChatProps {
   server: GameServer;
@@ -58,7 +58,7 @@ function shouldSmooth(message: MessageDocument, previousMessages: MessageDocumen
 
   let count = 0;
   let smooth = false;
-  console.log(`${message.name}: ${message.content}`)
+  console.log(`${message.name}: ${message.content}`);
   for(let i = index - 1; i >= 0; i--) {
     count++;
     if (count > 4) { return smooth; }
@@ -107,7 +107,8 @@ function Message({ messages, index }: { messages: MessageDocument[], index: numb
  */
 export const Chat = observer((props: ChatProps) => {
   const { server } = props;
-  if (!server.isReady) { return <></>}
+  if (!server.isReady)
+    return <></>;
 
   function sendMessage(values: MessageDocument) {
     // message.
@@ -115,10 +116,9 @@ export const Chat = observer((props: ChatProps) => {
   }
 
   const messageBlock: JSX.Element[] = [];
-  const sendAsOptions = [
-    { value: '', label: server.user.name }
+  const options = [
+    <option value="">{server.user.name}</option>,
   ];
-  console.log(sendAsOptions)
 
   server.state.messages.forEach((_: MessageDocument, index: number) => {
     messageBlock.push(<Message messages={server.state.messages} index={index} key={index}/>);
@@ -134,8 +134,10 @@ export const Chat = observer((props: ChatProps) => {
       >
       {() => (
         <Form>
-          <Select name="sendAs" options={sendAsOptions} includeEmpty={false} valueKey="value"/>
-          <TextArea name="content"/>
+          <Select name="sendAs">
+            {options}
+          </Select>
+          <Input type="textarea" name="content"/>
           <button type="submit">Submit</button>
         </Form>
       )}

@@ -1,17 +1,14 @@
-import { UserDocument } from "types/documents";
-import { FaunaRef } from "types/fauna";
+import { Ref64 } from "@owl-factory/types";
 
 export interface CoreDocument {
-  id?: string;
-  collection?: string
-  ref?: FaunaRef;
+  ref: Ref64;
   ts?: number;
 
   name?: string;
-  ownedBy?: UserDocument;
+  ownedBy?: { ref: Ref64; };
   createdAt?: Date;
-  createdBy?: UserDocument;
+  createdBy?: { ref: Ref64; };
   updatedAt?: Date;
-  updatedBy?: UserDocument;
+  updatedBy?: { ref: Ref64; };
 }
 

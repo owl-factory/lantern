@@ -1,13 +1,13 @@
-import { Form, Formik } from "formik";
 import React from "react";
-import { Button, Card, Col, FormGroup, FormLabel, Row } from "react-bootstrap";
-import { ContextMenu, ErrorMessage, fetchContentResponse, IndexTable, Input, Modal, Page } from "components/design";
-import request from "utilities/request";
+import { Page, fetchContentResponse } from "components/design";
 import { MdBlock, MdBuild, MdInfo } from "react-icons/md";
 import { ContextMenuBuilder, TableBuilder } from "utilities/design";
 import { TableComponentProps } from "types/design";
-import { useRouter } from "next/router";
-import * as Yup from "yup";
+import { Input } from "@owl-factory/components/form";
+import { Modal } from "@owl-factory/components/modal";
+import { Button } from "@owl-factory/components/button";
+import { Card, CardBody, CardHeader } from "@owl-factory/components/card";
+import { rest } from "@owl-factory/https/rest";
 
 // The props for the RulesetPage
 interface RulesetProps {
@@ -41,63 +41,9 @@ async function queryRulesets(
     skip: skip,
     sort: sortBy,
   }};
-  const res = await request.post<any>("/api/rulesets", body);
+  const res = await rest.post<any>("/api/rulesets", body);
   if (res.success) { return { content: res.data.rulesets, count: res.data.rulesetCount }; }
   return { content: [], count: 0 };
-}
-
-/**
- * Renders the form to create a new game system.
- */
-function CreateRulesetForm() {
-  const router = useRouter();
-
-  /**
-   * Runs the submit action of the create game system form and handles
-   * the success and failure results
-   *
-   * @param values The values from the form to submit
-   */
-  async function onSubmit(values: Record<string, string>) {
-    const response = await request.put<{ ruleset: any }>(
-      "/api/rulesets",
-      values
-    );
-    if (!response.success) {
-      return;
-    }
-
-    const href = `/rulesets`;
-    router.push(href);
-  }
-
-  return (
-    <Formik
-      initialErrors={ {} }
-      initialValues={ { name: "" } }
-      onSubmit={onSubmit}
-      validationSchema={Yup.object({
-        name: Yup.string()
-          .required("Required")
-          .max(100, "Maximum of 100 characters"),
-      })}
-    >
-      {() => (
-        <Form>
-          {/* Just name for now */}
-          <Row>
-            <FormGroup as={Col} xs={12} lg={6}>
-              <FormLabel>Ruleset Name</FormLabel>
-              <Input name="name"/>
-              <ErrorMessage name="name"/>
-            </FormGroup>
-          </Row>
-
-          <Button type="submit">Submit!</Button>
-        </Form>
-      )}
-    </Formik>
-  );
 }
 
 /**
@@ -106,14 +52,14 @@ function CreateRulesetForm() {
  * @param handleClose The function that handles closing the modal
  * @param modal Boolean. Show the modal if true.
  */
-function RulesetModal({ handleClose, modal }: { handleClose: () => void, modal: boolean }) {
+ function RulesetModal({ handleClose, modal }: { handleClose: () => void, modal: boolean }) {
   return (
     <Modal open={modal} handleClose={handleClose}>
       <Card>
-        <Card.Header>Create a New Ruleset</Card.Header>
-        <Card.Body>
-          <CreateRulesetForm/>
-        </Card.Body>
+        <CardHeader>Create a New Ruleset</CardHeader>
+        <CardBody>
+          {/* <CreateRulesetForm/> */}
+        </CardBody>
       </Card>
     </Modal>
   );
@@ -121,9 +67,7 @@ function RulesetModal({ handleClose, modal }: { handleClose: () => void, modal: 
 
 function RulesetFilter() {
   return (
-    <>
-      <Input name="name.like"/>
-    </>
+    <Input type="text" name="name.like"/>
   );
 }
 
@@ -162,10 +106,7 @@ export default function Rulesets({ initialRulesets, rulesetCount }: RulesetProps
    */
   function RulesetActions({ data }: TableComponentProps) {
     return (
-      <ContextMenu
-        context={{_id: data._id, name: data.name, alias: data.alias || data._id}}
-        {...rulesetActions.renderConfig()}
-      />
+      <></>
     );
   }
 
@@ -176,7 +117,7 @@ export default function Rulesets({ initialRulesets, rulesetCount }: RulesetProps
       <Button onClick={() => { setModal(true); }}>New Ruleset</Button>
       <RulesetModal modal={modal} handleClose={handleClose}/>
       <br/><br/>
-      <IndexTable
+      {/* <IndexTable
         tableBuilder={tableBuilder}
         content={initialRulesets}
         contentCount={rulesetCount}
@@ -186,13 +127,13 @@ export default function Rulesets({ initialRulesets, rulesetCount }: RulesetProps
         sort="name"
       >
         <RulesetFilter/>
-      </IndexTable>
+      </IndexTable> */}
     </Page>
   );
 }
 
 Rulesets.getInitialProps = async () => {
-  const res = await request.post<FetchRulesetsData>(
+  const res = await rest.post<FetchRulesetsData>(
     "/api/rulesets", { options: { limit: initialPerPage, sort: initialSortBy } }
   );
   return { initialRulesets: res.data.rulesets, rulesetCount: res.data.rulesetCount };

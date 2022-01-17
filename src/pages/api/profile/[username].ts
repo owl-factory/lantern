@@ -1,9 +1,9 @@
 import { NextApiRequest } from "next";
-import { UserLogic } from "server/logic";
-import { HTTPHandler } from "server/response";
-import { createEndpoint } from "server/utilities";
+import { UserLogic } from "server/logic/UserLogic";
+
+import { HTTPHandler, createEndpoint } from "@owl-factory/https";
 import { UserDocument } from "types/documents";
-import { buildRef } from "utilities/fauna";
+import { getUniques } from "@owl-factory/utilities/arrays";
 
 /**
  * Gets a single profile for the profile page
@@ -11,11 +11,13 @@ import { buildRef } from "utilities/fauna";
  * @param req The request to the server
  */
 async function getProfile(this: HTTPHandler, req: NextApiRequest) {
-  const userID = "295863299256353286";
-  const user = await UserLogic.findUserByUsername(req.query.username as string, userID) as UserDocument;
-  if (!user) { this.returnError(404, "The given profile was not found."); }
+  const userSearch = await UserLogic.searchByUsername(req.query.username as string) as UserDocument[];
+  if (userSearch.length === 0) { this.returnError(404, "The given profile was not found."); }
+
+  const user = await UserLogic.findOne(userSearch[0].ref);
+
   if (user.recentPlayers) {
-    user.recentPlayers = await UserLogic.findUsersByRefs(user.recentPlayers, userID);
+    user.recentPlayers = await UserLogic.findManyByIDs(getUniques(user.recentPlayers, "id"));
   }
 
   this.returnSuccess({ user });
@@ -27,9 +29,7 @@ async function getProfile(this: HTTPHandler, req: NextApiRequest) {
  * @param req The request to the server
  */
 async function updateProfile(this: HTTPHandler, req: NextApiRequest) {
-  const userID = "295863299256353286";
-  req.body.ref = buildRef(req.body.id, "users");
-  const user = await UserLogic.updateUser(req.body, userID);
+  const user = await UserLogic.updateOne(req.body.ref, req.body);
   this.returnSuccess({ user });
 }
 

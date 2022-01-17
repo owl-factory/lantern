@@ -1,9 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { setSession } from "utilities/auth";
-import { getServerClient } from "utilities/db";
 import { query as q } from "faunadb";
-import { mapFauna } from "utilities/fauna";
-import { normalize } from "utilities/strings";
+import { fromFauna } from "@owl-factory/database/conversion/fauna/from";
+import { getServerClient } from "@owl-factory/database/client/fauna";
+import { setSession } from "@owl-factory/auth/session";
+import { normalize } from "@owl-factory/utilities/strings";
 
 const checkEmail = /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i;
 
@@ -23,7 +23,7 @@ export default async function SignIn(req: NextApiRequest, res: NextApiResponse):
     )
   );
 
-  const user: any = mapFauna(await client.query(q.Get(instance)));
+  const user: any = fromFauna(await client.query(q.Get(instance)));
   delete user.email;
   const session: any = { user, secret };
   setSession(session, { res });

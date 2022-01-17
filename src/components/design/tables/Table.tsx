@@ -1,5 +1,4 @@
 import React from "react";
-import { Table as BSTable } from "react-bootstrap";
 import { MdExpandLess, MdExpandMore, MdUnfoldMore } from "react-icons/md";
 import { Column, TableDataType } from "types/design/table";
 
@@ -50,7 +49,7 @@ function TableHeader(props: TableHeaderProps) {
   // Adds each of the headers
   props.columns.forEach((column: Column) => {
     let icon = undefined; // The icon to place next to the title
-    let onClick = () => {}; // The function to run when clicking the title
+    let onClick; // The function to run when clicking the title
 
     // Sets icon and onClick functions if sorting is enabled for the column
     if (column.sortable) {
@@ -155,8 +154,8 @@ function TableRow(props: TableRowProps) {
  */
 export function Table(props: TableProps): JSX.Element {
   /**
-   * Sets the key to sort by given the key we want to sort by and what 
-   * we were previously sorting by
+   * Sets the key to sort by given the key we want to sort by and what
+   * we were previously sorting by.
    * @param sortBy The key that we want to sort by
    */
   function setSortBy(sortBy: string) {
@@ -166,7 +165,7 @@ export function Table(props: TableProps): JSX.Element {
   }
 
   return (
-    <BSTable>
+    <table className="table">
       <TableHeader
         columns={props.columns}
         lastSortBy={props.sortBy || ""}
@@ -179,7 +178,7 @@ export function Table(props: TableProps): JSX.Element {
         rowAction={props.rowAction}
         startingIncrement={props.startingIncrement}
       />
-    </BSTable>
+    </table>
   );
 }
 export default Table;

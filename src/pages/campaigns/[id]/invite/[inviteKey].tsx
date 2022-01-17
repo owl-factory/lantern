@@ -1,11 +1,11 @@
 import React from "react";
-import { Button } from "components/style";
+import { Button } from "@owl-factory/components/button";
 import { Page } from "components/design";
 import { NextPageContext } from "next";
 import Link from "next/link";
-import { getSession, requireClientLogin } from "utilities/auth";
-import { getClient, readQuery } from "utilities/db";
 import { query as q } from "faunadb";
+import { getSession, requireClientLogin } from "@owl-factory/auth/session";
+import { getClient, readQuery } from "@owl-factory/database/client/fauna";
 
 
 export default function InviteHandler(props: any) {
@@ -37,7 +37,7 @@ export default function InviteHandler(props: any) {
       </>
     );
   }
-  console.log(props)
+
   return (
     <Page>
       { props.data ?

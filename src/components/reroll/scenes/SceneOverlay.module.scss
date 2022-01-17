@@ -1,0 +1,11 @@
+.sceneOverlay {
+  position: relative; // Allows the map mode buttons to be positioned properly
+  overflow-x: hidden; // Prevents scroll bars on the page
+  overflow-y: hidden; // Prevents scroll bars on the page
+}
+
+.mapModeButtons {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+}
