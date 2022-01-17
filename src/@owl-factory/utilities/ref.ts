@@ -49,7 +49,7 @@ function fromNumber (number: bigint): string {
     result = rixits.charAt(Number(rixit)) + result;
     number = number / 64n;
     if (number === 0n)
-        break;
+      break;
   }
   return result;
 }
@@ -58,7 +58,7 @@ function toNumber (encoded: string): bigint {
   let result = 0n;
   const split = encoded.split('');
   for (let i = 0; i < split.length; i++) {
-      result = (result * 64n) + BigInt(rixits.indexOf(split[i]));
+    result = (result * 64n) + BigInt(rixits.indexOf(split[i]));
   }
   return result;
 }

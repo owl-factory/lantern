@@ -1,4 +1,4 @@
-import { normalize } from "path";
+import { normalize } from "../strings";
 
 test("normalize", () => {
   const unnormalizedStr = "AbC";

@@ -21,9 +21,9 @@ const thisDomain = "http://localhost:3000";
  * if the environment variable is set
  * @param url The url to format properly
  */
-function formatURL(url: string) {
-  if (typeof window !== "undefined") { return url; }
-  if (url.charAt(0) === "/") { return thisDomain + url; }
+export function $formatURL(url: string): string {
+  if (typeof window !== "undefined") { return url; } // On frontend urls work normally
+  if (url.charAt(0) === "/") { return thisDomain + url; } // Add the domain for backend server calls
   return url;
 }
 
@@ -61,7 +61,7 @@ async function get<T>(
   requestInit.method = "GET";
   // TODO - convert data to url params
   const urlParams = toURLParams(data);
-  const response = await fetch(formatURL(url + urlParams), requestInit);
+  const response = await fetch($formatURL(url + urlParams), requestInit);
   return response.json(); // parses JSON response into native JavaScript objects
 }
 
@@ -137,7 +137,7 @@ async function postlike<T>(
   requestInit: RequestInit = defaultRequestInit
 ):Promise<ServerResponse<T>> {
   requestInit.body = JSON.stringify(data);
-  const response = await fetch(formatURL(url), requestInit);
+  const response = await fetch($formatURL(url), requestInit);
   return response.json(); // parses JSON response into native JavaScript objects
 }
 

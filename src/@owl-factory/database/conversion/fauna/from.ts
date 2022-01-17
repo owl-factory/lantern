@@ -2,7 +2,6 @@ import { FaunaDocument } from "@owl-factory/database/types/fauna";
 import { Ref64 } from "@owl-factory/types";
 import { set } from "@owl-factory/utilities/objects";
 import { encode } from "@owl-factory/utilities/ref";
-import { isFaunaDate, isFaunaRef } from "./fauna";
 
 /**
  * Maps fauna into a flatter data format for easier readability and accessibility.
@@ -10,7 +9,7 @@ import { isFaunaDate, isFaunaRef } from "./fauna";
  * @param format The format to return the fauna function as. Valid options are 'class' or 'struct'.
  */
 export function fromFauna(faunaDoc: FaunaDocument): Record<string, unknown> {
-  const convertedDoc: Record<string, unknown> = fromRecord((faunaDoc.data || {}) as Record<string, unknown>);
+  const convertedDoc: Record<string, unknown> = $fromRecord((faunaDoc.data || {}) as Record<string, unknown>);
 
   // Parse ref after the fact to ensure we have accurate values
   convertedDoc.ref = fromRef(faunaDoc.ref);
@@ -23,11 +22,11 @@ export function fromFauna(faunaDoc: FaunaDocument): Record<string, unknown> {
  * @param data The data of data items to convert into usable JSON data
  * @returns An array of converted JSON data
  */
-function fromArray(data: unknown[]): unknown[] {
+export function $fromArray(data: unknown[]): unknown[] {
   const convertedData: unknown[] = [];
 
   data.forEach((item: unknown) => {
-    const convertedItem = fromItem(item);
+    const convertedItem = $fromItem(item);
     if (convertedItem === undefined) { return; }
     convertedData.push(convertedItem);
   });
@@ -39,7 +38,7 @@ function fromArray(data: unknown[]): unknown[] {
  * Parses a Fauna date into a common javascript date
  * @param date The Fauna date to parse into a Date
  */
- function fromDate(date: Record<string, unknown>): Date {
+export function $fromDate(date: Record<string, unknown>): Date {
   if ("@ts" in date && date["@ts"]) { return new Date(date["@ts"] as string | number | Date); }
   return new Date(date.value as string | number | Date);
 }
@@ -49,12 +48,12 @@ function fromArray(data: unknown[]): unknown[] {
  * @param data The data record to convert into a usable JSON object
  * @returns A converted JSON object
  */
-function fromRecord(data: Record<string, unknown>): Record<string, unknown> {
+export function $fromRecord(data: Record<string, unknown>): Record<string, unknown> {
   const convertedData: Record<string, unknown> = {};
   const dataKeys = Object.keys(data);
 
   dataKeys.forEach((dataKey: string) => {
-    convertedData[dataKey] = fromItem(data[dataKey]);
+    convertedData[dataKey] = $fromItem(data[dataKey]);
   });
 
   return convertedData;
@@ -65,8 +64,8 @@ function fromRecord(data: Record<string, unknown>): Record<string, unknown> {
  * @param data The single item to convert from Fauna to a JSON item
  * @returns The converted data
  */
-function fromItem(data: unknown) {
-  const dataType: string = getFaunaDataType(data);
+export function $fromItem(data: unknown) {
+  const dataType: string = $getFaunaDataType(data);
   switch(dataType) {
     case "boolean":
     case "number":
@@ -77,13 +76,13 @@ function fromItem(data: unknown) {
     case "undefined":
       return undefined;
     case "array":
-      return fromArray(data as unknown[]);
+      return $fromArray(data as unknown[]);
     case "ref":
       return fromRef(data);
     case "date":
-      return fromDate(data as Record<string, unknown>);
+      return $fromDate(data as Record<string, unknown>);
     case "object":
-      return fromRecord(data as Record<string, unknown>);
+      return $fromRecord(data as Record<string, unknown>);
   }
 }
 
@@ -113,12 +112,12 @@ function fromItem(data: unknown) {
  * @param data The data to infer type from
  * @returns The type of the data as a string
  */
-function getFaunaDataType(data: unknown): string {
+export function $getFaunaDataType(data: unknown): string {
   if (data === undefined || data === null) { return "undefined"; }
   else if (typeof data !== "object") { return typeof data; }
   else if (Array.isArray(data)) { return "array"; }
-  else if (isFaunaRef(data)) { return "ref"; }
-  else if (isFaunaDate(data)) { return "date"; }
+  else if ($isFaunaRef(data)) { return "ref"; }
+  else if ($isFaunaDate(data)) { return "date"; }
   else { return "object"; }
 }
 
@@ -144,11 +143,47 @@ export function fromIndex(faunaDocs: unknown[], fields: string[]): Record<string
     }
     faunaDoc.forEach((faunaItem: unknown, index: number) => {
       const key = fields[index];
-      const item = fromItem(faunaItem);
+      const item = $fromItem(faunaItem);
       set(convertedDoc, key, item);
     });
     convertedDocs.push(convertedDoc);
   });
 
   return convertedDocs;
+}
+
+/**
+ * Checks if the given data object is a Fauna ref.
+ * @param item The data to check if it is a Fauna ref
+ */
+export function $isFaunaRef(item: unknown): boolean {
+  if (item === null || typeof item !== "object") { return false; }
+  const castedItem = item as Record<string, unknown>;
+  if ("@ref" in castedItem) { return true; }
+  if (castedItem.value && typeof castedItem.value === "object" && "id" in castedItem.value) { return true; }
+  return false;
+}
+
+/**
+ * Determines if an object is a Fauna date.
+ * @param item The data object to determine if a Fauna date
+ */
+export function $isFaunaDate(item: unknown): boolean {
+  if (item === null || typeof item !== "object") { return false; }
+
+  const castedItem = item as Record<string, unknown>;
+  if (castedItem["@ts"]) { return true; }
+  if (castedItem.value && typeof castedItem.value === "string" && Date.parse(castedItem.value)) { return true; }
+  return false;
+}
+
+
+/**
+ * Determine if the given document is a fauna error or not
+ * @param doc The document to determine if an error or not.
+ * TODO - create this
+ * TODO - move to utilities/fauna
+ */
+export function $isFaunaError(doc: unknown): boolean {
+  return false;
 }
