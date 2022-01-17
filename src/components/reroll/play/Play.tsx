@@ -23,11 +23,11 @@ export const Play = observer(() => {
 
   function test() {
     const dispatch = { event: DispatchEvent.Test, content: gameServer.state.count + 1 };
-    gameServer.sendToAll(dispatch);
+    gameServer.dispatchToAll(dispatch);
   }
 
   function flushDispatch() {
-    gameServer.attemptFlush();
+    gameServer.beginDispatchFlush();
   }
 
   // ON LOAD
