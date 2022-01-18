@@ -1,9 +1,9 @@
-import { GridType, SceneController } from "controllers/maps/SceneController";
-import { Button } from "components/style";
+import { GridType } from "controllers/maps/SceneController";
+import { Button } from "@owl-factory/components/button";
 import { Formik, Form as FormikForm, FormikProps } from "formik";
 import React from "react";
-import { Input } from "components/style/forms";
-import { Select } from "components/style/forms/Select";
+import { Input } from "@owl-factory/components/form";
+import { Select } from "@owl-factory/components/form/Select";
 import { MapController } from "controllers/maps/map";
 import { GridController } from "controllers/maps/grid";
 import { observer } from "mobx-react-lite";

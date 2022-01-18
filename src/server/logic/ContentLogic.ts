@@ -1,16 +1,16 @@
 
-import { Fetch, FetchMany, Index } from "database/decorators/crud";
-import { Access, ReadFields } from "database/decorators/modifiers";
-import { Collection, FaunaIndex } from "fauna";
-import { Ref64 } from "types";
+import { Fetch, FetchMany, Index } from "@owl-factory/database/decorators/crud";
+import { Access, ReadFields } from "@owl-factory/database/decorators/modifiers";
+import { Collection, FaunaIndex } from "src/fauna";
+import { Ref64 } from "@owl-factory/types";
 import { AnyDocument, ContentDocument } from "types/documents";
-import { UserRole } from "types/security";
+import { UserRole } from "@owl-factory/auth/enums";
 import { DatabaseLogic } from "./AbstractDatabaseLogic";
 import { isOwner } from "./security";
-import * as fauna from "database/integration/fauna";
-import { FaunaIndexOptions } from "types/fauna";
-import { SecurityController } from "controllers/security";
-import { toRef } from "database/conversion/fauna/to";
+import * as fauna from "@owl-factory/database/integration/fauna";
+import { FaunaIndexOptions } from "@owl-factory/database/types/fauna";
+import { SecurityController } from "controllers/SecurityController";
+import { toRef } from "@owl-factory/database/conversion/fauna/to";
 
 class $ContentLogic extends DatabaseLogic<ContentDocument> {
   public collection = Collection.Contents;

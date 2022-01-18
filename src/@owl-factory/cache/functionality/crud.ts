@@ -1,8 +1,8 @@
 import { pruneErrors } from "@owl-factory/errors";
+import { rest } from "@owl-factory/https/rest";
+import { Ref64 } from "@owl-factory/types";
 import { ResponseDoc } from "@owl-factory/types/object";
-import { Ref64 } from "types";
-import { getUniques } from "utilities/arrays";
-import { rest } from "utilities/request";
+import { getUniques } from "@owl-factory/utilities/arrays";
 import { CacheController } from "../AbstractCacheController";
 import { RefRequired } from "../types";
 
@@ -131,6 +131,7 @@ export async function updateMany<T extends RefRequired>(
   return updatedDocs;
 }
 
+// TODO - move this to somewhere else?
 type StandardApiResponse<T> = { docs: Partial<T>[] }
 
 

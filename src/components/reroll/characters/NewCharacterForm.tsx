@@ -1,10 +1,8 @@
 import React from "react";
 import { Form, Formik } from "formik";
-import { Input, Select } from "components/style/forms";
-import { Button } from "components/style";
-import { CharacterDocument, RulesetDocument } from "types/documents";
-import { RulesetCache } from "controllers/cache/RulesetCache";
-import { observer } from "mobx-react-lite";
+import { Input } from "@owl-factory/components/form";
+import { Button } from "@owl-factory/components/button";
+import { CharacterDocument } from "types/documents";
 import { RulesetSelect } from "../rulesets/RulesetSelect";
 import { CampaignSelect } from "../campaigns/CampaignSelect";
 import { CharacterCache } from "controllers/cache/CharacterCache";
@@ -17,7 +15,7 @@ export function NewCharacterForm(props: any) {
   async function createNewCharacter(values: NewCharacterFormValues) {
     console.log(values);
     const character = await CharacterCache.create(values.character);
-    console.log(character)
+    console.log(character);
   }
 
   return (

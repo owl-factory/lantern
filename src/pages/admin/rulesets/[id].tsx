@@ -1,6 +1,6 @@
 import { Page } from "components/design";
-import { Col } from "components/style";
-import { Tooltip } from "components/style/tooltips";
+import { Col } from "@owl-factory/components/flex";
+import { Tooltip } from "@owl-factory/components/tooltip";
 import { RulesetCache } from "controllers/cache/RulesetCache";
 import { observer } from "mobx-react-lite";
 import { NextPageContext } from "next";
@@ -10,8 +10,8 @@ import { MdInfo } from "react-icons/md";
 import { isAdmin } from "server/logic/security";
 import { InitialProps } from "types/client";
 import { RulesetDocument } from "types/documents";
-import { getSession } from "utilities/auth";
-import { rest } from "utilities/request";
+import { rest } from "@owl-factory/https/rest";
+import { getSession } from "@owl-factory/auth/session";
 
 interface AdminRulesetProps extends InitialProps {
   ruleset: RulesetDocument;

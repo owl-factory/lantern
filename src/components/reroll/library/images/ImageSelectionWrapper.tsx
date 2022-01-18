@@ -1,4 +1,4 @@
-import { Modal } from "components/style/modals";
+import { Modal } from "@owl-factory/components/modal";
 import React from "react";
 import { ImageDocument } from "types/documents";
 import { AssetUploadSource } from "types/enums/assetSource";

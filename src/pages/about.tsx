@@ -1,7 +1,7 @@
 import React from "react";
 import Page from "components/design/Page";
 import Link from "next/link";
-import { Button } from "components/style";
+import { Button } from "@owl-factory/components/button";
 
 
 function About(): JSX.Element {

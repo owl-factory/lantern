@@ -1,4 +1,4 @@
-import { Ref64 } from "types";
+import { Ref64 } from "@owl-factory/types";
 
 export interface CoreDocument {
   ref: Ref64;

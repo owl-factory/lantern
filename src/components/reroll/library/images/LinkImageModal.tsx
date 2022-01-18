@@ -1,8 +1,8 @@
-import { Button } from "components/style";
-import { Card, CardBody, CardHeader } from "components/style/card";
-import { Input } from "components/style/forms";
-import { Modal } from "components/style/modals";
-import { Tooltip } from "components/style/tooltips";
+import { Button } from "@owl-factory/components/button";
+import { Card, CardBody, CardHeader } from "@owl-factory/components/card";
+import { Input } from "@owl-factory/components/form";
+import { Modal } from "@owl-factory/components/modal";
+import { Tooltip } from "@owl-factory/components/tooltip";
 import { Formik, Form as FormikForm } from "formik";
 import React from "react";
 
@@ -11,6 +11,11 @@ interface LinkImageModalProps {
   handleClose: () => void;
 }
 
+/**
+ * Renders a modal and form to link an image
+ * @param handleClose The function to close this modal
+ * @param modal True if the modal should be open
+ */
 export function LinkImageModal({ handleClose, modal }: LinkImageModalProps) {
   function saveLinkedImage(values: any) {
     // TODO - have linked image

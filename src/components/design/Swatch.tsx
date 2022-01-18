@@ -1,4 +1,5 @@
 import React from "react";
+import classes from "./Swatch.module.scss";
 
 /**
  * Renders a small swatch for displaying a color, usable as a key or reference
@@ -6,19 +7,7 @@ import React from "react";
  */
 export function Swatch({ color }: { color: string }): JSX.Element {
   const style = {
-    display: "inline-block",
-    marginLeft: "10px",
-    marginRight: "5px",
-    marginTop: "5px",
-
-    borderStyle: "solid",
-    borderWidth: "1px",
-    borderColor: "black",
-
-    width: "12px",
-    height: "12px",
-
     backgroundColor: color,
   };
-  return <div style={style}/>;
+  return <div className={classes.swatch} style={style}/>;
 }

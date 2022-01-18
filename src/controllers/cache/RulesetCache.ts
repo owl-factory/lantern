@@ -1,8 +1,8 @@
 import { CacheController } from "@owl-factory/cache/AbstractCacheController";
-import { Ref64 } from "types";
 import { RulesetDocument } from "types/documents";
 import * as storage from "@owl-factory/cache/storage/localStorage";
-import { rest } from "utilities/request";
+import { Ref64 } from "@owl-factory/types";
+import { rest } from "@owl-factory/https/rest";
 
 class $RulesetCache extends CacheController<RulesetDocument> {
   key = "ruleset";

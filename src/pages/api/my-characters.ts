@@ -1,9 +1,9 @@
 import { NextApiRequest } from "next";
 import { CampaignLogic } from "server/logic/CampaignLogic";
 import { CharacterLogic } from "server/logic/CharacterLogic";
-import { HTTPHandler } from "server/response";
-import { createEndpoint } from "server/utilities";
-import { getUniques } from "utilities/arrays";
+
+import { HTTPHandler, createEndpoint } from "@owl-factory/https";
+import { getUniques } from "@owl-factory/utilities/arrays";
 
 /**
  * Fetches all of a user's campaigns

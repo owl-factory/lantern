@@ -4,16 +4,16 @@ import React from "react";
 import { Button, ButtonGroup, Table } from "react-bootstrap";
 import { InitialProps } from "types/client";
 import { AnyDocument, ContentDocument } from "types/documents";
-import { getSession } from "utilities/auth";
-import { rest } from "utilities/request";
+import { getSession } from "@owl-factory/auth/session";
+import { rest } from "@owl-factory/https/rest";
 import { GiAxeSword } from 'react-icons/gi';
 import { MdContentCopy, MdDeleteForever, MdEdit } from "react-icons/md";
-import { Loading } from "components/style";
+import { Loading } from "@owl-factory/components/loading";
 import { observer } from "mobx-react-lite";
 import { ContentCache } from "controllers/cache/ContentCache";
-import { getUniques } from "utilities/arrays";
 import { ContentTypeCache } from "controllers/cache/ContentTypeCache";
 import { RulesetCache } from "controllers/cache/RulesetCache";
+import { getUniques } from "@owl-factory/utilities/arrays";
 
 interface MyContentProps extends InitialProps {
   contents: ContentDocument[];

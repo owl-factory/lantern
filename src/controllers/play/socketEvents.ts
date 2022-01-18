@@ -43,7 +43,7 @@ export function newHost(this: GameServer, peerID: string): void {
 
   if (isLosingHost) {
     this.calculateHostPriority();
-    this.dispatch({ event: DispatchEvent.PushHostQueue, content: this.hostPriority });
+    this.handleDispatch({ event: DispatchEvent.HostQueueItem, content: this.hostPriority });
   }
 }
 

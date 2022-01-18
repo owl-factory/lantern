@@ -4,8 +4,8 @@ import { Chat } from "components/reroll/play";
 
 import { GameServer } from "controllers/play";
 import { observer } from "mobx-react-lite";
-import { rest } from "utilities/request";
 import { useRouter } from "next/router";
+import { rest } from "@owl-factory/https/rest";
 
 const gameServer = new GameServer();
 gameServer.state = {
@@ -23,11 +23,11 @@ export const Play = observer(() => {
 
   function test() {
     const dispatch = { event: DispatchEvent.Test, content: gameServer.state.count + 1 };
-    gameServer.sendToAll(dispatch);
+    gameServer.dispatchToAll(dispatch);
   }
 
   function flushDispatch() {
-    gameServer.attemptFlush();
+    gameServer.beginDispatchFlush();
   }
 
   // ON LOAD

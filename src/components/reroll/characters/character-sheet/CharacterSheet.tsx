@@ -1,7 +1,7 @@
 import { PassiveReadLevel } from "@owl-factory/cache/enums";
 import { Ref64 } from "@owl-factory/types";
-import { Button, Loading } from "components/style";
-import { Input } from "components/style/forms";
+import { Button } from "@owl-factory/components/button";
+import { Input } from "@owl-factory/components/form";
 import { CharacterCache } from "controllers/cache/CharacterCache";
 import { Form, Formik } from "formik";
 import { observer } from "mobx-react-lite";

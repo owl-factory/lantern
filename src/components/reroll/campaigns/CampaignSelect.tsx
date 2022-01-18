@@ -1,4 +1,4 @@
-import { Select } from "components/style/forms";
+import { Select } from "@owl-factory/components/form";
 import { CampaignCache } from "controllers/cache/CampaignCache";
 import { observer } from "mobx-react-lite";
 import React from "react";

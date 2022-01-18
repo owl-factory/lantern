@@ -1,5 +1,5 @@
 import { Ref64 } from "@owl-factory/types";
-import { isClient } from "utilities/tools";
+import { isClient } from "@owl-factory/utilities/client";
 import { CacheItem } from "@owl-factory/cache/types";
 
 // Mocks up the window.localStorage to prevent breaks serverside

@@ -1,9 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { setSession } from "utilities/auth";
-import { getServerClient } from "utilities/db";
 import { query as q } from "faunadb";
-import { normalize } from "utilities/strings";
-import { fromFauna } from "database/conversion/fauna/from";
+import { fromFauna } from "@owl-factory/database/conversion/fauna/from";
+import { getServerClient } from "@owl-factory/database/client/fauna";
+import { setSession } from "@owl-factory/auth/session";
+import { normalize } from "@owl-factory/utilities/strings";
 
 const checkEmail = /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i;
 

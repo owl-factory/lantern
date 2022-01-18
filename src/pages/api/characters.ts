@@ -1,7 +1,7 @@
 import { NextApiRequest } from "next";
 import { CharacterLogic } from "server/logic/CharacterLogic";
-import { HTTPHandler } from "server/response";
-import { createEndpoint } from "server/utilities";
+
+import { HTTPHandler, createEndpoint } from "@owl-factory/https";
 
 
 /**

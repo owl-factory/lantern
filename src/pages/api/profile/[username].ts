@@ -1,9 +1,9 @@
 import { NextApiRequest } from "next";
 import { UserLogic } from "server/logic/UserLogic";
-import { HTTPHandler } from "server/response";
-import { createEndpoint } from "server/utilities";
+
+import { HTTPHandler, createEndpoint } from "@owl-factory/https";
 import { UserDocument } from "types/documents";
-import { getUniques } from "utilities/arrays";
+import { getUniques } from "@owl-factory/utilities/arrays";
 
 /**
  * Gets a single profile for the profile page

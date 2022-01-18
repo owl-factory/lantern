@@ -13,5 +13,5 @@ export function sendToAll(this: GameServer, newDispatch: Dispatch): void {
     const channel = this.channels[key];
     channel.send(newDispatch);
   });
-  this.dispatch(newDispatch);
+  // this.dispatch(newDispatch);
 }

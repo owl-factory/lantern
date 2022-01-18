@@ -1,4 +1,4 @@
-import { SelectionTabs } from "components/design";
+import { SelectionTabs } from "@owl-factory/components/SelectionTabs";
 import React from "react";
 import { ImageDocument } from "types/documents";
 import { AssetUploadSource } from "types/enums/assetSource";

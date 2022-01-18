@@ -1,6 +1,6 @@
-import { Button } from "components/style";
-import { Input } from "components/style/forms";
-import { Tooltip } from "components/style/tooltips";
+import { Button } from "@owl-factory/components/button";
+import { Input } from "@owl-factory/components/form";
+import { Tooltip } from "@owl-factory/components/tooltip";
 import { Formik, Form as FormikForm } from "formik";
 import React from "react";
 import { ImageDocument } from "types/documents";

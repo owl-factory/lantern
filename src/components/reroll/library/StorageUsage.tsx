@@ -1,9 +1,9 @@
 import { Swatch } from "components/design";
-import { Tooltip } from "components/style/tooltips";
+import { Tooltip } from "@owl-factory/components/tooltip";
 import React from "react";
 import { StorageTypeEnum, storageTypes } from "types/enums/storageType";
 import { StorageType, StorageUsageItem } from "types/reroll/library";
-import { bytesToReadable } from "utilities/bytes";
+import { bytesToReadable } from "@owl-factory/utilities/bytes";
 
 interface StorageUsageProps {
   maxAllowedStorage: number;

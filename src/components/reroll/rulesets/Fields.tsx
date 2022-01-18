@@ -3,8 +3,8 @@ import React from "react";
 import { MdBlock, MdBuild } from "react-icons/md";
 import { ContextMenuBuilder } from "utilities/design";
 import { FieldTypeEnum, fieldTypes } from "types/enums";
-import { Col, Row } from "components/style";
-import { Input, Select } from "components/style/forms";
+import { Col, Row } from "@owl-factory/components/flex";
+import { Input, Select } from "@owl-factory/components/form";
 
 // TODO
 type FieldType = any;

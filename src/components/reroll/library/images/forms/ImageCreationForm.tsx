@@ -1,4 +1,4 @@
-import { Modal } from "components/style/modals";
+import { Modal } from "@owl-factory/components/modal";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { ImageDocument } from "types/documents";
