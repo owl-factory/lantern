@@ -58,5 +58,5 @@ export default function RefTest() {
         </Form>
       </Formik>
     </Page>
-  )
+  );
 }
