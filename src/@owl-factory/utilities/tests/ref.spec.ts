@@ -1,5 +1,8 @@
-import { decodeId, isEncoding } from "../ref";
+import { CollectionMap, decodeId, isEncoding } from "../ref";
 
+const collections: CollectionMap = [
+  { id: "A", string: "users"},
+];
 
 test("isEncoded test", () => {
   const encodedRef = "A1234567890=";
