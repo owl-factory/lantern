@@ -34,10 +34,6 @@ interface CharacterCardProps {
   character: Partial<CharacterDocument>;
 }
 
-/**
- * 
- * @returns 
- */
 const CharacterList = observer((props: any) => {
   const [ characters, setCharacters ] = React.useState<Partial<CharacterDocument>[]>([]);
   const characterElements: JSX.Element[] = [];

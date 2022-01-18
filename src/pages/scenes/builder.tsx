@@ -6,6 +6,10 @@ const SceneBuilder = dynamic(
   { loading: () => <></>, ssr: false},
 );
 
-export default function SceneBuilderPage(): JSX.Element {
-  return <SceneBuilder/>;
+export default function SceneBuilderPage() {
+  if (SceneBuilder) {
+    return <SceneBuilder/>;
+  } else {
+    return <></>;
+  }
 }

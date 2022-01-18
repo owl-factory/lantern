@@ -15,7 +15,7 @@ export function NewCharacterForm(props: any) {
   async function createNewCharacter(values: NewCharacterFormValues) {
     console.log(values);
     const character = await CharacterCache.create(values.character);
-    console.log(character)
+    console.log(character);
   }
 
   return (

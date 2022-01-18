@@ -1,7 +1,8 @@
 import { Expr, query as q } from "faunadb";
 import { FaunaDocument } from "@owl-factory/database/types/fauna";
-import { decode, isEncoding } from "@owl-factory/utilities/ref";
+import { decode } from "utilities/ref";
 import { Ref64 } from "@owl-factory/types";
+import { isEncoding } from "@owl-factory/utilities/ref";
 
 /**
  * Converts a Javascript document into a Fauna document for saving to the database
@@ -96,8 +97,9 @@ export function $toItem(data: unknown): unknown {
  * @returns A Fauna Ref expr.
  */
 export function toRef(ref64ID: Ref64): Expr {
-  const { id, collection } = decode(ref64ID);
-  const ref = q.Ref(q.Collection(collection as string), id);
+  const decodedRef = decode(ref64ID);
+  if (!decodedRef) { throw "Ref failed to decode. TODO later"; }
+  const ref = q.Ref(q.Collection(decodedRef.collection as string), decodedRef.id);
   return ref;
 }
 

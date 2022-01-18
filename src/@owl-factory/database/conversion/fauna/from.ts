@@ -1,7 +1,7 @@
 import { FaunaDocument } from "@owl-factory/database/types/fauna";
 import { Ref64 } from "@owl-factory/types";
 import { set } from "@owl-factory/utilities/objects";
-import { encode } from "@owl-factory/utilities/ref";
+import { encode } from "utilities/ref";
 
 /**
  * Maps fauna into a flatter data format for easier readability and accessibility.
@@ -91,10 +91,10 @@ export function $fromItem(data: unknown) {
  * id and collection of the ref.
  * @param ref The ref object to parse
  */
- export function fromRef(ref: any): Ref64 | undefined {
+ export function fromRef(ref: any): Ref64 | null {
   let id, collection = "";
   if (ref === null)
-    return undefined;
+    return null;
 
     if ("@ref" in ref && "id" in ref["@ref"]) {
     id = ref["@ref"].id;

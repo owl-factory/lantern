@@ -2,8 +2,9 @@ import { Page } from "components/design";
 import { NextPageContext } from "next";
 import React from "react";
 import { Collection, query as q } from "faunadb";
-import { decode, isEncoding } from "@owl-factory/utilities/ref";
+import { decode } from "utilities/ref";
 import { getServerClient } from "@owl-factory/database/client/fauna";
+import { isEncoding } from "@owl-factory/utilities/ref";
 
 interface RefTestProps {
   res: any;
@@ -30,7 +31,8 @@ RefTest.getInitialProps = async (ctx: NextPageContext) => {
     return { error: 404 };
   }
   const client = getServerClient();
-  const { id, collection } = decode(ref);
-  const res = await client.query(q.Get(q.Ref(Collection(collection), id)));
+  const decodedRef = decode(ref);
+  if (!decodedRef) { throw "Ref failed to decode. TODO later"; }
+  const res = await client.query(q.Get(q.Ref(Collection(decodedRef.collection), decodedRef.id)));
   return { res };
 };

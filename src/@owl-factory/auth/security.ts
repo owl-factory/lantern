@@ -1,6 +1,6 @@
 import { Collection } from "src/fauna";
 import { NextApiRequest } from "next";
-import { encode } from "@owl-factory/utilities/ref";
+import { encode } from "utilities/ref";
 import { getSession } from "./session";
 import { UserRole } from "./enums";
 
@@ -31,10 +31,14 @@ export class $SecurityController<T> {
    */
   public fromReq(req: NextApiRequest) {
     const session = getSession({req});
+
+    const userRef = encode("295863299256353286", Collection.Users);
+    if (!userRef) { throw "Ref failed to encode. TODO later"; }
+
     if (!session || session.user === undefined || session.user === null) {
       // this.currentUser = undefined;
       this.currentUser = {
-        ref: encode("295863299256353286", Collection.Users), // TODO - collection.users should not require import
+        ref: userRef, // TODO - collection.users should not require import
         username: "laurasaura",
 
         role: UserRole.User,
