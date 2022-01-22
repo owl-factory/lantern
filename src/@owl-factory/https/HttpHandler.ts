@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { SecurityController } from "controllers/SecurityController"; // TODO - set this somewhere to refactor it out
 import { NextApiRequest, NextApiResponse } from "next";
 import { Context } from "types/server";
