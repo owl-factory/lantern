@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { NextApiRequest } from "next";
 import { CharacterLogic } from "server/logic/CharacterLogic";
 
