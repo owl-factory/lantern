@@ -1,4 +1,4 @@
-
+import "reflect-metadata";
 import { NextApiRequest } from "next";
 import { ImageLogic } from "server/logic/ImageLogic";
 import { UserLogic } from "server/logic/UserLogic";

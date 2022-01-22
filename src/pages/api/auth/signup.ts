@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { NextApiRequest, NextApiResponse } from "next";
 import { query as q } from "faunadb";
 import { fromFauna } from "@owl-factory/database/conversion/fauna/from";
