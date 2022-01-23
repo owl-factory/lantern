@@ -1,3 +1,4 @@
+import { initializeNextContext } from "@owl-factory/next/ctx";
 import { SecurityController } from "controllers/SecurityController"; // TODO - set this somewhere to refactor it out
 import { NextApiRequest, NextApiResponse } from "next";
 import { Context } from "types/server";
@@ -30,7 +31,9 @@ export class HTTPHandler {
     };
 
     try {
+      // TODO - replace with AuthController
       SecurityController.fromReq(this.req);
+      initializeNextContext({ res: this.res });
 
       // Checks that this method is present
       const method = this.req.method as PossibleMethods;
