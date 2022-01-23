@@ -1,15 +1,11 @@
-import { signOut } from "@owl-factory/auth/session";
 import { Auth } from "controllers/auth";
 import { CampaignCache } from "controllers/cache/CampaignCache";
-import { UserCache } from "controllers/cache/UserCache";
 import { observer } from "mobx-react-lite";
 import Link from "next/link";
 import React from "react";
 import { Nav, NavDropdown, Navbar } from "react-bootstrap";
-import { isAdmin } from "server/logic/security";
 import { CampaignDocument, UserDocument } from "types/documents";
-import { MyUserDocument } from "types/security";
-import { ADMIN_ENDPOINT } from "utilities/globals";
+import { signOut } from "utilities/auth";
 
 
 interface LoggedInNavProps {
@@ -52,7 +48,7 @@ const UserDisplay = observer(() => {
         style={{maxHeight: "32px", maxWidth: "32px", position: "absolute"}}
       />
       <div style={{width: "36px", display: "inline-flex"}}></div>
-      {user?.displayName || user?.username}&nbsp;
+      {user?.name || user?.username}&nbsp;
     </>
   );
 });

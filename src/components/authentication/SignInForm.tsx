@@ -3,7 +3,7 @@ import { ErrorMessage, Formik, Form as FormikForm } from "formik";
 import * as Yup from "yup";
 import { Button } from "@owl-factory/components/button";
 import { Input } from "@owl-factory/components/form";
-import { signIn } from "@owl-factory/auth/session";
+import { signIn } from "utilities/auth";
 
 /** Initial form values */
 const initialValues = {

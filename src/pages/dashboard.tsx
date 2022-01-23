@@ -8,8 +8,8 @@ import { Button } from "@owl-factory/components/button";
 import { Col, Row } from "@owl-factory/components/flex";
 import { Card } from "@owl-factory/components/card";
 import { AlertController } from "@owl-factory/components/alert/AlertController";
-import { getSession, signOut } from "@owl-factory/auth/session";
 import { Auth } from "controllers/auth";
+import { signOut } from "utilities/auth";
 
 interface DashboardProps {
   user?: any;
@@ -74,7 +74,7 @@ function RecentGames(props: any) {
 }
 
 Dashboard.getInitialProps = async (ctx: NextPageContext) => {
-  const user = Auth.getUser(ctx);
+  const user = Auth.getUser();
   const result = await rest.get(`/api/dashboard`);
 
   return { user, campaigns: (result as any).data.campaigns };
