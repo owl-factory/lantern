@@ -5,8 +5,13 @@ import { permissions } from "types/security/permissions";
 import { roles } from "types/security/roles";
 
 class RerollAuthController extends AuthController<UserDocument> {
-  allRoles = roles;
-  allPermissions = permissions;
+  constructor() {
+    super();
+    this.allRoles = roles;
+    this.allPermissions = permissions;
+    this.reloadPermissions();
+
+  }
 
   protected setRole() {
     if (this.$user === undefined) {

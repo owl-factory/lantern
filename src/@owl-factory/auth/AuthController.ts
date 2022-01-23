@@ -10,7 +10,7 @@ export class AuthController<T> {
   public $fullPermissions: Record<string, boolean> = {}; // A collection of all permissions the user has
 
   protected allRoles: Record<string, Role> = {}; // All roles currently in use
-  protected allPermissions: Permission[] = []; // All permissions currently  in use
+  public allPermissions: Permission[] = []; // All permissions currently  in use
 
   protected cookieKey = "session";
 
@@ -28,6 +28,7 @@ export class AuthController<T> {
    */
   public reload() {
     this.loadFromCookie();
+    this.reloadPermissions();
   }
 
   /**
@@ -44,7 +45,6 @@ export class AuthController<T> {
    */
   protected buildPermissions() {
     this.$fullPermissions = {};
-
     let rolePermissions: string[] = [];
     if (this.$role && this.$role in this.allRoles) {
       const role = this.allRoles[this.$role];
@@ -60,7 +60,7 @@ export class AuthController<T> {
   /**
    * Reruns all of the permission determination code
    */
-  protected reloadPermissions() {
+  public reloadPermissions() {
     this.setRole();
     this.setPermissions();
     this.buildPermissions();

@@ -10,7 +10,7 @@ import { Access, ReadFields, SetFields } from "@owl-factory/database/decorators/
 import { FaunaIndexOptions } from "@owl-factory/database/types/fauna";
 import { isEmail } from "@owl-factory/utilities/strings";
 
-const COOKIE_FIELDS = ["ref", "username", "email", "displayName", "avatar.*"];
+const COOKIE_FIELDS = ["ref", "username", "email", "name", "avatar.*", "role", "permissions", "boost"];
 
 const guestFields = [
   "username",

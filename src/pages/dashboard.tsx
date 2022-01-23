@@ -29,6 +29,7 @@ const Dashboard: NextPage<DashboardProps> = (props: any) => {
 
       <h4>Temp Profile Stuff</h4>
       <Button onClick={() =>AlertController.success("Testing")}>Test Alerts</Button>
+      <Button onClick={() => {console.log(Auth.$fullPermissions);}}>Test Auth</Button>
     </Page>
   );
 };
