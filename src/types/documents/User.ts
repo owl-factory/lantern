@@ -1,12 +1,7 @@
 import { Ref64 } from "@owl-factory/types";
 import { CoreDocument } from "types/documents";
-import { UserRole } from "@owl-factory/auth/enums";
-import { ImageDocument } from "./assets";
 
-interface PartialImageDocument extends Partial<ImageDocument> {
-  id: string;
-  src: string;
-}
+
 
 
 /**
@@ -17,7 +12,9 @@ export interface UserDocument extends CoreDocument {
   email: string;
   avatar: { ref: Ref64; src: string; };
 
-  role: UserRole;
+  // SECURITY
+  role: string; // Which role a user is assigned and the default permission
+  permissions: string[]; // Any additional permissions a user has on top of their role
 
   recentPlayers: UserDocument[];
 
