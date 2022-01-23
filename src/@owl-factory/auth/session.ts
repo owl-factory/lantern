@@ -63,7 +63,7 @@ export type CtxReq = Pick<NextPageContext, "req"> | {req: NextApiRequest;} | nul
 /**
  * Sets a session in the cookies
  * @param session The session to set
- * @param ctx The Next Page Context 
+ * @param ctx The Next Page Context
  */
 export function setSession(session: any, ctx?: CtxRes): void {
   setCookie(ctx, "session", JSON.stringify(session), {
@@ -91,33 +91,6 @@ export function getSession(ctx?: CtxReq): any | null {
     return null;
   const session: any = JSON.parse(cookie);
   return session;
-}
-
-/**
- * Authenticates the user
- * TODO - rework this? We don't access Fauna or auth through the UI
- * @param ctx The Next Page context
- */
-export async function authenticate(ctx?: CtxReq): Promise<any | null> {
-  const session = getSession(ctx);
-  const client = getClient(ctx);
-  const id: any = await client.query(q.CurrentIdentity());
-  if (id.id === session?.user.ref["@ref"]?.id) {
-    return session;
-  } else {
-    return null;
-  }
-}
-
-/**
- * A session hook
- */
-export function useSession(): any | undefined | null {
-  const [ ses, setSes ] = useState<any | undefined | null>();
-  useEffect(() => {
-    setSes(getSession());
-  }, []);
-  return ses;
 }
 
 /**

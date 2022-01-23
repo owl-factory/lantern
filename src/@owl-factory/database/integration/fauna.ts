@@ -2,6 +2,7 @@ import { fromFauna, fromIndex } from "@owl-factory/database/conversion/fauna/fro
 import { toFauna, toRef } from "@owl-factory/database/conversion/fauna/to";
 import { FaunaDocument, FaunaIndexOptions, FaunaIndexResponse } from "@owl-factory/database/types/fauna";
 import { Ref64 } from "@owl-factory/types";
+import { normalize } from "@owl-factory/utilities/strings";
 import { Expr, query as q } from "faunadb";
 import { Collection, FaunaIndex, FaunaIndexTerms } from "src/fauna"; // TODO - refactor and remove this
 import { getServerClient } from "../client/fauna";
@@ -118,4 +119,23 @@ export async function updateOne<T>(id: Ref64, doc: Partial<T>): Promise<T> {
 
   const parsedResult = fromFauna(result);
   return parsedResult as unknown as T;
+}
+
+export async function signIn<T>(index: string, username: string, password: string): Promise<T> {
+  const client = getServerClient();
+  let loginResult: any;
+  try {
+    loginResult = await client.query(
+      q.Login(
+        q.Match(q.Index(index), normalize(username)), { password },
+      )
+    );
+  } catch (e) {
+    throw({ code: 401, message: "The user was not found or the password was incorrect." });
+  }
+
+  const user: FaunaDocument = await client.query(q.Get(loginResult.instance));
+  const parsedUser = fromFauna(user);
+  console.log(parsedUser);
+  return parsedUser as any as T;
 }

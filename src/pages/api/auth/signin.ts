@@ -5,6 +5,9 @@ import { fromFauna } from "@owl-factory/database/conversion/fauna/from";
 import { getServerClient } from "@owl-factory/database/client/fauna";
 import { setSession } from "@owl-factory/auth/session";
 import { normalize } from "@owl-factory/utilities/strings";
+import { Auth } from "controllers/auth";
+import { createEndpoint, HTTPHandler } from "@owl-factory/https";
+import { signIn as faunaSignIn } from "@owl-factory/database/integration/fauna";
 
 const checkEmail = /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i;
 
@@ -13,21 +16,34 @@ const checkEmail = /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i;
  * @param req The request to the server
  * @param res The result from the server to be sent back
  */
-export default async function SignIn(req: NextApiRequest, res: NextApiResponse): Promise<void> {
-  const { username, password } = req.body;
-  const client = getServerClient();
-  const index = (checkEmail.test(username)) ? "users_by_email" : "users_by_username";
-  const { instance, secret }: any = await client.query(
-    q.Login(
-      q.Match(q.Index(index), normalize(username)),
-      { password },
-    )
-  );
+// export default async function SignIn(req: NextApiRequest, res: NextApiResponse): Promise<void> {
+//   const { username, password } = req.body;
+//   const client = getServerClient();
+//   const index = (checkEmail.test(username)) ? "users_by_email" : "users_by_username";
+//   const { instance, secret }: any = await client.query(
+//     q.Login(
+//       q.Match(q.Index(index), normalize(username)),
+//       { password },
+//     )
+//   );
 
-  const user: any = fromFauna(await client.query(q.Get(instance)));
-  delete user.email;
-  const session: any = { user, secret };
-  setSession(session, { res });
+//   const user: any = fromFauna(await client.query(q.Get(instance)));
+//   delete user.email;
+//   const session: any = { user, secret };
+//   setSession(session, { res });
+//   Auth.setUser(user);
 
-  res.json(session);
+//   res.json(session);
+// }
+
+/**
+ * Fetches all of a user's campaigns
+ * @param this The Handler class calling this function
+ * @param req The request to the server
+ */
+ async function signIn(this: HTTPHandler, req: NextApiRequest) {
+  faunaSignIn<any>("users_by_username", req.body.username, req.body.password);
+  this.returnSuccess({ });
 }
+
+export default createEndpoint({POST: signIn});
