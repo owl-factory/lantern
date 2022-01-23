@@ -163,3 +163,16 @@ export function Index(_target: any, _name: string, descriptor: any) {
     return result;
   };
 }
+
+export function SignIn(_target: any, _name: string, descriptor: any) {
+  const original = descriptor.value;
+  if (typeof original !== 'function') {
+    return;
+  }
+
+  descriptor.value = async function(...args: any) {
+    let result = await original.apply(this, args);
+    result = trimReadFields(descriptor, result);
+    return result;
+  };
+}

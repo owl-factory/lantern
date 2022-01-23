@@ -5,9 +5,10 @@ import * as fauna from "@owl-factory/database/integration/fauna";
 import { Collection, FaunaIndex } from "src/fauna";
 import { UserRole } from "@owl-factory/auth/enums";
 import { DatabaseLogic } from "./AbstractDatabaseLogic";
-import { Fetch, FetchMany, Index, Update } from "@owl-factory/database/decorators/crud";
+import { Fetch, FetchMany, Index, SignIn, Update } from "@owl-factory/database/decorators/crud";
 import { Access, ReadFields, SetFields } from "@owl-factory/database/decorators/modifiers";
 import { FaunaIndexOptions } from "@owl-factory/database/types/fauna";
+import { isEmail } from "@owl-factory/utilities/strings";
 
 const guestFields = [
   "username",
@@ -97,6 +98,20 @@ class $UserLogic extends DatabaseLogic<UserDocument> {
     if (user === undefined) {
       throw { code: 500, message: "An unexpected error occured while attepting to update the user."};
     }
+    return user;
+  }
+
+  /**
+   * Attempts to log in the user
+   * @param username The username or email of the user attempting to log in
+   * @param password The password of the user attempting to log in
+   * @returns A partial user document with only the important information present
+   */
+  @SignIn
+  @ReadFields(["ref", "username", "email", "displayName", "avatar.*"])
+  public async signIn(username: string, password: string) {
+    const index = isEmail(username) ? FaunaIndex.UsersByEmail : FaunaIndex.UsersByUsername;
+    const user = await fauna.signIn<UserDocument>(index, username, password);
     return user;
   }
 }

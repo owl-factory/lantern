@@ -5,6 +5,9 @@ import { destroyCookie, parseCookies, setCookie } from "nookies";
 import { useEffect, useState } from "react";
 import { query as q } from "faunadb";
 import { getClient, updateClient } from "@owl-factory/database/client/fauna";
+import { rest } from "@owl-factory/https/rest";
+import { UserDocument } from "types/documents";
+import { Auth } from "controllers/auth";
 
 // TODO - COMMENT AND REFACTOR
 
@@ -31,30 +34,22 @@ export function signUp(username: string, email: string, password: string): void 
  * @param username The username of the user to log in
  * @param password The password of the user to log in
  */
-export function signIn(username: string, password: string): void {
-  fetch("/api/auth/signin", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({username, password}),
-  }).then(async (res) => {
-    const session: any = await res.json();
-    updateClient(session.secret);
-    Router.reload();
-  });
+export async function signIn(username: string, password: string): Promise<string> {
+  const result = await rest.post<{ user: UserDocument }>("/api/auth/signin", { username, password });
+  if (!result.success) {
+    return result.message;
+  }
+  Auth.setUser(result.data.user);
+  Router.reload();
+  return "";
 }
 
 /**
  * Logs a user out
  */
 export function signOut(): void {
-  getClient().query(q.Logout(false)).then((res: unknown) => {
-    if (res) {
-      destroySession();
-      Router.reload();
-    } else {
-      throw Error("Something went wrong logging out!");
-    }
-  });
+  Auth.resetUser();
+  Router.reload();
 }
 
 export type CtxRes = Pick<NextPageContext, "res"> | {res: NextApiResponse<any>;} | null | undefined;

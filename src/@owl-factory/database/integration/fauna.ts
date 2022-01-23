@@ -136,6 +136,5 @@ export async function signIn<T>(index: string, username: string, password: strin
 
   const user: FaunaDocument = await client.query(q.Get(loginResult.instance));
   const parsedUser = fromFauna(user);
-  console.log(parsedUser);
   return parsedUser as any as T;
 }

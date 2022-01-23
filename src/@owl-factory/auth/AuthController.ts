@@ -4,7 +4,7 @@ import { action, makeObservable, observable } from "mobx";
 export class AuthController<T> {
   public $user: T | undefined;
 
-  protected cookieKey = "user_session";
+  protected cookieKey = "session";
 
   constructor() {
     this.reload();
@@ -40,6 +40,7 @@ export class AuthController<T> {
   public setUser(user: T) {
     this.resetUser();
     this.$user = user;
+    this.saveToCookie();
   }
 
   get isLoggedIn() {
