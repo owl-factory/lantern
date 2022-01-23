@@ -164,6 +164,12 @@ export function Index(_target: any, _name: string, descriptor: any) {
   };
 }
 
+/**
+ * Handles the pre- and post-signin code
+ * @param _target The target class
+ * @param _name The target name
+ * @param descriptor The properties of the function
+ */
 export function SignIn(_target: any, _name: string, descriptor: any) {
   const original = descriptor.value;
   if (typeof original !== 'function') {
@@ -171,6 +177,27 @@ export function SignIn(_target: any, _name: string, descriptor: any) {
   }
 
   descriptor.value = async function(...args: any) {
+    let result = await original.apply(this, args);
+    result = trimReadFields(descriptor, result);
+    return result;
+  };
+}
+
+/**
+ * Handles the pre- and post-signup code
+ * @param _target The target class
+ * @param _name The target name
+ * @param descriptor The properties of the function
+ */
+ export function SignUp(_target: any, _name: string, descriptor: any) {
+  const original = descriptor.value;
+  if (typeof original !== 'function') {
+    return;
+  }
+
+  descriptor.value = async function(...args: any) {
+    args[0] = trimSetFields(descriptor, args[0]);
+
     let result = await original.apply(this, args);
     result = trimReadFields(descriptor, result);
     return result;

@@ -5,10 +5,12 @@ import * as fauna from "@owl-factory/database/integration/fauna";
 import { Collection, FaunaIndex } from "src/fauna";
 import { UserRole } from "@owl-factory/auth/enums";
 import { DatabaseLogic } from "./AbstractDatabaseLogic";
-import { Fetch, FetchMany, Index, SignIn, Update } from "@owl-factory/database/decorators/crud";
+import { Fetch, FetchMany, Index, SignIn, SignUp, Update } from "@owl-factory/database/decorators/crud";
 import { Access, ReadFields, SetFields } from "@owl-factory/database/decorators/modifiers";
 import { FaunaIndexOptions } from "@owl-factory/database/types/fauna";
 import { isEmail } from "@owl-factory/utilities/strings";
+
+const COOKIE_FIELDS = ["ref", "username", "email", "displayName", "avatar.*"];
 
 const guestFields = [
   "username",
@@ -108,11 +110,25 @@ class $UserLogic extends DatabaseLogic<UserDocument> {
    * @returns A partial user document with only the important information present
    */
   @SignIn
-  @ReadFields(["ref", "username", "email", "displayName", "avatar.*"])
+  @ReadFields(COOKIE_FIELDS)
   public async signIn(username: string, password: string) {
     const index = isEmail(username) ? FaunaIndex.UsersByEmail : FaunaIndex.UsersByUsername;
     const user = await fauna.signIn<UserDocument>(index, username, password);
     return user;
+  }
+
+  /**
+   * Signs up a new user
+   * @param user The user to create
+   * @param password The password the user will be secured with
+   */
+  @SignUp
+  @ReadFields(COOKIE_FIELDS)
+  @SetFields(["username", "email"])
+  public async signUp(user: Partial<UserDocument>, password: string) {
+    // TODO - add default security and other fields required for the user
+    const newUser = await fauna.signUp<UserDocument>(this.collection, user, password);
+    return newUser;
   }
 }
 

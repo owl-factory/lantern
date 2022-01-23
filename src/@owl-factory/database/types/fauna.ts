@@ -2,6 +2,7 @@ import { Expr } from "faunadb";
 
 export interface FaunaDocument {
   ref?: Expr;
+  credentials?: { password: string };
   data: Record<string, unknown>;
   ts?: number;
   ttl?: number;
