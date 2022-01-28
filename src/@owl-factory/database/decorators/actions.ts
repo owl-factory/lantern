@@ -5,6 +5,7 @@ import * as fauna from "../integration/fauna";
 import { SecurityController } from "controllers/SecurityController"; // TODO - reference without importing
 import { UserRole } from "@owl-factory/auth/enums";
 import { Ref64 } from "@owl-factory/types";
+import { Auth } from "controllers/auth";
 
 export type PerRoleAccess<T> = T | ((doc: AnyDocument) => T);
 export interface RoleAccess<T> {
@@ -17,6 +18,7 @@ export interface RoleAccess<T> {
 export interface Descriptor {
   access?: RoleAccess<boolean>;
   requireLogin?: boolean;
+  role?: string;
   parent?: any;
   readFields?: RoleAccess<string[]>;
   setFields?: RoleAccess<string[]>;
@@ -82,6 +84,13 @@ export function checkDynamicAccess(descriptor: Descriptor, doc: AnyDocument): An
     throw { code: 401, message: "You do not have access to view this resource." };
   }
   return docs[0];
+}
+
+export function checkRoleAccess(descriptor: Descriptor): void {
+  if (!descriptor.role) { return; }
+  if (!Auth.hasPermission(descriptor.role)) {
+    throw { code: 401, message: "You lack the permission to run this function." };
+  }
 }
 
 /**

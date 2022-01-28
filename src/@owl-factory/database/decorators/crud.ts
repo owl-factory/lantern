@@ -4,6 +4,7 @@ import {
   checkLogin,
   checkManyDynamicAccess,
   checkParentAccess,
+  checkRoleAccess,
   checkStaticAccess,
   fetchTargetDoc,
   setCreateFields,
@@ -80,6 +81,7 @@ export function Delete(_target: any, _name: string, descriptor: any) {
     if (args[0] === "") { return { $error: true }; } // TODO - change to empty/error value
     checkLogin(descriptor);
     checkStaticAccess(descriptor);
+    checkRoleAccess(descriptor);
 
     let result = await original.apply(this, args);
 
@@ -128,6 +130,7 @@ export function Index(_target: any, _name: string, descriptor: any) {
   descriptor.value = async function(...args: any) {
     checkLogin(descriptor);
     checkStaticAccess(descriptor);
+    checkRoleAccess(descriptor);
     let result = await original.apply(this, args);
     result = checkManyDynamicAccess(descriptor, result);
     result = trimManyReadFields(descriptor, result);

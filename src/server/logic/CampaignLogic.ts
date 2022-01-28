@@ -3,7 +3,7 @@ import { AnyDocument, CampaignDocument } from "types/documents";
 import { isOwner } from "server/logic/security";
 import { UserRole } from "@owl-factory/auth/enums";
 import * as fauna from "@owl-factory/database/integration/fauna";
-import { Access, ReadFields, RequireLogin, SetFields } from "@owl-factory/database/decorators/modifiers";
+import { Access, ReadFields, RequireLogin, Role, SetFields } from "@owl-factory/database/decorators/modifiers";
 import { Index, Update } from "@owl-factory/database/decorators/crud";
 import { DatabaseLogic } from "./AbstractDatabaseLogic";
 import { Ref64 } from "@owl-factory/types";
@@ -11,6 +11,7 @@ import { Collection, FaunaIndex } from "src/fauna";
 import { toRef } from "@owl-factory/database/conversion/fauna/to";
 import { SecurityController } from "controllers/SecurityController";
 import { FaunaIndexOptions } from "@owl-factory/database/types/fauna";
+import { Auth } from "controllers/auth";
 
 /**
  * Checks if the current user is a player for the given document
@@ -67,11 +68,11 @@ class $CampaignLogic extends DatabaseLogic<CampaignDocument> {
    * @returns An array of campaign document partials
    */
   @Index
-  @Access({[UserRole.User]: true})
+  @Role("viewMyCampaigns")
   @RequireLogin()
   @ReadFields(["*"])
   public async fetchMyCampaigns(options?: FaunaIndexOptions) {
-    const id = SecurityController.currentUser?.ref;
+    const id = Auth.getUser()?.ref;
     if (!id) { return []; }
     const campaigns = fauna.searchByIndex<Partial<CampaignDocument>>(FaunaIndex.CampaignsByUser, [id], options);
     return campaigns;

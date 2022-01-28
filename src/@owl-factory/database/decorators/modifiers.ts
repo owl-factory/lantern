@@ -22,6 +22,15 @@ export function Access(roles: RoleAccess<boolean>) {
 }
 
 /**
+ * Sets what role is required to access this resource.
+ * TODO - allow this to be multiple Roles
+ * @param role The role key that this resource requires
+ */
+export function Role(role: string) {
+  return setFieldAccess(role, "role");
+}
+
+/**
  * Decorator that indicates the function is to require a login or not.
  * @param required If the user is required to be logged in. Defaults to true.
  * @returns The decorator function that sets the requirement
@@ -79,6 +88,11 @@ export function ReadFields(fields: PerRoleAccess<string[]> | RoleAccess<string[]
   return setFieldRoleAccess<string[]>(fields, "setFields");
 }
 
+function setFieldAccess<T>(value: T, fieldKey: string) {
+  return (_target: any, _name: string, descriptor: any) => {
+    descriptor[fieldKey] = value;
+  };
+}
 
 /**
  * A helper function to set field access for both read and set field functions

@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextApiRequest } from "next";
 import { HTTPHandler, createEndpoint } from "@owl-factory/https";
 import { UserLogic } from "server/logic/UserLogic";
 

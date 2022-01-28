@@ -1,5 +1,6 @@
 import { destroyCookie, getCookie, setCookie } from "@owl-factory/cookies";
 import { action, makeObservable, observable } from "mobx";
+import { NextApiRequest } from "next";
 import { Permission, Role } from "./types";
 
 export class AuthController<T> {
@@ -37,6 +38,20 @@ export class AuthController<T> {
    */
   public hasPermission(permission: string) {
     return (permission in this.$fullPermissions);
+  }
+
+  /**
+   * Loads in a user from the NextAPI Request object's cookies.
+   * @param req The NextAPI Request object containing the user's cookies
+   */
+  public fromReq(req: NextApiRequest) {
+    const rawCookie = req.cookies[this.cookieKey];
+    if (!rawCookie) {
+      this.resetUser();
+      return;
+    }
+    const cookie = JSON.parse(rawCookie);
+    this.setUser(cookie);
   }
 
   /**
@@ -92,6 +107,13 @@ export class AuthController<T> {
 
   get isLoggedIn() {
     return this.$user !== undefined;
+  }
+
+  public hasRole(role: string) {
+    if (role in this.$fullPermissions) {
+      return true;
+    }
+    return false;
   }
 
   /**
