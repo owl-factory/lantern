@@ -1,14 +1,11 @@
-import { signOut } from "@owl-factory/auth/session";
+import { Auth } from "controllers/auth";
 import { CampaignCache } from "controllers/cache/CampaignCache";
-import { UserCache } from "controllers/cache/UserCache";
 import { observer } from "mobx-react-lite";
 import Link from "next/link";
 import React from "react";
 import { Nav, NavDropdown, Navbar } from "react-bootstrap";
-import { isAdmin } from "server/logic/security";
 import { CampaignDocument, UserDocument } from "types/documents";
-import { MyUserDocument } from "types/security";
-import { ADMIN_ENDPOINT } from "utilities/globals";
+import { signOut } from "utilities/auth";
 
 
 interface LoggedInNavProps {
@@ -20,15 +17,15 @@ interface LoggedInNavProps {
  * @param user The currently logged in user
  * @returns A dropdown section with links to the admin portal if the user is elevated. Nothing otherwise.
  */
- function ElevatedDropdown(props: LoggedInNavProps) {
+ function ElevatedDropdown() {
   const navItems: JSX.Element[] = [];
-  if(isAdmin(props.user as unknown as MyUserDocument)) {
-    navItems.push(
-      <Link href={`${ADMIN_ENDPOINT}/rulesets`} passHref key="rulesets">
-        <NavDropdown.Item>Rulesets</NavDropdown.Item>
-      </Link>
-    );
-  }
+  // if(isAdmin(user as unknown as MyUserDocument)) {
+  //   navItems.push(
+  //     <Link href={`${ADMIN_ENDPOINT}/rulesets`} passHref key="rulesets">
+  //       <NavDropdown.Item>Rulesets</NavDropdown.Item>
+  //     </Link>
+  //   );
+  // }
 
   if (navItems.length === 0) { return <></>; }
 
@@ -41,14 +38,8 @@ interface LoggedInNavProps {
  * @param user The currently logged in user
  * @returns A JSX.Element displaying the user's profile image and name
  */
- const UserDisplay = observer((props: LoggedInNavProps) => {
-  const [ user, setUser ] = React.useState<Partial<UserDocument>>(props.user);
-
-  React.useEffect(() => {
-    const newUser = UserCache.get(props.user.ref);
-    if (!newUser) { return; }
-    setUser(newUser);
-  }, [UserCache]);
+const UserDisplay = observer(() => {
+  const user = Auth.getUser();
 
   return (
     <>
@@ -57,7 +48,7 @@ interface LoggedInNavProps {
         style={{maxHeight: "32px", maxWidth: "32px", position: "absolute"}}
       />
       <div style={{width: "36px", display: "inline-flex"}}></div>
-      {props.user.name || props.user.username}&nbsp;
+      {user?.name || user?.username}&nbsp;
     </>
   );
 });
@@ -93,13 +84,14 @@ function RecentCampaigns() {
  * @param user The currently logged in user
  * @returns A selection of navigation stuff for logged in navigation
  */
- function LoggedInNav(props: LoggedInNavProps) {
+function LoggedInNav() {
+  const user = Auth.getUser();
   return (
     <>
       <Navbar.Toggle aria-controls="basic-navbar-nav"/>
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="me-auto">
-          <NavDropdown title={<UserDisplay user={props.user}/>}>
+          <NavDropdown title={<UserDisplay/>}>
             <RecentCampaigns/>
             <Link href="/my-campaigns" passHref>
               <NavDropdown.Item>My Campaigns</NavDropdown.Item>
@@ -118,7 +110,7 @@ function RecentCampaigns() {
             <Link href="/messages" passHref>
               <NavDropdown.Item href="/messages">Messages</NavDropdown.Item>
             </Link>
-            <Link href={`/profile/${props.user.username}`} passHref>
+            <Link href={`/profile/${user?.username}`} passHref>
               <NavDropdown.Item>My Profile</NavDropdown.Item>
             </Link>
             <Link href="/requests" passHref>
@@ -163,7 +155,7 @@ function RecentCampaigns() {
             </Link>
           </NavDropdown >
 
-          <ElevatedDropdown {...props}/>
+          <ElevatedDropdown/>
         </Nav>
       </Navbar.Collapse>
     </>

@@ -8,16 +8,17 @@ import { Button } from "@owl-factory/components/button";
 import { Col, Row } from "@owl-factory/components/flex";
 import { Card } from "@owl-factory/components/card";
 import { AlertController } from "@owl-factory/components/alert/AlertController";
-import { getSession, signOut } from "@owl-factory/auth/session";
+import { Auth } from "controllers/auth";
+import { signOut } from "utilities/auth";
 
 interface DashboardProps {
-  session?: any;
+  user?: any;
 }
 
 const Dashboard: NextPage<DashboardProps> = (props: any) => {
   return (
     <Page error={props.error}>
-      <h3>Welcome back {props.session?.user.name || props.session?.user.username}!</h3>
+      <h3>Welcome back {props.user?.name || props.user?.username}!</h3>
 
       <Button onClick={() => signOut()}>Log Out</Button>
       {/* Recent Games */}
@@ -73,8 +74,8 @@ function RecentGames(props: any) {
 }
 
 Dashboard.getInitialProps = async (ctx: NextPageContext) => {
-  const session = getSession(ctx);
+  const user = Auth.getUser();
   const result = await rest.get(`/api/dashboard`);
 
-  return { session, campaigns: (result as any).data.campaigns };
+  return { user, campaigns: (result as any).data.campaigns };
 };

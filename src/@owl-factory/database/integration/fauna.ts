@@ -2,6 +2,7 @@ import { fromFauna, fromIndex } from "@owl-factory/database/conversion/fauna/fro
 import { toFauna, toRef } from "@owl-factory/database/conversion/fauna/to";
 import { FaunaDocument, FaunaIndexOptions, FaunaIndexResponse } from "@owl-factory/database/types/fauna";
 import { Ref64 } from "@owl-factory/types";
+import { normalize } from "@owl-factory/utilities/strings";
 import { Expr, query as q } from "faunadb";
 import { Collection, FaunaIndex, FaunaIndexTerms } from "src/fauna"; // TODO - refactor and remove this
 import { getServerClient } from "../client/fauna";
@@ -118,4 +119,67 @@ export async function updateOne<T>(id: Ref64, doc: Partial<T>): Promise<T> {
 
   const parsedResult = fromFauna(result);
   return parsedResult as unknown as T;
+}
+
+/**
+ * Signs a user in through Fauna and returns the user
+ * @param index The index to use for searching for the user
+ * @param username The username or any other unique value for the user, like email
+ * @param password The user's password
+ * @returns The signed in user, if found. Throws an error otherwise
+ */
+export async function signIn<T>(index: string, username: string, password: string): Promise<T> {
+  const client = getServerClient();
+  let loginResult: any;
+  try {
+    loginResult = await client.query(
+      q.Login(
+        q.Match(q.Index(index), normalize(username)), { password },
+      )
+    );
+  } catch (e) {
+    throw({ code: 401, message: "The user was not found or the password was incorrect." });
+  }
+
+  const user: FaunaDocument = await client.query(q.Get(loginResult.instance));
+  const parsedUser = fromFauna(user);
+  return parsedUser as any as T;
+}
+
+/**
+ * Signs out the current user from the Fauna client
+ */
+export function signOut() {
+  const client = getServerClient();
+  
+  try {
+    client.query(q.Logout(false));
+  } catch (e) {
+    console.log(e);
+    throw ({code: 500, message: "An unknown error occured when logging out"});
+  }
+}
+
+/**
+ * Signs up a new user to the database. Similar to the create function, but specifically for users
+ * @param collection The collection to create a new user in
+ * @param user The user document to create
+ * @param password The password credentials that the user will be created with
+ */
+export async function signUp<T>(collection: string, user: Partial<T>, password: string): Promise<T> {
+  const client = getServerClient();
+  const faunaUser = toFauna(user);
+  faunaUser.credentials = { password };
+
+  // Try-Catch handles failures for whatever reason
+  let createdUser: FaunaDocument;
+  try {
+    createdUser = await client.query(q.Create(collection, faunaUser));
+  } catch (e) {
+    console.log(e)
+    throw({ code: 405, message: "YOU HAVE FAILED THE CHALLENGE" });
+  }
+
+  const parsedUser = fromFauna(createdUser);
+  return parsedUser as unknown as T;
 }

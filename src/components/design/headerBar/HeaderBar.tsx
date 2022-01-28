@@ -4,6 +4,7 @@ import { Container, Navbar } from "react-bootstrap";
 import styles from "./HeaderBar.module.scss";
 import dynamic from "next/dynamic";
 import { getSession } from "@owl-factory/auth/session";
+import { Auth } from "controllers/auth";
 
 
 function LoggedInNavPlaceholder() {
@@ -29,9 +30,8 @@ function LoggedOutNav() {
  * A standard Header Bar used on every page
  */
 function HeaderBar(): JSX.Element {
-  const [ session ] = React.useState(getSession());
 
-  const nav = session ? <LoggedInNav user={session.user}/> : <LoggedOutNav/>;
+  const nav = Auth.isLoggedIn ? <LoggedInNav/> : <LoggedOutNav/>;
 
   return (
     <Navbar variant="dark" bg="dark" expand="lg" className={`${styles.headerBar} justify-content-between`}>

@@ -1,6 +1,7 @@
 import { Client } from "faunadb";
 import { isClient, isServer } from "@owl-factory/utilities/client";
-import { CtxReq, getSession } from "@owl-factory/auth/session";
+import { getSession } from "@owl-factory/auth/session";
+import { CtxReq } from "@owl-factory/next/types";
 
 const publicSecret = "fnAEGnar9QACAufk-juLojDn9IRNNa_HgdGHGZX6";
 let client: Client;
