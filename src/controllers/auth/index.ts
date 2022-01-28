@@ -1,19 +1,21 @@
 import { AuthController } from "@owl-factory/auth/AuthController";
-import { setGlobalAuth } from "@owl-factory/auth/global";
+import { setGlobalAuth, setGlobalPermissions, setGlobalRoles } from "@owl-factory/auth/globals";
 import { UserDocument } from "types/documents";
 import { permissions } from "types/security/permissions";
 import { roles } from "types/security/roles";
 
+
 class RerollAuthController extends AuthController<UserDocument> {
   constructor() {
     super();
-    this.allRoles = roles;
-    this.allPermissions = permissions;
     this.reloadPermissions();
 
   }
 
-  protected setRole() {
+  /**
+   * A Reroll-specific function to grab the user's role
+   */
+  public $setRole() {
     if (this.$user === undefined) {
       this.$role = "default";
       return;
@@ -21,7 +23,10 @@ class RerollAuthController extends AuthController<UserDocument> {
     this.$role = this.$user?.role || "default";
   }
 
-  protected setPermissions() {
+  /**
+   * A Reroll-specific function to grab the user's permissions
+   */
+  public $setPermissions() {
     if (this.$user === undefined) {
       this.$permissions = [];
       return;
@@ -31,5 +36,10 @@ class RerollAuthController extends AuthController<UserDocument> {
   }
 }
 
+
+setGlobalRoles(roles);
+setGlobalPermissions(permissions);
+
 export const Auth = new RerollAuthController();
 setGlobalAuth(Auth);
+

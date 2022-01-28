@@ -72,7 +72,7 @@ class $CampaignLogic extends DatabaseLogic<CampaignDocument> {
   @RequireLogin()
   @ReadFields(["*"])
   public async fetchMyCampaigns(options?: FaunaIndexOptions) {
-    const id = Auth.getUser()?.ref;
+    const id = Auth.user?.ref;
     if (!id) { return []; }
     const campaigns = fauna.searchByIndex<Partial<CampaignDocument>>(FaunaIndex.CampaignsByUser, [id], options);
     return campaigns;

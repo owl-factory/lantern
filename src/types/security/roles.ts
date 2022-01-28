@@ -7,7 +7,6 @@ const playerPermissions: string[] = [
   "viewMyCampaigns",
   "createCampaign",
   "editMyCampaign",
-  "editMyCampaign",
   "deleteMyCampaign",
 ];
 
