@@ -2,7 +2,6 @@
 import { Collection, FaunaIndex } from "src/fauna";
 import { Ref64 } from "@owl-factory/types";
 import { RulesetDocument } from "types/documents";
-import { UserRole } from "@owl-factory/auth/enums";
 import { DatabaseLogic } from "./AbstractDatabaseLogic";
 import * as fauna from "@owl-factory/database/integration/fauna";
 import { Create, Delete, Fetch, FetchMany, Index, Update } from "@owl-factory/database/decorators/crud";
@@ -74,8 +73,8 @@ class $RulesetLogic extends DatabaseLogic<RulesetDocument> {
    * @returns The new, updated document
    */
   @Update("editOfficialRuleset")
-  @ReadFields({[UserRole.Admin]: ["*"]})
-  @SetFields({[UserRole.Admin]: ["isPublic"]})
+  @ReadFields(["*"])
+  @SetFields(["isPublic"])
   public async updateOfficialRulesetIsPublic(id: Ref64, doc: Partial<RulesetDocument>): Promise<RulesetDocument> {
     const ruleset = await fauna.updateOne(id, doc);
     if (ruleset === undefined) {
@@ -90,7 +89,6 @@ class $RulesetLogic extends DatabaseLogic<RulesetDocument> {
    * @returns An array of campaign document partials
    */
   @Index("searchRulesetsByOfficial")
-  @Access({[UserRole.Admin]: true})
   @ReadFields(["*"])
   public async searchRulesetsByOfficial(isOfficial: boolean, options?: FaunaIndexOptions) {
     const rulesets = fauna.searchByIndex(FaunaIndex.RulesetsByOfficial, [isOfficial], options);

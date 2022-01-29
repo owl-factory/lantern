@@ -7,7 +7,6 @@ import { NextPageContext } from "next";
 import React from "react";
 import { Card, Row } from "react-bootstrap";
 import { MdInfo } from "react-icons/md";
-import { isAdmin } from "server/logic/security";
 import { InitialProps } from "types/client";
 import { RulesetDocument } from "types/documents";
 import { rest } from "@owl-factory/https/rest";
@@ -95,12 +94,6 @@ interface AdminRulesetResult {
 
 AdminRuleset.getInitialProps = async (ctx: NextPageContext) => {
   const session = getSession(ctx);
-  if (!session || !isAdmin(session.user)) { return {
-    success: false,
-    message: "You must be an admin to view this page.",
-    session: session,
-    rulesets: [],
-  }; }
 
   const result = await rest.get<AdminRulesetResult>(`/api/rulesets/${ctx.query.id}`);
   return {

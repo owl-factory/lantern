@@ -5,7 +5,6 @@ import {
   checkManyDynamicAccess,
   checkParentAccess,
   checkPermissionAccess,
-  checkStaticAccess,
   fetchTargetDoc,
   setCreateFields,
   setUpdateFields,
@@ -34,7 +33,6 @@ const FIELD_KEY = "permission";
     descriptor.value = async function(...args: any) {
       checkLogin(descriptor);
       checkPermissionAccess(descriptor);
-      checkStaticAccess(descriptor);
       checkParentAccess(descriptor, args);
 
       args[0] = trimSetFields(descriptor, args[0]);
@@ -65,7 +63,6 @@ export function Delete(permission: string) {
     descriptor.value = async function(...args: any) {
       checkLogin(descriptor);
       checkPermissionAccess(descriptor);
-      checkStaticAccess(descriptor);
 
       const targetDoc = await fetchTargetDoc(descriptor, args[0]);
       if (targetDoc === undefined) { return undefined; }
@@ -85,7 +82,6 @@ export function Delete(permission: string) {
  * @param descriptor The properties of the function
  */
  export function Fetch(permission: string) {
-  
   return (_target: any, _name: string, descriptor: any) => {
     const original = descriptor.value;
     if (typeof original !== 'function') { return; }
@@ -96,7 +92,6 @@ export function Delete(permission: string) {
       if (args[0] === "") { return { $error: true }; } // TODO - change to empty/error value
       checkLogin(descriptor);
       checkPermissionAccess(descriptor);
-      checkStaticAccess(descriptor);
 
       let result = await original.apply(this, args);
 
@@ -123,7 +118,6 @@ export function Delete(permission: string) {
     descriptor.value = async function(...args: any) {
       checkLogin(descriptor);
       checkPermissionAccess(descriptor);
-      checkStaticAccess(descriptor);
 
       let result = await original.apply(this, args);
 
@@ -150,8 +144,6 @@ export function Index(permission: string) {
     descriptor.value = async function(...args: any) {
       checkLogin(descriptor);
       checkPermissionAccess(descriptor);
-      checkStaticAccess(descriptor);
-
       let result = await original.apply(this, args);
 
       result = checkManyDynamicAccess(descriptor, result);
@@ -177,7 +169,6 @@ export function Index(permission: string) {
     descriptor.value = async function(...args: any) {
       checkLogin(descriptor);
       checkPermissionAccess(descriptor);
-      checkStaticAccess(descriptor);
 
       const targetDoc = await fetchTargetDoc(descriptor, args[0]);
       if (targetDoc === undefined) { throw { code: 404, message: "Document could not be found"}; }

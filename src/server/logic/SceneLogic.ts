@@ -1,6 +1,5 @@
 
 import * as fauna from "@owl-factory/database/integration/fauna";
-import { UserRole } from "@owl-factory/auth/enums";
 import { Create, Delete, Fetch, Update } from "@owl-factory/database/decorators/crud";
 import { Access, ReadFields, RequireLogin, SetFields } from "@owl-factory/database/decorators/modifiers";
 import { SceneDocument } from "types/documents";
@@ -50,7 +49,6 @@ class $SceneLogic {
    * @returns The campaign document
    */
   @Fetch("viewMyScene")
-  @Access({[UserRole.Guest]: true})
   @RequireLogin()
   @ReadFields(["*"])
   public async findOne(id: Ref64): Promise<SceneDocument> {

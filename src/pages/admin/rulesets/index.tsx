@@ -11,7 +11,6 @@ import { useRouter } from "next/router";
 import React from "react";
 import { Card, Row, Table } from "react-bootstrap";
 import { MdLockOpen, MdLockOutline, MdPageview, MdVisibility, MdVisibilityOff } from "react-icons/md";
-import { isAdmin } from "server/logic/security";
 import { InitialProps } from "types/client";
 import { RulesetDocument, UserDocument } from "types/documents";
 import { getSession } from "@owl-factory/auth/session";
@@ -252,12 +251,6 @@ interface AdminRulesetResult {
 
 AdminRulesets.getInitialProps = (async (ctx: NextPageContext) => {
   const session = getSession(ctx);
-  if (!session || !isAdmin(session.user)) { return {
-    success: false,
-    message: "You must be an admin to view this page.",
-    session: session,
-    rulesets: [],
-  }; }
 
   const result = await rest.get<AdminRulesetResult>(`/api/admin/rulesets`);
   return {

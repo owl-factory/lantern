@@ -4,13 +4,12 @@ import { Access, ReadFields, SetFields } from "@owl-factory/database/decorators/
 import { Collection, FaunaIndex } from "src/fauna";
 import { Ref64 } from "@owl-factory/types";
 import { AnyDocument, ContentDocument, RulesetDocument } from "types/documents";
-import { UserRole } from "@owl-factory/auth/enums";
 import { DatabaseLogic } from "./AbstractDatabaseLogic";
 import { isOwner } from "./security";
 import * as fauna from "@owl-factory/database/integration/fauna";
 import { FaunaIndexOptions } from "@owl-factory/database/types/fauna";
-import { SecurityController } from "controllers/SecurityController";
 import { toRef } from "@owl-factory/database/conversion/fauna/to";
+import { Auth } from "controllers/auth";
 
 class $ContentLogic extends DatabaseLogic<ContentDocument> {
   public collection = Collection.Contents;
@@ -41,7 +40,7 @@ class $ContentLogic extends DatabaseLogic<ContentDocument> {
    * @returns The deleted document
    */
   @Delete("deleteContent")
-  @Access({[UserRole.User]: isOwner})
+  @Access(isOwner)
   public async deleteMyContent(ref: Ref64, content: Partial<ContentDocument>) {
     const deletedDoc = await fauna.deleteOne<ContentDocument>(ref);
     if (deletedDoc === undefined) { throw { code: 404, message: `The document with id ${ref} could not be found.`}; }
@@ -54,8 +53,8 @@ class $ContentLogic extends DatabaseLogic<ContentDocument> {
    * @returns The content document
    */
   @Fetch("viewContent")
-  @Access({[UserRole.User]: userViewable, [UserRole.Admin]: true})
-  @ReadFields({[UserRole.User]: userViewableFields, [UserRole.Admin]: ["*"]})
+  @Access(userViewable)
+  @ReadFields(userViewableFields)
   public async findContent(id: Ref64): Promise<ContentDocument> {
     const content = await fauna.findByID<ContentDocument>(id);
     if (content === undefined) { throw { code: 404, message: `The content with id ${id} could not be found`}; }
@@ -68,8 +67,8 @@ class $ContentLogic extends DatabaseLogic<ContentDocument> {
    * @returns The found and allowed content documents
    */
   @FetchMany("viewContent")
-  @Access({[UserRole.User]: userViewable, [UserRole.Admin]: true})
-  @ReadFields({[UserRole.User]: userViewableFields, [UserRole.Admin]: ["*"]})
+  @Access(userViewable)
+  @ReadFields(userViewableFields)
   public async findManyByIDs(ids: Ref64[]): Promise<ContentDocument[]> {
     const contents = await fauna.findManyByIDs<ContentDocument>(ids);
     return contents;
@@ -101,7 +100,6 @@ class $ContentLogic extends DatabaseLogic<ContentDocument> {
    * @returns An array of content document partials
    */
   @Index("searchContentByUser")
-  @Access({[UserRole.Admin]: true})
   @ReadFields(["*"])
   public async searchContentByUser(userID: Ref64, options?: FaunaIndexOptions): Promise<ContentDocument[]> {
     return this._searchContentByUser(userID, options);
@@ -115,7 +113,7 @@ class $ContentLogic extends DatabaseLogic<ContentDocument> {
   @Index("searchMyContent")
   @ReadFields(["*"])
   public async searchMyContent(options?: FaunaIndexOptions): Promise<ContentDocument[]> {
-    const userID = SecurityController.currentUser?.ref;
+    const userID = Auth.user?.ref;
     if (!userID) { return []; }
     return this._searchContentByUser(userID, options);
   }

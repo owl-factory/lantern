@@ -3,7 +3,6 @@ import { UserDocument } from "types/documents";
 import { isOwner } from "./security";
 import * as fauna from "@owl-factory/database/integration/fauna";
 import { Collection, FaunaIndex } from "src/fauna";
-import { UserRole } from "@owl-factory/auth/enums";
 import { DatabaseLogic } from "./AbstractDatabaseLogic";
 import { Fetch, FetchMany, Index, SignIn, SignUp, Update } from "@owl-factory/database/decorators/crud";
 import { Access, ReadFields, SetFields } from "@owl-factory/database/decorators/modifiers";
@@ -38,7 +37,6 @@ class $UserLogic extends DatabaseLogic<UserDocument> {
    * @returns The user document
    */
   @Fetch("viewUser")
-  @Access({[UserRole.Guest]: true})
   @ReadFields(["*"])
   public async findOne(id: Ref64): Promise<UserDocument> {
     const user = await fauna.findByID<UserDocument>(id);
@@ -74,7 +72,7 @@ class $UserLogic extends DatabaseLogic<UserDocument> {
   @Update("updateMyUser")
   @Access(isOwner)
   @ReadFields(["*"])
-  @SetFields({[UserRole.User]: updateFields})
+  @SetFields(updateFields)
   public async updateOne(id: Ref64, doc: Partial<UserDocument>): Promise<UserDocument> {
     const user = await fauna.updateOne<UserDocument>(id, doc);
     if (user === undefined) {
@@ -92,7 +90,7 @@ class $UserLogic extends DatabaseLogic<UserDocument> {
   @Update("updateMyUser")
   @Access(isOwner)
   @ReadFields(["*"])
-  @SetFields({[UserRole.User]: ["avatar.ref", "avatar.src"]})
+  @SetFields(["avatar.ref", "avatar.src"])
   public async updateAvatar(id: Ref64, doc: Partial<UserDocument>): Promise<UserDocument> {
     const user = await fauna.updateOne<UserDocument>(id, doc);
     if (user === undefined) {

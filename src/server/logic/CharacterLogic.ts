@@ -4,11 +4,10 @@ import { AnyDocument, CharacterDocument } from "types/documents";
 import { DatabaseLogic } from "./AbstractDatabaseLogic";
 import { isOwner } from "./security";
 import { Collection, FaunaIndex } from "src/fauna";
-import { Create, Delete, Fetch, FetchMany, Index, Update } from "@owl-factory/database/decorators/crud";
+import { Create, Delete, Fetch, Index, Update } from "@owl-factory/database/decorators/crud";
 import { Access, ReadFields, SetFields } from "@owl-factory/database/decorators/modifiers";
-import { SecurityController } from "controllers/SecurityController";
 import { FaunaIndexOptions } from "@owl-factory/database/types/fauna";
-import { UserRole } from "@owl-factory/auth/enums";
+import { Auth } from "controllers/auth";
 
 const PUT_FIELDS = ["*"];
 
@@ -95,7 +94,7 @@ class $CharacterLogic extends DatabaseLogic<CharacterDocument> {
   @Index("searchMyCharacters")
   @ReadFields(["*"])
   public async searchMyCharacters(options?: FaunaIndexOptions): Promise<CharacterDocument[]> {
-    const userID = SecurityController.currentUser?.ref;
+    const userID = Auth.user?.ref;
     if (!userID) { return []; }
     return this._searchCharactersByUser(userID, options);
   }
