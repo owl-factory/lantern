@@ -33,8 +33,10 @@ const FIELD_KEY = "permission";
 
     descriptor.value = async function(...args: any) {
       checkLogin(descriptor);
+      checkRoleAccess(descriptor);
       checkStaticAccess(descriptor);
       checkParentAccess(descriptor, args);
+
       args[0] = trimSetFields(descriptor, args[0]);
       args[0] = setCreateFields(descriptor, args[0]);
 
@@ -62,7 +64,9 @@ export function Delete(permission: string) {
 
     descriptor.value = async function(...args: any) {
       checkLogin(descriptor);
+      checkRoleAccess(descriptor);
       checkStaticAccess(descriptor);
+
       const targetDoc = await fetchTargetDoc(descriptor, args[0]);
       if (targetDoc === undefined) { return undefined; }
       checkDynamicAccess(descriptor, targetDoc);
@@ -91,8 +95,8 @@ export function Delete(permission: string) {
     descriptor.value = async function(...args: any) {
       if (args[0] === "") { return { $error: true }; } // TODO - change to empty/error value
       checkLogin(descriptor);
-      checkStaticAccess(descriptor);
       checkRoleAccess(descriptor);
+      checkStaticAccess(descriptor);
 
       let result = await original.apply(this, args);
 
@@ -118,6 +122,7 @@ export function Delete(permission: string) {
 
     descriptor.value = async function(...args: any) {
       checkLogin(descriptor);
+      checkRoleAccess(descriptor);
       checkStaticAccess(descriptor);
 
       let result = await original.apply(this, args);
@@ -144,8 +149,8 @@ export function Index(permission: string) {
 
     descriptor.value = async function(...args: any) {
       checkLogin(descriptor);
-      checkStaticAccess(descriptor);
       checkRoleAccess(descriptor);
+      checkStaticAccess(descriptor);
 
       let result = await original.apply(this, args);
 
@@ -171,7 +176,9 @@ export function Index(permission: string) {
 
     descriptor.value = async function(...args: any) {
       checkLogin(descriptor);
+      checkRoleAccess(descriptor);
       checkStaticAccess(descriptor);
+
       const targetDoc = await fetchTargetDoc(descriptor, args[0]);
       if (targetDoc === undefined) { throw { code: 404, message: "Document could not be found"}; }
       checkDynamicAccess(descriptor, targetDoc);
