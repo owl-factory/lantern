@@ -1,9 +1,8 @@
 
 import { AnyDocument, CampaignDocument } from "types/documents";
 import { isOwner } from "server/logic/security";
-import { UserRole } from "@owl-factory/auth/enums";
 import * as fauna from "@owl-factory/database/integration/fauna";
-import { Access, Permission, ReadFields, RequireLogin, SetFields } from "@owl-factory/database/decorators/modifiers";
+import { Access, ReadFields, RequireLogin, SetFields } from "@owl-factory/database/decorators/modifiers";
 import { Create, Delete, Fetch, Index, Update } from "@owl-factory/database/decorators/crud";
 import { DatabaseLogic } from "./AbstractDatabaseLogic";
 import { Ref64 } from "@owl-factory/types";
@@ -156,7 +155,6 @@ class $CampaignLogic extends DatabaseLogic<CampaignDocument> {
    * @returns An array of campaign document partials
    */
   @Index("viewMyCampaigns")
-  @Permission("viewMyCampaigns")
   @RequireLogin()
   @ReadFields(["*"])
   public async fetchMyCampaigns(options?: FaunaIndexOptions) {
