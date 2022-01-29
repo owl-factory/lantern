@@ -1,4 +1,5 @@
 import { UserRole } from "@owl-factory/auth/enums";
+import { AnyDocument } from "types/documents";
 import { Descriptor, PerRoleAccess, RoleAccess } from "./actions";
 
 const DEFAULT_READ_FIELDS = ["id"];
@@ -17,8 +18,9 @@ enum Collection {
  * Sets which roles may access this resource, either a boolean or a function that evaluates to a boolean
  * @param roles Each of the per-role access that is a boolean or returns a boolean
  */
-export function Access(roles: RoleAccess<boolean>) {
-  return setFieldRoleAccess<boolean>(roles, "access");
+export function Access(roles: (RoleAccess<boolean> | ((doc: AnyDocument) => boolean))) {
+  if (typeof roles === "function") { return setFieldRoleAccess<boolean>({ [UserRole.Guest]: roles }, "access"); }
+  return setFieldRoleAccess<boolean>(roles as RoleAccess<boolean>, "access");
 }
 
 /**
@@ -26,7 +28,7 @@ export function Access(roles: RoleAccess<boolean>) {
  * TODO - allow this to be multiple Roles
  * @param role The role key that this resource requires
  */
-export function Role(role: string) {
+export function Permission(role: string) {
   return setFieldAccess(role, "role");
 }
 

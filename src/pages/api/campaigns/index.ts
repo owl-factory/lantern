@@ -10,7 +10,7 @@ import { HTTPHandler, createEndpoint } from "@owl-factory/https";
  * @param req The request to the server
  */
 async function getCampaigns(this: HTTPHandler, req: NextApiRequest) {
-  const campaigns = await CampaignLogic.findMany(req.body.refs);
+  const campaigns = await CampaignLogic.findManyOfMyCampaigns(req.body.refs);
   this.returnSuccess({ docs: campaigns });
 }
 

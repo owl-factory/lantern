@@ -8,6 +8,32 @@ const playerPermissions: string[] = [
   "createCampaign",
   "editMyCampaign",
   "deleteMyCampaign",
+
+  "createCharacter",
+  "deleteMyCharacter",
+  "viewMyCharacters",
+  "viewGameCharacters",
+  "editMyCharacter",
+  "searchMyCharacters",
+
+  "viewContent",
+  "searchMyContent",
+
+  "viewContentType",
+
+  "createExternalImage",
+  "searchMyImages",
+
+  "searchOfficialAndPublicRulesets",
+
+  "createScene",
+
+  "viewUser",
+  "searchByUsername",
+  "updateMyUser",
+
+
+
 ];
 
 const adminPermissions: string[] = getUniques(permissions, "key");

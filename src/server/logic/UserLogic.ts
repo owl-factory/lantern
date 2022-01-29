@@ -37,7 +37,7 @@ class $UserLogic extends DatabaseLogic<UserDocument> {
    * @param id The Ref64 ID of the document to fetch
    * @returns The user document
    */
-  @Fetch
+  @Fetch("viewUser")
   @Access({[UserRole.Guest]: true})
   @ReadFields(["*"])
   public async findOne(id: Ref64): Promise<UserDocument> {
@@ -51,16 +51,14 @@ class $UserLogic extends DatabaseLogic<UserDocument> {
    * @param ids The Ref64 IDs of the documents to fetch
    * @returns The found and allowed user documents
    */
-  @FetchMany
-  @Access({[UserRole.Guest]: true})
+  @FetchMany("viewUser")
   @ReadFields(["*"])
   public async findManyByIDs(ids: Ref64[]): Promise<UserDocument[]> {
     const users = await fauna.findManyByIDs<UserDocument>(ids);
     return users;
   }
 
-  @Index
-  @Access({[UserRole.Guest]: true})
+  @Index("searchByUsername")
   @ReadFields(["*"])
   public async searchByUsername(username: string, options?: FaunaIndexOptions): Promise<UserDocument[]> {
     const users = await fauna.searchByIndex<UserDocument>(FaunaIndex.UsersByUsername, [username], options);
@@ -73,8 +71,8 @@ class $UserLogic extends DatabaseLogic<UserDocument> {
    * @param doc The user partial to update
    * @returns The new, updated document
    */
-  @Update
-  @Access({[UserRole.User]: isOwner, [UserRole.Admin]: true})
+  @Update("updateMyUser")
+  @Access(isOwner)
   @ReadFields(["*"])
   @SetFields({[UserRole.User]: updateFields})
   public async updateOne(id: Ref64, doc: Partial<UserDocument>): Promise<UserDocument> {
@@ -91,8 +89,8 @@ class $UserLogic extends DatabaseLogic<UserDocument> {
    * @param doc The user partial to update
    * @returns The new, updated document
    */
-  @Update
-  @Access({[UserRole.User]: isOwner, [UserRole.Admin]: true})
+  @Update("updateMyUser")
+  @Access(isOwner)
   @ReadFields(["*"])
   @SetFields({[UserRole.User]: ["avatar.ref", "avatar.src"]})
   public async updateAvatar(id: Ref64, doc: Partial<UserDocument>): Promise<UserDocument> {
@@ -109,7 +107,7 @@ class $UserLogic extends DatabaseLogic<UserDocument> {
    * @param password The password of the user attempting to log in
    * @returns A partial user document with only the important information present
    */
-  @SignIn
+  @SignIn()
   @ReadFields(COOKIE_FIELDS)
   public async signIn(username: string, password: string) {
     const index = isEmail(username) ? FaunaIndex.UsersByEmail : FaunaIndex.UsersByUsername;
@@ -122,7 +120,7 @@ class $UserLogic extends DatabaseLogic<UserDocument> {
    * @param user The user to create
    * @param password The password the user will be secured with
    */
-  @SignUp
+  @SignUp()
   @ReadFields(COOKIE_FIELDS)
   @SetFields(["username", "email"])
   public async signUp(user: Partial<UserDocument>, password: string) {

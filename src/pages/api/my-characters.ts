@@ -5,6 +5,7 @@ import { CharacterLogic } from "server/logic/CharacterLogic";
 
 import { HTTPHandler, createEndpoint } from "@owl-factory/https";
 import { getUniques } from "@owl-factory/utilities/arrays";
+import { findMany } from "server/logic/many";
 
 /**
  * Fetches all of a user's campaigns
@@ -13,9 +14,9 @@ import { getUniques } from "@owl-factory/utilities/arrays";
  */
 async function getMyCharacters(this: HTTPHandler, _req: NextApiRequest) {
   const characters = await CharacterLogic.searchMyCharacters({ size: 200 });
-  const campaignIDs = getUniques(characters, "campaign.ref");
-  const campaigns = CampaignLogic.findMany(campaignIDs);
-  this.returnSuccess({ characters: characters, campaigns });
+  const charcterIDs = getUniques(characters, "campaign.ref");
+  const detailedCharacters = findMany(CampaignLogic.findMyCampaign, charcterIDs);
+  this.returnSuccess({ characters: characters, detailedCharacters });
 }
 
 export default createEndpoint({GET: getMyCharacters});

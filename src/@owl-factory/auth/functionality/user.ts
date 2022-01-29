@@ -33,6 +33,5 @@ export function setUser<T>(this: AuthController<T>, user: T) {
 
   this.$user = user;
   this.reloadPermissions();
-  console.log(this)
   this.$saveToCookie();
 }

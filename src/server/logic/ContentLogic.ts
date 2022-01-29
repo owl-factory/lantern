@@ -1,9 +1,9 @@
 
-import { Fetch, FetchMany, Index } from "@owl-factory/database/decorators/crud";
-import { Access, ReadFields } from "@owl-factory/database/decorators/modifiers";
+import { Create, Delete, Fetch, FetchMany, Index, Update } from "@owl-factory/database/decorators/crud";
+import { Access, ReadFields, SetFields } from "@owl-factory/database/decorators/modifiers";
 import { Collection, FaunaIndex } from "src/fauna";
 import { Ref64 } from "@owl-factory/types";
-import { AnyDocument, ContentDocument } from "types/documents";
+import { AnyDocument, ContentDocument, RulesetDocument } from "types/documents";
 import { UserRole } from "@owl-factory/auth/enums";
 import { DatabaseLogic } from "./AbstractDatabaseLogic";
 import { isOwner } from "./security";
@@ -16,14 +16,47 @@ class $ContentLogic extends DatabaseLogic<ContentDocument> {
   public collection = Collection.Contents;
 
   /**
+   * Creates a single document
+   * @param doc The document to create
+   * @returns The created document, if successful
+   */
+  @Create("createContent")
+  @ReadFields(["*"])
+  @SetFields(["*"])
+  public async createContent(
+    content: Partial<ContentDocument>,
+    ruleset: Partial<RulesetDocument>
+  ): Promise<ContentDocument> {
+    // TODO - add checks to verify that the user can create this content
+    const createdDoc = await fauna.createOne<ContentDocument>(this.collection, content);
+    if (createdDoc === undefined) {
+      throw { code: 500, message: `The content could not be created.`};
+    }
+    return createdDoc;
+  }
+
+  /**
+   * Deletes a single document, if present
+   * @param ref The ref of the document to delete
+   * @returns The deleted document
+   */
+  @Delete("deleteContent")
+  @Access({[UserRole.User]: isOwner})
+  public async deleteMyContent(ref: Ref64, content: Partial<ContentDocument>) {
+    const deletedDoc = await fauna.deleteOne<ContentDocument>(ref);
+    if (deletedDoc === undefined) { throw { code: 404, message: `The document with id ${ref} could not be found.`}; }
+    return deletedDoc;
+  }
+
+  /**
    * Fetches one content from its ID
    * @param id The Ref64 ID of the document to fetch
    * @returns The content document
    */
-  @Fetch
+  @Fetch("viewContent")
   @Access({[UserRole.User]: userViewable, [UserRole.Admin]: true})
   @ReadFields({[UserRole.User]: userViewableFields, [UserRole.Admin]: ["*"]})
-  public async findOne(id: Ref64): Promise<ContentDocument> {
+  public async findContent(id: Ref64): Promise<ContentDocument> {
     const content = await fauna.findByID<ContentDocument>(id);
     if (content === undefined) { throw { code: 404, message: `The content with id ${id} could not be found`}; }
     return content;
@@ -34,12 +67,31 @@ class $ContentLogic extends DatabaseLogic<ContentDocument> {
    * @param ids The Ref64 IDs of the documents to fetch
    * @returns The found and allowed content documents
    */
-  @FetchMany
+  @FetchMany("viewContent")
   @Access({[UserRole.User]: userViewable, [UserRole.Admin]: true})
   @ReadFields({[UserRole.User]: userViewableFields, [UserRole.Admin]: ["*"]})
   public async findManyByIDs(ids: Ref64[]): Promise<ContentDocument[]> {
     const contents = await fauna.findManyByIDs<ContentDocument>(ids);
     return contents;
+  }
+
+  /**
+   * Updates a single document
+   * @param ref The ref of the document to update
+   * @param doc The changes in the document to patch on
+   * @returns The updated document
+   */
+  @Update("updateMyContent")
+  @Access(isOwner)
+  @ReadFields(["*"])
+  @SetFields(["*"])
+  public async updateMyContent(ref: Ref64, doc: Partial<ContentDocument>) {
+    const updatedDoc = await fauna.updateOne(ref, doc);
+    // TODO - better message
+    if (updatedDoc === undefined) {
+      throw { code: 404, message: `The content document with id ${ref} could not be found.`};
+    }
+    return updatedDoc;
   }
 
 
@@ -48,7 +100,7 @@ class $ContentLogic extends DatabaseLogic<ContentDocument> {
    * @param options Any additional options for filtering the data retrieved from the database
    * @returns An array of content document partials
    */
-  @Index
+  @Index("searchContentByUser")
   @Access({[UserRole.Admin]: true})
   @ReadFields(["*"])
   public async searchContentByUser(userID: Ref64, options?: FaunaIndexOptions): Promise<ContentDocument[]> {
@@ -60,8 +112,7 @@ class $ContentLogic extends DatabaseLogic<ContentDocument> {
    * @param options Any additional options for filtering the data retrieved from the database
    * @returns An array of campaign document partials
    */
-  @Index
-  @Access({[UserRole.User]: true, [UserRole.Admin]: true})
+  @Index("searchMyContent")
   @ReadFields(["*"])
   public async searchMyContent(options?: FaunaIndexOptions): Promise<ContentDocument[]> {
     const userID = SecurityController.currentUser?.ref;

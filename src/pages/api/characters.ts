@@ -3,6 +3,7 @@ import { NextApiRequest } from "next";
 import { CharacterLogic } from "server/logic/CharacterLogic";
 
 import { HTTPHandler, createEndpoint } from "@owl-factory/https";
+import { createMany, deleteMany, findMany, updateMany } from "server/logic/many";
 
 
 /**
@@ -11,7 +12,7 @@ import { HTTPHandler, createEndpoint } from "@owl-factory/https";
  * @param req The request to the server
  */
 async function createCharacters(this: HTTPHandler, req: NextApiRequest) {
-  const characters = await CharacterLogic.createMany(req.body.docs);
+  const characters = await createMany(CharacterLogic.createCharacter, req.body.docs);
   this.returnSuccess({ docs: characters });
 }
 
@@ -21,7 +22,7 @@ async function createCharacters(this: HTTPHandler, req: NextApiRequest) {
  * @param req The request to the server. Must contain a list of ids in the body
  */
 async function deleteCharacters(this: HTTPHandler, req: NextApiRequest) {
-  const characters = await CharacterLogic.deleteMany(req.body.refs);
+  const characters = await deleteMany(CharacterLogic.deleteCharacter, req.body.refs);
   this.returnSuccess({ docs: characters });
 }
 
@@ -31,7 +32,7 @@ async function deleteCharacters(this: HTTPHandler, req: NextApiRequest) {
  * @param req The request to the server
  */
 async function getCharacters(this: HTTPHandler, req: NextApiRequest) {
-  const characters = await CharacterLogic.findMany(req.body.refs);
+  const characters = await findMany(CharacterLogic.findGameCharacter, req.body.refs);
   this.returnSuccess({ docs: characters });
 }
 
@@ -41,7 +42,7 @@ async function getCharacters(this: HTTPHandler, req: NextApiRequest) {
  * @param req The request to the server. Must contain a list packets with ref and the document patch
  */
 async function updateCharacters(this: HTTPHandler, req: NextApiRequest) {
-  const characters = await CharacterLogic.updateMany(req.body.docs);
+  const characters = await updateMany(CharacterLogic.updateMyCharacter, req.body.docs);
   this.returnSuccess({ docs: characters });
 }
 
