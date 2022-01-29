@@ -86,7 +86,11 @@ export function checkDynamicAccess(descriptor: Descriptor, doc: AnyDocument): An
   return docs[0];
 }
 
-export function checkRoleAccess(descriptor: Descriptor): void {
+/**
+ * Checks if the current user has permission allowing them to access this function
+ * @param descriptor The descriptor of the current function being run
+ */
+export function checkPermissionAccess(descriptor: Descriptor): void {
   if (!descriptor.role) { return; }
   if (!Auth.hasPermission(descriptor.role)) {
     throw { code: 401, message: "You lack the permission to run this function." };

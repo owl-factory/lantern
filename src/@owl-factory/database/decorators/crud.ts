@@ -4,7 +4,7 @@ import {
   checkLogin,
   checkManyDynamicAccess,
   checkParentAccess,
-  checkRoleAccess,
+  checkPermissionAccess,
   checkStaticAccess,
   fetchTargetDoc,
   setCreateFields,
@@ -33,7 +33,7 @@ const FIELD_KEY = "permission";
 
     descriptor.value = async function(...args: any) {
       checkLogin(descriptor);
-      checkRoleAccess(descriptor);
+      checkPermissionAccess(descriptor);
       checkStaticAccess(descriptor);
       checkParentAccess(descriptor, args);
 
@@ -64,7 +64,7 @@ export function Delete(permission: string) {
 
     descriptor.value = async function(...args: any) {
       checkLogin(descriptor);
-      checkRoleAccess(descriptor);
+      checkPermissionAccess(descriptor);
       checkStaticAccess(descriptor);
 
       const targetDoc = await fetchTargetDoc(descriptor, args[0]);
@@ -95,7 +95,7 @@ export function Delete(permission: string) {
     descriptor.value = async function(...args: any) {
       if (args[0] === "") { return { $error: true }; } // TODO - change to empty/error value
       checkLogin(descriptor);
-      checkRoleAccess(descriptor);
+      checkPermissionAccess(descriptor);
       checkStaticAccess(descriptor);
 
       let result = await original.apply(this, args);
@@ -122,7 +122,7 @@ export function Delete(permission: string) {
 
     descriptor.value = async function(...args: any) {
       checkLogin(descriptor);
-      checkRoleAccess(descriptor);
+      checkPermissionAccess(descriptor);
       checkStaticAccess(descriptor);
 
       let result = await original.apply(this, args);
@@ -149,7 +149,7 @@ export function Index(permission: string) {
 
     descriptor.value = async function(...args: any) {
       checkLogin(descriptor);
-      checkRoleAccess(descriptor);
+      checkPermissionAccess(descriptor);
       checkStaticAccess(descriptor);
 
       let result = await original.apply(this, args);
@@ -176,7 +176,7 @@ export function Index(permission: string) {
 
     descriptor.value = async function(...args: any) {
       checkLogin(descriptor);
-      checkRoleAccess(descriptor);
+      checkPermissionAccess(descriptor);
       checkStaticAccess(descriptor);
 
       const targetDoc = await fetchTargetDoc(descriptor, args[0]);
