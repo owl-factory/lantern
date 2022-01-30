@@ -1,6 +1,5 @@
 import { read, set } from "@owl-factory/utilities/objects";
 import { AnyDocument } from "types/documents";
-import { MyUserDocument } from "types/security";
 
 /**
  * Determines the fields accessible to the current user based on the given document and permissions
@@ -12,12 +11,12 @@ import { MyUserDocument } from "types/security";
  */
  export function determineAccessibleFields(
   doc: AnyDocument,
-  myUser: MyUserDocument,
-  fields: string[] | ((myUser: MyUserDocument, doc?: AnyDocument) => string[])
+  myUser: unknown,
+  fields: string[] | ((myUser: unknown, doc?: AnyDocument) => string[])
 ) {
   let selectedFields = fields;
   if (!Array.isArray(selectedFields)) {
-    selectedFields = (fields as (myUser: MyUserDocument, doc?: AnyDocument) => string[])(myUser, doc);
+    selectedFields = (fields as (myUser: unknown, doc?: AnyDocument) => string[])(myUser, doc);
   }
   return selectedFields;
 }
@@ -85,8 +84,8 @@ export function trimRestrictedFields(
  */
  export function trimRestrictedFieldsOn(
   docs: AnyDocument[],
-  myUser: MyUserDocument,
-  fields: string[] | ((myUser: MyUserDocument, doc?: AnyDocument) => string[]),
+  myUser: unknown,
+  fields: string[] | ((myUser: unknown, doc?: AnyDocument) => string[]),
   includeDefault=false
 ) {
   docs.forEach((doc: AnyDocument) => {

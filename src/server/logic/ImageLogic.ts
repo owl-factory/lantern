@@ -1,6 +1,5 @@
 import { ImageDocument } from "types/documents";
 import { isOwner } from "./security";
-import { UserRole } from "@owl-factory/auth/enums";
 import { Collection, FaunaIndex } from "src/fauna";
 import { DatabaseLogic } from "./AbstractDatabaseLogic";
 import * as fauna from "@owl-factory/database/integration/fauna";
@@ -8,9 +7,9 @@ import { Ref64 } from "@owl-factory/types";
 import { Access, ReadFields, SetFields } from "@owl-factory/database/decorators/modifiers";
 import { Create, Delete, Fetch, FetchMany, Index, Update } from "@owl-factory/database/decorators/crud";
 import { FaunaIndexOptions } from "@owl-factory/database/types/fauna";
-import { SecurityController } from "controllers/SecurityController";
 import { toRef } from "@owl-factory/database/conversion/fauna/to";
 import { AssetUploadSource } from "types/enums/assetSource";
+import { Auth } from "controllers/auth";
 
 const createFields = [
   "name",
@@ -60,7 +59,6 @@ class $ImageLogic extends DatabaseLogic<ImageDocument> {
    * @returns The new image document
    */
   @Create("createExternalImage")
-  @Access({[UserRole.User]: true})
   @ReadFields(["*"])
   @SetFields(createFields)
   public async createExternalLink(doc: Partial<ImageDocument>): Promise<ImageDocument> {
@@ -114,7 +112,6 @@ class $ImageLogic extends DatabaseLogic<ImageDocument> {
    * @returns An array of image document partials
    */
   @Index("searchImagesByUser")
-  @Access({[UserRole.Admin]: true})
   @ReadFields(["*"])
   public async searchImagesByUser(userID: Ref64, options?: FaunaIndexOptions): Promise<ImageDocument[]> {
     return this._searchImagesByUser(userID, options);
@@ -128,7 +125,7 @@ class $ImageLogic extends DatabaseLogic<ImageDocument> {
   @Index("searchMyImages")
   @ReadFields(["*"])
   public async searchMyImages(options?: FaunaIndexOptions): Promise<ImageDocument[]> {
-    const userID = SecurityController.currentUser?.ref;
+    const userID = Auth.user?.ref;
     if (!userID) { return []; }
     return this._searchImagesByUser(userID, options);
   }

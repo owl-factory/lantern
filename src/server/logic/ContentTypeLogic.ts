@@ -1,7 +1,6 @@
 import * as fauna from "@owl-factory/database/integration/fauna";
 import { Create, Delete, Fetch, FetchMany, Update } from "@owl-factory/database/decorators/crud";
 import { Access, ReadFields, SetFields } from "@owl-factory/database/decorators/modifiers";
-import { UserRole } from "@owl-factory/auth/enums";
 import { DatabaseLogic } from "./AbstractDatabaseLogic";
 import { ContentTypeDocument } from "types/documents";
 import { Ref64 } from "@owl-factory/types";

@@ -8,7 +8,6 @@ import { DatabaseLogic } from "./AbstractDatabaseLogic";
 import { Ref64 } from "@owl-factory/types";
 import { Collection, FaunaIndex } from "src/fauna";
 import { toRef } from "@owl-factory/database/conversion/fauna/to";
-import { SecurityController } from "controllers/SecurityController";
 import { FaunaIndexOptions } from "@owl-factory/database/types/fauna";
 import { Auth } from "controllers/auth";
 
@@ -23,7 +22,7 @@ function isPlayer(doc?: AnyDocument): boolean {
   if (!("players" in doc) || doc.players === undefined) { return false; }
   let success = false;
   doc.players.forEach((player: { ref: Ref64 }) => {
-    if (SecurityController.currentUser?.ref === player.ref) { success = true; }
+    if (Auth.user?.ref === player.ref) { success = true; }
   });
   return success;
 }

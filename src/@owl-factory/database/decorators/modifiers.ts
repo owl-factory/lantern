@@ -1,6 +1,5 @@
-import { UserRole } from "@owl-factory/auth/enums";
 import { AnyDocument } from "types/documents";
-import { Descriptor, PerRoleAccess, RoleAccess } from "./actions";
+import { AccessFieldValue, AccessFunction, Descriptor } from "./actions";
 
 const DEFAULT_READ_FIELDS = ["id"];
 
@@ -18,9 +17,9 @@ enum Collection {
  * Sets which roles may access this resource, either a boolean or a function that evaluates to a boolean
  * @param roles Each of the per-role access that is a boolean or returns a boolean
  */
-export function Access(roles: (RoleAccess<boolean> | ((doc: AnyDocument) => boolean))) {
-  if (typeof roles === "function") { return setFieldRoleAccess<boolean>({ [UserRole.Guest]: roles }, "access"); }
-  return setFieldRoleAccess<boolean>(roles as RoleAccess<boolean>, "access");
+export function Access(roles: AccessFieldValue<boolean>) {
+  if (typeof roles === "function") { return setFieldAccess<AccessFunction<boolean>>(roles, "access"); }
+  return setFieldAccess<boolean>(roles as boolean, "access");
 }
 
 /**
@@ -61,11 +60,8 @@ export function Parent(collection: Collection, key: string, roles: any) {
  * @param fields A list of fields, a function that evaluates to a list of fields, or a role-delimited dictionary
  *  that is or evaluates to a list of fields.
  */
-export function ReadFields(fields: PerRoleAccess<string[]> | RoleAccess<string[]>) {
-  if (Array.isArray(fields) || typeof fields === "function") {
-    return setFieldRoleAccess<string[]>({[UserRole.Guest]: fields}, "readFields");
-  }
-  return setFieldRoleAccess<string[]>(fields, "readFields");
+export function ReadFields(fields: AccessFieldValue<string[]>) {
+  return setFieldAccess<string[]>(fields, "readFields");
 }
 
 /**
@@ -74,11 +70,8 @@ export function ReadFields(fields: PerRoleAccess<string[]> | RoleAccess<string[]
  * @param fields A list of fields, a function that evaluates to a list of fields, or a role-delimited dictionary
  *  that is or evaluates to a list of fields.
  */
- export function SetFields(fields: PerRoleAccess<string[]> | RoleAccess<string[]>) {
-  if (Array.isArray(fields) || typeof fields === "function") {
-    return setFieldRoleAccess<string[]>({[UserRole.Guest]: fields}, "setFields");
-  }
-  return setFieldRoleAccess<string[]>(fields, "setFields");
+ export function SetFields(fields: AccessFieldValue<string[]>) {
+  return setFieldAccess<string[]>(fields, "setFields");
 }
 
 /**
@@ -86,59 +79,8 @@ export function ReadFields(fields: PerRoleAccess<string[]> | RoleAccess<string[]
  * @param value The value to set
  * @param fieldKey The key to set in the descriptor
  */
-function setFieldAccess<T>(value: T, fieldKey: string) {
+function setFieldAccess<T>(value: AccessFieldValue<T>, fieldKey: string) {
   return (_target: any, _name: string, descriptor: any) => {
     descriptor[fieldKey] = value;
-  };
-}
-
-/**
- * A helper function to set field access for both read and set field functions
- * @param fields A list of fields, a function that evaluates to a list of fields, or a role-delimited dictionary
- *  that is or evaluates to a list of fields.
- * @param fieldKey The key to save the fields in
- * @returns The decorator function to wrap around the function proper
- */
-function setFieldRoleAccess<T>(fields: RoleAccess<T>, fieldKey: string) {
-  return (_target: any, _name: string, descriptor: any) => {
-    // Ensures that we have the empty read fields if none is present so far
-    if (!(fieldKey in descriptor)) {
-      // TODO - can/should this initialization be moved out to a different function?
-      descriptor[fieldKey] = {};
-      USER_LEVELS.forEach((level: string) => {
-        descriptor[fieldKey][level] = undefined;
-      });
-    }
-
-    // Sets everything if given a string[] or function
-    if (Array.isArray(fields) || typeof fields === "function" || typeof fields === "boolean") {
-      USER_LEVELS.forEach((level: string) => {
-        descriptor[fieldKey][level] = fields;
-      });
-      return;
-    }
-
-    let lastField: PerRoleAccess<T> | undefined = undefined;
-    USER_LEVELS.forEach((level: string) => {
-      const targetField = (fields as any)[level];
-      const savedField = descriptor[fieldKey][level];
-
-      if (savedField !== undefined) {
-        lastField = savedField;
-      }
-
-      // Sets the new field, if one is present
-      if (targetField !== undefined) {
-        descriptor[fieldKey][level] = targetField;
-        lastField = targetField;
-        return;
-      }
-
-      // Sets the empty field with a pre-existing field
-      if (savedField === undefined) {
-        descriptor[fieldKey][level] = lastField;
-        return;
-      }
-    });
   };
 }

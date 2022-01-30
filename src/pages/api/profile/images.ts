@@ -4,7 +4,7 @@ import { ImageLogic } from "server/logic/ImageLogic";
 import { UserLogic } from "server/logic/UserLogic";
 
 import { HTTPHandler, createEndpoint } from "@owl-factory/https";
-import { SecurityController } from "controllers/SecurityController";
+import { Auth } from "controllers/auth";
 
 /**
  * Updates a single profile image for the current user
@@ -12,7 +12,7 @@ import { SecurityController } from "controllers/SecurityController";
  * @param req The request to the server
  */
 async function updateProfileImage(this: HTTPHandler, req: NextApiRequest) {
-  const user = await UserLogic.findOne(SecurityController.currentUser?.ref || "");
+  const user = await UserLogic.findOne(Auth.user?.ref || "");
   if (!user) { this.returnError(404, "User not found."); return; }
   const image = await ImageLogic.findOne(req.body.avatar.ref);
   if (!image) { this.returnError(404, "Image not found"); return; }

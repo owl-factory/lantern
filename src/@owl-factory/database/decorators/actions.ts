@@ -2,26 +2,20 @@
 import { AnyDocument } from "types/documents";
 import { trimFields } from "utilities/security";
 import * as fauna from "../integration/fauna";
-import { SecurityController } from "controllers/SecurityController"; // TODO - reference without importing
-import { UserRole } from "@owl-factory/auth/enums";
 import { Ref64 } from "@owl-factory/types";
 import { Auth } from "controllers/auth";
 
-export type PerRoleAccess<T> = T | ((doc: AnyDocument) => T);
-export interface RoleAccess<T> {
-  [UserRole.Guest]?: (PerRoleAccess<T> | undefined);
-  [UserRole.User]?: (PerRoleAccess<T> | undefined);
-  [UserRole.Moderator]?: (PerRoleAccess<T> | undefined);
-  [UserRole.Admin]?: (PerRoleAccess<T> | undefined);
-}
+export type AccessFunction<T> = (doc: AnyDocument) => T
+export type AccessFieldValue<T> = T | AccessFunction<T>
+
 
 export interface Descriptor {
-  access?: RoleAccess<boolean>;
+  access?: AccessFieldValue<boolean>;
   requireLogin?: boolean;
   role?: string;
   parent?: any;
-  readFields?: RoleAccess<string[]>;
-  setFields?: RoleAccess<string[]>;
+  readFields?: AccessFieldValue<string[]>;
+  setFields?: AccessFieldValue<string[]>;
 }
 
 /**
@@ -32,7 +26,7 @@ export interface Descriptor {
   // Nabs the login requirement. If requireLogin is present, use it, but then default to true
   const isLoginRequired = descriptor.requireLogin !== undefined ?  descriptor.requireLogin : false;
   if (isLoginRequired === false) { return; }
-  if (!SecurityController.loggedIn) {
+  if (!Auth.isLoggedIn) {
     throw { code: 401, message: "You must be logged in to view this resource."};
   }
 }
@@ -42,34 +36,9 @@ export interface Descriptor {
  * @param perRoleAccess The per role access item to check for a static value or a function
  * @returns Boolean. True if the function is static. False if it is dynamic.
  */
-function _isStatic(perRoleAccess: PerRoleAccess<unknown>) {
+function _isStatic(perRoleAccess: AccessFieldValue<unknown>) {
   if (typeof perRoleAccess === "function") { return false; }
   return true;
-}
-
-/**
- * Checks that the descriptor and current user has static access to the function. If access is false, an error is thrown
- * @param descriptor The descriptor of the database logic function being processsed
- */
-export function checkStaticAccess(descriptor: Descriptor): void {
-  // No access has been set, so skip any logic here
-  if (!("access" in descriptor) || descriptor.access === undefined) { return; }
-
-  // Ensure that the given role is a valid one
-  const role = SecurityController.activeRole;
-  if (!(role in descriptor.access)) {
-    throw { code: 500, message: "The access type is missing the active role. This is an error with database logic." };
-  }
-
-  // Skip doing anything if this is a dynamic check
-  if (!_isStatic(descriptor.access[role])) { return; }
-
-  // Error out specifically if the current user does not have access
-  if (descriptor.access[role] === false) {
-    throw { code: 401, message: "You do not have access to this resource." };
-  }
-
-  return;
 }
 
 /**
@@ -98,20 +67,6 @@ export function checkPermissionAccess(descriptor: Descriptor): void {
 }
 
 /**
- * Gets the current role of the user. Also validates that the role exists in the role access. Throws an
- * error if it is not present
- * @param roleAccess The role access for no particular field
- * @returns The user's current role
- */
-function _getRole(roleAccess: RoleAccess<unknown>) {
-  const role = SecurityController.activeRole;
-  if (!(role in roleAccess)) {
-    throw { code: 500, message: "The access type is missing the active role. This is an error with database logic." };
-  }
-  return role;
-}
-
-/**
  * Checks if the current user has access, either dynamic or static, for each of the given documents.
  * Returns an array of all of the approved documents.
  * @param descriptor The descriptor of the database logic function being processsed
@@ -121,16 +76,15 @@ function _getRole(roleAccess: RoleAccess<unknown>) {
 export function checkManyDynamicAccess(descriptor: Descriptor, docs: AnyDocument[]): AnyDocument[] {
   // No access has been set, so skip any logic here
   if (!("access" in descriptor) || descriptor.access === undefined) { return docs; }
-  const role = _getRole(descriptor.access);
 
   // Checks if the access property is static. If so, exits out with all or nothing to prevent unneeded processing
-  if (_isStatic(descriptor.access[role])) {
-    if (descriptor.access[role] === true) { return docs; }
+  if (_isStatic(descriptor.access)) {
+    if (descriptor.access === true) { return docs; }
     return [];
   }
 
   const approvedDocs: AnyDocument[] = [];
-  const accessFunction = descriptor.access[role] as (doc: AnyDocument) => boolean;
+  const accessFunction = descriptor.access as (doc: AnyDocument) => boolean;
   docs.forEach((doc: AnyDocument) => {
     if (accessFunction(doc)) {
       approvedDocs.push(doc);
@@ -151,15 +105,15 @@ export async function fetchTargetDoc(descriptor: Descriptor, id: Ref64): Promise
 
 export function setCreateFields(_descriptor: Descriptor, doc: Partial<AnyDocument>): Partial<AnyDocument> {
   doc.createdAt = new Date();
-  doc.createdBy = { ref: SecurityController.currentUser?.ref || "" };
-  doc.ownedBy = { ref: SecurityController.currentUser?.ref || "" };
+  doc.createdBy = { ref: Auth.user?.ref || "" };
+  doc.ownedBy = { ref: Auth.user?.ref || "" };
   doc = setUpdateFields(_descriptor, doc);
   return doc;
 }
 
 export function setUpdateFields(_descriptor: Descriptor, doc: Partial<AnyDocument>): Partial<AnyDocument> {
   doc.updatedAt = new Date();
-  doc.updatedBy = { ref: SecurityController.currentUser?.ref || "" };
+  doc.updatedBy = { ref: Auth.user?.ref || "" };
   return doc;
 }
 
@@ -183,9 +137,8 @@ export function trimReadFields(descriptor: Descriptor, doc: AnyDocument): Partia
  */
 export function trimManyReadFields(descriptor: Descriptor, docs: AnyDocument[]): Partial<AnyDocument>[] {
   if (!("readFields" in descriptor) || descriptor.readFields === undefined) { return docs; }
-  const role = _getRole(descriptor.readFields);
 
-  const trimmedDocs = _trimManyFields(descriptor.readFields[role], docs);
+  const trimmedDocs = _trimManyFields(descriptor.readFields, docs);
   return trimmedDocs;
 }
 
@@ -208,9 +161,8 @@ export function trimSetFields(descriptor: Descriptor, doc: AnyDocument): Partial
  */
 export function trimManySetFields(descriptor: Descriptor, docs: AnyDocument[]): Partial<AnyDocument>[] {
   if (!("setFields" in descriptor) || descriptor.setFields === undefined) { return docs; }
-  const role = _getRole(descriptor.setFields);
 
-  const trimmedDocs = _trimManyFields(descriptor.setFields[role], docs);
+  const trimmedDocs = _trimManyFields(descriptor.setFields, docs);
   return trimmedDocs;
 }
 
@@ -220,7 +172,10 @@ export function trimManySetFields(descriptor: Descriptor, docs: AnyDocument[]): 
  * @param docs The array of documents to trim fields from
  * @returns An array of documents with some or all of the fields they entered with
  */
-function _trimManyFields(roleFields: PerRoleAccess<string[]> | undefined, docs: AnyDocument[]): Partial<AnyDocument>[] {
+function _trimManyFields(
+  roleFields: AccessFieldValue<string[]> | undefined,
+  docs: AnyDocument[]
+): Partial<AnyDocument>[] {
   // Base case. Skips evaluation if the role fields haven't been defined
   if (roleFields === undefined) { return docs; }
 
