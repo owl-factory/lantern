@@ -10,7 +10,7 @@ import { HTTPHandler, createEndpoint } from "@owl-factory/https";
  * @param req The request to the server
  */
 async function setRulesetIsPublic(this: HTTPHandler, req: NextApiRequest) {
-  const ruleset = await RulesetLogic.updateIsPublic(req.query.id as string, req.body);
+  const ruleset = await RulesetLogic.updateOfficialRulesetIsPublic(req.query.id as string, req.body);
   this.returnSuccess({ ruleset: ruleset });
 }
 

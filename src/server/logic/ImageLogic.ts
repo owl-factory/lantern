@@ -6,7 +6,7 @@ import { DatabaseLogic } from "./AbstractDatabaseLogic";
 import * as fauna from "@owl-factory/database/integration/fauna";
 import { Ref64 } from "@owl-factory/types";
 import { Access, ReadFields, SetFields } from "@owl-factory/database/decorators/modifiers";
-import { Create, Delete, Fetch, FetchMany, Index } from "@owl-factory/database/decorators/crud";
+import { Create, Delete, Fetch, FetchMany, Index, Update } from "@owl-factory/database/decorators/crud";
 import { FaunaIndexOptions } from "@owl-factory/database/types/fauna";
 import { SecurityController } from "controllers/SecurityController";
 import { toRef } from "@owl-factory/database/conversion/fauna/to";
@@ -59,7 +59,7 @@ class $ImageLogic extends DatabaseLogic<ImageDocument> {
    * @param doc The image document partial to create
    * @returns The new image document
    */
-  @Create
+  @Create("createExternalImage")
   @Access({[UserRole.User]: true})
   @ReadFields(["*"])
   @SetFields(createFields)
@@ -74,8 +74,8 @@ class $ImageLogic extends DatabaseLogic<ImageDocument> {
    * @param id The ID of the image document to delete
    * @returns The deleted image document
    */
-  @Delete
-  @Access({[UserRole.User]: isOwner, [UserRole.Admin]: true})
+  @Delete("deleteMyImage")
+  @Access(isOwner)
   @ReadFields(["*"])
   public async deleteOne(id: Ref64): Promise<ImageDocument> {
     const image = await fauna.deleteOne<ImageDocument>(id);
@@ -88,8 +88,7 @@ class $ImageLogic extends DatabaseLogic<ImageDocument> {
    * @param id The Ref64 ID of the document to fetch
    * @returns The image document
    */
-  @Fetch
-  @Access({[UserRole.User]: true})
+  @Fetch("viewAnyImage")
   @ReadFields(["*"])
   public async findOne(id: Ref64): Promise<ImageDocument> {
     const image = await fauna.findByID<ImageDocument>(id);
@@ -102,8 +101,7 @@ class $ImageLogic extends DatabaseLogic<ImageDocument> {
    * @param ids The Ref64 IDs of the documents to fetch
    * @returns The found and allowed image documents
    */
-  @FetchMany
-  @Access({[UserRole.User]: true})
+  @FetchMany("viewAnyImage")
   @ReadFields(["*"])
   public async findManyByIDs(ids: Ref64[]): Promise<ImageDocument[]> {
     const images = await fauna.findManyByIDs<ImageDocument>(ids);
@@ -115,7 +113,7 @@ class $ImageLogic extends DatabaseLogic<ImageDocument> {
    * @param options Any additional options for filtering the data retrieved from the database
    * @returns An array of image document partials
    */
-  @Index
+  @Index("searchImagesByUser")
   @Access({[UserRole.Admin]: true})
   @ReadFields(["*"])
   public async searchImagesByUser(userID: Ref64, options?: FaunaIndexOptions): Promise<ImageDocument[]> {
@@ -127,13 +125,31 @@ class $ImageLogic extends DatabaseLogic<ImageDocument> {
    * @param options Any additional options for filtering the data retrieved from the database
    * @returns An array of image document partials
    */
-  @Index
-  @Access({[UserRole.User]: true})
+  @Index("searchMyImages")
   @ReadFields(["*"])
   public async searchMyImages(options?: FaunaIndexOptions): Promise<ImageDocument[]> {
     const userID = SecurityController.currentUser?.ref;
     if (!userID) { return []; }
     return this._searchImagesByUser(userID, options);
+  }
+
+  /**
+   * Updates a single document
+   * @param ref The ref of the document to update
+   * @param doc The changes in the document to patch on
+   * @returns The updated document
+   */
+   @Update("updateMyImage")
+   @Access(isOwner)
+   @ReadFields(["*"])
+   @SetFields(["*"])
+   public async updateMyImage(ref: Ref64, doc: Partial<ImageDocument>) {
+    const updatedDoc = await fauna.updateOne(ref, doc);
+    // TODO - better message
+    if (updatedDoc === undefined) {
+      throw { code: 404, message: `The image document with id ${ref} could not be found.`};
+    }
+    return updatedDoc;
   }
 
   /**

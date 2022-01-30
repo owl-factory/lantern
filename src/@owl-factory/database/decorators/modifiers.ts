@@ -1,4 +1,5 @@
 import { UserRole } from "@owl-factory/auth/enums";
+import { AnyDocument } from "types/documents";
 import { Descriptor, PerRoleAccess, RoleAccess } from "./actions";
 
 const DEFAULT_READ_FIELDS = ["id"];
@@ -17,8 +18,9 @@ enum Collection {
  * Sets which roles may access this resource, either a boolean or a function that evaluates to a boolean
  * @param roles Each of the per-role access that is a boolean or returns a boolean
  */
-export function Access(roles: RoleAccess<boolean>) {
-  return setFieldRoleAccess<boolean>(roles, "access");
+export function Access(roles: (RoleAccess<boolean> | ((doc: AnyDocument) => boolean))) {
+  if (typeof roles === "function") { return setFieldRoleAccess<boolean>({ [UserRole.Guest]: roles }, "access"); }
+  return setFieldRoleAccess<boolean>(roles as RoleAccess<boolean>, "access");
 }
 
 /**
@@ -79,6 +81,16 @@ export function ReadFields(fields: PerRoleAccess<string[]> | RoleAccess<string[]
   return setFieldRoleAccess<string[]>(fields, "setFields");
 }
 
+/**
+ * A helper function to set field access without roles
+ * @param value The value to set
+ * @param fieldKey The key to set in the descriptor
+ */
+function setFieldAccess<T>(value: T, fieldKey: string) {
+  return (_target: any, _name: string, descriptor: any) => {
+    descriptor[fieldKey] = value;
+  };
+}
 
 /**
  * A helper function to set field access for both read and set field functions

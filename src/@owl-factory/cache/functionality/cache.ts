@@ -114,9 +114,10 @@ export function $setMany<T extends RefRequired>(
  */
 export function $toCacheItem<T extends RefRequired>(
   this: CacheController<T>,
-  docs: Partial<T>[],
+  docs: Partial<T>[] | undefined,
   meta?: CacheItemMetadata
 ): CacheItem<T>[] {
+  if (docs === undefined) { return []; }
   const cacheItems: CacheItem<T>[] = [];
 
   const metadata = meta !== undefined ? { ...meta } : {

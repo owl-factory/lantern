@@ -35,7 +35,8 @@ export class HTTPHandler {
       // TODO - replace with AuthController
       SecurityController.fromReq(this.req);
       initializeNextContext({ req: this.req, res: this.res });
-      Auth.reload();
+
+      Auth.fromReq(this.req);
 
       // Checks that this method is present
       const method = this.req.method as PossibleMethods;

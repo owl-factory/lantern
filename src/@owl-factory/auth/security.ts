@@ -8,6 +8,7 @@ import { UserRole } from "./enums";
  * A controller for managing security, primarily for the backend. It's purpose is to take in
  * a NextApiRequest object, read the current user document, and parse it into usable fields,
  * such as a loggedIn flag or the active role.
+ * TODO - remove this eventually as it is being replaced by AuthController
  */
 export class $SecurityController<T> {
   public currentUser: Partial<T> | undefined;

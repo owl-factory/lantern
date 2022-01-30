@@ -16,6 +16,7 @@ import { AssetUploadSource } from "types/enums/assetSource";
 import { ImageCache } from "controllers/cache/ImageCache";
 import { UserCache } from "controllers/cache/UserCache";
 import { arrayToList } from "@owl-factory/utilities/arrays";
+import { Auth } from "controllers/auth";
 
 /**
  * Renders a small section indicating how long a player has been a member, their hours played,
@@ -278,7 +279,7 @@ function Profile(props: ProfileProps): JSX.Element {
    */
   function calculateIfUserIsOwner() {
     if (!props.session) { return false; }
-    if (props.session.user.ref === user.ref) { return true; }
+    if (Auth.user?.ref === user.ref) { return true; }
     return false;
   }
 

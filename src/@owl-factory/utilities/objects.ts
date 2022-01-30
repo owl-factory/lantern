@@ -3,14 +3,16 @@
  * @param obj The object to read a key from
  * @param target The target address of an object to read
  */
-export function read<T>(obj: Record<string, unknown>, target: string): T {
+export function read<T>(obj: Record<string, unknown>, target: string): T | undefined {
   const targetKeys = target.split(".");
   let current = obj;
-  targetKeys.forEach((targetKey: string) => {
+
+  for (const targetKey of targetKeys) {
     if (typeof current !== "object") { return undefined; }
     if (!(targetKey in current)) { return undefined; }
     current = current[targetKey] as Record<string, unknown>;
-  });
+  }
+
   return current as T;
 }
 

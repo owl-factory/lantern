@@ -29,6 +29,7 @@ const Dashboard: NextPage<DashboardProps> = (props: any) => {
 
       <h4>Temp Profile Stuff</h4>
       <Button onClick={() =>AlertController.success("Testing")}>Test Alerts</Button>
+      <Button onClick={() => {console.log(Auth);}}>Test Auth</Button>
     </Page>
   );
 };
@@ -74,7 +75,7 @@ function RecentGames(props: any) {
 }
 
 Dashboard.getInitialProps = async (ctx: NextPageContext) => {
-  const user = Auth.getUser();
+  const user = Auth.user;
   const result = await rest.get(`/api/dashboard`);
 
   return { user, campaigns: (result as any).data.campaigns };

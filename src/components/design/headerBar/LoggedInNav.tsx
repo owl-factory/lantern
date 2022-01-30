@@ -39,7 +39,7 @@ interface LoggedInNavProps {
  * @returns A JSX.Element displaying the user's profile image and name
  */
 const UserDisplay = observer(() => {
-  const user = Auth.getUser();
+  const user = Auth.user;
 
   return (
     <>
@@ -85,7 +85,7 @@ function RecentCampaigns() {
  * @returns A selection of navigation stuff for logged in navigation
  */
 function LoggedInNav() {
-  const user = Auth.getUser();
+  const user = Auth.user;
   return (
     <>
       <Navbar.Toggle aria-controls="basic-navbar-nav"/>

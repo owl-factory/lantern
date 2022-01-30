@@ -12,7 +12,7 @@ import { getUniques } from "@owl-factory/utilities/arrays";
  * @param req The request to the server
  */
 async function getCampaignPage(this: HTTPHandler, req: NextApiRequest) {
-  const campaign = await CampaignLogic.findOne(req.query.ref as string);
+  const campaign = await CampaignLogic.findMyCampaign(req.query.ref as string);
   campaign.players = await UserLogic.findManyByIDs(getUniques(campaign.players, "id"));
 
   this.returnSuccess({ campaign: campaign });
