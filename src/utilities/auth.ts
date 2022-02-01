@@ -30,7 +30,7 @@ export async function signIn(username: string, password: string): Promise<string
     return result.message;
   }
   Auth.setUser(result.data.user);
-  // Router.reload();
+  Router.reload();
   return "";
 }
 

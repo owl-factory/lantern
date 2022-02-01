@@ -31,10 +31,10 @@ export class AuthController<T> {
   /**
    * Returns the currently logged in user. May be undefined if no user is logged in
    */
-   get user(): T | undefined { return this.$user; }
-   get isLoggedIn() {
-     return this.$user !== undefined;
-   }
+  get user(): T | undefined { return this.$user; }
+  get isLoggedIn() {
+    return this.$user !== undefined;
+  }
 
   /**
    * Loads and reloads everything
