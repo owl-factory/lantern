@@ -30,7 +30,7 @@ export async function signIn(username: string, password: string): Promise<string
     return result.message;
   }
   Auth.setUser(result.data.user);
-  Router.reload();
+  // Router.reload();
   return "";
 }
 
@@ -38,6 +38,6 @@ export async function signIn(username: string, password: string): Promise<string
  * Logs a user out
  */
 export function signOut(): void {
-  Auth.resetUser();
+  Auth.reset();
   Router.reload();
 }

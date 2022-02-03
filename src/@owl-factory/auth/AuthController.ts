@@ -23,7 +23,7 @@ export class AuthController<T> {
     this.reload();
     makeObservable(this, {
       $user: observable,
-      resetUser: action,
+      reset: action,
       setUser: action,
     });
   }
@@ -34,6 +34,10 @@ export class AuthController<T> {
   get user(): T | undefined { return this.$user; }
   get isLoggedIn() {
     return this.$user !== undefined;
+  }
+
+  public $extractSecurity(fullUser: T) {
+    return { user: fullUser, role: "default", permissions: [] };
   }
 
   /**
@@ -64,6 +68,6 @@ export class AuthController<T> {
   public $setPermissions() { this.$permissions = []; }
 
   public fromReq = user.fromReq;
-  public resetUser = user.resetUser;
+  public reset = user.resetUser;
   public setUser = user.setUser;
 }

@@ -30,6 +30,11 @@ export function base64toDecimal(base64: string): bigint {
   return result;
 }
 
+/**
+ * Safely grabs a rixit value without stepping outside the bounds of the rixit list.
+ * Throws a warning if the index is outside the bounds of the string
+ * @param index The index of the rixit to grab
+ */
 export function safeRixit(index: number | bigint) {
   if (typeof index !== "number") { index = Number(index); }
   if (index >= 64) { console.warn("Rixit exceeds safe value"); }

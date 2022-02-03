@@ -37,3 +37,108 @@ export function binaryToBase64(binary: string): string {
   }
   return decimal;
 }
+
+/**
+ * Boolean operation to and two binary strings together
+ * @param bin1 The first binary string
+ * @param bin2 The second binary string
+ */
+export function and(bin1: string, bin2: string): string {
+  let resultBin = "";
+  let largeBin;
+  let smallBin;
+
+  if (bin1.length > bin2.length) {
+    largeBin = bin1;
+    smallBin = bin2;
+  } else {
+    largeBin = bin2;
+    smallBin = bin1;
+  }
+
+  for(let i = 0; i < smallBin.length; i++) {
+    if (smallBin[smallBin.length - (i + 1)] === "1" && largeBin[largeBin.length - (i + 1)] === "1") {
+      resultBin = "1" + resultBin;
+    } else {
+      resultBin = "0" + resultBin;
+    }
+  }
+
+  resultBin = trimLeadingZeroes(resultBin);
+  return resultBin;
+}
+
+
+/**
+ * Boolean operation to or two binary strings together
+ * @param bin1 The first binary string
+ * @param bin2 The second binary string
+ */
+export function or(bin1: string, bin2: string): string {
+  let resultBin = "";
+  let largeBin;
+  let smallBin;
+
+  if (bin1.length > bin2.length) {
+    largeBin = bin1;
+    smallBin = bin2;
+  } else {
+    largeBin = bin2;
+    smallBin = bin1;
+  }
+
+  for(let i = 0; i < largeBin.length; i++) {
+    if (i >= smallBin.length) {
+      resultBin = largeBin[largeBin.length - (i + 1)] + resultBin;
+    } else if (smallBin[smallBin.length - (i + 1)] === "1" || largeBin[largeBin.length - (i + 1)] === "1") {
+      resultBin = "1" + resultBin;
+    } else {
+      resultBin = "0" + resultBin;
+    }
+  }
+
+  resultBin = trimLeadingZeroes(resultBin);
+  return resultBin;
+}
+
+/**
+ * Boolean operation to exclusive or two binary strings together
+ * @param bin1 The first binary string
+ * @param bin2 The second binary string
+ */
+export function xor(bin1: string, bin2: string): string {
+  let resultBin = "";
+  let largeBin;
+  let smallBin;
+
+  if (bin1.length > bin2.length) {
+    largeBin = bin1;
+    smallBin = bin2;
+  } else {
+    largeBin = bin2;
+    smallBin = bin1;
+  }
+
+  for(let i = 0; i < largeBin.length; i++) {
+    if (i >= smallBin.length) {
+      resultBin = largeBin[largeBin.length - (i + 1)] + resultBin;
+    } else if (smallBin[smallBin.length - (i + 1)] === "1" && largeBin[largeBin.length - (i + 1)] === "0") {
+      resultBin = "1" + resultBin;
+    } else if (smallBin[smallBin.length - (i + 1)] === "0" && largeBin[largeBin.length - (i + 1)] === "1") {
+      resultBin = "1" + resultBin;
+    } else {
+      resultBin = "0" + resultBin;
+    }
+  }
+
+  resultBin = trimLeadingZeroes(resultBin);
+  return resultBin;
+}
+
+/**
+ * Trims any leading zeroes from the beginning of a binary string
+ * @param bin The binary string to trim leading zeroes from
+ */
+export function trimLeadingZeroes(bin: string): string {
+  return bin.replace(/^0+/, '');
+}

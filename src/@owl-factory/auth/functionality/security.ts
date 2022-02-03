@@ -21,6 +21,10 @@ export function buildPermissions(this: AuthController<unknown>) {
   });
 }
 
+export function compressPermissions(this: AuthController<unknown>) {
+  const userPermissions = this.$permissions.sort();
+}
+
 /**
  * Checks if the current user has a given permission
  * @param permission The permission key to check if present
