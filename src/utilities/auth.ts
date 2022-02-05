@@ -31,7 +31,7 @@ export async function signIn(username: string, password: string): Promise<string
     return result.message;
   }
   Auth.fromAPI(result.data.user, result.data.permissions, result.data.jwt);
-  Router.reload();
+  // Router.reload();
   return "";
 }
 

@@ -13,6 +13,7 @@ export interface Role {
   permissions: string[];
 }
 
+// An expected response from a log in action, be it sign up or sign in
 export interface LogInResponse<T> {
   user: T;
   permissions: string;

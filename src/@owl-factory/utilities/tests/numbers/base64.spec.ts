@@ -1,12 +1,12 @@
-import { base64toBinary, base64toDecimal } from "@owl-factory/utilities/numbers/base64";
+import { base64ToBinary, base64toDecimal } from "@owl-factory/utilities/numbers/base64";
 
 test("base64toBinary a to 11010", () => {
-  const binary = base64toBinary("a");
+  const binary = base64ToBinary("a");
   expect(binary).toBe("11010");
 });
 
 test("base64toBinary abc to 11010,011011,011100", () => {
-  const binary = base64toBinary("abc");
+  const binary = base64ToBinary("abc");
   expect(binary).toBe("11010011011011100");
 });
 

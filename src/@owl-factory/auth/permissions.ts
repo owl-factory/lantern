@@ -1,4 +1,7 @@
 import { getUniques } from "@owl-factory/utilities/arrays";
+import { isServer } from "@owl-factory/utilities/client";
+import { Auth } from "controllers/auth";
+import { useRouter } from "next/router";
 import { getGlobalPermissionKeys, getGlobalPermissions, getGlobalRole } from "./globals";
 
 /**
@@ -10,7 +13,7 @@ import { getGlobalPermissionKeys, getGlobalPermissions, getGlobalRole } from "./
 export function permissionsToBinary(targetPermissions: string[], globalPermissions?: string[]) {
   let compressed = "1"; // Lead with a bit to prevent trimming of the lead zeroes
   if (globalPermissions === undefined) {
-    globalPermissions = getUniques(getGlobalPermissions(), "key");
+    globalPermissions = getGlobalPermissionKeys();
   }
 
   // Base case in the even that the target permissions is empty.
@@ -89,4 +92,15 @@ export function buildFullPermissions(role: string, permissions: string[]) {
 
   const fullPermissions = Object.keys(fullPermissionStruct).sort();
   return fullPermissions;
+}
+
+/**
+ * Verifies that the user has the permission required to view a page. Redirects to the 401 page if not
+ * @param permission The permission required to view a page
+ */
+export function pagePermission(permission: string) {
+  if (isServer) { return; }
+  if (Auth.hasPermission(permission)) { return; }
+  const router = useRouter();
+  router.push("/401");
 }

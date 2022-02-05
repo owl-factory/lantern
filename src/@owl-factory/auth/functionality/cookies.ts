@@ -1,7 +1,11 @@
 import { destroyCookie, getCookie, setCookie } from "@owl-factory/cookies";
 import { binaryToBase64 } from "@owl-factory/utilities/numbers/base2";
+import { base64ToBinary } from "@owl-factory/utilities/numbers/base64";
 import { AuthController } from "../AuthController";
 
+/**
+ * Destroys all cookies used for the Auth
+ */
 export function destroyCookies(this: AuthController<unknown>) {
   destroyCookie(this.userCookieKey);
   destroyCookie(this.permissionCookieKey);
@@ -23,8 +27,8 @@ export function loadFromCookie(this: AuthController<unknown>) {
     return;
   }
 
-  this.$user = user;
-  this.$permissions = permissions;
+  this.$user = JSON.parse(user);
+  this.$permissions = base64ToBinary(permissions as string);
   this.$jwt = jwt;
 }
 

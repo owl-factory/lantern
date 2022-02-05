@@ -1,7 +1,7 @@
 import { destroyCookie } from "@owl-factory/cookies";
 import { NextApiRequest } from "next/types";
 import { AuthController } from "../AuthController";
-import { base64toBinary } from "@owl-factory/utilities/numbers/base64";
+import { base64ToBinary } from "@owl-factory/utilities/numbers/base64";
 
 /**
  * Loads a user from an API response (sign up or sign in)
@@ -11,7 +11,7 @@ import { base64toBinary } from "@owl-factory/utilities/numbers/base64";
  */
  export function fromAPI<T>(this: AuthController<T>, user: T, permissions: string, jwt: string | undefined) {
   this.$user = user;
-  this.$permissions = base64toBinary(permissions);
+  this.$permissions = base64ToBinary(permissions);
   this.$jwt = jwt;
 
   this.$saveToCookie();
