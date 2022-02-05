@@ -9,22 +9,22 @@ import * as user from "./functionality/user";
 
 export class AuthController<T> {
   public $user: T | undefined;
+  public $permissions: string | undefined; // All permissions a user has, role & custom permissions included
+  public $jwt: string | undefined;
 
-  // User information broken out from the cookie
-  public $role = "default"; // The role a user has
-  public $permissions: string[] = []; // The specific permissions a user has outside of their role
-
-  // Roles & Permissions for reference. TODO - should these be moved to global variables?
-  public $fullPermissions: Record<string, boolean> = {}; // A collection of all permissions the user has
-
-  protected cookieKey = "session";
+  protected userCookieKey = "session";
+  protected permissionCookieKey = "session_permissions";
+  protected jwtCookieKey = "session_jwt";
 
   constructor() {
     this.reload();
     makeObservable(this, {
       $user: observable,
+      $permissions: observable,
+      $jwt: observable,
       reset: action,
-      setUser: action,
+      fromAPI: action,
+      fromReq: action,
     });
   }
 
@@ -32,9 +32,9 @@ export class AuthController<T> {
    * Returns the currently logged in user. May be undefined if no user is logged in
    */
   get user(): T | undefined { return this.$user; }
-  get isLoggedIn() {
-    return this.$user !== undefined;
-  }
+  get isLoggedIn() { return this.$user !== undefined; }
+  get jwt() { return this.$jwt; }
+  get permissions() { return this.$permissions; }
 
   public $extractSecurity(fullUser: T) {
     return { user: fullUser, role: "default", permissions: [] };
@@ -45,29 +45,17 @@ export class AuthController<T> {
    */
   public reload() {
     this.$loadFromCookie();
-    this.reloadPermissions();
   }
 
   // COOKIES
+  public $destroyCookies = cookies.destroyCookies;
   public $loadFromCookie = cookies.loadFromCookie;
   public $saveToCookie = cookies.saveToCookie;
 
   // SECURITY
-  public buildPermissions = security.buildPermissions;
   public hasPermission = security.hasPermission;
-  public reloadPermissions = security.reloadPermissions;
-  /**
-   * Sets the role of the current user.
-   * @override to pull the proper role for the user.
-   */
-  public $setRole() { this.$role = "default"; }
-  /**
-   * Sets the permissions of the current user
-   * @override to pull the proper permissions for the user
-  */
-  public $setPermissions() { this.$permissions = []; }
 
+  public fromAPI = user.fromAPI;
   public fromReq = user.fromReq;
   public reset = user.resetUser;
-  public setUser = user.setUser;
 }

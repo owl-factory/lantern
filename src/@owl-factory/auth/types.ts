@@ -12,3 +12,9 @@ export interface Role {
   name: string;
   permissions: string[];
 }
+
+export interface LogInResponse<T> {
+  user: T;
+  permissions: string;
+  jwt: string | undefined;
+}

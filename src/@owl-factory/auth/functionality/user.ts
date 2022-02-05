@@ -1,38 +1,20 @@
 import { destroyCookie } from "@owl-factory/cookies";
 import { NextApiRequest } from "next/types";
 import { AuthController } from "../AuthController";
-import { permissionsToBinary } from "../permissions";
-import { getCompressedRolePermissions } from "../globals";
 import { base64toBinary } from "@owl-factory/utilities/numbers/base64";
 
-export function fromCookie(this: AuthController<unknown>) {
-  return
-}
-
-export function fromDatabase<T>(this: AuthController<T>, databaseUser: T) {
-  this.reset(); // Ensures that everything is cleared out
-
-  // Extract role & permissions (remove from user)
-  const { user, role, permissions } = this.$extractSecurity(databaseUser);
-
-  // Put user in $user
+/**
+ * Loads a user from an API response (sign up or sign in)
+ * @param user The user object, containing a name and a small amount of extra information
+ * @param permissions The permissions of a user, passed in as a base64 string
+ * @param jwt A JSON web token containing a compressed version of the user information and the permissions
+ */
+ export function fromAPI<T>(this: AuthController<T>, user: T, permissions: string, jwt: string | undefined) {
   this.$user = user;
+  this.$permissions = base64toBinary(permissions);
+  this.$jwt = jwt;
 
-  // Get binary role permissions
-  const compressedRolePermissions = getCompressedRolePermissions(role);
-  // let fullCompressedPermissions = compressedRolePermissions;
-
-  // Compress permissions to binary
-  if (permissions.length > 0) {
-    const compressedPermissions = permissionsToBinary(permissions);
-    // fullCompressedPermissions =  or()
-  }
-  // Merge
-
-  // Binary to base64
-
-  // Save all to cookies
-
+  this.$saveToCookie();
 }
 
 /**
@@ -40,41 +22,26 @@ export function fromDatabase<T>(this: AuthController<T>, databaseUser: T) {
  * @param req The NextAPI Request object containing the user's cookies
  */
 export function fromReq(this: AuthController<unknown>, req: NextApiRequest) {
-  const rawCookie = req.cookies[this.cookieKey];
-  if (!rawCookie) {
+  const user = req.cookies[this.userCookieKey];
+  const permissions = req.cookies[this.permissionCookieKey];
+  const jwt = req.cookies[this.jwtCookieKey]; // TODO - use auth header in the future
+
+  if (user === undefined) {
     this.reset();
     return;
   }
-  const cookie = JSON.parse(rawCookie);
-  this.setUser(cookie);
+
+  this.fromAPI(JSON.parse(user), permissions, jwt);
 }
 
 /**
  * Resets the user and the AuthController to the default state
  */
 export function resetUser(this: AuthController<unknown>) {
-  destroyCookie(this.cookieKey);
   this.$user = undefined;
-  this.reloadPermissions();
-}
-/**
- * Sets a new user
- * @param user The new user that is being logged in or authenticated
- */
-export function setUser<T>(this: AuthController<T>, user: T) {
-  this.reset();
-
-  this.$user = user;
-  this.reloadPermissions();
-  this.$saveToCookie();
+  this.$permissions = undefined;
+  this.$jwt = undefined;
+  this.$destroyCookies();
 }
 
-export function fromAPI<T>(this: AuthController<T>, user: T, permissions: string, jwt: string | null) {
-  this.$user = user;
-  this.$permissions = base64toBinary(permissions);
-  this.
-}
 
-export function logout() {
-
-}
