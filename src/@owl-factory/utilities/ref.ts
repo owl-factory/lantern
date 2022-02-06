@@ -47,7 +47,7 @@ export function decode(ref64: string, collections: CollectionMap): { id: string,
   const collection = decodeCollection(col64, collections);
 
   if (!collection) {
-    console.warn("Invalid collection identifier.");
+    console.warn(`Invalid collection identifier '${col64}'.`);
     return null;
   }
 

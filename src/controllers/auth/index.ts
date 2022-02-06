@@ -6,34 +6,7 @@ import { roles } from "types/security/roles";
 
 
 class RerollAuthController extends AuthController<UserDocument> {
-  constructor() {
-    super();
-    this.reloadPermissions();
-
-  }
-
-  /**
-   * A Reroll-specific function to grab the user's role
-   */
-  public $setRole() {
-    if (this.$user === undefined) {
-      this.$role = "default";
-      return;
-    }
-    this.$role = this.$user?.role || "default";
-  }
-
-  /**
-   * A Reroll-specific function to grab the user's permissions
-   */
-  public $setPermissions() {
-    if (this.$user === undefined) {
-      this.$permissions = [];
-      return;
-    }
-
-    this.$permissions = this.$user.permissions || [];
-  }
+  constructor() { super(); }
 }
 
 

@@ -31,9 +31,6 @@ const playerPermissions: string[] = [
   "viewUser",
   "searchByUsername",
   "updateMyUser",
-
-
-
 ];
 
 const adminPermissions: string[] = getUniques(permissions, "key");

@@ -98,7 +98,7 @@ export function $toItem(data: unknown): unknown {
  */
 export function toRef(ref64ID: Ref64): Expr {
   const decodedRef = decode(ref64ID);
-  if (!decodedRef) { throw "Ref failed to decode. TODO later"; }
+  if (!decodedRef) { throw `Ref '${ref64ID}' failed to decode. `; }
   const ref = q.Ref(q.Collection(decodedRef.collection as string), decodedRef.id);
   return ref;
 }

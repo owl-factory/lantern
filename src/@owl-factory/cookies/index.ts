@@ -28,7 +28,7 @@ export function getCookie(key: string) {
 
   if (!(key in allCookies)) { return undefined; }
   const cookie = allCookies[key];
-  return JSON.parse(cookie);
+  return cookie;
 }
 
 /**
@@ -40,6 +40,7 @@ export function getCookie(key: string) {
  */
 export function setCookie(key: string, content: any, maxAge = defaultAge, path = defaultPath) {
   const ctx = getCtx();
-  setNookieCookie(ctx, key, JSON.stringify(content), { maxAge, path });
+  if (typeof content === "object") { content = JSON.stringify(content); }
+  setNookieCookie(ctx, key, content, { maxAge, path });
 }
 

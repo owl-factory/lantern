@@ -2,6 +2,7 @@ import { rest } from "@owl-factory/https/rest";
 import { Auth } from "controllers/auth";
 import { UserDocument } from "types/documents";
 import Router from "next/router";
+import { LogInResponse } from "@owl-factory/auth/types";
 
 /**
  * Sends a request to sign a user up to the API
@@ -10,11 +11,11 @@ import Router from "next/router";
  * @param password The password of the user attempting to sign up
  */
  export async function signUp(username: string, email: string, password: string): Promise<string> {
-  const result = await rest.post<{ user: UserDocument}>("/api/auth/signup", { username, email, password });
+  const result = await rest.post<LogInResponse<UserDocument>>("/api/auth/signup", { username, email, password });
   if (!result.success) {
     return result.message;
   }
-  Auth.setUser(result.data.user);
+  Auth.fromAPI(result.data.user, result.data.permissions, result.data.jwt);
   Router.reload();
   return "";
 }
@@ -25,12 +26,12 @@ import Router from "next/router";
  * @param password The password of the user to log in
  */
 export async function signIn(username: string, password: string): Promise<string> {
-  const result = await rest.post<{ user: UserDocument }>("/api/auth/signin", { username, password });
+  const result = await rest.post<LogInResponse<UserDocument>>("/api/auth/signin", { username, password });
   if (!result.success) {
     return result.message;
   }
-  Auth.setUser(result.data.user);
-  // Router.reload();
+  Auth.fromAPI(result.data.user, result.data.permissions, result.data.jwt);
+  Router.reload();
   return "";
 }
 
@@ -38,6 +39,6 @@ export async function signIn(username: string, password: string): Promise<string
  * Logs a user out
  */
 export function signOut(): void {
-  Auth.resetUser();
+  Auth.reset();
   Router.reload();
 }

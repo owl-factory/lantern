@@ -1,37 +1,47 @@
 import { destroyCookie } from "@owl-factory/cookies";
 import { NextApiRequest } from "next/types";
 import { AuthController } from "../AuthController";
+import { base64ToBinary } from "@owl-factory/utilities/numbers/base64";
+
+/**
+ * Loads a user from an API response (sign up or sign in)
+ * @param user The user object, containing a name and a small amount of extra information
+ * @param permissions The permissions of a user, passed in as a base64 string
+ * @param jwt A JSON web token containing a compressed version of the user information and the permissions
+ */
+ export function fromAPI<T>(this: AuthController<T>, user: T, permissions: string, jwt: string | undefined) {
+  this.$user = user;
+  this.$permissions = base64ToBinary(permissions);
+  this.$jwt = jwt;
+
+  this.$saveToCookie();
+}
 
 /**
  * Loads in a user from the NextAPI Request object's cookies.
  * @param req The NextAPI Request object containing the user's cookies
  */
 export function fromReq(this: AuthController<unknown>, req: NextApiRequest) {
-  const rawCookie = req.cookies[this.cookieKey];
-  if (!rawCookie) {
-    this.resetUser();
+  const user = req.cookies[this.userCookieKey];
+  const permissions = req.cookies[this.permissionCookieKey];
+  const jwt = req.cookies[this.jwtCookieKey]; // TODO - use auth header in the future
+
+  if (user === undefined) {
+    this.reset();
     return;
   }
-  const cookie = JSON.parse(rawCookie);
-  this.setUser(cookie);
+
+  this.fromAPI(JSON.parse(user), permissions, jwt);
 }
 
 /**
  * Resets the user and the AuthController to the default state
  */
 export function resetUser(this: AuthController<unknown>) {
-  destroyCookie(this.cookieKey);
   this.$user = undefined;
-  this.reloadPermissions();
+  this.$permissions = undefined;
+  this.$jwt = undefined;
+  this.$destroyCookies();
 }
-/**
- * Sets a new user
- * @param user The new user that is being logged in or authenticated
- */
-export function setUser<T>(this: AuthController<T>, user: T) {
-  this.resetUser();
 
-  this.$user = user;
-  this.reloadPermissions();
-  this.$saveToCookie();
-}
+
