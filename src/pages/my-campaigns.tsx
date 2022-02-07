@@ -9,8 +9,6 @@ import React from "react";
 import { Button, Card, Col, Row } from "react-bootstrap";
 import { InitialProps } from "types/client";
 import { CampaignDocument } from "types/documents";
-import { getSession } from "@owl-factory/auth/session";
-import { rest } from "@owl-factory/https/rest";
 import { CampaignCache } from "controllers/cache/CampaignCache";
 import { RulesetCache } from "controllers/cache/RulesetCache";
 import { pagePermission } from "@owl-factory/auth/permissions";
@@ -67,7 +65,6 @@ const CampaignTile = observer((props: CampaignTileProps) => {
  * @param campaigns The initial light campaign information fetched from the API
  */
 function MyCampaigns(props: MyCampaignsProps) {
-  console.log(props)
   onApiError(props);
   pagePermission("viewMyCampaigns");
   const [ campaigns, setCampaigns ] = React.useState<Partial<CampaignDocument>[]>([]);
