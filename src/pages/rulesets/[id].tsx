@@ -15,6 +15,7 @@ import * as Yup from "yup";
 import { Col, Row } from "@owl-factory/components/flex";
 import { Button } from "@owl-factory/components/button";
 import { Breadcrumbs } from "@owl-factory/components/Breadcrumbs";
+import { handleAPI } from "@owl-factory/https/apiHandler";
 
 interface FetchContentTypeData {
   contentTypes: any[];
@@ -190,24 +191,8 @@ function RulesetPage({
   );
 }
 
-RulesetPage.getInitialProps = async (ctx: NextPageContext) => {
-  const res = await rest.post<any>(
-    `/api/pages/rulesets/${ctx.query.id}`,
-    {
-      contentType: {
-        filters: {},
-        options: {
-          limit: initialContentTypeLimit,
-          sort: initialContentTypeSort,
-        },
-      },
-    }
-  );
-  return {
-    contentTypes: res.data.contentTypes,
-    contentTypeCount: res.data.contentTypeCount,
-    ruleset: res.data.ruleset || undefined,
-  };
-};
+export async function getServerSideProps(ctx: NextPageContext) {
+  return { props: {} };
+}
 
 export default RulesetPage;

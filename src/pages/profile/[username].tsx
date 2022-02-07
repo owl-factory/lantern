@@ -17,6 +17,8 @@ import { ImageCache } from "controllers/cache/ImageCache";
 import { UserCache } from "controllers/cache/UserCache";
 import { arrayToList } from "@owl-factory/utilities/arrays";
 import { Auth } from "controllers/auth";
+import { handleAPI } from "@owl-factory/https/apiHandler";
+import { getProfile } from "../api/profile/[username]";
 
 /**
  * Renders a small section indicating how long a player has been a member, their hours played,
@@ -314,17 +316,9 @@ interface ProfileResponse {
   user: UserDocument;
 }
 
-Profile.getInitialProps = async (ctx: NextPageContext) => {
-  const session = await getSession(ctx);
+export async function getServerSideProps(ctx: NextPageContext) {
+  return await handleAPI(ctx, getProfile);
+}
 
-  const result = await rest.get<ProfileResponse>(`/api/profile/${ctx.query.username}`);
-  return {
-    key: ctx.query.username,
-    session,
-    success: result.success,
-    message: result.message,
-    user: result.data.user,
-  };
-};
 
 export default observer(Profile);

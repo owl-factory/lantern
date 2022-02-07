@@ -8,6 +8,9 @@ import { Modal } from "@owl-factory/components/modal";
 import { Button } from "@owl-factory/components/button";
 import { Card, CardBody, CardHeader } from "@owl-factory/components/card";
 import { rest } from "@owl-factory/https/rest";
+import { handleAPI } from "@owl-factory/https/apiHandler";
+import { NextPageContext } from "next/types";
+import { getRulesets } from "../api/rulesets";
 
 // The props for the RulesetPage
 interface RulesetProps {
@@ -132,9 +135,6 @@ export default function Rulesets({ initialRulesets, rulesetCount }: RulesetProps
   );
 }
 
-Rulesets.getInitialProps = async () => {
-  const res = await rest.post<FetchRulesetsData>(
-    "/api/rulesets", { options: { limit: initialPerPage, sort: initialSortBy } }
-  );
-  return { initialRulesets: res.data.rulesets, rulesetCount: res.data.rulesetCount };
-};
+export async function getServerSideProps(ctx: NextPageContext) {
+  return await handleAPI(ctx, getRulesets);
+}

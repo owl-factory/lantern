@@ -4,14 +4,18 @@ import { RulesetLogic } from "server/logic/RulesetLogic";
 
 import { HTTPHandler, createEndpoint } from "@owl-factory/https";
 
+export async function getRulesets(req: NextApiRequest) {
+  const ruleset = await RulesetLogic.findOne(req.query.id as string);
+  return { ruleset: ruleset };
+}
+
 /**
  * Fetches the given rulesets
  * @param this The Handler class calling this function
  * @param req The request to the server
  */
-async function getRuleset(this: HTTPHandler, req: NextApiRequest) {
-  const ruleset = await RulesetLogic.findOne(req.query.id as string);
-  this.returnSuccess({ ruleset: ruleset });
+async function getRulesetRequest(this: HTTPHandler, req: NextApiRequest) {
+  this.returnSuccess(await getRulesets(req));
 }
 
 /**
@@ -25,6 +29,6 @@ async function updateRuleset(this: HTTPHandler, req: NextApiRequest) {
 }
 
 export default createEndpoint({
-  GET: getRuleset,
+  GET: getRulesetRequest,
   PATCH: updateRuleset,
 });

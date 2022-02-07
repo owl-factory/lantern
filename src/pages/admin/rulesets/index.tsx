@@ -18,6 +18,8 @@ import { rest } from "@owl-factory/https/rest";
 import { RulesetCache } from "controllers/cache/RulesetCache";
 import { Col } from "@owl-factory/components/flex";
 import { Loading } from "@owl-factory/components/loading";
+import { getAdminRulesets } from "src/pages/api/admin/rulesets";
+import { handleAPI } from "@owl-factory/https/apiHandler";
 
 interface AdminRulesetsProps extends InitialProps {
   rulesets: RulesetDocument[];
@@ -245,20 +247,8 @@ function AdminRulesets(props: AdminRulesetsProps) {
   );
 }
 
-interface AdminRulesetResult {
-  rulesets: RulesetDocument[];
+export async function getServerSideProps(ctx: NextPageContext) {
+  return await handleAPI(ctx, getAdminRulesets);
 }
-
-AdminRulesets.getInitialProps = (async (ctx: NextPageContext) => {
-  const session = getSession(ctx);
-
-  const result = await rest.get<AdminRulesetResult>(`/api/admin/rulesets`);
-  return {
-    session,
-    success: result.success,
-    message: result.message,
-    rulesets: result.data.rulesets,
-  };
-});
 
 export default observer(AdminRulesets);

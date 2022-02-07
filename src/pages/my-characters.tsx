@@ -18,6 +18,8 @@ import { PassiveReadLevel } from "@owl-factory/cache/enums";
 import { CharacterSheet } from "components/reroll/characters/character-sheet/CharacterSheet";
 import { Ref64 } from "@owl-factory/types";
 import { getUniques } from "@owl-factory/utilities/arrays";
+import { handleAPI } from "@owl-factory/https/apiHandler";
+import { getMyCharacters } from "./api/my-characters";
 
 interface MyCharactersProps extends InitialProps {
   characters: CharacterDocument[];
@@ -192,26 +194,8 @@ interface MyCharactersResult {
   rulesets: RulesetDocument[];
 }
 
-MyCharacters.getInitialProps = async (ctx: NextPageContext) => {
-  const session = getSession(ctx);
-  if (!session) {
-    return {
-      session: null,
-      success: false,
-      message: "You must be logged in to view your characters.",
-      characters: [],
-    };
-  }
-
-  const result = await rest.get<MyCharactersResult>(`/api/my-characters`);
-
-  return {
-    session,
-    success: result.success,
-    message: result.message,
-    characters: result.data.characters,
-    campaigns: result.data.campaigns,
-  };
-};
+export async function getServerSideProps(ctx: NextPageContext) {
+  return await handleAPI(ctx, getMyCharacters);
+}
 
 export default observer(MyCharacters);
