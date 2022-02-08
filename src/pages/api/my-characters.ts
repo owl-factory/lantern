@@ -7,10 +7,14 @@ import { HTTPHandler, createEndpoint } from "@owl-factory/https";
 import { getUniques } from "@owl-factory/utilities/arrays";
 import { findMany } from "server/logic/many";
 
+/**
+ * Gets a list of a user's characters
+ */
 export async function getMyCharacters(_req: NextApiRequest) {
   const characters = await CharacterLogic.searchMyCharacters({ size: 200 });
-  const charcterIDs = getUniques(characters, "campaign.ref");
-  const campaigns = await findMany(CampaignLogic.findMyCampaign, charcterIDs);
+  // TODO - remove the need for the campaign search, since we have the cache now
+  const campaignRefs = getUniques(characters, "campaign.ref");
+  const campaigns = await findMany(CampaignLogic.findMyCampaign, campaignRefs);
   return { characters: characters, campaigns };
 }
 

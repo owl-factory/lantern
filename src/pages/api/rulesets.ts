@@ -4,6 +4,9 @@ import { RulesetLogic } from "server/logic/RulesetLogic";
 
 import { HTTPHandler, createEndpoint } from "@owl-factory/https";
 
+/**
+ * Fetches a list of rulesets from their refs
+ */
 export async function getRulesets(req: NextApiRequest) {
   const rulesets = await RulesetLogic.findManyByIDs(req.body.refs);
   return { rulesets: rulesets };

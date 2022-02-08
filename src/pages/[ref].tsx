@@ -26,6 +26,10 @@ export default function RefTest(props: RefTestProps): JSX.Element {
   );
 }
 
+/**
+ * Decodes a ref and fetches a document from Fauna
+ * TODO - remove the fauna call
+ */
 export async function getServerSideProps(ctx: NextPageContext) {
   const ref = ctx.query.ref as string;
   if (!ref || !isEncoding(ref)) {

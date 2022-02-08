@@ -4,13 +4,16 @@ import { NextApiRequest } from "next";
 import { HTTPHandler, createEndpoint } from "@owl-factory/https";
 import { CampaignLogic } from "server/logic/CampaignLogic";
 
+/**
+ * Fetches the information needed for the current user's dashboard page.
+ */
 export async function getDashboardPage(_req: NextApiRequest) {
   const campaigns = await CampaignLogic.fetchMyCampaigns({ size: 6 });
   return { campaigns: campaigns };
 }
 
 /**
- * Creates a single new ruleset
+ * Fetches the information needed for the current user's dashboard page.
  * @param this The Handler class calling this function
  * @param req The request to the server
  */

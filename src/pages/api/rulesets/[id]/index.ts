@@ -4,6 +4,9 @@ import { RulesetLogic } from "server/logic/RulesetLogic";
 
 import { HTTPHandler, createEndpoint } from "@owl-factory/https";
 
+/**
+ * Fetches a single ruleset
+ */
 export async function getRulesets(req: NextApiRequest) {
   const ruleset = await RulesetLogic.findOne(req.query.id as string);
   return { ruleset: ruleset };

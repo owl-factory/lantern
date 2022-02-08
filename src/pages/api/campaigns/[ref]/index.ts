@@ -6,8 +6,12 @@ import { UserLogic } from "server/logic/UserLogic";
 import { HTTPHandler, createEndpoint } from "@owl-factory/https";
 import { getUniques } from "@owl-factory/utilities/arrays";
 
+/**
+ * Gets all of the information about the campaign and it's players
+ */
 export async function getCampaignPage(req: NextApiRequest) {
   const campaign = await CampaignLogic.findMyCampaign(req.query.ref as string);
+  // TODO - remove this and instead store the player name in the campaign
   campaign.players = await UserLogic.findManyByIDs(getUniques(campaign.players, "id"));
 
   return { campaign: campaign };

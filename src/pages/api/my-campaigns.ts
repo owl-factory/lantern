@@ -6,7 +6,11 @@ import { HTTPHandler, createEndpoint } from "@owl-factory/https";
 import { getUniques } from "@owl-factory/utilities/arrays";
 import { findMany } from "server/logic/many";
 
-export async function getMyCampaigns(req: NextApiRequest) {
+/**
+ * Fetches all of the current user's campaigns
+ * @param _req The request to the server. Unused but required for handleAPI
+ */
+export async function getMyCampaigns(_req: NextApiRequest) {
   const fetchedCampaigns = await CampaignLogic.fetchMyCampaigns({ size: 20 });
   const ids = getUniques(fetchedCampaigns, "ref");
   const campaigns = await findMany(CampaignLogic.findMyCampaign, ids);

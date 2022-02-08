@@ -13,13 +13,11 @@ import { CampaignCache } from "controllers/cache/CampaignCache";
 import { RulesetCache } from "controllers/cache/RulesetCache";
 import { pagePermission } from "@owl-factory/auth/permissions";
 import { onApiError } from "@owl-factory/next/page-handling";
-import { Auth } from "controllers/auth";
-import { initializeNextContext } from "@owl-factory/next/ctx";
 import { getMyCampaigns } from "./api/my-campaigns";
 import { handleAPI } from "@owl-factory/https/apiHandler";
 
 interface MyCampaignsProps extends InitialProps {
-  myCampaigns: CampaignDocument[];
+  campaigns: CampaignDocument[];
 }
 
 interface SearchCampaignsArguments {
@@ -67,10 +65,12 @@ const CampaignTile = observer((props: CampaignTileProps) => {
 function MyCampaigns(props: MyCampaignsProps) {
   onApiError(props);
   pagePermission("viewMyCampaigns");
+  console.log(props)
+
   const [ campaigns, setCampaigns ] = React.useState<Partial<CampaignDocument>[]>([]);
 
   React.useEffect(() => {
-    CampaignCache.setMany(props.myCampaigns || []);
+    CampaignCache.setMany(props.campaigns || []);
   }, []);
 
   function searchCampaigns(values: SearchCampaignsArguments) {
