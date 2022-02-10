@@ -9,14 +9,15 @@ import React from "react";
 import { Button, Card, Col, Row } from "react-bootstrap";
 import { InitialProps } from "types/client";
 import { CampaignDocument } from "types/documents";
-import { getSession } from "@owl-factory/auth/session";
-import { rest } from "@owl-factory/https/rest";
 import { CampaignCache } from "controllers/cache/CampaignCache";
 import { RulesetCache } from "controllers/cache/RulesetCache";
 import { pagePermission } from "@owl-factory/auth/permissions";
+import { onApiError } from "@owl-factory/next/page-handling";
+import { getMyCampaigns } from "./api/my-campaigns";
+import { handleAPI } from "@owl-factory/https/apiHandler";
 
 interface MyCampaignsProps extends InitialProps {
-  myCampaigns: CampaignDocument[];
+  campaigns: CampaignDocument[];
 }
 
 interface SearchCampaignsArguments {
@@ -62,11 +63,14 @@ const CampaignTile = observer((props: CampaignTileProps) => {
  * @param campaigns The initial light campaign information fetched from the API
  */
 function MyCampaigns(props: MyCampaignsProps) {
+  onApiError(props);
   pagePermission("viewMyCampaigns");
+  console.log(props)
+
   const [ campaigns, setCampaigns ] = React.useState<Partial<CampaignDocument>[]>([]);
 
   React.useEffect(() => {
-    CampaignCache.setMany(props.myCampaigns || []);
+    CampaignCache.setMany(props.campaigns || []);
   }, []);
 
   function searchCampaigns(values: SearchCampaignsArguments) {
@@ -76,7 +80,7 @@ function MyCampaigns(props: MyCampaignsProps) {
   // Use this to prevent too many rerenders
   React.useEffect(() => {
     setCampaigns(CampaignCache.getPage());
-  }, [CampaignCache]);
+  }, [CampaignCache.lastTouched]);
 
   // Builds the tiles for listing out the campaigns
   const campaignTiles: JSX.Element[] = [];
@@ -105,19 +109,8 @@ function MyCampaigns(props: MyCampaignsProps) {
   );
 }
 
-interface MyCampaignsResponse {
-  campaigns: CampaignDocument[];
+export async function getServerSideProps(ctx: NextPageContext) {
+  return await handleAPI(ctx, getMyCampaigns);
 }
-
-MyCampaigns.getInitialProps = async (ctx: NextPageContext) => {
-  const result = await rest.get<MyCampaignsResponse>(`/api/my-campaigns`);
-
-  return {
-    success: result.success,
-    message: result.message,
-    session: getSession(ctx),
-    myCampaigns: result.data.campaigns,
-  };
-};
 
 export default observer(MyCampaigns);

@@ -14,6 +14,8 @@ import { ContentCache } from "controllers/cache/ContentCache";
 import { ContentTypeCache } from "controllers/cache/ContentTypeCache";
 import { RulesetCache } from "controllers/cache/RulesetCache";
 import { getUniques } from "@owl-factory/utilities/arrays";
+import { getMyContent } from "./api/my-content";
+import { handleAPI } from "@owl-factory/https/apiHandler";
 
 interface MyContentProps extends InitialProps {
   contents: ContentDocument[];
@@ -100,28 +102,9 @@ function MyContent(props: MyContentProps): JSX.Element {
   );
 }
 
-interface MyContentResult {
-  contents: ContentDocument[];
+export async function getServerSideProps(ctx: NextPageContext) {
+  return await handleAPI(ctx, getMyContent);
 }
 
-MyContent.getInitialProps = async (ctx: NextPageContext) => {
-  const session = getSession(ctx);
-  if (!session) {
-    return {
-      session,
-      success: false,
-      message: "You must be logged in to view your content",
-      contents: [],
-    };
-  }
-
-  const result = await rest.get<MyContentResult>(`/api/my-content`);
-  return {
-    session,
-    success: result.success,
-    message: result.message,
-    contents: result.data.contents,
-  };
-};
 
 export default observer(MyContent);

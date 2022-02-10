@@ -68,13 +68,8 @@ export function ContentTypePageProps({ initialContentType, ruleset }: ContentTyp
   );
 }
 
-ContentTypePageProps.getInitialProps = async (ctx: NextPageContext) => {
-
-  // return {
-  //   initialContentType: res.data.contentType,
-  //   ruleset: res.data.ruleset,
-  // };
-  return {};
-};
+export async function getServerSideProps(ctx: NextPageContext) {
+  return { props: {} };
+}
 
 export default ContentTypePageProps;

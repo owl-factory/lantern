@@ -94,7 +94,12 @@ export function $setMany<T extends RefRequired>(
 ): void {
   if (cacheItems === undefined || cacheItems.length === 0) { return; }
   cacheItems.forEach((cacheItem: CacheItem<T>) => {
-    if (!cacheItem || !cacheItem.doc || !("ref" in cacheItem.doc)) { console.log("fail");return; }
+    if (!cacheItem || !cacheItem.doc || !("ref" in cacheItem.doc)) { 
+      console.log("fail");
+      console.log(cacheItem);
+      throw "error";
+      return;
+    }
 
     const ref = cacheItem.doc.ref as string;
     this.$data[ref] = cacheItem;

@@ -12,6 +12,8 @@ import { Ref64 } from "@owl-factory/types";
 import { CampaignCache } from "controllers/cache/CampaignCache";
 import { UserCache } from "controllers/cache/UserCache";
 import { getSession, requireClientLogin } from "@owl-factory/auth/session";
+import { getCampaignPage } from "src/pages/api/campaigns/[ref]";
+import { handleAPI } from "@owl-factory/https/apiHandler";
 
 interface BannerProps {
   campaign: CampaignDocument;
@@ -151,13 +153,8 @@ interface CampaignViewResponse {
   campaign: CampaignDocument;
 }
 
-CampaignView.getInitialProps = async (ctx: NextPageContext) => {
-  const session = getSession(ctx);
-  if (!requireClientLogin(session, ctx)) { return {}; }
-
-  const result = await rest.get<CampaignViewResponse>(`/api/campaigns/${ctx.query.id}`);
-
-  return { key: ctx.query.id, session, campaign: result.data.campaign, message: result.message };
-};
+export async function getServerSideProps(ctx: NextPageContext) {
+  return await handleAPI(ctx, getCampaignPage);
+}
 
 export default observer(CampaignView);

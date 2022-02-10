@@ -143,7 +143,7 @@ export function fromIndex(faunaDocs: unknown[], fields: string[]): Record<string
     }
     faunaDoc.forEach((faunaItem: unknown, index: number) => {
       const key = fields[index];
-      const item = $fromItem(faunaItem);
+      const item = $fromItem(faunaItem) || null;
       set(convertedDoc, key, item);
     });
     convertedDocs.push(convertedDoc);

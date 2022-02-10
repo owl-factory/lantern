@@ -5,13 +5,20 @@ import { ContentLogic } from "server/logic/ContentLogic";
 import { HTTPHandler, createEndpoint } from "@owl-factory/https";
 
 /**
+ * Gets a list of the current user's contents
+ */
+export async function getMyContent(_req: NextApiRequest) {
+  const contents = await ContentLogic.searchMyContent({ size: 20 });
+  return { contents: contents };
+}
+
+/**
  * Fetches all of a user's campaigns
  * @param this The Handler class calling this function
  * @param req The request to the server
  */
-async function getMyContent(this: HTTPHandler, _req: NextApiRequest) {
-  const contents = await ContentLogic.searchMyContent({ size: 20 });
-  this.returnSuccess({ contents: contents });
+async function getMyContentRequest(this: HTTPHandler, req: NextApiRequest) {
+  this.returnSuccess(await getMyContent(req));
 }
 
-export default createEndpoint({GET: getMyContent});
+export default createEndpoint({GET: getMyContentRequest});

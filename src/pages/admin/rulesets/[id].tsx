@@ -11,6 +11,8 @@ import { InitialProps } from "types/client";
 import { RulesetDocument } from "types/documents";
 import { rest } from "@owl-factory/https/rest";
 import { getSession } from "@owl-factory/auth/session";
+import { getRulesets } from "src/pages/api/rulesets/[id]";
+import { handleAPI } from "@owl-factory/https/apiHandler";
 
 interface AdminRulesetProps extends InitialProps {
   ruleset: RulesetDocument;
@@ -92,16 +94,8 @@ interface AdminRulesetResult {
   ruleset: RulesetDocument[];
 }
 
-AdminRuleset.getInitialProps = async (ctx: NextPageContext) => {
-  const session = getSession(ctx);
-
-  const result = await rest.get<AdminRulesetResult>(`/api/rulesets/${ctx.query.id}`);
-  return {
-    session,
-    success: result.success,
-    message: result.message,
-    ruleset: result.data.ruleset,
-  };
-};
+export async function getServerSideProps(ctx: NextPageContext) {
+  return await handleAPI(ctx, getRulesets);
+}
 
 export default observer(AdminRuleset);

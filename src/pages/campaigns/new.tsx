@@ -60,11 +60,6 @@ export default function NewCampaign(props: any): JSX.Element {
   );
 }
 
-NewCampaign.getInitialProps = async (ctx: NextPageContext) => {
-  const session = getSession(ctx);
-  if (!requireClientLogin(session, ctx)) { return {}; }
-  const client = getClient(ctx);
-
-
-  return { session, rulesets: {} };
-};
+export async function getServerSideProps(ctx: NextPageContext) {
+  return { props: { rulesets: [] } };
+}
