@@ -15,7 +15,7 @@ interface LibraryProps extends InitialProps {
 }
 
 /**
- * Renders the liubrary of all user data
+ * Renders the library of all user data
  * @param success Boolean
  * @param message Failure message, if any.
  * @param data Contains the data.

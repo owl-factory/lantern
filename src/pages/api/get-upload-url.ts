@@ -6,7 +6,7 @@ import { HTTPHandler, createEndpoint } from "@owl-factory/https";
 import { typeRegex } from "utilities/image-upload";
 
 const urlExpirationSeconds = 300;
-const extentionMap: any = {
+const extentionMap: Record<string, string> = {
   "image/jpeg": "jpg",
   "image/png": "png",
   "image/webp": "webp",

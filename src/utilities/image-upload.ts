@@ -1,7 +1,7 @@
 import { getSession } from "@owl-factory/auth/session";
 import { rest } from "@owl-factory/https/rest";
 
-const maxImageSize = 1000000;
+const maxImageSize = 10000000;
 export const typeRegex = /image\/(jpeg|png|webp)/;
 
 export async function uploadImage(file: File) {
