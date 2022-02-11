@@ -12,6 +12,7 @@ import { Auth } from "controllers/auth";
 import { signOut } from "utilities/auth";
 import { handleAPI } from "@owl-factory/https/apiHandler";
 import { getDashboardPage } from "./api/dashboard";
+import { uploadImage } from "utilities/image-upload";
 
 interface DashboardProps {
   user?: any;
@@ -19,6 +20,14 @@ interface DashboardProps {
 
 const Dashboard: NextPage<DashboardProps> = (props: any) => {
   const [user, setUser] = React.useState(Auth.user);
+
+  function uploadHandler(event: React.ChangeEvent<HTMLInputElement>) {
+    if (event.target.files && event.target.files.length === 1) {
+      const image = event.target.files[0];
+      uploadImage(image).then(e => {console.log(e);});
+    }
+  }
+
   return (
     <Page error={props.error}>
       <h3>Welcome back {user?.name || user?.username}!</h3>
@@ -33,6 +42,12 @@ const Dashboard: NextPage<DashboardProps> = (props: any) => {
       <h4>Temp Profile Stuff</h4>
       <Button onClick={() =>AlertController.success("Testing")}>Test Alerts</Button>
       <Button onClick={() => {console.log(Auth);}}>Test Auth</Button>
+
+      <h4>Upload Image Test</h4>
+      <div className="mb-3">
+        <label htmlFor="formFile" className="form-label">Default file input example</label>
+        <input className="form-control" type="file" id="formFile" onChange={uploadHandler} />
+      </div>
     </Page>
   );
 };
