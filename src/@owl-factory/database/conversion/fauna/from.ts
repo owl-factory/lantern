@@ -38,9 +38,9 @@ export function $fromArray(data: unknown[]): unknown[] {
  * Parses a Fauna date into a common javascript date
  * @param date The Fauna date to parse into a Date
  */
-export function $fromDate(date: Record<string, unknown>): Date {
-  if ("@ts" in date && date["@ts"]) { return new Date(date["@ts"] as string | number | Date); }
-  return new Date(date.value as string | number | Date);
+export function $fromDate(date: Record<string, unknown>): string | number {
+  if ("@ts" in date && date["@ts"]) { return date["@ts"] as string | number; }
+  return date.value as string | number;
 }
 
 /**
@@ -143,7 +143,7 @@ export function fromIndex(faunaDocs: unknown[], fields: string[]): Record<string
     }
     faunaDoc.forEach((faunaItem: unknown, index: number) => {
       const key = fields[index];
-      const item = $fromItem(faunaItem) || null;
+      const item = $fromItem(faunaItem) || null; // Null is to prevent JSON conversion from failing
       set(convertedDoc, key, item);
     });
     convertedDocs.push(convertedDoc);

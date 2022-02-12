@@ -273,14 +273,14 @@ function Profile(props: ProfileProps): JSX.Element {
     if (!newUser) { return; }
 
     setUser(newUser);
-  }, [UserCache.get(props.user.ref)?.updatedAt, UserCache]);
+  }, [UserCache.lastTouched]);
 
   /**
    * Determines if the current player is the owner of the profile page.
    * Required to catch issue where unlogged players would cause an issue with the logic
    */
   function calculateIfUserIsOwner() {
-    if (!props.session) { return false; }
+    if (!Auth.isLoggedIn) { return false; }
     if (Auth.user?.ref === user.ref) { return true; }
     return false;
   }
@@ -312,11 +312,7 @@ function Profile(props: ProfileProps): JSX.Element {
   );
 }
 
-interface ProfileResponse {
-  user: UserDocument;
-}
-
-export async function getServerSideProps(ctx: NextPageContext) {
+export async function getServerSideProps(ctx: any) {  
   return await handleAPI(ctx, getProfile);
 }
 

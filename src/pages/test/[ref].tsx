@@ -31,12 +31,13 @@ export default function RefTest(props: RefTestProps): JSX.Element {
  * TODO - remove the fauna call
  */
 export async function getServerSideProps(ctx: NextPageContext) {
+  console.warn("Ref runs")
   const ref = ctx.query.ref as string;
   if (!ref || !isEncoding(ref)) {
-    return sendRedirect("/404?message=Ref failed to decode. TODO later");
+    return { props: {} }; //sendRedirect("/404?message=Ref failed to decode. TODO later");
   }
   const decodedRef = decode(ref);
-  if (!decodedRef) { return sendRedirect("/404?message=Ref failed to decode. TODO later"); }
+  if (!decodedRef) { return { props: {} }; } //sendRedirect("/404?message=Ref failed to decode. TODO later"); }
 
   const client = getServerClient();
   const res = await client.query(q.Get(q.Ref(Collection(decodedRef.collection), decodedRef.id)));

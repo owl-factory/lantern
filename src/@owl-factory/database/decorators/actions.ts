@@ -103,6 +103,10 @@ export async function fetchTargetDoc(descriptor: Descriptor, id: Ref64): Promise
   return doc;
 }
 
+/**
+ * Sets the fields required on creation. Returns the updated document
+ * @param doc The document to add the fields to
+ */
 export function setCreateFields(_descriptor: Descriptor, doc: Partial<AnyDocument>): Partial<AnyDocument> {
   doc.createdAt = new Date();
   doc.createdBy = { ref: Auth.user?.ref || "" };
@@ -111,6 +115,10 @@ export function setCreateFields(_descriptor: Descriptor, doc: Partial<AnyDocumen
   return doc;
 }
 
+/**
+ * Sets the fields required on update. Returns the updated document
+ * @param doc The document to add the fields to
+ */
 export function setUpdateFields(_descriptor: Descriptor, doc: Partial<AnyDocument>): Partial<AnyDocument> {
   doc.updatedAt = new Date();
   doc.updatedBy = { ref: Auth.user?.ref || "" };
