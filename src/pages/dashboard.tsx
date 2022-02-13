@@ -3,7 +3,6 @@ import Link from "next/link";
 import React from "react";
 import { CampaignDocument } from "types/documents";
 import { NextPage, NextPageContext } from "next";
-import { rest } from "@owl-factory/https/rest";
 import { Button } from "@owl-factory/components/button";
 import { Col, Row } from "@owl-factory/components/flex";
 import { Card } from "@owl-factory/components/card";

@@ -11,7 +11,6 @@ import { UserLogic } from "server/logic/UserLogic";
  * @param req The request to the server
  */
 async function signUp(this: HTTPHandler, req: NextApiRequest) {
-  console.log(process.env.NODE_ENV);
   if (process.env.NODE_ENV === "production") {
     this.returnError(401, "Account creation is disabled at this time.");
     return;

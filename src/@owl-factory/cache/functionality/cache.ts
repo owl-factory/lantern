@@ -95,8 +95,6 @@ export function $setMany<T extends RefRequired>(
   if (cacheItems === undefined || cacheItems.length === 0) { return; }
   cacheItems.forEach((cacheItem: CacheItem<T>) => {
     if (!cacheItem || !cacheItem.doc || !("ref" in cacheItem.doc)) { 
-      console.log("fail");
-      console.log(cacheItem);
       throw "error";
       return;
     }

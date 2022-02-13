@@ -21,10 +21,12 @@ interface ImageDetailsModalProps {
 function $ImageDetailsModal({ imageID, open, handleClose }: ImageDetailsModalProps): JSX.Element | null {
   const [ image, setImage ] = React.useState<Partial<ImageDocument>>({ ref: "" } as ImageDocument);
 
+
+
   // Ensures that this only runs when the imageID changes
   React.useEffect(() => {
     setImage(ImageCache.get(imageID) || {});
-  }, [ ImageCache ]);
+  }, [ imageID, ImageCache.lastTouched ]);
 
 
 
