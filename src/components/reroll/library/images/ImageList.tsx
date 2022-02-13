@@ -73,7 +73,7 @@ function $ImageList(props: ImageListProps): JSX.Element {
   // Updates the list of images when the image manager changes
   React.useEffect(() => {
     setImages(ImageCache.getPage());
-  }, [ImageCache]);
+  }, [ImageCache.lastTouched]);
 
   images.forEach((image: Partial<ImageDocument>) => {
     if (!image) { return; }

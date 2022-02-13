@@ -63,7 +63,7 @@ export async function findManyByIDs<T>(ids: Ref64[]): Promise<T[]> {
 
   const docs: Promise<T>[] = [];
   ids.forEach((id: Ref64) => {
-
+    if (!id) { return; }
     const doc = findByID<T>(id);
     if (!doc) { return; }
 
