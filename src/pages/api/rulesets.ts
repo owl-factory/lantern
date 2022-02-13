@@ -9,7 +9,7 @@ import { HTTPHandler, createEndpoint } from "@owl-factory/https";
  */
 export async function getRulesets(req: NextApiRequest) {
   const rulesets = await RulesetLogic.findManyByIDs(req.body.refs);
-  return { rulesets: rulesets };
+  return { docs: rulesets };
 }
 
 /**

@@ -104,6 +104,8 @@ interface CampaignViewProps extends InitialProps {
  * @param campaign The campaign to view
  */
 function CampaignView(props: CampaignViewProps): JSX.Element {
+  if (!props.campaign) { console.log(props.campaign); return <Page>The campaign was not found.</Page>; }
+
   const [ campaign, setCampaign ] = React.useState<Partial<CampaignDocument>>(props.campaign);
   const [ players, setPlayers ] = React.useState<Partial<UserDocument>[]>([]);
   const [ isOwner ] = React.useState(calculateIfUserIsOwner());
@@ -127,7 +129,7 @@ function CampaignView(props: CampaignViewProps): JSX.Element {
   React.useEffect(() => {
     const newCampaign = CampaignCache.get(props.campaign.ref);
     if (newCampaign) { setCampaign(newCampaign); }
-  }, [CampaignCache]);
+  }, [CampaignCache.lastTouched]);
 
   /**
    * Determines if the current player is the owner of the profile page.
@@ -139,6 +141,8 @@ function CampaignView(props: CampaignViewProps): JSX.Element {
     if (campaign.ownedBy && props.session.user.ref === campaign.ownedBy.ref) { return true; }
     return false;
   }
+
+  if (!campaign) { return <Page>Error</Page>; }
 
   return (
     <Page>
@@ -153,7 +157,7 @@ interface CampaignViewResponse {
   campaign: CampaignDocument;
 }
 
-export async function getServerSideProps(ctx: NextPageContext) {
+export async function getServerSideProps(ctx: any) {
   return await handleAPI(ctx, getCampaignPage);
 }
 

@@ -9,8 +9,9 @@ import { getUniques } from "@owl-factory/utilities/arrays";
 /**
  * Gets all of the information needed to render a user's profile page
  */
-export async function getProfile(req: NextApiRequest) {
-  const userSearch = await UserLogic.searchByUsername(req.query.username as string) as UserDocument[];
+export async function getProfile(params: Record<string, unknown>) {
+  if (!("username" in params)) { return {}; }
+  const userSearch = await UserLogic.searchByUsername(params.username as string) as UserDocument[];
   if (userSearch.length === 0) { throw { code: 404, message: "The given profile was not found."}; }
 
   const user = await UserLogic.findOne(userSearch[0].ref);
@@ -29,7 +30,7 @@ export async function getProfile(req: NextApiRequest) {
  * @param req The request to the server
  */
 async function getProfileRequest(this: HTTPHandler, req: NextApiRequest) {
-  this.returnSuccess(await getProfile(req));
+  this.returnSuccess(await getProfile(req.query));
 }
 
 /**

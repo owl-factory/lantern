@@ -18,6 +18,8 @@ import { ResponseDoc } from "@owl-factory/types/object";
  * @returns An array of valid items
  */
 export function pruneErrors<T>(potentialErrors: (ResponseDoc<T>)[]): T[] {
+  if (!potentialErrors) { return []; }
+
   const validItems: Partial<T>[] = [];
   potentialErrors.forEach((potentialError: ResponseDoc<T>) => {
     if (isError(potentialError)) { return; }

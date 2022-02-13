@@ -37,7 +37,6 @@ export const Play = observer(() => {
       if (res.success) {
         gameServer.state.messages = res.data.messages;
         gameServer.state.entities = {};
-        console.log(gameServer.state.messages);
         gameServer.connect(res.data.campaign._id as string, res.data.userProfile);
 
       }

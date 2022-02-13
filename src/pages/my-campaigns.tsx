@@ -8,7 +8,7 @@ import Link from "next/link";
 import React from "react";
 import { Button, Card, Col, Row } from "react-bootstrap";
 import { InitialProps } from "types/client";
-import { CampaignDocument } from "types/documents";
+import { CampaignDocument, RulesetDocument } from "types/documents";
 import { CampaignCache } from "controllers/cache/CampaignCache";
 import { RulesetCache } from "controllers/cache/RulesetCache";
 import { pagePermission } from "@owl-factory/auth/permissions";
@@ -33,6 +33,12 @@ interface CampaignTileProps {
  * @param campaign The campaign to render a tile for
  */
 const CampaignTile = observer((props: CampaignTileProps) => {
+  const [ ruleset, setRuleset ] = React.useState<Partial<RulesetDocument> | undefined>(undefined);
+
+  React.useEffect(() => {
+    setRuleset(RulesetCache.get(props.campaign?.ruleset?.ref as string));
+  }, [RulesetCache.lastTouched]);
+
   return (
     <Card>
       <Row>
@@ -47,7 +53,7 @@ const CampaignTile = observer((props: CampaignTileProps) => {
             <Link href={`/play/${props.campaign.ref}`}>
               <a>Play</a>
             </Link>
-            {RulesetCache.get(props.campaign?.ruleset?.ref as string)?.name || <Loading/>}
+            {ruleset?.name || <Loading/>}
           </Card.Body>
         </Col>
       </Row>
@@ -65,7 +71,6 @@ const CampaignTile = observer((props: CampaignTileProps) => {
 function MyCampaigns(props: MyCampaignsProps) {
   onApiError(props);
   pagePermission("viewMyCampaigns");
-  console.log(props)
 
   const [ campaigns, setCampaigns ] = React.useState<Partial<CampaignDocument>[]>([]);
 
@@ -74,7 +79,7 @@ function MyCampaigns(props: MyCampaignsProps) {
   }, []);
 
   function searchCampaigns(values: SearchCampaignsArguments) {
-    console.log(values);
+    return;
   }
 
   // Use this to prevent too many rerenders

@@ -63,7 +63,7 @@ function RecentCampaigns() {
 
   React.useEffect(() => {
     setCampaigns(CampaignCache.getPage({size: 3}));
-  }, [CampaignCache]);
+  }, [CampaignCache.lastTouched]);
 
   campaigns.forEach((doc: Partial<CampaignDocument>) => {
     campaignLinks.push(
