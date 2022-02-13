@@ -79,6 +79,7 @@ function MyCampaigns(props: MyCampaignsProps) {
   }, []);
 
   function searchCampaigns(values: SearchCampaignsArguments) {
+    return;
   }
 
   // Use this to prevent too many rerenders

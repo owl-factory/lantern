@@ -4,6 +4,7 @@ import { isClient } from "@owl-factory/utilities/client";
 
 export default function Test(): JSX.Element {
   if (isClient) {
+    console.log("Client");
   }
 
   return (

@@ -104,7 +104,7 @@ interface CampaignViewProps extends InitialProps {
  * @param campaign The campaign to view
  */
 function CampaignView(props: CampaignViewProps): JSX.Element {
-  if (!props.campaign) { console.log(props.campaign); return <Page>The campaign was not found.</Page>}
+  if (!props.campaign) { console.log(props.campaign); return <Page>The campaign was not found.</Page>; }
 
   const [ campaign, setCampaign ] = React.useState<Partial<CampaignDocument>>(props.campaign);
   const [ players, setPlayers ] = React.useState<Partial<UserDocument>[]>([]);
