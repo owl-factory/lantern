@@ -48,7 +48,7 @@ export async function $readIfUnloaded<T extends RefRequired>(
   if (!cacheItem) { return cacheItem; }
   // Base case: return if no ref is present (somehow)
   if (!cacheItem.doc || !("ref" in cacheItem.doc)) { return cacheItem; }
-  if (cacheItem.meta.isLoaded) { return cacheItem; }
+  if (cacheItem.meta.loaded) { return cacheItem; }
 
   const newCacheItem = await this.read(cacheItem.doc.ref as string);
   if (isError(newCacheItem)) { return undefined; }
@@ -104,7 +104,7 @@ export function $setMany<T extends RefRequired>(
   });
 
   // Saves this list to the cache
-  if (saveToCacheStorage) { save<CacheItem<T>>(this.key, cacheItems); }
+  if (saveToCacheStorage) { save<T>(this.key, cacheItems); }
   this.$touch();
 }
 
@@ -117,20 +117,20 @@ export function $setMany<T extends RefRequired>(
  */
 export function $toCacheItem<T extends RefRequired>(
   this: CacheController<T>,
-  docs: Partial<T>[] | undefined,
+  docs: T[] | undefined,
   meta?: CacheItemMetadata
 ): CacheItem<T>[] {
   if (docs === undefined) { return []; }
   const cacheItems: CacheItem<T>[] = [];
 
   const metadata = meta !== undefined ? { ...meta } : {
-    isLoaded: false,
+    loaded: false,
     loadedAt: 0,
     updatedAt: 0,
   };
   metadata.updatedAt = Date.now();
 
-  docs.forEach((doc: Partial<T>) => {
+  docs.forEach((doc: T) => {
     if (!doc.ref) { return; }
     const cacheItem: CacheItem<T> = {
       ref: doc.ref,

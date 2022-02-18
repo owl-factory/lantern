@@ -41,7 +41,7 @@ export function remove<T>(key: string, targetRefs: Ref64[]): CacheItem<T>[] {
 
   const refs = getRefList(key);
   targetRefs.forEach((ref: Ref64) => {
-    const doc = removeItem(key, ref);
+    const doc: CacheItem<T> | undefined = removeItem(key, ref);
     if (!doc) { return; }
     deletedDocs.push(doc);
 

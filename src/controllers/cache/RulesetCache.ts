@@ -41,8 +41,8 @@ class $RulesetCache extends CacheController<RulesetDocument> {
 
     // Pull the global rulesets
     const globalRulesets = await rest.get<{ rulesets: Partial<RulesetDocument>[] }>(`/api/rulesets/globals`);
-    const globalRulesetCacheItems = this.$toCacheItem(globalRulesets.data.rulesets, {
-      isLoaded: false,
+    const globalRulesetCacheItems = this.$toCacheItem(globalRulesets.data.rulesets as RulesetDocument[], {
+      loaded: false,
       loadedAt: 0,
       updatedAt: Date.now(),
     });

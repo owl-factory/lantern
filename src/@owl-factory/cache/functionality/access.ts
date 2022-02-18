@@ -102,7 +102,7 @@ export async function readMissing<T extends RefRequired>(this: CacheController<T
  * Sets a document in the data manager. Updates both the data manager and the instance in local storage
  * @param doc The document to add or update in the data manager
  */
-export function set<T extends RefRequired>(this: CacheController<T>, doc: Partial<T>): void {
+export function set<T extends RefRequired>(this: CacheController<T>, doc: T): void {
   this.setMany([doc]);
 }
 
@@ -110,9 +110,9 @@ export function set<T extends RefRequired>(this: CacheController<T>, doc: Partia
  * Sets many documents in the data manager and the storage method
  * @param docs The documents to set in the data manager and the storage method
  */
-export function setMany<T extends RefRequired>(this: CacheController<T>, docs?: Partial<T>[]): void {
+export function setMany<T extends RefRequired>(this: CacheController<T>, docs?: T[]): void {
   if (docs === undefined) { docs = []; }
-  const cacheItems: CacheItem<T>[] = this.$toCacheItem(docs, { isLoaded: false, loadedAt: 0, updatedAt: Date.now()});
+  const cacheItems: CacheItem<T>[] = this.$toCacheItem(docs, { loaded: false, loadedAt: 0, updatedAt: Date.now()});
 
   this.$setMany(cacheItems);
 }

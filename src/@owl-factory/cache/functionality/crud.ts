@@ -30,7 +30,7 @@ export async function createMany<T extends RefRequired>(
 ): Promise<ResponseDoc<T>[]> {
   const createdDocs = await this.$createMany(docs);
   const validDocs = pruneErrors<T>(createdDocs);
-  const cacheItemDocs = this.$toCacheItem(validDocs, { isLoaded: true, loadedAt: Date.now(), updatedAt: Date.now() });
+  const cacheItemDocs = this.$toCacheItem(validDocs, { loaded: true, loadedAt: Date.now(), updatedAt: Date.now() });
 
   this.$setMany(cacheItemDocs);
   return createdDocs;
@@ -92,8 +92,8 @@ export async function readMany<T extends RefRequired>(
   if (refs.length === 0) { return []; }
 
   const readDocs = await this.$readMany(refs);
-  const validDocs = pruneErrors<Partial<T>>(readDocs);
-  const cacheItemDocs = this.$toCacheItem(validDocs, { isLoaded: true, loadedAt: Date.now(), updatedAt: Date.now() });
+  const validDocs = pruneErrors<T>(readDocs);
+  const cacheItemDocs = this.$toCacheItem(validDocs, { loaded: true, loadedAt: Date.now(), updatedAt: Date.now() });
 
   this.$setMany(cacheItemDocs);
 
@@ -126,7 +126,7 @@ export async function updateMany<T extends RefRequired>(
 ): Promise<ResponseDoc<T>[]> {
   const updatedDocs = await this.$updateMany(docs);
   const validDocs = pruneErrors<T>(updatedDocs);
-  const cacheItemDocs = this.$toCacheItem(validDocs, { isLoaded: true, loadedAt: Date.now(), updatedAt: Date.now() });
+  const cacheItemDocs = this.$toCacheItem(validDocs, { loaded: true, loadedAt: Date.now(), updatedAt: Date.now() });
   this.$setMany(cacheItemDocs);
   return updatedDocs;
 }

@@ -1,17 +1,12 @@
 import { CacheItem, CacheItemMetadata } from "@owl-factory/cache/types";
 import { deepMerge, fieldInObject, read } from "@owl-factory/utilities/objects";
+import { CacheMethod, ReloadPolicy } from "./enums";
+import * as caching from "./functionality/caching";
+import * as data from "./functionality/data";
+import * as grouping from "./functionality/grouping";
+import { SearchParams } from "./types";
 
-// The method for where the Data Manager will store data
-enum CacheMethod {
-  LocalStorage,
-}
 
-// The policy for how the DataManager will reload a document if the document is already loaded
-enum ReloadPolicy {
-  Never, // Never reloads the document if it is already loaded in
-  IfStale, // Reloads the document when the document has become stale
-  Always, // Always reloads the document when called, even if already loaded in
-}
 
 export class DataManager<T extends Record<string, unknown>> {
   protected readonly refField = "ref"; // The field containing a unique ID for the document
@@ -23,45 +18,44 @@ export class DataManager<T extends Record<string, unknown>> {
 
   public readonly staleTime = 1000 * 60 * 30; // The time until a document becomes stale in milliseconds
 
-  public $data: Record<string, CacheItem<T>> = {};
+  public $data: Record<string, CacheItem<T>> = {}; // The bucket that holds all data loaded into the data manager
+  public $groups: Record<string, string[]> = {}; // A collection of lists of refs for data that fits into a specific group
+  public $groupValidation: Record<string, (doc: T) => boolean> = {}; // Functions that determine if a document fits into a group
+  public $indexes: Record<string, unknown> = {}; // UNUSED
+
+  protected $cacheQueue: Record<string, number> = {}; // A set of records that will be updated the next time the cache queue is emptied
+  protected $cacheBatchJob!: NodeJS.Timeout;
+  protected $cacheSaveInterval = 1000 * 60 * 5;
 
   public $lastTouched = 0;
 
   constructor() {
     window.addEventListener("load", () => {
-      // this.$cacheLoad();
-    })
+      this.$loadCache();
+      this.$initializeCacheBatchJob();
+    });
   }
 
-  /**
-   * Gets a single document from the data manager
-   * @param ref The reference of the document to fetch
-   * @returns The found document, if present. Undefined otherwise
-   */
-  public get(ref: string): T | undefined {
-    if (!(ref in this.$data)) { return undefined; }
-    return this.$data[ref].doc;
-  }
+  public clear = data.clear;
+  public get = data.get;
+  public load = data.load;
+  public search = data.search;
+  public set = data.set;
+  public setMany = data.setMany;
 
-  /**
-   * Adds a single document to the data manager. Merges with any existing document if newer and replaces if older.
-   * @param doc The document to set in the data manager
-   * @returns True if adding the document was successful. False otherwise.
-   */
-  public set(doc: T): boolean {
-    const result = this.setMany([doc]);
-    return result;
-  }
+  protected $clearCache = caching.clearCache;
+  protected $initializeCacheBatchJob = caching.initializeCacheBatchJob;
+  protected $loadCache = caching.loadCache;
+  protected $markUpdated = caching.markUpdated;
+  protected $saveCache = caching.saveCache;
 
-  /**
-   * Sets many document in the data manager. Merges them with any existing document if newer, and replaces if older.
-   * @param docs A list of documents to add to the data manager
-   * @returns True if adding any document succeeded. False if all of them failed.
-   */
-  public setMany(docs: T[]): boolean {
-    this.$setMany(docs, false);
-    return false;
-  }
+  public addGroup = grouping.addGroup;
+  public removeGroup = grouping.removeGroup;
+  protected $clearGroups = grouping.clearGroups;
+  protected $createItemInGroups = grouping.createItemInGroups;
+  protected $removeItemFromGroups = grouping.removeItemFromGroups;
+  protected $updateItemInGroups = grouping.updateItemInGroups;
+  
 
   /**
    * Set many documents into the data manager
@@ -151,35 +145,7 @@ export class DataManager<T extends Record<string, unknown>> {
   }
 
   /**
-   * Ensures one or many documents are loaded into the data manager
-   * @async
-   * @param ref The reference of the document to load
-   * @param reloadPolicy A reload policy to use instead of the default
-   * @returns True if the load was successful. False otherwise
-   */
-  public async load(ref: string | string[], reloadPolicy: ReloadPolicy = this.reloadPolicy): Promise<boolean> {
-    const refs = Array.isArray(ref) ? ref : [ref];
-    const loadRefs: string[] = [];
-
-    // Checks which documents to we can load
-    for (const ref of refs) {
-      const cacheItem = this.$data[ref];
-      if (!cacheItem) { continue; }
-      if (canLoad(cacheItem, reloadPolicy, this.staleTime)) { loadRefs.push(ref); }
-    }
-
-    // Prevents unneeded calls from being made if the target refs are empty
-    if (loadRefs.length === 0) { return true; }
-
-    const docs = await this.loadDocuments(loadRefs);
-    if (!Array.isArray(docs) || docs.length === 0) { return false; } // Unexpected error
-
-    // Set Many
-    return this.$setMany(docs, true);
-  }
-
-  /**
-   * Loads documents from an external source.
+   * Loads documents from an external source. This function should be overloaded when a child class is created.
    * @async
    * @abstract
    * @protected 
@@ -196,32 +162,11 @@ export class DataManager<T extends Record<string, unknown>> {
 
     return docs;
   }
-
-  /**
-   * Searches through the data and finds documents that match the search criteria
-   * @param params The parameters to use for searching, sorting, and paginating
-   * @returns An array of documents matching the criteria
-   */
-  public search(params: SearchParams) {
-    return [];
-  }
-
-  /**
-   * Clears all data from the data manager and cache. 
-   */
-  public clear() {
-    return;
-  }
 }
 
-interface SearchParams {
-  page: number; // The page of data to pull
-  perPage: number; // The number of documents per page
-  sort: string[]; // The order of fields and the direction that they should be sorted
-  filters: Record<string, string>; // The fields to filter
-}
 
-function canLoad(cacheItem: CacheItem<unknown>, reloadPolicy: ReloadPolicy, staleTime: number) {
+
+export function canLoad(cacheItem: CacheItem<unknown>, reloadPolicy: ReloadPolicy, staleTime: number) {
   // Base case. Load if the item is not loaded or the reload policy is always
   if (!cacheItem.meta.loaded || reloadPolicy === ReloadPolicy.Always) { return true; }
 
@@ -238,6 +183,13 @@ function canLoad(cacheItem: CacheItem<unknown>, reloadPolicy: ReloadPolicy, stal
   }
 }
 
+/**
+ * Builds a cache item
+ * @param ref The reference of the document
+ * @param doc The document to put into the cache item
+ * @param meta The metadata for the cache item
+ * @returns The completed cache item
+ */
 function buildCacheItem(ref: string, doc: Record<string, unknown>, meta: CacheItemMetadata): CacheItem<Record<string, unknown>> {
   return {
     ref,
@@ -246,6 +198,12 @@ function buildCacheItem(ref: string, doc: Record<string, unknown>, meta: CacheIt
   };
 }
 
+/**
+ * Builds a complete metadata object
+ * @param loaded Whether or not the document is loaded in
+ * @param updatedAt The last time that the document was updated according to the server
+ * @returns A complete metadata object
+ */
 function buildMeta(loaded: boolean, updatedAt: number = 0): CacheItemMetadata {
   const meta = {
     loaded: loaded,
@@ -255,11 +213,17 @@ function buildMeta(loaded: boolean, updatedAt: number = 0): CacheItemMetadata {
   return meta;
 }
 
-function isValidRef(ref: unknown) {
+export function isValidRef(ref: unknown) {
   if (typeof ref !== "string" || ref === "") { return false; }
   return true;
 }
 
+/**
+ * Merges an old cache item with a new one
+ * @param newItem The newer item
+ * @param existingItem The older item
+ * @returns The merged cache item
+ */
 function mergeCacheItems(newItem: CacheItem<Record<string, unknown>>, existingItem: CacheItem<Record<string, unknown>>): CacheItem<Record<string, unknown>> {
   // Ensures that the given item is set, but marks it as unloaded so that the next load will get the most updated value
   if (newItem.meta.updatedAt < existingItem.meta.updatedAt) { 
@@ -281,6 +245,21 @@ function mergeCacheItems(newItem: CacheItem<Record<string, unknown>>, existingIt
   return mergedItem;
 }
 
-function save(item: CacheItem<unknown>) {
+function buildIndexKey(params: SearchParams) {
+  // Sorting or filters first? Filters - limits number that we are then required to sort. Weighted filters? Or do we want to pre-create an index for a page and then keep temporary indexes?
+  // Sorting
+  let sortKey = "";
 
+  // if (!params.sort || params.sort.length === 0) { sortKey = }
+  // for (const sort of params.sort) {
+
+  // }
+}
+
+function buildSortKey(sortArr: string[]) {
+  if (!sortArr || sortArr.length === 0) { return "noSort"; }
+  let sortKey = "";
+  for (const sortItem of sortArr) {
+    // if ("&" in )
+  }
 }
