@@ -9,8 +9,8 @@ import { observer } from "mobx-react-lite";
 import { InitialProps } from "types/client";
 import { AssetUploadSource } from "types/enums/assetSource";
 import { Ref64 } from "@owl-factory/types";
-import { CampaignData } from "controllers/cache/CampaignCache";
-import { UserCache } from "controllers/cache/UserCache";
+import { CampaignData } from "controllers/data/CampaignData";
+import { UserData } from "controllers/data/UserData";
 import { getSession, requireClientLogin } from "@owl-factory/auth/session";
 import { getCampaignPage } from "src/pages/api/campaigns/[ref]";
 import { handleAPI } from "@owl-factory/https/apiHandler";
@@ -117,9 +117,9 @@ function CampaignView(props: CampaignViewProps): JSX.Element {
     campaign.players?.forEach((player: { ref: Ref64 }) => {
       playerIDs.push(player.ref);
     });
-    UserCache.readMissing(playerIDs)
+    UserData.load(playerIDs)
     .then(() => {
-      const newPlayers = UserCache.getMany(playerIDs);
+      const newPlayers = UserData.getMany(playerIDs);
       setPlayers(newPlayers);
     });
   }, []);

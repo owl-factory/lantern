@@ -10,9 +10,9 @@ import { GiAxeSword } from 'react-icons/gi';
 import { MdContentCopy, MdDeleteForever, MdEdit } from "react-icons/md";
 import { Loading } from "@owl-factory/components/loading";
 import { observer } from "mobx-react-lite";
-import { ContentCache } from "controllers/cache/ContentCache";
-import { ContentTypeCache } from "controllers/cache/ContentTypeCache";
-import { RulesetCache } from "controllers/cache/RulesetCache";
+import { ContentData } from "controllers/data/ContentData";
+import { ContentTypeData } from "controllers/data/ContentTypeData";
+import { RulesetData } from "controllers/data/RulesetData";
 import { getUniques } from "@owl-factory/utilities/arrays";
 import { getMyContent } from "./api/my-content";
 import { handleAPI } from "@owl-factory/https/apiHandler";
@@ -36,8 +36,8 @@ const ContentRow = observer((props: ContentRowProps) => {
     <tr>
       <td><GiAxeSword/></td>
       <td>{props.content.name}</td>
-      <td>{ContentTypeCache.get(props.content.type?.ref as string)?.name || <Loading/>}</td>
-      <td>{RulesetCache.get(props.content.ruleset?.ref as string)?.name || <Loading/>}</td>
+      <td>{ContentTypeData.get(props.content.type?.ref as string)?.name || <Loading/>}</td>
+      <td>{RulesetData.get(props.content.ruleset?.ref as string)?.name || <Loading/>}</td>
       <td>
         <ButtonGroup>
           <Button><MdContentCopy/></Button>
@@ -60,16 +60,17 @@ const ContentRow = observer((props: ContentRowProps) => {
 function MyContent(props: MyContentProps): JSX.Element {
   const [ contents, setContents ] = React.useState<Partial<ContentDocument>[]>([]);
   React.useEffect(() => {
-    ContentCache.setMany(props.contents);
+    ContentData.setMany(props.contents);
 
     const uniqueRulesets = getUniques(props.contents, "ruleset.ref");
-    RulesetCache.readMissing(uniqueRulesets);
+    RulesetData.load(uniqueRulesets);
   }, []);
 
   // Use this to prevent too many rerenders
   React.useEffect(() => {
-    setContents(ContentCache.getPage());
-  }, [ContentCache]);
+    const contentRefs = ContentData.search({ group: "owned-content" });
+    setContents(ContentData.getMany(contentRefs));
+  }, [ContentData.$lastTouched]);
 
   function match(doc: AnyDocument) {
     if (!props.session) { return false; }

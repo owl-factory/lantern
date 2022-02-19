@@ -10,7 +10,7 @@ import { CacheMethod } from "../enums";
 type GenericRecord = Record<string, unknown>;
 
 export function initializeCacheBatchJob<T extends GenericRecord>(this: DataManager<T>) {
-  this.$cacheBatchJob = setInterval(this.$saveCache, this.$cacheSaveInterval);
+  this.$cacheBatchJob = setInterval(() => this.$saveCache(), this.$cacheSaveInterval);
 }
 
 /**
@@ -33,7 +33,7 @@ export function loadCache<T extends GenericRecord>(this: DataManager<T>) {
  * Queues a document ID to be queued for caching
  * @param ref The ID of the document to queue for the next cache run
  */
-export function markUpdated(this: DataManager<GenericRecord>, ref: string) {
+export function markUpdated<T extends GenericRecord>(this: DataManager<T>, ref: string) {
   this.$cacheQueue[ref] = 1;
 }
 

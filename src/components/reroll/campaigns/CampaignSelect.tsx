@@ -1,6 +1,6 @@
 import { Select } from "@owl-factory/components/form";
 import { Ref64 } from "@owl-factory/types";
-import { CampaignData } from "controllers/cache/CampaignCache";
+import { CampaignData } from "controllers/data/CampaignData";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { CampaignDocument } from "types/documents";

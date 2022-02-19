@@ -9,8 +9,8 @@ import React from "react";
 import { Button, Card, Col, Row } from "react-bootstrap";
 import { InitialProps } from "types/client";
 import { CampaignDocument, RulesetDocument } from "types/documents";
-import { CampaignData } from "controllers/cache/CampaignCache";
-import { RulesetCache } from "controllers/cache/RulesetCache";
+import { CampaignData } from "controllers/data/CampaignData";
+import { RulesetData } from "controllers/data/RulesetData";
 import { pagePermission } from "@owl-factory/auth/permissions";
 import { onApiError } from "@owl-factory/next/page-handling";
 import { getMyCampaigns } from "./api/my-campaigns";
@@ -43,8 +43,8 @@ const CampaignTile = observer((props: CampaignTileProps) => {
 
   React.useEffect(() => {
     if (!campaign) { return; }
-    setRuleset(RulesetCache.get(campaign.ruleset?.ref as string) || {});
-  }, [RulesetCache.lastTouched]);
+    setRuleset(RulesetData.get(campaign.ruleset?.ref as string) || {});
+  }, [RulesetData.lastTouched]);
 
   return (
     <Card>

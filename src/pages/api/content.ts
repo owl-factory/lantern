@@ -11,7 +11,7 @@ import { HTTPHandler, createEndpoint } from "@owl-factory/https";
  */
 async function getContents(this: HTTPHandler, req: NextApiRequest) {
   const contents = await ContentLogic.findManyByIDs(req.body.refs);
-  this.returnSuccess({ docs: contents });
+  this.returnSuccess({ contents });
 }
 
 export default createEndpoint({POST: getContents});

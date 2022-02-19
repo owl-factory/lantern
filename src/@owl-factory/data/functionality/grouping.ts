@@ -19,6 +19,9 @@ export function addGroup<T extends GenericRecord>(
   name: string,
   validation: (doc: T | undefined) => boolean
 ): void {
+  // Skip adding this again if it already exists
+  if (Array.isArray(this.$groups[name]) && this.$groupValidation[name]) { return; }
+
   this.$groups[name] = [];
   this.$groupValidation[name] = validation;
 

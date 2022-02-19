@@ -1,8 +1,8 @@
 import { PassiveReadLevel } from "@owl-factory/cache/enums";
 import { isError } from "@owl-factory/errors";
 import { AlertController } from "@owl-factory/components/alert/AlertController";
-import { CampaignData } from "controllers/cache/CampaignCache";
-import { SceneCache } from "controllers/cache/SceneCache";
+import { CampaignData } from "controllers/data/CampaignData";
+import { SceneData } from "controllers/data/SceneData";
 import { action, makeObservable, observable } from "mobx";
 import { CampaignDocument, SceneDocument } from "types/documents";
 import { Ref64 } from "@owl-factory/types";
@@ -52,7 +52,7 @@ class $SceneController {
    * @param id The ID of the scene to load into the SceneController
    */
   public async load(id: string) {
-    const scene = await SceneCache.get(id, PassiveReadLevel.Force);
+    const scene = await SceneData.get(id, PassiveReadLevel.Force);
     if (scene === undefined) {
       AlertController.error("The scene could not be found or you do not have permission to view.");
       return;
@@ -86,7 +86,7 @@ class $SceneController {
   }
 
   public async setScene(ref: Ref64) {
-    const scene = await SceneCache.get(ref);
+    const scene = await SceneData.get(ref);
     if (scene === undefined) {
       AlertController.error("The scene could not be found or you do not have permission to view.");
     }
@@ -94,7 +94,7 @@ class $SceneController {
 
   public async newScene() {
     if (!this.campaignID) { return; }
-    const scene = await SceneCache.create(
+    const scene = await SceneData.create(
       { name: "Untitled", campaign: {ref: this.campaignID }}
     ) as Partial<SceneDocument>;
 

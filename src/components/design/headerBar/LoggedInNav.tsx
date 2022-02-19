@@ -1,5 +1,5 @@
 import { Auth } from "controllers/auth";
-import { CampaignData } from "controllers/cache/CampaignCache";
+import { CampaignData } from "controllers/data/CampaignData";
 import { observer } from "mobx-react-lite";
 import Link from "next/link";
 import React from "react";

@@ -13,8 +13,8 @@ import { observer } from "mobx-react-lite";
 import { InitialProps } from "types/client";
 import Link from "next/link";
 import { AssetUploadSource } from "types/enums/assetSource";
-import { ImageCache } from "controllers/cache/ImageCache";
-import { UserCache } from "controllers/cache/UserCache";
+import { ImageData } from "controllers/data/ImageData";
+import { UserData } from "controllers/data/UserData";
 import { arrayToList } from "@owl-factory/utilities/arrays";
 import { Auth } from "controllers/auth";
 import { handleAPI } from "@owl-factory/https/apiHandler";
@@ -209,7 +209,7 @@ const Avatar = observer(({ user, isMyPage }: ProfileImageProps) => {
   let image = <img src={user.avatar?.src} width="200px" height="200px"/>;
 
   async function onSubmit(imageDocument: Partial<ImageDocument>, method: AssetUploadSource) {
-    await UserCache.updateAvatar(user.ref, imageDocument, method);
+    // await UserData.updateAvatar(user.ref, imageDocument, method);
   }
 
   if (isMyPage) {
@@ -254,26 +254,26 @@ function Profile(props: ProfileProps): JSX.Element {
   React.useEffect(() => {
 
 
-    UserCache.set(props.user);
+    UserData.set(props.user);
 
     const playerIDs: string[] = [];
     props.user.recentPlayers?.forEach((player: Partial<UserDocument>) => {
       playerIDs.push(player.ref as string);
     });
-    UserCache.readMissing(playerIDs).then(() => {
-      setPlayers(UserCache.getMany(playerIDs));
+    UserData.load(playerIDs).then(() => {
+      setPlayers(UserData.getMany(playerIDs));
     });
 
-    ImageCache.readMissing([props.user.avatar.ref]);
+    ImageData.load(props.user.avatar.ref);
   }, []);
 
   // Updates the current user when they change
   React.useEffect(() => {
-    const newUser = UserCache.get(props.user.ref as string);
+    const newUser = UserData.get(props.user.ref as string);
     if (!newUser) { return; }
 
     setUser(newUser);
-  }, [UserCache.lastTouched]);
+  }, [UserData.lastTouched]);
 
   /**
    * Determines if the current player is the owner of the profile page.
@@ -290,7 +290,8 @@ function Profile(props: ProfileProps): JSX.Element {
    * @param values The user document values to save to the database
    */
   async function saveUser(values: Record<string, unknown>) {
-    await UserCache.update(user.ref as string, values);
+    return;
+    // await UserData.update(user.ref as string, values);
   }
 
   return (

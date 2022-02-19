@@ -11,7 +11,7 @@ import { Auth } from "controllers/auth";
 import { signOut } from "utilities/auth";
 import { handleAPI } from "@owl-factory/https/apiHandler";
 import { getDashboardPage } from "./api/dashboard";
-import { CampaignData } from "controllers/cache/CampaignCache";
+import { CampaignData } from "controllers/data/CampaignData";
 
 interface DashboardProps {
   user?: any;

@@ -1,5 +1,5 @@
 import { Select } from "@owl-factory/components/form";
-import { RulesetCache } from "controllers/cache/RulesetCache";
+import { RulesetData } from "controllers/data/RulesetData";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { RulesetDocument } from "types/documents";
@@ -16,10 +16,10 @@ export const RulesetSelect = observer((props: RulesetSelectProps) => {
   const [ rulesets, setRulesets ] = React.useState<Partial<RulesetDocument>[]>([]);
 
   React.useEffect(() => {
-    const cachedRulesets = RulesetCache.getPage({ sort: "name" });
+    const rulesetRefs = RulesetData.search({ group: "data", sort: ["name"] });
     // TODO - include user rulesets & last used rulesets as a top option
-    setRulesets(cachedRulesets);
-  }, [RulesetCache.$lastTouched]);
+    setRulesets(RulesetData.getMany(rulesetRefs));
+  }, [RulesetData.$lastTouched]);
 
   // Renders the rulesets into selectable options
   const rulesetOptions: JSX.Element[] = [<option key="no-ruleset" value="">-- Select a Ruleset --</option>];

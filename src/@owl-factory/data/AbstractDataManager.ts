@@ -76,7 +76,7 @@ export class DataManager<T extends Record<string, unknown>> {
 
   get lastTouched() { return this.$lastTouched; }
   public touch() { this.$lastTouched = Date.now(); }
-  
+
 
   /**
    * Set many documents into the data manager
@@ -96,6 +96,7 @@ export class DataManager<T extends Record<string, unknown>> {
       if (!success) { continue; }
       const ref = this.$getRef(doc);
       succeededRefs.push(ref);
+      this.$markUpdated(ref);
     }
 
     this.touch();
@@ -110,7 +111,7 @@ export class DataManager<T extends Record<string, unknown>> {
    * @returns True if the set succeeded, false otherwise
    */
   public $setOne(doc: T, loaded: boolean): boolean {
-    const ref = this.$getRef(doc)
+    const ref = this.$getRef(doc);
     const updatedAt = this.$getUpdatedAt(doc);
 
     if (!isValidRef(ref)) {
@@ -130,7 +131,7 @@ export class DataManager<T extends Record<string, unknown>> {
     this.$data[ref] = cacheItem;
 
     if (existingCacheItem) {
-      this.$updateItemInGroups(cacheItem.doc, existingCacheItem.doc)
+      this.$updateItemInGroups(cacheItem.doc, existingCacheItem.doc);
     } else {
       this.$createItemInGroups(cacheItem.doc);
     }
@@ -162,7 +163,7 @@ export class DataManager<T extends Record<string, unknown>> {
     if (!fieldInObject(doc, this.updatedAtField)) { return 0; }
 
     // In a try-catch block to prevent issues from invalid Dates
-    try { 
+    try {
       const value = read(doc, this.updatedAtField);
       if (typeof value !== "string" || typeof value !== "number" || typeof value !== "object") { return 0; }
 
@@ -178,7 +179,7 @@ export class DataManager<T extends Record<string, unknown>> {
    * Loads documents from an external source. This function should be overloaded when a child class is created.
    * @async
    * @abstract
-   * @protected 
+   * @protected
    * @param refs A list of document references to load
    */
   protected async loadDocuments(refs: string[]): Promise<T[]> {
@@ -208,7 +209,7 @@ export function canLoad(cacheItem: CacheItem<unknown>, reloadPolicy: ReloadPolic
       const staleAt = cacheItem.meta.loadedAt + staleTime;
       return (now > staleAt);
     default:
-      console.error("An unexpected reload policy was given.")
+      console.error("An unexpected reload policy was given.");
       return false;
   }
 }
@@ -220,11 +221,15 @@ export function canLoad(cacheItem: CacheItem<unknown>, reloadPolicy: ReloadPolic
  * @param meta The metadata for the cache item
  * @returns The completed cache item
  */
-function buildCacheItem(ref: string, doc: Record<string, unknown>, meta: CacheItemMetadata): CacheItem<Record<string, unknown>> {
+function buildCacheItem(
+  ref: string,
+  doc: Record<string, unknown>,
+  meta: CacheItemMetadata
+): CacheItem<Record<string, unknown>> {
   return {
     ref,
     doc,
-    meta
+    meta,
   };
 }
 
@@ -234,7 +239,7 @@ function buildCacheItem(ref: string, doc: Record<string, unknown>, meta: CacheIt
  * @param updatedAt The last time that the document was updated according to the server
  * @returns A complete metadata object
  */
-function buildMeta(loaded: boolean, updatedAt: number = 0): CacheItemMetadata {
+function buildMeta(loaded: boolean, updatedAt = 0): CacheItemMetadata {
   const meta = {
     loaded: loaded,
     loadedAt: loaded ? Date.now() : 0,
@@ -254,9 +259,12 @@ export function isValidRef(ref: unknown) {
  * @param existingItem The older item
  * @returns The merged cache item
  */
-function mergeCacheItems(newItem: CacheItem<Record<string, unknown>>, existingItem: CacheItem<Record<string, unknown>>): CacheItem<Record<string, unknown>> {
+function mergeCacheItems(
+  newItem: CacheItem<Record<string, unknown>>,
+  existingItem: CacheItem<Record<string, unknown>>
+): CacheItem<Record<string, unknown>> {
   // Ensures that the given item is set, but marks it as unloaded so that the next load will get the most updated value
-  if (newItem.meta.updatedAt < existingItem.meta.updatedAt) { 
+  if (newItem.meta.updatedAt < existingItem.meta.updatedAt) {
     newItem.meta.loaded = false;
     newItem.meta.loadedAt = 0;
     return newItem;
@@ -269,27 +277,8 @@ function mergeCacheItems(newItem: CacheItem<Record<string, unknown>>, existingIt
       loaded: newItem.meta.loaded || existingItem.meta.loaded,
       loadedAt: newItem.meta.loadedAt > existingItem.meta.loadedAt ? newItem.meta.loadedAt : existingItem.meta.loadedAt,
       updatedAt: newItem.meta.updatedAt,
-    }
-  }
+    },
+  };
 
   return mergedItem;
-}
-
-function buildIndexKey(params: SearchParams) {
-  // Sorting or filters first? Filters - limits number that we are then required to sort. Weighted filters? Or do we want to pre-create an index for a page and then keep temporary indexes?
-  // Sorting
-  let sortKey = "";
-
-  // if (!params.sort || params.sort.length === 0) { sortKey = }
-  // for (const sort of params.sort) {
-
-  // }
-}
-
-function buildSortKey(sortArr: string[]) {
-  if (!sortArr || sortArr.length === 0) { return "noSort"; }
-  let sortKey = "";
-  for (const sortItem of sortArr) {
-    // if ("&" in )
-  }
 }

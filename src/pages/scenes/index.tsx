@@ -4,8 +4,8 @@ import { observer } from "mobx-react-lite";
 import { Page } from "components/design";
 import { SceneController } from "controllers/scenes/scenes";
 import { CampaignDocument, SceneDocument } from "types/documents";
-import { CampaignData } from "controllers/cache/CampaignCache";
-import { SceneCache } from "controllers/cache/SceneCache";
+import { CampaignData } from "controllers/data/CampaignData";
+import { SceneData } from "controllers/data/SceneData";
 
 const CampaignSelection = observer(() => {
   const [ campaigns, setCampaigns ] = React.useState<string[]>([]);
@@ -31,11 +31,11 @@ const SceneSelection = observer(() => {
   const [ scenes, setScenes ] = React.useState<Partial<SceneDocument>[]>([]);
 
   React.useEffect(() => {
-    setScenes(SceneCache.getPage());
+    setScenes(SceneData.getPage());
   });
 
   const sceneElements: JSX.Element[] = [];
-  SceneCache.getPage().forEach((scene: Partial<SceneDocument>) => {
+  SceneData.getPage().forEach((scene: Partial<SceneDocument>) => {
     sceneElements.push(<a href="#" onClick={() => SceneController.setCampaign(scene.ref as string)}>{scene.name}</a>);
   });
   return (
