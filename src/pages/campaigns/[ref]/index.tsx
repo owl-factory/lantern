@@ -9,7 +9,7 @@ import { observer } from "mobx-react-lite";
 import { InitialProps } from "types/client";
 import { AssetUploadSource } from "types/enums/assetSource";
 import { Ref64 } from "@owl-factory/types";
-import { CampaignCache } from "controllers/cache/CampaignCache";
+import { CampaignData } from "controllers/cache/CampaignCache";
 import { UserCache } from "controllers/cache/UserCache";
 import { getSession, requireClientLogin } from "@owl-factory/auth/session";
 import { getCampaignPage } from "src/pages/api/campaigns/[ref]";
@@ -37,7 +37,6 @@ const Banner = observer(({ campaign, isOwner }: any) => {
      */
     const onSubmit = async (newBanner: Partial<ImageDocument>, method: AssetUploadSource) => {
       // TODO - Save banner
-      const result = CampaignCache.updateBanner(campaign.ref, newBanner, method);
     };
 
     image = (
@@ -112,7 +111,7 @@ function CampaignView(props: CampaignViewProps): JSX.Element {
 
   // Initializes the managers on page load
   React.useEffect(() => {
-    CampaignCache.set(props.campaign);
+    CampaignData.set(props.campaign);
 
     const playerIDs: string[] = [];
     campaign.players?.forEach((player: { ref: Ref64 }) => {
@@ -127,9 +126,9 @@ function CampaignView(props: CampaignViewProps): JSX.Element {
 
   // Updates the campaign each time the campaign is updated
   React.useEffect(() => {
-    const newCampaign = CampaignCache.get(props.campaign.ref);
+    const newCampaign = CampaignData.get(props.campaign.ref);
     if (newCampaign) { setCampaign(newCampaign); }
-  }, [CampaignCache.lastTouched]);
+  }, [CampaignData.lastTouched]);
 
   /**
    * Determines if the current player is the owner of the profile page.

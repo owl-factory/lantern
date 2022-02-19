@@ -1,7 +1,7 @@
 import { PassiveReadLevel } from "@owl-factory/cache/enums";
 import { isError } from "@owl-factory/errors";
 import { AlertController } from "@owl-factory/components/alert/AlertController";
-import { CampaignCache } from "controllers/cache/CampaignCache";
+import { CampaignData } from "controllers/cache/CampaignCache";
 import { SceneCache } from "controllers/cache/SceneCache";
 import { action, makeObservable, observable } from "mobx";
 import { CampaignDocument, SceneDocument } from "types/documents";
@@ -58,7 +58,7 @@ class $SceneController {
       return;
     }
 
-    const campaign = await CampaignCache.read(scene.campaign?.ref as string) as Partial<CampaignDocument>;
+    const campaign = await CampaignData.get(scene.campaign?.ref as string) as Partial<CampaignDocument>;
     if (campaign === undefined || isError(campaign)) {
       AlertController.error("An error occured while trying to load the campaign");
       return;
@@ -76,7 +76,7 @@ class $SceneController {
   }
 
   public async setCampaign(ref: Ref64) {
-    const campaign = await CampaignCache.read(ref);
+    const campaign = await CampaignData.get(ref);
     if (campaign === undefined) {
       AlertController.error("An error occured while trying to load the campaign");
       return;

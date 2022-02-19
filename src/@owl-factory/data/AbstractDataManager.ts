@@ -1,5 +1,7 @@
 import { CacheItem, CacheItemMetadata } from "@owl-factory/cache/types";
+import { isClient } from "@owl-factory/utilities/client";
 import { deepMerge, fieldInObject, read } from "@owl-factory/utilities/objects";
+import { action, makeObservable, observable } from "mobx";
 import { CacheMethod, ReloadPolicy } from "./enums";
 import * as caching from "./functionality/caching";
 import * as data from "./functionality/data";
@@ -9,35 +11,51 @@ import { SearchParams } from "./types";
 
 
 export class DataManager<T extends Record<string, unknown>> {
-  protected readonly refField = "ref"; // The field containing a unique ID for the document
-  protected readonly updatedAtField = "updatedAt"; // The field containing the document's last updated time
-  public readonly collection = "data"; // The name of the collection of data. Used for logs and caching
+  protected refField = "ref"; // The field containing a unique ID for the document
+  protected updatedAtField = "updatedAt"; // The field containing the document's last updated time
+  protected collection = "data"; // The name of the collection of data. Used for logs and caching
 
-  public readonly cacheMethod = CacheMethod.LocalStorage; // The location that the data will be cached at
-  public readonly reloadPolicy = ReloadPolicy.IfStale; // The policy for determining if a document should be reloaded if already loaded
+  protected cacheMethod = CacheMethod.LocalStorage; // The location that the data will be cached at
+  // The policy for determining if a document should be reloaded if already loaded
+  protected reloadPolicy = ReloadPolicy.IfStale;
 
-  public readonly staleTime = 1000 * 60 * 30; // The time until a document becomes stale in milliseconds
+  protected staleTime = 1000 * 60 * 30; // The time until a document becomes stale in milliseconds
 
   public $data: Record<string, CacheItem<T>> = {}; // The bucket that holds all data loaded into the data manager
-  public $groups: Record<string, string[]> = {}; // A collection of lists of refs for data that fits into a specific group
-  public $groupValidation: Record<string, (doc: T) => boolean> = {}; // Functions that determine if a document fits into a group
+  // A collection of lists of refs for data that fits into a specific group
+  public $groups: Record<string, string[]> = {};
+   // Functions that determine if a document fits into a group
+  public $groupValidation: Record<string, (doc: T) => boolean> = {};
   public $indexes: Record<string, unknown> = {}; // UNUSED
 
-  protected $cacheQueue: Record<string, number> = {}; // A set of records that will be updated the next time the cache queue is emptied
+  // A set of records that will be updated the next time the cache queue is emptied
+  protected $cacheQueue: Record<string, number> = {};
   protected $cacheBatchJob!: NodeJS.Timeout;
   protected $cacheSaveInterval = 1000 * 60 * 5;
 
   public $lastTouched = 0;
 
   constructor() {
-    window.addEventListener("load", () => {
-      this.$loadCache();
-      this.$initializeCacheBatchJob();
-    });
+    if (isClient) {
+      window.addEventListener("load", () => {
+        this.$loadCache();
+        this.$initializeCacheBatchJob();
+      });
+
+      makeObservable(this, {
+        $loadCache: action,
+        $setMany: action,
+        touch: action,
+
+        $data: observable,
+        $lastTouched: observable,
+      });
+    }
   }
 
   public clear = data.clear;
   public get = data.get;
+  public getMany = data.getMany;
   public load = data.load;
   public search = data.search;
   public set = data.set;
@@ -45,7 +63,7 @@ export class DataManager<T extends Record<string, unknown>> {
 
   protected $clearCache = caching.clearCache;
   protected $initializeCacheBatchJob = caching.initializeCacheBatchJob;
-  protected $loadCache = caching.loadCache;
+  public $loadCache = caching.loadCache;
   protected $markUpdated = caching.markUpdated;
   protected $saveCache = caching.saveCache;
 
@@ -55,6 +73,9 @@ export class DataManager<T extends Record<string, unknown>> {
   protected $createItemInGroups = grouping.createItemInGroups;
   protected $removeItemFromGroups = grouping.removeItemFromGroups;
   protected $updateItemInGroups = grouping.updateItemInGroups;
+
+  get lastTouched() { return this.$lastTouched; }
+  public touch() { this.$lastTouched = Date.now(); }
   
 
   /**
@@ -76,7 +97,8 @@ export class DataManager<T extends Record<string, unknown>> {
       const ref = this.$getRef(doc);
       succeededRefs.push(ref);
     }
-    
+
+    this.touch();
     return totalSuccess;
   }
 
@@ -99,10 +121,18 @@ export class DataManager<T extends Record<string, unknown>> {
     const existingCacheItem = this.$data[ref];
 
     const meta = buildMeta(loaded, updatedAt);
-    let cacheItem = buildCacheItem(ref, doc, meta);
+    let cacheItem = buildCacheItem(ref, doc, meta) as CacheItem<T>;
 
     if (existingCacheItem) {
-      cacheItem = mergeCacheItems(cacheItem, existingCacheItem);
+      cacheItem = mergeCacheItems(cacheItem, existingCacheItem) as CacheItem<T>;
+    }
+
+    this.$data[ref] = cacheItem;
+
+    if (existingCacheItem) {
+      this.$updateItemInGroups(cacheItem.doc, existingCacheItem.doc)
+    } else {
+      this.$createItemInGroups(cacheItem.doc);
     }
 
     return true;
@@ -151,7 +181,7 @@ export class DataManager<T extends Record<string, unknown>> {
    * @protected 
    * @param refs A list of document references to load
    */
-  public async loadDocuments(refs: string[]): Promise<T[]> {
+  protected async loadDocuments(refs: string[]): Promise<T[]> {
     const docs = [];
 
     for (const ref of refs) {

@@ -11,16 +11,20 @@ import { Auth } from "controllers/auth";
 import { signOut } from "utilities/auth";
 import { handleAPI } from "@owl-factory/https/apiHandler";
 import { getDashboardPage } from "./api/dashboard";
+import { CampaignData } from "controllers/cache/CampaignCache";
 
 interface DashboardProps {
   user?: any;
 }
 
 const Dashboard: NextPage<DashboardProps> = (props: any) => {
-  const [user, setUser] = React.useState(Auth.user);
+  React.useEffect(() => {
+    CampaignData.setMany(props.campaigns);
+  }, []);
+
   return (
     <Page error={props.error}>
-      <h3>Welcome back {user?.name || user?.username}!</h3>
+      <h3>Welcome back {Auth.user?.name || Auth.user?.username}!</h3>
 
       <Button onClick={() => signOut()}>Log Out</Button>
       {/* Recent Games */}

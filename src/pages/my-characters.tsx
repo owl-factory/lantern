@@ -9,7 +9,7 @@ import { InitialProps } from "types/client";
 import { CampaignDocument, CharacterDocument, RulesetDocument } from "types/documents";
 import { getSession } from "@owl-factory/auth/session";
 import { rest } from "@owl-factory/https/rest";
-import { CampaignCache } from "controllers/cache/CampaignCache";
+import { CampaignData } from "controllers/cache/CampaignCache";
 import { CharacterCache } from "controllers/cache/CharacterCache";
 import { RulesetCache } from "controllers/cache/RulesetCache";
 import { Modal } from "@owl-factory/components/modal";
@@ -70,7 +70,7 @@ const CharacterCard = observer((props: CharacterCardProps) => {
           </Col>
           <Col sm={8}>
             <h3>{props.character.name}</h3><br/>
-            {CampaignCache.get(props.character.campaign?.ref)?.name || <Loading/>}<br/>
+            {CampaignData.get(props.character.campaign?.ref)?.name || <Loading/>}<br/>
             {RulesetCache.get(props.character.ruleset?.ref)?.name || <Loading/>}<br/>
             <ButtonGroup>
               <Button>Duplicate</Button>
@@ -111,7 +111,7 @@ export function MyCharacters (props: MyCharactersProps) {
 
     // Fetches all missing campaigns and rulesets for the names
     const uniqueCampaigns = getUniques(props.characters, "campaign.ref");
-    CampaignCache.readMissing(uniqueCampaigns);
+    CampaignData.load(uniqueCampaigns);
 
     const uniqueRulesets = getUniques(props.characters, "ruleset.ref");
     RulesetCache.readMissing(uniqueRulesets);

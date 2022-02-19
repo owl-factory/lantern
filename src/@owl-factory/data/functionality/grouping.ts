@@ -14,7 +14,11 @@ type GenericRecord = Record<string, unknown>;
  * @param name The name of the group
  * @param validation The function to validate if a document is in a group or not
  */
-export function addGroup<T extends GenericRecord>(this: DataManager<T>, name: string, validation: (doc: T) => boolean): void {
+export function addGroup<T extends GenericRecord>(
+  this: DataManager<T>,
+  name: string,
+  validation: (doc: T | undefined) => boolean
+): void {
   this.$groups[name] = [];
   this.$groupValidation[name] = validation;
 

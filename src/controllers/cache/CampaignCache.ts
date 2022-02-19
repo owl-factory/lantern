@@ -1,33 +1,45 @@
-import { CacheController } from "@owl-factory/cache/AbstractCacheController";
-import { CampaignDocument, ImageDocument } from "types/documents";
-import { AssetUploadSource } from "types/enums/assetSource";
+import { DataManager } from "@owl-factory/data/AbstractDataManager";
+import { rest } from "@owl-factory/https/rest";
+import { getUniques } from "@owl-factory/utilities/arrays";
+import { Auth } from "controllers/auth";
+import { isOwner } from "server/logic/security";
+import { CampaignDocument } from "types/documents";
 
-class $CampaignCache extends CacheController<CampaignDocument> {
-  key = "campaign";
-  apiURL = '/api/campaigns';
+class CampaignDataManager extends DataManager<Partial<CampaignDocument>> {
+  public readonly collection = "campaigns";
 
-  /**
-   * Updates the banner image for a campaign
-   * TODO - implement working update Banner
-   * @param id The ID of the campaign to update
-   * @param newBanner The new banner to upload
-   * @param method The method of uploading the new banner.
-   */
-   public async updateBanner(id: string, newBanner: Partial<ImageDocument>, method: AssetUploadSource) {
-    const updateBannerURI = `/api/campaigns/${id}/banner`;
+  constructor() {
+    super();
 
-    // const result = await rest.patch<UpdateBannerResponse>(updateBannerURI, { image: newBanner, method });
-    // if (!result.success) {
-    //   AlertController.error(`An error occured while updating the banner: ${result.message}`);
-    //   return;
-    // }
+    this.addGroup("owned-campaigns", isOwner);
+    this.addGroup("my-campaigns", isMyCampaign);
+  }
 
-    // const cachedCampaign = this.$toCacheItem([result.data.campaign])
-
-    // this.$setMany([result.data.campaign);
-    // AlertController.success(`The banner for ${result.data.campaign.name} has been successfully updated.`);
-    // return { campaign: result.data.campaign, image: result.data.image };
+  protected async loadDocuments(refs: string[]): Promise<Partial<CampaignDocument>[]> {
+    if (refs.length) { return []; }
+    const docs = await rest.post<{ campaigns: Partial<CampaignDocument>[] }>(`/api/campaigns`, { refs: refs });
+    return docs.data.campaigns;
   }
 }
 
-export const CampaignCache = new $CampaignCache();
+/**
+ * Evaluates a campaign document to determine if the current user is a player in this campaign
+ * TODO - move to a campaign helper document
+ * @param doc The document to evaluate
+ * @returns True if the user belongs to a campaign. False otherwise
+ */
+function isMyCampaign(doc: Partial<CampaignDocument> | undefined): boolean {
+  if (!doc || !Auth.isLoggedIn) { return false; }
+
+  if (isOwner(doc)) { return true; }
+  else if (doc.players === undefined || Auth.ref === undefined) { return false; }
+
+  const players = getUniques(doc.players, "ref");
+  if (players.includes(Auth.ref)) {
+    return true;
+  }
+
+  return false;
+}
+
+export const CampaignData = new CampaignDataManager();

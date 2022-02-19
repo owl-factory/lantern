@@ -26,7 +26,6 @@ export function loadCache<T extends GenericRecord>(this: DataManager<T>) {
     default:
       return;
   }
-
   this.$data = data;
 }
 

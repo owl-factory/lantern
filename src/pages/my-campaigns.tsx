@@ -9,12 +9,13 @@ import React from "react";
 import { Button, Card, Col, Row } from "react-bootstrap";
 import { InitialProps } from "types/client";
 import { CampaignDocument, RulesetDocument } from "types/documents";
-import { CampaignCache } from "controllers/cache/CampaignCache";
+import { CampaignData } from "controllers/cache/CampaignCache";
 import { RulesetCache } from "controllers/cache/RulesetCache";
 import { pagePermission } from "@owl-factory/auth/permissions";
 import { onApiError } from "@owl-factory/next/page-handling";
 import { getMyCampaigns } from "./api/my-campaigns";
 import { handleAPI } from "@owl-factory/https/apiHandler";
+import { Ref64 } from "@owl-factory/types";
 
 interface MyCampaignsProps extends InitialProps {
   campaigns: CampaignDocument[];
@@ -25,7 +26,7 @@ interface SearchCampaignsArguments {
 }
 
 interface CampaignTileProps {
-  campaign: Partial<CampaignDocument>;
+  campaignRef: Ref64;
 }
 
 /**
@@ -33,24 +34,30 @@ interface CampaignTileProps {
  * @param campaign The campaign to render a tile for
  */
 const CampaignTile = observer((props: CampaignTileProps) => {
-  const [ ruleset, setRuleset ] = React.useState<Partial<RulesetDocument> | undefined>(undefined);
+  const [ campaign, setCampaign ] = React.useState<Partial<CampaignDocument>>({});
+  const [ ruleset, setRuleset ] = React.useState<Partial<RulesetDocument>>({});
 
   React.useEffect(() => {
-    setRuleset(RulesetCache.get(props.campaign?.ruleset?.ref as string));
+    setCampaign(CampaignData.get(props.campaignRef) || {});
+  }, [CampaignData.lastTouched]);
+
+  React.useEffect(() => {
+    if (!campaign) { return; }
+    setRuleset(RulesetCache.get(campaign.ruleset?.ref as string) || {});
   }, [RulesetCache.lastTouched]);
 
   return (
     <Card>
       <Row>
         <Col sm={4}>
-          <img className="img-fluid rounded-start" src={props.campaign.banner?.src} />
+          <img className="img-fluid rounded-start" src={campaign.banner?.src} />
         </Col>
         <Col sm={8}>
           <Card.Body>
-            <Link href={`/campaigns/${props.campaign.ref}`} passHref>
-              <a><h3>{props.campaign.name}</h3></a>
+            <Link href={`/campaigns/${campaign.ref}`} passHref>
+              <a><h3>{campaign.name}</h3></a>
             </Link><br/>
-            <Link href={`/play/${props.campaign.ref}`}>
+            <Link href={`/play/${campaign.ref}`}>
               <a>Play</a>
             </Link>
             {ruleset?.name || <Loading/>}
@@ -72,28 +79,28 @@ function MyCampaigns(props: MyCampaignsProps) {
   onApiError(props);
   pagePermission("viewMyCampaigns");
 
-  const [ campaigns, setCampaigns ] = React.useState<Partial<CampaignDocument>[]>([]);
+  const [ campaignRefs, setCampaignRefs ] = React.useState<Ref64[]>([]);
 
   React.useEffect(() => {
-    CampaignCache.setMany(props.campaigns || []);
+    CampaignData.setMany(props.campaigns || []);
   }, []);
-
-  function searchCampaigns(values: SearchCampaignsArguments) {
-    return;
-  }
 
   // Use this to prevent too many rerenders
   React.useEffect(() => {
-    setCampaigns(CampaignCache.getPage());
-  }, [CampaignCache.lastTouched]);
+    setCampaignRefs(CampaignData.search({ group: "my-campaigns" }));
+  }, [CampaignData.$lastTouched]);
 
   // Builds the tiles for listing out the campaigns
   const campaignTiles: JSX.Element[] = [];
-  campaigns.forEach((campaign: Partial<CampaignDocument>) => {
+  for (const ref of campaignRefs) {
     campaignTiles.push(
-      <CampaignTile key={campaign.ref} campaign={campaign}/>
+      <CampaignTile key={ref} campaignRef={ref}/>
     );
-  });
+  }
+
+  function searchCampaigns(values: any) {
+    return;
+  }
 
   return (
     <Page>

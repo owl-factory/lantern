@@ -1,5 +1,6 @@
 import { Select } from "@owl-factory/components/form";
-import { CampaignCache } from "controllers/cache/CampaignCache";
+import { Ref64 } from "@owl-factory/types";
+import { CampaignData } from "controllers/cache/CampaignCache";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { CampaignDocument } from "types/documents";
@@ -13,19 +14,19 @@ interface CampaignSelectProps {
  * any user-specific rulesets
  */
 export const CampaignSelect = observer((props: CampaignSelectProps) => {
-  const [ campaigns, setCampaigns ] = React.useState<Partial<CampaignDocument>[]>([]);
+  const [ campaigns, setCampaigns ] = React.useState<Ref64[]>([]);
 
   React.useEffect(() => {
-    const cachedCampaigns = CampaignCache.getPage({ sort: "name" });
+    const cachedCampaigns = CampaignData.search({ sort: ["name"] });
     // TODO - include user rulesets & last used rulesets as a top option
     setCampaigns(cachedCampaigns);
-  }, [CampaignCache.$lastTouched]);
+  }, [CampaignData.$lastTouched]);
 
   // Renders the rulesets into selectable options
   const campaignOptions: JSX.Element[] = [<option key="no-ruleset" value="">-- Select a Campaign --</option>];
-  campaigns.forEach((ruleset: Partial<CampaignDocument>) => {
-    campaignOptions.push(<option key={ruleset.ref} value={ruleset.ref}>{ruleset.name}</option>);
-  });
+  // campaigns.forEach((ruleset: Partial<CampaignDocument>) => {
+  //   campaignOptions.push(<option key={ruleset.ref} value={ruleset.ref}>{ruleset.name}</option>);
+  // });
 
   return (
     <Select name={props.name}>
