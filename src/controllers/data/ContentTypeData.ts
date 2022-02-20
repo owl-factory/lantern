@@ -20,7 +20,7 @@ class ContentTypeDataManager extends DataManager<Partial<ContentTypeDocument>> {
   }
 
   protected async loadDocuments(refs: string[]): Promise<Partial<ContentTypeDocument>[]> {
-    if (refs.length) { return []; }
+    if (refs.length === 0) { return []; }
     const docs = await rest.post<{ contentTypes: Partial<ContentTypeDocument>[] }>(
       `/api/content-types`,
       { refs: refs }

@@ -24,7 +24,7 @@ class CharactersDataManager extends DataManager<Partial<CharacterDocument>> {
   }
 
   protected async loadDocuments(refs: string[]): Promise<Partial<CharacterDocument>[]> {
-    if (refs.length) { return []; }
+    if (refs.length === 0) { return []; }
     const docs = await rest.post<{ characters: Partial<CharacterDocument>[] }>(`/api/characters`, { refs: refs });
     return docs.data.characters;
   }

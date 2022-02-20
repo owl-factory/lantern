@@ -28,7 +28,7 @@ class UserDataManager extends DataManager<Partial<UserDocument>> {
   }
 
   protected async loadDocuments(refs: string[]): Promise<Partial<UserDocument>[]> {
-    if (refs.length) { return []; }
+    if (refs.length === 0) { return []; }
     const docs = await rest.post<{ users: Partial<UserDocument>[] }>(`/api/users`, { refs: refs });
     return docs.data.users;
   }

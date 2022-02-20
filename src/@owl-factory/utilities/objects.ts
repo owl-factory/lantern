@@ -26,8 +26,12 @@ export function read<T>(obj: Record<string, unknown>, target: string): T | undef
 export function set(obj: Record<string, unknown>, target: string, value: unknown): Record<string, unknown> {
   const targetKeys = target.split(".");
   let current = obj;
+
+  // if (obj === undefined) { return obj; }
+
   targetKeys.forEach((targetKey: string, index: number) => {
     if (index === targetKeys.length - 1) {
+      // if (typeof current !== "object") { current = {}; }
       current[targetKey] = value;
       return;
     }
@@ -49,7 +53,7 @@ export function fieldInObject(obj: Record<string, unknown>, target: string): boo
     if (typeof current !== "object" || !(targetKey in current)) { return false; }
     current = current[targetKey] as Record<string, unknown>;
   }
-  return true; 
+  return true;
 }
 
 /**
@@ -67,7 +71,7 @@ export function getDeepKeys(obj: Record<string, unknown>): string[] {
   for (const shallowKey of shallowKeys) {
     const current = obj[shallowKey];
 
-    if (typeof current !== "object") { 
+    if (typeof current !== "object") {
       keys.push(shallowKey);
       continue;
     }

@@ -21,7 +21,7 @@ class ImageDataManager extends DataManager<Partial<ImageDocument>> {
   }
 
   protected async loadDocuments(refs: string[]): Promise<Partial<ImageDocument>[]> {
-    if (refs.length) { return []; }
+    if (refs.length === 0) { return []; }
     const docs = await rest.post<{ images: Partial<ImageDocument>[] }>(`/api/images`, { refs: refs });
     return docs.data.images;
   }

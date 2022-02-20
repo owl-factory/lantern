@@ -54,29 +54,33 @@ export function get<T extends GenericRecord>(this: DataManager<T>, ref: string |
  * @param reloadPolicy A reload policy to use instead of the default
  * @returns True if the load was successful. False otherwise
  */
-export async function load(
-  this: DataManager<GenericRecord>,
+export function load<T extends GenericRecord>(
+  this: DataManager<T>,
   targetRef: string | string[],
   reloadPolicy: ReloadPolicy = this.reloadPolicy
-): Promise<boolean> {
+): void {
   const refs = Array.isArray(targetRef) ? targetRef : [targetRef];
   const loadRefs: string[] = [];
 
   // Checks which documents to we can load
   for (const ref of refs) {
+    if (ref === undefined || ref === "undefined" || ref === "") { continue; }
+
     const cacheItem = this.$data[ref];
-    if (!cacheItem) { continue; }
+    if (!cacheItem) {
+      loadRefs.push(ref);
+      continue;
+    }
     if (canLoad(cacheItem, reloadPolicy, this.staleTime)) { loadRefs.push(ref); }
   }
 
   // Prevents unneeded calls from being made if the target refs are empty
-  if (loadRefs.length === 0) { return true; }
+  if (loadRefs.length === 0) { return; }
 
-  const docs = await this.loadDocuments(loadRefs);
-  if (!Array.isArray(docs) || docs.length === 0) { return false; } // Unexpected error
-
-  // Set Many
-  return this.$setMany(docs, true);
+  this.loadDocuments(loadRefs).then((docs: T[]) => {
+    if (!Array.isArray(docs) || docs.length === 0) { return false; } // Unexpected error
+    this.$setMany(docs, true);
+  });
 }
 
 /**

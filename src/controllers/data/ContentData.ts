@@ -22,7 +22,7 @@ class ContentDataManager extends DataManager<Partial<ContentDocument>> {
   }
 
   protected async loadDocuments(refs: string[]): Promise<Partial<ContentDocument>[]> {
-    if (refs.length) { return []; }
+    if (refs.length === 0) { return []; }
     const docs = await rest.post<{ contents: Partial<ContentDocument>[] }>(`/api/contents`, { refs: refs });
     return docs.data.contents;
   }

@@ -16,7 +16,7 @@ class CampaignDataManager extends DataManager<Partial<CampaignDocument>> {
   }
 
   protected async loadDocuments(refs: string[]): Promise<Partial<CampaignDocument>[]> {
-    if (refs.length) { return []; }
+    if (refs.length === 0) { return []; }
     const docs = await rest.post<{ campaigns: Partial<CampaignDocument>[] }>(`/api/campaigns`, { refs: refs });
     return docs.data.campaigns;
   }

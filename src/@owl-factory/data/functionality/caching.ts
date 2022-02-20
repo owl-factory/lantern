@@ -26,7 +26,13 @@ export function loadCache<T extends GenericRecord>(this: DataManager<T>) {
     default:
       return;
   }
-  this.$data = data;
+
+  const cachedRefs = Object.keys(data);
+  // TODO - use a piece of setOne
+  for (const ref of cachedRefs) {
+    // TODO
+  }
+  this.touch();
 }
 
 /**

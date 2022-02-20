@@ -73,7 +73,7 @@ class RulesetDataManager extends DataManager<Partial<RulesetDocument>> {
   }
 
   protected async loadDocuments(refs: string[]): Promise<Partial<RulesetDocument>[]> {
-    if (refs.length) { return []; }
+    if (refs.length === 0) { return []; }
     const docs = await rest.post<{ rulesets: Partial<RulesetDocument>[] }>(`/api/rulesets`, { refs: refs });
     return docs.data.rulesets;
   }

@@ -1,6 +1,6 @@
 /**
  * The Grouping functionality is for grouping data meeting specific criteria together immediately on group generation
- * and data setting.  
+ * and data setting.
  */
 
 import { DataManager, isValidRef } from "../AbstractDataManager";
@@ -76,6 +76,8 @@ export function createItemInGroups<T extends GenericRecord>(this: DataManager<T>
     }
 
     if (validator(doc)) {
+      // TODO - maybe remove this?
+      if (group.indexOf(ref) !== -1) { continue; }
       group.push(ref);
     }
   }
@@ -111,16 +113,16 @@ export function removeItemFromGroups<T extends GenericRecord>(this: DataManager<
 }
 
 /**
- * Handles an event where an item is updated and it's placement in the groups may change. 
+ * Handles an event where an item is updated and it's placement in the groups may change.
  */
 export function updateItemInGroups<T extends GenericRecord>(this: DataManager<T>, newDoc: T, oldDoc: T) {
   const groupNames = Object.keys(this.$groups);
   const oldRef = this.$getRef(oldDoc);
   const newRef = this.$getRef(newDoc);
 
-  if (oldRef !== newRef) { return; } 
+  if (oldRef !== newRef) { return; }
 
-  for (const name in groupNames) {
+  for (const name of groupNames) {
     const group = this.$groups[name];
     const validator = this.$groupValidation[name];
 
@@ -135,6 +137,8 @@ export function updateItemInGroups<T extends GenericRecord>(this: DataManager<T>
 
     if (oldState === newState) { continue; }
     else if (newState) {
+      // TODO - ensure that we can remove this and then do
+      if (group.indexOf(newRef) !== -1) { continue; }
       group.push(newRef);
       continue;
     }

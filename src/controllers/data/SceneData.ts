@@ -21,7 +21,7 @@ class SceneDataManager extends DataManager<Partial<SceneDocument>> {
   }
 
   protected async loadDocuments(refs: string[]): Promise<Partial<SceneDocument>[]> {
-    if (refs.length) { return []; }
+    if (refs.length === 0) { return []; }
     const docs = await rest.post<{ scenes: Partial<SceneDocument>[] }>(`/api/scenes`, { refs: refs });
     return docs.data.scenes;
   }

@@ -14,6 +14,7 @@ import { UserData } from "controllers/data/UserData";
 import { getSession, requireClientLogin } from "@owl-factory/auth/session";
 import { getCampaignPage } from "src/pages/api/campaigns/[ref]";
 import { handleAPI } from "@owl-factory/https/apiHandler";
+import { getUniques } from "@owl-factory/utilities/arrays";
 
 interface BannerProps {
   campaign: CampaignDocument;
@@ -117,12 +118,14 @@ function CampaignView(props: CampaignViewProps): JSX.Element {
     campaign.players?.forEach((player: { ref: Ref64 }) => {
       playerIDs.push(player.ref);
     });
-    UserData.load(playerIDs)
-    .then(() => {
-      const newPlayers = UserData.getMany(playerIDs);
-      setPlayers(newPlayers);
-    });
+    UserData.load(playerIDs);
   }, []);
+
+  React.useEffect(() => {
+    const playerRefs = getUniques(campaign.players, "ref");
+    setPlayers(UserData.getMany(playerRefs));
+
+  }, [UserData.$lastTouched]);
 
   // Updates the campaign each time the campaign is updated
   React.useEffect(() => {

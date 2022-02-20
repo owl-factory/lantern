@@ -19,7 +19,8 @@ interface DashboardProps {
 
 const Dashboard: NextPage<DashboardProps> = (props: any) => {
   React.useEffect(() => {
-    CampaignData.setMany(props.campaigns);
+    // TODO - do not set until after we return the players and owners for these campaigns
+    // CampaignData.setMany(props.campaigns);
   }, []);
 
   return (

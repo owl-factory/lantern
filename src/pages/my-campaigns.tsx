@@ -39,12 +39,13 @@ const CampaignTile = observer((props: CampaignTileProps) => {
 
   React.useEffect(() => {
     setCampaign(CampaignData.get(props.campaignRef) || {});
-  }, [CampaignData.lastTouched]);
+  }, [CampaignData.$lastTouched]);
 
   React.useEffect(() => {
-    if (!campaign) { return; }
+    if (!campaign || campaign.ruleset?.ref === undefined) { setRuleset({}); return; }
+    RulesetData.load(campaign.ruleset?.ref);
     setRuleset(RulesetData.get(campaign.ruleset?.ref as string) || {});
-  }, [RulesetData.lastTouched]);
+  }, [campaign, RulesetData.$lastTouched]);
 
   return (
     <Card>

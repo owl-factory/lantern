@@ -15,7 +15,7 @@ import Link from "next/link";
 import { AssetUploadSource } from "types/enums/assetSource";
 import { ImageData } from "controllers/data/ImageData";
 import { UserData } from "controllers/data/UserData";
-import { arrayToList } from "@owl-factory/utilities/arrays";
+import { arrayToList, getUniques } from "@owl-factory/utilities/arrays";
 import { Auth } from "controllers/auth";
 import { handleAPI } from "@owl-factory/https/apiHandler";
 import { getProfile } from "../api/profile/[username]";
@@ -252,20 +252,21 @@ function Profile(props: ProfileProps): JSX.Element {
 
   // Loads in everything from local storage and inserts new user ingo the Manager
   React.useEffect(() => {
-
-
     UserData.set(props.user);
 
     const playerIDs: string[] = [];
     props.user.recentPlayers?.forEach((player: Partial<UserDocument>) => {
       playerIDs.push(player.ref as string);
     });
-    UserData.load(playerIDs).then(() => {
-      setPlayers(UserData.getMany(playerIDs));
-    });
+    UserData.load(playerIDs);
 
     ImageData.load(props.user.avatar.ref);
   }, []);
+
+  React.useEffect(() => {
+    const playerIDs = getUniques(user.recentPlayers, "ref");
+    setPlayers(UserData.getMany(playerIDs));
+  }, [UserData.$lastTouched]);
 
   // Updates the current user when they change
   React.useEffect(() => {

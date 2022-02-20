@@ -48,6 +48,7 @@ export class DataManager<T extends Record<string, unknown>> {
         touch: action,
 
         $data: observable,
+        $groups: observable,
         $lastTouched: observable,
       });
     }
