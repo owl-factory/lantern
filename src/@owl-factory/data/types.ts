@@ -1,3 +1,19 @@
+import { Ref64 } from "@owl-factory/types";
+
+
+// The standard package of data stored within the cache
+export interface CacheItem<T> {
+  ref: Ref64;
+  doc: T; // The document data for business logic
+  meta: CacheItemMetadata;
+}
+
+// The metadata for a cache item
+export interface CacheItemMetadata {
+  loaded: boolean; // If the full item was loaded in from the database, or partially
+  loadedAt: number; // The last time that this item was loaded in from the database
+  updatedAt: number; // The last time that this item was updated
+}
 
 /**
  * An interface for describing what a user is searching for
@@ -8,5 +24,7 @@ export interface SearchParams {
   sort?: string[]; // The order of fields and the direction that they should be sorted
   filters?: Record<string, string>; // The fields to filter
   group?: string; // The group of data to search through. 
-  skip?: number; // The total number of documents to skip before starting to search. Used in place of page and per page up to the point where the skip ends
+  // The total number of documents to skip before starting to search. 
+  // Used in place of page and per page up to the point where the skip ends
+  skip?: number;
 }

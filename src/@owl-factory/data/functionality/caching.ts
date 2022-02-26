@@ -2,15 +2,31 @@
  * Handles the caching of data to given source such that calls to the database or an API are minimized
  */
 
-import { CacheItem } from "@owl-factory/cache/types";
+import { CacheItem } from "../types";
 import { DataManager } from "../AbstractDataManager";
 import { clearCacheLocalStorage, loadCacheLocalStorage, saveCacheLocalStorage } from "../caching/local-storage";
 import { CacheMethod } from "../enums";
+import { Ref64 } from "@owl-factory/types";
 
 type GenericRecord = Record<string, unknown>;
 
+
+/**
+ * Clears out the cache
+ */
+ export function clearCache<T extends GenericRecord>(this: DataManager<T>): void {
+  switch (this.cacheMethod) {
+    case CacheMethod.LocalStorage:
+      clearCacheLocalStorage(this.collection);
+      break;
+  }
+}
+
+/**
+ * Initializes the caching batch job
+ */
 export function initializeCacheBatchJob<T extends GenericRecord>(this: DataManager<T>) {
-  this.$cacheBatchJob = setInterval(() => this.$saveCache(), this.$cacheSaveInterval);
+  // this.$cacheBatchJob = setInterval(() => this.$saveCache(), this.$cacheSaveInterval);
 }
 
 /**
@@ -46,13 +62,12 @@ export function markUpdated<T extends GenericRecord>(this: DataManager<T>, ref: 
 /**
  * Compiles the updated and deleted keys, then runs the specified method to save the cache
  */
-export function saveCache<T extends GenericRecord>(this: DataManager<T>): void {
-  const refs: string[] = Object.keys(this.$cacheQueue);
+export function saveCache<T extends GenericRecord>(this: DataManager<T>, refs: Ref64[]): void {
   const updateKeys: string[] = [];
   const deleteKeys: string[] = [];
 
   // Skip out before doing any more work
-  if (refs.length === 0) { return; }
+  if (!refs || refs.length === 0) { return; }
 
   for (const ref of refs) {
     // Mark this for deletion
@@ -71,10 +86,10 @@ export function saveCache<T extends GenericRecord>(this: DataManager<T>): void {
   }
 }
 
-export function clearCache<T extends GenericRecord>(this: DataManager<T>): void {
-  switch (this.cacheMethod) {
-    case CacheMethod.LocalStorage:
-      clearCacheLocalStorage(this.collection);
-      break;
-  }
+export function addToCacheQueue<T extends GenericRecord>(this: DataManager<T>, ref: Ref64): void {
+  return
+}
+
+export function runCacheQueue<T extends GenericRecord>(this: DataManager<T>) {
+  return
 }

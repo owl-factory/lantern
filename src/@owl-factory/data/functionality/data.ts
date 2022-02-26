@@ -1,6 +1,9 @@
-import { canLoad, DataManager } from "../AbstractDataManager";
+import { CacheItem } from "../types";
+import { DataManager, isValidRef } from "../AbstractDataManager";
 import { ReloadPolicy } from "../enums";
 import { SearchParams } from "../types";
+import { canLoad } from "../helpers/loading";
+import { buildCacheItem, buildMeta, mergeCacheItems } from "../helpers/caching";
 
 type GenericRecord = Record<string, unknown>;
 
@@ -79,7 +82,7 @@ export function load<T extends GenericRecord>(
 
   this.loadDocuments(loadRefs).then((docs: T[]) => {
     if (!Array.isArray(docs) || docs.length === 0) { return false; } // Unexpected error
-    this.$setMany(docs, true);
+    this.setMany(docs, true);
   });
 }
 
@@ -109,7 +112,17 @@ export function search<T extends GenericRecord>(this: DataManager<T>, params?: S
  * @param loaded If this is the full document that a user can get -- eg, it is fully loaded. If not, false. 
  */
 export function set<T extends GenericRecord>(this: DataManager<T>, doc: T, loaded = false): void {
-  this.setMany([doc], loaded);
+  const ref = this.$getRef(doc);
+  const updatedAt = this.$getUpdatedAt(doc);
+
+  if (!isValidRef(ref)) {
+    console.error(`A document attempting to be added to the ${this.collection} data manager is missing a ref.`);
+    return;
+  }
+
+  const meta = buildMeta(loaded, updatedAt);
+  const cacheItem = buildCacheItem(ref, doc, meta) as CacheItem<T>;
+  this.$setCacheItem(cacheItem);
 }
 
 /**
@@ -121,5 +134,29 @@ export function set<T extends GenericRecord>(this: DataManager<T>, doc: T, loade
  * never be marked loaded.
  */
 export function setMany<T extends GenericRecord>(this: DataManager<T>, docs: T[], loaded = false): void {
-  this.$setMany(docs, loaded);
+  for (const doc of docs) {
+    this.set(doc, loaded);
+  }
+}
+
+/**
+ * Sets a cache item in the local data, updates the document in the groups, and adds it to the cache
+ * @param cacheItem The cache item to set in the data manager
+ */
+export function setCacheItem<T extends GenericRecord>(this: DataManager<T>, cacheItem: CacheItem<T>) {
+  const ref = cacheItem.ref;
+  const existingCacheItem = this.$data[ref];
+
+  if (existingCacheItem) {
+    cacheItem = mergeCacheItems(cacheItem, existingCacheItem) as CacheItem<T>;
+  }
+
+  this.$data[ref] = cacheItem;
+
+  if (existingCacheItem) {
+    this.$updateItemInGroups(cacheItem.doc, existingCacheItem.doc);
+  } else {
+    this.$createItemInGroups(cacheItem.doc);
+  }
+  this.$markUpdated(ref);
 }
