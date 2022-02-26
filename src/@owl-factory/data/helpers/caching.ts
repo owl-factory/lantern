@@ -8,7 +8,7 @@ import { deepMerge } from "@owl-factory/utilities/objects";
  * @param meta The metadata for the cache item
  * @returns The completed cache item
  */
-export function buildCacheItem(
+export function newCacheItem(
   ref: string,
   doc: Record<string, unknown>,
   meta: CacheItemMetadata
@@ -26,7 +26,7 @@ export function buildCacheItem(
  * @param updatedAt The last time that the document was updated according to the server
  * @returns A complete metadata object
  */
-export function buildMeta(loaded: boolean, updatedAt = 0): CacheItemMetadata {
+export function newMetadata(loaded: boolean, updatedAt = 0): CacheItemMetadata {
   const meta = {
     loaded: loaded,
     loadedAt: loaded ? Date.now() : 0,

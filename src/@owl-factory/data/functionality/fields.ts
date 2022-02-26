@@ -29,9 +29,11 @@ export function getUpdatedAt<T extends Record<string, unknown>>(this: DataManage
   // In a try-catch block to prevent issues from invalid Dates
   try {
     const value = read(doc, this.updatedAtField);
-    if (typeof value !== "string" || typeof value !== "number" || typeof value !== "object") { return 0; }
+    if (typeof value !== "string" && typeof value !== "number" && typeof value !== "object") { return 2; }
 
     const date = new Date(value as (string | number | Date));
+    // Case with invalid value (eg empty object) causing the value to be not a number
+    if (isNaN(date.valueOf())) { return 0; }
     return date.valueOf();
 
   } catch {

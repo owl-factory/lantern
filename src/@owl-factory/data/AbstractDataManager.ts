@@ -14,7 +14,7 @@ export class DataManager<T extends Record<string, unknown>> {
   protected updatedAtField = "updatedAt"; // The field containing the document's last updated time
   protected collection = "data"; // The name of the collection of data. Used for logs and caching
 
-  protected cacheMethod = CacheMethod.LocalStorage; // The location that the data will be cached at
+  // protected cacheMethod = CacheMethod.LocalStorage; // The location that the data will be cached at
   // The policy for determining if a document should be reloaded if already loaded
   protected reloadPolicy = ReloadPolicy.IfStale;
 
@@ -28,9 +28,9 @@ export class DataManager<T extends Record<string, unknown>> {
   public $indexes: Record<string, unknown> = {}; // UNUSED
 
   // A set of records that will be updated the next time the cache queue is emptied
-  protected $cacheQueue: Record<string, number> = {};
-  protected $cacheBatchJob!: NodeJS.Timeout;
-  protected $cacheBatchDelay = 1000 * 60 * 5;
+  // protected $cacheQueue: Record<string, number> = {};
+  // protected $cacheBatchJob!: NodeJS.Timeout;
+  // protected $cacheBatchDelay = 1000 * 60 * 5;
 
   protected $loadQueue: Record<string, number> = {};
   protected $loadBatchJob!: NodeJS.Timeout;
@@ -41,17 +41,17 @@ export class DataManager<T extends Record<string, unknown>> {
   constructor() {
     if (isClient) {
       window.addEventListener("load", () => {
-        this.$loadCache();
-        this.$initializeCacheBatchJob();
+        // this.$loadCache();
+        // this.$initializeCacheBatchJob();
       });
 
       // Functions to run if we're hard refreshing or going to a different site
       window.onbeforeunload = () => {
-        this.$runCacheQueue();
+        // this.$runCacheQueue();
       };
 
       makeObservable(this, {
-        $loadCache: action,
+        // $loadCache: action,
         setMany: action,
         set: action,
         $setCacheItem: action,
@@ -73,16 +73,16 @@ export class DataManager<T extends Record<string, unknown>> {
   public $setCacheItem = data.setCacheItem;
   public setMany = data.setMany;
 
-  protected $clearCache = caching.clearCache;
-  protected $initializeCacheBatchJob = caching.initializeCacheBatchJob;
-  public $loadCache = caching.loadCache;
-  protected $runCacheQueue = caching.runCacheQueue;
-  protected $markUpdated = caching.markUpdated;
-  protected $saveCache = caching.saveCache;
+  // protected $clearCache = caching.clearCache;
+  // protected $initializeCacheBatchJob = caching.initializeCacheBatchJob;
+  // public $loadCache = caching.loadCache;
+  // protected $runCacheQueue = caching.runCacheQueue;
+  // protected $markUpdated = caching.markUpdated;
+  // protected $saveCache = caching.saveCache;
 
   public addGroup = grouping.addGroup;
   public removeGroup = grouping.removeGroup;
-  protected $clearGroups = grouping.clearGroups;
+  public $clearGroups = grouping.clearGroups;
   protected $createItemInGroups = grouping.createItemInGroups;
   protected $removeItemFromGroups = grouping.removeItemFromGroups;
   protected $updateItemInGroups = grouping.updateItemInGroups;
@@ -90,8 +90,8 @@ export class DataManager<T extends Record<string, unknown>> {
   get lastTouched() { return this.$lastTouched; }
   public touch() { this.$lastTouched = Date.now(); }
 
-  protected $getRef = fields.getRef;
-  protected $getUpdatedAt = fields.getUpdatedAt;
+  public $getRef = fields.getRef;
+  public $getUpdatedAt = fields.getUpdatedAt;
 
   /**
    * Loads documents from an external source. This function should be overloaded when a child class is created.

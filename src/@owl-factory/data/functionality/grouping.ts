@@ -43,7 +43,7 @@ export function removeGroup<T extends GenericRecord>(this: DataManager<T>, name:
 }
 
 /**
- * Clears out all of the groups
+ * Clears out all of the groups, but does not delete the group itself
  * @protected
  */
 export function clearGroups<T extends GenericRecord>(this: DataManager<T>) {

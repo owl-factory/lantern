@@ -3,7 +3,7 @@ import { DataManager, isValidRef } from "../AbstractDataManager";
 import { ReloadPolicy } from "../enums";
 import { SearchParams } from "../types";
 import { canLoad } from "../helpers/loading";
-import { buildCacheItem, buildMeta, mergeCacheItems } from "../helpers/caching";
+import { newCacheItem, newMetadata, mergeCacheItems } from "../helpers/caching";
 
 type GenericRecord = Record<string, unknown>;
 
@@ -14,7 +14,7 @@ type GenericRecord = Record<string, unknown>;
 export function clear(this: DataManager<GenericRecord>) {
   this.$data = {};
   this.$clearGroups();
-  this.$clearCache();
+  // this.$clearCache();
 
   return;
 }
@@ -66,6 +66,7 @@ export function load<T extends GenericRecord>(
   const loadRefs: string[] = [];
 
   // Checks which documents to we can load
+  // TODO - move the for loop into a different function?
   for (const ref of refs) {
     if (ref === undefined || ref === "undefined" || ref === "") { continue; }
 
@@ -120,8 +121,8 @@ export function set<T extends GenericRecord>(this: DataManager<T>, doc: T, loade
     return;
   }
 
-  const meta = buildMeta(loaded, updatedAt);
-  const cacheItem = buildCacheItem(ref, doc, meta) as CacheItem<T>;
+  const meta = newMetadata(loaded, updatedAt);
+  const cacheItem = newCacheItem(ref, doc, meta) as CacheItem<T>;
   this.$setCacheItem(cacheItem);
 }
 
@@ -158,5 +159,5 @@ export function setCacheItem<T extends GenericRecord>(this: DataManager<T>, cach
   } else {
     this.$createItemInGroups(cacheItem.doc);
   }
-  this.$markUpdated(ref);
+  // this.$markUpdated(ref);
 }
