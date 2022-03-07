@@ -1,5 +1,5 @@
 import { CacheController } from "@owl-factory/cache/AbstractCacheController";
-import { DataManager } from "@owl-factory/data/AbstractDataManager";
+import { DataManager } from "@owl-factory/data/DataManager";
 import { rest } from "@owl-factory/https/rest";
 import { Ref64 } from "@owl-factory/types";
 import { isOwner } from "server/logic/security";

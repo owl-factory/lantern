@@ -1,4 +1,4 @@
-import { DataManager } from "@owl-factory/data/AbstractDataManager";
+import { DataManager } from "@owl-factory/data/DataManager";
 import { rest } from "@owl-factory/https/rest";
 import { getUniques } from "@owl-factory/utilities/arrays";
 import { Auth } from "controllers/auth";

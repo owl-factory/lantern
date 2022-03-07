@@ -1,13 +1,13 @@
-import { newCacheItem, newMetadata } from "@owl-factory/data/helpers/caching";
-import { DataManager } from "../../AbstractDataManager";
+import { newPacket, newMetadata } from "@owl-factory/data/helpers/caching";
+import { DataManager } from "../../DataManager";
 
 describe("DataManager Data Functions", () => {
   let data: DataManager<Record<string, unknown>>;
 
   beforeEach(() => {
     data = new DataManager();
-    const cacheItem1 = newCacheItem("1", { ref: "1" }, newMetadata(false, 0));
-    const cacheItem2 = newCacheItem("2", { ref: "2" }, newMetadata(true, 0));
+    const cacheItem1 = newPacket("1", { ref: "1" }, newMetadata(false, 0));
+    const cacheItem2 = newPacket("2", { ref: "2" }, newMetadata(true, 0));
     data.$data = { [cacheItem1.ref]: cacheItem1, [cacheItem2.ref]: cacheItem2 };
     data.addGroup("testAll", (_doc) => true);
     data.addGroup("testOne", (doc) => doc?.ref === "2");
@@ -62,26 +62,26 @@ describe("DataManager Data Functions", () => {
 
   // TODO - expand search tests later as the search gets more complicated. Perhaps move to own file
   test("search data group", () => {
-    const docs = data.search({group: "data"});
+    const docs = data.searching({group: "data"});
 
     expect(docs.length).toBe(2);
   });
 
   test("search testOne group", () => {
-    const docs = data.search({ group: "testOne" });
+    const docs = data.searching({ group: "testOne" });
 
     expect(docs.length).toBe(1);
     expect(docs[0]).toBe("2");
   });
 
   test("search no group", () => {
-    const docs = data.search();
+    const docs = data.searching();
 
     expect(docs.length).toBe(0);
   });
 
   test("search missing group", () => {
-    const docs = data.search({ group: "missing" });
+    const docs = data.searching({ group: "missing" });
     expect(docs.length).toBe(0);
   });
 

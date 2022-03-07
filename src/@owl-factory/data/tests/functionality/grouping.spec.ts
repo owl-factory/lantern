@@ -1,13 +1,13 @@
-import { DataManager } from "@owl-factory/data/AbstractDataManager";
-import { newCacheItem, newMetadata } from "@owl-factory/data/helpers/caching";
+import { DataManager } from "@owl-factory/data/DataManager";
+import { newPacket, newMetadata } from "@owl-factory/data/helpers/caching";
 
 describe("DataManager fields", () => {
   let data: DataManager<Record<string, unknown>>;
 
   beforeEach(() => {
     data = new DataManager();
-    const cacheItem1 = newCacheItem("1", { ref: "1" }, newMetadata(false, 0));
-    const cacheItem2 = newCacheItem("2", { ref: "2" }, newMetadata(true, 0));
+    const cacheItem1 = newPacket("1", { ref: "1" }, newMetadata(false, 0));
+    const cacheItem2 = newPacket("2", { ref: "2" }, newMetadata(true, 0));
     data.$data = { [cacheItem1.ref]: cacheItem1, [cacheItem2.ref]: cacheItem2 };
 
   });

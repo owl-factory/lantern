@@ -2,14 +2,14 @@ import { Ref64 } from "@owl-factory/types";
 
 
 // The standard package of data stored within the cache
-export interface CacheItem<T> {
+export interface Packet<T> {
   ref: Ref64;
   doc: T; // The document data for business logic
-  meta: CacheItemMetadata;
+  meta: PacketMetadata;
 }
 
 // The metadata for a cache item
-export interface CacheItemMetadata {
+export interface PacketMetadata {
   loaded: boolean; // If the full item was loaded in from the database, or partially
   loadedAt: number; // The last time that this item was loaded in from the database
   updatedAt: number; // The last time that this item was updated

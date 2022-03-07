@@ -1,5 +1,5 @@
 import { Ref64 } from "@owl-factory/types";
-import { DataManager } from "../AbstractDataManager";
+import { DataManager } from "../DataManager";
 
 export function batchToCache<T extends Record<string, unknown>>(this: DataManager<T>, ref: Ref64) {
   // Ensure that the batch job exists

@@ -11,7 +11,7 @@ const CampaignSelection = observer(() => {
   const [ campaigns, setCampaigns ] = React.useState<string[]>([]);
 
   React.useEffect(() => {
-    setCampaigns(CampaignData.search());
+    setCampaigns(CampaignData.searching());
   }, [CampaignData]);
 
   const campaignElements: JSX.Element[] = [];

@@ -88,7 +88,7 @@ function MyCampaigns(props: MyCampaignsProps) {
 
   // Use this to prevent too many rerenders
   React.useEffect(() => {
-    setCampaignRefs(CampaignData.search({ group: "my-campaigns" }));
+    setCampaignRefs(CampaignData.searching({ group: "my-campaigns" }));
   }, [CampaignData.$lastTouched]);
 
   // Builds the tiles for listing out the campaigns

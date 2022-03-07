@@ -1,7 +1,7 @@
 
 // TODO - put into its own folder
 
-import { CacheItem } from "@owl-factory/cache/types";
+import { Packet } from "@owl-factory/cache/types";
 import { isClient } from "@owl-factory/utilities/client";
 
 // Mocks up the window.localStorage to prevent breaks serverside
@@ -33,10 +33,10 @@ export function clearCacheLocalStorage(collection: string): void {
  * @param collection The collection to load from the local storage cache
  * @returns A struct of cache items by their refs
  */
-export function loadCacheLocalStorage<T>(collection: string): Record<string, CacheItem<T>> {
+export function loadCacheLocalStorage<T>(collection: string): Record<string, Packet<T>> {
   const refs = getIndexRefs(collection);
 
-  const data: Record<string, CacheItem<T>> = {};
+  const data: Record<string, Packet<T>> = {};
 
   for (const ref of refs) {
     if (typeof ref !== "string") { continue; } // Error handling in case someone modifies their local storage
@@ -59,7 +59,7 @@ export function loadCacheLocalStorage<T>(collection: string): Record<string, Cac
  * @param updateRefs A list of all refs of updated documents
  * @param deleteRefs A list of all refs that were removed
  */
-export function saveCacheLocalStorage(collection: string, data: Record<string, CacheItem<unknown>>, updateRefs: string[], deleteRefs: string[]): void {
+export function saveCacheLocalStorage(collection: string, data: Record<string, Packet<unknown>>, updateRefs: string[], deleteRefs: string[]): void {
   for (const deleteRef of deleteRefs) {
     LOCAL_STORAGE.removeItem(buildItemKey(collection, deleteRef));
   }

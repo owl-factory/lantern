@@ -16,7 +16,7 @@ export const RulesetSelect = observer((props: RulesetSelectProps) => {
   const [ rulesets, setRulesets ] = React.useState<Partial<RulesetDocument>[]>([]);
 
   React.useEffect(() => {
-    const rulesetRefs = RulesetData.search({ group: "data", sort: ["name"] });
+    const rulesetRefs = RulesetData.searching({ group: "data", sort: ["name"] });
     // TODO - include user rulesets & last used rulesets as a top option
     setRulesets(RulesetData.getMany(rulesetRefs));
   }, [RulesetData.$lastTouched]);

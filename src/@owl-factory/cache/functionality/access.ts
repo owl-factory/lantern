@@ -1,7 +1,7 @@
 import { Ref64 } from "@owl-factory/types";
 import { CacheController } from "../AbstractCacheController";
 import { PassiveReadLevel } from "../enums";
-import { CacheItem, GetPageOptions, RefRequired } from "../types";
+import { Packet, GetPageOptions, RefRequired } from "../types";
 
 /**
  * Fetches a single item from the database
@@ -25,7 +25,7 @@ export function get<T extends RefRequired>(
     return undefined;
   }
 
-  const cacheItem: CacheItem<T> | undefined = this.$data[ref];
+  const cacheItem: Packet<T> | undefined = this.$data[ref];
   if (cacheItem === undefined) { return undefined; } // Safety case, though it should never be hit
 
   // TODO - security. Also prevent repeated attempts to access the data
@@ -39,7 +39,7 @@ export function get<T extends RefRequired>(
       return cacheItem?.doc;
 
     case PassiveReadLevel.IfStale:
-      this.$readIfStale(cacheItem, staleTime).then((unstaleCacheItem: CacheItem<T> | undefined) => {
+      this.$readIfStale(cacheItem, staleTime).then((unstaleCacheItem: Packet<T> | undefined) => {
         this.$readIfUnloaded(unstaleCacheItem);
       });
       return cacheItem?.doc;
@@ -112,7 +112,7 @@ export function set<T extends RefRequired>(this: CacheController<T>, doc: T): vo
  */
 export function setMany<T extends RefRequired>(this: CacheController<T>, docs?: T[]): void {
   if (docs === undefined) { docs = []; }
-  const cacheItems: CacheItem<T>[] = this.$toCacheItem(docs, { loaded: false, loadedAt: 0, updatedAt: Date.now()});
+  const cacheItems: Packet<T>[] = this.$toCacheItem(docs, { loaded: false, loadedAt: 0, updatedAt: Date.now()});
 
   this.$setMany(cacheItems);
 }

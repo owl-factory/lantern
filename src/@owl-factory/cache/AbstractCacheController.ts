@@ -7,7 +7,7 @@
  */
 
 import { isClient } from "@owl-factory/utilities/client";
-import { CacheItem, RefRequired } from "@owl-factory/cache/types";
+import { Packet, RefRequired } from "@owl-factory/cache/types";
 import { action, makeObservable, observable } from "mobx";
 
 import * as access from "./functionality/access";
@@ -20,7 +20,7 @@ export abstract class CacheController<T extends RefRequired> {
   public abstract readonly apiURL: string; // The API endpoint for accessing data
 
   // An object that contains all of the data currently cached
-  public $data: Record<string, CacheItem<T>> = {};
+  public $data: Record<string, Packet<T>> = {};
 
   protected staleTime = 1000 * 60 * 30; // The time until a document becomes stale, in milliseconds
   // A flag that informs the cache when a document should be pulled from the database again

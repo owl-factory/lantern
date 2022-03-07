@@ -3,7 +3,7 @@ import { RulesetDocument } from "types/documents";
 import * as storage from "@owl-factory/cache/storage/localStorage";
 import { Ref64 } from "@owl-factory/types";
 import { rest } from "@owl-factory/https/rest";
-import { DataManager } from "@owl-factory/data/AbstractDataManager";
+import { DataManager } from "@owl-factory/data/DataManager";
 import { isOwner, isPublic } from "server/logic/security";
 
 // class $RulesetData extends CacheController<RulesetDocument> {

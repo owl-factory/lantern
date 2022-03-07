@@ -17,7 +17,7 @@ export const CampaignSelect = observer((props: CampaignSelectProps) => {
   const [ campaigns, setCampaigns ] = React.useState<Ref64[]>([]);
 
   React.useEffect(() => {
-    const cachedCampaigns = CampaignData.search({ sort: ["name"] });
+    const cachedCampaigns = CampaignData.searching({ sort: ["name"] });
     // TODO - include user rulesets & last used rulesets as a top option
     setCampaigns(cachedCampaigns);
   }, [CampaignData.$lastTouched]);

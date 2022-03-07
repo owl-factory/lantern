@@ -2,7 +2,7 @@ import { isError } from "@owl-factory/errors";
 import { Ref64 } from "@owl-factory/types";
 import { CacheController } from "../AbstractCacheController";
 import { load, remove, save } from "../storage/localStorage";
-import { CacheItem, CacheItemMetadata, RefRequired } from "../types";
+import { Packet, CacheItemMetadata, RefRequired } from "../types";
 
 /**
  * Loads documents from the cache into memory
@@ -21,9 +21,9 @@ export function loadCache<T extends RefRequired>(this: CacheController<T>) {
  */
  export async function $readIfStale<T extends RefRequired>(
   this: CacheController<T>,
-  cacheItem: CacheItem<T>,
+  cacheItem: Packet<T>,
   staleTime: number
-): Promise<CacheItem<T> | undefined> {
+): Promise<Packet<T> | undefined> {
   // If it's not loaded right now, then we'll assume that there's an issue elsewhere
   if (!cacheItem || !cacheItem.doc || cacheItem.doc.ref) { return cacheItem; }
 
@@ -42,8 +42,8 @@ export function loadCache<T extends RefRequired>(this: CacheController<T>) {
  */
 export async function $readIfUnloaded<T extends RefRequired>(
   this: CacheController<T>,
-  cacheItem?: CacheItem<T>
-): Promise<CacheItem<T> | undefined> {
+  cacheItem?: Packet<T>
+): Promise<Packet<T> | undefined> {
   // Base case: undefined item
   if (!cacheItem) { return cacheItem; }
   // Base case: return if no ref is present (somehow)
@@ -89,11 +89,11 @@ export function $removeMany<T extends RefRequired>(
  */
 export function $setMany<T extends RefRequired>(
   this: CacheController<T>,
-  cacheItems: CacheItem<T>[],
+  cacheItems: Packet<T>[],
   saveToCacheStorage = true
 ): void {
   if (cacheItems === undefined || cacheItems.length === 0) { return; }
-  cacheItems.forEach((cacheItem: CacheItem<T>) => {
+  cacheItems.forEach((cacheItem: Packet<T>) => {
     if (!cacheItem || !cacheItem.doc || !("ref" in cacheItem.doc)) { 
       throw "error";
       return;
@@ -119,9 +119,9 @@ export function $toCacheItem<T extends RefRequired>(
   this: CacheController<T>,
   docs: T[] | undefined,
   meta?: CacheItemMetadata
-): CacheItem<T>[] {
+): Packet<T>[] {
   if (docs === undefined) { return []; }
-  const cacheItems: CacheItem<T>[] = [];
+  const cacheItems: Packet<T>[] = [];
 
   const metadata = meta !== undefined ? { ...meta } : {
     loaded: false,
@@ -132,7 +132,7 @@ export function $toCacheItem<T extends RefRequired>(
 
   docs.forEach((doc: T) => {
     if (!doc.ref) { return; }
-    const cacheItem: CacheItem<T> = {
+    const cacheItem: Packet<T> = {
       ref: doc.ref,
       doc: doc,
       meta: metadata,

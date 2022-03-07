@@ -3,7 +3,7 @@
  */
 
 import { CacheItem } from "../types";
-import { DataManager } from "../AbstractDataManager";
+import { DataManager } from "../DataManager";
 import { clearCacheLocalStorage, loadCacheLocalStorage, saveCacheLocalStorage } from "../caching/local-storage";
 import { CacheMethod } from "../enums";
 import { Ref64 } from "@owl-factory/types";

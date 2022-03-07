@@ -72,7 +72,7 @@ function $ImageList(props: ImageListProps): JSX.Element {
 
   // Updates the list of images when the image manager changes
   React.useEffect(() => {
-    const imageRefs = ImageData.search({ group: "owned-images" });
+    const imageRefs = ImageData.searching({ group: "owned-images" });
     setImages(ImageData.getMany(imageRefs));
   }, [ImageData.lastTouched]);
 

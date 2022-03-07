@@ -3,7 +3,7 @@
  * and data setting.
  */
 
-import { DataManager, isValidRef } from "../AbstractDataManager";
+import { DataManager, isValidRef } from "../DataManager";
 
 type GenericRecord = Record<string, unknown>;
 
@@ -61,7 +61,7 @@ export function clearGroups<T extends GenericRecord>(this: DataManager<T>) {
  */
 export function createItemInGroups<T extends GenericRecord>(this: DataManager<T>, doc: T) {
   const groupNames = Object.keys(this.$groups);
-  const ref = this.$getRef(doc);
+  const ref = doc.ref as string;
 
   if (!isValidRef(ref)) { return; }
 
@@ -90,7 +90,7 @@ export function createItemInGroups<T extends GenericRecord>(this: DataManager<T>
  */
 export function removeItemFromGroups<T extends GenericRecord>(this: DataManager<T>, doc: T) {
   const groupNames = Object.keys(this.$groups);
-  const ref = this.$getRef(doc);
+  const ref = doc.ref as string;
 
   if (!isValidRef(ref)) { return; }
 
@@ -117,8 +117,8 @@ export function removeItemFromGroups<T extends GenericRecord>(this: DataManager<
  */
 export function updateItemInGroups<T extends GenericRecord>(this: DataManager<T>, newDoc: T, oldDoc: T) {
   const groupNames = Object.keys(this.$groups);
-  const oldRef = this.$getRef(oldDoc);
-  const newRef = this.$getRef(newDoc);
+  const oldRef = oldDoc.ref as string;
+  const newRef = newDoc.ref as string;
 
   if (oldRef !== newRef) { return; }
 

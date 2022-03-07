@@ -1,4 +1,4 @@
-import { CacheItem } from "@owl-factory/cache/types";
+import { Packet } from "@owl-factory/cache/types";
 import { ReloadPolicy } from "../enums";
 
 /**
@@ -8,7 +8,7 @@ import { ReloadPolicy } from "../enums";
  * @param staleTime The time before a cache item is marked as stale, in milliseconds
  * @returns True if the item meets loading criteria. False otherwise.
  */
-export function canLoad(cacheItem: CacheItem<unknown>, reloadPolicy: ReloadPolicy, staleTime: number) {
+export function canLoad(cacheItem: Packet<unknown>, reloadPolicy: ReloadPolicy, staleTime: number) {
   // Base case. Load if the item is not loaded or the reload policy is always
   if (!cacheItem.meta.loaded || reloadPolicy === ReloadPolicy.Always) { return true; }
 

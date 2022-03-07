@@ -1,9 +1,9 @@
-import { CacheItem } from "../types";
-import { DataManager, isValidRef } from "../AbstractDataManager";
+import { Packet } from "../types";
+import { DataManager, isValidRef } from "../DataManager";
 import { ReloadPolicy } from "../enums";
 import { SearchParams } from "../types";
 import { canLoad } from "../helpers/loading";
-import { newCacheItem, newMetadata, mergeCacheItems } from "../helpers/caching";
+import { newPacket, newMetadata, mergePackets } from "../helpers/caching";
 
 type GenericRecord = Record<string, unknown>;
 
@@ -113,7 +113,7 @@ export function search<T extends GenericRecord>(this: DataManager<T>, params?: S
  * @param loaded If this is the full document that a user can get -- eg, it is fully loaded. If not, false. 
  */
 export function set<T extends GenericRecord>(this: DataManager<T>, doc: T, loaded = false): void {
-  const ref = this.$getRef(doc);
+  const ref = doc.ref;
   const updatedAt = this.$getUpdatedAt(doc);
 
   if (!isValidRef(ref)) {
@@ -122,7 +122,7 @@ export function set<T extends GenericRecord>(this: DataManager<T>, doc: T, loade
   }
 
   const meta = newMetadata(loaded, updatedAt);
-  const cacheItem = newCacheItem(ref, doc, meta) as CacheItem<T>;
+  const cacheItem = newPacket(ref, doc, meta) as Packet<T>;
   this.$setCacheItem(cacheItem);
 }
 
@@ -144,12 +144,12 @@ export function setMany<T extends GenericRecord>(this: DataManager<T>, docs: T[]
  * Sets a cache item in the local data, updates the document in the groups, and adds it to the cache
  * @param cacheItem The cache item to set in the data manager
  */
-export function setCacheItem<T extends GenericRecord>(this: DataManager<T>, cacheItem: CacheItem<T>) {
+export function setCacheItem<T extends GenericRecord>(this: DataManager<T>, cacheItem: Packet<T>) {
   const ref = cacheItem.ref;
   const existingCacheItem = this.$data[ref];
 
   if (existingCacheItem) {
-    cacheItem = mergeCacheItems(cacheItem, existingCacheItem) as CacheItem<T>;
+    cacheItem = mergePackets(cacheItem, existingCacheItem) as Packet<T>;
   }
 
   this.$data[ref] = cacheItem;

@@ -1,23 +1,8 @@
 import { fieldInObject, read } from "@owl-factory/utilities/objects";
-import { DataManager } from "../AbstractDataManager";
+import { DataManager } from "../DataManager";
 
 /**
- * Gets the ref for a document. Undefined refs are returned as empty strings
- * @protected
- * @param doc The document to parse the ref from
- * @returns A string containing the ref or an empty string
- */
-export function getRef<T extends Record<string, unknown>>(this: DataManager<T>, doc: T): string {
-  if (!fieldInObject(doc, this.refField)) { return ""; }
-
-  const ref = read(doc, this.refField);
-  if (typeof ref !== "string") { return ""; }
-
-  return ref;
-}
-
-/**
- * Determines the time that this document was last updated, if any
+ * Determines the time that this document was last updated, if any. If none is found, returns 0
  * @protected
  * @param doc The doc to parse the updatedAt time from
  * @returns A number greater than or equal to 0

@@ -1,6 +1,6 @@
 import { Ref64 } from "@owl-factory/types";
 import { isClient } from "@owl-factory/utilities/client";
-import { CacheItem } from "@owl-factory/cache/types";
+import { Packet } from "@owl-factory/cache/types";
 
 // Mocks up the window.localStorage to prevent breaks serverside
 const mockLocalStorage = {
@@ -17,8 +17,8 @@ const LOCAL_STORAGE = isClient ? window.localStorage : mockLocalStorage;
  * @param key The document type key
  * @returns An array of cache items stored in the cache
  */
-export function load<T>(key: string): CacheItem<T>[]  {
-  const docs: CacheItem<T>[] = [];
+export function load<T>(key: string): Packet<T>[]  {
+  const docs: Packet<T>[] = [];
 
   const refs = getRefList(key);
   refs.forEach((ref: Ref64) => {
@@ -36,12 +36,12 @@ export function load<T>(key: string): CacheItem<T>[]  {
  * @param targetRefs The refs for documents to delete
  * @returns An array of all deleted documents
  */
-export function remove<T>(key: string, targetRefs: Ref64[]): CacheItem<T>[] {
-  const deletedDocs: CacheItem<T>[] = [];
+export function remove<T>(key: string, targetRefs: Ref64[]): Packet<T>[] {
+  const deletedDocs: Packet<T>[] = [];
 
   const refs = getRefList(key);
   targetRefs.forEach((ref: Ref64) => {
-    const doc: CacheItem<T> | undefined = removeItem(key, ref);
+    const doc: Packet<T> | undefined = removeItem(key, ref);
     if (!doc) { return; }
     deletedDocs.push(doc);
 
@@ -60,7 +60,7 @@ export function remove<T>(key: string, targetRefs: Ref64[]): CacheItem<T>[] {
  * @param docs A subset of documents to save to the cache
  * @returns The number of documents save to the cache
  */
-export function save<T>(key: string, docs: CacheItem<T>[]): number {
+export function save<T>(key: string, docs: Packet<T>[]): number {
   let count = 0;
 
   const refs = getRefList(key);
@@ -118,7 +118,7 @@ function $get(key: string, ref: Ref64) {
  * @param ref The ref64 of the document to fetch
  * @returns The deleted CacheItem document, if found. Undefined if the document did not exist
  */
-function removeItem<T>(key: string, ref: Ref64): CacheItem<T> | undefined {
+function removeItem<T>(key: string, ref: Ref64): Packet<T> | undefined {
   const doc = $get(key, ref);
   if (!doc) { return undefined; }
   LOCAL_STORAGE.removeItem(itemKey(key, ref));

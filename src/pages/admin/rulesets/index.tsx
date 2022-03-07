@@ -219,7 +219,7 @@ function AdminRulesets(props: AdminRulesetsProps) {
   }, []);
 
   React.useEffect(() => {
-    const rulesetRefs = RulesetData.search({ group: "data" });
+    const rulesetRefs = RulesetData.searching({ group: "data" });
     setRulesets(RulesetData.getMany(rulesetRefs));
   }, [RulesetData]);
 

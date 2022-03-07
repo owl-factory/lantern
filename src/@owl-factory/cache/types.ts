@@ -7,7 +7,7 @@ export interface RefRequired {
 }
 
 // The standard package of data stored within the cache
-export interface CacheItem<T> {
+export interface Packet<T> {
   ref: Ref64;
   doc: T; // The document data for business logic
   meta: CacheItemMetadata;
@@ -16,8 +16,8 @@ export interface CacheItem<T> {
 // The metadata for a cache item
 export interface CacheItemMetadata {
   loaded: boolean; // If the full item was loaded in from the database, or partially
-  loadedAt: number; // The last time that this item was loaded in from the database
-  updatedAt: number; // The last time that this item was updated
+  loadedAt: number; // The last time that this item was loaded in from the database in local time
+  updatedAt: number; // The last time that this item was updated in server time
 }
 
 // Search options for searching through a page from the cache
