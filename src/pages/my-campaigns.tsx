@@ -39,13 +39,13 @@ const CampaignTile = observer((props: CampaignTileProps) => {
 
   React.useEffect(() => {
     setCampaign(CampaignData.get(props.campaignRef) || {});
-  }, [CampaignData.$lastTouched]);
+  }, [CampaignData.lastTouched]);
 
   React.useEffect(() => {
     if (!campaign || campaign.ruleset?.ref === undefined) { setRuleset({}); return; }
     RulesetData.load(campaign.ruleset?.ref);
     setRuleset(RulesetData.get(campaign.ruleset?.ref as string) || {});
-  }, [campaign, RulesetData.$lastTouched]);
+  }, [campaign, RulesetData.lastTouched]);
 
   return (
     <Card>
@@ -88,8 +88,8 @@ function MyCampaigns(props: MyCampaignsProps) {
 
   // Use this to prevent too many rerenders
   React.useEffect(() => {
-    setCampaignRefs(CampaignData.searching({ group: "my-campaigns" }));
-  }, [CampaignData.$lastTouched]);
+    setCampaignRefs(CampaignData.search({ group: "my-campaigns" }));
+  }, [CampaignData.lastTouched]);
 
   // Builds the tiles for listing out the campaigns
   const campaignTiles: JSX.Element[] = [];

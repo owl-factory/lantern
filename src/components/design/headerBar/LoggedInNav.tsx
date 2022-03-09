@@ -62,10 +62,10 @@ const RecentCampaigns = observer(() => {
   const campaignLinks: JSX.Element[] = [];
 
   React.useEffect(() => {
-    const campaignRefs = CampaignData.searching({ group: "my-campaigns", perPage: 3} );
+    const campaignRefs = CampaignData.search({ group: "my-campaigns", perPage: 3} );
     const foundCampaigns = CampaignData.getMany(campaignRefs);
     setCampaigns(foundCampaigns);
-  }, [CampaignData.$lastTouched]);
+  }, [CampaignData.lastTouched]);
 
   campaigns.forEach((doc: Partial<CampaignDocument>) => {
     campaignLinks.push(

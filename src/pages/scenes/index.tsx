@@ -11,7 +11,7 @@ const CampaignSelection = observer(() => {
   const [ campaigns, setCampaigns ] = React.useState<string[]>([]);
 
   React.useEffect(() => {
-    setCampaigns(CampaignData.searching());
+    setCampaigns(CampaignData.search());
   }, [CampaignData]);
 
   const campaignElements: JSX.Element[] = [];
@@ -30,14 +30,8 @@ const CampaignSelection = observer(() => {
 const SceneSelection = observer(() => {
   const [ scenes, setScenes ] = React.useState<Partial<SceneDocument>[]>([]);
 
-  React.useEffect(() => {
-    setScenes(SceneData.getPage());
-  });
-
   const sceneElements: JSX.Element[] = [];
-  SceneData.getPage().forEach((scene: Partial<SceneDocument>) => {
-    sceneElements.push(<a href="#" onClick={() => SceneController.setCampaign(scene.ref as string)}>{scene.name}</a>);
-  });
+
   return (
     <div>
       {scenes}

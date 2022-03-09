@@ -47,9 +47,13 @@ export class GroupingController<T extends Record<string, unknown>> {
    * Removes a group and its validator
    * @param name The name of the group to remove
    */
-  public removeGroup(name: string): void {
+  public removeGroup(name: string): number {
+    const group = this.groups[name];
     delete this.groups[name];
     delete this.validators[name];
+
+    if (group !== undefined) { return 1; }
+    return 0;
   }
 
   /**

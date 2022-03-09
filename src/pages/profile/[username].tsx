@@ -266,7 +266,7 @@ function Profile(props: ProfileProps): JSX.Element {
   React.useEffect(() => {
     const playerIDs = getUniques(user.recentPlayers, "ref");
     setPlayers(UserData.getMany(playerIDs));
-  }, [UserData.$lastTouched]);
+  }, [UserData.lastTouched]);
 
   // Updates the current user when they change
   React.useEffect(() => {

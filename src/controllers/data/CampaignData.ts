@@ -6,7 +6,7 @@ import { isOwner } from "server/logic/security";
 import { CampaignDocument } from "types/documents";
 
 class CampaignDataManager extends DataManager<Partial<CampaignDocument>> {
-  public readonly collection = "campaigns";
+  public collection = "campaigns";
 
   constructor() {
     super();
@@ -15,7 +15,7 @@ class CampaignDataManager extends DataManager<Partial<CampaignDocument>> {
     this.addGroup("my-campaigns", isMyCampaign);
   }
 
-  protected async loadDocuments(refs: string[]): Promise<Partial<CampaignDocument>[]> {
+  public async loadDocuments(refs: string[]): Promise<Partial<CampaignDocument>[]> {
     if (refs.length === 0) { return []; }
     const docs = await rest.post<{ campaigns: Partial<CampaignDocument>[] }>(`/api/campaigns`, { refs: refs });
     return docs.data.campaigns;

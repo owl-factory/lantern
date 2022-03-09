@@ -1,17 +1,12 @@
 import { Packet } from "@owl-factory/cache/types";
 import { Ref64 } from "@owl-factory/types";
-import { isClient } from "@owl-factory/utilities/client";
-import { action, makeObservable, observable } from "mobx";
 import { DataController } from "./data";
-import { CacheMethod, ReloadPolicy } from "./enums";
-import * as caching from "./functionality/caching";
-import * as data from "./functionality/data";
-import * as fields from "./functionality/fields";
-import * as grouping from "./functionality/grouping";
+import { ReloadPolicy } from "./enums";
 import { mergePackets as mergePackets, newMetadata, newPacket } from "./helpers/caching";
-import { canLoad } from "./helpers/loading";
 import { GroupingController } from "./grouping";
 import { SearchParams } from "./types";
+import * as caching from "./caching";
+import { BatchingController } from "./batching";
 
 
 
@@ -26,12 +21,14 @@ export class DataManager<T extends Record<string, unknown>> {
   public staleTime = 30 * 60 * 1000;
 
   public lastTouched = 0;
+  public batching: BatchingController;
   public data: DataController<T>;
   public grouping: GroupingController<T>;
 
   constructor() {
     this.data = new DataController(this.staleTime);
     this.grouping = new GroupingController();
+    this.batching = new BatchingController((refs) => this.cacheAction(refs));
   }
 
   /**
@@ -39,7 +36,8 @@ export class DataManager<T extends Record<string, unknown>> {
    * @param ref The reference to the desired document
    * @returns The document, if found. Undefined otherwise
    */
-  public get(ref: Ref64): T | undefined {
+  public get(ref: Ref64 | undefined): T | undefined {
+    if (!ref || ref === "undefined") { return undefined; }
     const packet = this.data.get(ref);
     if (!packet) { return undefined; }
     return packet.doc;
@@ -77,9 +75,11 @@ export class DataManager<T extends Record<string, unknown>> {
     const packet = newPacket(doc, metadata) as Packet<T>;
 
     const savedPacket = this.data.set(packet);
-    // Add to cache
+
+    this.batching.addToCacheQueue(ref);
+
     // Update in groups
-    if (oldPacket !== undefined) { this.grouping.onUpdatedDoc(savedPacket.doc, oldPacket.doc)}
+    if (oldPacket !== undefined) { this.grouping.onUpdatedDoc(savedPacket.doc, oldPacket.doc); }
     else { this.grouping.onNewDoc(savedPacket.doc); }
 
     this.touch();
@@ -108,7 +108,7 @@ export class DataManager<T extends Record<string, unknown>> {
    * Loads one or many documents from the database
    * @param targetRefs The refs to load from the database
    */
-  public async load(targetRefs: Ref64, reloadPolicy?: ReloadPolicy): Promise<void> {
+  public async load(targetRefs: Ref64[] | Ref64, reloadPolicy?: ReloadPolicy): Promise<void> {
     const refs = Array.isArray(targetRefs) ? targetRefs : [targetRefs];
     const loadedDocs = await this.data.load(refs, reloadPolicy || this.reloadPolicy, this.loadDocuments);
 
@@ -124,8 +124,7 @@ export class DataManager<T extends Record<string, unknown>> {
    */
   public clear(): void {
     this.data.clear();
-    // Clear cache
-    // Clear grouping
+    caching.clear(this.collection);
     this.grouping.clear();
     return;
   }
@@ -138,7 +137,10 @@ export class DataManager<T extends Record<string, unknown>> {
   public remove(ref: Ref64): number {
     const deletedPacket = this.data.remove(ref);
     if (!deletedPacket) { return 0; }
-    // Remove in cache
+
+    this.batching.addToCacheQueue(ref);
+
+
     // Remove in searching
     this.grouping.onRemoveDoc(deletedPacket.doc);
     return 1;
@@ -158,134 +160,71 @@ export class DataManager<T extends Record<string, unknown>> {
     return totalDeleteCount;
   }
 
-  public search(parameters: SearchParams): Ref64[] {
+  /**
+   * Searches for refs matching the given parameters
+   * @param parameters The search parameters describing what we're searching for
+   * @returns A list of refs matching the search criteria
+   */
+  public search(parameters: SearchParams = {}): Ref64[] {
     let refs: Ref64[] = [];
-    if (parameters.group === "data") { refs = Object.keys(this.data.getAll()); }
+    if (parameters.group === "data") { refs = this.data.getRefs(); }
     else { refs = this.grouping.getGroup(parameters.group || ""); }
     return refs;
   }
 
+  /**
+   * Marks the Data Manager as having been changed to allow for updates through MobX
+   */
   public touch(): void {
     this.lastTouched = Date.now();
   }
 
+  /**
+   * A custom-defined function that defines how multiple documents are fetched and loaded
+   * @param refs The list of refs to fetch
+   * @returns A list of fetched documents
+   */
   public async loadDocuments(refs: Ref64[]): Promise<T[]> {
     return [];
   }
 
+  /**
+   * Adds a single grouping of documents
+   * @param name The name of the group to add
+   * @param validation A validation function that determines if a document belongs to the group.
+   *  Takes a document and returns a boolean
+   */
   public addGroup(name: string, validation: (doc: T) => boolean) {
     const allData = this.data.getAll();
     this.grouping.addGroup(name, validation, allData);
   }
 
+  /**
+   * Removes a single grouping of documents
+   * @param name The name of the group to remove
+   * @returns The number of groups deleted
+   */
   public removeGroup(name: string): number {
     return this.grouping.removeGroup(name);
   }
 
+  /**
+   * Runs the action to update a number of items in the cache
+   * @param refs The refs to update in the cache
+   */
+  public cacheAction(refs: Ref64[]): void {
+    for (const ref of refs) {
+      const packet = this.data.get(ref);
+      if (!packet) {
+        caching.remove(this.collection, ref);
+        continue;
+      }
+      caching.set(this.collection, packet);
+    }
 
-  // protected refField = "ref"; // The field containing a unique ID for the document
-  // protected updatedAtField = "updatedAt"; // The field containing the document's last updated time
-  // protected collection = "data"; // The name of the collection of data. Used for logs and caching
-
-  // // protected cacheMethod = CacheMethod.LocalStorage; // The location that the data will be cached at
-  // // The policy for determining if a document should be reloaded if already loaded
-  // protected reloadPolicy = ReloadPolicy.IfStale;
-
-  // protected staleTime = 1000 * 60 * 30; // The time until a document becomes stale in milliseconds
-
-  // public $data: Record<string, CacheItem<T>> = {}; // The bucket that holds all data loaded into the data manager
-  // // A collection of lists of refs for data that fits into a specific group
-  // public $groups: Record<string, string[]> = {};
-  //  // Functions that determine if a document fits into a group
-  // public $groupValidation: Record<string, (doc: T) => boolean> = {};
-  // public $indexes: Record<string, unknown> = {}; // UNUSED
-
-  // // A set of records that will be updated the next time the cache queue is emptied
-  // // protected $cacheQueue: Record<string, number> = {};
-  // // protected $cacheBatchJob!: NodeJS.Timeout;
-  // // protected $cacheBatchDelay = 1000 * 60 * 5;
-
-  // protected $loadQueue: Record<string, number> = {};
-  // protected $loadBatchJob!: NodeJS.Timeout;
-  // protected $loadBatchDelay = 1000 * 0.5; // Default delay of a half second. Decrease possibly?
-
-  // public $lastTouched = 0;
-
-  // constructor() {
-  //   if (isClient) {
-  //     window.addEventListener("load", () => {
-  //       // this.$loadCache();
-  //       // this.$initializeCacheBatchJob();
-  //     });
-
-  //     // Functions to run if we're hard refreshing or going to a different site
-  //     window.onbeforeunload = () => {
-  //       // this.$runCacheQueue();
-  //     };
-
-  //     makeObservable(this, {
-  //       // $loadCache: action,
-  //       setMany: action,
-  //       set: action,
-  //       $setCacheItem: action,
-  //       touch: action,
-
-  //       $data: observable,
-  //       $groups: observable,
-  //       $lastTouched: observable,
-  //     });
-  //   }
-  // }
-
-  // public clear = data.clear;
-  // public get = data.get;
-  // public getMany = data.getMany;
-  // public load = data.load;
-  // public search = data.search;
-  // public set = data.set;
-  // public $setCacheItem = data.setCacheItem;
-  // public setMany = data.setMany;
-
-  // // protected $clearCache = caching.clearCache;
-  // // protected $initializeCacheBatchJob = caching.initializeCacheBatchJob;
-  // // public $loadCache = caching.loadCache;
-  // // protected $runCacheQueue = caching.runCacheQueue;
-  // // protected $markUpdated = caching.markUpdated;
-  // // protected $saveCache = caching.saveCache;
-
-  // public addGroup = grouping.addGroup;
-  // public removeGroup = grouping.removeGroup;
-  // public $clearGroups = grouping.clearGroups;
-  // protected $createItemInGroups = grouping.createItemInGroups;
-  // protected $removeItemFromGroups = grouping.removeItemFromGroups;
-  // protected $updateItemInGroups = grouping.updateItemInGroups;
-
-  // get lastTouched() { return this.$lastTouched; }
-  // public touch() { this.$lastTouched = Date.now(); }
-
-  // public $getUpdatedAt = fields.getUpdatedAt;
-
-  // /**
-  //  * Loads documents from an external source. This function should be overloaded when a child class is created.
-  //  * @async
-  //  * @abstract
-  //  * @protected
-  //  * @param refs A list of document references to load
-  //  */
-  // protected async loadDocuments(refs: string[]): Promise<T[]> {
-  //   const docs = [];
-
-  //   for (const ref of refs) {
-  //     const doc = this.get(ref);
-  //     if (!doc) { continue; }
-  //     docs.push(doc);
-  //   }
-
-  //   return docs;
-  // }
+    caching.setRefs(this.collection, this.data.getRefs());
+  }
 }
-
-
 
 export function isValidRef(ref: unknown) {
   if (typeof ref !== "string" || ref === "") { return false; }
@@ -300,7 +239,7 @@ export function isValidRef(ref: unknown) {
  * @returns A number greater than or equal to 0
  */
 export function getUpdatedAt<T extends Record<string, unknown>>(doc: T): number {
-  // Handles case where the object is missing an updated time. Defaults to 0
+  // Handles case where the    is missing an updated time. Defaults to 0
   if (doc.updatedAt === undefined) { return 0; }
 
   // In a try-catch block to prevent issues from invalid Dates

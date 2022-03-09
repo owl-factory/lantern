@@ -10,7 +10,7 @@ const mockLocalStorage = {
   setItem: (_key: string, _value: any) => { return; },
 };
 
-const LOCAL_STORAGE = isClient ? window.localStorage : mockLocalStorage;
+export const LOCAL_STORAGE = isClient ? window.localStorage : mockLocalStorage;
 
 /**
  * Loads in all documents from the cache

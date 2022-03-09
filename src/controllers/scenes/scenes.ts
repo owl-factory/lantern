@@ -52,7 +52,7 @@ class $SceneController {
    * @param id The ID of the scene to load into the SceneController
    */
   public async load(id: string) {
-    const scene = await SceneData.get(id, PassiveReadLevel.Force);
+    const scene = SceneData.get(id);
     if (scene === undefined) {
       AlertController.error("The scene could not be found or you do not have permission to view.");
       return;
@@ -93,14 +93,7 @@ class $SceneController {
   }
 
   public async newScene() {
-    if (!this.campaignID) { return; }
-    const scene = await SceneData.create(
-      { name: "Untitled", campaign: {ref: this.campaignID }}
-    ) as Partial<SceneDocument>;
-
-    if (!scene) { return; }
-    this.scene = scene;
-    this.sceneID = scene?.ref as string;
+    return;
   }
 }
 

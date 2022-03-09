@@ -125,7 +125,7 @@ function CampaignView(props: CampaignViewProps): JSX.Element {
     const playerRefs = getUniques(campaign.players, "ref");
     setPlayers(UserData.getMany(playerRefs));
 
-  }, [UserData.$lastTouched]);
+  }, [UserData.lastTouched]);
 
   // Updates the campaign each time the campaign is updated
   React.useEffect(() => {

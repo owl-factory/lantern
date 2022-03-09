@@ -1,117 +1,62 @@
-import { newPacket, newMetadata } from "@owl-factory/data/helpers/caching";
-import { DataManager } from "../../DataManager";
+import { DataController } from "@owl-factory/data/data";
+import { newMetadata, newPacket } from "@owl-factory/data/helpers/caching";
+import { Packet } from "@owl-factory/data/types";
 
-describe("DataManager Data Functions", () => {
-  let data: DataManager<Record<string, unknown>>;
 
+describe("DataController Functions", () => {
+  let data: DataController<Record<string, unknown>>;
+  let packet: Packet<Record<string, unknown>>;
   beforeEach(() => {
-    data = new DataManager();
-    const cacheItem1 = newPacket("1", { ref: "1" }, newMetadata(false, 0));
-    const cacheItem2 = newPacket("2", { ref: "2" }, newMetadata(true, 0));
-    data.$data = { [cacheItem1.ref]: cacheItem1, [cacheItem2.ref]: cacheItem2 };
-    data.addGroup("testAll", (_doc) => true);
-    data.addGroup("testOne", (doc) => doc?.ref === "2");
+    data = new DataController(30 * 60 * 1000);
+    packet = newPacket({ref: "1"}, newMetadata(false));
   });
 
   test("clear", () => {
-    expect(Object.keys(data.$data).length).toBe(2);
-    expect(data.$groups.testAll.length).toBe(2);
-
+    data.set(packet);
+    expect(data.getRefs().length).toBe(1);
     data.clear();
-
-    expect(Object.keys(data.$data).length).toBe(0);
-    expect(data.$groups.testAll.length).toBe(0);
+    expect(data.getRefs().length).toBe(0);
   });
 
-  test("get existing", () => {
-    const doc = data.get("1");
+  test("get", () => {
+    const initialGet = data.get("1");
+    expect(initialGet).toBeUndefined();
 
-    expect(doc).toBeDefined();
-    expect(doc?.ref).toBe("1");
+    data.set(packet);
+    const finalGet = data.get("1");
+    expect(finalGet).toBeDefined();
   });
 
-  test("get non-existing", () => {
-    const doc = data.get("a");
+  test("getMany", () => {
+    const initialGet = data.getMany(["1"]);
+    expect(initialGet).toStrictEqual([]);
 
-    expect(doc).toBeUndefined();
+    data.set(packet);
+    const finalGet = data.getMany(["1"]);
+    expect(finalGet).toStrictEqual([packet]);
   });
 
-  test("get many existing", () => {
-    const docs = data.getMany(["1", "2"]);
+  test("set", () => {
+    expect(data.getRefs().length).toBe(0);
 
-    expect(docs.length).toBe(2);
-    expect(docs[0].ref).toBe("1");
+    data.set(packet);
+    expect(data.getRefs().length).toBe(1);
+    expect(data.get("1")).toBeDefined();
   });
 
-  test("get many mixed", () => {
-    const docs = data.getMany(["a", "2"]);
+  test("setMany", () => {
+    expect(data.getRefs().length).toBe(0);
 
-    expect(docs.length).toBe(1);
-    expect(docs[0].ref).toBe("2");
+    data.setMany([packet]);
+    expect(data.getRefs().length).toBe(1);
+    expect(data.get("1")).toBeDefined();
   });
 
-  test("get many all undefined", () => {
-    const docs = data.getMany(["a", "b", "c"]);
-
-    expect(docs.length).toBe(0);
-  });
-
-  // test("load", () => {
-
-  // })
-
-  // TODO - expand search tests later as the search gets more complicated. Perhaps move to own file
-  test("search data group", () => {
-    const docs = data.searching({group: "data"});
-
-    expect(docs.length).toBe(2);
-  });
-
-  test("search testOne group", () => {
-    const docs = data.searching({ group: "testOne" });
-
-    expect(docs.length).toBe(1);
-    expect(docs[0]).toBe("2");
-  });
-
-  test("search no group", () => {
-    const docs = data.searching();
-
-    expect(docs.length).toBe(0);
-  });
-
-  test("search missing group", () => {
-    const docs = data.searching({ group: "missing" });
-    expect(docs.length).toBe(0);
-  });
-
-  test("set new valid", () => {
-    const doc = { ref: "3" };
-    data.set(doc);
-
-    expect(Object.keys(data.$data).length).toBe(3);
-    expect(data.$groups.testAll.length).toBe(3);
-    expect(data.$groups.testOne.length).toBe(1);
-  });
-
-  test("set update existing", () => {
-    const doc = { ref: "1", boop: 1 };
-    data.set(doc);
-
-    expect(Object.keys(data.$data).length).toBe(2);
-    expect(data.$groups.testAll.length).toBe(2);
-    expect(data.$groups.testOne.length).toBe(1);
-    expect(data.$data["1"].doc).toBeDefined();
-    expect(data.$data["1"].doc.boop).toBeDefined();
-    expect(data.$data["1"].doc.boop).toBe(1);
-  });
-
-  test("set invalid", () => {
-    const doc = {};
-    data.set(doc);
-
-    expect(Object.keys(data.$data).length).toBe(2);
-    expect(data.$groups.testAll.length).toBe(2);
-    expect(data.$groups.testOne.length).toBe(1);
+  test("remove", () => {
+    expect(data.getRefs().length).toBe(0);
+    data.set(packet);
+    expect(data.getRefs().length).toBe(1);
+    data.remove("1");
+    expect(data.getRefs().length).toBe(0);
   });
 });

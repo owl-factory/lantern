@@ -68,9 +68,9 @@ function MyContent(props: MyContentProps): JSX.Element {
 
   // Use this to prevent too many rerenders
   React.useEffect(() => {
-    const contentRefs = ContentData.searching({ group: "owned-content" });
+    const contentRefs = ContentData.search({ group: "owned-content" });
     setContents(ContentData.getMany(contentRefs));
-  }, [ContentData.$lastTouched]);
+  }, [ContentData.lastTouched]);
 
   function match(doc: AnyDocument) {
     if (!props.session) { return false; }

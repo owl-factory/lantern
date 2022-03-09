@@ -25,11 +25,11 @@ function CharacterSheetTSX(props: CharacterSheetProps) {
 
   // Loads the active character
   React.useEffect(() => {
-    const cachedCharacter = CharactersData.get(props.activeCharacter);
+    const cachedCharacter = CharactersData.get(props.activeCharacter as string);
     setCharacter(cachedCharacter);
     if (cachedCharacter)
     CharactersData.load(cachedCharacter.ref as string);
-  }, [props.activeCharacter, CharactersData.$lastTouched]);
+  }, [props.activeCharacter, CharactersData.lastTouched]);
 
   // Base case for no character loaded.
   if (character === undefined) { return <div>No Character Loaded</div>; }

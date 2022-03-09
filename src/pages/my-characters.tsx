@@ -43,10 +43,10 @@ const CharacterList = observer((props: any) => {
   const characterElements: JSX.Element[] = [];
 
   React.useEffect(() => {
-    const cachedCharacterRefs = CharactersData.searching({ group: "owned-characters" });
+    const cachedCharacterRefs = CharactersData.search({ group: "owned-characters" });
     const cachedCharacters = CharactersData.getMany(cachedCharacterRefs);
     setCharacters(cachedCharacters);
-  }, [CharactersData.$lastTouched]);
+  }, [CharactersData.lastTouched]);
 
   characters.forEach((character: Partial<CharacterDocument>) => {
     characterElements.push(
@@ -122,9 +122,9 @@ export function MyCharacters (props: MyCharactersProps) {
 
   // Refreshes the rulesets to prevent too many rewrites
   React.useEffect(() => {
-    const rulesetRefs = RulesetData.searching({ group: "used-rulesets" });
+    const rulesetRefs = RulesetData.search({ group: "used-rulesets" });
     setRulesets(RulesetData.getMany(rulesetRefs));
-  }, [RulesetData.$lastTouched]);
+  }, [RulesetData.lastTouched]);
 
 
   const characterCards: JSX.Element[] = [];

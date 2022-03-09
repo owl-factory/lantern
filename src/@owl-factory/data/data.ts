@@ -1,12 +1,11 @@
 import { Packet } from "@owl-factory/cache/types";
 import { Ref64 } from "@owl-factory/types";
-import { DataManager } from "./DataManager";
 import { ReloadPolicy } from "./enums";
 import { mergePackets } from "./helpers/caching";
 import { canLoad } from "./helpers/loading";
 
 export class DataController<T extends Record<string, unknown>> {
-  protected data: Record<string, Packet<T>> = {};
+  public data: Record<string, Packet<T>> = {};
 
   public staleTime = 30 * 60 * 1000;
 
@@ -118,8 +117,18 @@ export class DataController<T extends Record<string, unknown>> {
     return packet;
   }
 
+  /**
+   * Gets all data from the DataController
+   */
   public getAll() {
     return this.data;
+  }
+
+  /**
+   * Gets all refs for data in the DataController
+   */
+  public getRefs() {
+    return Object.keys(this.data);
   }
 }
 

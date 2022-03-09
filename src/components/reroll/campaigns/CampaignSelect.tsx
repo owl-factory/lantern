@@ -17,10 +17,10 @@ export const CampaignSelect = observer((props: CampaignSelectProps) => {
   const [ campaigns, setCampaigns ] = React.useState<Ref64[]>([]);
 
   React.useEffect(() => {
-    const cachedCampaigns = CampaignData.searching({ sort: ["name"] });
+    const cachedCampaigns = CampaignData.search({ sort: ["name"] });
     // TODO - include user rulesets & last used rulesets as a top option
     setCampaigns(cachedCampaigns);
-  }, [CampaignData.$lastTouched]);
+  }, [CampaignData.lastTouched]);
 
   // Renders the rulesets into selectable options
   const campaignOptions: JSX.Element[] = [<option key="no-ruleset" value="">-- Select a Campaign --</option>];
