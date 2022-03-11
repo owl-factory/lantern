@@ -1,5 +1,6 @@
 
 // The method for where the Data Manager will store data
+// Currently not implemented
 export enum CacheMethod {
   LocalStorage,
 }

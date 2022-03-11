@@ -1,14 +1,13 @@
-import { Packet } from "@owl-factory/cache/types";
+import { Packet } from "@owl-factory/data/types";
 import { Ref64 } from "@owl-factory/types";
 import { DataController } from "./data";
 import { ReloadPolicy } from "./enums";
-import { mergePackets as mergePackets, newMetadata, newPacket } from "./helpers/caching";
+import { newMetadata, newPacket } from "./helpers/caching";
 import { GroupingController } from "./grouping";
 import { SearchParams } from "./types";
 import * as caching from "./caching";
 import { BatchingController } from "./batching";
-
-
+import { getUpdatedAt, isValidRef } from "./helpers/fields";
 
 /**
  * The top level Data Managing class with an API for accessing and searching data
@@ -16,11 +15,13 @@ import { BatchingController } from "./batching";
 export class DataManager<T extends Record<string, unknown>> {
   protected collection = "data"; // The name of the data collection. Used for logs and caching
 
+  public lastTouched = 0;
+
   // Configuration //
   public reloadPolicy = ReloadPolicy.IfStale;
   public staleTime = 30 * 60 * 1000;
 
-  public lastTouched = 0;
+  // Subcomponents //
   public batching: BatchingController;
   public data: DataController<T>;
   public grouping: GroupingController<T>;
@@ -28,7 +29,7 @@ export class DataManager<T extends Record<string, unknown>> {
   constructor() {
     this.data = new DataController(this.staleTime);
     this.grouping = new GroupingController();
-    this.batching = new BatchingController((refs) => this.cacheAction(refs));
+    this.batching = new BatchingController((refs) => this.cacheAction(refs), 5000);
   }
 
   /**
@@ -223,36 +224,5 @@ export class DataManager<T extends Record<string, unknown>> {
     }
 
     caching.setRefs(this.collection, this.data.getRefs());
-  }
-}
-
-export function isValidRef(ref: unknown) {
-  if (typeof ref !== "string" || ref === "") { return false; }
-  return true;
-}
-
-
-/**
- * Determines the time that this document was last updated, if any. If none is found, returns 0
- * @protected
- * @param doc The doc to parse the updatedAt time from
- * @returns A number greater than or equal to 0
- */
-export function getUpdatedAt<T extends Record<string, unknown>>(doc: T): number {
-  // Handles case where the    is missing an updated time. Defaults to 0
-  if (doc.updatedAt === undefined) { return 0; }
-
-  // In a try-catch block to prevent issues from invalid Dates
-  try {
-    const updatedAt = doc.updatedAt;
-    if (typeof updatedAt !== "string" && typeof updatedAt !== "number" && typeof updatedAt !== "object") { return 2; }
-
-    const date = new Date(updatedAt as (string | number | Date));
-    // Case with invalid value (eg empty object) causing the value to be not a number
-    if (isNaN(date.valueOf())) { return 0; }
-    return date.valueOf();
-
-  } catch {
-    return 0;
   }
 }

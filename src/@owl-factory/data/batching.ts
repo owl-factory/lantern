@@ -9,9 +9,14 @@ export class BatchingController {
   public cacheQueue: Record<Ref64, 1> = {};
   public cacheTimeout = false;
   public cacheAction: (refs: Ref64[]) => void;
+  public cacheDelay: number;
 
-  constructor(cacheAction: (refs: Ref64[]) => void) {
+  constructor(
+    cacheAction: (refs: Ref64[]) => void,
+    cacheDelay: number
+  ) {
     this.cacheAction = cacheAction;
+    this.cacheDelay = cacheDelay;
   }
 
   /**
@@ -21,7 +26,7 @@ export class BatchingController {
   public addToCacheQueue(ref: Ref64) {
     this.cacheQueue[ref] = 1;
     if (this.cacheTimeout === false) {
-      setTimeout(() => this.runCacheBatch(), 5000);
+      setTimeout(() => this.runCacheBatch(), this.cacheDelay);
       this.cacheTimeout = true;
     }
   }

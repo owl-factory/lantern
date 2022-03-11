@@ -1,4 +1,20 @@
+import { DataController } from "@owl-factory/data/data";
 import { GroupingController } from "@owl-factory/data/grouping";
+import { newMetadata, newPacket } from "@owl-factory/data/helpers/caching";
+import { Packet } from "@owl-factory/data/types";
+
+describe("DataController Functions", () => {
+  let grouping: GroupingController<Record<string, unknown>>;
+  let doc1: Record<string, unknown>;
+  let doc2: Record<string, unknown>;
+  beforeEach(() => {
+    grouping = new GroupingController();
+    doc1 = { ref: "1" };
+    doc2 = { ref: "2" };
+  });
+
+  
+});
 
 // import { DataManager } from "@owl-factory/data/DataManager";
 // import { newPacket, newMetadata } from "@owl-factory/data/helpers/caching";

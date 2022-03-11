@@ -1,4 +1,4 @@
-import { Packet } from "@owl-factory/cache/types";
+import { Packet } from "@owl-factory/data/types";
 import { Ref64 } from "@owl-factory/types";
 import { ReloadPolicy } from "./enums";
 import { mergePackets } from "./helpers/caching";
@@ -7,7 +7,7 @@ import { canLoad } from "./helpers/loading";
 export class DataController<T extends Record<string, unknown>> {
   public data: Record<string, Packet<T>> = {};
 
-  public staleTime = 30 * 60 * 1000;
+  public staleTime: number;
 
   constructor(staleTime: number) {
     this.staleTime = staleTime;

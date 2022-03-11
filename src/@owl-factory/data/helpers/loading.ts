@@ -1,4 +1,4 @@
-import { Packet } from "@owl-factory/cache/types";
+import { Packet } from "@owl-factory/data/types";
 import { ReloadPolicy } from "../enums";
 
 /**

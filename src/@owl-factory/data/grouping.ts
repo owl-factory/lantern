@@ -1,6 +1,5 @@
-import { Packet } from "@owl-factory/cache/types";
+import { Packet } from "@owl-factory/data/types";
 import { Ref64 } from "@owl-factory/types";
-import { DataManager } from "./DataManager";
 
 export class GroupingController<T extends Record<string, unknown>> {
 
