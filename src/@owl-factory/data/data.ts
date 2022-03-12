@@ -1,9 +1,14 @@
 import { Packet } from "@owl-factory/data/types";
 import { Ref64 } from "@owl-factory/types";
+import { isServer } from "@owl-factory/utilities/client";
+import { action, makeObservable, observable } from "mobx";
 import { ReloadPolicy } from "./enums";
 import { mergePackets } from "./helpers/caching";
 import { canLoad } from "./helpers/loading";
 
+/**
+ * Handles storing, setting, and updating data locally
+ */
 export class DataController<T extends Record<string, unknown>> {
   public data: Record<string, Packet<T>> = {};
 
@@ -11,6 +16,16 @@ export class DataController<T extends Record<string, unknown>> {
 
   constructor(staleTime: number) {
     this.staleTime = staleTime;
+
+    if (isServer) { return; }
+
+    // Client-side Only //
+    makeObservable(this, {
+      data: observable,
+      set: action,
+      clear: action,
+      remove: action,
+    });
   }
 
   /**

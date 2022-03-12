@@ -10,7 +10,6 @@ export function isValidRef(ref: unknown) {
 
 /**
  * Determines the time that this document was last updated, if any. If none is found, returns 0
- * @protected
  * @param doc The doc to parse the updatedAt time from
  * @returns A number greater than or equal to 0
  */

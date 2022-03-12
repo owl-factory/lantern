@@ -46,6 +46,12 @@ export function set(obj: Record<string, unknown>, target: string, value: unknown
   return obj;
 }
 
+/**
+ * Determines if a given field is present in an object
+ * @param obj The object to find a value within
+ * @param target The target address to find. May be delimited by '.'
+ * @returns True if the field is present, false otherwise
+ */
 export function fieldInObject(obj: Record<string, unknown>, target: string): boolean {
   const targetKeys = target.split(".");
   let current = obj;
@@ -124,6 +130,6 @@ export function deepMerge(newObj: Record<string, unknown>, oldDoc: Record<string
   for (const key of keys) {
     set(mergedObj, key, read(newObj, key));
   }
-  
+
   return mergedObj;
 }

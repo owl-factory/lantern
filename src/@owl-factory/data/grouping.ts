@@ -1,10 +1,31 @@
 import { Packet } from "@owl-factory/data/types";
 import { Ref64 } from "@owl-factory/types";
+import { isServer } from "@owl-factory/utilities/client";
+import { action, makeObservable, observable } from "mobx";
 
+/**
+ * Handles grouping together documents meeting a given criteria, such as the documents that a
+ * user owns.
+ */
 export class GroupingController<T extends Record<string, unknown>> {
 
   public groups: Record<string, Ref64[]> = {};
   public validators: Record<string, (doc: T) => boolean> = {};
+
+  constructor() {
+    if (isServer) { return; }
+
+    // Client-side Only //
+    makeObservable(this, {
+      groups: observable,
+      addGroup: action,
+      removeGroup: action,
+      clear: action,
+      onNewDoc: action,
+      onUpdatedDoc: action,
+      onRemoveDoc: action,
+    });
+  }
 
   /**
    * Gets the refs for documents belonging to the given group

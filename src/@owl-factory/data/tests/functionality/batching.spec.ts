@@ -1,7 +1,5 @@
 import { BatchingController } from "@owl-factory/data/batching";
 
-
-
 describe("BatchingController Functions", () => {
   let batching: BatchingController;
   let hasMockRun: boolean;

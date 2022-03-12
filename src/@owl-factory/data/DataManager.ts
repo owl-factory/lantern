@@ -100,8 +100,6 @@ export class DataManager<T extends Record<string, unknown>> {
       if (result) { successCount++; }
     }
 
-    this.touch();
-
     return successCount;
   }
 
@@ -140,7 +138,6 @@ export class DataManager<T extends Record<string, unknown>> {
     if (!deletedPacket) { return 0; }
 
     this.batching.addToCacheQueue(ref);
-
 
     // Remove in searching
     this.grouping.onRemoveDoc(deletedPacket.doc);
