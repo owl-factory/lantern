@@ -6,8 +6,11 @@ import { newMetadata, newPacket } from "./helpers/caching";
 import { GroupingController } from "./grouping";
 import { SearchParams } from "./types";
 import * as caching from "./caching";
+import * as crud from "./crud";
 import { BatchingController } from "./batching";
 import { getUpdatedAt, isValidRef } from "./helpers/fields";
+import { CrudPacket } from "@owl-factory/types/object";
+import { getUniques } from "@owl-factory/utilities/arrays";
 
 /**
  * The top level Data Managing class with an API for accessing and searching data
@@ -18,6 +21,7 @@ export class DataManager<T extends Record<string, unknown>> {
   public lastTouched = 0;
 
   // Configuration //
+  public url = "/";
   public reloadPolicy = ReloadPolicy.IfStale;
   public staleTime = 30 * 60 * 1000;
 
@@ -26,7 +30,9 @@ export class DataManager<T extends Record<string, unknown>> {
   public data: DataController<T>;
   public grouping: GroupingController<T>;
 
-  constructor() {
+  constructor(url: string) {
+    this.url = url;
+
     this.data = new DataController(this.staleTime);
     this.grouping = new GroupingController();
     this.batching = new BatchingController((refs) => this.cacheAction(refs), 5000);
@@ -109,7 +115,7 @@ export class DataManager<T extends Record<string, unknown>> {
    */
   public async load(targetRefs: Ref64[] | Ref64, reloadPolicy?: ReloadPolicy): Promise<void> {
     const refs = Array.isArray(targetRefs) ? targetRefs : [targetRefs];
-    const loadedDocs = await this.data.load(refs, reloadPolicy || this.reloadPolicy, this.loadDocuments);
+    const loadedDocs = await this.data.load(refs, reloadPolicy || this.reloadPolicy, this.read);
 
     this.setMany(loadedDocs, true);
 
@@ -149,7 +155,7 @@ export class DataManager<T extends Record<string, unknown>> {
    * @param refs A list of refs for documents to remove
    * @returns The number of documents deleted
    */
-  public removeMany(refs: Ref64): number {
+  public removeMany(refs: Ref64[]): number {
     let totalDeleteCount = 0;
     for (const ref of refs) {
       const deleteCount = this.remove(ref);
@@ -175,15 +181,6 @@ export class DataManager<T extends Record<string, unknown>> {
    */
   public touch(): void {
     this.lastTouched = Date.now();
-  }
-
-  /**
-   * A custom-defined function that defines how multiple documents are fetched and loaded
-   * @param refs The list of refs to fetch
-   * @returns A list of fetched documents
-   */
-  public async loadDocuments(refs: Ref64[]): Promise<T[]> {
-    return [];
   }
 
   /**
@@ -222,4 +219,69 @@ export class DataManager<T extends Record<string, unknown>> {
 
     caching.setRefs(this.collection, this.data.getRefs());
   }
+
+  /**
+   * Creates one or many documents and ensures that they're loaded into the DataManager
+   * @param docs The documents to create
+   * @returns A list of packets, for for each document, returning the created document or an error message
+   */
+  public async create(docs: T | T[]): Promise<CrudPacket<T>[]> {
+    if (!Array.isArray(docs)) { docs = [docs]; }
+
+    const packets = await crud.create<T>(this.url, docs);
+    const createdDocs = getSuccessfulDocuments(packets);
+    this.setMany(createdDocs);
+    return packets;
+  }
+
+  /**
+   * Creates one or many documents and ensures that they're loaded into the DataManager
+   * @param docs The documents to create
+   * @returns A list of packets, for for each document, returning the created document or an error message
+   */
+   public async read(refs: Ref64 | Ref64[]): Promise<CrudPacket<T>[]> {
+    if (!Array.isArray(refs)) { refs = [refs]; }
+
+    const packets = await crud.read<T>(this.url, refs);
+    const createdDocs = getSuccessfulDocuments(packets);
+    this.setMany(createdDocs);
+    return packets;
+  }
+
+  /**
+   * Creates one or many documents and ensures that they're loaded into the DataManager
+   * @param docs The documents to create
+   * @returns A list of packets, for for each document, returning the created document or an error message
+   */
+   public async update(docs: T | T[]): Promise<CrudPacket<T>[]> {
+    if (!Array.isArray(docs)) { docs = [docs]; }
+
+    const packets = await crud.update<T>(this.url, docs);
+    const createdDocs = getSuccessfulDocuments(packets);
+    this.setMany(createdDocs);
+    return packets;
+  }
+
+  /**
+   * Creates one or many documents and ensures that they're loaded into the DataManager
+   * @param docs The documents to create
+   * @returns A list of packets, for for each document, returning the created document or an error message
+   */
+   public async delete(refs: Ref64 | Ref64[]): Promise<CrudPacket<T>[]> {
+    if (!Array.isArray(refs)) { refs = [refs]; }
+
+    const packets = await crud.read<T>(this.url, refs);
+    const deletedDocs = getSuccessfulDocuments(packets);
+    const deletedRefs = getUniques(deletedDocs, "ref");
+    this.removeMany(deletedRefs);
+    return packets;
+  }
+}
+
+export function getSuccessfulDocuments<T>(packets: CrudPacket<T>[]): T[] {
+  const docs: T[] = [];
+  for (const packet of packets) {
+    if (packet.success && packet.doc) { docs.push(packet.doc); }
+  }
+  return docs;
 }

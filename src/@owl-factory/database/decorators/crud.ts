@@ -31,18 +31,31 @@ const FIELD_KEY = "permission";
     descriptor[FIELD_KEY] = permission;
 
     descriptor.value = async function(...args: any) {
-      checkLogin(descriptor);
-      checkPermissionAccess(descriptor);
-      checkParentAccess(descriptor, args);
+      try {
+        checkLogin(descriptor);
+        checkPermissionAccess(descriptor);
+        checkParentAccess(descriptor, args);
 
-      args[0] = trimSetFields(descriptor, args[0]);
-      args[0] = setCreateFields(descriptor, args[0]);
+        args[0] = trimSetFields(descriptor, args[0]);
+        args[0] = setCreateFields(descriptor, args[0]);
 
-      let result = await original.apply(this, args);
-      result = checkDynamicAccess(descriptor, result);
-      result = trimReadFields(descriptor, result);
+        let result = await original.apply(this, args);
+        result = checkDynamicAccess(descriptor, result);
+        result = trimReadFields(descriptor, result);
 
-      return result;
+        const packet = {
+          ref: result.ref,
+          doc: result,
+          success: true,
+        };
+
+        return result;
+      } catch (e) {
+        const packet = {
+          success: false,
+          messages: [e as string],
+        };
+      }
     };
   };
 }
@@ -61,14 +74,30 @@ export function Delete(permission: string) {
     descriptor[FIELD_KEY] = permission;
 
     descriptor.value = async function(...args: any) {
-      checkLogin(descriptor);
-      checkPermissionAccess(descriptor);
+      try {
+        checkLogin(descriptor);
+        checkPermissionAccess(descriptor);
 
-      const targetDoc = await fetchTargetDoc(descriptor, args[0]);
-      if (targetDoc === undefined) { return undefined; }
-      checkDynamicAccess(descriptor, targetDoc);
+        const targetDoc = await fetchTargetDoc(descriptor, args[0]);
+        if (targetDoc === undefined) { return undefined; }
+        checkDynamicAccess(descriptor, targetDoc);
 
-      return original.apply(this, args);
+        const result = original.apply(this, args);
+
+        const packet = {
+          success: true,
+          ref: args[0],
+          doc: result,
+        };
+        return packet;
+      } catch (e) {
+        const packet = {
+          success: false,
+          ref: args[0],
+          messages: [e],
+        };
+        return packet;
+      }
     };
   };
 }
@@ -167,20 +196,35 @@ export function Index(permission: string) {
     descriptor[FIELD_KEY] = permission;
 
     descriptor.value = async function(...args: any) {
-      checkLogin(descriptor);
-      checkPermissionAccess(descriptor);
+      try {
+        checkLogin(descriptor);
+        checkPermissionAccess(descriptor);
 
-      const targetDoc = await fetchTargetDoc(descriptor, args[0]);
-      if (targetDoc === undefined) { throw { code: 404, message: "Document could not be found"}; }
-      checkDynamicAccess(descriptor, targetDoc);
-      args[1] = trimSetFields(descriptor, args[1]);
-      args[1] = setUpdateFields(descriptor, args[1]);
+        const targetDoc = await fetchTargetDoc(descriptor, args[0]);
+        if (targetDoc === undefined) { throw { code: 404, message: "Document could not be found"}; }
+        checkDynamicAccess(descriptor, targetDoc);
+        args[1] = trimSetFields(descriptor, args[1]);
+        args[1] = setUpdateFields(descriptor, args[1]);
 
 
-      let result = await original.apply(this, args);
+        let result = await original.apply(this, args);
 
-      result = trimReadFields(descriptor, result);
-      return result;
+        result = trimReadFields(descriptor, result);
+
+        const packet = {
+          success: true,
+          ref: args[0],
+          doc: result,
+        };
+        return packet;
+      } catch (e) {
+        const packet = {
+          success: false,
+          ref: args[0],
+          messages: [e],
+        };
+        return packet;
+      }
     };
   };
 }

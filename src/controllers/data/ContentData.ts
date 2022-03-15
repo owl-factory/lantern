@@ -7,7 +7,7 @@ class ContentDataManager extends DataManager<Partial<ContentDocument>> {
   public collection = "contents";
 
   constructor() {
-    super();
+    super("/api/content");
 
     this.addGroup("owned-contents", isOwner);
     // TODO - content should be grouped by content type and rulesets

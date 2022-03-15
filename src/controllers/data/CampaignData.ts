@@ -1,5 +1,4 @@
 import { DataManager } from "@owl-factory/data/DataManager";
-import { rest } from "@owl-factory/https/rest";
 import { getUniques } from "@owl-factory/utilities/arrays";
 import { Auth } from "controllers/auth";
 import { isOwner } from "server/logic/security";
@@ -9,16 +8,10 @@ class CampaignDataManager extends DataManager<Partial<CampaignDocument>> {
   public collection = "campaigns";
 
   constructor() {
-    super();
+    super("/api/campaigns");
 
     this.addGroup("owned-campaigns", isOwner);
     this.addGroup("my-campaigns", isMyCampaign);
-  }
-
-  public async loadDocuments(refs: string[]): Promise<Partial<CampaignDocument>[]> {
-    if (refs.length === 0) { return []; }
-    const docs = await rest.post<{ campaigns: Partial<CampaignDocument>[] }>(`/api/campaigns`, { refs: refs });
-    return docs.data.campaigns;
   }
 }
 

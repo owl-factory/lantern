@@ -1,7 +1,9 @@
 import { Packet } from "@owl-factory/data/types";
 import { Ref64 } from "@owl-factory/types";
+import { CrudPacket } from "@owl-factory/types/object";
 import { isServer } from "@owl-factory/utilities/client";
 import { action, makeObservable, observable } from "mobx";
+import { getSuccessfulDocuments } from "./DataManager";
 import { ReloadPolicy } from "./enums";
 import { mergePackets } from "./helpers/caching";
 import { canLoad } from "./helpers/loading";
@@ -90,7 +92,7 @@ export class DataController<T extends Record<string, unknown>> {
   public async load(
     refs: string | string[],
     reloadPolicy: ReloadPolicy,
-    loadDocuments: (refs: Ref64[]) => Promise<T[]>
+    loadDocuments: (refs: Ref64[]) => Promise<CrudPacket<T>[]>
   ): Promise<T[]> {
     const loadRefs: string[] = [];
 
@@ -106,7 +108,8 @@ export class DataController<T extends Record<string, unknown>> {
     }
 
     try {
-      const docs = await loadDocuments(loadRefs);
+      const packets = await loadDocuments(loadRefs);
+      const docs = getSuccessfulDocuments<T>(packets);
       return docs;
     } catch (e) {
       console.error(e);
