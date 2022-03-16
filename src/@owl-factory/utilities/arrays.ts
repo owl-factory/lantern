@@ -42,6 +42,8 @@ export function $getUniquesFromObjects(data: unknown[], target: string) {
   const uniques: string[] = [];
   const uniqueEncounters: Record<string | number, boolean> = {};
 
+  if (!data || !Array.isArray(data)) { return []; }
+
   data.forEach((item: unknown) => {
     if (typeof item !== "object" || item === null) { return; }
     const value = read(item as Record<string, unknown>, target);

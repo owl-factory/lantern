@@ -7,6 +7,8 @@ import { roles } from "types/security/roles";
 
 class RerollAuthController extends AuthController<UserDocument> {
   constructor() { super(); }
+
+  get ref(): string | undefined { return this.$user?.ref; }
 }
 
 

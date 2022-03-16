@@ -4,22 +4,22 @@ import { observer } from "mobx-react-lite";
 import { Page } from "components/design";
 import { SceneController } from "controllers/scenes/scenes";
 import { CampaignDocument, SceneDocument } from "types/documents";
-import { CampaignCache } from "controllers/cache/CampaignCache";
-import { SceneCache } from "controllers/cache/SceneCache";
+import { CampaignData } from "controllers/data/CampaignData";
+import { SceneData } from "controllers/data/SceneData";
 
 const CampaignSelection = observer(() => {
-  const [ campaigns, setCampaigns ] = React.useState<Partial<CampaignDocument>[]>([]);
+  const [ campaigns, setCampaigns ] = React.useState<string[]>([]);
 
   React.useEffect(() => {
-    setCampaigns(CampaignCache.getPage());
-  }, [CampaignCache]);
+    setCampaigns(CampaignData.search());
+  }, [CampaignData]);
 
   const campaignElements: JSX.Element[] = [];
-  campaigns.forEach((campaign: Partial<CampaignDocument>) => {
-    campaignElements.push(
-      <a href="#" onClick={() => SceneController.setCampaign(campaign.ref as string)}>{campaign.name}</a>
-    );
-  });
+  // campaigns.forEach((campaign: string) => {
+  //   campaignElements.push(
+  //     <a href="#" onClick={() => SceneController.setCampaign(campaign.ref as string)}>{campaign.name}</a>
+  //   );
+  // });
   return (
     <div>
       {campaignElements}
@@ -30,14 +30,8 @@ const CampaignSelection = observer(() => {
 const SceneSelection = observer(() => {
   const [ scenes, setScenes ] = React.useState<Partial<SceneDocument>[]>([]);
 
-  React.useEffect(() => {
-    setScenes(SceneCache.getPage());
-  });
-
   const sceneElements: JSX.Element[] = [];
-  SceneCache.getPage().forEach((scene: Partial<SceneDocument>) => {
-    sceneElements.push(<a href="#" onClick={() => SceneController.setCampaign(scene.ref as string)}>{scene.name}</a>);
-  });
+
   return (
     <div>
       {scenes}

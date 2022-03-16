@@ -33,7 +33,7 @@ async function deleteCharacters(this: HTTPHandler, req: NextApiRequest) {
  */
 async function getCharacters(this: HTTPHandler, req: NextApiRequest) {
   const characters = await findMany(CharacterLogic.findGameCharacter, req.body.refs);
-  this.returnSuccess({ docs: characters });
+  this.returnSuccess({ characters });
 }
 
 /**

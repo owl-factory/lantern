@@ -1,7 +1,7 @@
 import { Page } from "components/design";
 import { Col } from "@owl-factory/components/flex";
 import { Tooltip } from "@owl-factory/components/tooltip";
-import { RulesetCache } from "controllers/cache/RulesetCache";
+import { RulesetData } from "controllers/data/RulesetData";
 import { observer } from "mobx-react-lite";
 import { NextPageContext } from "next";
 import React from "react";
@@ -30,15 +30,15 @@ function AdminRuleset(props: AdminRulesetProps) {
 
   // Loads the cached data in and updates with the details from the API
   React.useEffect(() => {
-    RulesetCache.set(props.ruleset);
+    RulesetData.set(props.ruleset);
   }, []);
 
   // Updates the ruleset when something in the ruleset manager is updated
   React.useEffect(() => {
-    const newRuleset = RulesetCache.get(ruleset.ref as string);
+    const newRuleset = RulesetData.get(ruleset.ref as string);
     if (!newRuleset) { return; }
     setRuleset(newRuleset);
-  }, [RulesetCache.get(ruleset.ref as string)]);
+  }, [RulesetData.get(ruleset.ref as string)]);
 
   return (
     <Page>
