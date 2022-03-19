@@ -278,10 +278,3 @@ export class DataManager<T extends Record<string, unknown>> {
   }
 }
 
-export function getSuccessfulDocuments<T>(packets: CrudPacket<T>[]): T[] {
-  const docs: T[] = [];
-  for (const packet of packets) {
-    if (packet.success && packet.doc) { docs.push(packet.doc); }
-  }
-  return docs;
-}
