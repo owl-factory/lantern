@@ -6,7 +6,7 @@ import { NextPageContext } from "next";
 import { observer } from "mobx-react-lite";
 import { ImageDocument } from "types/documents";
 import { InitialProps } from "types/client";
-import { ImageCache } from "controllers/cache/ImageCache";
+import { ImageData } from "controllers/data/ImageData";
 import { handleAPI } from "@owl-factory/https/apiHandler";
 import { getLibraryPage } from "./api/library";
 
@@ -29,7 +29,7 @@ function Library(props: LibraryProps): JSX.Element {
   ];
 
   React.useEffect(() => {
-    ImageCache.setMany(props.images || []);
+    ImageData.setMany(props.images || []);
   });
 
   return (

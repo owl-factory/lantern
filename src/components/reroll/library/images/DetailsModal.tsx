@@ -5,7 +5,7 @@ import { observer } from "mobx-react-lite";
 import React from "react";
 import { MdClose } from "react-icons/md";
 import { ImageDocument } from "types/documents";
-import { ImageCache } from "controllers/cache/ImageCache";
+import { ImageData } from "controllers/data/ImageData";
 
 interface ImageDetailsModalProps {
   imageID: string;
@@ -25,8 +25,8 @@ function $ImageDetailsModal({ imageID, open, handleClose }: ImageDetailsModalPro
 
   // Ensures that this only runs when the imageID changes
   React.useEffect(() => {
-    setImage(ImageCache.get(imageID) || {});
-  }, [ imageID, ImageCache.lastTouched ]);
+    setImage(ImageData.get(imageID) || {});
+  }, [ imageID, ImageData.lastTouched ]);
 
 
 

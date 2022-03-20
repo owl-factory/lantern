@@ -1,5 +1,5 @@
 import { Auth } from "controllers/auth";
-import { CampaignCache } from "controllers/cache/CampaignCache";
+import { CampaignData } from "controllers/data/CampaignData";
 import { observer } from "mobx-react-lite";
 import Link from "next/link";
 import React from "react";
@@ -57,13 +57,15 @@ const UserDisplay = observer(() => {
  * Renders up to three of the user's recent campaigns for fewer clicks to game
  * @returns A component containing up to three campaigns for faster access
  */
-function RecentCampaigns() {
+const RecentCampaigns = observer(() => {
   const [ campaigns, setCampaigns ] = React.useState<Partial<CampaignDocument>[]>([]);
   const campaignLinks: JSX.Element[] = [];
 
   React.useEffect(() => {
-    setCampaigns(CampaignCache.getPage({size: 3}));
-  }, [CampaignCache.lastTouched]);
+    const campaignRefs = CampaignData.search({ group: "my-campaigns", perPage: 3} );
+    const foundCampaigns = CampaignData.getMany(campaignRefs);
+    setCampaigns(foundCampaigns);
+  }, [CampaignData.lastTouched]);
 
   campaigns.forEach((doc: Partial<CampaignDocument>) => {
     campaignLinks.push(
@@ -77,7 +79,7 @@ function RecentCampaigns() {
       {campaignLinks}
     </>
   );
-}
+});
 
 /**
  * The component for logged in navigation

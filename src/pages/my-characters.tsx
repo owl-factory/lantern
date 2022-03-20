@@ -7,19 +7,16 @@ import React from "react";
 import { ButtonGroup, Card, Col, Row } from "react-bootstrap";
 import { InitialProps } from "types/client";
 import { CampaignDocument, CharacterDocument, RulesetDocument } from "types/documents";
-import { getSession } from "@owl-factory/auth/session";
-import { rest } from "@owl-factory/https/rest";
-import { CampaignCache } from "controllers/cache/CampaignCache";
-import { CharacterCache } from "controllers/cache/CharacterCache";
-import { RulesetCache } from "controllers/cache/RulesetCache";
+import { CampaignData } from "controllers/data/CampaignData";
+import { RulesetData } from "controllers/data/RulesetData";
 import { Modal } from "@owl-factory/components/modal";
 import { NewCharacterForm } from "components/reroll/characters/NewCharacterForm";
-import { PassiveReadLevel } from "@owl-factory/cache/enums";
 import { CharacterSheet } from "components/reroll/characters/character-sheet/CharacterSheet";
 import { Ref64 } from "@owl-factory/types";
 import { getUniques } from "@owl-factory/utilities/arrays";
 import { handleAPI } from "@owl-factory/https/apiHandler";
 import { getMyCharacters } from "./api/my-characters";
+import { CharactersData } from "controllers/data/CharactersData";
 
 interface MyCharactersProps extends InitialProps {
   characters: CharacterDocument[];
@@ -36,20 +33,26 @@ interface CharacterCardProps {
   character: Partial<CharacterDocument>;
 }
 
+// TODO - this function. Also this should be moved somewhere else and handled generally?
+function deleteCharacter(ref?: Ref64) {
+  return;
+}
+
 const CharacterList = observer((props: any) => {
   const [ characters, setCharacters ] = React.useState<Partial<CharacterDocument>[]>([]);
   const characterElements: JSX.Element[] = [];
 
   React.useEffect(() => {
-    const cachedCharacters = CharacterCache.getPage();
+    const cachedCharacterRefs = CharactersData.search({ group: "owned-characters" });
+    const cachedCharacters = CharactersData.getMany(cachedCharacterRefs);
     setCharacters(cachedCharacters);
-  }, [CharacterCache.lastTouched]);
+  }, [CharactersData.lastTouched]);
 
   characters.forEach((character: Partial<CharacterDocument>) => {
     characterElements.push(
       <div key={character.ref} onClick={() => props.onClick(character.ref)}>
         {character.name}
-        <span style={{float: "right"}} onClick={() => CharacterCache.delete(character.ref)}>X</span>
+        <span style={{float: "right"}} onClick={() => deleteCharacter(character.ref)}>X</span>
       </div>
     );
   });
@@ -70,8 +73,8 @@ const CharacterCard = observer((props: CharacterCardProps) => {
           </Col>
           <Col sm={8}>
             <h3>{props.character.name}</h3><br/>
-            {CampaignCache.get(props.character.campaign?.ref)?.name || <Loading/>}<br/>
-            {RulesetCache.get(props.character.ruleset?.ref)?.name || <Loading/>}<br/>
+            {CampaignData.get(props.character.campaign?.ref)?.name || <Loading/>}<br/>
+            {RulesetData.get(props.character.ruleset?.ref)?.name || <Loading/>}<br/>
             <ButtonGroup>
               <Button>Duplicate</Button>
               <Button>Edit</Button>
@@ -107,20 +110,21 @@ export function MyCharacters (props: MyCharactersProps) {
 
   // Loads in all data from the cache to the data managers
   React.useEffect(() => {
-    CharacterCache.setMany(props.characters);
+    CharactersData.setMany(props.characters);
 
     // Fetches all missing campaigns and rulesets for the names
     const uniqueCampaigns = getUniques(props.characters, "campaign.ref");
-    CampaignCache.readMissing(uniqueCampaigns);
+    CampaignData.load(uniqueCampaigns);
 
     const uniqueRulesets = getUniques(props.characters, "ruleset.ref");
-    RulesetCache.readMissing(uniqueRulesets);
+    RulesetData.load(uniqueRulesets);
   }, []);
 
   // Refreshes the rulesets to prevent too many rewrites
   React.useEffect(() => {
-    setRulesets(RulesetCache.getPage());
-  }, [RulesetCache]);
+    const rulesetRefs = RulesetData.search({ group: "used-rulesets" });
+    setRulesets(RulesetData.getMany(rulesetRefs));
+  }, [RulesetData.lastTouched]);
 
 
   const characterCards: JSX.Element[] = [];

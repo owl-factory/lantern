@@ -11,7 +11,7 @@ import { HTTPHandler, createEndpoint } from "@owl-factory/https";
  */
 async function getContentTypes(this: HTTPHandler, req: NextApiRequest) {
   const contentTypes = await ContentTypeLogic.findManyByIDs(req.body.refs);
-  this.returnSuccess({ docs: contentTypes });
+  this.returnSuccess({ contentTypes });
 }
 
 export default createEndpoint({POST: getContentTypes});

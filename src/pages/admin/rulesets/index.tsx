@@ -15,11 +15,12 @@ import { InitialProps } from "types/client";
 import { RulesetDocument, UserDocument } from "types/documents";
 import { getSession } from "@owl-factory/auth/session";
 import { rest } from "@owl-factory/https/rest";
-import { RulesetCache } from "controllers/cache/RulesetCache";
+import { RulesetData } from "controllers/data/RulesetData";
 import { Col } from "@owl-factory/components/flex";
 import { Loading } from "@owl-factory/components/loading";
 import { getAdminRulesets } from "src/pages/api/admin/rulesets";
 import { handleAPI } from "@owl-factory/https/apiHandler";
+import { Ref64 } from "@owl-factory/types";
 
 interface AdminRulesetsProps extends InitialProps {
   rulesets: RulesetDocument[];
@@ -42,7 +43,7 @@ async function setPublic(id: string, isPublic: boolean) {
     return;
   }
 
-  RulesetCache.set(result.data.ruleset);
+  RulesetData.set(result.data.ruleset);
   return;
 }
 
@@ -138,6 +139,10 @@ interface RulesetRowProps {
   ruleset: Partial<RulesetDocument>;
 }
 
+function updateIsPublic(ref: Ref64, isPublic: boolean) {
+  return;
+}
+
 /**
  * Renders a single row for describing a ruleset
  * @param index The current index of the row
@@ -170,11 +175,11 @@ const RulesetRow = observer((props: RulesetRowProps) => {
           </Link>
           {
             props.ruleset.isPublic ? (
-              <Button onClick={() => RulesetCache.updateIsPublic(props.ruleset.ref as string, false)}>
+              <Button onClick={() => updateIsPublic(props.ruleset.ref as string, false)}>
                 <Tooltip title="Make Private"><MdVisibilityOff/></Tooltip>
               </Button>
             ) : (
-              <Button onClick={() => RulesetCache.updateIsPublic(props.ruleset.ref as string, true)}>
+              <Button onClick={() => updateIsPublic(props.ruleset.ref as string, true)}>
                 <Tooltip title="Make Public"><MdVisibility/></Tooltip>
               </Button>
             )
@@ -210,12 +215,13 @@ function AdminRulesets(props: AdminRulesetsProps) {
   const rulesetRows: JSX.Element[] = [];
 
   React.useEffect(() => {
-    RulesetCache.setMany(props.rulesets);
+    RulesetData.setMany(props.rulesets);
   }, []);
 
   React.useEffect(() => {
-    setRulesets(RulesetCache.getPage());
-  }, [RulesetCache]);
+    const rulesetRefs = RulesetData.search({ group: "data" });
+    setRulesets(RulesetData.getMany(rulesetRefs));
+  }, [RulesetData]);
 
   rulesets.forEach((ruleset: Partial<RulesetDocument>, index: number) => {
     rulesetRows.push(<RulesetRow key={ruleset.ref} index={index + 1} ruleset={ruleset}/>);

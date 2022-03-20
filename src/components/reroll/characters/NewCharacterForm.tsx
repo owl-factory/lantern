@@ -5,7 +5,6 @@ import { Button } from "@owl-factory/components/button";
 import { CharacterDocument } from "types/documents";
 import { RulesetSelect } from "../rulesets/RulesetSelect";
 import { CampaignSelect } from "../campaigns/CampaignSelect";
-import { CharacterCache } from "controllers/cache/CharacterCache";
 
 interface NewCharacterFormValues {
   character: Partial<CharacterDocument>;
@@ -13,7 +12,7 @@ interface NewCharacterFormValues {
 
 export function NewCharacterForm(props: any) {
   async function createNewCharacter(values: NewCharacterFormValues) {
-    const character = await CharacterCache.create(values.character);
+    // const character = await CharactersData.create(values.character);
   }
 
   return (

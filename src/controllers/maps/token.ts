@@ -1,4 +1,4 @@
-import { ImageCache } from "controllers/cache/ImageCache";
+import { ImageData } from "controllers/data/ImageData";
 import { InteractionEvent, Sprite, Texture } from "pixi.js";
 import { MapController } from "./map";
 import { ViewportController } from "./viewport";
@@ -17,7 +17,7 @@ class $TokenController {
    * Adds a new token onto the map
    */
   public async add(id: string, x: number, y: number) {
-    const image = ImageCache.get(id);
+    const image = ImageData.get(id);
     if (!image) { return; }
 
     const sprite: Token = new Sprite(await Texture.fromURL(image.src as string));
