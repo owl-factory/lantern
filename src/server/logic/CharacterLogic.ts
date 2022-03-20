@@ -2,12 +2,12 @@ import { Ref64 } from "@owl-factory/types";
 import * as fauna from "@owl-factory/database/integration/fauna";
 import { AnyDocument, CharacterDocument } from "types/documents";
 import { DatabaseLogic } from "./AbstractDatabaseLogic";
-import { isOwner } from "./security";
 import { Collection, FaunaIndex } from "src/fauna";
-import { Create, Delete, Fetch, Index, Update } from "@owl-factory/database/decorators/crud";
+import { Create, Delete, Fetch, Search, Update } from "@owl-factory/database/decorators/decorators";
 import { Access, ReadFields, SetFields } from "@owl-factory/database/decorators/modifiers";
 import { FaunaIndexOptions } from "@owl-factory/database/types/fauna";
 import { Auth } from "controllers/auth";
+import { isOwner } from "security/documents";
 
 const PUT_FIELDS = ["*"];
 
@@ -23,12 +23,7 @@ class $CharacterLogic extends DatabaseLogic<CharacterDocument> {
   @ReadFields(["*"])
   @SetFields(PUT_FIELDS)
   public async createCharacter(doc: Partial<CharacterDocument>): Promise<CharacterDocument> {
-    const character = await fauna.createOne<CharacterDocument>(this.collection, doc);
-
-    if (character === undefined) {
-      throw { code: 500, message: `The character could not be created.`};
-    }
-    return character;
+    return await super.create(doc);
   }
 
   /**
@@ -39,9 +34,7 @@ class $CharacterLogic extends DatabaseLogic<CharacterDocument> {
   @Delete("deleteCharacter")
   @Access(isOwner)
   public async deleteCharacter(ref: Ref64) {
-    const character = await fauna.deleteOne<CharacterDocument>(ref);
-    if (character === undefined) { throw { code: 404, message: `The character with id ${ref} could not be found.`}; }
-    return character;
+    return await super.delete(ref);
   }
 
   /**
@@ -52,11 +45,7 @@ class $CharacterLogic extends DatabaseLogic<CharacterDocument> {
   @Fetch("viewGameCharacters")
   @Access(userViewable)
   @ReadFields(userViewableFields)
-  public async findGameCharacter(id: Ref64): Promise<CharacterDocument> {
-    const character = await fauna.findByID<CharacterDocument>(id);
-    if (character === undefined) { throw { code: 404, message: `The character with id ${id} could not be found.`}; }
-    return character;
-  }
+  public async fetch(ref: Ref64): Promise<CharacterDocument> { return await super.fetch(ref); }
 
   /**
    * Updates the character document
@@ -68,19 +57,14 @@ class $CharacterLogic extends DatabaseLogic<CharacterDocument> {
   @Access(isOwner)
   @ReadFields(userViewableFields)
   @SetFields(["*"])
-  public async updateMyCharacter(ref: Ref64, doc: Partial<CharacterDocument>) {
-    const character = await fauna.updateOne(ref, doc);
-    // TODO - better message
-    if (character === undefined) { throw { code: 404, message: `The character with id ${ref} could not be found.`}; }
-    return character;
-  }
+  public async updateMyCharacter(ref: Ref64, doc: Partial<CharacterDocument>) { return await super.update(ref, doc); }
 
   /**
    * Fetches the partial character documents for any given user
    * @param options Any additional options for filtering the data retrieved from the database
    * @returns An array of character document partials
    */
-  @Index("searchCharacterByUser")
+  @Search("searchCharacterByUser")
   @ReadFields(["*"])
   public async searchCharactersByUser(userID: Ref64, options?: FaunaIndexOptions): Promise<CharacterDocument[]> {
     return this._searchCharactersByUser(userID, options);
@@ -91,7 +75,7 @@ class $CharacterLogic extends DatabaseLogic<CharacterDocument> {
    * @param options Any additional options for filtering the data retrieved from the database
    * @returns An array of character document partials
    */
-  @Index("searchMyCharacters")
+  @Search("searchMyCharacters")
   @ReadFields(["*"])
   public async searchMyCharacters(options?: FaunaIndexOptions): Promise<CharacterDocument[]> {
     const userID = Auth.user?.ref;

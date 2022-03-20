@@ -12,7 +12,7 @@ import { HTTPHandler, createEndpoint } from "@owl-factory/https";
  * @param req The request to the server
  */
 async function createScene(this: HTTPHandler, req: NextApiRequest) {
-  const campaign = CampaignLogic.findMyCampaign(req.body.campaignID);
+  const campaign = CampaignLogic.fetch(req.body.campaignID);
   if (!campaign) {
     throw { code: 404, message: "The campaign does not exist" };
   }

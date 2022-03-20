@@ -1,15 +1,15 @@
 
-import { Create, Delete, Fetch, FetchMany, Index, Update } from "@owl-factory/database/decorators/crud";
+import { Create, Delete, Fetch, FetchMany, Search, Update } from "@owl-factory/database/decorators/decorators";
 import { Access, ReadFields, SetFields } from "@owl-factory/database/decorators/modifiers";
 import { Collection, FaunaIndex } from "src/fauna";
 import { Ref64 } from "@owl-factory/types";
 import { AnyDocument, ContentDocument, RulesetDocument } from "types/documents";
 import { DatabaseLogic } from "./AbstractDatabaseLogic";
-import { isOwner } from "./security";
 import * as fauna from "@owl-factory/database/integration/fauna";
 import { FaunaIndexOptions } from "@owl-factory/database/types/fauna";
 import { toRef } from "@owl-factory/database/conversion/fauna/to";
 import { Auth } from "controllers/auth";
+import { isOwner } from "security/documents";
 
 class $ContentLogic extends DatabaseLogic<ContentDocument> {
   public collection = Collection.Contents;
@@ -26,12 +26,8 @@ class $ContentLogic extends DatabaseLogic<ContentDocument> {
     content: Partial<ContentDocument>,
     ruleset: Partial<RulesetDocument>
   ): Promise<ContentDocument> {
-    // TODO - add checks to verify that the user can create this content
-    const createdDoc = await fauna.createOne<ContentDocument>(this.collection, content);
-    if (createdDoc === undefined) {
-      throw { code: 500, message: `The content could not be created.`};
-    }
-    return createdDoc;
+    // TODO - ensure ruleset exists and the user has permission to update
+    return await super.create(content);
   }
 
   /**
@@ -41,11 +37,7 @@ class $ContentLogic extends DatabaseLogic<ContentDocument> {
    */
   @Delete("deleteContent")
   @Access(isOwner)
-  public async deleteMyContent(ref: Ref64, content: Partial<ContentDocument>) {
-    const deletedDoc = await fauna.deleteOne<ContentDocument>(ref);
-    if (deletedDoc === undefined) { throw { code: 404, message: `The document with id ${ref} could not be found.`}; }
-    return deletedDoc;
-  }
+  public async deleteMyContent(ref: Ref64) { return await super.delete(ref); }
 
   /**
    * Fetches one content from its ID
@@ -55,24 +47,7 @@ class $ContentLogic extends DatabaseLogic<ContentDocument> {
   @Fetch("viewContent")
   @Access(userViewable)
   @ReadFields(userViewableFields)
-  public async findContent(id: Ref64): Promise<ContentDocument> {
-    const content = await fauna.findByID<ContentDocument>(id);
-    if (content === undefined) { throw { code: 404, message: `The content with id ${id} could not be found`}; }
-    return content;
-  }
-
-  /**
-   * Fetches many contents from their IDs
-   * @param ids The Ref64 IDs of the documents to fetch
-   * @returns The found and allowed content documents
-   */
-  @FetchMany("viewContent")
-  @Access(userViewable)
-  @ReadFields(userViewableFields)
-  public async findManyByIDs(ids: Ref64[]): Promise<ContentDocument[]> {
-    const contents = await fauna.findManyByIDs<ContentDocument>(ids);
-    return contents;
-  }
+  public async findContent(ref: Ref64): Promise<ContentDocument> { return await super.fetch(ref); }
 
   /**
    * Updates a single document
@@ -84,14 +59,7 @@ class $ContentLogic extends DatabaseLogic<ContentDocument> {
   @Access(isOwner)
   @ReadFields(["*"])
   @SetFields(["*"])
-  public async updateMyContent(ref: Ref64, doc: Partial<ContentDocument>) {
-    const updatedDoc = await fauna.updateOne(ref, doc);
-    // TODO - better message
-    if (updatedDoc === undefined) {
-      throw { code: 404, message: `The content document with id ${ref} could not be found.`};
-    }
-    return updatedDoc;
-  }
+  public async updateMyContent(ref: Ref64, doc: Partial<ContentDocument>) { return await super.update(ref, doc); }
 
 
   /**
@@ -99,7 +67,7 @@ class $ContentLogic extends DatabaseLogic<ContentDocument> {
    * @param options Any additional options for filtering the data retrieved from the database
    * @returns An array of content document partials
    */
-  @Index("searchContentByUser")
+  @Search("searchContentByUser")
   @ReadFields(["*"])
   public async searchContentByUser(userID: Ref64, options?: FaunaIndexOptions): Promise<ContentDocument[]> {
     return this._searchContentByUser(userID, options);
@@ -110,7 +78,7 @@ class $ContentLogic extends DatabaseLogic<ContentDocument> {
    * @param options Any additional options for filtering the data retrieved from the database
    * @returns An array of campaign document partials
    */
-  @Index("searchMyContent")
+  @Search("searchMyContent")
   @ReadFields(["*"])
   public async searchMyContent(options?: FaunaIndexOptions): Promise<ContentDocument[]> {
     const userID = Auth.user?.ref;

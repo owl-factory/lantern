@@ -4,7 +4,7 @@ import { CampaignLogic } from "server/logic/CampaignLogic";
 
 import { HTTPHandler, createEndpoint } from "@owl-factory/https";
 import { getUniques } from "@owl-factory/utilities/arrays";
-import { findMany } from "server/logic/many";
+import { fetchMany } from "server/logic/many";
 
 /**
  * Fetches all of the current user's campaigns
@@ -13,7 +13,7 @@ import { findMany } from "server/logic/many";
 export async function getMyCampaigns(_req: NextApiRequest) {
   const fetchedCampaigns = await CampaignLogic.fetchMyCampaigns({ size: 20 });
   const ids = getUniques(fetchedCampaigns, "ref");
-  const campaigns = await findMany(CampaignLogic.findMyCampaign, ids);
+  const campaigns = await fetchMany(CampaignLogic.fetch, ids);
   return { campaigns: campaigns };
 }
 

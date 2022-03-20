@@ -20,7 +20,7 @@ async function getUsers(this: HTTPHandler, req: NextApiRequest) {
  * @param req The request to the servert
  */
 async function updateUser(this: HTTPHandler, req: NextApiRequest) {
-  const updatedUser = await UserLogic.updateOne(req.body.ref, req.body.doc);
+  const updatedUser = await UserLogic.update(req.body.ref, req.body.doc);
   this.returnSuccess({ doc: updatedUser });
 }
 

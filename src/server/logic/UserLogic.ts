@@ -1,13 +1,13 @@
 import { Ref64 } from "@owl-factory/types";
 import { UserDocument } from "types/documents";
-import { isOwner } from "./security";
 import * as fauna from "@owl-factory/database/integration/fauna";
 import { Collection, FaunaIndex } from "src/fauna";
 import { DatabaseLogic } from "./AbstractDatabaseLogic";
-import { Fetch, FetchMany, Index, SignIn, SignUp, Update } from "@owl-factory/database/decorators/crud";
+import { Fetch, FetchMany, Search, SignIn, SignUp, Update } from "@owl-factory/database/decorators/decorators";
 import { Access, ReadFields, SetFields } from "@owl-factory/database/decorators/modifiers";
 import { FaunaIndexOptions } from "@owl-factory/database/types/fauna";
 import { isEmail } from "@owl-factory/utilities/strings";
+import { isOwner } from "security/documents";
 
 const COOKIE_FIELDS = ["ref", "username", "email", "name", "avatar.*", "role", "permissions", "boost"];
 
@@ -38,25 +38,11 @@ class $UserLogic extends DatabaseLogic<UserDocument> {
    */
   @Fetch("viewUser")
   @ReadFields(["*"])
-  public async findOne(id: Ref64): Promise<UserDocument> {
-    const user = await fauna.findByID<UserDocument>(id);
-    if (user === undefined) { throw { code: 404, message: `A user with ID ${id} could not be found` }; }
-    return user;
+  public async fetch(ref: Ref64): Promise<UserDocument> {
+    return await super.fetch(ref);
   }
 
-  /**
-   * Fetches many users from their IDs
-   * @param ids The Ref64 IDs of the documents to fetch
-   * @returns The found and allowed user documents
-   */
-  @FetchMany("viewUser")
-  @ReadFields(["*"])
-  public async findManyByIDs(ids: Ref64[]): Promise<UserDocument[]> {
-    const users = await fauna.findManyByIDs<UserDocument>(ids);
-    return users;
-  }
-
-  @Index("searchByUsername")
+  @Search("searchByUsername")
   @ReadFields(["*"])
   public async searchByUsername(username: string, options?: FaunaIndexOptions): Promise<UserDocument[]> {
     const users = await fauna.searchByIndex<UserDocument>(FaunaIndex.UsersByUsername, [username], options);
@@ -73,12 +59,8 @@ class $UserLogic extends DatabaseLogic<UserDocument> {
   @Access(isOwner)
   @ReadFields(["*"])
   @SetFields(updateFields)
-  public async updateOne(id: Ref64, doc: Partial<UserDocument>): Promise<UserDocument> {
-    const user = await fauna.updateOne<UserDocument>(id, doc);
-    if (user === undefined) {
-      throw { code: 500, message: "An unexpected error occured while attepting to update the user."};
-    }
-    return user;
+  public async update(ref: Ref64, doc: Partial<UserDocument>): Promise<UserDocument> {
+    return await super.update(ref, doc);
   }
 
   /**
@@ -91,12 +73,8 @@ class $UserLogic extends DatabaseLogic<UserDocument> {
   @Access(isOwner)
   @ReadFields(["*"])
   @SetFields(["avatar.ref", "avatar.src"])
-  public async updateAvatar(id: Ref64, doc: Partial<UserDocument>): Promise<UserDocument> {
-    const user = await fauna.updateOne<UserDocument>(id, doc);
-    if (user === undefined) {
-      throw { code: 500, message: "An unexpected error occured while attepting to update the user."};
-    }
-    return user;
+  public async updateAvatar(ref: Ref64, doc: Partial<UserDocument>): Promise<UserDocument> {
+    return await super.update(ref, doc);
   }
 
   /**

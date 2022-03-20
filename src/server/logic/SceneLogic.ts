@@ -1,16 +1,17 @@
 
 import * as fauna from "@owl-factory/database/integration/fauna";
-import { Create, Delete, Fetch, Update } from "@owl-factory/database/decorators/crud";
+import { Create, Delete, Fetch, Update } from "@owl-factory/database/decorators/decorators";
 import { Access, ReadFields, RequireLogin, SetFields } from "@owl-factory/database/decorators/modifiers";
 import { SceneDocument } from "types/documents";
 import { Collection } from "src/fauna";
 import { Ref64 } from "@owl-factory/types";
-import { isOwner } from "./security";
+import { DatabaseLogic } from "./AbstractDatabaseLogic";
+import { isOwner } from "security/documents";
 
 
 const CREATE_FIELDS: string[] = ["name", "campaignID"];
 
-class $SceneLogic {
+class $SceneLogic extends DatabaseLogic<SceneDocument> {
   public collection = Collection.Scenes;
 
   /**
@@ -23,11 +24,7 @@ class $SceneLogic {
   @ReadFields(["*"])
   @SetFields(CREATE_FIELDS)
   public async createScene(doc: Partial<SceneDocument>): Promise<SceneDocument> {
-    const ruleset = await fauna.createOne<SceneDocument>(this.collection, doc);
-    if (ruleset === undefined) {
-      throw {code: 500, message: "An unexpected error occured while creating the document"};
-    }
-    return ruleset;
+    return await super.create(doc);
   }
 
   /**
@@ -38,9 +35,7 @@ class $SceneLogic {
   @Delete("deleteScene")
   @Access(isOwner)
   public async deleteOne(ref: Ref64) {
-    const deletedDoc = await fauna.deleteOne<SceneDocument>(ref);
-    if (deletedDoc === undefined) { throw { code: 404, message: `The document with id ${ref} could not be found.`}; }
-    return deletedDoc;
+    return await super.delete(ref);
   }
 
   /**
@@ -51,10 +46,8 @@ class $SceneLogic {
   @Fetch("viewMyScene")
   @RequireLogin()
   @ReadFields(["*"])
-  public async findOne(id: Ref64): Promise<SceneDocument> {
-    const readDoc = await fauna.findByID<SceneDocument>(id);
-    if (readDoc === undefined) { throw { code: 404, message: `A document with ID ${id} could not be found` }; }
-    return readDoc;
+  public async fetch(ref: Ref64): Promise<SceneDocument> {
+    return await super.fetch(ref);
   }
 
   /**
@@ -63,16 +56,13 @@ class $SceneLogic {
    * @param doc The changes in the document to patch on
    * @returns The updated document
    */
-   @Update("updateScene")
-   @Access(isOwner)
-   @ReadFields(["*"])
-   @SetFields(["*"])
-   public async updateOne(ref: Ref64, doc: Partial<SceneDocument>) {
-     const updatedDoc = await fauna.updateOne(ref, doc);
-     // TODO - better message
-     if (updatedDoc === undefined) { throw { code: 404, message: `The document with id ${ref} could not be found.`}; }
-     return updatedDoc;
-   }
+  @Update("updateScene")
+  @Access(isOwner)
+  @ReadFields(["*"])
+  @SetFields(["*"])
+  public async update(ref: Ref64, doc: Partial<SceneDocument>) {
+    return await super.update(ref, doc);
+  }
 }
 
 export const SceneLogic = new $SceneLogic();

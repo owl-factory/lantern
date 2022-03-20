@@ -14,7 +14,7 @@ export async function getProfile(params: Record<string, unknown>) {
   const userSearch = await UserLogic.searchByUsername(params.username as string) as UserDocument[];
   if (userSearch.length === 0) { throw { code: 404, message: "The given profile was not found."}; }
 
-  const user = await UserLogic.findOne(userSearch[0].ref);
+  const user = await UserLogic.fetch(userSearch[0].ref);
 
   // TODO - store the player username and ref instead of pulling the full user
   if (user.recentPlayers) {
@@ -39,7 +39,7 @@ async function getProfileRequest(this: HTTPHandler, req: NextApiRequest) {
  * @param req The request to the server
  */
 async function updateProfile(this: HTTPHandler, req: NextApiRequest) {
-  const user = await UserLogic.updateOne(req.body.ref, req.body);
+  const user = await UserLogic.update(req.body.ref, req.body);
   this.returnSuccess({ user });
 }
 

@@ -41,7 +41,7 @@ export async function deleteMany<T>(
  * @param fx The function to run for finding each document
  * @param refs The list of refs of the documents to find
  */
-export async function findMany<T>(
+export async function fetchMany<T>(
   fx: (ref: Ref64) => Promise<Partial<T>>,
   refs: Ref64[]
 ): Promise<Partial<T>[]> {

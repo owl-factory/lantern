@@ -1,31 +1,18 @@
 
-import { AnyDocument, CampaignDocument } from "types/documents";
-import { isOwner } from "server/logic/security";
+import { CampaignDocument } from "types/documents";
 import * as fauna from "@owl-factory/database/integration/fauna";
-import { Access, ReadFields, RequireLogin, SetFields } from "@owl-factory/database/decorators/modifiers";
-import { Create, Delete, Fetch, Index, Update } from "@owl-factory/database/decorators/crud";
+import { RequireLogin } from "@owl-factory/database/decorators/modifiers";
+import { Create, Delete, Fetch, Search, Update } from "@owl-factory/database/decorators/decorators";
 import { DatabaseLogic } from "./AbstractDatabaseLogic";
 import { Ref64 } from "@owl-factory/types";
 import { Collection, FaunaIndex } from "src/fauna";
 import { toRef } from "@owl-factory/database/conversion/fauna/to";
 import { FaunaIndexOptions } from "@owl-factory/database/types/fauna";
 import { Auth } from "controllers/auth";
+import { isPlayer } from "security/documents/campaigns";
+import { isOwner } from "security/documents";
 
-/**
- * Checks if the current user is a player for the given document
- * @param doc The document to if the current user is a player of
- * @returns True if the current user is a player
- */
-function isPlayer(doc?: AnyDocument): boolean {
-  if (doc === undefined) { return false; }
-  if (isOwner(doc)) { return true; }
-  if (!("players" in doc) || doc.players === undefined) { return false; }
-  let success = false;
-  doc.players.forEach((player: { ref: Ref64 }) => {
-    if (Auth.user?.ref === player.ref) { success = true; }
-  });
-  return success;
-}
+
 
 class $CampaignLogic extends DatabaseLogic<CampaignDocument> {
   public collection = Collection.Campaigns;
@@ -35,16 +22,8 @@ class $CampaignLogic extends DatabaseLogic<CampaignDocument> {
    * @param doc The document to create
    * @returns The created document, if successful
    */
-  @Create("createCampaign")
-  @ReadFields(["*"])
-  @SetFields(["*"])
-  public async createOne(doc: Partial<CampaignDocument>): Promise<CampaignDocument> {
-    const createdDoc = await fauna.createOne<CampaignDocument>(this.collection, doc);
-    if (createdDoc === undefined) {
-      throw { code: 500, message: `The campaign could not be created.`};
-    }
-    return createdDoc;
-  }
+  @Create(["*"], ["*"])
+  public async create(doc: Partial<CampaignDocument>): Promise<CampaignDocument> { return await super.create(doc); }
 
   /**
    * Deletes a single document, if present
@@ -52,40 +31,18 @@ class $CampaignLogic extends DatabaseLogic<CampaignDocument> {
    * @returns The deleted document
    */
   @Delete("deleteMyCampaign")
-  public async deleteMyCampaign(ref: Ref64) {
-    const deletedDoc = await fauna.deleteOne<CampaignDocument>(ref);
-    if (deletedDoc === undefined) { throw { code: 404, message: `The document with id ${ref} could not be found.`}; }
-    return deletedDoc;
-  }
+  public async delete(ref: Ref64) { return await super.delete(ref); }
 
   /**
    * Fetches one campaign from its ID
    * @param id The Ref64 ID of the document to fetch
    * @returns The campaign document
    */
-  @Fetch("viewMyCampaign")
+  @Fetch(Collection.Campaigns, "viewMyCampaign")
   @Access(isPlayer)
   @RequireLogin()
   @ReadFields(["*"])
-  public async findMyCampaign(id: Ref64): Promise<CampaignDocument> {
-    const readDoc = await fauna.findByID<CampaignDocument>(id);
-    if (readDoc === undefined) { throw { code: 404, message: `A document with ID ${id} could not be found` }; }
-    return readDoc;
-  }
-
-  /**
-   * Finds many documents
-   * @param refs A list of document refs to fetch
-   * @returns An array of found documents
-   */
-  public async findManyOfMyCampaigns(refs: Ref64[]) {
-    const promises: Promise<Partial<CampaignDocument>>[] = [];
-    refs.forEach((ref: Ref64) => {
-      promises.push(this.findMyCampaign(ref));
-    });
-    const readDocs = await Promise.all(promises);
-    return readDocs;
-  }
+  public async fetch(ref: Ref64): Promise<CampaignDocument> { return super.fetch(ref); }
 
   /**
    * Updates a single document
@@ -97,28 +54,7 @@ class $CampaignLogic extends DatabaseLogic<CampaignDocument> {
   @Access(isOwner)
   @ReadFields(["*"])
   @SetFields(["*"])
-  public async updateMyCampaign(ref: Ref64, doc: Partial<CampaignDocument>) {
-    const updatedDoc = await fauna.updateOne(ref, doc);
-    // TODO - better message
-    if (updatedDoc === undefined) { throw { code: 404, message: `The document with id ${ref} could not be found.`}; }
-    return updatedDoc;
-  }
-
-  /**
-   * Updates any single campaign
-   * @param ref The ref of the document to update
-   * @param doc The changes in the document to patch on
-   * @returns The updated document
-   */
-   @Update("editAnyCampaign")
-   @ReadFields(["*"])
-   @SetFields(["*"])
-   public async updateAnyCampaign(ref: Ref64, doc: Partial<CampaignDocument>) {
-     const updatedDoc = await fauna.updateOne(ref, doc);
-     // TODO - better message
-     if (updatedDoc === undefined) { throw { code: 404, message: `The document with id ${ref} could not be found.`}; }
-     return updatedDoc;
-   }
+  public async update(ref: Ref64, doc: Partial<CampaignDocument>) { return await super.update(ref, doc); }
 
   /**
    * Updates the banner image for a campaign
@@ -139,7 +75,7 @@ class $CampaignLogic extends DatabaseLogic<CampaignDocument> {
    * @param options Any additional options for filtering the data retrieved from the database
    * @returns An array of campaign document partials
    */
-  @Index("viewCampaignsByUser")
+  @Search("viewCampaignsByUser")
   @RequireLogin()
   @ReadFields(["*"])
   public async fetchCampaignsByUser(userID: Ref64, options?: FaunaIndexOptions) {
@@ -153,7 +89,7 @@ class $CampaignLogic extends DatabaseLogic<CampaignDocument> {
    * @param options Any additional options for filtering the data retrieved from the database
    * @returns An array of campaign document partials
    */
-  @Index("viewMyCampaigns")
+  @Search("viewMyCampaigns")
   @RequireLogin()
   @ReadFields(["*"])
   public async fetchMyCampaigns(options?: FaunaIndexOptions) {
