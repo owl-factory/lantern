@@ -3,6 +3,7 @@ import { NextApiRequest } from "next";
 import { CampaignLogic } from "server/logic/CampaignLogic";
 
 import { HTTPHandler, createEndpoint } from "@owl-factory/https";
+import { fetchMany } from "server/logic/many";
 
 /**
  * Fetches all of a user's campaigns
@@ -10,7 +11,7 @@ import { HTTPHandler, createEndpoint } from "@owl-factory/https";
  * @param req The request to the server
  */
 async function getCampaigns(this: HTTPHandler, req: NextApiRequest) {
-  const campaigns = await CampaignLogic.findManyOfMyCampaigns(req.body.refs);
+  const campaigns = await fetchMany(CampaignLogic.fetch, req.body.refs);
   this.returnSuccess({ campaigns });
 }
 

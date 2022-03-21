@@ -1,29 +1,27 @@
 import { Ref64 } from "@owl-factory/types";
 import * as fauna from "@owl-factory/database/integration/fauna";
-import { AnyDocument, CharacterDocument } from "types/documents";
+import { CharacterDocument } from "types/documents";
 import { DatabaseLogic } from "./AbstractDatabaseLogic";
 import { Collection, FaunaIndex } from "src/fauna";
 import { Create, Delete, Fetch, Search, Update } from "@owl-factory/database/decorators/decorators";
-import { Access, ReadFields, SetFields } from "@owl-factory/database/decorators/modifiers";
 import { FaunaIndexOptions } from "@owl-factory/database/types/fauna";
 import { Auth } from "controllers/auth";
-import { isOwner } from "security/documents";
+import * as access from "./access";
 
-const PUT_FIELDS = ["*"];
+
+const collection = Collection.Characters;
 
 class $CharacterLogic extends DatabaseLogic<CharacterDocument> {
-  public collection = Collection.Characters;
+  public collection = collection;
 
   /**
    * Creates a single character
    * @param doc The character document to create
    * @returns The created character, if successful
    */
-  @Create("createCharacter")
-  @ReadFields(["*"])
-  @SetFields(PUT_FIELDS)
-  public async createCharacter(doc: Partial<CharacterDocument>): Promise<CharacterDocument> {
-    return await super.create(doc);
+  @Create(["*"], ["*"])
+  public async create(doc: Partial<CharacterDocument>): Promise<CharacterDocument> {
+    return await access.create(collection, doc);
   }
 
   /**
@@ -31,10 +29,9 @@ class $CharacterLogic extends DatabaseLogic<CharacterDocument> {
    * @param ref The ref of the document to delete
    * @returns The deleted document
    */
-  @Delete("deleteCharacter")
-  @Access(isOwner)
-  public async deleteCharacter(ref: Ref64) {
-    return await super.delete(ref);
+  @Delete(collection, ["*"], (ref) => access.fetch(collection, ref))
+  public async delete(ref: Ref64) {
+    return await access.remove(collection, ref);
   }
 
   /**
@@ -42,10 +39,8 @@ class $CharacterLogic extends DatabaseLogic<CharacterDocument> {
    * @param id The Ref64 ID of the document to fetch
    * @returns The character document
    */
-  @Fetch("viewGameCharacters")
-  @Access(userViewable)
-  @ReadFields(userViewableFields)
-  public async fetch(ref: Ref64): Promise<CharacterDocument> { return await super.fetch(ref); }
+  @Fetch(collection, ["*"])
+  public async fetch(ref: Ref64): Promise<CharacterDocument> { return await access.fetch(collection, ref); }
 
   /**
    * Updates the character document
@@ -53,19 +48,17 @@ class $CharacterLogic extends DatabaseLogic<CharacterDocument> {
    * @param doc The new document partial to patch onto the old document
    * @returns The updated document
    */
-  @Update("updateMyCharacter")
-  @Access(isOwner)
-  @ReadFields(userViewableFields)
-  @SetFields(["*"])
-  public async updateMyCharacter(ref: Ref64, doc: Partial<CharacterDocument>) { return await super.update(ref, doc); }
+  @Update(collection, ["*"], ["*"], (ref) => access.fetch(collection, ref))
+  public async updateMyCharacter(ref: Ref64, doc: Partial<CharacterDocument>) {
+    return await access.update(collection, ref, doc);
+  }
 
   /**
    * Fetches the partial character documents for any given user
    * @param options Any additional options for filtering the data retrieved from the database
    * @returns An array of character document partials
    */
-  @Search("searchCharacterByUser")
-  @ReadFields(["*"])
+  @Search(["*"])
   public async searchCharactersByUser(userID: Ref64, options?: FaunaIndexOptions): Promise<CharacterDocument[]> {
     return this._searchCharactersByUser(userID, options);
   }
@@ -75,8 +68,7 @@ class $CharacterLogic extends DatabaseLogic<CharacterDocument> {
    * @param options Any additional options for filtering the data retrieved from the database
    * @returns An array of character document partials
    */
-  @Search("searchMyCharacters")
-  @ReadFields(["*"])
+  @Search(["*"])
   public async searchMyCharacters(options?: FaunaIndexOptions): Promise<CharacterDocument[]> {
     const userID = Auth.user?.ref;
     if (!userID) { return []; }
@@ -95,15 +87,4 @@ class $CharacterLogic extends DatabaseLogic<CharacterDocument> {
 }
 
 export const CharacterLogic = new $CharacterLogic();
-
-
-function userViewableFields(doc?: AnyDocument) {
-  if (isOwner(doc)) { return ["*"]; }
-  return [];
-}
-
-function userViewable(doc?: AnyDocument) {
-  if (isOwner(doc)) { return true; }
-  return false;
-}
 

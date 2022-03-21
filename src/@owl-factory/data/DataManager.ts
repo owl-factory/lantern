@@ -11,6 +11,7 @@ import { BatchingController } from "./batching";
 import { getUpdatedAt, isValidRef } from "./helpers/fields";
 import { CrudPacket } from "@owl-factory/types/object";
 import { getUniques } from "@owl-factory/utilities/arrays";
+import { getSuccessfulDocuments } from "./helpers/data";
 
 /**
  * The top level Data Managing class with an API for accessing and searching data

@@ -1,5 +1,5 @@
 import { DataManager } from "@owl-factory/data/DataManager";
-import { isOwner } from "server/logic/security";
+import { isOwner } from "security/documents";
 import { ImageDocument } from "types/documents";
 
 class ImageDataManager extends DataManager<Partial<ImageDocument>> {

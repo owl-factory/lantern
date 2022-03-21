@@ -34,12 +34,13 @@ import { createWrapper, deleteWrapper, fetchWrapper, searchWrapper, updateWrappe
  * @param _name The name of the function
  * @param descriptor The properties of the function
  */
-export function Delete(collection: string, fetchFunction: DocumentFetch) {
+export function Delete(collection: string, readFields: DocumentField, fetchFunction: DocumentFetch) {
   return (_target: any, _name: string, descriptor: any) => {
     const original = descriptor.value;
     if (typeof original !== "function") { return; }
 
     descriptor.collection = collection;
+    descriptor.readFields = readFields;
     descriptor.fetch = fetchFunction;
 
     descriptor.value = async function(...args: any) {
@@ -127,10 +128,12 @@ export function Update(
  * @param _name The target name
  * @param descriptor The properties of the function
  */
-export function SignIn() {
+export function SignIn(readFields: DocumentField) {
   return (_target: any, _name: string, descriptor: any) => {
     const original = descriptor.value;
     if (typeof original !== 'function') { return; }
+
+    descriptor.readFields = readFields;
 
     descriptor.value = async function(...args: any) {
       let result = await original.apply(this, args);
@@ -146,9 +149,13 @@ export function SignIn() {
  * @param _name The target name
  * @param descriptor The properties of the function
  */
- export function SignUp() {
+ export function SignUp(readFields: DocumentField, setFields: DocumentField) {
   return (_target: any, _name: string, descriptor: any) => {
     const original = descriptor.value;
+
+    descriptor.readFields = readFields;
+    descriptor.setFields = setFields;
+
     if (typeof original !== 'function') { return; }
 
     descriptor.value = async function(...args: any) {

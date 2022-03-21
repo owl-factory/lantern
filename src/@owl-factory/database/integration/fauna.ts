@@ -4,7 +4,7 @@ import { FaunaDocument, FaunaIndexOptions, FaunaIndexResponse } from "@owl-facto
 import { Ref64 } from "@owl-factory/types";
 import { normalize } from "@owl-factory/utilities/strings";
 import { Expr, query as q } from "faunadb";
-import { Collection, FaunaIndex, FaunaIndexTerms } from "src/fauna"; // TODO - refactor and remove this
+import { FaunaIndex, FaunaIndexTerms } from "src/fauna"; // TODO - refactor and remove this
 import { getServerClient } from "../client/fauna";
 
 /**
@@ -13,7 +13,7 @@ import { getServerClient } from "../client/fauna";
  * @param doc The Javascript object document to place into the database
  * @returns The created document
  */
-export async function createOne<T>(collection: Collection, doc: Record<string, unknown>): Promise<T | undefined>{
+export async function createOne<T>(collection: string, doc: Record<string, unknown>): Promise<T | undefined>{
   const client = getServerClient();
   const faunaDoc: FaunaDocument = toFauna(doc);
 

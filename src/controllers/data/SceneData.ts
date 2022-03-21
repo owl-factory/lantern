@@ -1,5 +1,5 @@
 import { DataManager } from "@owl-factory/data/DataManager";
-import { isOwner } from "server/logic/security";
+import { isOwner } from "security/documents";
 import { SceneDocument } from "types/documents";
 
 class SceneDataManager extends DataManager<Partial<SceneDocument>> {

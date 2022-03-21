@@ -24,7 +24,7 @@ export async function createMany<T>(fx: (doc: Partial<T>) => Promise<Partial<T>>
  * @param refs The list of refs of the documents to delete
  */
 export async function deleteMany<T>(
-  fx: (ref: Ref64) => Promise<Partial<T>>,
+  fx: (ref: Ref64) => Promise<T>,
   refs: Ref64[]
 ): Promise<Partial<T>[]> {
   const promises: Promise<Partial<T>>[] = [];

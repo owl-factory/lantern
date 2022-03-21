@@ -9,13 +9,13 @@ import { Collection, FaunaIndex } from "src/fauna";
 import { toRef } from "@owl-factory/database/conversion/fauna/to";
 import { FaunaIndexOptions } from "@owl-factory/database/types/fauna";
 import { Auth } from "controllers/auth";
-import { isPlayer } from "security/documents/campaigns";
 import { isOwner } from "security/documents";
+import * as access from "./access";
 
-
+const collection = Collection.Campaigns;
 
 class $CampaignLogic extends DatabaseLogic<CampaignDocument> {
-  public collection = Collection.Campaigns;
+  public collection = collection;
 
   /**
    * Creates a single document
@@ -23,26 +23,26 @@ class $CampaignLogic extends DatabaseLogic<CampaignDocument> {
    * @returns The created document, if successful
    */
   @Create(["*"], ["*"])
-  public async create(doc: Partial<CampaignDocument>): Promise<CampaignDocument> { return await super.create(doc); }
+  public async create(doc: Partial<CampaignDocument>): Promise<CampaignDocument> {
+    return await access.create(collection, doc);
+  }
 
   /**
    * Deletes a single document, if present
    * @param ref The ref of the document to delete
    * @returns The deleted document
    */
-  @Delete("deleteMyCampaign")
-  public async delete(ref: Ref64) { return await super.delete(ref); }
+  @Delete(collection, ["*"], (ref) => access.fetch(collection, ref))
+  public async delete(ref: Ref64) { return await access.remove(this.collection, ref); }
 
   /**
    * Fetches one campaign from its ID
    * @param id The Ref64 ID of the document to fetch
    * @returns The campaign document
    */
-  @Fetch(Collection.Campaigns, "viewMyCampaign")
-  @Access(isPlayer)
+  @Fetch(Collection.Campaigns, ["*"])
   @RequireLogin()
-  @ReadFields(["*"])
-  public async fetch(ref: Ref64): Promise<CampaignDocument> { return super.fetch(ref); }
+  public async fetch(ref: Ref64): Promise<CampaignDocument> { return access.fetch(collection, ref); }
 
   /**
    * Updates a single document
@@ -50,11 +50,8 @@ class $CampaignLogic extends DatabaseLogic<CampaignDocument> {
    * @param doc The changes in the document to patch on
    * @returns The updated document
    */
-  @Update("editMyCampaign")
-  @Access(isOwner)
-  @ReadFields(["*"])
-  @SetFields(["*"])
-  public async update(ref: Ref64, doc: Partial<CampaignDocument>) { return await super.update(ref, doc); }
+  @Update(collection, ["*"], ["*"], (ref) => access.fetch(collection, ref))
+  public async update(ref: Ref64, doc: Partial<CampaignDocument>) { return await access.update(collection, ref, doc); }
 
   /**
    * Updates the banner image for a campaign
@@ -62,9 +59,7 @@ class $CampaignLogic extends DatabaseLogic<CampaignDocument> {
    * @param doc The campaign partial with a new banner ID and src
    * @returns The new, updated document
    */
-  @Update("editMyCampaign")
-  @Access(isOwner)
-  @SetFields(["banner.ref", "banner.src"])
+  @Update(collection, ["*"], ["*"], (ref) => access.fetch(collection, ref))
   public async updateBanner(id: Ref64, doc: Partial<CampaignDocument>) {
     const campaign = await fauna.updateOne<CampaignDocument>(id, doc);
     return campaign;
@@ -75,9 +70,8 @@ class $CampaignLogic extends DatabaseLogic<CampaignDocument> {
    * @param options Any additional options for filtering the data retrieved from the database
    * @returns An array of campaign document partials
    */
-  @Search("viewCampaignsByUser")
+  @Search(["*"])
   @RequireLogin()
-  @ReadFields(["*"])
   public async fetchCampaignsByUser(userID: Ref64, options?: FaunaIndexOptions) {
     const ref = toRef(userID);
     const campaigns = fauna.searchByIndex(FaunaIndex.CampaignsByUser, [ref], options);
@@ -89,9 +83,8 @@ class $CampaignLogic extends DatabaseLogic<CampaignDocument> {
    * @param options Any additional options for filtering the data retrieved from the database
    * @returns An array of campaign document partials
    */
-  @Search("viewMyCampaigns")
+  @Search(["*"])
   @RequireLogin()
-  @ReadFields(["*"])
   public async fetchMyCampaigns(options?: FaunaIndexOptions) {
     const id = Auth.user?.ref;
     if (!id) { return []; }

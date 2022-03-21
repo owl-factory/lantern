@@ -1,6 +1,7 @@
 import { RulesetDocument } from "types/documents";
 import { DataManager } from "@owl-factory/data/DataManager";
-import { isOwner, isPublic } from "server/logic/security";
+import { isPublic } from "server/logic/security";
+import { isOwner } from "security/documents";
 class RulesetDataManager extends DataManager<Partial<RulesetDocument>> {
   public collection = "rulesets";
 

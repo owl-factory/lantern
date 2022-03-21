@@ -5,6 +5,7 @@ import { UserLogic } from "server/logic/UserLogic";
 import { HTTPHandler, createEndpoint } from "@owl-factory/https";
 import { UserDocument } from "types/documents";
 import { getUniques } from "@owl-factory/utilities/arrays";
+import { fetchMany } from "server/logic/many";
 
 /**
  * Gets all of the information needed to render a user's profile page
@@ -15,11 +16,6 @@ export async function getProfile(params: Record<string, unknown>) {
   if (userSearch.length === 0) { throw { code: 404, message: "The given profile was not found."}; }
 
   const user = await UserLogic.fetch(userSearch[0].ref);
-
-  // TODO - store the player username and ref instead of pulling the full user
-  if (user.recentPlayers) {
-    user.recentPlayers = await UserLogic.findManyByIDs(getUniques(user.recentPlayers, "id"));
-  }
 
   return { user };
 }

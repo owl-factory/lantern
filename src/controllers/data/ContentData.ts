@@ -1,6 +1,6 @@
 import { DataManager } from "@owl-factory/data/DataManager";
 import { rest } from "@owl-factory/https/rest";
-import { isOwner } from "server/logic/security";
+import { isOwner } from "security/documents";
 import { ContentDocument } from "types/documents";
 
 class ContentDataManager extends DataManager<Partial<ContentDocument>> {

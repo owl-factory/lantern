@@ -1,5 +1,5 @@
 import { DataManager } from "@owl-factory/data/DataManager";
-import { isOwner } from "server/logic/security";
+import { isOwner } from "security/documents";
 import { UserDocument } from "types/documents";
 
 class UserDataManager extends DataManager<Partial<UserDocument>> {

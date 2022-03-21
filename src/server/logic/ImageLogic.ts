@@ -3,21 +3,13 @@ import { Collection, FaunaIndex } from "src/fauna";
 import { DatabaseLogic } from "./AbstractDatabaseLogic";
 import * as fauna from "@owl-factory/database/integration/fauna";
 import { Ref64 } from "@owl-factory/types";
-import { Access, ReadFields, SetFields } from "@owl-factory/database/decorators/modifiers";
-import { Create, Delete, Fetch, FetchMany, Search, Update } from "@owl-factory/database/decorators/decorators";
+import { Delete, Fetch, Search } from "@owl-factory/database/decorators/decorators";
 import { FaunaIndexOptions } from "@owl-factory/database/types/fauna";
 import { toRef } from "@owl-factory/database/conversion/fauna/to";
 import { Auth } from "controllers/auth";
-import { isOwner } from "security/documents";
+import * as access from "./access";
 
-const createFields = [
-  "name",
-  "src",
-  "height",
-  "width",
-  "sizeInBytes",
-  "source",
-];
+const collection = Collection.Images;
 
 class $ImageLogic extends DatabaseLogic<ImageDocument> {
   public collection = Collection.Images;
@@ -27,11 +19,9 @@ class $ImageLogic extends DatabaseLogic<ImageDocument> {
    * @param id The ID of the image document to delete
    * @returns The deleted image document
    */
-  @Delete("deleteMyImage")
-  @Access(isOwner)
-  @ReadFields(["*"])
+  @Delete(collection, ["*"], (ref) => access.fetch(collection, ref))
   public async deleteOne(ref: Ref64): Promise<ImageDocument> {
-    return await super.delete(ref);
+    return await access.remove(collection, ref);
   }
 
   /**
@@ -39,10 +29,9 @@ class $ImageLogic extends DatabaseLogic<ImageDocument> {
    * @param id The Ref64 ID of the document to fetch
    * @returns The image document
    */
-  @Fetch("viewAnyImage")
-  @ReadFields(["*"])
+  @Fetch(collection, ["*"])
   public async fetch(ref: Ref64): Promise<ImageDocument> {
-    return await super.fetch(ref);
+    return await access.fetch(collection, ref);
   }
 
   /**
@@ -50,8 +39,7 @@ class $ImageLogic extends DatabaseLogic<ImageDocument> {
    * @param options Any additional options for filtering the data retrieved from the database
    * @returns An array of image document partials
    */
-  @Search("searchImagesByUser")
-  @ReadFields(["*"])
+  @Search(["*"])
   public async searchImagesByUser(userID: Ref64, options?: FaunaIndexOptions): Promise<ImageDocument[]> {
     return this._searchImagesByUser(userID, options);
   }
@@ -61,8 +49,7 @@ class $ImageLogic extends DatabaseLogic<ImageDocument> {
    * @param options Any additional options for filtering the data retrieved from the database
    * @returns An array of image document partials
    */
-  @Search("searchMyImages")
-  @ReadFields(["*"])
+  @Search(["*"])
   public async searchMyImages(options?: FaunaIndexOptions): Promise<ImageDocument[]> {
     const userID = Auth.user?.ref;
     if (!userID) { return []; }

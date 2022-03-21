@@ -6,7 +6,7 @@ import { Descriptor } from "./types";
  * @returns The decorator function that sets the requirement
  */
 export function RequireLogin(required = true) {
-  return (_target: any, _name: string, descriptor: Descriptor) => {
+  return (_target: any, _name: string, descriptor: any) => {
     descriptor.requireLogin = required;
   };
 }

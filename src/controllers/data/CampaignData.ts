@@ -1,7 +1,7 @@
 import { DataManager } from "@owl-factory/data/DataManager";
 import { getUniques } from "@owl-factory/utilities/arrays";
 import { Auth } from "controllers/auth";
-import { isOwner } from "server/logic/security";
+import { isOwner } from "security/documents";
 import { CampaignDocument } from "types/documents";
 
 class CampaignDataManager extends DataManager<Partial<CampaignDocument>> {
