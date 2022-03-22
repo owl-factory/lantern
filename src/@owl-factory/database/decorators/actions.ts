@@ -1,8 +1,8 @@
 
 import { AnyDocument } from "types/documents";
-import { trimFields } from "src/security";
 import { Auth } from "controllers/auth";
 import { Descriptor } from "./types";
+import { trimFields } from "security";
 
 /**
  * Validates that the document matches the dynamic access function provided in a decorator
@@ -37,7 +37,10 @@ export function validateDocument(descriptor: Descriptor, doc: any) {
     console.warn("SET VALIDATION OR MAKE VALIDATION REQUIRED BY DEFAULT");
     return;
   }
-  descriptor.validation(doc);
+  const result = descriptor.validation(doc);
+  if (result === undefined || (Array.isArray(result) && result.length === 0)) { return; }
+  // TODO - convert array into a string more carefully
+  throw result.toString();
 }
 
 /**
@@ -49,7 +52,7 @@ export function validateLogin(descriptor: Descriptor): void {
   const isLoginRequired = descriptor.requireLogin !== undefined ?  descriptor.requireLogin : false;
   if (isLoginRequired === false) { return; }
   if (!Auth.isLoggedIn) {
-    throw `You must be logged in to access the ${descriptor.collection}`;
+    throw `You must be logged in to access the ${descriptor.collection} collection`;
   }
 }
 

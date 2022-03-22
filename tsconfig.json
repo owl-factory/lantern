@@ -38,6 +38,12 @@
       "components/*": [
         "src/components/*"
       ],
+      "fauna": [
+        "src/fauna"
+      ],
+      "fauna/*": [
+        "src/fauna/*"
+      ],
       "server": [
         "src/server"
       ],
@@ -61,6 +67,9 @@
       ],
       "utilities/*": [
         "src/utilities/*"
+      ],
+      "security": [
+        "src/security"
       ],
       "security/*": [
         "src/security/*"
