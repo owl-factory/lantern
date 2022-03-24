@@ -1,7 +1,6 @@
 import { rest } from "@owl-factory/https/rest";
 import { Ref64 } from "@owl-factory/types";
 import { CrudPacket } from "@owl-factory/types/object";
-import { string } from "yup/lib/locale";
 
 interface ResponsePacket<T> {
   docs: CrudPacket<T>[];

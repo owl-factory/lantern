@@ -1,5 +1,8 @@
 import {
   setCreateFields,
+  setUpdateFields,
+  trimReadFields,
+  trimSetFields,
   validateDocument,
   validateDynamicAccess,
   validateLogin,
@@ -166,6 +169,8 @@ describe("validateLogin", () => {
 
 describe("setCreateFields", () => {
   test("created, no log in", () => {
+    Auth.reset();
+
     const doc = setCreateFields({});
     const ref = { ref: "" };
 
@@ -187,6 +192,118 @@ describe("setCreateFields", () => {
     expect(doc.ownedBy).toStrictEqual(ref);
 
     expect(doc.updatedBy).toStrictEqual(ref);
+  });
+});
+
+describe("setUpdateFields", () => {
+  test("updated, no log in", () => {
+    Auth.reset();
+    const doc = setUpdateFields({});
+    const ref = { ref: "" };
+
+    expect(doc.createdAt).toBeUndefined();
+    expect(doc.createdBy).toBeUndefined();
+    expect(doc.ownedBy).toBeUndefined();
+
+    expect(doc.updatedAt).toBeDefined();
+    expect(doc.updatedBy).toStrictEqual(ref);
+  });
+
+  test("updated, logged in", () => {
+    const user = createTestUserDocument();
+    const ref = { ref: user.ref };
+    Auth.fromAPI(user, "", "");
+    const doc = setUpdateFields({});
+    expect(doc.updatedBy).toStrictEqual(ref);
+  });
+});
+
+describe("Trim Read Fields", () => {
+  let descriptor: Descriptor;
+  let doc: any;
+
+  let mockCacheAction: ((doc: any) => string[] | undefined) | undefined;
+
+  const value = {
+    apply: mockCacheAction,
+  };
+
+  beforeEach(() => {
+    descriptor = {
+      collection: "test",
+      readFields: ["*"],
+      value,
+    };
+    doc = { id: "1" };
+
+    mockCacheAction = jest.fn((mockDoc: any) => {
+      const errors: string[] = [];
+      if (mockDoc.id === "2") { errors.push("error"); }
+      return errors;
+    });
+  });
+
+  test("Missing Read Field", () => {
+    (descriptor as any).readFields = undefined;
+    expect(() => trimReadFields(descriptor, doc)).toThrow();
+  });
+
+  test("Trim Read Fields from Array", () => {
+    doc.test = "test";
+    descriptor.readFields = ["id"];
+    const result = trimReadFields(descriptor, doc);
+    expect(result).toStrictEqual({ id: "1" });
+  });
+
+  test("Trim Read Fields from Func", () => {
+    doc.test = "test";
+    descriptor.readFields = (givenDoc: any) => ["id"];
+    const result = trimReadFields(descriptor, doc);
+    expect(result).toStrictEqual({ id: "1" });
+  });
+});
+
+describe("Trim Set Fields", () => {
+  let descriptor: Descriptor;
+  let doc: any;
+
+  let mockCacheAction: ((doc: any) => string[] | undefined) | undefined;
+
+  const value = {
+    apply: mockCacheAction,
+  };
+
+  beforeEach(() => {
+    descriptor = {
+      collection: "test",
+      readFields: ["*"],
+      value,
+    };
+    doc = { id: "1" };
+
+    mockCacheAction = jest.fn((mockDoc: any) => {
+      const errors: string[] = [];
+      if (mockDoc.id === "2") { errors.push("error"); }
+      return errors;
+    });
+  });
+
+  test("Missing Set Field", () => {
+    expect(() => trimSetFields(descriptor, doc)).toThrow();
+  });
+
+  test("Trim Set Fields from Array", () => {
+    doc.test = "test";
+    descriptor.setFields = ["id"];
+    const result = trimSetFields(descriptor, doc);
+    expect(result).toStrictEqual({ id: "1" });
+  });
+
+  test("Trim Set Fields from Func", () => {
+    doc.test = "test";
+    descriptor.setFields = (givenDoc: any) => ["id"];
+    const result = trimSetFields(descriptor, doc);
+    expect(result).toStrictEqual({ id: "1" });
   });
 });
 

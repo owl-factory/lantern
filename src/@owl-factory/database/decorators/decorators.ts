@@ -4,6 +4,9 @@ import {
 } from "./actions";
 import { createWrapper, deleteWrapper, fetchWrapper, searchWrapper, updateWrapper } from "./wrappers";
 
+type DocumentFetch = (ref: string) => Promise<any>;
+type DocumentField = string[] | ((doc: any) => string[]);
+type DocumentValidation = (doc: any) => void;
 
 /**
  * Handles running pre- and post-pull processing for running a create function
@@ -11,7 +14,7 @@ import { createWrapper, deleteWrapper, fetchWrapper, searchWrapper, updateWrappe
  * @param _name The name of the function
  * @param descriptor The properties of the function
  */
- export function Create(readFields: DocumentField, setFields: DocumentField, validation?: DocumentValidation) {
+export function Create(readFields: DocumentField, setFields: DocumentField, validation?: DocumentValidation) {
   return (_target: any, _name: string, descriptor: any) => {
     const original = descriptor.value;
     if (typeof original !== 'function') {
@@ -49,10 +52,6 @@ export function Delete(collection: string, readFields: DocumentField, fetchFunct
   };
 }
 
-type DocumentFetch = (ref: string) => Promise<any>;
-type DocumentField = string[] | ((doc: any) => string[]);
-type DocumentValidation = (doc: any) => void;
-
 /**
  * Handles running pre- and post-pull processing for running a fetch function.
  * Fetch uses the @Access, @RequireLogin, and @ReadFields decorators
@@ -60,7 +59,7 @@ type DocumentValidation = (doc: any) => void;
  * @param _name The name of the function
  * @param descriptor The properties of the function
  */
- export function Fetch(collection: string, readFields: DocumentField) {
+export function Fetch(collection: string, readFields: DocumentField) {
   return (_target: any, _name: string, descriptor: any) => {
     const original = descriptor.value;
     if (typeof original !== 'function') { return; }
@@ -149,7 +148,7 @@ export function SignIn(readFields: DocumentField) {
  * @param _name The target name
  * @param descriptor The properties of the function
  */
- export function SignUp(readFields: DocumentField, setFields: DocumentField) {
+export function SignUp(readFields: DocumentField, setFields: DocumentField) {
   return (_target: any, _name: string, descriptor: any) => {
     const original = descriptor.value;
 

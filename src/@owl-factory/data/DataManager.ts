@@ -206,6 +206,7 @@ export class DataManager<T extends Record<string, unknown>> {
 
   /**
    * Runs the action to update a number of items in the cache
+   * TODO - please rename. This is weird
    * @param refs The refs to update in the cache
    */
   public cacheAction(refs: Ref64[]): void {
