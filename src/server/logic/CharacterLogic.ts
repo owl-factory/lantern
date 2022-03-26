@@ -1,7 +1,6 @@
 import { Ref64 } from "@owl-factory/types";
 import * as fauna from "@owl-factory/database/integration/fauna";
 import { CharacterDocument } from "types/documents";
-import { DatabaseLogic } from "./AbstractDatabaseLogic";
 import { Collection, FaunaIndex } from "src/fauna";
 import { Create, Delete, Fetch, Search, Update } from "@owl-factory/database/decorators/decorators";
 import { FaunaIndexOptions } from "@owl-factory/database/types/fauna";
@@ -11,7 +10,7 @@ import * as access from "./access";
 
 const collection = Collection.Characters;
 
-class $CharacterLogic extends DatabaseLogic<CharacterDocument> {
+class $CharacterLogic {
   public collection = collection;
 
   /**

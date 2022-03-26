@@ -3,7 +3,6 @@ import { CampaignDocument } from "types/documents";
 import * as fauna from "@owl-factory/database/integration/fauna";
 import { RequireLogin } from "@owl-factory/database/decorators/modifiers";
 import { Create, Delete, Fetch, Search, Update } from "@owl-factory/database/decorators/decorators";
-import { DatabaseLogic } from "./AbstractDatabaseLogic";
 import { Ref64 } from "@owl-factory/types";
 import { Collection, FaunaIndex } from "src/fauna";
 import { toRef } from "@owl-factory/database/conversion/fauna/to";
@@ -14,7 +13,7 @@ import * as access from "./access";
 
 const collection = Collection.Campaigns;
 
-class $CampaignLogic extends DatabaseLogic<CampaignDocument> {
+class $CampaignLogic {
   public collection = collection;
 
   /**

@@ -13,6 +13,10 @@ import {
 } from "./actions";
 import { Descriptor } from "./types";
 
+function returnArr(data: string | string[]) {
+  return Array.isArray(data) ? data : [data];
+}
+
 /**
  * Wraps a function to create a document to verify that a user has access to create a document
  * @param descriptor An object containing information for creating a document
@@ -22,7 +26,7 @@ import { Descriptor } from "./types";
  */
 export async function createWrapper(
   descriptor: Descriptor,
-  original: (doc: any) => any,
+  original: (doc: any) => Promise<any>,
   doc: any
 ): Promise<CrudPacket<any>> {
   const packet: CrudPacket<any> = { success: false, messages: [] };
@@ -49,7 +53,7 @@ export async function createWrapper(
     packet.success = true;
     return packet;
   } catch (e) {
-    packet.messages = [e as string];
+    packet.messages = returnArr(e as (string | string[]));
     return packet;
   }
 }
@@ -63,7 +67,7 @@ export async function createWrapper(
  */
 export async function deleteWrapper(
   descriptor: Descriptor,
-  original: (ref: string) => any,
+  original: (ref: string) => Promise<any>,
   ref: Ref64
 ): Promise<CrudPacket<any>> {
   const packet: CrudPacket<any> = { success: false, ref, messages: [] };
@@ -97,7 +101,7 @@ export async function deleteWrapper(
     packet.success = true;
     return packet;
   } catch (e) {
-    packet.messages = [e as string];
+    packet.messages = returnArr(e as (string | string[]));
     return packet;
   }
 }
@@ -111,7 +115,7 @@ export async function deleteWrapper(
  */
 export async function fetchWrapper(
   descriptor: Descriptor,
-  original: (ref: string) => any,
+  original: (ref: string) => Promise<any>,
   ref: Ref64
 ): Promise<CrudPacket<any>> {
   const packet: CrudPacket<any> = { success: false, ref, messages: [] };
@@ -136,7 +140,7 @@ export async function fetchWrapper(
     packet.success = true;
     return packet;
   } catch (e) {
-    packet.messages = [e as string];
+    packet.messages = returnArr(e as (string | string[]));
     return packet;
   }
 }
@@ -178,7 +182,7 @@ export async function searchWrapper(
     packet.success = true;
     return packet;
   } catch (e) {
-    packet.messages = [e as string];
+    packet.messages = returnArr(e as (string | string[]));
     return packet;
   }
 }
@@ -229,7 +233,7 @@ export async function updateWrapper(
     packet.success = true;
     return packet;
   } catch (e) {
-    packet.messages = [e as string];
+    packet.messages = returnArr(e as (string | string[]));
     return packet;
   }
 }

@@ -16,4 +16,9 @@ export const validateLogin = jest.fn((_descriptor: Descriptor) => {
   return;
 });
 
+export const trimReadFields = jest.fn((_descriptor: Descriptor, doc: any) => { return doc; });
+export const trimSetFields = jest.fn((_descriptor: Descriptor, doc: any) => { return doc; });
+export const setCreateFields = jest.fn((_descriptor: Descriptor, doc: any) => { return doc; });
+export const setUpdateFields = jest.fn((_descriptor: Descriptor, doc: any) => { return doc; });
+
 

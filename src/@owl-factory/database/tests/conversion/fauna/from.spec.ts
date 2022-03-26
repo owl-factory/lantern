@@ -5,7 +5,6 @@ import {
   $fromItem,
   $fromRecord,
   $getFaunaDataType,
-  $isFaunaDate,
   $isFaunaRef,
 } from "@owl-factory/database/conversion/fauna/from";
 
@@ -18,7 +17,7 @@ test("fromDate test", () => {
   const baseDate = new Date();
   const faunaTime = { "@ts": baseDate.toISOString() };
   const date = $fromDate(faunaTime);
-  expect(date).toStrictEqual(baseDate);
+  expect(date).toStrictEqual(baseDate.toISOString());
 });
 
 test("fromRecord test", () => {

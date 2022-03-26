@@ -4,7 +4,6 @@ import { RequireLogin } from "@owl-factory/database/decorators/modifiers";
 import { SceneDocument } from "types/documents";
 import { Collection } from "src/fauna";
 import { Ref64 } from "@owl-factory/types";
-import { DatabaseLogic } from "./AbstractDatabaseLogic";
 import * as access from "./access";
 
 
@@ -12,7 +11,7 @@ const CREATE_FIELDS: string[] = ["name", "campaignID"];
 
 const collection = Collection.Scenes;
 
-class $SceneLogic extends DatabaseLogic<SceneDocument> {
+class $SceneLogic {
   /**
    * Creates a single new scene document
    * @param doc The document partial to create

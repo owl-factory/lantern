@@ -1,6 +1,5 @@
 import { ImageDocument } from "types/documents";
 import { Collection, FaunaIndex } from "src/fauna";
-import { DatabaseLogic } from "./AbstractDatabaseLogic";
 import * as fauna from "@owl-factory/database/integration/fauna";
 import { Ref64 } from "@owl-factory/types";
 import { Delete, Fetch, Search } from "@owl-factory/database/decorators/decorators";
@@ -11,7 +10,7 @@ import * as access from "./access";
 
 const collection = Collection.Images;
 
-class $ImageLogic extends DatabaseLogic<ImageDocument> {
+class $ImageLogic {
   public collection = Collection.Images;
 
   /**

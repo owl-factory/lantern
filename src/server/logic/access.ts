@@ -9,8 +9,7 @@ import { Ref64 } from "@owl-factory/types";
 export async function create<T>(collection: string, doc: Partial<T>): Promise<T> {
   const newDoc = await fauna.createOne<T>(collection, doc);
   if (newDoc === undefined) {
-    let name = "undefined";
-    if ("name" in doc) { name = (doc as any).name; }
+    const name = ("name" in doc) ? (doc as any).name : "undefined";
     throw `A document in collection '${collection}' with name '${name}' could not be created`;
   }
   return newDoc;

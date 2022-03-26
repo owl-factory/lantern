@@ -75,6 +75,7 @@ export async function findManyByIDs<T>(ids: Ref64[]): Promise<T[]> {
 
 /**
  * Searches by a specified index
+ * TODO - unlink from fauna index or have a way to set that
  * @param index The FaunaIndex to search
  * @param terms The terms that are being searched
  * @param options Any options that may modify the search
@@ -148,10 +149,11 @@ export async function signIn<T>(index: string, username: string, password: strin
 
 /**
  * Signs out the current user from the Fauna client
+ * TODO - review. This basically does nothing, yeah?
  */
 export function signOut() {
   const client = getServerClient();
-  
+
   try {
     client.query(q.Logout(false));
   } catch (e) {
@@ -172,12 +174,13 @@ export async function signUp<T>(collection: string, user: Partial<T>, password: 
   faunaUser.credentials = { password };
 
   // Try-Catch handles failures for whatever reason
+  // TODO - can we have better validation?
   let createdUser: FaunaDocument;
   try {
     createdUser = await client.query(q.Create(collection, faunaUser));
   } catch (e) {
     console.log(e)
-    throw({ code: 405, message: "YOU HAVE FAILED THE CHALLENGE" });
+    throw({ code: 405, message: "User could not be created" });
   }
 
   const parsedUser = fromFauna(createdUser);

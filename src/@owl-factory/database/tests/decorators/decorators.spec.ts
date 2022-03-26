@@ -1,5 +1,4 @@
 import { Create, Delete, Fetch, Search, Update } from "@owl-factory/database/decorators/decorators";
-import { read } from "fs";
 
 describe("Decorators", () => {
   const collection = "collection";

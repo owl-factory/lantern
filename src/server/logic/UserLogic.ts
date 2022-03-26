@@ -2,7 +2,6 @@ import { Ref64 } from "@owl-factory/types";
 import { UserDocument } from "types/documents";
 import * as fauna from "@owl-factory/database/integration/fauna";
 import { Collection, FaunaIndex } from "src/fauna";
-import { DatabaseLogic } from "./AbstractDatabaseLogic";
 import { Fetch, Search, SignIn, SignUp, Update } from "@owl-factory/database/decorators/decorators";
 import { FaunaIndexOptions } from "@owl-factory/database/types/fauna";
 import { isEmail } from "@owl-factory/utilities/strings";
@@ -31,7 +30,7 @@ const updateFields = [
 
 const collection = Collection.Users;
 
-class $UserLogic extends DatabaseLogic<UserDocument> {
+class $UserLogic {
   /**
    * Fetches one user from its ID
    * @param id The Ref64 ID of the document to fetch
@@ -91,7 +90,7 @@ class $UserLogic extends DatabaseLogic<UserDocument> {
   @SignUp(COOKIE_FIELDS, ["username", "email"])
   public async signUp(user: Partial<UserDocument>, password: string) {
     // TODO - add default security and other fields required for the user
-    const newUser = await fauna.signUp<UserDocument>(this.collection, user, password);
+    const newUser = await fauna.signUp<UserDocument>(collection, user, password);
     return newUser;
   }
 }

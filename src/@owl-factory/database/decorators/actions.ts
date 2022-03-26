@@ -39,8 +39,7 @@ export function validateDocument(descriptor: Descriptor, doc: any) {
   }
   const result = descriptor.validation(doc);
   if (result === undefined || (Array.isArray(result) && result.length === 0)) { return; }
-  // TODO - convert array into a string more carefully
-  throw result.toString();
+  throw result;
 }
 
 /**

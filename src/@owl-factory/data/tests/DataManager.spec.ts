@@ -1,5 +1,6 @@
 import { DataManager } from "../DataManager";
 import * as caching from "../caching";
+import { isValidRef } from "../helpers/fields";
 
 
 jest.mock("@owl-factory/data/helpers/fields");
@@ -58,6 +59,7 @@ describe("set", () => {
     (dm.data.set as any).mockClear();
     (dm.grouping.onNewDoc as any).mockClear();
     (dm.grouping.onUpdatedDoc as any).mockClear();
+    (isValidRef as any).mockImplementation((ref: string) => ref !== "");
   });
 
   test("success, new", () => {
@@ -91,7 +93,7 @@ describe("set", () => {
   });
 });
 
-describe("set", () => {
+describe("setMany", () => {
   beforeEach(() => {
     (dm.batching.addToCacheQueue as any).mockClear();
     (dm.data.get as any).mockClear();

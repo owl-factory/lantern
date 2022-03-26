@@ -2,14 +2,13 @@
 import { Collection, FaunaIndex } from "src/fauna";
 import { Ref64 } from "@owl-factory/types";
 import { RulesetDocument } from "types/documents";
-import { DatabaseLogic } from "./AbstractDatabaseLogic";
 import * as fauna from "@owl-factory/database/integration/fauna";
 import { Create, Delete, Fetch, Search, Update } from "@owl-factory/database/decorators/decorators";
 import { FaunaIndexOptions } from "@owl-factory/database/types/fauna";
 import * as access from "./access";
 
 const collection = Collection.Rulesets;
-class $RulesetLogic extends DatabaseLogic<RulesetDocument> {
+class $RulesetLogic {
   public collection = Collection.Rulesets;
 
   /**
