@@ -1,4 +1,4 @@
-import { Descriptor } from "./types";
+import { LogicDescriptor } from "./types";
 
 /**
  * Decorator that indicates the function is to require a login or not.
@@ -17,7 +17,7 @@ export function RequireLogin(required = true) {
  * @returns Any errors encountered
  */
 export function Dynamic(fx: (doc: any) => string) {
-  return (_target: any, _name: string, descriptor: Descriptor) => {
+  return (_target: any, _name: string, descriptor: LogicDescriptor) => {
     descriptor.dynamicAccess = fx;
   };
 }
@@ -28,7 +28,7 @@ export function Dynamic(fx: (doc: any) => string) {
  * @returns Any errors encountered
  */
 export function Static(fx: () => string) {
-  return (_target: any, _name: string, descriptor: Descriptor) => {
+  return (_target: any, _name: string, descriptor: LogicDescriptor) => {
     descriptor.staticAccess = fx;
   };
 }

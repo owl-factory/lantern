@@ -1,3 +1,4 @@
+import { Ref64 } from "@owl-factory/types";
 import {
   trimReadFields,
   trimSetFields,
@@ -26,7 +27,7 @@ export function Create(readFields: DocumentField, setFields: DocumentField, vali
     descriptor.validateDocument = validation;
 
     descriptor.value = async function(...args: any) {
-      return await createWrapper(descriptor, async (doc: any) => original.apply(this, doc), args[0]);
+      return await createWrapper(descriptor, async (doc: any) => original.apply(this, [doc]), args[0]);
     };
   };
 }
@@ -47,7 +48,7 @@ export function Delete(collection: string, readFields: DocumentField, fetchFunct
     descriptor.fetch = fetchFunction;
 
     descriptor.value = async function(...args: any) {
-      return await deleteWrapper(descriptor, (ref: string) => original.apply(this, ref), args[0]);
+      return await deleteWrapper(descriptor, (ref: string) => original.apply(this, [ref]), args[0]);
     };
   };
 }
@@ -68,7 +69,7 @@ export function Fetch(collection: string, readFields: DocumentField) {
     descriptor.readFields = readFields;
 
     descriptor.value = async function(...args: any) {
-      return await fetchWrapper(descriptor, (ref: string) => original.apply(this, ref), args[0]);
+      return await fetchWrapper(descriptor, (ref: string) => original.apply(this, [ref]), args[0]);
     };
   };
 }
@@ -87,7 +88,7 @@ export function Search(readFields: DocumentField) {
     descriptor.readFields = readFields;
 
     descriptor.value = async function(...args: any) {
-      return await searchWrapper(descriptor, (arg: any) => original.apply(this, arg), args);
+      return await searchWrapper(descriptor, (arg: any) => original.apply(this, [arg]), args);
     };
   };
 }
@@ -116,7 +117,7 @@ export function Update(
     descriptor.validateDocument = validation;
 
     descriptor.value = async function(...args: any) {
-      return await updateWrapper(descriptor, original, args[0], args[1]);
+      return await updateWrapper(descriptor, async (ref: Ref64, doc: any) => original(ref, doc), args[0], args[1]);
     };
   };
 }

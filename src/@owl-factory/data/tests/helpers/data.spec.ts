@@ -1,4 +1,4 @@
-import { getSuccessfulDocuments } from "../data";
+import { getSuccessfulDocuments } from "../../helpers/data";
 
 describe("getSuccessfulDocuments", () => {
   test("test", () => {

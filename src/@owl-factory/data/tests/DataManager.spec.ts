@@ -2,15 +2,27 @@ import { DataManager } from "../DataManager";
 import * as caching from "../caching";
 import { isValidRef } from "../helpers/fields";
 
+import "@owl-factory/data/tests/mocks/helpers/fields";
+
+import "@owl-factory/data/tests/mocks/crud";
+import { mockBatchingController} from "@owl-factory/data/tests/mocks/batching";
+import "@owl-factory/data/tests/mocks/caching";
+import { mockDataController } from "@owl-factory/data/tests/mocks/data";
+import { mockGroupingController} from "@owl-factory/data/tests/mocks/grouping";
+
+
 
 jest.mock("@owl-factory/data/helpers/fields");
 
-jest.mock("@owl-factory/data/batching");
+jest.mock("@owl-factory/data/batching", () => ({
+  BatchingController: jest.fn().mockImplementation(() => mockBatchingController),
+}));
 jest.mock("@owl-factory/data/caching");
 jest.mock("@owl-factory/data/crud");
-jest.mock("@owl-factory/data/data");
-jest.mock("@owl-factory/data/grouping");
-
+jest.mock("@owl-factory/data/data", () => ({ DataController: jest.fn().mockImplementation(() => mockDataController) }));
+jest.mock("@owl-factory/data/grouping", () => ({
+  GroupingController: jest.fn().mockImplementation(() => mockGroupingController),
+}));
 
 const dm: DataManager<any> = new DataManager("/");
 

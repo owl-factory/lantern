@@ -32,7 +32,7 @@ class $CampaignLogic {
    * @returns The deleted document
    */
   @Delete(collection, ["*"], (ref) => access.fetch(collection, ref))
-  public async delete(ref: Ref64) { return await access.remove(this.collection, ref); }
+  public async delete(ref: Ref64) { return await access.remove(collection, ref); }
 
   /**
    * Fetches one campaign from its ID

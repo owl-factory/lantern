@@ -1,4 +1,4 @@
-import { Descriptor } from "@owl-factory/database/decorators/types";
+import { LogicDescriptor } from "@owl-factory/database/decorators/types";
 import {
   setCreateFields,
   trimReadFields,
@@ -17,10 +17,13 @@ import {
 } from "@owl-factory/database/decorators/wrappers";
 import { isValidCollection, isValidRef } from "@owl-factory/data/helpers/fields";
 
+import "@owl-factory/database/tests/mocks/decorators/actions";
+import "@owl-factory/data/tests/mocks/helpers/fields";
+
 jest.mock("@owl-factory/database/decorators/actions");
 jest.mock("@owl-factory/data/helpers/fields");
 
-let descriptor: Descriptor;
+let descriptor: LogicDescriptor;
 const doc = { ref: "2", collection: "test" };
 const original = jest.fn(async () => (doc));
 
@@ -191,7 +194,7 @@ describe("deleteWrapper", () => {
 
   test("failed dynamic access", async () => {
     const err = "err";
-    (validateDynamicAccess as any).mockImplementationOnce((_desc: Descriptor, _doc: any) => {throw err;});
+    (validateDynamicAccess as any).mockImplementationOnce((_desc: LogicDescriptor, _doc: any) => {throw err;});
     const res = await deleteWrapper(descriptor, original, doc.ref);
 
     expect(res.success).toBeFalsy();
@@ -279,7 +282,7 @@ describe("fetchWrapper", () => {
 
   test("failed dynamic access", async () => {
     const err = "err";
-    (validateDynamicAccess as any).mockImplementationOnce((_desc: Descriptor, _doc: any) => {throw err;});
+    (validateDynamicAccess as any).mockImplementationOnce((_desc: LogicDescriptor, _doc: any) => {throw err;});
     const res = await fetchWrapper(descriptor, original, doc.ref);
 
     expect(res.success).toBeFalsy();
@@ -347,7 +350,7 @@ describe("searchWrapper", () => {
 
   test("failed dynamic access", async () => {
     const err = "err";
-    (validateDynamicAccess as any).mockImplementationOnce((_desc: Descriptor, _doc: any) => {throw err;});
+    (validateDynamicAccess as any).mockImplementationOnce((_desc: LogicDescriptor, _doc: any) => {throw err;});
     const res = await searchWrapper(descriptor, originalArr, doc.ref);
 
     expect(res.success).toBeTruthy();
@@ -471,7 +474,7 @@ describe("deleteWrapper", () => {
 
   test("failed dynamic access", async () => {
     const err = "err";
-    (validateDynamicAccess as any).mockImplementationOnce((_desc: Descriptor, _doc: any) => {throw err;});
+    (validateDynamicAccess as any).mockImplementationOnce((_desc: LogicDescriptor, _doc: any) => {throw err;});
     const res = await updateWrapper(descriptor, original, doc.ref, doc);
 
     expect(res.success).toBeFalsy();

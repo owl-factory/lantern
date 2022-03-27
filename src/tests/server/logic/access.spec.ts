@@ -1,3 +1,4 @@
+import "@owl-factory/database/tests/mocks/integration/fauna";
 import { create, fetch, remove, update } from "server/logic/access";
 
 jest.mock("@owl-factory/database/integration/fauna");

@@ -8,13 +8,13 @@ import {
   validateLogin,
   validateStaticAccess,
 } from "@owl-factory/database/decorators/actions";
-import { Descriptor } from "@owl-factory/database/decorators/types";
+import { LogicDescriptor } from "@owl-factory/database/decorators/types";
 import { Auth } from "controllers/auth";
 import { UserDocument } from "types/documents";
 
 
 describe("validateDynamicAccess", () => {
-  let descriptor: Descriptor;
+  let descriptor: LogicDescriptor;
   let doc: any;
 
   let mockCacheAction: ((doc: any) => string | undefined) | undefined;
@@ -59,7 +59,7 @@ describe("validateDynamicAccess", () => {
 
 
 describe("validateStaticAccess", () => {
-  let descriptor: Descriptor;
+  let descriptor: LogicDescriptor;
   let doThrow = false;
 
   let mockCacheAction: any;
@@ -102,7 +102,7 @@ describe("validateStaticAccess", () => {
 
 
 describe("validateDocument", () => {
-  let descriptor: Descriptor;
+  let descriptor: LogicDescriptor;
   let doc: any;
 
   let mockCacheAction: ((doc: any) => string[] | undefined) | undefined;
@@ -147,7 +147,7 @@ describe("validateDocument", () => {
 });
 
 describe("validateLogin", () => {
-  let descriptor: Descriptor;
+  let descriptor: LogicDescriptor;
 
   const value = {
     apply: () => undefined,
@@ -219,7 +219,7 @@ describe("setUpdateFields", () => {
 });
 
 describe("Trim Read Fields", () => {
-  let descriptor: Descriptor;
+  let descriptor: LogicDescriptor;
   let doc: any;
 
   let mockCacheAction: ((doc: any) => string[] | undefined) | undefined;
@@ -264,7 +264,7 @@ describe("Trim Read Fields", () => {
 });
 
 describe("Trim Set Fields", () => {
-  let descriptor: Descriptor;
+  let descriptor: LogicDescriptor;
   let doc: any;
 
   let mockCacheAction: ((doc: any) => string[] | undefined) | undefined;

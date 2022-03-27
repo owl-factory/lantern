@@ -11,10 +11,13 @@ import {
   validateLogin,
   validateStaticAccess,
 } from "./actions";
-import { Descriptor } from "./types";
+import { LogicDescriptor } from "./types";
 
-function returnArr(data: string | string[]) {
-  return Array.isArray(data) ? data : [data];
+function returnArr(data: any) {
+  if (typeof data === "string") { return [data]; }
+  else if (Array.isArray(data)) { return data; }
+  else if (typeof data === "object") { return [ data.message ]; }
+  return ["unknown error"];
 }
 
 /**
@@ -25,7 +28,7 @@ function returnArr(data: string | string[]) {
  * @returns A CrudPacket describing the success of fetching a document
  */
 export async function createWrapper(
-  descriptor: Descriptor,
+  descriptor: LogicDescriptor,
   original: (doc: any) => Promise<any>,
   doc: any
 ): Promise<CrudPacket<any>> {
@@ -66,7 +69,7 @@ export async function createWrapper(
  * @returns A CrudPacket describing the success of deleting a document
  */
 export async function deleteWrapper(
-  descriptor: Descriptor,
+  descriptor: LogicDescriptor,
   original: (ref: string) => Promise<any>,
   ref: Ref64
 ): Promise<CrudPacket<any>> {
@@ -114,7 +117,7 @@ export async function deleteWrapper(
  * @returns A CrudPacket describing the success of fetching a document
  */
 export async function fetchWrapper(
-  descriptor: Descriptor,
+  descriptor: LogicDescriptor,
   original: (ref: string) => Promise<any>,
   ref: Ref64
 ): Promise<CrudPacket<any>> {
@@ -153,7 +156,7 @@ export async function fetchWrapper(
  * @returns A CrudPacket describing the success of fetching an array of documents
  */
 export async function searchWrapper(
-  descriptor: Descriptor,
+  descriptor: LogicDescriptor,
   original: (args: any) => Promise<any[]>,
   args: any
 ) {
@@ -196,8 +199,8 @@ export async function searchWrapper(
  * @returns A CrudPacket describing the success of updating a document
  */
 export async function updateWrapper(
-  descriptor: Descriptor,
-  original: (ref: string) => Promise<any>,
+  descriptor: LogicDescriptor,
+  original: (ref: string, doc: any) => Promise<any>,
   ref: Ref64,
   doc: any
 ): Promise<CrudPacket<any>> {
@@ -224,7 +227,7 @@ export async function updateWrapper(
     doc = setUpdateFields(doc);
 
     // Run original function
-    let result = await original(ref);
+    let result = await original(ref, doc);
 
     // Read Fields
     result = trimReadFields(descriptor, result);

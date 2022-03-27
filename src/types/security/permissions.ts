@@ -1,6 +1,5 @@
 import { Permission } from "@owl-factory/auth/types";
 import { Collection } from "fauna";
-console.log(Collection)
 
 // TODO - this might be better in a more configurable format?
 export const permissions: Permission[] = [

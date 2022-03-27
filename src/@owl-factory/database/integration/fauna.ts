@@ -4,7 +4,7 @@ import { FaunaDocument, FaunaIndexOptions, FaunaIndexResponse } from "@owl-facto
 import { Ref64 } from "@owl-factory/types";
 import { normalize } from "@owl-factory/utilities/strings";
 import { Expr, query as q } from "faunadb";
-import { FaunaIndex, FaunaIndexTerms } from "src/fauna"; // TODO - refactor and remove this
+import { FaunaIndex, FaunaIndexTerms } from "fauna"; // TODO - refactor and remove this
 import { getServerClient } from "../client/fauna";
 
 /**

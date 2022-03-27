@@ -1,10 +1,8 @@
-import { AnyDocument } from "types/documents"
-
 export type AccessFunction<T> = (doc: any) => T
 export type AccessFieldValue<T> = T | AccessFunction<T>
 
 
-export interface Descriptor {
+export interface LogicDescriptor {
   collection: string;
   dynamicAccess?: (doc: any) => string | undefined;
   staticAccess?: () => string;

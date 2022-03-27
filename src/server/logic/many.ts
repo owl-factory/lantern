@@ -46,12 +46,14 @@ export async function fetchMany<T>(
   refs: Ref64[]
 ): Promise<Partial<T>[]> {
   const promises: Promise<Partial<T>>[] = [];
-  refs.forEach((ref: Ref64) => {
-    if (fx === undefined) { return; }
+  if (!refs || !fx) { return []; }
+
+  for (const ref of refs) {
+    if (fx === undefined) { continue; }
     promises.push(fx(ref));
-  });
-  const deletedDocs = Promise.all(promises);
-  return deletedDocs;
+  }
+  const fetchedDocs = Promise.all(promises);
+  return fetchedDocs;
 }
 
 /**
