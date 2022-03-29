@@ -99,7 +99,7 @@ export async function del<T>(url: string, refs: Ref64[]): Promise<CrudPacket<T>[
  * @param terms The search terms for running the search
  * @returns An array of partial documents
  */
-export async function search<T>(
+export async function search<T> (
   url: string,
   terms: Record<string, string | number | boolean> = {},
   options?: FaunaIndexOptions // What should this be? The page/perPage stuff for index searches

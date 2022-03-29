@@ -306,71 +306,71 @@ describe("fetchWrapper", () => {
 
 
 
-describe("searchWrapper", () => {
-  const originalArr = jest.fn(async (args: any) => [doc]);
+// describe("searchWrapper", () => {
+//   const originalArr = jest.fn(async (args: any) => [doc]);
 
-  beforeEach(() => {
-    descriptor = {
-      collection: "test",
-      readFields: ["*"],
-      value: original,
-      fetch: jest.fn(async (ref: string) => doc),
-    };
+//   beforeEach(() => {
+//     descriptor = {
+//       collection: "test",
+//       readFields: ["*"],
+//       value: original,
+//       fetch: jest.fn(async (ref: string) => doc),
+//     };
 
-    resetMocks();
-    originalArr.mockClear();
+//     resetMocks();
+//     originalArr.mockClear();
 
-  });
+//   });
 
-  test("failed login", async () => {
-    const err = "Login Error";
-    (validateLogin as any).mockImplementationOnce((_desc: any) => {throw err;});
+//   test("failed login", async () => {
+//     const err = "Login Error";
+//     (validateLogin as any).mockImplementationOnce((_desc: any) => {throw err;});
 
-    const res = await searchWrapper(descriptor, originalArr, doc.ref);
+//     const res = await searchWrapper(descriptor, originalArr, doc.ref);
 
-    expect(res.success).toBeFalsy();
-    expect(res.messages).toStrictEqual([err]);
+//     expect(res.success).toBeFalsy();
+//     expect(res.messages).toStrictEqual([err]);
 
-    expect(validateLogin).toBeCalledTimes(1);
-    expect(validateStaticAccess).toBeCalledTimes(0);
-  });
+//     expect(validateLogin).toBeCalledTimes(1);
+//     expect(validateStaticAccess).toBeCalledTimes(0);
+//   });
 
-  test("failed static access", async () => {
-    const err = "Static Error";
-    (validateStaticAccess as any).mockImplementationOnce((_desc: any) => {throw err;});
+//   test("failed static access", async () => {
+//     const err = "Static Error";
+//     (validateStaticAccess as any).mockImplementationOnce((_desc: any) => {throw err;});
 
-    const res = await searchWrapper(descriptor, originalArr, doc.ref);
+//     const res = await searchWrapper(descriptor, originalArr, doc.ref);
 
-    expect(res.success).toBeFalsy();
-    expect(res.messages).toStrictEqual([err]);
+//     expect(res.success).toBeFalsy();
+//     expect(res.messages).toStrictEqual([err]);
 
-    expect(validateStaticAccess).toBeCalledTimes(1);
-    expect(validateDocument).toBeCalledTimes(0);
-  });
+//     expect(validateStaticAccess).toBeCalledTimes(1);
+//     expect(validateDocument).toBeCalledTimes(0);
+//   });
 
-  test("failed dynamic access", async () => {
-    const err = "err";
-    (validateDynamicAccess as any).mockImplementationOnce((_desc: LogicDescriptor, _doc: any) => {throw err;});
-    const res = await searchWrapper(descriptor, originalArr, doc.ref);
+//   test("failed dynamic access", async () => {
+//     const err = "err";
+//     (validateDynamicAccess as any).mockImplementationOnce((_desc: LogicDescriptor, _doc: any) => {throw err;});
+//     const res = await searchWrapper(descriptor, originalArr, doc.ref);
 
-    expect(res.success).toBeTruthy();
-    expect(res.doc).toStrictEqual([]);
+//     expect(res.success).toBeTruthy();
+//     expect(res.doc).toStrictEqual([]);
 
-    expect(validateDynamicAccess).toBeCalledTimes(1);
-    expect(originalArr).toBeCalledTimes(1);
-  });
+//     expect(validateDynamicAccess).toBeCalledTimes(1);
+//     expect(originalArr).toBeCalledTimes(1);
+//   });
 
-  test("success", async () => {
-    const res = await searchWrapper(descriptor, originalArr, doc.ref);
+//   test("success", async () => {
+//     const res = await searchWrapper(descriptor, originalArr, doc.ref);
 
-    expect(res.success).toBeTruthy();
-    expect(res.doc).toStrictEqual([doc]);
+//     expect(res.success).toBeTruthy();
+//     expect(res.doc).toStrictEqual([doc]);
 
-    expect(originalArr).toBeCalledTimes(1);
-    expect(trimReadFields).toBeCalledTimes(1);
+//     expect(originalArr).toBeCalledTimes(1);
+//     expect(trimReadFields).toBeCalledTimes(1);
 
-  });
-});
+//   });
+// });
 
 
 

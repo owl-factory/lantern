@@ -285,12 +285,9 @@ export class DataManager<T extends Record<string, unknown>> {
    * @param docs The documents to create
    * @returns A list of packets, for for each document, returning the created document or an error message
    */
-   public async searchIndex(url: string, terms?: Record<string, string | number | boolean>): Promise<CrudPacket<T>[]> {
+   public async searchIndex(url: string, terms?: Record<string, string | number | boolean>): Promise<any> {
     const packets = await crud.search<T>(url, terms);
-    const docs = getSuccessfulDocuments(packets);
     this.setMany(packets);
-    console.log(packets);
-    console.log(this.data.data);
     return packets;
   }
 }
