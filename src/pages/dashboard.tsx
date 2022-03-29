@@ -1,35 +1,24 @@
 import { Page } from "components/design";
 import Link from "next/link";
 import React from "react";
-import { CampaignDocument } from "types/documents";
-import { NextPage, NextPageContext } from "next";
 import { Button } from "@owl-factory/components/button";
 import { Col, Row } from "@owl-factory/components/flex";
 import { Card } from "@owl-factory/components/card";
 import { AlertController } from "@owl-factory/components/alert/AlertController";
 import { Auth } from "controllers/auth";
 import { signOut } from "utilities/auth";
-import { handleAPI } from "@owl-factory/https/apiHandler";
-import { getDashboardPage } from "./api/dashboard";
 import { CampaignData } from "controllers/data/CampaignData";
+import { observer } from "mobx-react-lite";
 
-interface DashboardProps {
-  user?: any;
-}
-
-const Dashboard: NextPage<DashboardProps> = (props: any) => {
-  React.useEffect(() => {
-    // TODO - do not set until after we return the players and owners for these campaigns
-    // CampaignData.setMany(props.campaigns);
-  }, []);
+const Dashboard = observer(() => {
 
   return (
-    <Page error={props.error}>
+    <Page>
       <h3>Welcome back {Auth.user?.name || Auth.user?.username}!</h3>
 
       <Button onClick={() => signOut()}>Log Out</Button>
       {/* Recent Games */}
-      <RecentGames campaigns={props.campaigns}/>
+      <RecentGames/>
 
       {/* Characters */}
       <h4>My Characters</h4>
@@ -39,15 +28,19 @@ const Dashboard: NextPage<DashboardProps> = (props: any) => {
       <Button onClick={() => {console.log(Auth);}}>Test Auth</Button>
     </Page>
   );
-};
+});
 
 export default Dashboard;
 
-function RecentGames(props: any) {
-  if (!props.campaigns) { return null; }
+const RecentGames = observer(() => {
+  React.useEffect(() => { CampaignData.searchMyCampaigns(); }, []);
+
+  const refs = CampaignData.search({ group: "my-campaigns" });
 
   const campaigns: JSX.Element[] = [];
-  props.campaigns.forEach((campaign: CampaignDocument) => {
+  for (const ref of refs) {
+    const campaign = CampaignData.get(ref);
+    if (!campaign) { continue; }
     let src = "";
     if (campaign.banner && campaign.banner.src) { src = campaign.banner.src; }
     campaigns.push(
@@ -61,7 +54,7 @@ function RecentGames(props: any) {
         </Card>
       </Col>
     );
-  });
+  }
 
   return (
     <div>
@@ -85,8 +78,8 @@ function RecentGames(props: any) {
       </Row>
     </div>
   );
-}
+});
 
-export async function getServerSideProps(ctx: NextPageContext) {
-  return await handleAPI(ctx, getDashboardPage);
-}
+// export async function getServerSideProps(ctx: NextPageContext) {
+//   return await handleAPI(ctx, getDashboardPage);
+// }

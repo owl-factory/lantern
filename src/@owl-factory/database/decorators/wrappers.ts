@@ -168,7 +168,7 @@ export async function searchWrapper(
     validateStaticAccess(descriptor);
 
     // Run original function
-    const result = await original(args);
+    const result = await original(args[0]);
 
     // Check we can read the document and restrict what fields are sent back
     const compiledResult: any[] = [];
@@ -181,9 +181,7 @@ export async function searchWrapper(
       }
     }
 
-    packet.doc = compiledResult;
-    packet.success = true;
-    return packet;
+    return compiledResult;
   } catch (e) {
     packet.messages = returnArr(e as (string | string[]));
     return packet;

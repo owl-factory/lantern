@@ -8,13 +8,11 @@ import { Collection, FaunaIndex } from "src/fauna";
 import { toRef } from "@owl-factory/database/conversion/fauna/to";
 import { FaunaIndexOptions } from "@owl-factory/database/types/fauna";
 import { Auth } from "controllers/auth";
-import { isOwner } from "security/documents";
 import * as access from "./access";
 
 const collection = Collection.Campaigns;
 
 class $CampaignLogic {
-  public collection = collection;
 
   /**
    * Creates a single document
@@ -23,6 +21,7 @@ class $CampaignLogic {
    */
   @Create(["*"], ["*"])
   public async create(doc: Partial<CampaignDocument>): Promise<CampaignDocument> {
+    doc.players = [{ ref: Auth.ref as string } ];
     return await access.create(collection, doc);
   }
 
@@ -39,7 +38,7 @@ class $CampaignLogic {
    * @param id The Ref64 ID of the document to fetch
    * @returns The campaign document
    */
-  @Fetch(Collection.Campaigns, ["*"])
+  @Fetch(collection, ["*"])
   @RequireLogin()
   public async fetch(ref: Ref64): Promise<CampaignDocument> { return access.fetch(collection, ref); }
 

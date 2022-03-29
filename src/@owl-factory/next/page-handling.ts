@@ -11,5 +11,5 @@ export function onApiError(props: InitialProps): void {
   if (props.success) { return; }
 
   const router = useRouter();
-  router.push(`/500?message=${props.message}`);
+  // router.push(`/500?message=${props.message}`);
 }

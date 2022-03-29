@@ -12,6 +12,7 @@ import { getUpdatedAt, isValidRef } from "./helpers/fields";
 import { CrudPacket } from "@owl-factory/types/object";
 import { getUniques } from "@owl-factory/utilities/arrays";
 import { getSuccessfulDocuments } from "./helpers/data";
+import { action, makeObservable, observable } from "mobx";
 
 /**
  * The top level Data Managing class with an API for accessing and searching data
@@ -272,10 +273,24 @@ export class DataManager<T extends Record<string, unknown>> {
    public async delete(refs: Ref64 | Ref64[]): Promise<CrudPacket<T>[]> {
     if (!Array.isArray(refs)) { refs = [refs]; }
 
-    const packets = await crud.read<T>(this.url, refs);
+    const packets = await crud.del<T>(this.url, refs);
     const deletedDocs = getSuccessfulDocuments(packets);
     const deletedRefs = getUniques(deletedDocs, "ref");
     this.removeMany(deletedRefs);
+    return packets;
+  }
+
+  /**
+   * Creates one or many documents and ensures that they're loaded into the DataManager
+   * @param docs The documents to create
+   * @returns A list of packets, for for each document, returning the created document or an error message
+   */
+   public async searchIndex(url: string, terms?: Record<string, string | number | boolean>): Promise<CrudPacket<T>[]> {
+    const packets = await crud.search<T>(url, terms);
+    const docs = getSuccessfulDocuments(packets);
+    this.setMany(packets);
+    console.log(packets);
+    console.log(this.data.data);
     return packets;
   }
 }

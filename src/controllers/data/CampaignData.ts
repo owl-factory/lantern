@@ -13,6 +13,13 @@ class CampaignDataManager extends DataManager<Partial<CampaignDocument>> {
     this.addGroup("owned-campaigns", isOwner);
     this.addGroup("my-campaigns", isMyCampaign);
   }
+
+  /**
+   * Searches for the current user's campaigns
+   */
+  public searchMyCampaigns() {
+    this.searchIndex("/api/my-campaigns");
+  }
 }
 
 /**

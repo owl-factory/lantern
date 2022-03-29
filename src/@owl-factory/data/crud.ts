@@ -1,6 +1,8 @@
+import { FaunaIndexOptions } from "@owl-factory/database/types/fauna";
 import { rest } from "@owl-factory/https/rest";
 import { Ref64 } from "@owl-factory/types";
 import { CrudPacket } from "@owl-factory/types/object";
+import { SearchParams } from "./types";
 
 interface ResponsePacket<T> {
   docs: CrudPacket<T>[];
@@ -84,6 +86,31 @@ export async function del<T>(url: string, refs: Ref64[]): Promise<CrudPacket<T>[
       return [];
     }
     return result.data.docs;
+  } catch (e) {
+    console.log(`A fatal error has occured while attempting to delete documents at '${url}'`);
+    console.log(e);
+    return [];
+  }
+}
+
+/**
+ * Requests a database search from the server
+ * @param url The url endpoint for this search
+ * @param terms The search terms for running the search
+ * @returns An array of partial documents
+ */
+export async function search<T>(
+  url: string,
+  terms: Record<string, string | number | boolean> = {},
+  options?: FaunaIndexOptions // What should this be? The page/perPage stuff for index searches
+): Promise<T[]> {
+  try {
+    const result = await rest.post<ResponsePacket<T>>(url, { terms, options });
+    if (!result.success) {
+      console.error(result.message);
+      return [];
+    }
+    return result.data.docs as any;
   } catch (e) {
     console.log(`A fatal error has occured while attempting to delete documents at '${url}'`);
     console.log(e);
