@@ -8,7 +8,7 @@ import { HTTPHandler, createEndpoint } from "@owl-factory/https";
  * Fetches a single ruleset
  */
 export async function getRulesets(req: NextApiRequest) {
-  const ruleset = await RulesetLogic.findOne(req.query.id as string);
+  const ruleset = await RulesetLogic.fetch(req.query.id as string);
   return { ruleset: ruleset };
 }
 
@@ -27,7 +27,7 @@ async function getRulesetRequest(this: HTTPHandler, req: NextApiRequest) {
  * @param req The request to the server
  */
 async function updateRuleset(this: HTTPHandler, req: NextApiRequest) {
-  const ruleset = await RulesetLogic.createOne(req.body);
+  const ruleset = await RulesetLogic.create(req.body);
   this.returnSuccess({ ruleset });
 }
 

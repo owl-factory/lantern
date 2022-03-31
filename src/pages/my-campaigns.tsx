@@ -16,6 +16,7 @@ import { onApiError } from "@owl-factory/next/page-handling";
 import { getMyCampaigns } from "./api/my-campaigns";
 import { handleAPI } from "@owl-factory/https/apiHandler";
 import { Ref64 } from "@owl-factory/types";
+import { makeAutoObservable } from "mobx";
 
 interface MyCampaignsProps extends InitialProps {
   campaigns: CampaignDocument[];
@@ -76,20 +77,12 @@ const CampaignTile = observer((props: CampaignTileProps) => {
  * @param session The current user's session
  * @param campaigns The initial light campaign information fetched from the API
  */
-function MyCampaigns(props: MyCampaignsProps) {
-  onApiError(props);
+const MyCampaigns = observer(() => {
   pagePermission("viewMyCampaigns");
 
-  const [ campaignRefs, setCampaignRefs ] = React.useState<Ref64[]>([]);
+  React.useEffect(() => { CampaignData.searchMyCampaigns(); }, []);
 
-  React.useEffect(() => {
-    CampaignData.setMany(props.campaigns || []);
-  }, []);
-
-  // Use this to prevent too many rerenders
-  React.useEffect(() => {
-    setCampaignRefs(CampaignData.search({ group: "my-campaigns" }));
-  }, [CampaignData.lastTouched]);
+  const campaignRefs = CampaignData.search({ group: "my-campaigns" });
 
   // Builds the tiles for listing out the campaigns
   const campaignTiles: JSX.Element[] = [];
@@ -120,10 +113,6 @@ function MyCampaigns(props: MyCampaignsProps) {
       {campaignTiles}
     </Page>
   );
-}
+});
 
-export async function getServerSideProps(ctx: NextPageContext) {
-  return await handleAPI(ctx, getMyCampaigns);
-}
-
-export default observer(MyCampaigns);
+export default MyCampaigns;

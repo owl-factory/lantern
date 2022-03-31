@@ -1,30 +1,21 @@
-import * as fauna from "@owl-factory/database/integration/fauna";
-import { Create, Delete, Fetch, FetchMany, Update } from "@owl-factory/database/decorators/crud";
-import { Access, ReadFields, SetFields } from "@owl-factory/database/decorators/modifiers";
-import { DatabaseLogic } from "./AbstractDatabaseLogic";
+import { Create, Delete, Fetch, Update } from "@owl-factory/database/decorators/decorators";
 import { ContentTypeDocument } from "types/documents";
 import { Ref64 } from "@owl-factory/types";
 import { Collection } from "src/fauna";
-import { isOwner } from "./security";
+import * as access from "./access";
 
+const collection = Collection.ContentTypes;
 
-class $ContentTypeLogic extends DatabaseLogic<ContentTypeDocument> {
-  public collection = Collection.ContentTypes;
-
+class $ContentTypeLogic {
   /**
    * Creates a single document
    * @param doc The document to create
    * @returns The created document, if successful
    */
-  @Create("createContentType")
-  @ReadFields(["*"])
-  @SetFields(["*"])
-  public async createOne(doc: Partial<ContentTypeDocument>): Promise<ContentTypeDocument> {
-    const createdDoc = await fauna.createOne<ContentTypeDocument>(this.collection, doc);
-    if (createdDoc === undefined) {
-      throw { code: 500, message: `The content type could not be created.`};
-    }
-    return createdDoc;
+  @Create(["*"], ["*"])
+  public async create(doc: Partial<ContentTypeDocument>): Promise<ContentTypeDocument> { 
+    // TODO - ensure that user can access parent ruleset
+    return await access.create(collection, doc);
   }
 
   /**
@@ -32,12 +23,9 @@ class $ContentTypeLogic extends DatabaseLogic<ContentTypeDocument> {
    * @param ref The ref of the document to delete
    * @returns The deleted document
    */
-  @Delete("deleteMyContentType")
-  @Access(isOwner)
-  public async deleteOne(ref: Ref64) {
-    const deletedDoc = await fauna.deleteOne<ContentTypeDocument>(ref);
-    if (deletedDoc === undefined) { throw { code: 404, message: `The document with id ${ref} could not be found.`}; }
-    return deletedDoc;
+  @Delete(collection, ["*"], (ref) => access.fetch(collection, ref))
+  public async delete(ref: Ref64) {
+    return await access.remove(collection, ref);
   }
 
   /**
@@ -45,24 +33,9 @@ class $ContentTypeLogic extends DatabaseLogic<ContentTypeDocument> {
    * @param id The Ref64 ID of the document to fetch
    * @returns The content type document
    */
-  @Fetch("viewContentType")
-  @ReadFields(["*"])
-  public async findOne(id: Ref64): Promise<ContentTypeDocument> {
-    const contentType = await fauna.findByID<ContentTypeDocument>(id);
-    if (contentType === undefined) { throw { code: 404, message: `The content type with id ${id} could not be found.`};}
-    return contentType;
-  }
-
-  /**
-   * Fetches many content types from their IDs
-   * @param ids The Ref64 IDs of the documents to fetch
-   * @returns The found and allowed content type documents
-   */
-  @FetchMany("viewContentType")
-  @ReadFields(["*"])
-  public async findManyByIDs(ids: Ref64[]): Promise<ContentTypeDocument[]> {
-    const contentTypes = await fauna.findManyByIDs<ContentTypeDocument>(ids);
-    return contentTypes;
+  @Fetch(collection, ["*"])
+  public async fetch(ref: Ref64): Promise<ContentTypeDocument> {
+    return await access.fetch(collection, ref);
   }
 
   /**
@@ -71,17 +44,9 @@ class $ContentTypeLogic extends DatabaseLogic<ContentTypeDocument> {
    * @param doc The changes in the document to patch on
    * @returns The updated document
    */
-   @Update("updateMyContentType")
-   @Access(isOwner)
-   @ReadFields(["*"])
-   @SetFields(["*"])
-   public async updateMyContentType(ref: Ref64, doc: Partial<ContentTypeDocument>) {
-    const updatedDoc = await fauna.updateOne(ref, doc);
-    // TODO - better message
-    if (updatedDoc === undefined) {
-      throw { code: 404, message: `The content type document with id ${ref} could not be found.`};
-    }
-    return updatedDoc;
+   @Update(collection, ["*"], ["*"], (ref) => access.fetch(collection, ref))
+   public async update(ref: Ref64, doc: Partial<ContentTypeDocument>) {
+    return await access.update(collection, ref, doc);
   }
 }
 

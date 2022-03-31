@@ -1,3 +1,6 @@
+import { isEncoding } from "@owl-factory/utilities/ref";
+import { decode } from "utilities/ref";
+
 /**
  * Roughly determines if a ref is valid by checking general problems
  * @param ref The ref to validate
@@ -5,7 +8,26 @@
  */
 export function isValidRef(ref: unknown) {
   if (typeof ref !== "string" || ref === "") { return false; }
-  return true;
+  return isEncoding(ref);
+}
+
+/**
+ * Determines if the collection in the given ref is valid. Optionally compares to a given collection string
+ * @param ref The ref to decode for the collection
+ * @param expectedCollection The collection that is expected to be in the ref
+ * @returns True if the collection is valid and optionall matches the expected collection
+ */
+export function isValidCollection(ref: unknown, expectedCollection?: string) {
+  try {
+    // TODO - find a way to make this decode global. Maybe we need an init file that sets everything?
+    const refPair = decode(ref as string);
+    if (refPair === null) { return false; } // Collection does not exist case
+    if (!expectedCollection) { return true; } // Success, but no expected collection to compare to
+
+    return refPair.collection === expectedCollection;
+  } catch (e) {
+    return false;
+  }
 }
 
 /**

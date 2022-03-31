@@ -4,7 +4,6 @@ import { UserDocument } from "types/documents";
 import { permissions } from "types/security/permissions";
 import { roles } from "types/security/roles";
 
-
 class RerollAuthController extends AuthController<UserDocument> {
   constructor() { super(); }
 

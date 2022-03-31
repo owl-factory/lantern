@@ -1,19 +1,13 @@
-
+import { Ref64 } from "@owl-factory/types";
 import {
-  checkDynamicAccess,
-  checkLogin,
-  checkManyDynamicAccess,
-  checkParentAccess,
-  checkPermissionAccess,
-  fetchTargetDoc,
-  setCreateFields,
-  setUpdateFields,
-  trimManyReadFields,
   trimReadFields,
   trimSetFields,
 } from "./actions";
+import { createWrapper, deleteWrapper, fetchWrapper, searchWrapper, updateWrapper } from "./wrappers";
 
-const FIELD_KEY = "permission";
+type DocumentFetch = (ref: string) => Promise<any>;
+type DocumentField = string[] | ((doc: any) => string[]);
+type DocumentValidation = (doc: any) => void;
 
 /**
  * Handles running pre- and post-pull processing for running a create function
@@ -21,28 +15,19 @@ const FIELD_KEY = "permission";
  * @param _name The name of the function
  * @param descriptor The properties of the function
  */
- export function Create(permission: string) {
+export function Create(readFields: DocumentField, setFields: DocumentField, validation?: DocumentValidation) {
   return (_target: any, _name: string, descriptor: any) => {
     const original = descriptor.value;
     if (typeof original !== 'function') {
       return;
     }
 
-    descriptor[FIELD_KEY] = permission;
+    descriptor.readFields = readFields;
+    descriptor.setFields = setFields;
+    descriptor.validateDocument = validation;
 
     descriptor.value = async function(...args: any) {
-      checkLogin(descriptor);
-      checkPermissionAccess(descriptor);
-      checkParentAccess(descriptor, args);
-
-      args[0] = trimSetFields(descriptor, args[0]);
-      args[0] = setCreateFields(descriptor, args[0]);
-
-      let result = await original.apply(this, args);
-      result = checkDynamicAccess(descriptor, result);
-      result = trimReadFields(descriptor, result);
-
-      return result;
+      return await createWrapper(descriptor, async (doc: any) => original.apply(this, [doc]), args[0]);
     };
   };
 }
@@ -53,26 +38,20 @@ const FIELD_KEY = "permission";
  * @param _name The name of the function
  * @param descriptor The properties of the function
  */
-export function Delete(permission: string) {
+export function Delete(collection: string, readFields: DocumentField, fetchFunction: DocumentFetch) {
   return (_target: any, _name: string, descriptor: any) => {
     const original = descriptor.value;
     if (typeof original !== "function") { return; }
 
-    descriptor[FIELD_KEY] = permission;
+    descriptor.collection = collection;
+    descriptor.readFields = readFields;
+    descriptor.fetch = fetchFunction;
 
     descriptor.value = async function(...args: any) {
-      checkLogin(descriptor);
-      checkPermissionAccess(descriptor);
-
-      const targetDoc = await fetchTargetDoc(descriptor, args[0]);
-      if (targetDoc === undefined) { return undefined; }
-      checkDynamicAccess(descriptor, targetDoc);
-
-      return original.apply(this, args);
+      return await deleteWrapper(descriptor, (ref: string) => original.apply(this, [ref]), args[0]);
     };
   };
 }
-
 
 /**
  * Handles running pre- and post-pull processing for running a fetch function.
@@ -81,49 +60,16 @@ export function Delete(permission: string) {
  * @param _name The name of the function
  * @param descriptor The properties of the function
  */
- export function Fetch(permission: string) {
+export function Fetch(collection: string, readFields: DocumentField) {
   return (_target: any, _name: string, descriptor: any) => {
     const original = descriptor.value;
     if (typeof original !== 'function') { return; }
 
-    descriptor[FIELD_KEY] = permission;
+    descriptor.collection = collection;
+    descriptor.readFields = readFields;
 
     descriptor.value = async function(...args: any) {
-      if (args[0] === "") { return { $error: true }; } // TODO - change to empty/error value
-      checkLogin(descriptor);
-      checkPermissionAccess(descriptor);
-
-      let result = await original.apply(this, args);
-
-      checkDynamicAccess(descriptor, result);
-      result = trimReadFields(descriptor, result);
-      return result;
-    };
-  };
-}
-
-/**
- * Handles running pre- and post-pull processing for running a fetch many function
- * @param _target The target class
- * @param _name The name of the function
- * @param descriptor The properties of the function
- */
- export function FetchMany(permission: string) {
-  return (_target: any, _name: string, descriptor: any) => {
-    const original = descriptor.value;
-    if (typeof original !== 'function') { return; }
-
-    descriptor[FIELD_KEY] = permission;
-
-    descriptor.value = async function(...args: any) {
-      checkLogin(descriptor);
-      checkPermissionAccess(descriptor);
-
-      let result = await original.apply(this, args);
-
-      result = checkManyDynamicAccess(descriptor, result);
-      result = trimManyReadFields(descriptor, result);
-      return result;
+      return await fetchWrapper(descriptor, (ref: string) => original.apply(this, [ref]), args[0]);
     };
   };
 }
@@ -134,21 +80,15 @@ export function Delete(permission: string) {
  * @param _name The name of the function
  * @param descriptor The properties of the function
  */
-export function Index(permission: string) {
+export function Search(readFields: DocumentField) {
   return (_target: any, _name: string, descriptor: any) => {
     const original = descriptor.value;
     if (typeof original !== 'function') { return; }
 
-    descriptor[FIELD_KEY] = permission;
+    descriptor.readFields = readFields;
 
     descriptor.value = async function(...args: any) {
-      checkLogin(descriptor);
-      checkPermissionAccess(descriptor);
-      let result = await original.apply(this, args);
-
-      result = checkManyDynamicAccess(descriptor, result);
-      result = trimManyReadFields(descriptor, result);
-      return result;
+      return await searchWrapper(descriptor, (arg: any) => original.apply(this, [arg]), args);
     };
   };
 }
@@ -159,28 +99,25 @@ export function Index(permission: string) {
  * @param _name The name of the function
  * @param descriptor The properties of the function
  */
- export function Update(permission: string) {
+export function Update(
+  collection: string,
+  readFields: DocumentField,
+  setFields: DocumentField,
+  fetchFunction: DocumentFetch,
+  validation?: DocumentValidation
+) {
   return (_target: any, _name: string, descriptor: any) => {
     const original = descriptor.value;
     if (typeof original !== 'function') { return; }
 
-    descriptor[FIELD_KEY] = permission;
+    descriptor.collection = collection;
+    descriptor.readFields = readFields;
+    descriptor.setFields = setFields;
+    descriptor.fetch = fetchFunction;
+    descriptor.validateDocument = validation;
 
     descriptor.value = async function(...args: any) {
-      checkLogin(descriptor);
-      checkPermissionAccess(descriptor);
-
-      const targetDoc = await fetchTargetDoc(descriptor, args[0]);
-      if (targetDoc === undefined) { throw { code: 404, message: "Document could not be found"}; }
-      checkDynamicAccess(descriptor, targetDoc);
-      args[1] = trimSetFields(descriptor, args[1]);
-      args[1] = setUpdateFields(descriptor, args[1]);
-
-
-      let result = await original.apply(this, args);
-
-      result = trimReadFields(descriptor, result);
-      return result;
+      return await updateWrapper(descriptor, async (ref: Ref64, doc: any) => original(ref, doc), args[0], args[1]);
     };
   };
 }
@@ -191,10 +128,12 @@ export function Index(permission: string) {
  * @param _name The target name
  * @param descriptor The properties of the function
  */
-export function SignIn() {
+export function SignIn(readFields: DocumentField) {
   return (_target: any, _name: string, descriptor: any) => {
     const original = descriptor.value;
     if (typeof original !== 'function') { return; }
+
+    descriptor.readFields = readFields;
 
     descriptor.value = async function(...args: any) {
       let result = await original.apply(this, args);
@@ -210,9 +149,13 @@ export function SignIn() {
  * @param _name The target name
  * @param descriptor The properties of the function
  */
- export function SignUp() {
+export function SignUp(readFields: DocumentField, setFields: DocumentField) {
   return (_target: any, _name: string, descriptor: any) => {
     const original = descriptor.value;
+
+    descriptor.readFields = readFields;
+    descriptor.setFields = setFields;
+
     if (typeof original !== 'function') { return; }
 
     descriptor.value = async function(...args: any) {
