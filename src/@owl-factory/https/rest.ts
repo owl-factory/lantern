@@ -1,3 +1,4 @@
+import { Cacheable } from "@owl-factory/cache/decorators";
 import fetch from "cross-fetch";
 import { ServerResponse } from "./types";
 
@@ -47,82 +48,89 @@ export function toURLParams(data?: Record<string, string | unknown>): string {
   return urlParams;
 }
 
-/**
- * Runs a standard get request
- * @param url The url of the API to request
- * @param requestInit  The request instructions
- */
-async function get<T>(
-  url: string,
-  data?: Record<string, string>,
-  requestInit: RequestInit = defaultRequestInit
-): Promise<ServerResponse<T>> {
-  requestInit.body = undefined;
-  requestInit.method = "GET";
-  // TODO - convert data to url params
-  const urlParams = toURLParams(data);
-  const response = await fetch($formatURL(url + urlParams), requestInit);
-  return response.json(); // parses JSON response into native JavaScript objects
-}
+class Rest {
+  /**
+   * Runs a standard get request
+   * @param url The url of the API to request
+   * @param requestInit  The request instructions
+   */
+  @Cacheable()
+  public async get<T>(
+    url: string,
+    data?: Record<string, string>,
+    requestInit: RequestInit = defaultRequestInit
+  ): Promise<ServerResponse<T>> {
+    requestInit.body = undefined;
+    requestInit.method = "GET";
+    // TODO - convert data to url params
+    const urlParams = toURLParams(data);
+    const response = await fetch($formatURL(url + urlParams), requestInit);
+    return response.json(); // parses JSON response into native JavaScript objects
+  }
 
-/**
- * Runs a standard post request
- * @param url The url of the API to request
- * @param data The data to send through the Post request
- * @param requestInit  The request instructions
- */
-async function post<T>(
-  url: string,
-  data: Record<string, unknown>,
-  requestInit: RequestInit = defaultRequestInit
-): Promise<ServerResponse<T>> {
-  requestInit.method = "POST";
-  return postlike(url, data, requestInit);
-}
+  /**
+   * Runs a standard post request
+   * @param url The url of the API to request
+   * @param data The data to send through the Post request
+   * @param requestInit  The request instructions
+   */
+  @Cacheable()
+  public async post<T>(
+    url: string,
+    data: Record<string, unknown>,
+    requestInit: RequestInit = defaultRequestInit
+  ): Promise<ServerResponse<T>> {
+    requestInit.method = "POST";
+    return postlike(url, data, requestInit);
+  }
 
-/**
- * Runs a standard put request
- * @param url The url of the API to request
- * @param data The data to send through the Post request
- * @param requestInit  The request instructions
- */
-async function put<T>(
-  url: string,
-  data: Record<string, unknown>,
-  requestInit: RequestInit = defaultRequestInit
-): Promise<ServerResponse<T>> {
-  requestInit.method = "PUT";
-  return postlike(url, data, requestInit);
-}
+  /**
+   * Runs a standard put request
+   * @param url The url of the API to request
+   * @param data The data to send through the Post request
+   * @param requestInit  The request instructions
+   */
+  @Cacheable()
+  public async put<T>(
+    url: string,
+    data: Record<string, unknown>,
+    requestInit: RequestInit = defaultRequestInit
+  ): Promise<ServerResponse<T>> {
+    requestInit.method = "PUT";
+    return postlike(url, data, requestInit);
+  }
 
-/**
- * Runs a standard put request
- * @param url The url of the API to request
- * @param data The data to send through the Post request
- * @param requestInit  The request instructions
- */
-async function patch<T>(
-  url: string,
-  data: Record<string, unknown>,
-  requestInit: RequestInit = defaultRequestInit
-): Promise<ServerResponse<T>> {
-  requestInit.method = "PATCH";
-  return postlike(url, data, requestInit);
-}
+  /**
+   * Runs a standard put request
+   * @param url The url of the API to request
+   * @param data The data to send through the Post request
+   * @param requestInit  The request instructions
+   */
+  @Cacheable()
+  public async patch<T>(
+    url: string,
+    data: Record<string, unknown>,
+    requestInit: RequestInit = defaultRequestInit
+  ): Promise<ServerResponse<T>> {
+    requestInit.method = "PATCH";
+    return postlike(url, data, requestInit);
+  }
 
-/**
- * Runs a standard put request
- * @param url The url of the API to request
- * @param data The data to send through the Post request
- * @param requestInit  The request instructions
- */
-async function del<T>(
-  url: string,
-  data: Record<string, unknown>,
-  requestInit: RequestInit = defaultRequestInit
-): Promise<ServerResponse<T>> {
-  requestInit.method = "DELETE";
-  return postlike(url, data, requestInit);
+  /**
+   * Runs a standard put request
+   * @param url The url of the API to request
+   * @param data The data to send through the Post request
+   * @param requestInit  The request instructions
+   */
+  @Cacheable()
+  public async delete<T>(
+    url: string,
+    data: Record<string, unknown>,
+    requestInit: RequestInit = defaultRequestInit
+  ): Promise<ServerResponse<T>> {
+    requestInit.method = "DELETE";
+    return postlike(url, data, requestInit);
+  }
 }
 
 /**
@@ -141,11 +149,5 @@ async function postlike<T>(
   return response.json(); // parses JSON response into native JavaScript objects
 }
 
-export const request = {
-  get,
-  post,
-  put,
-  patch,
-  delete: del,
-};
+export const request = new Rest();
 export const rest = request;
