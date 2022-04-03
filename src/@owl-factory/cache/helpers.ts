@@ -1,3 +1,4 @@
+import { cache } from "./CacheManager";
 import { CacheItem, CacheOptions } from "./types";
 
 /**
@@ -5,7 +6,8 @@ import { CacheItem, CacheOptions } from "./types";
  * @param args The arguments to convert into a string
  * @returns A string version of the arguments
  */
-export function argsToString(args: any) {
+export function argsToString(args: any): string {
+  if (typeof args === "string") { return args; }
   return JSON.stringify(args);
 }
 
@@ -15,13 +17,15 @@ export function argsToString(args: any) {
  * @param options Additional options to alter the values of the cache item
  * @returns A cache item
  */
-export function buildCacheItem(value: any, options: CacheOptions) {
+export function buildCacheItem(name: string, args: any, value: any, options: CacheOptions): CacheItem {
   const now = Date.now();
+  const ttl = options.ttl * 60 * 1000;
   const cacheItem: CacheItem = {
     value,
     ttl: options.ttl,
     updatedAt: now,
-    deleteAt: now + (options.ttl * 60 * 1000),
+    deleteAt: now + (ttl),
+    prune: setTimeout(() => cache.prune(name, args), ttl),
   };
   return cacheItem;
 }

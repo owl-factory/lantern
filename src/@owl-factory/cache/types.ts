@@ -8,4 +8,5 @@ export interface CacheItem {
   updatedAt: number;
   ttl: number;
   deleteAt: number;
+  prune: any;
 }

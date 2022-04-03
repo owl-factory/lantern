@@ -13,6 +13,7 @@ import { CrudPacket } from "@owl-factory/types/object";
 import { getUniques } from "@owl-factory/utilities/arrays";
 import { getSuccessfulDocuments } from "./helpers/data";
 import { action, makeObservable, observable } from "mobx";
+import { Cacheable } from "@owl-factory/cache/decorators";
 
 /**
  * The top level Data Managing class with an API for accessing and searching data
@@ -228,6 +229,7 @@ export class DataManager<T extends Record<string, unknown>> {
    * @param docs The documents to create
    * @returns A list of packets, for for each document, returning the created document or an error message
    */
+  @Cacheable()
   public async create(docs: T | T[]): Promise<CrudPacket<T>[]> {
     if (!Array.isArray(docs)) { docs = [docs]; }
 
@@ -242,6 +244,7 @@ export class DataManager<T extends Record<string, unknown>> {
    * @param docs The documents to create
    * @returns A list of packets, for for each document, returning the created document or an error message
    */
+   @Cacheable()
    public async read(refs: Ref64 | Ref64[]): Promise<CrudPacket<T>[]> {
     if (!Array.isArray(refs)) { refs = [refs]; }
 
@@ -256,7 +259,8 @@ export class DataManager<T extends Record<string, unknown>> {
    * @param docs The documents to create
    * @returns A list of packets, for for each document, returning the created document or an error message
    */
-   public async update(docs: T | T[]): Promise<CrudPacket<T>[]> {
+  @Cacheable()
+  public async update(docs: T | T[]): Promise<CrudPacket<T>[]> {
     if (!Array.isArray(docs)) { docs = [docs]; }
 
     const packets = await crud.update<T>(this.url, docs);
@@ -270,7 +274,8 @@ export class DataManager<T extends Record<string, unknown>> {
    * @param docs The documents to create
    * @returns A list of packets, for for each document, returning the created document or an error message
    */
-   public async delete(refs: Ref64 | Ref64[]): Promise<CrudPacket<T>[]> {
+  @Cacheable()
+  public async delete(refs: Ref64 | Ref64[]): Promise<CrudPacket<T>[]> {
     if (!Array.isArray(refs)) { refs = [refs]; }
 
     const packets = await crud.del<T>(this.url, refs);
@@ -285,7 +290,8 @@ export class DataManager<T extends Record<string, unknown>> {
    * @param docs The documents to create
    * @returns A list of packets, for for each document, returning the created document or an error message
    */
-   public async searchIndex(url: string, terms?: Record<string, string | number | boolean>): Promise<any> {
+  @Cacheable()
+  public async searchIndex(url: string, terms?: Record<string, string | number | boolean>): Promise<any> {
     const packets = await crud.search<T>(url, terms);
     this.setMany(packets);
     return packets;
