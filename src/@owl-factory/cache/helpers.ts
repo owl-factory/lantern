@@ -1,3 +1,4 @@
+import { setPruneTimeout } from "./async";
 import { cache } from "./CacheManager";
 import { CacheItem, CacheOptions } from "./types";
 
@@ -25,7 +26,7 @@ export function buildCacheItem(name: string, args: any, value: any, options: Cac
     ttl: options.ttl,
     updatedAt: now,
     deleteAt: now + (ttl),
-    prune: setTimeout(() => cache.prune(name, args), ttl),
+    prune: setPruneTimeout(name, args, ttl),
   };
   return cacheItem;
 }

@@ -1,8 +1,9 @@
+import { setPruneTimeout } from "./async";
 import { argsToString, buildCacheItem } from "./helpers";
 import { Cache, CacheItem, CacheOptions } from "./types";
 
 
-class CacheManager {
+export class CacheManager {
   public cache: Cache = {};
 
   /**
@@ -77,7 +78,7 @@ class CacheManager {
     const now = Date.now();
     if (item.deleteAt > now) {
       clearTimeout(item.prune);
-      item.prune = setTimeout(() => this.prune(name, args), item.deleteAt - now);
+      item.prune = setPruneTimeout(name, args, item.deleteAt - now);
       return;
     }
 
@@ -96,6 +97,13 @@ class CacheManager {
     const argString = argsToString(args);
     delete functionCache[argString];
     console.log("removed");
+  }
+
+  /**
+   * Resets the CacheManager
+   */
+  public clear() {
+    this.cache = {};
   }
 }
 

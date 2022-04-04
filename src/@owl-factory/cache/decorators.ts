@@ -5,7 +5,7 @@ import { cache } from "./CacheManager";
  * @param ttl The time to live, in minutes. Default: 30
  */
 export function Cacheable(ttl = 30) {
-  return (target: any, name: string, descriptor: any) => {
+  return (_target: any, name: string, descriptor: any) => {
     const original = descriptor.value;
     descriptor.ttl = ttl;
     if (typeof original !== 'function') { return; }
@@ -24,7 +24,7 @@ export function Cacheable(ttl = 30) {
  * @param args The original arguments, as an array
  * @returns The result, either from running the argument, or the cached value
  */
-async function cacheWrapper(name: string, descriptor: any, original: (args: any[]) => Promise<any>, args: any[]
+export async function cacheWrapper(name: string, descriptor: any, original: (args: any[]) => Promise<any>, args: any[]
 ) {
   const originalResult = cache.get(name, args);
   if (originalResult !== undefined) { return originalResult; }
