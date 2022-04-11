@@ -4,6 +4,7 @@ import { CampaignLogic } from "server/logic/CampaignLogic";
 
 import { HTTPHandler, createEndpoint } from "@owl-factory/https";
 import { createMany, deleteMany, fetchMany, updateMany } from "server/logic/many";
+import { version } from "fauna/migrations/campaigns";
 
 /**
  * Creates the given campaigns
@@ -21,6 +22,7 @@ import { createMany, deleteMany, fetchMany, updateMany } from "server/logic/many
  * @param req The request to the server
  */
 async function read(this: HTTPHandler, req: NextApiRequest) {
+  console.log(version);
   const campaigns = await fetchMany(CampaignLogic.fetch, req.body.refs);
   this.returnSuccess({ docs: campaigns });
 }

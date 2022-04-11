@@ -9,9 +9,9 @@ export const MIGRATION_VERSIONS: Record<string, string> = {};
 export function importMigrations(migrationPath: string, collection: string) {
   // Returns version number, default object, and migrations
   // Get yaml file names
-  const path = `${migrationPath}/${collection}`;
+  const path = `${migrationPath}${collection}`;
 
-  const migrationFilenames = getMigrationFilenames(migrationPath)
+  const migrationFilenames = getMigrationFilenames(path);
   const rawMigrations = readMigrations(path, migrationFilenames);
   const migrations = processMigrations(rawMigrations);
 
@@ -79,3 +79,6 @@ function buildDefaultDocument(migrations: any) {
 
   return defaultDocument;
 }
+
+// Actions 
+// Create (w/ default), default (set default), remove (w/ move, if wanted), move, copy, transform?
