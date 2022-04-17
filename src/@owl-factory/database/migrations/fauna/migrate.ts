@@ -67,6 +67,10 @@ function runFieldMigration(
 ): Record<string, unknown> {
   switch (action.action) {
     case MigrationAction.CREATE:
+      // Check for previous value to prevent overwrites
+      const value = read(document, field);
+      if (value) break;
+
       set(document, field, action.default);
       break;
     case MigrationAction.COPY:

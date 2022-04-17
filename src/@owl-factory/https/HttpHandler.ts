@@ -2,6 +2,7 @@ import { initializeNextContext } from "@owl-factory/next/ctx";
 import { Auth } from "controllers/auth";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Context } from "types/server";
+import "src/init"; // Runs the initialize code for all backend functionality
 
 type RequestFunction = (req: NextApiRequest, res: NextApiResponse) => void;
 type PossibleMethods = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";

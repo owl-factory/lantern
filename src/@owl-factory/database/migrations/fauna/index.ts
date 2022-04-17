@@ -1,4 +1,5 @@
 import { ImportMigrationResult } from "@owl-factory/database/types/migrations/fauna";
+import { setDefaultDocument, setMigrations, setVersion } from "./access";
 import { getMigrationFilenames, readMigrations } from "./file";
 import { runDocumentMigrations } from "./migrate";
 import { processMigrations } from "./process";
@@ -25,6 +26,10 @@ import { validateMigrations } from "./validate";
   // Process migration objects into a default object
   const baseDocument = { _v: "0.0.0" };
   const defaultDocument = runDocumentMigrations(baseDocument, migrations);
+
+  setVersion(collection, defaultDocument._v as string);
+  setDefaultDocument(collection, defaultDocument);
+  setMigrations(collection, migrations);
 
   return { defaultDocument, version: defaultDocument._v as string, migrations };
 }

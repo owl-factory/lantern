@@ -10,6 +10,8 @@ import fs from "fs";
  */
 export function getMigrationFilenames(path: string): string[] {
   if (isClient) { throw "Fatal Error - Migrations can only be run serverside"; }
+  // Prevents an error when passing in a list of all collections
+  if (!fs.existsSync(path)) { return []; }
   const files = fs.readdirSync(path);
   const migrationFiles: string[] = [];
 

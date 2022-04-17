@@ -1,6 +1,10 @@
 import { isValidCollection, isValidRef } from "@owl-factory/data/helpers/fields";
 import { Ref64 } from "@owl-factory/types";
 import { CrudPacket } from "@owl-factory/types/object";
+import { deepMerge } from "@owl-factory/utilities/objects";
+import { updateOne } from "../integration/fauna";
+import { getDefaultDocument, getMigrations, getVersion } from "../migrations/fauna/access";
+import { runDocumentMigrations } from "../migrations/fauna/migrate";
 import {
   setCreateFields,
   setUpdateFields,
@@ -44,6 +48,7 @@ export async function createWrapper(
 
     // Ensures that required fields are set and that no extra fields are set.
     doc = trimSetFields(descriptor, doc);
+    doc = deepMerge(doc, getDefaultDocument(descriptor.collection));
     doc = setCreateFields(doc);
 
     // Run original function
@@ -134,6 +139,8 @@ export async function fetchWrapper(
 
     // Run original function
     let result = await original(ref);
+
+    result = await verifyVersion(descriptor.collection, result);
 
     // Check we can read the document and restrict what fields are sent back
     validateDynamicAccess(descriptor, result);
@@ -237,4 +244,17 @@ export async function updateWrapper(
     packet.messages = returnArr(e as (string | string[]));
     return packet;
   }
+}
+
+/**
+ * Verifies that the document is on the latest version and migrates it if not
+ * @param collection The collection the document belongs to
+ * @param doc The document to verify the version of
+ * @returns The document, migrated to the latest version
+ */
+async function verifyVersion(collection: string, doc: any) {
+  if (doc._v !== undefined && getVersion(collection) <= doc._v) { return doc; }
+  doc = runDocumentMigrations(doc, getMigrations(collection));
+  doc = await updateOne<any>(doc.ref, doc);
+  return doc;
 }
