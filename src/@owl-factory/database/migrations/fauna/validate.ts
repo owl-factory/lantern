@@ -1,4 +1,4 @@
-import { MigrationAction, RawMigration } from "../../types/migrations/fauna";
+import { Migration, MigrationAction, RawMigration, RawMigrationAction } from "../../types/migrations/fauna";
 
 /**
  * Validates a list of migrations for a given collection
@@ -43,43 +43,20 @@ function validateMigrationActions(migrationActions: any, identifier: string) {
   for (const action of migrationActions) {
     switch(action.action) {
       case MigrationAction.CREATE:
-        validateField(action, "default", ["string", "null"], identifier);
+        validateCreate(action, identifier);
         break;
 
       case MigrationAction.COPY:
-        if (!action.source && !action.target) {
-          throw `Migration for ${identifier} action copy requires either a target or source field`;
-        }
-        if ("force" in action && typeof action.force !== "boolean") {
-          throw `Migration for ${identifier} descriptor 'force' must be of type boolean`;
-        }
-        if ("transform" in action) { 
-          validateTransform(action.transform);
-        }
+      case MigrationAction.MOVE:
+        validateCopy(action, identifier);
         break;
 
-      case MigrationAction.MOVE:
-        if (!action.source && !action.target) {
-          throw `Migration for ${identifier} action copy requires either a target or source field`;
-        }
-        if ("force" in action && typeof action.force !== "boolean") {
-          throw `Migration for ${identifier} descriptor 'force' must be of type boolean`;
-        }
-        if ("transform" in action) { 
-          validateTransform(action.transform);
-        }
-        break;
-      
-      case MigrationAction.REMOVE: 
+      case MigrationAction.REMOVE:
         // No validation required
         break;
 
       case MigrationAction.TRANSFORM:
-        validateField(action, "transform", ["string"], identifier);
-
-        if ("transform" in action) { 
-          validateTransform(action.transform);
-        }
+        validateTransform(action, identifier);
         break;
       default:
         throw `Migration for ${identifier} has an invalid action '${action.action}'`;
@@ -88,42 +65,90 @@ function validateMigrationActions(migrationActions: any, identifier: string) {
 }
 
 /**
- * Validates a single field in a migration action
- * @param migrationAction The migration action containing the field to validate
- * @param field The field in the migration action to validate
- * @param types The type the field should be
- * @param identifier An identifier for the error messages
+ * Validates all fields required for the create action
+ * @param action The create migration action
+ * @param identifier An identifier string for throwing errors
  */
-function validateField(
-  migrationAction: Record<string, unknown>,
-  field: string,
-  types: string | string[],
-  identifier: string
-) {
-  if (migrationAction[field] === undefined) { throw `Migration for ${identifier} requires the field '${field}'`; }
-  // validateType(migrationAction, field, types, identifier);
-}
-
-function validateType(
-  migrationAction: Record<string, unknown>,
-  field: string,
-  types: string | string[],
-  identifier: string
-) {
-  if (!Array.isArray(types)) { types = [types]; }
-
-  let valid = false;
-
-  for (const type of types) {
-    valid = valid || (typeof migrationAction[field] === type);
-  }
-  if (valid === false) {throw `Migration for ${identifier} field must be of type(s) '${types.toString()}'`; }
+function validateCreate(action: RawMigrationAction, identifier: string) {
+  requireField("default", action, identifier);
 }
 
 /**
- * Validates the transform action, ensuring that it's present
- * @param transformAction The transform action to validate
+ * Validates all fields required for the copy action
+ * @param action The copy migration action
+ * @param identifier An identifier string for throwing errors
  */
-function validateTransform(transformAction: string) {
+function validateCopy(action: RawMigrationAction, identifier: string) {
+  if (!requireField("source", action, identifier, false) && !requireField("target", action, identifier, false)) {
+    throw `Migration for ${identifier} action ${action.action} requires either a target or source field`;
+  }
+  requireType("source", "string", action, identifier);
+  requireType("target", "string", action, identifier);
+  requireType("transform", "string", action, identifier);
+  requireValidTransform(action, identifier);
+}
 
+/**
+ * Validates all fields required for the transform action
+ * @param action The create migration action
+ * @param identifier An identifier string for throwing errors
+ */
+function validateTransform(action: RawMigrationAction, identifier: string) {
+  requireField("transform", action, identifier);
+  requireType("transform", "string", action, identifier);
+  requireValidTransform(action, identifier);
+}
+
+/**
+ * Checks if the given field is present in the action
+ * @param field The field to require
+ * @param action The migration action to check for the field
+ * @param identifier An identifier string for throwing errors
+ * @param shouldThrow Whether or not the function should throw on error
+ * @returns Boolean if no error is thrown
+ */
+function requireField(
+  field: keyof RawMigrationAction,
+  action: RawMigrationAction,
+  identifier: string,
+  shouldThrow = true
+): boolean | undefined {
+  if (action[field] !== undefined) { return true; }
+  if (shouldThrow) {throw `Migration for ${identifier} requires the field '${field}'`; }
+  return false;
+}
+
+/**
+ * Checks if the given field is has the correct type, if present
+ * @param field The field to verify the type of, if present
+ * @param action The migration action to check for the field's type
+ * @param identifier An identifier string for throwing errors
+ * @param shouldThrow Whether or not the function should throw on error
+ * @returns Boolean if no error is thrown
+ */
+function requireType(
+  field: keyof RawMigrationAction,
+  type: string,
+  action: RawMigrationAction,
+  identifier: string,
+  shouldThrow = true
+): boolean | undefined {
+  if (action[field] === undefined || typeof action[field] === type) { return true; }
+  if (shouldThrow) { throw `Migration for ${identifier} must have type ${type} for the field '${field}'`; }
+  return false;
+}
+
+/**
+ * Checks if the given field is has the correct type, if presentww
+ * @param action The migration action to check for the field's type
+ * @param identifier An identifier string for throwing errors
+ * @param shouldThrow Whether or not the function should throw on error
+ * @returns Boolean if no error is thrown
+ */
+function requireValidTransform(
+  action: RawMigrationAction,
+  identifier: string,
+  shouldThrow = true
+) {
+  return true;
 }
