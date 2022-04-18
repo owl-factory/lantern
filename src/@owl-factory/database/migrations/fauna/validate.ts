@@ -45,8 +45,42 @@ function validateMigrationActions(migrationActions: any, identifier: string) {
       case MigrationAction.CREATE:
         validateField(action, "default", ["string", "null"], identifier);
         break;
-      // case MigrationAction.COPY:
-      //   validateField(action, "")
+
+      case MigrationAction.COPY:
+        if (!action.source && !action.target) {
+          throw `Migration for ${identifier} action copy requires either a target or source field`;
+        }
+        if ("force" in action && typeof action.force !== "boolean") {
+          throw `Migration for ${identifier} descriptor 'force' must be of type boolean`;
+        }
+        if ("transform" in action) { 
+          validateTransform(action.transform);
+        }
+        break;
+
+      case MigrationAction.MOVE:
+        if (!action.source && !action.target) {
+          throw `Migration for ${identifier} action copy requires either a target or source field`;
+        }
+        if ("force" in action && typeof action.force !== "boolean") {
+          throw `Migration for ${identifier} descriptor 'force' must be of type boolean`;
+        }
+        if ("transform" in action) { 
+          validateTransform(action.transform);
+        }
+        break;
+      
+      case MigrationAction.REMOVE: 
+        // No validation required
+        break;
+
+      case MigrationAction.TRANSFORM:
+        validateField(action, "transform", ["string"], identifier);
+
+        if ("transform" in action) { 
+          validateTransform(action.transform);
+        }
+        break;
       default:
         throw `Migration for ${identifier} has an invalid action '${action.action}'`;
     }
@@ -79,11 +113,17 @@ function validateType(
   if (!Array.isArray(types)) { types = [types]; }
 
   let valid = false;
-  console.log(migrationAction[field])
+
   for (const type of types) {
-    console.log(type)
-    console.log(typeof migrationAction[field])
     valid = valid || (typeof migrationAction[field] === type);
   }
   if (valid === false) {throw `Migration for ${identifier} field must be of type(s) '${types.toString()}'`; }
+}
+
+/**
+ * Validates the transform action, ensuring that it's present
+ * @param transformAction The transform action to validate
+ */
+function validateTransform(transformAction: string) {
+
 }
