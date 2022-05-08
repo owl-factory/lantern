@@ -494,3 +494,13 @@ describe("deleteWrapper", () => {
     expect(trimReadFields).toBeCalledTimes(1);
   });
 });
+
+describe("verifyVersion", () => {
+  test("version up to date", () => {
+    return
+  });
+
+  test("version not up to date", () => {
+    return
+  });
+});

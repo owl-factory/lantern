@@ -255,6 +255,6 @@ export async function updateWrapper(
 async function verifyVersion(collection: string, doc: any) {
   if (doc._v !== undefined && getVersion(collection) <= doc._v) { return doc; }
   doc = runDocumentMigrations(doc, getMigrations(collection));
-  // doc = await updateOne<any>(doc.ref, doc);
+  doc = await updateOne<any>(doc.ref, doc);
   return doc;
 }
