@@ -10,7 +10,7 @@ interface MapImage {
 }
 
 export interface SceneDocument extends BaseDocument {
-  campaign: { ref: Ref64; };
+  campaign: { ref: Ref64 | null; };
 
   // Defines the base map and size of the scene
   map: {

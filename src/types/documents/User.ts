@@ -10,7 +10,7 @@ import { BaseDocument } from "types/documents";
 export interface UserDocument extends BaseDocument {
   username: string;
   email: string;
-  avatar: { ref: Ref64; src: string; };
+  avatar: { ref: Ref64 | null; src: string | null; };
 
   // SECURITY
   role: string; // Which role a user is assigned and the default permission

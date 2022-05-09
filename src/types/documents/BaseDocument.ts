@@ -5,11 +5,11 @@ export interface BaseDocument {
   name: string;
   _v: string;
 
-  ownedBy: { ref: Ref64; };
+  ownedBy: { ref: Ref64 | null; };
   createdAt: Date;
-  createdBy: { ref: Ref64; };
+  createdBy: { ref: Ref64 | null; };
   updatedAt: Date;
-  updatedBy: { ref: Ref64; };
+  updatedBy: { ref: Ref64 | null; };
 }
 
 export const baseDocument = {

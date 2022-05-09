@@ -9,8 +9,8 @@ import { BaseDocument } from "types/documents";
  * Represents the campaign and all information contained therein
  */
 export interface CampaignDocument extends BaseDocument {
-  ruleset: { ref: Ref64; };
-  banner: { ref: Ref64; src: string; };
+  ruleset: { ref: Ref64 | null; };
+  banner: { ref: Ref64 | null; src: string | null; };
   players?: { ref: Ref64; }[];
   lastPlayed?: Date;
 
