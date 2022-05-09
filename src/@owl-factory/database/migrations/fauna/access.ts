@@ -2,6 +2,18 @@ import { RawMigration } from "@owl-factory/database/types/migrations/fauna";
 import { deepCopy } from "@owl-factory/utilities/objects";
 import { defaultDocuments, migrations, versions } from "./data";
 
+// TODO - allow this to be settable on init
+let BASE_DOCUMENT: Record<string, unknown> = {
+  _v: "0.0.0",
+  createdAt: Date.now(),
+  updatedAt: Date.now(),
+};
+
+export function setBaseDocument(doc: Record<string, unknown>) {
+  BASE_DOCUMENT = doc;
+  BASE_DOCUMENT._v = "0.0.0";
+}
+
 /**
  * Fetches the stored version for a collection
  * @param collection The collection to fetch the version for
@@ -16,9 +28,9 @@ export function getVersion(collection: string): string {
  * @param collection The collection to fetch the default document for
  * @returns The current default document. Returns empty with the default version if none is present
  */
-export function getDefaultDocument(collection: string): Record<string, unknown> {
-  const doc = defaultDocuments[collection] || { _v: "0.0.0" };
-  return deepCopy(doc);
+export function getDefaultDocument<T = Record<string, unknown>>(collection: string): T {
+  const doc = defaultDocuments[collection] || BASE_DOCUMENT;
+  return deepCopy(doc) as unknown as T;
 }
 
 /**

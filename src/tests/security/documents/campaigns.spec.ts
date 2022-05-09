@@ -1,24 +1,17 @@
+import { getDefaultDocument } from "@owl-factory/database/migrations/fauna/access";
 import { Auth } from "controllers/auth";
 import { isOwner } from "security/documents";
 import { isPlayer } from "security/documents/campaigns";
-import { AnyDocument, CampaignDocument } from "types/documents";
+import { AnyDocument, CampaignDocument, UserDocument } from "types/documents";
 
 jest.mock("security/documents");
 
-const doc: CampaignDocument = {
-  ref: "1",
-  ownedBy: {
-    ref: "2",
-  },
-  ruleset: {
-    ref: "3",
-  },
-  banner: {
-    ref: "4",
-    src: "/img.jpg",
-  },
-  players: [{ ref: "a" }, { ref: "b" }],
-};
+const doc = getDefaultDocument<CampaignDocument>("campaigns");
+doc.ref = "1";
+doc.ownedBy = { ref: "2" };
+doc.ruleset = { ref: "3" };
+doc.banner = { ref: "4", src: "/img.jpg" };
+doc.players = [ { ref: "a"}, { ref: "b" }];
 
 describe("isPlayer", () => {
   test("undefined", () => {
@@ -33,9 +26,10 @@ describe("isPlayer", () => {
   });
 
   test("isPlayer", () => {
+    const userDoc = getDefaultDocument<UserDocument>("users");
+    userDoc.ref = "b";
     Auth.fromAPI(
-      { ref: "b", username: "", email: "", 
-        avatar: { ref: "", src:"" }, role:"", permissions:[], recentPlayers: [], badges: [] },
+      userDoc,
       "",
       ""
     );

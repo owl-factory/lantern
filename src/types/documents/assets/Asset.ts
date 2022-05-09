@@ -1,7 +1,7 @@
 import { AssetSource } from "types/enums/assetSource";
-import { CoreDocument } from "../CoreDocument";
+import { BaseDocument } from "../BaseDocument";
 
-export interface AssetDocument extends CoreDocument {
+export interface AssetDocument extends BaseDocument {
   src: string;
   sizeInBytes: number;
   source: AssetSource; // The method that the asset was created through

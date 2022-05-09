@@ -1,6 +1,6 @@
 import { GridType } from "controllers/maps/SceneController";
 import { Ref64 } from "@owl-factory/types";
-import { CoreDocument } from "./CoreDocument";
+import { BaseDocument } from "./BaseDocument";
 
 interface MapImage {
   image: { ref: Ref64; src: string; };
@@ -9,7 +9,7 @@ interface MapImage {
   scale: number;
 }
 
-export interface SceneDocument extends CoreDocument {
+export interface SceneDocument extends BaseDocument {
   campaign: { ref: Ref64; };
 
   // Defines the base map and size of the scene

@@ -9,6 +9,7 @@ import {
   validateStaticAccess,
 } from "@owl-factory/database/decorators/actions";
 import { LogicDescriptor } from "@owl-factory/database/decorators/types";
+import { getDefaultDocument } from "@owl-factory/database/migrations/fauna/access";
 import { Auth } from "controllers/auth";
 import { UserDocument } from "types/documents";
 
@@ -308,18 +309,10 @@ describe("Trim Set Fields", () => {
 });
 
 function createTestUserDocument(): UserDocument {
-  return {
-    ref: "123",
-    name: "TestingLady",
-    username: "TestingLady",
-    email: "fakeemail@mail.com",
-    avatar: {
-      src: "",
-      ref: "",
-    },
-    role: "",
-    permissions: [],
-    recentPlayers: [],
-    badges: [],
-  };
+  const doc = getDefaultDocument<UserDocument>("users");
+  doc.ref = "123";
+  doc.name = "TestingLady";
+  doc.username = "TestingLady";
+  doc.email = "fakeemail@mail.com";
+  return doc;
 }

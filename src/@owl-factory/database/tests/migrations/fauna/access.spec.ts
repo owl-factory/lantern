@@ -28,11 +28,6 @@ describe("getDefaultDocument", () => {
 
     expect(res).toStrictEqual(testDoc);
   });
-
-  test("without doc", () => {
-    const res = getDefaultDocument(collection);
-    expect(res).toStrictEqual({ _v: "0.0.0" });
-  });
 });
 
 describe("getMigrations", () => {

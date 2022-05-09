@@ -1,11 +1,11 @@
 import { Ref64 } from "@owl-factory/types";
-import { CampaignDocument, CoreDocument, UserDocument } from "types/documents";
+import { CampaignDocument, BaseDocument, UserDocument } from "types/documents";
 
 export enum MessageType {
   Text,
 }
 
-export interface MessageDocument extends CoreDocument {
+export interface MessageDocument extends BaseDocument {
   campaign?: { ref: Ref64; };
 
   // The user who sent the message

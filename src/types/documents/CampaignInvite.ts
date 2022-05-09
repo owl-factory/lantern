@@ -1,8 +1,8 @@
 import { Ref64 } from "@owl-factory/types";
-import { CoreDocument } from "types/documents";
+import { BaseDocument } from "types/documents";
 
 
-export interface CampaignInviteDocument extends CoreDocument {
+export interface CampaignInviteDocument extends BaseDocument {
   campaign?: { ref: Ref64; };
 
   inviteAddress?: string;

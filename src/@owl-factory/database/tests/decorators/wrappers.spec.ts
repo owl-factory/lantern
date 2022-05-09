@@ -12,7 +12,6 @@ import {
   createWrapper,
   deleteWrapper,
   fetchWrapper,
-  searchWrapper,
   updateWrapper,
 } from "@owl-factory/database/decorators/wrappers";
 import { isValidCollection, isValidRef } from "@owl-factory/data/helpers/fields";
@@ -21,6 +20,7 @@ import "@owl-factory/database/tests/mocks/decorators/actions";
 import "@owl-factory/data/tests/mocks/helpers/fields";
 
 jest.mock("@owl-factory/database/decorators/actions");
+jest.mock("@owl-factory/database/integration/fauna");
 jest.mock("@owl-factory/data/helpers/fields");
 
 let descriptor: LogicDescriptor;

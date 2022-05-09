@@ -1,5 +1,5 @@
 import { Ref64 } from "@owl-factory/types";
-import { CoreDocument } from "types/documents";
+import { BaseDocument } from "types/documents";
 
 
 
@@ -7,7 +7,7 @@ import { CoreDocument } from "types/documents";
 /**
  * The user object for the user's core data for use with NextAuth
  */
-export interface UserDocument extends CoreDocument {
+export interface UserDocument extends BaseDocument {
   username: string;
   email: string;
   avatar: { ref: Ref64; src: string; };

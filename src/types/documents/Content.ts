@@ -1,7 +1,7 @@
 import { Ref64 } from "@owl-factory/types";
-import { CoreDocument } from "./CoreDocument";
+import { BaseDocument } from "./BaseDocument";
 
-export interface ContentDocument extends CoreDocument {
+export interface ContentDocument extends BaseDocument {
   type: { ref: Ref64; },
   ruleset: { ref: Ref64; },
 }
