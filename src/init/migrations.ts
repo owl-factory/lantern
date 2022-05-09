@@ -18,5 +18,6 @@ export function run() {
     importMigrations(PATH, collection);
   }
   HAS_RUN = true;
+  console.log("Migration imports run successfully"); // TODO - use a proper logging system
 }
 
