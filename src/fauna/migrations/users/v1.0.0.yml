@@ -16,7 +16,7 @@ avatar.ref:
 
 avatar.src:
   - action: create
-    default: null
+    default: ""
 
 role:
   - action: create

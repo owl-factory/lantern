@@ -10,7 +10,7 @@ import { BaseDocument } from "types/documents";
  */
 export interface CampaignDocument extends BaseDocument {
   ruleset: { ref: Ref64 | null; };
-  banner: { ref: Ref64 | null; src: string | null; };
+  banner: { ref: Ref64 | null; src: string; };
   players?: { ref: Ref64; }[];
   lastPlayed?: Date;
 

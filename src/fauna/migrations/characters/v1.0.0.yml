@@ -16,4 +16,4 @@ profile.ref:
 
 profile.src:
   - action: create
-    default: null # Null or empty string?
+    default:  ""
