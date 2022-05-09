@@ -46,8 +46,8 @@ export class DataManager<T extends Record<string, unknown>> {
    * @param ref The reference to the desired document
    * @returns The document, if found. Undefined otherwise
    */
-  public get(ref: Ref64 | undefined): T | undefined {
-    if (!ref || ref === "undefined") { return undefined; }
+  public get(ref: Ref64 | null | undefined): T | undefined {
+    if (!ref || ref === "undefined" || ref === null) { return undefined; }
     const packet = this.data.get(ref);
     if (!packet) { return undefined; }
     return packet.doc;
@@ -116,7 +116,8 @@ export class DataManager<T extends Record<string, unknown>> {
    * Loads one or many documents from the database
    * @param targetRefs The refs to load from the database
    */
-  public async load(targetRefs: Ref64[] | Ref64, reloadPolicy?: ReloadPolicy): Promise<void> {
+  public async load(targetRefs: Ref64[] | Ref64 | null, reloadPolicy?: ReloadPolicy): Promise<void> {
+    if (targetRefs === null) { return; }
     const refs = Array.isArray(targetRefs) ? targetRefs : [targetRefs];
     const loadedDocs = await this.data.load(refs, reloadPolicy || this.reloadPolicy, this.read);
 

@@ -1,0 +1,5 @@
+name:
+  - action: create
+    default: null
+
+# TODO - fill this out more when we start really developing scenes

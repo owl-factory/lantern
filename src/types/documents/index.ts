@@ -1,6 +1,6 @@
 
 export * from "types/documents/assets";
-export * from "types/documents/CoreDocument";
+export * from "types/documents/BaseDocument";
 export * from "types/documents/Campaign";
 export * from "types/documents/Character";
 export * from "types/documents/Content";
@@ -15,7 +15,7 @@ import * as type from "types/documents";
 
 export type AnyDocument = (
   type.AnyAssetDocument |
-  type.CoreDocument |
+  type.BaseDocument |
   type.CampaignDocument |
   type.CharacterDocument |
   type.ContentDocument |

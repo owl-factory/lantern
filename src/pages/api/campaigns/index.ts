@@ -4,6 +4,7 @@ import { CampaignLogic } from "server/logic/CampaignLogic";
 
 import { HTTPHandler, createEndpoint } from "@owl-factory/https";
 import { createMany, deleteMany, fetchMany, updateMany } from "server/logic/many";
+// import { init, version } from "fauna/migrations/campaigns";
 
 /**
  * Creates the given campaigns

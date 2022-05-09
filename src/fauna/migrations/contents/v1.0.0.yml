@@ -1,0 +1,11 @@
+name:
+  - action: create
+    default: null
+
+type.ref:
+  - action: create
+    default: null
+
+ruleset:
+  - action: create
+    default: null
