@@ -13,7 +13,7 @@ import { observer } from "mobx-react-lite";
 import { InitialProps } from "types/client";
 import Link from "next/link";
 import { AssetUploadSource } from "types/enums/assetSource";
-import { ImageData } from "controllers/data/ImageData";
+import { FileData } from "controllers/data/ImageData";
 import { UserData } from "controllers/data/UserData";
 import { arrayToList, getUniques } from "@owl-factory/utilities/arrays";
 import { Auth } from "controllers/auth";
@@ -260,7 +260,7 @@ function Profile(props: ProfileProps): JSX.Element {
     });
     UserData.load(playerIDs);
 
-    ImageData.load(props.user.avatar.ref);
+    FileData.load(props.user.avatar.ref);
   }, []);
 
   React.useEffect(() => {

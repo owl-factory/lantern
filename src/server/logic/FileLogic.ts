@@ -1,4 +1,4 @@
-import { ImageDocument } from "types/documents";
+import { FileDocument } from "types/documents";
 import { isOwner } from "./security";
 import { Collection, FaunaIndex } from "src/fauna";
 import { DatabaseLogic } from "./AbstractDatabaseLogic";
@@ -20,8 +20,14 @@ const createFields = [
   "source",
 ];
 
-class $ImageLogic extends DatabaseLogic<ImageDocument> {
+class $ImageLogic extends DatabaseLogic<FileDocument> {
   public collection = Collection.Images;
+
+  @Create("uploadFile")
+  @SetFields(["name"])
+  public async createUpload() {
+    
+  }
 
   /**
    * Creates a single new image document
@@ -29,8 +35,8 @@ class $ImageLogic extends DatabaseLogic<ImageDocument> {
    * @param doc The image document partial to create
    * @returns The new image document
    */
-  public async create(method: AssetUploadSource, doc: Partial<ImageDocument>): Promise<ImageDocument> {
-    let result: ImageDocument;
+  public async create(method: AssetUploadSource, doc: Partial<FileDocument>): Promise<FileDocument> {
+    let result: FileDocument;
     switch(method) {
       case AssetUploadSource.Select:
         if (!doc.ref) { throw {code: 500, message: "An image ID is required for the Select create method." }; }

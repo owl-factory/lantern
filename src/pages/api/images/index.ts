@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { NextApiRequest } from "next";
-import { ImageLogic } from "server/logic/ImageLogic";
+import { ImageLogic } from "server/logic/FileLogic";
 
 import { HTTPHandler, createEndpoint } from "@owl-factory/https";
 

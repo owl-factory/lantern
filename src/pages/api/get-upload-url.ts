@@ -47,9 +47,9 @@ async function getUploadURL(this: HTTPHandler, req: NextApiRequest) {
 
   const command = new PutObjectCommand(params);
 
-  const url = await getSignedUrl(s3, command, { expiresIn: urlExpirationSeconds });
+  const uploadURL = await getSignedUrl(s3, command, { expiresIn: urlExpirationSeconds });
 
-  this.returnSuccess({ url });
+  this.returnSuccess({ uploadURL });
 }
 
 export default createEndpoint({POST: getUploadURL});
