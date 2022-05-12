@@ -170,6 +170,5 @@ export class GroupingController<T extends Record<string, unknown>> {
       if (index === -1) { continue; }
       group.splice(index, 1);
     }
-
   }
 }

@@ -1,5 +1,5 @@
 
-export * from "types/documents/CoreDocument";
+export * from "types/documents/BaseDocument";
 export * from "types/documents/Campaign";
 export * from "types/documents/Character";
 export * from "types/documents/Content";
@@ -14,7 +14,7 @@ export * from "types/documents/misc";
 import * as type from "types/documents";
 
 export type AnyDocument = (
-  type.CoreDocument |
+  type.BaseDocument |
   type.CampaignDocument |
   type.CharacterDocument |
   type.ContentDocument |

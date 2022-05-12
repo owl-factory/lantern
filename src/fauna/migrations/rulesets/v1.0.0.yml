@@ -1,0 +1,15 @@
+name:
+  - action: create
+    default: null
+
+isOfficial:
+  - action: create
+    default: false
+
+isPublic:
+  - action: create
+    default: false
+
+isLocked:
+  - action: create
+    default: false

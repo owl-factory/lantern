@@ -3,12 +3,13 @@ import { NextApiRequest } from "next";
 import { RulesetLogic } from "server/logic/RulesetLogic";
 
 import { HTTPHandler, createEndpoint } from "@owl-factory/https";
+import { fetchMany } from "server/logic/many";
 
 /**
  * Fetches a list of rulesets from their refs
  */
 export async function getRulesets(req: NextApiRequest) {
-  const rulesets = await RulesetLogic.findManyByIDs(req.body.refs);
+  const rulesets = await fetchMany(RulesetLogic.fetch, req.body.refs);
   return { rulesets };
 }
 
@@ -27,7 +28,7 @@ async function getRulesetsRequest(this: HTTPHandler, req: NextApiRequest) {
  * @param req The request to the server
  */
 async function createRuleset(this: HTTPHandler, req: NextApiRequest) {
-  const ruleset = await RulesetLogic.createOne(req.body);
+  const ruleset = await RulesetLogic.create(req.body);
   this.returnSuccess({ ruleset });
 }
 

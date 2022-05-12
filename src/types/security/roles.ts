@@ -37,7 +37,8 @@ const playerPermissions: string[] = [
 const adminPermissions: string[] = getUniques(permissions, "key");
 
 export const roles: Record<string, Role> = {
+  // Who gets these? Are these necessary in code?
   default: { key: "default", name: "Default", permissions: defaultPermissions },
-  player: { key: "player", name: "Player", permissions: playerPermissions },
+  player: { key: "player", name: "Player", permissions: playerPermissions }, // The common user
   admin: { key: "admin", name: "Admin", permissions: adminPermissions },
 };

@@ -3,6 +3,7 @@ import { NextApiRequest } from "next";
 import { ContentLogic } from "server/logic/ContentLogic";
 
 import { HTTPHandler, createEndpoint } from "@owl-factory/https";
+import { fetchMany } from "server/logic/many";
 
 /**
  * Fetches all of a user's campaigns
@@ -10,7 +11,7 @@ import { HTTPHandler, createEndpoint } from "@owl-factory/https";
  * @param req The request to the server
  */
 async function getContents(this: HTTPHandler, req: NextApiRequest) {
-  const contents = await ContentLogic.findManyByIDs(req.body.refs);
+  const contents = await fetchMany(ContentLogic.fetch, req.body.refs);
   this.returnSuccess({ contents });
 }
 

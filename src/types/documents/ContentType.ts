@@ -1,8 +1,8 @@
 import { Ref64 } from "@owl-factory/types";
 import { ContentTypeIcon } from "types/enums/contentTypeIcon";
-import { CoreDocument } from "./CoreDocument";
+import { BaseDocument } from "./BaseDocument";
 
-export interface ContentTypeDocument extends CoreDocument {
-  ruleset: { ref: Ref64; },
+export interface ContentTypeDocument extends BaseDocument {
+  ruleset: { ref: Ref64 | null; },
   icon: ContentTypeIcon,
 }

@@ -48,7 +48,7 @@ async function setPublic(id: string, isPublic: boolean) {
 }
 
 interface RulesetOwnerProps {
-  ownedBy?: Partial<UserDocument>;
+  ownedBy?: Partial<UserDocument> | any;
 }
 
 /**

@@ -1,5 +1,5 @@
 import { AssetSource } from "types/enums/assetSource";
-import { CoreDocument } from "./CoreDocument";
+import { BaseDocument } from "./BaseDocument";
 
 export const fileExtentionMap: Record<string, string> = {
   "image/jpeg": "jpg",
@@ -7,7 +7,7 @@ export const fileExtentionMap: Record<string, string> = {
   "image/webp": "webp",
 };
 
-export interface FileDocument extends CoreDocument {
+export interface FileDocument extends BaseDocument {
   src: string; // The full URL to access the document's source.
 
   mimetype: string;

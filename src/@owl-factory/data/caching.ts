@@ -1,4 +1,4 @@
-import { LOCAL_STORAGE } from "@owl-factory/cache/localStorage";
+import { LOCAL_STORAGE } from "@owl-factory/storage/localStorage";
 import { Packet } from "@owl-factory/data/types";
 import { Ref64 } from "@owl-factory/types";
 

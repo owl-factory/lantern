@@ -1,44 +1,24 @@
 import { Page } from "components/design";
 import Link from "next/link";
 import React from "react";
-import { CampaignDocument } from "types/documents";
-import { NextPage, NextPageContext } from "next";
 import { Button } from "@owl-factory/components/button";
 import { Col, Row } from "@owl-factory/components/flex";
 import { Card } from "@owl-factory/components/card";
 import { AlertController } from "@owl-factory/components/alert/AlertController";
 import { Auth } from "controllers/auth";
 import { signOut } from "utilities/auth";
-import { handleAPI } from "@owl-factory/https/apiHandler";
-import { getDashboardPage } from "./api/dashboard";
-import { uploadImage } from "utilities/image-upload";
+import { CampaignData } from "controllers/data/CampaignData";
+import { observer } from "mobx-react-lite";
 
-interface DashboardProps {
-  user?: any;
-}
-
-const Dashboard: NextPage<DashboardProps> = (props: any) => {
-  const [user, setUser] = React.useState(Auth.user);
-
-  function uploadHandler(event: React.ChangeEvent<HTMLInputElement>) {
-    if (event.target.files && event.target.files.length === 1) {
-      const image = event.target.files[0];
-      uploadImage(image).then(e => {console.log(e);});
-    }
-  }
-
-  React.useEffect(() => {
-    // TODO - do not set until after we return the players and owners for these campaigns
-    // CampaignData.setMany(props.campaigns);
-  }, []);
+const Dashboard = observer(() => {
 
   return (
-    <Page error={props.error}>
+    <Page>
       <h3>Welcome back {Auth.user?.name || Auth.user?.username}!</h3>
 
       <Button onClick={() => signOut()}>Log Out</Button>
       {/* Recent Games */}
-      <RecentGames campaigns={props.campaigns}/>
+      <RecentGames/>
 
       {/* Characters */}
       <h4>My Characters</h4>
@@ -46,23 +26,21 @@ const Dashboard: NextPage<DashboardProps> = (props: any) => {
       <h4>Temp Profile Stuff</h4>
       <Button onClick={() =>AlertController.success("Testing")}>Test Alerts</Button>
       <Button onClick={() => {console.log(Auth);}}>Test Auth</Button>
-
-      <h4>Upload Image Test</h4>
-      <div className="mb-3">
-        <label htmlFor="formFile" className="form-label">Default file input example</label>
-        <input className="form-control" type="file" id="formFile" onChange={uploadHandler} />
-      </div>
     </Page>
   );
-};
+});
 
 export default Dashboard;
 
-function RecentGames(props: any) {
-  if (!props.campaigns) { return null; }
+const RecentGames = observer(() => {
+  React.useEffect(() => { CampaignData.searchMyCampaigns(); }, []);
+
+  const refs = CampaignData.search({ group: "my-campaigns" });
 
   const campaigns: JSX.Element[] = [];
-  props.campaigns.forEach((campaign: CampaignDocument) => {
+  for (const ref of refs) {
+    const campaign = CampaignData.get(ref);
+    if (!campaign) { continue; }
     let src = "";
     if (campaign.banner && campaign.banner.src) { src = campaign.banner.src; }
     campaigns.push(
@@ -76,7 +54,7 @@ function RecentGames(props: any) {
         </Card>
       </Col>
     );
-  });
+  }
 
   return (
     <div>
@@ -100,8 +78,8 @@ function RecentGames(props: any) {
       </Row>
     </div>
   );
-}
+});
 
-export async function getServerSideProps(ctx: NextPageContext) {
-  return await handleAPI(ctx, getDashboardPage);
-}
+// export async function getServerSideProps(ctx: NextPageContext) {
+//   return await handleAPI(ctx, getDashboardPage);
+// }

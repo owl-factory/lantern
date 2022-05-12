@@ -24,7 +24,7 @@ export async function createMany<T>(fx: (doc: Partial<T>) => Promise<Partial<T>>
  * @param refs The list of refs of the documents to delete
  */
 export async function deleteMany<T>(
-  fx: (ref: Ref64) => Promise<Partial<T>>,
+  fx: (ref: Ref64) => Promise<T>,
   refs: Ref64[]
 ): Promise<Partial<T>[]> {
   const promises: Promise<Partial<T>>[] = [];
@@ -41,17 +41,19 @@ export async function deleteMany<T>(
  * @param fx The function to run for finding each document
  * @param refs The list of refs of the documents to find
  */
-export async function findMany<T>(
+export async function fetchMany<T>(
   fx: (ref: Ref64) => Promise<Partial<T>>,
   refs: Ref64[]
 ): Promise<Partial<T>[]> {
   const promises: Promise<Partial<T>>[] = [];
-  refs.forEach((ref: Ref64) => {
-    if (fx === undefined) { return; }
+  if (!refs || !fx) { return []; }
+
+  for (const ref of refs) {
+    if (fx === undefined) { continue; }
     promises.push(fx(ref));
-  });
-  const deletedDocs = Promise.all(promises);
-  return deletedDocs;
+  }
+  const fetchedDocs = Promise.all(promises);
+  return fetchedDocs;
 }
 
 /**
