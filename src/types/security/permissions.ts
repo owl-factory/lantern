@@ -26,11 +26,15 @@ export const permissions: Permission[] = [
 
   { key: "viewContentType", name: "View Content Type", collection: Collection.ContentTypes },
 
+  { key: "uploadFile", name: "Upload a File", collection: Collection.Files },
+
   { key: "createExternalImage", name: "Create Externally Linked Image", collection: Collection.Images },
   { key: "deleteImage", name: "Delete My Image", collection: Collection.Images },
   { key: "viewAnyImage", name: "View Any Image", collection: Collection.Images },
   { key: "searchImagesByUser", name: "Search Images By User", collection: Collection.Images },
   { key: "searchMyImages", name: "Search My Images", collection: Collection.Images },
+
+
 
   { key: "createOfficialRuleset", name: "Create an Official Ruleset", collection: Collection.Rulesets },
   { key: "viewAnyRuleset", name: "View Any Ruleset", collection: Collection.Rulesets },

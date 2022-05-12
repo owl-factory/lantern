@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { NextApiRequest } from "next";
 import { CampaignLogic } from "server/logic/CampaignLogic";
-import { ImageLogic } from "server/logic/FileLogic";
+import { FileLogic } from "server/logic/FileLogic";
 
 import { HTTPHandler, createEndpoint } from "@owl-factory/https";
 import { CampaignDocument } from "types/documents";
@@ -15,7 +15,7 @@ async function updateCampaignBanner(this: HTTPHandler, req: NextApiRequest) {
 // TODO - move this logic into the CampaignLogic
   const campaign = await CampaignLogic.findMyCampaign(req.query.ref as string);
   if (!campaign) { this.returnError(404, "Campaign not found."); return; }
-  const image = await ImageLogic.create(req.body.method, req.body.image);
+  const image = await FileLogic.create(req.body.method, req.body.image);
   if (!image) {  this.returnError(404, "Image not found."); return; }
   const campaignPatch: Partial<CampaignDocument> = { banner:
     { ref: image.ref, src: image.src },

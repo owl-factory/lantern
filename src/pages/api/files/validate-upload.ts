@@ -8,13 +8,23 @@ import { UserLogic } from "server/logic/UserLogic";
 import { requireLogin, requirePermission, validateAccountHasSpace } from "utilities/validation/account";
 
 /**
- * Prepares for the upload of a file. Creates a pending document in the database and generates
- * an upload URL for AWS
+ * Validates the successful upload of a file
  * @param req The request containing a body with a file document 'doc'
  */
-async function beginUpload(this: HTTPHandler, req: NextApiRequest) {
+async function validateUpload(this: HTTPHandler, req: NextApiRequest) {
+  // Checks aren't strictly required, but it is better to spend a little time verifying the user
+  // has access than pinging the database on each run
   requireLogin();
   requirePermission("uploadFile");
+
+  const fileDoc = await FileLogic.findOne(req.body.file.ref);
+  // If we're not pending, then there is nothing to be done. Exit.
+  if (!fileDoc.isPending) {
+    this.returnSuccess({ file: fileDoc });
+    return;
+  }
+
+  const fileMetadata = await s3.getObjectMetadata(fileDoc.s3Path || "");
 
   // Check DB for latest information on the user's storage
   const user = await UserLogic.findOne(Auth.user?.ref || "");
@@ -26,4 +36,4 @@ async function beginUpload(this: HTTPHandler, req: NextApiRequest) {
   this.returnSuccess({ uploadURL, doc });
 }
 
-export default createEndpoint({PUT: beginUpload});
+export default createEndpoint({PUT: validateUpload});

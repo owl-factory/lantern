@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { NextApiRequest } from "next";
-import { ImageLogic } from "server/logic/FileLogic";
+import { FileLogic } from "server/logic/FileLogic";
 
 import { HTTPHandler, createEndpoint } from "@owl-factory/https";
 
@@ -10,7 +10,7 @@ import { HTTPHandler, createEndpoint } from "@owl-factory/https";
  * @param req The request to the server
  */
 async function getMyImages(this: HTTPHandler, req: NextApiRequest) {
-  const images = await ImageLogic.searchMyImages({ size: 100 });
+  const images = await FileLogic.searchMyImages({ size: 100 });
   this.returnSuccess({ images });
 }
 
@@ -20,7 +20,7 @@ async function getMyImages(this: HTTPHandler, req: NextApiRequest) {
  * @param req The request to the server
  */
 async function getImages(this: HTTPHandler, req: NextApiRequest) {
-  const images = await ImageLogic.findManyByIDs(req.body.refs);
+  const images = await FileLogic.findManyByIDs(req.body.refs);
   this.returnSuccess({ docs: images });
 }
 
@@ -30,7 +30,7 @@ async function getImages(this: HTTPHandler, req: NextApiRequest) {
  * @param req The request to the server. In body, contains an image object and method.
  */
 async function createImage(this: HTTPHandler, req: NextApiRequest) {
-  const image = await ImageLogic.create(req.body.method, req.body.image);
+  const image = await FileLogic.create(req.body.method, req.body.image);
   this.returnSuccess({ image });
 }
 

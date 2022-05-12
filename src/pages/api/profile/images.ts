@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { NextApiRequest } from "next";
-import { ImageLogic } from "server/logic/FileLogic";
+import { FileLogic } from "server/logic/FileLogic";
 import { UserLogic } from "server/logic/UserLogic";
 
 import { HTTPHandler, createEndpoint } from "@owl-factory/https";
@@ -14,7 +14,7 @@ import { Auth } from "controllers/auth";
 async function updateProfileImage(this: HTTPHandler, req: NextApiRequest) {
   const user = await UserLogic.findOne(Auth.user?.ref || "");
   if (!user) { this.returnError(404, "User not found."); return; }
-  const image = await ImageLogic.findOne(req.body.avatar.ref);
+  const image = await FileLogic.findOne(req.body.avatar.ref);
   if (!image) { this.returnError(404, "Image not found"); return; }
   const newUser = await UserLogic.updateAvatar(user.ref, req.body);
 

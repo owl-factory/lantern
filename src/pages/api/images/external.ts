@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { NextApiRequest } from "next";
-import { ImageLogic } from "server/logic/FileLogic";
+import { FileLogic } from "server/logic/FileLogic";
 
 import { HTTPHandler, createEndpoint } from "@owl-factory/https";
 
@@ -10,7 +10,7 @@ import { HTTPHandler, createEndpoint } from "@owl-factory/https";
  * @param req The request to the server
  */
 async function createExternalImage(this: HTTPHandler, req: NextApiRequest) {
-  const image = await ImageLogic.createExternalLink(req.body);
+  const image = await FileLogic.createExternalLink(req.body);
 
   this.returnSuccess({ image });
 }

@@ -38,7 +38,7 @@ function FileUploadForm() {
         <Form>
           <div className="mb-3">
             <label htmlFor="file" className="form-label">Default file input example</label>
-            <input type="file" name="fileInput" onChange={(event) => {console.log(event); props.setFieldValue("file", event.currentTarget.files[0])}}/>
+            <input type="file" name="fileInput" onChange={(event) => {props.setFieldValue("file", event.currentTarget.files[0])}}/>
             {/* <input type="file" name="form2" onChange={uploadTest}/> */}
             <Button type="button" onClick={props.resetForm}>Reset</Button>
             <Button type="submit">Upload</Button>

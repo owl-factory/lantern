@@ -1,8 +1,11 @@
+import { s3 } from "@owl-factory/aws/s3";
 import { DataManager } from "@owl-factory/data/DataManager";
 import { rest } from "@owl-factory/https/rest";
 import { Auth } from "controllers/auth";
 import { isOwner } from "server/logic/security";
 import { FileDocument } from "types/documents";
+import { requireLogin } from "utilities/validation/account";
+import { validateFileUploadDoc } from "utilities/validation/file";
 
 class FileDataManager extends DataManager<Partial<FileDocument>> {
   public collection = "images";
@@ -25,26 +28,29 @@ class FileDataManager extends DataManager<Partial<FileDocument>> {
    */
   public async upload(values: { file: File }) {
     // Validate user
-    if (!Auth.isLoggedIn) { throw "You must be logged in to upload files"; }
-
-    const doc: Partial<FileDocument> = {
-      name: values.file.name.replace(/.*?[\\/]/, ""),
-      type: values.file.type,
-    };
-
-    // Validate data
+    requireLogin();
     if (!values.file) { throw "You must select a file to upload."; }
 
     // Create new File document
+    const doc: Partial<FileDocument> = {
+      name: values.file.name.replace(/.*?[\\/]/, ""),
+      mimetype: values.file.type,
+      sizeInBytes: values.file.size, // We do not guarantee this number is correct
+    };
+
+    // Validate data
+    validateFileUploadDoc(doc);
+
     // TODO - move into it's own function?
     let res;
     try {
-      res = await rest.put<{ file: FileDocument, uploadURL: string }>(`/api/files/begin-upload`, doc);
+      res = await rest.put<{ file: FileDocument, uploadURL: string }>(`/api/files/begin-upload`, { doc });
     } catch (e: any) {
       // TODO - make a little more descriptive
       throw "An error occured while attempting to reserve space for the file";
     }
-    return
+
+    console.log(res.data)
     // Upload to AWS
     // TODO - move into its own function?
     let awsRes;
@@ -57,14 +63,11 @@ class FileDataManager extends DataManager<Partial<FileDocument>> {
     }
 
     // Update File document with data
-
+    rest.post<{ file: FileDocument }>(`/api/files/validate-upload`, { file: res.data.file });
   }
 }
 
-const s3 = {
-  upload: async (url: string, file: File) => {
-    return await fetch(url, { method: "PUT", body: file });
-  },
-}
+
+
 
 export const FileData = new FileDataManager();

@@ -21,6 +21,7 @@ const playerPermissions: string[] = [
 
   "viewContentType",
 
+  "uploadFile",
   "createExternalImage",
   "searchMyImages",
 

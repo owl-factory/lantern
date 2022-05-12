@@ -1,4 +1,4 @@
-import { FileDocument } from "types/documents";
+import { FileDocument, UserDocument } from "types/documents";
 import { isOwner } from "./security";
 import { Collection, FaunaIndex } from "src/fauna";
 import { DatabaseLogic } from "./AbstractDatabaseLogic";
@@ -10,6 +10,7 @@ import { FaunaIndexOptions } from "@owl-factory/database/types/fauna";
 import { toRef } from "@owl-factory/database/conversion/fauna/to";
 import { AssetUploadSource } from "types/enums/assetSource";
 import { Auth } from "controllers/auth";
+import { generateS3Filepath, generateS3Key } from "utilities/files";
 
 const createFields = [
   "name",
@@ -20,13 +21,33 @@ const createFields = [
   "source",
 ];
 
-class $ImageLogic extends DatabaseLogic<FileDocument> {
-  public collection = Collection.Images;
+class $FileLogic extends DatabaseLogic<FileDocument> {
+  public collection = Collection.Files;
 
   @Create("uploadFile")
-  @SetFields(["name"])
-  public async createUpload() {
-    
+  @SetFields(["name", "mimetype"])
+  public async createUpload(doc: Partial<FileDocument>) {
+    doc.isPending = true;
+    doc.s3Key = generateS3Key();
+    doc.s3Path = generateS3Filepath(Auth.user as UserDocument, doc);
+
+    const createdDoc = await fauna.createOne<FileDocument>(this.collection, doc);
+    if (createdDoc === undefined) {
+      throw { code: 500, message: `The file ${doc.name} could not be reserved.`};
+    }
+    return createdDoc;
+  }
+
+  @Update("validateFileUpload")
+  @SetFields(["*"])
+  public async validateUploadedFile(doc: Partial<FileDocument>) {
+    (doc as any).isPending = null; // Set to null for deleting the 'isPending' value
+
+    const updatedDoc = await fauna.updateOne<FileDocument>(this.collection, doc);
+    if (updatedDoc === undefined) {
+      throw `The file document "${doc.name}" could not be marked as valid`;
+    }
+    return updatedDoc;
   }
 
   /**
@@ -67,8 +88,8 @@ class $ImageLogic extends DatabaseLogic<FileDocument> {
   @Create("createExternalImage")
   @ReadFields(["*"])
   @SetFields(createFields)
-  public async createExternalLink(doc: Partial<ImageDocument>): Promise<ImageDocument> {
-    const image = await fauna.createOne<ImageDocument>(this.collection, doc);
+  public async createExternalLink(doc: Partial<FileDocument>): Promise<FileDocument> {
+    const image = await fauna.createOne<FileDocument>(this.collection, doc);
     if (image === undefined) { throw { code: 500, message: "An unexpected error occured while creating the image"}; }
     return image;
   }
@@ -81,8 +102,8 @@ class $ImageLogic extends DatabaseLogic<FileDocument> {
   @Delete("deleteMyImage")
   @Access(isOwner)
   @ReadFields(["*"])
-  public async deleteOne(id: Ref64): Promise<ImageDocument> {
-    const image = await fauna.deleteOne<ImageDocument>(id);
+  public async deleteOne(id: Ref64): Promise<FileDocument> {
+    const image = await fauna.deleteOne<FileDocument>(id);
     if (image === undefined) { throw {code: 500, message: "An unexpected error occured while deleting the document"}; }
     return image;
   }
@@ -94,8 +115,8 @@ class $ImageLogic extends DatabaseLogic<FileDocument> {
    */
   @Fetch("viewAnyImage")
   @ReadFields(["*"])
-  public async findOne(id: Ref64): Promise<ImageDocument> {
-    const image = await fauna.findByID<ImageDocument>(id);
+  public async findOne(id: Ref64): Promise<FileDocument> {
+    const image = await fauna.findByID<FileDocument>(id);
     if (image === undefined) { throw { code: 404, message: `The image with id ${id} could not be found.`}; }
     return image;
   }
@@ -107,8 +128,8 @@ class $ImageLogic extends DatabaseLogic<FileDocument> {
    */
   @FetchMany("viewAnyImage")
   @ReadFields(["*"])
-  public async findManyByIDs(ids: Ref64[]): Promise<ImageDocument[]> {
-    const images = await fauna.findManyByIDs<ImageDocument>(ids);
+  public async findManyByIDs(ids: Ref64[]): Promise<FileDocument[]> {
+    const images = await fauna.findManyByIDs<FileDocument>(ids);
     return images;
   }
 
@@ -119,7 +140,7 @@ class $ImageLogic extends DatabaseLogic<FileDocument> {
    */
   @Index("searchImagesByUser")
   @ReadFields(["*"])
-  public async searchImagesByUser(userID: Ref64, options?: FaunaIndexOptions): Promise<ImageDocument[]> {
+  public async searchImagesByUser(userID: Ref64, options?: FaunaIndexOptions): Promise<FileDocument[]> {
     return this._searchImagesByUser(userID, options);
   }
 
@@ -130,7 +151,7 @@ class $ImageLogic extends DatabaseLogic<FileDocument> {
    */
   @Index("searchMyImages")
   @ReadFields(["*"])
-  public async searchMyImages(options?: FaunaIndexOptions): Promise<ImageDocument[]> {
+  public async searchMyImages(options?: FaunaIndexOptions): Promise<FileDocument[]> {
     const userID = Auth.user?.ref;
     if (!userID) { return []; }
     return this._searchImagesByUser(userID, options);
@@ -146,7 +167,7 @@ class $ImageLogic extends DatabaseLogic<FileDocument> {
    @Access(isOwner)
    @ReadFields(["*"])
    @SetFields(["*"])
-   public async updateMyImage(ref: Ref64, doc: Partial<ImageDocument>) {
+   public async updateMyImage(ref: Ref64, doc: Partial<FileDocument>) {
     const updatedDoc = await fauna.updateOne(ref, doc);
     // TODO - better message
     if (updatedDoc === undefined) {
@@ -160,11 +181,11 @@ class $ImageLogic extends DatabaseLogic<FileDocument> {
    * @param options Any additional options for filtering the data retrieved from the database
    * @returns An array of campaign document partials
    */
-  private async _searchImagesByUser(userID: Ref64, options?: FaunaIndexOptions): Promise<ImageDocument[]> {
+  private async _searchImagesByUser(userID: Ref64, options?: FaunaIndexOptions): Promise<FileDocument[]> {
     const ref = toRef(userID);
-    const images = await fauna.searchByIndex<ImageDocument>(FaunaIndex.ImagesByUser, [ref], options);
+    const images = await fauna.searchByIndex<FileDocument>(FaunaIndex.ImagesByUser, [ref], options);
     return images;
   }
 }
 
-export const ImageLogic = new $ImageLogic();
+export const FileLogic = new $FileLogic();
