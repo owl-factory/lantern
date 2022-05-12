@@ -31,5 +31,9 @@ export function requirePermission(permission?: string) {
  * @throws An error if the account does not have the space requirements
  */
 export function validateAccountHasSpace(account: UserDocument, expectedSize: number) {
+  if (expectedSize <= 0) { throw `An invalid size was given when validating account space`; }
+  if (account.maximumAvailableStorage < account.storageUsed + expectedSize) {
+    throw `There is not enough storage in the account of ${account.username}.`;
+  }
   return;
 }

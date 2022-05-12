@@ -25,15 +25,31 @@ async function validateUpload(this: HTTPHandler, req: NextApiRequest) {
   }
 
   const fileMetadata = await s3.getObjectMetadata(fileDoc.s3Path || "");
+  // Catch if file metadata does not exist. This should never happen unless something goes wonderfully wrong
+  if (!fileMetadata) {
+    FileLogic.deleteOne(fileDoc.ref);
+    this.returnSuccess({
+      message: `File ${fileDoc.name} was not uploaded properly and could not be validated. Please try again.`,
+    });
+    return;
+  }
+
+  fileDoc.sizeInBytes = fileMetadata.ContentLength || -1;
+  fileDoc.mimetype = fileMetadata.ContentType || "";
 
   // Check DB for latest information on the user's storage
-  const user = await UserLogic.findOne(Auth.user?.ref || "");
-  validateAccountHasSpace(user, req.body.doc.sizeInBytes);
+  const account = await UserLogic.findOne(Auth.user?.ref || "");
+  validateAccountHasSpace(account, fileDoc.sizeInBytes);
 
-  const doc = await FileLogic.createUpload(req.body.doc);
-  const uploadURL = await s3.generateUploadURL(doc.s3Path || "", doc.mimetype);
+  account.storageUsed = (account.storageUsed || 0) + fileDoc.sizeInBytes;
 
-  this.returnSuccess({ uploadURL, doc });
+  // Save in this order. We would rather have the user be using more space than recorded until
+  // we review and adjust storage used. This shouldn't happen, but we want to err towards user
+  // quality of life
+  const file = await FileLogic.updateValidatedUpload(fileDoc.ref, fileDoc);
+  const updatedUser = await UserLogic.updateStorageUsed(account.ref, account);
+
+  this.returnSuccess({ account: updatedUser, file });
 }
 
-export default createEndpoint({PUT: validateUpload});
+export default createEndpoint({POST: validateUpload});

@@ -16,6 +16,10 @@ export interface UserDocument extends CoreDocument {
   role: string; // Which role a user is assigned and the default permission
   permissions: string[]; // Any additional permissions a user has on top of their role
 
+  // STORAGE
+  storageUsed: number;
+  maximumAvailableStorage: number;
+
   recentPlayers: UserDocument[];
 
   badges: {

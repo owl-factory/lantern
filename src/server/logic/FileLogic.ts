@@ -40,10 +40,10 @@ class $FileLogic extends DatabaseLogic<FileDocument> {
 
   @Update("validateFileUpload")
   @SetFields(["*"])
-  public async validateUploadedFile(doc: Partial<FileDocument>) {
+  public async updateValidatedUpload(ref: Ref64, doc: Partial<FileDocument>) {
     (doc as any).isPending = null; // Set to null for deleting the 'isPending' value
 
-    const updatedDoc = await fauna.updateOne<FileDocument>(this.collection, doc);
+    const updatedDoc = await fauna.updateOne<FileDocument>(ref, doc);
     if (updatedDoc === undefined) {
       throw `The file document "${doc.name}" could not be marked as valid`;
     }

@@ -14,6 +14,7 @@ export const collections: CollectionMap = [
   { id: "H", string: "content_types" },
   { id: "I", string: "scenes" },
   { id: "J", string: "users" },
+  { id: "K", string: "files" },
 ];
 
 /**

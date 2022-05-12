@@ -1,4 +1,4 @@
-import { GetObjectTaggingCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { GetObjectTaggingCommand, HeadObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { isClient } from "@owl-factory/utilities/client";
 
@@ -53,9 +53,19 @@ async function getObjectMetadata(path: string) {
     Key: path,
   };
 
-  const command = new GetObjectTaggingCommand(params);
-  const fileMetadata = await client.send(command);
-  return fileMetadata;
+  const command = new HeadObjectCommand(params);
+  try {
+    const fileMetadata = await client.send(command);
+    return fileMetadata;
+  } catch (e: any) {
+    if (!e.$response || !e.$response.statusCode) {
+      // TODO - Log error
+      throw `An unexpected error occured when attempting to read object metadata from the AWS S3 bucket`;
+    }
+
+    if (e.$response.statusCode === 404) { return undefined; }
+    else { throw e; }
+  }
 }
 
 /**

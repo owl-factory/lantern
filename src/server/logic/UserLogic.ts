@@ -100,6 +100,24 @@ class $UserLogic extends DatabaseLogic<UserDocument> {
   }
 
   /**
+   * Updates a user's consumed storage amount
+   * @param ref The Ref64 ID of the document to update
+   * @param doc The user partial to update
+   * @returns The new, updated document
+   */
+  @Update("uploadFile")
+  @Access(isOwner)
+  @ReadFields(["*"])
+  @SetFields(["storageUsed"])
+  public async updateStorageUsed(ref: Ref64, doc: Partial<UserDocument>): Promise<UserDocument> {
+    const user = await fauna.updateOne<UserDocument>(ref, doc);
+    if (user === undefined) {
+      throw { code: 500, message: "An unexpected error occured while attepting to update the user."};
+    }
+    return user;
+  }
+
+  /**
    * Attempts to log in the user
    * @param username The username or email of the user attempting to log in
    * @param password The password of the user attempting to log in
