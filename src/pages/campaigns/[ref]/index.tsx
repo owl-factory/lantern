@@ -4,10 +4,10 @@ import Link from "next/link";
 import React from "react";
 import { rest } from "@owl-factory/https/rest";
 import { ImageSelectionWrapper } from "components/reroll/library/images/ImageSelectionWrapper";
-import { CampaignDocument, ImageDocument, UserDocument } from "types/documents";
+import { CampaignDocument, FileDocument, UserDocument } from "types/documents";
 import { observer } from "mobx-react-lite";
 import { InitialProps } from "types/client";
-import { AssetUploadSource } from "types/enums/assetSource";
+import { AssetUploadSource } from "types/enums/files/createMethod";
 import { Ref64 } from "@owl-factory/types";
 import { CampaignData } from "controllers/data/CampaignData";
 import { UserData } from "controllers/data/UserData";
@@ -36,7 +36,7 @@ const Banner = observer(({ campaign, isOwner }: any) => {
      * @param image The new image document to use as the banner image
      * @param method The method to set the new image
      */
-    const onSubmit = async (newBanner: Partial<ImageDocument>, method: AssetUploadSource) => {
+    const onSubmit = async (newBanner: Partial<FileDocument>, method: AssetUploadSource) => {
       // TODO - Save banner
     };
 

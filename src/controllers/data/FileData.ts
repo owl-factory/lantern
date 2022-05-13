@@ -1,17 +1,20 @@
 import { s3 } from "@owl-factory/aws/s3";
 import { DataManager } from "@owl-factory/data/DataManager";
 import { rest } from "@owl-factory/https/rest";
-import { Auth } from "controllers/auth";
-import { isOwner } from "server/logic/security";
-import { FileDocument } from "types/documents";
+import { ServerResponse } from "@owl-factory/https/types";
+import { Collection } from "fauna";
+import { isOwner } from "security/documents";
+import { FileDocument, UserDocument } from "types/documents";
+import { Mimetype } from "types/enums/files/mimetypes";
 import { requireLogin } from "utilities/validation/account";
 import { validateFileUploadDoc } from "utilities/validation/file";
+import { UserData } from "./UserData";
 
 class FileDataManager extends DataManager<Partial<FileDocument>> {
-  public collection = "images";
+  public collection = Collection.Files;
 
   constructor() {
-    super();
+    super("/api/files");
 
     this.addGroup("owned-image", isOwner);
   }
@@ -34,7 +37,7 @@ class FileDataManager extends DataManager<Partial<FileDocument>> {
     // Create new File document
     const doc: Partial<FileDocument> = {
       name: values.file.name.replace(/.*?[\\/]/, ""),
-      mimetype: values.file.type,
+      mimetype: values.file.type as Mimetype,
       sizeInBytes: values.file.size, // We do not guarantee this number is correct
     };
 
@@ -50,7 +53,6 @@ class FileDataManager extends DataManager<Partial<FileDocument>> {
       throw "An error occured while attempting to reserve space for the file";
     }
 
-    console.log(res.data)
     // Upload to AWS
     // TODO - move into its own function?
     let awsRes;
@@ -62,8 +64,18 @@ class FileDataManager extends DataManager<Partial<FileDocument>> {
       throw "The file failed to upload successfully";
     }
 
+    console.log(awsRes);
+    res.data.file.src = awsRes.url.substring(0, awsRes.url.indexOf("?"));
+
     // Update File document with data
-    rest.post<{ file: FileDocument }>(`/api/files/validate-upload`, { file: res.data.file });
+    rest.post<{ file: FileDocument, account?: UserDocument }>(`/api/files/validate-upload`, { file: res.data.file })
+    .then((validateRes: ServerResponse<{ file: FileDocument, account?: UserDocument }>) => {
+      if (!validateRes.success) { return; } // Do we want to notify on failure?
+
+      FileData.set(validateRes.data.file);
+      if (!validateRes.data.account) { return; }
+      UserData.set(validateRes.data.account);
+    });
   }
 }
 

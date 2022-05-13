@@ -1,7 +1,7 @@
 
 import { Button } from "@owl-factory/components/button";
 import React from "react";
-import { ImageDocument } from "types/documents";
+import { FileDocument } from "types/documents";
 import { ImageDetailsModal, ImageList, ListFormat } from "components/reroll/library/images";
 import { ImageCreationFormModal } from "./forms/ImageCreationForm";
 
@@ -26,7 +26,7 @@ export function LibraryImageList(props: ImageListProps): JSX.Element {
         <h2>Images</h2>
         <Button type="button" onClick={() => setModal(true)}>+</Button>
         <ImageList
-        onClick={(image: Partial<ImageDocument>) => setImageDetailsModal(image.ref as string)}
+        onClick={(image: Partial<FileDocument>) => setImageDetailsModal(image.ref as string)}
           listFormat={props.listFormat || ListFormat.Icons}
         />
 

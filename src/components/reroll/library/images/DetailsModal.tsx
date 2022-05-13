@@ -4,8 +4,8 @@ import { Modal } from "@owl-factory/components/modal";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { MdClose } from "react-icons/md";
-import { ImageDocument } from "types/documents";
-import { FileData } from "controllers/data/ImageData";
+import { FileDocument } from "types/documents";
+import { FileData } from "controllers/data/FileData";
 
 interface ImageDetailsModalProps {
   imageID: string;
@@ -19,7 +19,7 @@ interface ImageDetailsModalProps {
  * @param handleClose Handles closing the modal
  */
 function $ImageDetailsModal({ imageID, open, handleClose }: ImageDetailsModalProps): JSX.Element | null {
-  const [ image, setImage ] = React.useState<Partial<ImageDocument>>({ ref: "" } as ImageDocument);
+  const [ image, setImage ] = React.useState<Partial<FileDocument>>({ ref: "" } as FileDocument);
 
 
 

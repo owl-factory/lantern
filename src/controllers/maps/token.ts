@@ -1,4 +1,4 @@
-import { FileData } from "controllers/data/ImageData";
+import { FileData } from "controllers/data/FileData";
 import { InteractionEvent, Sprite, Texture } from "pixi.js";
 import { MapController } from "./map";
 import { ViewportController } from "./viewport";

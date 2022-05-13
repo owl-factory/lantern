@@ -3,10 +3,10 @@ import { Input } from "@owl-factory/components/form";
 import { Tooltip } from "@owl-factory/components/tooltip";
 import { Formik, Form as FormikForm } from "formik";
 import React from "react";
-import { ImageDocument } from "types/documents";
+import { FileDocument } from "types/documents";
 
 interface LinkImageFormProps {
-  onSubmit?: (image: Partial<ImageDocument>) => Promise<void>;
+  onSubmit?: (image: Partial<FileDocument>) => Promise<void>;
   onSave?: () => void;
 }
 
@@ -17,7 +17,7 @@ interface LinkImageFormProps {
  *  original save function
  */
 export function LinkImageForm(props: LinkImageFormProps): JSX.Element {
-  let onSubmit: (Image: Partial<ImageDocument>) => Promise<void>;
+  let onSubmit: (Image: Partial<FileDocument>) => Promise<void>;
   if (props.onSubmit) { onSubmit = props.onSubmit; }
   else {
     onSubmit = async () => {

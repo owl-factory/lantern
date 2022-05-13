@@ -6,39 +6,55 @@ import { Formik, Form, FormikProps, FormikBag, FormikHelpers } from "formik";
 import React from "react";
 import { uploadImage } from "utilities/image-upload";
 
+interface FormValues {
+  file: File | null;
+  fileInput: string;
+}
+
 const INITIAL_VALUES = {
   file: null,
-  fileInput: ""
+  fileInput: "",
 };
 
-async function uploadHandler(event: any, bag: FormikHelpers<any>) {
-  console.log(event)
+async function onSubmit(values: FormValues) {
+  // TODO - Validate
   try {
-    await FileData.upload(event);
+    await FileData.upload(values as any);
   } catch (e: any) {
     console.error(e);
   }
-  // if (event.target.files && event.target.files.length === 1) {
-  //   const image = event.target.files[0];
-  //   uploadImage(image).then(e => {console.log(e);});
-  // }
 }
 
-function uploadTest(event: any) {
-  console.log(event)
+/**
+ * Places the file into a Formik form value, as Formik doesn't normally support file uploads
+ * @param event The onChange event that triggered the call
+ * @param setFieldValue A function that sets a value in the Formik form
+ */
+function onChange(
+  event: React.ChangeEvent<HTMLInputElement>,
+  setFieldValue: (field: string, value: any, shouldValidate?: boolean | undefined) => void
+): void {
+  if (event.currentTarget.files === null) {
+    setFieldValue("file", null);
+    return;
+  }
+  setFieldValue("file", event.currentTarget.files[0]);
 }
 
 function FileUploadForm() {
   return (
     <Formik
       initialValues={INITIAL_VALUES}
-      onSubmit={uploadHandler}
+      onSubmit={onSubmit}
     >
       {(props: FormikProps<any>) => (
         <Form>
           <div className="mb-3">
             <label htmlFor="file" className="form-label">Default file input example</label>
-            <input type="file" name="fileInput" onChange={(event) => {props.setFieldValue("file", event.currentTarget.files[0])}}/>
+            <input
+              type="file"
+              name="fileInput"
+              onChange={(event) => {onChange(event, props.setFieldValue)}}/>
             {/* <input type="file" name="form2" onChange={uploadTest}/> */}
             <Button type="button" onClick={props.resetForm}>Reset</Button>
             <Button type="submit">Upload</Button>

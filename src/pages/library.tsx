@@ -4,14 +4,14 @@ import { LibraryImageList, ListFormat, StorageUsage } from "components/reroll/li
 import { StorageTypeEnum } from "types/enums/storageType";
 import { NextPageContext } from "next";
 import { observer } from "mobx-react-lite";
-import { ImageDocument } from "types/documents";
+import { FileDocument } from "types/documents";
 import { InitialProps } from "types/client";
-import { FileData } from "controllers/data/ImageData";
+import { FileData } from "controllers/data/FileData";
 import { handleAPI } from "@owl-factory/https/apiHandler";
 import { getLibraryPage } from "./api/library";
 
 interface LibraryProps extends InitialProps {
-  images: ImageDocument[];
+  images: FileDocument[];
 }
 
 /**

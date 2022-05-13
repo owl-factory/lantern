@@ -8,14 +8,21 @@ import { toRef } from "@owl-factory/database/conversion/fauna/to";
 import { Auth } from "controllers/auth";
 import { generateS3Filepath, generateS3Key } from "utilities/files";
 import * as access from "./access";
+import { FileCreateMethod } from "types/enums/files/createMethod";
 
 const collection = Collection.Files;
 
 class $FileLogic {
   public collection = Collection.Files;
 
+  /**
+   * Creates a pending file document in the database
+   * @param doc The file document to insert into the database
+   * @returns The created document
+   */
   @Create(["*"], ["name", "mimetype"])
   public async createUpload(doc: Partial<FileDocument>) {
+    doc.createdMethod = FileCreateMethod.Upload;
     doc.isPending = true;
     doc.s3Key = generateS3Key();
     doc.s3Path = generateS3Filepath(Auth.user as UserDocument, doc);
@@ -27,14 +34,21 @@ class $FileLogic {
     return createdDoc;
   }
 
-  @Update(collection, ["*"], ["mimetype", "sizeInBytes"], (ref) => access.fetch(collection, ref))
+  /**
+   * Updates a pending file document to be valid
+   * @param ref The ref of the pending file document to mark as valid
+   * @param doc The changes to the file document
+   * @returns The updated file document
+   */
+  @Update(collection, ["*"], ["src", "mimetype", "sizeInBytes"], (ref) => access.fetch(collection, ref))
   public async updateValidatedUpload(ref: Ref64, doc: Partial<FileDocument>) {
     (doc as any).isPending = null; // Set to null for deleting the 'isPending' value
-
+    console.log(doc)
     const updatedDoc = await fauna.updateOne<FileDocument>(ref, doc);
     if (updatedDoc === undefined) {
       throw `The file document "${doc.name}" could not be marked as valid`;
     }
+    console.log(updatedDoc)
     return updatedDoc;
   }
 
@@ -44,7 +58,7 @@ class $FileLogic {
    * @returns The deleted image document
    */
   @Delete(collection, ["*"], (ref) => access.fetch(collection, ref))
-  public async deleteOne(ref: Ref64): Promise<FileDocument> {
+  public async delete(ref: Ref64): Promise<FileDocument> {
     return await access.remove(collection, ref);
   }
 

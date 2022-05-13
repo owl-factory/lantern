@@ -1,9 +1,9 @@
-import { GetObjectTaggingCommand, HeadObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { HeadObjectCommand, HeadObjectCommandOutput, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { isClient } from "@owl-factory/utilities/client";
 
 let S3_CLIENT: S3Client | null = null; // The AWS S3 client
-const S3_BUCKET = process.env.AWS_S3_IMAGE_BUCKET || "";
+const S3_BUCKET = process.env.AWS_S3_IMAGE_BUCKET || ""; // The name of the bucket in S3 to upload to
 const URL_EXPIRATION_SECONDS = 300; // The time in seconds until the S3 upload URL expires
 
 /**
@@ -45,7 +45,12 @@ async function generateUploadURL(path: string, mimetype: string) {
   return uploadURL;
 }
 
-async function getObjectMetadata(path: string) {
+/**
+ * Fetches an object's metadata from an AWS S3 bucket
+ * @param path The path to the place that the file is located
+ * @returns The object metadata, if found. If no object is found, returns undefined
+ */
+async function getObjectMetadata(path: string): Promise<HeadObjectCommandOutput | undefined> {
   if (!path) { throw "A valid path is required to fetch an object's metadata from the S3 bucket"; }
   const client = getS3Client();
   const params = {

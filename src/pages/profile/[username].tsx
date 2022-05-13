@@ -3,7 +3,7 @@ import { Page } from "components/design";
 import { NextPageContext } from "next";
 import { rest } from "@owl-factory/https/rest";
 import { getSession } from "@owl-factory/auth/session";
-import { ImageDocument, UserDocument } from "types/documents";
+import { FileDocument, UserDocument } from "types/documents";
 import { Formik, Form as FormikForm } from "formik";
 import { Button } from "@owl-factory/components/button";
 import { useRouter } from "next/router";
@@ -12,8 +12,8 @@ import { Checkbox, Input } from "@owl-factory/components/form";
 import { observer } from "mobx-react-lite";
 import { InitialProps } from "types/client";
 import Link from "next/link";
-import { AssetUploadSource } from "types/enums/assetSource";
-import { FileData } from "controllers/data/ImageData";
+import { AssetUploadSource } from "types/enums/files/createMethod";
+import { FileData } from "controllers/data/FileData";
 import { UserData } from "controllers/data/UserData";
 import { arrayToList, getUniques } from "@owl-factory/utilities/arrays";
 import { Auth } from "controllers/auth";
@@ -208,8 +208,8 @@ const Avatar = observer(({ user, isMyPage }: ProfileImageProps) => {
 
   let image = <img src={user.avatar?.src} width="200px" height="200px"/>;
 
-  async function onSubmit(imageDocument: Partial<ImageDocument>, method: AssetUploadSource) {
-    // await UserData.updateAvatar(user.ref, imageDocument, method);
+  async function onSubmit(fileDocument: Partial<FileDocument>, method: AssetUploadSource) {
+    // await UserData.updateAvatar(user.ref, fileDocument, method);
   }
 
   if (isMyPage) {

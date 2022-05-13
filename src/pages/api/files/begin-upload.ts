@@ -1,5 +1,4 @@
 import { s3 } from "@owl-factory/aws/s3";
-import { RequireLogin } from "@owl-factory/database/decorators/modifiers";
 import { HTTPHandler, createEndpoint } from "@owl-factory/https";
 import { Auth } from "controllers/auth";
 import { NextApiRequest } from "next";
@@ -17,13 +16,13 @@ async function beginUpload(this: HTTPHandler, req: NextApiRequest) {
   requirePermission("uploadFile");
 
   // Check DB for latest information on the user's storage
-  const user = await UserLogic.findOne(Auth.user?.ref || "");
+  const user = await UserLogic.fetch(Auth.user?.ref || "");
   validateAccountHasSpace(user, req.body.doc.sizeInBytes);
 
-  const doc = await FileLogic.createUpload(req.body.doc);
-  const uploadURL = await s3.generateUploadURL(doc.s3Path || "", doc.mimetype);
+  const file = await FileLogic.createUpload(req.body.doc);
+  const uploadURL = await s3.generateUploadURL(file.s3Path || "", file.mimetype);
 
-  this.returnSuccess({ uploadURL, doc });
+  this.returnSuccess({ uploadURL, file });
 }
 
 export default createEndpoint({PUT: beginUpload});

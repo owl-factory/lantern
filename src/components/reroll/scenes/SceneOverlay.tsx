@@ -25,7 +25,7 @@ function SceneDrawer() {
         </div>
         {/* <ImageList
         listFormat={ListFormat.Icons}
-        onClick={(image: ImageDocument) => sceneController.addProp(sceneController, image)}/> */}
+        onClick={(image: FileDocument) => sceneController.addProp(sceneController, image)}/> */}
       </DrawerContent>
       <DrawerContent name="Characters" Icon={MdSupervisorAccount}>
         Nothing yet

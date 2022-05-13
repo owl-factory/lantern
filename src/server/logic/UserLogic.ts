@@ -75,10 +75,7 @@ class $UserLogic {
    * @param doc The user partial to update
    * @returns The new, updated document
    */
-  @Update("uploadFile")
-  @Access(isOwner)
-  @ReadFields(["*"])
-  @SetFields(["storageUsed"])
+  @Update(collection, ["*"], ["storageUsed"], (ref) => access.fetch(collection, ref))
   public async updateStorageUsed(ref: Ref64, doc: Partial<UserDocument>): Promise<UserDocument> {
     const user = await fauna.updateOne<UserDocument>(ref, doc);
     if (user === undefined) {

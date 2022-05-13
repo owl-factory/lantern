@@ -5,6 +5,7 @@ import { Auth } from "controllers/auth";
 import { NextApiRequest } from "next";
 import { FileLogic } from "server/logic/FileLogic";
 import { UserLogic } from "server/logic/UserLogic";
+import { Mimetype } from "types/enums/files/mimetypes";
 import { requireLogin, requirePermission, validateAccountHasSpace } from "utilities/validation/account";
 
 /**
@@ -17,7 +18,8 @@ async function validateUpload(this: HTTPHandler, req: NextApiRequest) {
   requireLogin();
   requirePermission("uploadFile");
 
-  const fileDoc = await FileLogic.findOne(req.body.file.ref);
+  const fileDoc = await FileLogic.fetch(req.body.file.ref);
+  console.log(fileDoc)
   // If we're not pending, then there is nothing to be done. Exit.
   if (!fileDoc.isPending) {
     this.returnSuccess({ file: fileDoc });
@@ -27,7 +29,7 @@ async function validateUpload(this: HTTPHandler, req: NextApiRequest) {
   const fileMetadata = await s3.getObjectMetadata(fileDoc.s3Path || "");
   // Catch if file metadata does not exist. This should never happen unless something goes wonderfully wrong
   if (!fileMetadata) {
-    FileLogic.deleteOne(fileDoc.ref);
+    FileLogic.delete(fileDoc.ref);
     this.returnSuccess({
       message: `File ${fileDoc.name} was not uploaded properly and could not be validated. Please try again.`,
     });
@@ -35,10 +37,10 @@ async function validateUpload(this: HTTPHandler, req: NextApiRequest) {
   }
 
   fileDoc.sizeInBytes = fileMetadata.ContentLength || -1;
-  fileDoc.mimetype = fileMetadata.ContentType || "";
+  fileDoc.mimetype = fileMetadata.ContentType as Mimetype;
 
   // Check DB for latest information on the user's storage
-  const account = await UserLogic.findOne(Auth.user?.ref || "");
+  const account = await UserLogic.fetch(Auth.user?.ref || "");
   validateAccountHasSpace(account, fileDoc.sizeInBytes);
 
   account.storageUsed = (account.storageUsed || 0) + fileDoc.sizeInBytes;

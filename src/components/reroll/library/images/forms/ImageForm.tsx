@@ -1,7 +1,7 @@
 import { SelectionTabs } from "@owl-factory/components/SelectionTabs";
 import React from "react";
-import { ImageDocument } from "types/documents";
-import { AssetUploadSource } from "types/enums/assetSource";
+import { FileDocument } from "types/documents";
+import { AssetUploadSource } from "types/enums/files/createMethod";
 import { LinkImageForm, UploadImageForm } from ".";
 import { ImageList, ListFormat } from "..";
 
@@ -25,7 +25,7 @@ function getApprovedTabs(requestedTabs: string[]) {
 
 interface ImageFormProps {
   defaultTab: string;
-  onSubmit: (image: Partial<ImageDocument>, method: AssetUploadSource) => Promise<void>;
+  onSubmit: (image: Partial<FileDocument>, method: AssetUploadSource) => Promise<void>;
   tabs: string[];
 }
 
@@ -43,14 +43,14 @@ export function ImageForm({defaultTab, onSubmit, tabs}: ImageFormProps) {
   switch(activeTab) {
     case "link":
       activeForm = (
-        <LinkImageForm onSubmit={(image: Partial<ImageDocument>) => onSubmit(image, AssetUploadSource.ExternalLink)}/>
+        <LinkImageForm onSubmit={(image: Partial<FileDocument>) => onSubmit(image, AssetUploadSource.ExternalLink)}/>
       );
       break;
     case "list":
       activeForm = (
         <ImageList
           listFormat={ListFormat.Icons}
-          onClick={(image:Partial<ImageDocument>) => onSubmit(image, AssetUploadSource.Select)}
+          onClick={(image:Partial<FileDocument>) => onSubmit(image, AssetUploadSource.Select)}
         />
       );
       break;
