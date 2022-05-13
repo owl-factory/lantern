@@ -1,20 +1,30 @@
 import { Button } from "@owl-factory/components/button";
 import { Input } from "@owl-factory/components/form";
+import { isClient } from "@owl-factory/utilities/client";
 import { Page } from "components/design";
 import { FileData } from "controllers/data/FileData";
 import { Formik, Form, FormikProps, FormikBag, FormikHelpers } from "formik";
 import React from "react";
+import { mimetypeToTypeMap } from "types/enums/files/mimetypes";
+import { FileType } from "types/enums/files/type";
 import { uploadImage } from "utilities/image-upload";
 
 interface FormValues {
   file: File | null;
   fileInput: string;
+  auxData: Record<string, unknown>;
 }
 
 const INITIAL_VALUES = {
   file: null,
   fileInput: "",
+  auxData: {},
 };
+
+let img: any;
+if (isClient) {
+  img = new Image();
+}
 
 async function onSubmit(values: FormValues) {
   // TODO - Validate
@@ -30,18 +40,41 @@ async function onSubmit(values: FormValues) {
  * @param event The onChange event that triggered the call
  * @param setFieldValue A function that sets a value in the Formik form
  */
-function onChange(
+ function onChange(
   event: React.ChangeEvent<HTMLInputElement>,
-  setFieldValue: (field: string, value: any, shouldValidate?: boolean | undefined) => void
+  setFieldValue: (field: string, value: any, shouldValidate?: boolean | undefined) => void,
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
 ): void {
   if (event.currentTarget.files === null) {
     setFieldValue("file", null);
+    setFieldValue("auxData", {});
+    setLoading(false);
     return;
   }
-  setFieldValue("file", event.currentTarget.files[0]);
+  const file: File = event.currentTarget.files[0];
+  setFieldValue("file", file);
+  setLoading(false);
+
+  const fileType: FileType = (mimetypeToTypeMap as Record<string, FileType>)[file.type];
+  switch(fileType) {
+    case FileType.Image:
+      setLoading(true);
+      img.src = window.URL.createObjectURL(file);
+      img.onload = () => {
+        const auxData = {
+          width: img.width,
+          height: img.height,
+        };
+        setFieldValue("auxData", auxData);
+        setLoading(false);
+      };
+  }
+
 }
 
 function FileUploadForm() {
+  const [loading, setLoading] = React.useState(false);
+
   return (
     <Formik
       initialValues={INITIAL_VALUES}
@@ -54,10 +87,10 @@ function FileUploadForm() {
             <input
               type="file"
               name="fileInput"
-              onChange={(event) => {onChange(event, props.setFieldValue)}}/>
+              onChange={(event) => { onChange(event, props.setFieldValue, setLoading); }}/>
             {/* <input type="file" name="form2" onChange={uploadTest}/> */}
             <Button type="button" onClick={props.resetForm}>Reset</Button>
-            <Button type="submit">Upload</Button>
+            <Button type="submit" disabled={loading}>Upload</Button>
           </div>
         </Form>
       )}

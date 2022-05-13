@@ -5,9 +5,10 @@ import { ServerResponse } from "@owl-factory/https/types";
 import { Collection } from "fauna";
 import { isOwner } from "security/documents";
 import { FileDocument, UserDocument } from "types/documents";
-import { Mimetype } from "types/enums/files/mimetypes";
+import { Mimetype, mimetypeToTypeMap } from "types/enums/files/mimetypes";
+import { FileType } from "types/enums/files/type";
 import { requireLogin } from "utilities/validation/account";
-import { validateFileUploadDoc } from "utilities/validation/file";
+import { validateFileUploadCreationDoc, validateRawFile } from "utilities/validation/file";
 import { UserData } from "./UserData";
 
 class FileDataManager extends DataManager<Partial<FileDocument>> {
@@ -26,23 +27,32 @@ class FileDataManager extends DataManager<Partial<FileDocument>> {
   }
 
   /**
-   * Reserves space for a file, retrieves the destination URL, and 
+   * Reserves space for a file, retrieves the destination URL, and validates the file on completion
+   * @todo Break up into subfunctions. This is too long
    * @param values The values of the form to uplaod
    */
-  public async upload(values: { file: File }) {
+  public async upload(values: { file: File, auxData: Record<string, unknown> }) {
     // Validate user
     requireLogin();
-    if (!values.file) { throw "You must select a file to upload."; }
+    validateRawFile(values.file);
 
     // Create new File document
     const doc: Partial<FileDocument> = {
       name: values.file.name.replace(/.*?[\\/]/, ""),
       mimetype: values.file.type as Mimetype,
+      fileType: (mimetypeToTypeMap as Record<string, FileType>)[values.file.type],
       sizeInBytes: values.file.size, // We do not guarantee this number is correct
     };
 
+    switch(doc.fileType) {
+      case FileType.Image:
+        doc.height = values.auxData.height as number || 0;
+        doc.width = values.auxData.width as number || 0;
+        break;
+    }
+
     // Validate data
-    validateFileUploadDoc(doc);
+    validateFileUploadCreationDoc(doc);
 
     // TODO - move into it's own function?
     let res;
@@ -77,8 +87,5 @@ class FileDataManager extends DataManager<Partial<FileDocument>> {
     });
   }
 }
-
-
-
 
 export const FileData = new FileDataManager();
