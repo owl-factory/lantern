@@ -43,12 +43,10 @@ class $FileLogic {
   @Update(collection, ["*"], ["src", "mimetype", "sizeInBytes"], (ref) => access.fetch(collection, ref))
   public async updateValidatedUpload(ref: Ref64, doc: Partial<FileDocument>) {
     (doc as any).isPending = null; // Set to null for deleting the 'isPending' value
-    console.log(doc)
     const updatedDoc = await fauna.updateOne<FileDocument>(ref, doc);
     if (updatedDoc === undefined) {
       throw `The file document "${doc.name}" could not be marked as valid`;
     }
-    console.log(updatedDoc)
     return updatedDoc;
   }
 

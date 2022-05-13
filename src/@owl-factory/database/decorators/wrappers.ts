@@ -189,7 +189,6 @@ export async function updateWrapper(
   if (!originalDoc) { throw `A document with ref '${ref}' could not be found`; }
   validateDynamicAccess(descriptor, doc);
   doc = trimSetFields(descriptor, doc);
-  doc = deepMerge(doc, originalDoc);
   doc = setUpdateFields(doc);
 
   // Run original function

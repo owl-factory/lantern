@@ -64,7 +64,6 @@ class FileDataManager extends DataManager<Partial<FileDocument>> {
       throw "The file failed to upload successfully";
     }
 
-    console.log(awsRes);
     res.data.file.src = awsRes.url.substring(0, awsRes.url.indexOf("?"));
 
     // Update File document with data

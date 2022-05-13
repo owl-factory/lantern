@@ -75,6 +75,7 @@ export function $toItem(data: unknown): unknown {
     case "string":
     case "bigint":
     case "symbol":
+    case "null":
       return data;
     case "undefined":
       return undefined;
@@ -109,7 +110,8 @@ export function toRef(ref64ID: Ref64): Expr {
  * @returns The type of the given data item
  */
 function getDataType(data: unknown) {
-  if (data === undefined || data === null) { return "undefined"; }
+  if (data === undefined) { return "undefined"; }
+  else if (data === null) { return "null"; }
   else if (typeof data === "string" && isEncoding(data)) { return "ref64"; }
   else if (typeof data !== "object") { return typeof data; }
   else if (Array.isArray(data)) { return "array"; }
