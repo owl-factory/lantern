@@ -10,7 +10,7 @@ export function hasPermission(this: AuthController<unknown>, permission: string)
 
   const permissions = getGlobalPermissionKeys();
   if (permissions.length !== (this.$permissions.length - 1)) {
-    console.error(`There is a mismatch of the permission lengths in AuthController for permission "${permission}.
+    console.error(`There is a mismatch of the permission lengths in AuthController for permission "${permission}".
       The evaluation will fail.`
     );
     return false;

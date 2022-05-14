@@ -1,4 +1,5 @@
 import { Ref64 } from "@owl-factory/types";
+import { CrudPacket } from "@owl-factory/types/object";
 
 /**
  * Creates many documents
@@ -6,11 +7,11 @@ import { Ref64 } from "@owl-factory/types";
  * @param docs The list of partial documents to create
  */
 export async function createMany<T>(fx: (doc: Partial<T>) => Promise<Partial<T>>, docs: Partial<T>[]) {
-  const promises: Promise<Partial<T>>[] = [];
+  const promises: Promise<CrudPacket<Partial<T>>>[] = [];
 
   docs.forEach((doc: Partial<T>) => {
     if (fx === undefined) { return; }
-    const promise = fx(doc);
+    const promise = packetWrapper(() => fx(doc));
     promises.push(promise);
   });
 
@@ -26,11 +27,11 @@ export async function createMany<T>(fx: (doc: Partial<T>) => Promise<Partial<T>>
 export async function deleteMany<T>(
   fx: (ref: Ref64) => Promise<T>,
   refs: Ref64[]
-): Promise<Partial<T>[]> {
-  const promises: Promise<Partial<T>>[] = [];
+): Promise<CrudPacket<Partial<T>>[]> {
+  const promises: Promise<CrudPacket<Partial<T>>>[] = [];
   refs.forEach((ref: Ref64) => {
     if (fx === undefined) { return; }
-    promises.push(fx(ref));
+    promises.push(packetWrapper(() => fx(ref), { ref }));
   });
   const deletedDocs = Promise.all(promises);
   return deletedDocs;
@@ -64,11 +65,11 @@ export async function fetchMany<T>(
 export async function updateMany<T>(
   fx: (ref: Ref64, doc: Partial<T>) => Promise<Partial<T>>,
   packets: UpdatePacket<T>[]
-): Promise<Partial<T>[]> {
-  const promises: Promise<Partial<T>>[] = [];
+): Promise<CrudPacket<Partial<T>>[]> {
+  const promises: Promise<CrudPacket<Partial<T>>>[] = [];
   packets.forEach((packet: UpdatePacket<T>) => {
     if (fx === undefined) { return; }
-    promises.push(fx(packet.ref, packet.doc));
+    promises.push(packetWrapper(() => fx(packet.ref, packet.doc), { ref: packet.ref }));
   });
   const deletedDocs = Promise.all(promises);
   return deletedDocs;
@@ -77,4 +78,25 @@ export async function updateMany<T>(
 interface UpdatePacket<T> {
   ref: Ref64;
   doc: Partial<T>;
+}
+
+async function packetWrapper(fx: Function, basePacket?: Partial<CrudPacket<any>>) {
+  const packet: CrudPacket<any> = { ...basePacket, success: false, messages: [] };
+  try {
+    packet.doc = await fx();
+    packet.success = true;
+  } catch (e) {
+    packet.doc = undefined;
+    packet.success = false;
+    packet.messages = returnArr(e as (string | string[]));
+  }
+
+  return packet;
+}
+
+function returnArr(data: any) {
+  if (typeof data === "string") { return [data]; }
+  else if (Array.isArray(data)) { return data; }
+  else if (typeof data === "object") { return [ data.message ]; }
+  return ["unknown error"];
 }

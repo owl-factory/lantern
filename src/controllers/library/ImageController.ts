@@ -2,14 +2,14 @@ import { getClient } from "@owl-factory/database/client/fauna";
 import { rest } from "@owl-factory/https/rest";
 import { Client, query as q } from "faunadb";
 import { makeAutoObservable } from "mobx";
-import { CampaignDocument, ImageDocument } from "types/documents";
+import { CampaignDocument, FileDocument } from "types/documents";
 
 /**
  * Manages the state and massive list of images, allowing for fast
  * and efficient management of them on the front end
  */
 export class ImageController {
-  public images: Record<string, ImageDocument> = {};
+  public images: Record<string, FileDocument> = {};
   public imageList: string[] = [];
   private ourCDNPrefex = "none";
   private client: Client;
@@ -33,13 +33,13 @@ export class ImageController {
    * @param images The array of images to load into the image manager
    * @param startIndex The index to insert the images into, if doing multiple pages.
    */
-  public loadImages(images: ImageDocument[], startIndex?: number): void {
+  public loadImages(images: FileDocument[], startIndex?: number): void {
     if (startIndex === undefined) {
       startIndex = this.imageList.length;
     }
 
     const newImageList: string[] = [];
-    images.forEach((image: ImageDocument) => {
+    images.forEach((image: FileDocument) => {
       this.images[image.ref as string] = image;
       newImageList.push(image.ref as string);
     });
@@ -51,7 +51,7 @@ export class ImageController {
    * Saves a linked image to the database.
    * @param values The image values to save
    */
-  public saveLinkedImage(values: ImageDocument): void {
+  public saveLinkedImage(values: FileDocument): void {
     const tempID = "temp";
     values.ref = tempID;
     this.images[tempID] = values;
@@ -75,7 +75,7 @@ export class ImageController {
    * Adds an image to the top of the image list
    * @param image The image to add to the top of the image list
    */
-  public add(image: ImageDocument) {
+  public add(image: FileDocument) {
     this.images[image.ref as string] = image;
     this.imageList.splice(0, 0, image.ref as string);
   }
@@ -85,7 +85,7 @@ export class ImageController {
    * @param image The image to create
    * @param method The method by which to create an image
    */
-  public async createImage(image: ImageDocument, method: string) {
+  public async createImage(image: FileDocument, method: string) {
     if (!["link", "upload"].includes(method)) {
       Promise.reject(new Error("Method does not exist"));
       return;
@@ -108,7 +108,7 @@ export class ImageController {
    * @param allowedMethods The allowed methods used for setting the image
    */
   protected async setImage(
-    image: ImageDocument,
+    image: FileDocument,
     method: string,
     url: string,
     allowedMethods: string[] = ["list", "link", "upload"]
@@ -134,7 +134,7 @@ export class ImageController {
    * @param image The image to set as the new profile image
    * @param method The method to set the new profile image
    */
-  public async setProfileImage(image: ImageDocument, method: string) {
+  public async setProfileImage(image: FileDocument, method: string) {
     const result = await this.setImage(image, method, "/api/profile/images");
     return result.user;
   }
@@ -145,7 +145,7 @@ export class ImageController {
    * @param image The image that we are setting and potentially creating
    * @param method The method that we are using to set the banner
    */
-  public async setCampaignBanner(campaign: CampaignDocument, image: ImageDocument, method: string) {
+  public async setCampaignBanner(campaign: CampaignDocument, image: FileDocument, method: string) {
     const result = await this.setImage(image, method, `/api/campaigns/${campaign.ref}/banner`);
     return result.campaign;
   }

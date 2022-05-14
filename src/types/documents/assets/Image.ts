@@ -1,10 +1,9 @@
-import { AssetDocument } from "types/documents";
-import { AssetType } from "types/enums/assetType";
+import { FileDocument } from "types/documents";
 
 /**
  * Describes an Image Asset
  */
-export interface ImageDocument extends AssetDocument {
+export interface ImageDocument extends FileDocument {
   height?: number;
   width?: number;
 }

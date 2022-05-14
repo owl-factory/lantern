@@ -4,6 +4,7 @@ export enum Collection {
   Characters = "characters",
   ContentTypes = "content_types",
   Contents = "contents",
+  Files = "files",
   Images = "images",
   Rulesets = "rulesets",
   Scenes = "scenes",

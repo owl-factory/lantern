@@ -26,6 +26,8 @@ export const permissions: Permission[] = [
 
   { key: "viewContentType", name: "View Content Type", collection: Collection.ContentTypes },
 
+  { key: "uploadFile", name: "Upload a File", collection: Collection.Files },
+
   { key: "createExternalImage", name: "Create Externally Linked Image", collection: Collection.Images },
   { key: "deleteImage", name: "Delete My Image", collection: Collection.Images },
   { key: "viewAnyImage", name: "View Any Image", collection: Collection.Images },

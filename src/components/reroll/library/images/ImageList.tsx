@@ -2,9 +2,9 @@ import { Col, Row } from "@owl-factory/components/flex";
 import { Card, CardBody } from "@owl-factory/components/card";
 import { observer } from "mobx-react-lite";
 import React from "react";
-import { ImageDocument } from "types/documents";
+import { FileDocument } from "types/documents";
 import style from "./ImageList.module.scss";
-import { ImageData } from "controllers/data/ImageData";
+import { FileData } from "controllers/data/FileData";
 
 export enum ListFormat {
   Thumbnails,
@@ -12,8 +12,8 @@ export enum ListFormat {
 }
 
 interface ImageThumbnailProps {
-  image: Partial<ImageDocument>;
-  onClick: (image: Partial<ImageDocument>) => void
+  image: Partial<FileDocument>;
+  onClick: (image: Partial<FileDocument>) => void
 }
 
 /**
@@ -54,7 +54,7 @@ function ImageThumbnail({ image, onClick }: ImageThumbnailProps) {
 
 interface ImageListProps {
   listFormat: ListFormat;
-  onClick: (image: Partial<ImageDocument>) => void;
+  onClick: (image: Partial<FileDocument>) => void;
 }
 
 /**
@@ -65,18 +65,18 @@ interface ImageListProps {
  * @returns Returns a list of images as either Icons or Thumbnails
  */
 function $ImageList(props: ImageListProps): JSX.Element {
-  const [ images, setImages ] = React.useState<Partial<ImageDocument>[]>([]);
+  const [ images, setImages ] = React.useState<Partial<FileDocument>[]>([]);
 
   const imageThumbnails: JSX.Element[] = [];
   const onClick = props.onClick === undefined ? (() => {return;}) : props.onClick;
 
   // Updates the list of images when the image manager changes
   React.useEffect(() => {
-    const imageRefs = ImageData.search({ group: "owned-images" });
-    setImages(ImageData.getMany(imageRefs));
-  }, [ImageData.lastTouched]);
+    const imageRefs = FileData.search({ group: "owned-images" });
+    setImages(FileData.getMany(imageRefs));
+  }, [FileData.lastTouched]);
 
-  images.forEach((image: Partial<ImageDocument>) => {
+  images.forEach((image: Partial<FileDocument>) => {
     if (!image) { return; }
     switch(props.listFormat) {
       case ListFormat.Thumbnails:

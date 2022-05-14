@@ -17,13 +17,6 @@ import {
 } from "./actions";
 import { LogicDescriptor } from "./types";
 
-function returnArr(data: any) {
-  if (typeof data === "string") { return [data]; }
-  else if (Array.isArray(data)) { return data; }
-  else if (typeof data === "object") { return [ data.message ]; }
-  return ["unknown error"];
-}
-
 /**
  * Wraps a function to create a document to verify that a user has access to create a document
  * @param descriptor An object containing information for creating a document
@@ -35,35 +28,27 @@ export async function createWrapper(
   descriptor: LogicDescriptor,
   original: (doc: any) => Promise<any>,
   doc: any
-): Promise<CrudPacket<any>> {
-  const packet: CrudPacket<any> = { success: false, messages: [] };
+): Promise<any> {
   descriptor.requireLogin = true;
 
-  try {
-    // Check login & static permissions
-    validateLogin(descriptor);
-    validateStaticAccess(descriptor);
+  // Check login & static permissions
+  validateLogin(descriptor);
+  validateStaticAccess(descriptor);
 
-    validateDocument(descriptor, doc);
+  validateDocument(descriptor, doc);
 
-    // Ensures that required fields are set and that no extra fields are set.
-    doc = trimSetFields(descriptor, doc);
-    doc = deepMerge(doc, getDefaultDocument(descriptor.collection));
-    doc = setCreateFields(doc);
+  // Ensures that required fields are set and that no extra fields are set.
+  doc = trimSetFields(descriptor, doc);
+  doc = deepMerge(doc, getDefaultDocument(descriptor.collection));
+  doc = setCreateFields(doc);
 
-    // Run original function
-    let result = await original(doc);
+  // Run original function
+  let result = await original(doc);
 
-    // Read Fields
-    result = trimReadFields(descriptor, result);
+  // Read Fields
+  result = trimReadFields(descriptor, result);
 
-    packet.doc = result;
-    packet.success = true;
-    return packet;
-  } catch (e) {
-    packet.messages = returnArr(e as (string | string[]));
-    return packet;
-  }
+  return result;
 }
 
 /**
@@ -78,40 +63,32 @@ export async function deleteWrapper(
   original: (ref: string) => Promise<any>,
   ref: Ref64
 ): Promise<CrudPacket<any>> {
-  const packet: CrudPacket<any> = { success: false, ref, messages: [] };
   descriptor.requireLogin = true;
 
-  try {
-    // Validate ref
-    if (!isValidRef(ref)) { throw `The ref '${ref}' is not valid`; }
-    // Validate collection
-    if (!isValidCollection(ref, descriptor.collection)) { throw `The collection within '${ref}' is not valid`; }
+  // Validate ref
+  if (!isValidRef(ref)) { throw `The ref '${ref}' is not valid`; }
+  // Validate collection
+  if (!isValidCollection(ref, descriptor.collection)) { throw `The collection within '${ref}' is not valid`; }
 
-    // Check login
-    validateLogin(descriptor);
-    // Check static permission
-    validateStaticAccess(descriptor);
+  // Check login
+  validateLogin(descriptor);
+  // Check static permission
+  validateStaticAccess(descriptor);
 
-    if (!descriptor.fetch) { throw `A fetch function is required for the delete function`; }
-    const doc = await descriptor.fetch(ref);
-    if (!doc) { throw `A document with ref '${ref}' could not be found`; }
+  if (!descriptor.fetch) { throw `A fetch function is required for the delete function`; }
+  const doc = await descriptor.fetch(ref);
+  if (!doc) { throw `A document with ref '${ref}' could not be found`; }
 
-    // Dynamic check
-    validateDynamicAccess(descriptor, doc);
+  // Dynamic check
+  validateDynamicAccess(descriptor, doc);
 
-    // Run original function
-    let result = await original(ref);
+  // Run original function
+  let result = await original(ref);
 
-    // Read Fields
-    result = trimReadFields(descriptor, result);
+  // Read Fields
+  result = trimReadFields(descriptor, result);
 
-    packet.doc = result;
-    packet.success = true;
-    return packet;
-  } catch (e) {
-    packet.messages = returnArr(e as (string | string[]));
-    return packet;
-  }
+  return result;
 }
 
 /**
@@ -126,33 +103,25 @@ export async function fetchWrapper(
   original: (ref: string) => Promise<any>,
   ref: Ref64
 ): Promise<CrudPacket<any>> {
-  const packet: CrudPacket<any> = { success: false, ref, messages: [] };
 
-  try {
-    // Validate ref and collection
-    if (!isValidRef(ref)) { throw `The ref '${ref}' is not valid`; }
-    if (!isValidCollection(ref, descriptor.collection)) { throw `The collection within '${ref}' is not valid`; }
+  // Validate ref and collection
+  if (!isValidRef(ref)) { throw `The ref '${ref}' is not valid`; }
+  if (!isValidCollection(ref, descriptor.collection)) { throw `The collection within '${ref}' is not valid`; }
 
-    // Check login & static permission
-    validateLogin(descriptor);
-    validateStaticAccess(descriptor);
+  // Check login & static permission
+  validateLogin(descriptor);
+  validateStaticAccess(descriptor);
 
-    // Run original function
-    let result = await original(ref);
+  // Run original function
+  let result = await original(ref);
 
-    result = await verifyVersion(descriptor.collection, result);
+  result = await verifyVersion(descriptor.collection, result);
 
-    // Check we can read the document and restrict what fields are sent back
-    validateDynamicAccess(descriptor, result);
-    result = trimReadFields(descriptor, result);
+  // Check we can read the document and restrict what fields are sent back
+  validateDynamicAccess(descriptor, result);
+  result = trimReadFields(descriptor, result);
 
-    packet.doc = result;
-    packet.success = true;
-    return packet;
-  } catch (e) {
-    packet.messages = returnArr(e as (string | string[]));
-    return packet;
-  }
+  return result;
 }
 
 /**
@@ -167,32 +136,26 @@ export async function searchWrapper(
   original: (args: any) => Promise<any[]>,
   args: any
 ) {
-  const packet: CrudPacket<any> = { success: false, messages: [] };
 
-  try {
-    // Check login & static permission
-    validateLogin(descriptor);
-    validateStaticAccess(descriptor);
+  // Check login & static permission
+  validateLogin(descriptor);
+  validateStaticAccess(descriptor);
 
-    // Run original function
-    const result = await original(args[0]);
+  // Run original function
+  const result = await original(args[0]);
 
-    // Check we can read the document and restrict what fields are sent back
-    const compiledResult: any[] = [];
-    for (const doc of result) {
-      try {
-        validateDynamicAccess(descriptor, doc);
-        compiledResult.push(trimReadFields(descriptor, doc));
-      } catch (e) {
-        continue;
-      }
+  // Check we can read the document and restrict what fields are sent back
+  const compiledResult: any[] = [];
+  for (const doc of result) {
+    try {
+      validateDynamicAccess(descriptor, doc);
+      compiledResult.push(trimReadFields(descriptor, doc));
+    } catch (e) {
+      continue;
     }
-
-    return compiledResult;
-  } catch (e) {
-    packet.messages = returnArr(e as (string | string[]));
-    return packet;
   }
+
+  return compiledResult;
 }
 
 /**
@@ -209,41 +172,32 @@ export async function updateWrapper(
   ref: Ref64,
   doc: any
 ): Promise<CrudPacket<any>> {
-  const packet: CrudPacket<any> = { success: false, ref, messages: [] };
   descriptor.requireLogin = true;
 
-  try {
-    // Validate ref & collection
-    if (!isValidRef(ref)) { throw `The ref '${ref}' is not valid`; }
-    if (!isValidCollection(ref, descriptor.collection)) { throw `The collection within '${ref}' is not valid`; }
+  // Validate ref & collection
+  if (!isValidRef(ref)) { throw `The ref '${ref}' is not valid`; }
+  if (!isValidCollection(ref, descriptor.collection)) { throw `The collection within '${ref}' is not valid`; }
 
-    // Check login and static access
-    validateLogin(descriptor);
-    validateStaticAccess(descriptor);
-    validateDocument(descriptor, doc);
+  // Check login and static access
+  validateLogin(descriptor);
+  validateStaticAccess(descriptor);
+  validateDocument(descriptor, doc);
 
-    // Check that the user can access the original document
-    if (!descriptor.fetch) { throw `A fetch function is required for the update function`; }
-    const originalDoc = await descriptor.fetch(ref);
-    if (!originalDoc) { throw `A document with ref '${ref}' could not be found`; }
-    validateDynamicAccess(descriptor, doc);
+  // Check that the user can access the original document
+  if (!descriptor.fetch) { throw `A fetch function is required for the update function`; }
+  const originalDoc = await descriptor.fetch(ref);
+  if (!originalDoc) { throw `A document with ref '${ref}' could not be found`; }
+  validateDynamicAccess(descriptor, doc);
+  doc = trimSetFields(descriptor, doc);
+  doc = setUpdateFields(doc);
 
-    doc = trimSetFields(descriptor, doc);
-    doc = setUpdateFields(doc);
+  // Run original function
+  let result = await original(ref, doc);
 
-    // Run original function
-    let result = await original(ref, doc);
+  // Read Fields
+  result = trimReadFields(descriptor, result);
 
-    // Read Fields
-    result = trimReadFields(descriptor, result);
-
-    packet.doc = result;
-    packet.success = true;
-    return packet;
-  } catch (e) {
-    packet.messages = returnArr(e as (string | string[]));
-    return packet;
-  }
+  return result;
 }
 
 /**

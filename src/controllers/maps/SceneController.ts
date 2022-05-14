@@ -4,7 +4,7 @@ import { Graphics } from "@pixi/graphics";
 import { makeAutoObservable } from "mobx";
 import { Viewport } from "pixi-viewport";
 import { InteractionData, InteractionEvent, Point, Sprite } from "pixi.js";
-import { ImageDocument } from "types/documents";
+import { FileDocument } from "types/documents";
 
 import * as events from "./events";
 import * as snap from "./snap";
@@ -57,7 +57,7 @@ export type Interactable = InteractiveContainer | InteractiveSprite;
 
 export interface Prop extends InteractiveSprite {
   key: string;
-  image: ImageDocument;
+  image: FileDocument;
 }
 
 /**
@@ -147,7 +147,7 @@ export class SceneController {
     // }
   }
 
-  public addProp(sceneController: SceneController, image: ImageDocument, x?: number, y?: number): void {
+  public addProp(sceneController: SceneController, image: FileDocument, x?: number, y?: number): void {
     const prop = Sprite.from(image.src as string);
     (prop as Prop).image = image;
     // TODO - make unique!
@@ -172,7 +172,7 @@ export class SceneController {
    * @param y The y coordinate of the new sprite
    */
   public async createSprite(textureSource: string, x: number, y: number): Promise<void> {
-    this.addProp(this, { ref: "", src: textureSource } as ImageDocument, x, y);
+    this.addProp(this, { ref: "", src: textureSource } as FileDocument, x, y);
   }
 
   /**

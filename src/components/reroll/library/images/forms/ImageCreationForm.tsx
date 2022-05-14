@@ -1,8 +1,8 @@
 import { Modal } from "@owl-factory/components/modal";
 import { observer } from "mobx-react-lite";
 import React from "react";
-import { ImageDocument } from "types/documents";
-import { AssetUploadSource } from "types/enums/assetSource";
+import { FileDocument } from "types/documents";
+import { AssetUploadSource } from "types/enums/files/createMethod";
 import { ImageForm } from "./ImageForm";
 
 /**
@@ -15,7 +15,7 @@ export const ImageCreationForm = observer(({onSave}: any) => {
     "upload",
   ];
 
-  const onSubmit = async (image: Partial<ImageDocument>, method: AssetUploadSource) => {
+  const onSubmit = async (image: Partial<FileDocument>, method: AssetUploadSource) => {
     // ImageManager.createOne(image, method)
     // .then(() => {
     //   if (onSave) {

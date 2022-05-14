@@ -1,13 +1,13 @@
 import { Modal } from "@owl-factory/components/modal";
 import React from "react";
-import { ImageDocument } from "types/documents";
-import { AssetUploadSource } from "types/enums/assetSource";
+import { FileDocument } from "types/documents";
+import { AssetUploadSource } from "types/enums/files/createMethod";
 import { ImageSelectionForm } from ".";
 import style from "./ImageSelectionWrapper.module.scss";
 
 interface ImageSelectionWrapperProps {
   children: JSX.Element;
-  onSubmit: (image: Partial<ImageDocument>, method: AssetUploadSource) => Promise<unknown>;
+  onSubmit: (image: Partial<FileDocument>, method: AssetUploadSource) => Promise<unknown>;
   onSave?: (result: unknown) => void;
 }
 

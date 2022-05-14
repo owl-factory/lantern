@@ -1,8 +1,8 @@
 import { DataManager } from "@owl-factory/data/DataManager";
 import { isOwner } from "security/documents";
-import { ImageDocument } from "types/documents";
+import { FileDocument } from "types/documents";
 
-class ImageDataManager extends DataManager<Partial<ImageDocument>> {
+class FileDataManager extends DataManager<Partial<FileDocument>> {
   public collection = "images";
 
   constructor() {
@@ -12,4 +12,4 @@ class ImageDataManager extends DataManager<Partial<ImageDocument>> {
   }
 }
 
-export const ImageData = new ImageDataManager();
+export const FileData = new FileDataManager();

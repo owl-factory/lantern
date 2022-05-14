@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite";
 import React from "react";
-import { ImageDocument } from "types/documents";
-import { AssetUploadSource } from "types/enums/assetSource";
+import { FileDocument } from "types/documents";
+import { AssetUploadSource } from "types/enums/files/createMethod";
 import { ImageForm } from "./ImageForm";
 
 const tabs = [
@@ -11,7 +11,7 @@ const tabs = [
 ];
 
 interface ImageSelectionFormProps {
-  onSubmit: (image: Partial<ImageDocument>, method: AssetUploadSource) => Promise<unknown>;
+  onSubmit: (image: Partial<FileDocument>, method: AssetUploadSource) => Promise<unknown>;
   onSave: (result: unknown) => void;
 }
 
@@ -27,7 +27,7 @@ export const ImageSelectionForm = observer(({onSubmit, onSave}: ImageSelectionFo
    * @param image The new image document to submit
    * @param method The method of selecting a new image
    */
-  async function submit(image: Partial<ImageDocument>, method: AssetUploadSource): Promise<void> {
+  async function submit(image: Partial<FileDocument>, method: AssetUploadSource): Promise<void> {
     onSubmit(image, method)
     .then((result: unknown) => {
       onSave(result);
