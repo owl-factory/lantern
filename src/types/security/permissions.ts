@@ -34,8 +34,13 @@ export const permissions: Permission[] = [
   { key: "searchImagesByUser", name: "Search Images By User", collection: Collection.Images },
   { key: "searchMyImages", name: "Search My Images", collection: Collection.Images },
 
+  { key: "createModule", name: "Create a Module", collection: Collection.Modules },
+  { key: "updateModule", name: "Update a Module", collection: Collection.Modules },
+
   { key: "createOfficialRuleset", name: "Create an Official Ruleset", collection: Collection.Rulesets },
   { key: "viewAnyRuleset", name: "View Any Ruleset", collection: Collection.Rulesets },
+  { key: "createRuleset", name: "Create a Ruleset", collection: Collection.Rulesets },
+  { key: "updateRuleset", name: "Update a Ruleset", collection: Collection.Rulesets },
   { key: "editOfficialRuleset", name: "Edit an Official Ruleset", collection: Collection.Rulesets },
   { key: "searchRulesetsByOfficial", name: "Search for Official Rulesets", collection: Collection.Rulesets },
   {

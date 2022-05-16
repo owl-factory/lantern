@@ -25,6 +25,11 @@ const playerPermissions: string[] = [
   "createExternalImage",
   "searchMyImages",
 
+  "createModule",
+  "updateModule",
+
+  "createRuleset",
+  "updateRuleset",
   "searchOfficialAndPublicRulesets",
 
   "createScene",

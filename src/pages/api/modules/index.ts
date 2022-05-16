@@ -5,11 +5,12 @@ import { RulesetLogic } from "server/logic/RulesetLogic";
 import { HTTPHandler, createEndpoint } from "@owl-factory/https";
 import { createMany, fetchMany } from "server/logic/many";
 import { requireLogin, requirePermission } from "utilities/validation/account";
+import { ModuleLogic } from "server/logic/ModuleLogic";
 
 /**
  * Fetches a list of rulesets from their refs
  */
-export async function getRulesets(req: NextApiRequest) {
+export async function getModules(req: NextApiRequest) {
   const rulesets = await fetchMany(RulesetLogic.fetch, req.body.refs);
   return { rulesets };
 }
@@ -19,8 +20,8 @@ export async function getRulesets(req: NextApiRequest) {
  * @param this The Handler class calling this function
  * @param req The request to the server
  */
-async function getRulesetsRequest(this: HTTPHandler, req: NextApiRequest) {
-  this.returnSuccess(await getRulesets(req));
+async function getModulesRequest(this: HTTPHandler, req: NextApiRequest) {
+  this.returnSuccess(await getModules(req));
 }
 
 /**
@@ -28,14 +29,14 @@ async function getRulesetsRequest(this: HTTPHandler, req: NextApiRequest) {
  * @param this The Handler class calling this function
  * @param req The request to the server
  */
-async function createRulesets(this: HTTPHandler, req: NextApiRequest) {
+async function createModules(this: HTTPHandler, req: NextApiRequest) {
   requireLogin();
-  requirePermission("createRuleset");
-  const rulesets = await createMany(RulesetLogic.create, req.body.docs);
-  this.returnSuccess({ docs: rulesets });
+  requirePermission("createModule");
+  const modules = await createMany(ModuleLogic.create, req.body.docs);
+  this.returnSuccess({ docs: modules });
 }
 
 export default createEndpoint({
-  POST: getRulesetsRequest,
-  PUT: createRulesets,
+  POST: getModulesRequest,
+  PUT: createModules,
 });

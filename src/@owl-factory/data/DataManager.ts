@@ -85,7 +85,8 @@ export class DataManager<T extends Record<string, unknown>> {
     const packet = newPacket(doc, metadata) as Packet<T>;
 
     const savedPacket = this.data.set(packet);
-
+    console.log(packet)
+    console.log(savedPacket)
     this.batching.addToCacheQueue(ref);
 
     // Update in groups
@@ -108,6 +109,7 @@ export class DataManager<T extends Record<string, unknown>> {
       const result = this.set(doc, loaded);
       if (result) { successCount++; }
     }
+    console.log(this.data)
 
     return successCount;
   }
@@ -175,7 +177,7 @@ export class DataManager<T extends Record<string, unknown>> {
    */
   public search(parameters: SearchParams = {}): Ref64[] {
     let refs: Ref64[] = [];
-    if (parameters.group === "data") { refs = this.data.getRefs(); }
+    if (parameters.group === "data" || !parameters.group) { refs = this.data.getRefs(); }
     else { refs = this.grouping.getGroup(parameters.group || ""); }
     return refs;
   }
@@ -231,7 +233,7 @@ export class DataManager<T extends Record<string, unknown>> {
    * @returns A list of packets, for for each document, returning the created document or an error message
    */
   @Cacheable()
-  public async create(docs: T | T[]): Promise<CrudPacket<T>[]> {
+  public async $create(docs: T | T[]): Promise<CrudPacket<T>[]> {
     if (!Array.isArray(docs)) { docs = [docs]; }
 
     const packets = await crud.create<T>(this.url, docs);
@@ -261,7 +263,7 @@ export class DataManager<T extends Record<string, unknown>> {
    * @returns A list of packets, for for each document, returning the created document or an error message
    */
   @Cacheable()
-  public async update(docs: T | T[]): Promise<CrudPacket<T>[]> {
+  public async $update(docs: T | T[]): Promise<CrudPacket<T>[]> {
     if (!Array.isArray(docs)) { docs = [docs]; }
 
     const packets = await crud.update<T>(this.url, docs);
@@ -294,6 +296,7 @@ export class DataManager<T extends Record<string, unknown>> {
   @Cacheable()
   public async searchIndex(url: string, terms?: Record<string, string | number | boolean>): Promise<any> {
     const packets = await crud.search<T>(url, terms);
+    console.log(packets)
     this.setMany(packets);
     return packets;
   }

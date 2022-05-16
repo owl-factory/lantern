@@ -1,0 +1,11 @@
+// Creates an index for listing all rulesets. This is a temporary ruleset index and should be tightened eventually
+CreateIndex({
+  name: "all_rulesets",
+  source: Collection("rulesets"),
+  values: [
+    { field: ["data", "updatedAt"]},
+    { field: ["ref"]},
+    { field: ["data", "name"]},
+    { field: ["data", "ownedBy"]}
+  ],
+})

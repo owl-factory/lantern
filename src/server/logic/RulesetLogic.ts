@@ -74,6 +74,17 @@ class $RulesetLogic {
      return rulesets;
    }
 
+   /**
+   * Fetches the partial ruleset documents by their official status
+   * @param options Any additional options for filtering the data retrieved from the database
+   * @returns An array of campaign document partials
+   */
+    @Search(["*"])
+    public async searchAllRulesets(options?: FaunaIndexOptions) {
+      const rulesets = fauna.searchByIndex(FaunaIndex.AllRulesets, [], options);
+      return rulesets;
+    }
+
 }
 
 export const RulesetLogic = new $RulesetLogic();
