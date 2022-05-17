@@ -2,9 +2,11 @@
 import { Collection, FaunaIndex } from "src/fauna";
 import { Ref64 } from "@owl-factory/types";
 import { ModuleDocument } from "types/documents";
-import { Create, Delete, Fetch } from "@owl-factory/database/decorators/decorators";
+import { Create, Delete, Fetch, Search } from "@owl-factory/database/decorators/decorators";
+import * as fauna from "@owl-factory/database/integration/fauna";
 
 import * as access from "./access";
+import { FaunaIndexOptions } from "@owl-factory/database/types/fauna";
 
 const collection = Collection.Modules;
 class $ModuleLogic {
@@ -40,6 +42,16 @@ class $ModuleLogic {
     return await access.fetch(collection, ref);
   }
 
+  /**
+   * Fetches a list of all modules
+   * @param options Any additional options for filtering the data retrieved from the database
+   * @returns An array of campaign document partials
+   */
+  @Search(["*"])
+  public async searchAllModules(options?: FaunaIndexOptions) {
+    const modules = fauna.searchByIndex(FaunaIndex.AllModules, [], options);
+    return modules;
+  }
 }
 
 export const ModuleLogic = new $ModuleLogic();

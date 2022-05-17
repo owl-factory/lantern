@@ -18,8 +18,12 @@ const playerPermissions: string[] = [
 
   "viewContent",
   "searchMyContent",
+  "createContent",
+  "updateContent",
 
   "viewContentType",
+  "createContentType",
+  "updateContentType",
 
   "uploadFile",
   "createExternalImage",

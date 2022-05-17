@@ -23,7 +23,11 @@ export const permissions: Permission[] = [
   { key: "viewContent", name: "View Content", collection: Collection.Contents },
   { key: "searchContentByUser", name: "Search Content By User", collection: Collection.Contents },
   { key: "searchMyContent", name: "Search My Content", collection: Collection.Contents },
+  { key: "createContent", name: "Create Content", collection: Collection.Contents },
+  { key: "updateContent", name: "Update Content", collection: Collection.Contents },
 
+  { key: "createContentType", name: "Create Content Type", collection: Collection.ContentTypes },
+  { key: "updateContentType", name: "Update Content Type", collection: Collection.ContentTypes },
   { key: "viewContentType", name: "View Content Type", collection: Collection.ContentTypes },
 
   { key: "uploadFile", name: "Upload a File", collection: Collection.Files },

@@ -1,21 +1,20 @@
 import { Page } from "components/design";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "components/elements/table";
 import { ContentTypeData } from "controllers/data/ContentTypeData";
-import { ModuleData } from "controllers/data/ModuleData";
 import { RulesetData } from "controllers/data/RulesetData";
 import { observer } from "mobx-react-lite";
 import React from "react";
 
-const ModuleRow = observer((props: any) => {
-  const module = ModuleData.get(props.id);
-  if (!module) { return <></>; }
+const ContentTypeRow = observer((props: any) => {
+  const contentType = ContentTypeData.get(props.id);
+  if (!contentType) { return <></>; }
 
-  const ruleset = RulesetData.get((module.ruleset)?.ref);
+  const ruleset = RulesetData.get((contentType.ruleset)?.ref);
 
   return (
     <TableRow>
-      <TableCell>{module.name}</TableCell>
-      <TableCell>{ruleset?.name || module.ruleset?.name}</TableCell>
+      <TableCell>{contentType.name}</TableCell>
+      <TableCell>{ruleset?.name || contentType.ruleset?.name}</TableCell>
       <TableCell></TableCell>
     </TableRow>
   );
@@ -23,14 +22,14 @@ const ModuleRow = observer((props: any) => {
 
 const ContentTypeTable = observer((props: any) => {
   React.useEffect(() => {
-    ModuleData.searchIndex(`/api/modules/list`);
+    ContentTypeData.searchIndex(`/api/content-types/list`);
   }, []);
 
-  const modules = ModuleData.search({ group: "data" });
+  const contentTypes = ContentTypeData.search({ group: "data" });
   const rows: JSX.Element[] = [];
 
-  for (const ref of modules) {
-    rows.push(<ModuleRow key={ref} id={ref}/>);
+  for (const ref of contentTypes) {
+    rows.push(<ContentTypeRow key={ref} id={ref}/>);
   }
 
   return (
@@ -47,11 +46,10 @@ const ContentTypeTable = observer((props: any) => {
   );
 });
 
-export default function Modules() {
-
+export default function ContentTypes() {
   return (
     <Page>
-      <h1>Modules</h1>
+      <h1>Content Types</h1>
       <ContentTypeTable/>
     </Page>
   );

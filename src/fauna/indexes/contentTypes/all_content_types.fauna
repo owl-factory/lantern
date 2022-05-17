@@ -1,0 +1,15 @@
+// Creates an index for listing all content types. This is a temporary content type index and should be tightened eventually
+CreateIndex({
+  name: "all_content_types",
+  source: Collection("content_types"),
+  values: [
+    { field: ["data", "updatedAt"]},
+    { field: ["ref"]},
+    { field: ["data", "name"]},
+    { field: ["data", "alias"]},
+    { field: ["data", "ruleset", "ref"]},
+    { field: ["data", "ruleset", "name"]},
+    { field: ["data", "parent", "ref"]},
+    { field: ["data", "parent", "name"]},
+  ],
+})

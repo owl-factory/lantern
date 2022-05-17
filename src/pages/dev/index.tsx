@@ -11,6 +11,21 @@ export default function DevIndex() {
       <Link href="/dev/rulesets/new">Create Ruleset</Link><br/>
       <br/>
 
+      <h2>Modules</h2>
+      <Link href="/dev/modules">List Modules</Link><br/>
+      <Link href="/dev/modules/new">Create Module</Link><br/>
+      <br/>
+
+      <h2>Content Types</h2>
+      <Link href="/dev/content-types">List Content Types</Link><br/>
+      <Link href="/dev/content-types/new">Create Content Types</Link><br/>
+      <br/>
+
+      <h2>Contents</h2>
+      <Link href="/dev/contents">List Contents</Link><br/>
+      <Link href="/dev/contents/new">Create Contents</Link><br/>
+      <br/>
+
       <h2>Files</h2>
       <Link href="/dev/file-upload">Upload File</Link><br/>
     </Page>
