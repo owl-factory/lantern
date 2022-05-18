@@ -1,13 +1,15 @@
 import { Button } from "@owl-factory/components/button";
 import { Page } from "components/design";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "components/elements/table";
-import { ContentTypeData } from "controllers/data/ContentTypeData";
 import { ModuleData } from "controllers/data/ModuleData";
 import { RulesetData } from "controllers/data/RulesetData";
 import { observer } from "mobx-react-lite";
 import Link from "next/link";
 import React from "react";
 
+/**
+ * Renders a single row for a module table
+ */
 const ModuleRow = observer((props: any) => {
   const module = ModuleData.get(props.id);
   if (!module) { return <></>; }
@@ -29,7 +31,7 @@ const ModuleRow = observer((props: any) => {
 /**
  * Renders a table of modules
  */
-const ModuleTable = observer((props: any) => {
+const ModuleTable = observer(() => {
   React.useEffect(() => {
     ModuleData.searchIndex(`/api/modules/list`);
   }, []);

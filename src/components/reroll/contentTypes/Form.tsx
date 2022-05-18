@@ -4,6 +4,7 @@ import { ContentTypeData } from "controllers/data/ContentTypeData";
 import { RulesetData } from "controllers/data/RulesetData";
 import { Form, Formik, FormikProps } from "formik";
 import { observer } from "mobx-react-lite";
+import { useRouter } from "next/router";
 import React from "react";
 import { ContentTypeDocument } from "types/documents";
 import { RulesetOptions } from "../rulesets/Options";
@@ -15,22 +16,32 @@ const INITIAL_VALUES = {
   "ruleset.ref": "",
 };
 
-function onSubmit(values: Partial<ContentTypeDocument>) {
-  try {
-    if (values.ref) { ContentTypeData.update(values); }
-    else { ContentTypeData.create(values); }
-  } catch (e) {
-    console.error(e);
-  }
-}
-
-export const ContentTypeForm = observer((props: any) => {
+/**
+ * Renders a form for creating or editing a content type
+ */
+export const ContentTypeForm = observer((props: { contentType?: Partial<ContentTypeDocument> }) => {
+  // Ensures that the data is pulled in from the database.
+  // TODO - this should be handled outside the form
   React.useEffect(() => {
     RulesetData.searchIndex(`/api/rulesets/list`);
     ContentTypeData.searchIndex(`/api/content-types/list`);
   }, []);
 
+  const router = useRouter();
   const initialValues = props.contentType || INITIAL_VALUES;
+
+  /**
+   * Submits the form values to create or update a content type
+   * @param values The content type values from the form
+   */
+  function onSubmit(values: Partial<ContentTypeDocument>) {
+    try {
+      if (values.ref) { ContentTypeData.update(values).then(() => router.push(`/dev/content-types`)); }
+      else { ContentTypeData.create(values).then(() => router.push(`/dev/content-types`)); }
+    } catch (e) {
+      console.error(e);
+    }
+  }
 
   return (
     <Formik

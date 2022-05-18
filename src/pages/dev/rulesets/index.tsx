@@ -1,4 +1,5 @@
 import { Button } from "@owl-factory/components/button";
+import { Ref64 } from "@owl-factory/types";
 import { Page } from "components/design";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "components/elements/table";
 import { RulesetData } from "controllers/data/RulesetData";
@@ -9,7 +10,7 @@ import React from "react";
 /**
  * Renders a single row for a ruleset table
  */
-const RulesetRow = observer((props: any) => {
+const RulesetRow = observer((props: { id: Ref64 }) => {
   const ruleset = RulesetData.get(props.id);
   if (!ruleset) { return <></>; }
 

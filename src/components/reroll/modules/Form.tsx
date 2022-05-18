@@ -4,6 +4,7 @@ import { ModuleData } from "controllers/data/ModuleData";
 import { RulesetData } from "controllers/data/RulesetData";
 import { Form, Formik, FormikProps } from "formik";
 import { observer } from "mobx-react-lite";
+import { useRouter } from "next/router";
 import React from "react";
 import { ModuleDocument } from "types/documents";
 import { RulesetOptions } from "../rulesets/Options";
@@ -15,22 +16,30 @@ const INITIAL_VALUES = {
   "ruleset.ref": null,
 };
 
-function onSubmit(values: Partial<ModuleDocument>) {
-  try {
-    if (values.ref) { ModuleData.update(values); }
-    else { ModuleData.create(values); }
-  } catch (e) {
-    console.error(e);
-  }
-}
-
-export const ModuleForm = observer((props: any) => {
+/**
+ * Renders a form for creating or updating a module
+ */
+export const ModuleForm = observer((props: { module?: Partial<ModuleDocument> }) => {
   // Ensures that the data is pulled in from the database
   React.useEffect(() => {
     RulesetData.searchIndex(`/api/rulesets/list`);
   }, []);
 
+  const router = useRouter();
   const initialValues = props.module || INITIAL_VALUES;
+
+  /**
+   * Submits the form values to create or update a module
+   * @param values The module values from the form
+   */
+  function onSubmit(values: Partial<ModuleDocument>) {
+    try {
+      if (values.ref) { ModuleData.update(values).then(() => router.push(`/dev/modules`)); }
+      else { ModuleData.create(values).then(() => router.push(`/dev/modules`)); }
+    } catch (e) {
+      console.error(e);
+    }
+  }
 
   return (
     <Formik
