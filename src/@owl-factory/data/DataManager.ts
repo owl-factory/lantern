@@ -109,7 +109,8 @@ export class DataManager<T extends Record<string, unknown>> {
       const result = this.set(doc, loaded);
       if (result) { successCount++; }
     }
-    console.log(this.data)
+    console.log(docs)
+    console.log(this.data.data)
 
     return successCount;
   }
@@ -121,8 +122,11 @@ export class DataManager<T extends Record<string, unknown>> {
   public async load(targetRefs: Ref64[] | Ref64 | null, reloadPolicy?: ReloadPolicy): Promise<void> {
     if (targetRefs === null) { return; }
     const refs = Array.isArray(targetRefs) ? targetRefs : [targetRefs];
-    const loadedDocs = await this.data.load(refs, reloadPolicy || this.reloadPolicy, this.read);
-
+    const loadedDocs = await this.data.load(
+      refs,
+      reloadPolicy || this.reloadPolicy,
+      (readRefs: string[]) => this.read(readRefs)
+    );
     this.setMany(loadedDocs, true);
 
     // Other caching and saving are handled in setMany
@@ -252,6 +256,7 @@ export class DataManager<T extends Record<string, unknown>> {
     if (!Array.isArray(refs)) { refs = [refs]; }
 
     const packets = await crud.read<T>(this.url, refs);
+    console.log("pckt", packets);
     const createdDocs = getSuccessfulDocuments(packets);
     this.setMany(createdDocs);
     return packets;
@@ -262,7 +267,7 @@ export class DataManager<T extends Record<string, unknown>> {
    * @param docs The documents to create
    * @returns A list of packets, for for each document, returning the created document or an error message
    */
-  @Cacheable()
+  // @Cacheable()
   public async $update(docs: T | T[]): Promise<CrudPacket<T>[]> {
     if (!Array.isArray(docs)) { docs = [docs]; }
 
@@ -277,7 +282,7 @@ export class DataManager<T extends Record<string, unknown>> {
    * @param docs The documents to create
    * @returns A list of packets, for for each document, returning the created document or an error message
    */
-  @Cacheable()
+  // @Cacheable()
   public async delete(refs: Ref64 | Ref64[]): Promise<CrudPacket<T>[]> {
     if (!Array.isArray(refs)) { refs = [refs]; }
 
@@ -296,7 +301,6 @@ export class DataManager<T extends Record<string, unknown>> {
   @Cacheable()
   public async searchIndex(url: string, terms?: Record<string, string | number | boolean>): Promise<any> {
     const packets = await crud.search<T>(url, terms);
-    console.log(packets)
     this.setMany(packets);
     return packets;
   }

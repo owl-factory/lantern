@@ -1,9 +1,11 @@
+import { Button } from "@owl-factory/components/button";
 import { Page } from "components/design";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "components/elements/table";
 import { ContentData } from "controllers/data/ContentData";
 import { ContentTypeData } from "controllers/data/ContentTypeData";
 import { RulesetData } from "controllers/data/RulesetData";
 import { observer } from "mobx-react-lite";
+import Link from "next/link";
 import React from "react";
 
 const ContentRow = observer((props: any) => {
@@ -18,7 +20,10 @@ const ContentRow = observer((props: any) => {
       <TableCell>{content.name}</TableCell>
       <TableCell>{contentType?.name || content.contentType?.name}</TableCell>
       <TableCell>{ruleset?.name || content.ruleset?.name}</TableCell>
-      <TableCell></TableCell>
+      <TableCell>
+        <Link href={`/dev/contents/${content.ref}/edit`}>Edit</Link>
+        <a href="#" onClick={() => ContentData.delete(content.ref as string)}>Delete</a>
+      </TableCell>
     </TableRow>
   );
 });
@@ -54,6 +59,7 @@ export default function Contents() {
   return (
     <Page>
       <h1>Contents</h1>
+      <Link href="/dev"><Button>Back</Button></Link>
       <ContentTable/>
     </Page>
   );

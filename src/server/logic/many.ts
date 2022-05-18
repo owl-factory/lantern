@@ -1,5 +1,6 @@
 import { Ref64 } from "@owl-factory/types";
 import { CrudPacket } from "@owl-factory/types/object";
+import { BaseDocument } from "types/documents";
 
 /**
  * Creates many documents
@@ -29,10 +30,10 @@ export async function deleteMany<T>(
   refs: Ref64[]
 ): Promise<CrudPacket<Partial<T>>[]> {
   const promises: Promise<CrudPacket<Partial<T>>>[] = [];
-  refs.forEach((ref: Ref64) => {
-    if (fx === undefined) { return; }
+  for (const ref of refs) {
+    if (fx === undefined) { continue; }
     promises.push(packetWrapper(() => fx(ref), { ref }));
-  });
+  }
   const deletedDocs = Promise.all(promises);
   return deletedDocs;
 }
@@ -45,13 +46,13 @@ export async function deleteMany<T>(
 export async function fetchMany<T>(
   fx: (ref: Ref64) => Promise<Partial<T>>,
   refs: Ref64[]
-): Promise<Partial<T>[]> {
-  const promises: Promise<Partial<T>>[] = [];
+): Promise<CrudPacket<Partial<T>>[]> {
+  const promises: Promise<CrudPacket<Partial<T>>>[] = [];
   if (!refs || !fx) { return []; }
 
   for (const ref of refs) {
     if (fx === undefined) { continue; }
-    promises.push(fx(ref));
+    promises.push(packetWrapper(() => fx(ref)));
   }
   const fetchedDocs = Promise.all(promises);
   return fetchedDocs;
@@ -62,15 +63,19 @@ export async function fetchMany<T>(
  * @param fx The function to run for finding each document
  * @param refs The list of refs of the documents to find
  */
-export async function updateMany<T>(
+export async function updateMany<T extends BaseDocument>(
   fx: (ref: Ref64, doc: Partial<T>) => Promise<Partial<T>>,
-  packets: UpdatePacket<T>[]
+  docs: Partial<T>[]
 ): Promise<CrudPacket<Partial<T>>[]> {
   const promises: Promise<CrudPacket<Partial<T>>>[] = [];
-  packets.forEach((packet: UpdatePacket<T>) => {
-    if (fx === undefined) { return; }
-    promises.push(packetWrapper(() => fx(packet.ref, packet.doc), { ref: packet.ref }));
-  });
+  if (fx === undefined) { return []; }
+
+  for (const doc of docs) {
+    if (!doc.ref) { continue; }
+    const ref = doc.ref;
+    promises.push(packetWrapper(() => fx(ref, doc), { ref: doc.ref }));
+  }
+
   const deletedDocs = Promise.all(promises);
   return deletedDocs;
 }

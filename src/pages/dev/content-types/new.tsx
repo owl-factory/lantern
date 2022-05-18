@@ -1,5 +1,7 @@
+import { Button } from "@owl-factory/components/button";
 import { Page } from "components/design";
 import { ContentTypeForm } from "components/reroll/contentTypes/Form";
+import Link from "next/link";
 import React from "react";
 
 
@@ -7,6 +9,7 @@ export default function NewContentType() {
   return (
     <Page>
       <h1>New Content Type</h1>
+      <Link href="/dev"><Button>Back</Button></Link>
       <ContentTypeForm/>
     </Page>
   );

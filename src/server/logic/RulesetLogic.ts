@@ -53,6 +53,17 @@ class $RulesetLogic {
   }
 
   /**
+   * Updates a single ruleset
+   * @param ref The Ref64 ID of the document to update
+   * @param doc The ruleset partial to update
+   * @returns The new, updated document
+   */
+  @Update(collection, ["*"], ["*"], (ref) => access.fetch(collection, ref))
+  public async update(ref: Ref64, doc: Partial<RulesetDocument>): Promise<RulesetDocument> {
+    return await access.update(collection, ref, doc);
+  }
+
+  /**
    * Fetches the partial ruleset documents by their official status
    * @param options Any additional options for filtering the data retrieved from the database
    * @returns An array of campaign document partials

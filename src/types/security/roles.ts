@@ -20,10 +20,12 @@ const playerPermissions: string[] = [
   "searchMyContent",
   "createContent",
   "updateContent",
+  "deleteContent",
 
   "viewContentType",
   "createContentType",
   "updateContentType",
+  "deleteContentType",
 
   "uploadFile",
   "createExternalImage",
@@ -31,9 +33,11 @@ const playerPermissions: string[] = [
 
   "createModule",
   "updateModule",
+  "deleteModule",
 
   "createRuleset",
   "updateRuleset",
+  "deleteRuleset",
   "searchOfficialAndPublicRulesets",
 
   "createScene",

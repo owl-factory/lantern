@@ -1,9 +1,14 @@
+import { Button } from "@owl-factory/components/button";
 import { Page } from "components/design";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "components/elements/table";
 import { RulesetData } from "controllers/data/RulesetData";
 import { observer } from "mobx-react-lite";
+import Link from "next/link";
 import React from "react";
 
+/**
+ * Renders a single row for a ruleset table
+ */
 const RulesetRow = observer((props: any) => {
   const ruleset = RulesetData.get(props.id);
   if (!ruleset) { return <></>; }
@@ -11,12 +16,19 @@ const RulesetRow = observer((props: any) => {
   return (
     <TableRow>
       <TableCell>{ruleset.name}</TableCell>
-      <TableCell></TableCell>
+      <TableCell>{ruleset.alias}</TableCell>
+      <TableCell>
+        <Link href={`/dev/rulesets/${ruleset.ref}/edit`}>Edit</Link>
+        <a onClick={() => RulesetData.delete(ruleset.ref as string)}>Delete</a>
+      </TableCell>
     </TableRow>
   );
 });
 
-const RulesetTable = observer((props: any) => {
+/**
+ * Renders a table to list out all rulesets
+ */
+const RulesetTable = observer(() => {
   React.useEffect(() => {
     RulesetData.searchIndex(`/api/rulesets/list`);
   }, []);
@@ -32,6 +44,7 @@ const RulesetTable = observer((props: any) => {
     <Table>
       <TableHead>
         <TableHeader>Name</TableHeader>
+        <TableHeader>Alias</TableHeader>
         <TableHeader>Actions</TableHeader>
       </TableHead>
       <TableBody>
@@ -41,11 +54,14 @@ const RulesetTable = observer((props: any) => {
   );
 });
 
+/**
+ * Renders a development page for listing all rulesets
+ */
 export default function Rulesets() {
-
   return (
     <Page>
       <h1>Rulesets</h1>
+      <Link href="/dev"><Button>Back</Button></Link>
       <RulesetTable/>
     </Page>
   );

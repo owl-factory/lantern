@@ -2,7 +2,7 @@
 import { Collection, FaunaIndex } from "src/fauna";
 import { Ref64 } from "@owl-factory/types";
 import { ModuleDocument } from "types/documents";
-import { Create, Delete, Fetch, Search } from "@owl-factory/database/decorators/decorators";
+import { Create, Delete, Fetch, Search, Update } from "@owl-factory/database/decorators/decorators";
 import * as fauna from "@owl-factory/database/integration/fauna";
 
 import * as access from "./access";
@@ -40,6 +40,17 @@ class $ModuleLogic {
   @Fetch(collection, ["*"])
   public async fetch(ref: Ref64): Promise<ModuleDocument> {
     return await access.fetch(collection, ref);
+  }
+
+  /**
+   * Updates a single module
+   * @param ref The Ref64 ID of the document to update
+   * @param doc The ruleset partial to update
+   * @returns The new, updated document
+   */
+  @Update(collection, ["*"], ["*"], (ref: Ref64) => access.fetch(collection, ref))
+  public async update(ref: Ref64, doc: Partial<ModuleDocument>): Promise<ModuleDocument> {
+    return await access.update(collection, ref, doc);
   }
 
   /**

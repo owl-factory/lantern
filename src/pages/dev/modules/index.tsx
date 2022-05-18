@@ -1,9 +1,11 @@
+import { Button } from "@owl-factory/components/button";
 import { Page } from "components/design";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "components/elements/table";
 import { ContentTypeData } from "controllers/data/ContentTypeData";
 import { ModuleData } from "controllers/data/ModuleData";
 import { RulesetData } from "controllers/data/RulesetData";
 import { observer } from "mobx-react-lite";
+import Link from "next/link";
 import React from "react";
 
 const ModuleRow = observer((props: any) => {
@@ -16,12 +18,18 @@ const ModuleRow = observer((props: any) => {
     <TableRow>
       <TableCell>{module.name}</TableCell>
       <TableCell>{ruleset?.name || module.ruleset?.name}</TableCell>
-      <TableCell></TableCell>
+      <TableCell>
+        <Link href={`/dev/modules/${module.ref}/edit`}>Edit</Link>
+        <a href="#" onClick={() => ModuleData.delete(module.ref as string)}>Delete</a>
+      </TableCell>
     </TableRow>
   );
 });
 
-const ContentTypeTable = observer((props: any) => {
+/**
+ * Renders a table of modules
+ */
+const ModuleTable = observer((props: any) => {
   React.useEffect(() => {
     ModuleData.searchIndex(`/api/modules/list`);
   }, []);
@@ -47,12 +55,15 @@ const ContentTypeTable = observer((props: any) => {
   );
 });
 
+/**
+ * Renders a development page for listing and searching through all modules
+ */
 export default function Modules() {
-
   return (
     <Page>
       <h1>Modules</h1>
-      <ContentTypeTable/>
+      <Link href="/dev"><Button>Back</Button></Link>
+      <ModuleTable/>
     </Page>
   );
 }
