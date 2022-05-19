@@ -14,6 +14,12 @@ class ModuleDataManager extends DataManager<Partial<ModuleDocument>> {
     super("/api/modules");
   }
 
+  /**
+   * Creates a single module document
+   * @param doc The document to create
+   * @returns The created document
+   * @throws Errors with the validation or creation
+   */
   public async create(doc: Partial<ModuleDocument>): Promise<Partial<ModuleDocument>> {
     delete doc.ref;
 
@@ -30,6 +36,12 @@ class ModuleDataManager extends DataManager<Partial<ModuleDocument>> {
     return packets[0].doc as Partial<ModuleDocument>;
   }
 
+  /**
+   * Updates a single module document
+   * @param doc The document to update
+   * @returns The updated document
+   * @throws Errors with the validation or updating
+   */
   public async update(doc: Partial<ModuleDocument>): Promise<Partial<ModuleDocument>> {
     requireLogin();
     requirePermission("updateModule");

@@ -8,7 +8,10 @@ import { observer } from "mobx-react-lite";
 import Link from "next/link";
 import React from "react";
 
-const ContentRow = observer((props: any) => {
+/**
+ * Renders a single row of the content table
+ */
+const ContentRow = observer((props: { id: string }) => {
   const content = ContentData.get(props.id);
   if (!content) { return <></>; }
 
@@ -28,7 +31,10 @@ const ContentRow = observer((props: any) => {
   );
 });
 
-const ContentTable = observer((props: any) => {
+/**
+ * Renders a table for displaying a list of contents
+ */
+const ContentTable = observer(() => {
   React.useEffect(() => {
     ContentData.searchIndex(`/api/contents/list`);
   }, []);
@@ -55,6 +61,9 @@ const ContentTable = observer((props: any) => {
   );
 });
 
+/**
+ * Renders a table listing all contents
+ */
 export default function Contents() {
   return (
     <Page>

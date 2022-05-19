@@ -1,9 +1,12 @@
 import React from "react";
 import { observer } from "mobx-react-lite";
 import { RulesetData } from "controllers/data/RulesetData";
+import { SearchParams } from "@owl-factory/data/types";
 
-
-export const RulesetOptions = observer((props: any) => {
+/**
+ * Renders a list of ruleset select options by loading in data determined by the given parameters
+ */
+export const RulesetOptions = observer((props: { parameters?: SearchParams }) => {
   const options: JSX.Element[] = [];
 
   options.push(<option key="" value="">-- Select a Ruleset --</option>);

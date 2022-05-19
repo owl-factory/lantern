@@ -23,6 +23,12 @@ class ContentDataManager extends DataManager<Partial<ContentDocument>> {
     return docs.data.contents;
   }
 
+  /**
+   * Creates a single content document
+   * @param doc The document to create
+   * @returns The created document
+   * @throws Errors with the validation or creation
+   */
   public async create(doc: Partial<ContentDocument>): Promise<Partial<ContentDocument>> {
     delete doc.ref;
 
@@ -44,6 +50,12 @@ class ContentDataManager extends DataManager<Partial<ContentDocument>> {
     return packets[0].doc as Partial<ContentDocument>;
   }
 
+  /**
+   * Updates a single content document
+   * @param doc The document to update
+   * @returns The updated document
+   * @throws Errors with the validation or updating
+   */
   public async update(doc: Partial<ContentDocument>): Promise<Partial<ContentDocument>> {
     requireLogin();
     requirePermission("updateContent");

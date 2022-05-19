@@ -4,8 +4,9 @@ import { ModuleForm } from "components/reroll/modules/Form";
 import Link from "next/link";
 import React from "react";
 
-
-
+/**
+ * Renders a form for creating a new module
+ */
 export default function NewModule() {
   return (
     <Page>

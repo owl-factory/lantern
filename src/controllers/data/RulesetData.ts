@@ -14,6 +14,12 @@ class RulesetDataManager extends DataManager<Partial<RulesetDocument>> {
     this.addGroup("public-rulesets", isPublic);
   }
 
+  /**
+   * Creates a single ruleset document
+   * @param doc The document to create
+   * @returns The created document
+   * @throws Errors with the validation or creation
+   */
   public async create(doc: Partial<RulesetDocument>): Promise<Partial<RulesetDocument>> {
     requireLogin();
     requirePermission("createRuleset");
@@ -25,6 +31,12 @@ class RulesetDataManager extends DataManager<Partial<RulesetDocument>> {
     return packets[0].doc as Partial<RulesetDocument>;
   }
 
+  /**
+   * Updates a single ruleset document
+   * @param doc The document to update
+   * @returns The updated document
+   * @throws Errors with the validation or updating
+   */
   public async update(doc: Partial<RulesetDocument>): Promise<Partial<RulesetDocument>> {
     requireLogin();
     requirePermission("updateRuleset");

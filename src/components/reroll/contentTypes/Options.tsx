@@ -1,9 +1,12 @@
 import React from "react";
 import { observer } from "mobx-react-lite";
 import { ContentTypeData } from "controllers/data/ContentTypeData";
+import { SearchParams } from "@owl-factory/data/types";
 
-
-export const ContentTypeOptions = observer((props: any) => {
+/**
+ * Renders a list of content type select options by loading in data determined by the given parameters
+ */
+export const ContentTypeOptions = observer((props: { parameters?: SearchParams }) => {
   const options: JSX.Element[] = [];
 
   options.push(<option key="" value="">-- Select a Content Type --</option>);

@@ -2,6 +2,9 @@ import { Page } from "components/design";
 import Link from "next/link";
 import React from "react";
 
+/**
+ * An index page listing out all of the development pages for easier navigation
+ */
 export default function DevIndex() {
   return (
     <Page>

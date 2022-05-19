@@ -4,7 +4,9 @@ import { ContentForm } from "components/reroll/contents/Form";
 import Link from "next/link";
 import { Button } from "@owl-factory/components/button";
 
-
+/**
+ * Renders a form for creating a new content
+ */
 export default function NewContentType() {
   return (
     <Page>

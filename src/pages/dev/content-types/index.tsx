@@ -1,4 +1,5 @@
 import { Button } from "@owl-factory/components/button";
+import { Ref64 } from "@owl-factory/types";
 import { Page } from "components/design";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "components/elements/table";
 import { ContentTypeData } from "controllers/data/ContentTypeData";
@@ -7,7 +8,10 @@ import { observer } from "mobx-react-lite";
 import Link from "next/link";
 import React from "react";
 
-const ContentTypeRow = observer((props: any) => {
+/**
+ * Renders a single row of the content type table
+ */
+const ContentTypeRow = observer((props: { id: Ref64 }) => {
   const contentType = ContentTypeData.get(props.id);
   if (!contentType) { return <></>; }
 
@@ -25,7 +29,10 @@ const ContentTypeRow = observer((props: any) => {
   );
 });
 
-const ContentTypeTable = observer((props: any) => {
+/**
+ * Renders a table for displaying a list of content types
+ */
+const ContentTypeTable = observer(() => {
   React.useEffect(() => {
     ContentTypeData.searchIndex(`/api/content-types/list`);
   }, []);
@@ -51,6 +58,9 @@ const ContentTypeTable = observer((props: any) => {
   );
 });
 
+/**
+ * Renders a table listing all content types
+ */
 export default function ContentTypes() {
   return (
     <Page>

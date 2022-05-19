@@ -85,8 +85,6 @@ export class DataManager<T extends Record<string, unknown>> {
     const packet = newPacket(doc, metadata) as Packet<T>;
 
     const savedPacket = this.data.set(packet);
-    console.log(packet)
-    console.log(savedPacket)
     this.batching.addToCacheQueue(ref);
 
     // Update in groups
@@ -109,8 +107,6 @@ export class DataManager<T extends Record<string, unknown>> {
       const result = this.set(doc, loaded);
       if (result) { successCount++; }
     }
-    console.log(docs)
-    console.log(this.data.data)
 
     return successCount;
   }
@@ -256,7 +252,6 @@ export class DataManager<T extends Record<string, unknown>> {
     if (!Array.isArray(refs)) { refs = [refs]; }
 
     const packets = await crud.read<T>(this.url, refs);
-    console.log("pckt", packets);
     const createdDocs = getSuccessfulDocuments(packets);
     this.setMany(createdDocs);
     return packets;

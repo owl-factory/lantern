@@ -14,6 +14,12 @@ class ContentTypeDataManager extends DataManager<Partial<ContentTypeDocument>> {
     // TODO - content types should be deliniated by rulesets
   }
 
+  /**
+   * Creates a single content type document
+   * @param doc The document to create
+   * @returns The created document
+   * @throws Errors with the validation or creation
+   */
   public async create(doc: Partial<ContentTypeDocument>): Promise<Partial<ContentTypeDocument>> {
     delete doc.ref;
 
@@ -35,6 +41,12 @@ class ContentTypeDataManager extends DataManager<Partial<ContentTypeDocument>> {
     return packets[0].doc as Partial<ContentTypeDocument>;
   }
 
+  /**
+   * Updates a single content type document
+   * @param doc The document to update
+   * @returns The updated document
+   * @throws Errors with the validation or updating
+   */
   public async update(doc: Partial<ContentTypeDocument>): Promise<Partial<ContentTypeDocument>> {
     requireLogin();
     requirePermission("updateContentType");

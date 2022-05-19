@@ -9,9 +9,9 @@ import { BaseDocument } from "types/documents";
  */
 export async function createMany<T>(fx: (doc: Partial<T>) => Promise<Partial<T>>, docs: Partial<T>[]) {
   const promises: Promise<CrudPacket<Partial<T>>>[] = [];
+  if (fx === undefined) { return []; }
 
   docs.forEach((doc: Partial<T>) => {
-    if (fx === undefined) { return; }
     const promise = packetWrapper(() => fx(doc));
     promises.push(promise);
   });

@@ -1,6 +1,10 @@
 import React from "react";
 
-export function TableCell(props: any) {
+/**
+ * Renders a standarized table cell element
+ * @param props.children The contents of the table cell
+ */
+export function TableCell(props: { children: React.ReactNode }) {
   return (
     <td>
       {props.children}
