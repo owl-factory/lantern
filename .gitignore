@@ -25,3 +25,6 @@ coverage
 .env*
 *.env
 *.log
+
+# Local Netlify folder
+.netlify
