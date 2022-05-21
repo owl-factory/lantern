@@ -5,12 +5,14 @@ import { Form, Formik, FormikProps } from "formik";
 import { useRouter } from "next/router";
 import React from "react";
 import { RulesetDocument } from "types/documents";
+import { CustomFieldInput } from "../CustomFieldInput";
 
 // The initial values of the form
 const INITIAL_VALUES = {
   ref: "",
   name: "",
   alias: "",
+  variables: {},
 };
 
 /**
@@ -20,6 +22,9 @@ const INITIAL_VALUES = {
 export function RulesetForm(props: { ruleset?: Partial<RulesetDocument> }) {
   const router = useRouter();
   const initialValues = props.ruleset || INITIAL_VALUES;
+  if (!initialValues.variables) {
+    // initialValues.variables = {};
+  }
 
   /**
    * Submits the form values to create or update a ruleset
@@ -44,6 +49,9 @@ export function RulesetForm(props: { ruleset?: Partial<RulesetDocument> }) {
         <Form>
           <Input name="name" type="text" label="Name"/>
           <Input name="alias" type="text" label="Alias"/>
+
+          <CustomFieldInput field="variables" onChange={formikProps.setFieldValue} values={formikProps.values}/>
+
           <Button type="button" onClick={() => formikProps.resetForm}>Reset</Button>
           <Button type="submit">Submit</Button>
         </Form>
@@ -51,3 +59,5 @@ export function RulesetForm(props: { ruleset?: Partial<RulesetDocument> }) {
     </Formik>
   );
 }
+
+

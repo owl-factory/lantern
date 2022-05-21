@@ -5,6 +5,8 @@ import { BaseDocument } from "./BaseDocument";
 export interface RulesetDocument extends BaseDocument {
   alias: string;
 
+  variables: Record<string, unknown>;
+
   // Indicates whether a ruleset is official or not. Official rulesets are those that are offically supported
   // on the app, be they first party (D&D 5e) or third party (Star Wars 5e).
   isOfficial: boolean;
