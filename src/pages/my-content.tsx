@@ -4,8 +4,6 @@ import React from "react";
 import { Button, ButtonGroup, Table } from "react-bootstrap";
 import { InitialProps } from "types/client";
 import { AnyDocument, ContentDocument } from "types/documents";
-import { getSession } from "@owl-factory/auth/session";
-import { rest } from "@owl-factory/https/rest";
 import { GiAxeSword } from 'react-icons/gi';
 import { MdContentCopy, MdDeleteForever, MdEdit } from "react-icons/md";
 import { Loading } from "@owl-factory/components/loading";
@@ -36,7 +34,7 @@ const ContentRow = observer((props: ContentRowProps) => {
     <tr>
       <td><GiAxeSword/></td>
       <td>{props.content.name}</td>
-      <td>{ContentTypeData.get(props.content.type?.ref as string)?.name || <Loading/>}</td>
+      <td>{ContentTypeData.get(props.content.contentType?.ref as string)?.name || <Loading/>}</td>
       <td>{RulesetData.get(props.content.ruleset?.ref as string)?.name || <Loading/>}</td>
       <td>
         <ButtonGroup>

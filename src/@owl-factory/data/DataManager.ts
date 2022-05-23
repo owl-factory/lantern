@@ -85,7 +85,6 @@ export class DataManager<T extends Record<string, unknown>> {
     const packet = newPacket(doc, metadata) as Packet<T>;
 
     const savedPacket = this.data.set(packet);
-
     this.batching.addToCacheQueue(ref);
 
     // Update in groups
@@ -119,8 +118,11 @@ export class DataManager<T extends Record<string, unknown>> {
   public async load(targetRefs: Ref64[] | Ref64 | null, reloadPolicy?: ReloadPolicy): Promise<void> {
     if (targetRefs === null) { return; }
     const refs = Array.isArray(targetRefs) ? targetRefs : [targetRefs];
-    const loadedDocs = await this.data.load(refs, reloadPolicy || this.reloadPolicy, this.read);
-
+    const loadedDocs = await this.data.load(
+      refs,
+      reloadPolicy || this.reloadPolicy,
+      (readRefs: string[]) => this.read(readRefs)
+    );
     this.setMany(loadedDocs, true);
 
     // Other caching and saving are handled in setMany
@@ -175,7 +177,7 @@ export class DataManager<T extends Record<string, unknown>> {
    */
   public search(parameters: SearchParams = {}): Ref64[] {
     let refs: Ref64[] = [];
-    if (parameters.group === "data") { refs = this.data.getRefs(); }
+    if (parameters.group === "data" || !parameters.group) { refs = this.data.getRefs(); }
     else { refs = this.grouping.getGroup(parameters.group || ""); }
     return refs;
   }
@@ -231,7 +233,7 @@ export class DataManager<T extends Record<string, unknown>> {
    * @returns A list of packets, for for each document, returning the created document or an error message
    */
   @Cacheable()
-  public async create(docs: T | T[]): Promise<CrudPacket<T>[]> {
+  public async $create(docs: T | T[]): Promise<CrudPacket<T>[]> {
     if (!Array.isArray(docs)) { docs = [docs]; }
 
     const packets = await crud.create<T>(this.url, docs);
@@ -260,8 +262,8 @@ export class DataManager<T extends Record<string, unknown>> {
    * @param docs The documents to create
    * @returns A list of packets, for for each document, returning the created document or an error message
    */
-  @Cacheable()
-  public async update(docs: T | T[]): Promise<CrudPacket<T>[]> {
+  // @Cacheable()
+  public async $update(docs: T | T[]): Promise<CrudPacket<T>[]> {
     if (!Array.isArray(docs)) { docs = [docs]; }
 
     const packets = await crud.update<T>(this.url, docs);
@@ -275,7 +277,7 @@ export class DataManager<T extends Record<string, unknown>> {
    * @param docs The documents to create
    * @returns A list of packets, for for each document, returning the created document or an error message
    */
-  @Cacheable()
+  // @Cacheable()
   public async delete(refs: Ref64 | Ref64[]): Promise<CrudPacket<T>[]> {
     if (!Array.isArray(refs)) { refs = [refs]; }
 

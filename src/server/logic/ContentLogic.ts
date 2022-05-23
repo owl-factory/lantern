@@ -19,9 +19,8 @@ class $ContentLogic {
    * @returns The created document, if successful
    */
   @Create(["*"], ["*"])
-  public async createContent(
-    content: Partial<ContentDocument>,
-    ruleset: Partial<RulesetDocument>
+  public async create(
+    content: Partial<ContentDocument>
   ): Promise<ContentDocument> {
     // TODO - ensure ruleset exists and the user has permission to update
     return await access.create(collection, content);
@@ -88,6 +87,17 @@ class $ContentLogic {
 
     return content;
   }
+
+  /**
+   * Fetches a list of all content types
+   * @param options Any additional options for filtering the data retrieved from the database
+   * @returns An array of campaign document partials
+   */
+   @Search(["*"])
+   public async searchAllContents(options?: FaunaIndexOptions) {
+     const contents = fauna.searchByIndex(FaunaIndex.AllContents, [], options);
+     return contents;
+   }
 }
 
 export const ContentLogic = new $ContentLogic();

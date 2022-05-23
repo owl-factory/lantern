@@ -23,7 +23,13 @@ export const permissions: Permission[] = [
   { key: "viewContent", name: "View Content", collection: Collection.Contents },
   { key: "searchContentByUser", name: "Search Content By User", collection: Collection.Contents },
   { key: "searchMyContent", name: "Search My Content", collection: Collection.Contents },
+  { key: "createContent", name: "Create Content", collection: Collection.Contents },
+  { key: "updateContent", name: "Update Content", collection: Collection.Contents },
+  { key: "deleteContent", name: "Delete Content", collection: Collection.Contents },
 
+  { key: "createContentType", name: "Create Content Type", collection: Collection.ContentTypes },
+  { key: "updateContentType", name: "Update Content Type", collection: Collection.ContentTypes },
+  { key: "deleteContentType", name: "Delete Content Type", collection: Collection.ContentTypes },
   { key: "viewContentType", name: "View Content Type", collection: Collection.ContentTypes },
 
   { key: "uploadFile", name: "Upload a File", collection: Collection.Files },
@@ -34,8 +40,15 @@ export const permissions: Permission[] = [
   { key: "searchImagesByUser", name: "Search Images By User", collection: Collection.Images },
   { key: "searchMyImages", name: "Search My Images", collection: Collection.Images },
 
+  { key: "createModule", name: "Create a Module", collection: Collection.Modules },
+  { key: "updateModule", name: "Update a Module", collection: Collection.Modules },
+  { key: "deleteModule", name: "Delete a Module", collection: Collection.Modules },
+
   { key: "createOfficialRuleset", name: "Create an Official Ruleset", collection: Collection.Rulesets },
   { key: "viewAnyRuleset", name: "View Any Ruleset", collection: Collection.Rulesets },
+  { key: "createRuleset", name: "Create a Ruleset", collection: Collection.Rulesets },
+  { key: "updateRuleset", name: "Update a Ruleset", collection: Collection.Rulesets },
+  { key: "deleteRuleset", name: "Delete a Ruleset", collection: Collection.Rulesets },
   { key: "editOfficialRuleset", name: "Edit an Official Ruleset", collection: Collection.Rulesets },
   { key: "searchRulesetsByOfficial", name: "Search for Official Rulesets", collection: Collection.Rulesets },
   {

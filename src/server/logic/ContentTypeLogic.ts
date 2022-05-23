@@ -1,8 +1,10 @@
-import { Create, Delete, Fetch, Update } from "@owl-factory/database/decorators/decorators";
+import { Create, Delete, Fetch, Search, Update } from "@owl-factory/database/decorators/decorators";
 import { ContentTypeDocument } from "types/documents";
 import { Ref64 } from "@owl-factory/types";
-import { Collection } from "src/fauna";
+import { Collection, FaunaIndex } from "src/fauna";
 import * as access from "./access";
+import { FaunaIndexOptions } from "@owl-factory/database/types/fauna";
+import * as fauna from "@owl-factory/database/integration/fauna";
 
 const collection = Collection.ContentTypes;
 
@@ -48,6 +50,17 @@ class $ContentTypeLogic {
    public async update(ref: Ref64, doc: Partial<ContentTypeDocument>) {
     return await access.update(collection, ref, doc);
   }
+
+  /**
+   * Fetches a list of all content types
+   * @param options Any additional options for filtering the data retrieved from the database
+   * @returns An array of campaign document partials
+   */
+   @Search(["*"])
+   public async searchAllContentTypes(options?: FaunaIndexOptions) {
+     const contentTypes = fauna.searchByIndex(FaunaIndex.AllContentTypes, [], options);
+     return contentTypes;
+   }
 }
 
 export const ContentTypeLogic = new $ContentTypeLogic();

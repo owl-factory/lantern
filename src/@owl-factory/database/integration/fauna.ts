@@ -15,6 +15,7 @@ import { getServerClient } from "../client/fauna";
  */
 export async function createOne<T>(collection: string, doc: Record<string, unknown>): Promise<T | undefined>{
   const client = getServerClient();
+  delete doc.ref;
   const faunaDoc: FaunaDocument = toFauna(doc);
 
   const faunaResult: FaunaDocument = await client.query(q.Create(collection, faunaDoc));
