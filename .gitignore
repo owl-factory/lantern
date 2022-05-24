@@ -1,18 +1,16 @@
+# editor
 .vscode
 !.vscode/launch.json
 
 # dependencies
 node_modules
 
-# Build files
+# build files
 dist
 .next
 out_functions
 out_publish
 out
-
-# Non-Production Images
-public/images
 
 # testing
 coverage
@@ -25,3 +23,6 @@ coverage
 .env*
 *.env
 *.log
+
+# netlify
+.netlify
