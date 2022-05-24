@@ -51,13 +51,13 @@ export function FieldList(props: FieldListProps) {
 
   // Generates the rows for each of the items
   // TODO - give this its own function?
-  // TODO - sort by name
-  const uuids = Object.keys(props.fields);
+  // Tertiary operator is to prevent pre-load from throwing an error
+  const uuids = props.fields ? Object.keys(props.fields) : [];
   const uuidLabelMap: Record<string, string> = {};
   for (const uuid of uuids) {
     const field = props.fields[uuid];
-    if (!field || !field.label) { continue; }
-    uuidLabelMap[field.label] = uuid;
+    if (!field || !field.name) { continue; }
+    uuidLabelMap[field.name] = uuid;
   }
 
   const labels = Object.keys(uuidLabelMap).sort();
@@ -69,7 +69,7 @@ export function FieldList(props: FieldListProps) {
     const className = (field.uuid === props.selected) ? styles.active : "";
     fields.push(
       <div key={field.uuid} className={className} onClick={() => setSelected(field.uuid)}>
-        {field.label} ({field.key})
+        {field.name} ({field.key})
       </div>
     );
   }

@@ -60,7 +60,11 @@ export function FieldForm(props: FieldFormProps) {
                 <CustomFieldTypeOptions/>
               </Select>
 
-              <CustomFieldValuesForm field={field}/>
+              <CustomFieldValuesForm
+                type={formikProps.values.type}
+                values={formikProps.values.values}
+                setValues={(values: any) => formikProps.setFieldValue("values", values)}
+              />
 
               <Button type="button" onClick={() => props.setSelected(undefined)}>Cancel</Button>
               <Button

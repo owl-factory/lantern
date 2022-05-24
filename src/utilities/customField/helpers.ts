@@ -35,7 +35,7 @@ export function generateNewCustomField(key: string): CustomField {
   return {
     uuid: uniqueID,
     key: key,
-    label: key,
+    name: key,
     type: CustomFieldType.Text,
   };
 }
