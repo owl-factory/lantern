@@ -5,7 +5,7 @@ import { Form, Formik, FormikProps } from "formik";
 import { useRouter } from "next/router";
 import React from "react";
 import { RulesetDocument } from "types/documents";
-import { CustomFieldInput } from "../CustomFieldInput";
+import { CustomFieldInput } from "../forms/customFields/CustomFieldInput";
 
 // The initial values of the form
 const INITIAL_VALUES = {
