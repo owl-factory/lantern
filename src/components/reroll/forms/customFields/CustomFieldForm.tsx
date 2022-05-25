@@ -2,10 +2,20 @@
 import { Button } from "@owl-factory/components/button";
 import { Input, Select } from "@owl-factory/components/form";
 import { Formik, FormikProps } from "formik";
+import { makeAutoObservable, makeObservable, observable } from "mobx";
 import React from "react";
 import { CustomField } from "types/documents/subdocument/CustomField";
 import { ReadableCustomFieldType } from "types/enums/subdocument/CustomFieldType";
 import { CustomFieldValuesForm } from "./CustomFieldValuesForm";
+
+class CustomValues {
+  selectValues: (string | number)[][] = [];
+  constructor() {
+    makeAutoObservable(this);
+  }
+}
+
+const CUSTOM_VALUES = new CustomValues();
 
 interface FieldFormProps {
   selected: string | undefined;
@@ -38,6 +48,7 @@ export function FieldForm(props: FieldFormProps) {
    */
   function onSubmit(values: Partial<CustomField>) {
     if (!values.uuid) { return; }
+    values.selectValues = CUSTOM_VALUES.selectValues;
     props.fields[values.uuid] = values;
     props.setField(props.fields);
     props.setSelected(undefined);
@@ -50,10 +61,13 @@ export function FieldForm(props: FieldFormProps) {
         onSubmit={onSubmit}
       >
         {(formikProps: FormikProps<any>) => {
-          if (formikProps.values.uuid !== props.selected) { formikProps.setValues(field); }
+          if (formikProps.values.uuid !== props.selected) {
+            formikProps.setValues(field);
+            CUSTOM_VALUES.selectValues = field.selectValues || [];
+          }
           return (
             <>
-              <Input type="text" name="label" label="Label"/>
+              <Input type="text" name="name" label="Label"/>
               <Input type="text" name="key" label="Key"/>
               <label htmlFor="type">Field Type</label>
               <Select name="type" id="type">
@@ -62,9 +76,11 @@ export function FieldForm(props: FieldFormProps) {
 
               <CustomFieldValuesForm
                 type={formikProps.values.type}
-                values={formikProps.values.values}
-                setValues={(values: any) => formikProps.setFieldValue("values", values)}
+                selectValues={formikProps.values.selectValues || []}
+                setSelectValues={(values: any) => formikProps.setFieldValue("selectValues", values)}
               />
+
+              {/* <CustomFieldDefaultValue type={f/> */}
 
               <Button type="button" onClick={() => props.setSelected(undefined)}>Cancel</Button>
               <Button

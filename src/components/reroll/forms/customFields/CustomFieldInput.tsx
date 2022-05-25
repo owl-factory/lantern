@@ -3,7 +3,6 @@ import { CustomField } from "types/documents/subdocument/CustomField";
 import { FieldForm } from "./CustomFieldForm";
 import { FieldList } from "./CustomFieldList";
 
-
 interface CustomFieldInputProps {
   field: string;
   onChange: (field: string, value: any, shouldValidate?: boolean | undefined) => void;

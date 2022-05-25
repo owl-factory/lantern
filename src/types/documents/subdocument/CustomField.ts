@@ -29,5 +29,5 @@ export interface CustomField {
   isInherited?: boolean;
 
   // A list of fake tuples for use in select types. Index 0 is the value, index 1 is the text
-  selectValues?: Record<string, CustomSelectValue>;
+  selectValues?: (string | number)[][];
 }
