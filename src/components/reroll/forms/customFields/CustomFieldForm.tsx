@@ -48,7 +48,6 @@ export function FieldForm(props: FieldFormProps) {
    */
   function onSubmit(values: Partial<CustomField>) {
     if (!values.uuid) { return; }
-    values.selectValues = CUSTOM_VALUES.selectValues;
     props.fields[values.uuid] = values;
     props.setField(props.fields);
     props.setSelected(undefined);

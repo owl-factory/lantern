@@ -25,7 +25,7 @@ const EditContentType = observer(() => {
       <h1>Edit Content Type {contentType?.name}</h1>
       <Link href="/dev/content-types"><Button>Back</Button></Link>
       {/* Ensures that the form isn't rendered until after the document is loaded in */}
-      { contentType ? <ContentTypeForm contentType={contentType}/> : undefined }
+      { contentType && ContentTypeData.isLoaded(ref) ? <ContentTypeForm contentType={contentType}/> : undefined }
     </Page>
   );
 });

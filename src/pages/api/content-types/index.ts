@@ -13,7 +13,7 @@ import { requireLogin, requirePermission } from "utilities/validation/account";
  */
 async function getContentTypes(this: HTTPHandler, req: NextApiRequest) {
   const contentTypes = await fetchMany(ContentTypeLogic.fetch, req.body.refs);
-  this.returnSuccess({ contentTypes });
+  this.returnSuccess({ docs: contentTypes });
 }
 
 /**

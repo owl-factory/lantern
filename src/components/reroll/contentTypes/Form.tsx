@@ -7,6 +7,7 @@ import { observer } from "mobx-react-lite";
 import { useRouter } from "next/router";
 import React from "react";
 import { ContentTypeDocument } from "types/documents";
+import { CustomFieldInput } from "../forms/customFields/CustomFieldInput";
 import { RulesetOptions } from "../rulesets/Options";
 import { ContentTypeOptions } from "./Options";
 
@@ -60,6 +61,8 @@ export const ContentTypeForm = observer((props: { contentType?: Partial<ContentT
           <Select name="parent.ref">
             <ContentTypeOptions parameters={{ group: "data" }}/>
           </Select>
+
+          <CustomFieldInput field="variables" onChange={formikProps.setFieldValue} values={formikProps.values}/>
 
           <Button type="button" onClick={() => formikProps.resetForm}>Reset</Button>
           <Button type="submit">Submit</Button>

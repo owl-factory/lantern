@@ -119,6 +119,7 @@ export class DataManager<T extends Record<string, unknown>> {
   public async load(targetRefs: Ref64[] | Ref64 | null, reloadPolicy?: ReloadPolicy): Promise<void> {
     if (targetRefs === null) { return; }
     const refs = Array.isArray(targetRefs) ? targetRefs : [targetRefs];
+    if (refs.length === 0) { return; }
     const loadedDocs = await this.data.load(
       refs,
       reloadPolicy || this.reloadPolicy,
@@ -255,11 +256,12 @@ export class DataManager<T extends Record<string, unknown>> {
    * @param docs The documents to create
    * @returns A list of packets, for for each document, returning the created document or an error message
    */
-   @Cacheable()
+  //  @Cacheable()
    public async read(refs: Ref64 | Ref64[]): Promise<CrudPacket<T>[]> {
     if (!Array.isArray(refs)) { refs = [refs]; }
 
     const packets = await crud.read<T>(this.url, refs);
+    console.log("here", packets)
     const createdDocs = getSuccessfulDocuments(packets);
     this.setMany(createdDocs);
     return packets;

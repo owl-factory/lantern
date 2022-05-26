@@ -14,5 +14,7 @@ export interface ContentTypeDocument extends BaseDocument {
     name?: string;
   }
 
+  variables: Record<string, unknown>;
+
   icon: ContentTypeIcon,
 }

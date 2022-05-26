@@ -44,8 +44,6 @@ export function RulesetForm(props: { ruleset?: Partial<RulesetDocument> }) {
     }
   }
 
-  console.log("Ruleset", props.ruleset?.variables)
-
   return (
     <Formik
       initialValues={initialValues}
