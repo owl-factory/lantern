@@ -20,7 +20,8 @@ interface FieldListProps {
  * @param setField The function to set the field data when creating a new custom field
  */
 export function FieldList(props: FieldListProps) {
-  const fields: JSX.Element[] = [];
+  const fieldItems: JSX.Element[] = [];
+
 
   /**
    * Adds a new field to the custom input field
@@ -67,7 +68,7 @@ export function FieldList(props: FieldListProps) {
     if (!field) { continue; }
 
     const className = (field.uuid === props.selected) ? styles.active : "";
-    fields.push(
+    fieldItems.push(
       <div key={field.uuid} className={className} onClick={() => setSelected(field.uuid)}>
         {field.name} ({field.key})
       </div>
@@ -81,7 +82,7 @@ export function FieldList(props: FieldListProps) {
         <Button onClick={addField}>+</Button>
       </div>
       <div>
-        {fields}
+        {fieldItems}
       </div>
     </div>
   );

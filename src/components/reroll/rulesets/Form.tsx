@@ -26,6 +26,10 @@ export function RulesetForm(props: { ruleset?: Partial<RulesetDocument> }) {
     // initialValues.variables = {};
   }
 
+  if (props.ruleset && !RulesetData.isLoaded(props.ruleset.ref)) {
+    return <></>;
+  }
+
   /**
    * Submits the form values to create or update a ruleset
    * @param values The ruleset values from the form
@@ -39,6 +43,8 @@ export function RulesetForm(props: { ruleset?: Partial<RulesetDocument> }) {
       console.error(e);
     }
   }
+
+  console.log("Ruleset", props.ruleset?.variables)
 
   return (
     <Formik

@@ -2,13 +2,14 @@ import { Button } from "@owl-factory/components/button";
 import { Input } from "@owl-factory/components/form";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "components/elements/table";
 import { Formik, FormikProps } from "formik";
-import { observer } from "mobx-react-lite";
+import { toJS } from "mobx";
 import React from "react";
 import { CustomFieldType } from "types/enums/subdocument/CustomFieldType";
 
 const ALLOWED_FIELD_TYPES = [CustomFieldType.Select, CustomFieldType.NumberSelect, CustomFieldType.Multiselect];
 
 function CustomFieldValueItem(props: any) {
+  console.log(props.value)
   const initialValues = {
     value: props.value[0],
     text: props.value[1],
@@ -45,12 +46,12 @@ function CustomFieldValueItem(props: any) {
 }
 
 export function CustomFieldValuesForm(props: any) {
- 
   if (!ALLOWED_FIELD_TYPES.includes(props.type)) { return <></>; }
   if (props.selectValues === undefined) { return <></>; }
-
+  console.log("selected", props.selectValues)
+  console.log("selected js", toJS(props.selectValues))
   function addValue() {
-    props.selectValues.push([props.selectValues.length, `Undefined${props.selectValues.length}`]);
+    props.selectValues.push([props.selectValues.length, `Undefined`]);
     props.setSelectValues(props.selectValues);
     // props.customValues.selectValues.push([props.customValues.selectValues.length, "Untitled"]);
   }
@@ -71,18 +72,16 @@ export function CustomFieldValuesForm(props: any) {
   }
 
   const values: JSX.Element[] = [];
-  let index = 0;
-  for (const selectItem of props.selectValues) {
+  for (let i = 0; i < props.selectValues.length || Object.keys(props.selectValues).length; i++){
     values.push(
       <CustomFieldValueItem
-        key={index}
-        value={selectItem}
-        index={index}
+        key={i}
+        value={props.selectValues[i]}
+        index={i}
         updateValue={updateValue}
         removeValue={removeValue}
       />
     );
-    index++;
   }
 
   return (

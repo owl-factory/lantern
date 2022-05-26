@@ -102,6 +102,7 @@ export class DataManager<T extends Record<string, unknown>> {
    * @returns The number of documents successfully saved
    */
   public setMany(docs: T[], loaded = false): number {
+    console.log(docs)
     let successCount = 0;
     for (const doc of docs) {
       const result = this.set(doc, loaded);
@@ -187,6 +188,13 @@ export class DataManager<T extends Record<string, unknown>> {
    */
   public touch(): void {
     this.lastTouched = Date.now();
+  }
+
+  public isLoaded(ref?: Ref64): boolean {
+    if (!ref) { return false; }
+    const packet = this.data.get(ref);
+    if (!packet) { return false; }
+    return packet.meta.loaded;
   }
 
   /**

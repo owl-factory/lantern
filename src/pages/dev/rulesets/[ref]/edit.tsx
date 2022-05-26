@@ -3,9 +3,7 @@ import { observer } from "mobx-react-lite";
 import { Page } from "components/design";
 import { RulesetData } from "controllers/data/RulesetData";
 import { useRouter } from "next/router";
-import { RulesetForm } from "components/reroll/rulesets/Form";
-import Link from "next/link";
-import { Button } from "@owl-factory/components/button";
+import { toJS } from "mobx";
 
 /**
  * Renders a development page for editing a ruleset
@@ -19,13 +17,9 @@ const EditRuleset = observer(() => {
     RulesetData.load(rulesetRef);
   }, [rulesetRef]);
   const ruleset = RulesetData.get(rulesetRef);
-
+  console.log("js rs", toJS(ruleset))
   return (
     <Page>
-      <h1>Edit Ruleset {ruleset?.name}</h1>
-      <Link href="/dev/rulesets"><Button>Back</Button></Link>
-      {/* Ensures that the Ruleset isn't rendered until after the document is loaded in */}
-      { ruleset ? <RulesetForm ruleset={ruleset}/> : undefined }
     </Page>
   );
 });
