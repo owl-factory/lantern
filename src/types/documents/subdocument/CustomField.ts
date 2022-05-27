@@ -1,21 +1,4 @@
 import { CustomFieldType } from "types/enums/subdocument/CustomFieldType";
-import { v4 as uuid } from "uuid";
-
-export interface CustomSelectValue {
-  uuid: string;
-  value: number | string;
-  text: string;
-  order: number;
-}
-
-export function newCustomSelectValue(): CustomSelectValue {
-  return {
-    uuid: uuid(),
-    value: 0,
-    text: "Unknown",
-    order: -1,
-  };
-}
 
 export interface CustomField {
   // Access

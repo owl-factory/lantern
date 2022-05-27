@@ -71,24 +71,3 @@ export function $getUniquesFromSimpleTypes(data: string []): string[] {
 
   return uniques;
 }
-
-type OrderObject = Record<string, unknown> & { order: number }
-function orderObjects(objects: OrderObject[]) {
-  return objects;
-  // const orderedObjects: OrderObject[] = Array(objects.length).fill(null);
-  // const overflow: OrderObject[] = [];
-  // for (const object of objects) {
-  //   // Nothing should be outside of these bounds, but we need to account for them anyways
-  //   if (object.order === undefined || object.order < 0 || object.order >= orderedObjects.length) {
-  //     overflow.push(object);
-  //     continue;
-  //   }
-
-  //   // Handles the case where there are duplicate orders
-  //   if (orderedObjects[object.order] !== null) { overflow.push(object); }
-
-  //   orderedObjects[object.order] = object;
-  // }
-
-  
-}

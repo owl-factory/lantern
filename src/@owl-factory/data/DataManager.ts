@@ -102,7 +102,6 @@ export class DataManager<T extends Record<string, unknown>> {
    * @returns The number of documents successfully saved
    */
   public setMany(docs: T[], loaded = false): number {
-    console.log(docs)
     let successCount = 0;
     for (const doc of docs) {
       const result = this.set(doc, loaded);
@@ -191,6 +190,11 @@ export class DataManager<T extends Record<string, unknown>> {
     this.lastTouched = Date.now();
   }
 
+  /**
+   * Determines if a document is loaded
+   * @param ref The ref of a document
+   * @returns True if the document is loaded. False if it is not loaded or missing
+   */
   public isLoaded(ref?: Ref64): boolean {
     if (!ref) { return false; }
     const packet = this.data.get(ref);
@@ -261,7 +265,6 @@ export class DataManager<T extends Record<string, unknown>> {
     if (!Array.isArray(refs)) { refs = [refs]; }
 
     const packets = await crud.read<T>(this.url, refs);
-    console.log("here", packets)
     const createdDocs = getSuccessfulDocuments(packets);
     this.setMany(createdDocs);
     return packets;

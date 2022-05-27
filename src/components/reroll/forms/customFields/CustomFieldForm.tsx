@@ -2,28 +2,14 @@
 import { Button } from "@owl-factory/components/button";
 import { Input, Select } from "@owl-factory/components/form";
 import { Formik, FormikProps } from "formik";
-import { makeAutoObservable, makeObservable, observable } from "mobx";
 import React from "react";
 import { CustomField } from "types/documents/subdocument/CustomField";
 import { ReadableCustomFieldType } from "types/enums/subdocument/CustomFieldType";
 import { CustomFieldValuesForm } from "./CustomFieldValuesForm";
 
-class CustomValues {
-  selectValues: (string | number)[][] = [];
-  constructor() {
-    makeAutoObservable(this);
-  }
-}
-
-const CUSTOM_VALUES = new CustomValues();
-
-interface FieldFormProps {
-  selected: string | undefined;
-  setSelected: React.Dispatch<React.SetStateAction<string | undefined>>;
-  fields: Record<string, Partial<CustomField> | null>;
-  setField: React.Dispatch<React.SetStateAction<Record<string, Partial<CustomField> | null>>>;
-}
-
+/**
+ * Renders the options for a custom field type select element
+ */
 function CustomFieldTypeOptions() {
   const options: JSX.Element[] = [];
   const keys = Object.keys(ReadableCustomFieldType);
@@ -34,8 +20,19 @@ function CustomFieldTypeOptions() {
   return <>{options}</>;
 }
 
+interface FieldFormProps {
+  selected: string | undefined;
+  setSelected: React.Dispatch<React.SetStateAction<string | undefined>>;
+  fields: Record<string, Partial<CustomField> | null>;
+  setFields: React.Dispatch<React.SetStateAction<Record<string, Partial<CustomField> | null>>>;
+}
+
 /**
  * Renders the form to edit custom fields
+ * @param selected The key of the currently selected custom field
+ * @param setSelected The function to update the currently selected custom field
+ * @param fields The full dictionary of custom fields
+ * @param setField The function to update the custom fields in the previous form
  */
 export function FieldForm(props: FieldFormProps) {
   if (!props.selected) { return <div style={{flexGrow: 1}}></div>; }
@@ -49,7 +46,7 @@ export function FieldForm(props: FieldFormProps) {
   function onSubmit(values: Partial<CustomField>) {
     if (!values.uuid) { return; }
     props.fields[values.uuid] = values;
-    props.setField(props.fields);
+    props.setFields(props.fields);
     props.setSelected(undefined);
   }
 
@@ -62,7 +59,6 @@ export function FieldForm(props: FieldFormProps) {
         {(formikProps: FormikProps<any>) => {
           if (formikProps.values.uuid !== props.selected) {
             formikProps.setValues(field);
-            CUSTOM_VALUES.selectValues = field.selectValues || [];
           }
           return (
             <>
@@ -78,8 +74,6 @@ export function FieldForm(props: FieldFormProps) {
                 selectValues={formikProps.values.selectValues || []}
                 setSelectValues={(values: any) => formikProps.setFieldValue("selectValues", values)}
               />
-
-              {/* <CustomFieldDefaultValue type={f/> */}
 
               <Button type="button" onClick={() => props.setSelected(undefined)}>Cancel</Button>
               <Button

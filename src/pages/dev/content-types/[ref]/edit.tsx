@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Button } from "@owl-factory/components/button";
 import { ContentTypeData } from "controllers/data/ContentTypeData";
 import { ContentTypeForm } from "components/reroll/contentTypes/Form";
+import { toJS } from "mobx";
 
 /**
  * Renders a development page for editing a content type
@@ -18,7 +19,8 @@ const EditContentType = observer(() => {
   React.useEffect(() => {
     ContentTypeData.load(ref);
   }, [ref]);
-  const contentType = ContentTypeData.get(ref);
+  // Unlinks from MobX
+  const contentType = toJS(ContentTypeData.get(ref));
 
   return (
     <Page>

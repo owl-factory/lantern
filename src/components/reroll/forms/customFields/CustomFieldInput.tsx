@@ -28,7 +28,7 @@ export function CustomFieldInput(props: CustomFieldInputProps) {
       <h2>Custom Fields</h2>
       <div style={{display: "flex"}}>
         <FieldList selected={selected} setSelected={setSelected} setField={setField} fields={fields}/>
-        <FieldForm selected={selected} setSelected={setSelected} setField={setField} fields={fields}/>
+        <FieldForm selected={selected} setSelected={setSelected} setFields={setField} fields={fields}/>
       </div>
     </div>
   );

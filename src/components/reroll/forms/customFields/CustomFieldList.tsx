@@ -45,6 +45,10 @@ export function FieldList(props: FieldListProps) {
     props.setSelected(undefined);
   }
 
+  /**
+   * Sets the currently selected field. If the given UUID matches the currently selected one, it is unselected
+   * @param uuid The UUID to set as the currently selected key
+   */
   function setSelected(uuid: string | undefined) {
     if (uuid === props.selected) { props.setSelected(undefined); }
     else { props.setSelected(uuid); }
