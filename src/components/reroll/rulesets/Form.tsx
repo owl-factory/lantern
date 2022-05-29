@@ -12,7 +12,7 @@ const INITIAL_VALUES = {
   ref: "",
   name: "",
   alias: "",
-  variables: {},
+  actorFields: {},
 };
 
 /**
@@ -22,8 +22,8 @@ const INITIAL_VALUES = {
 export function RulesetForm(props: { ruleset?: Partial<RulesetDocument> }) {
   const router = useRouter();
   const initialValues = props.ruleset || INITIAL_VALUES;
-  if (!initialValues.variables) {
-    // initialValues.variables = {};
+  if (!initialValues.actorFields) {
+    initialValues.actorFields = {};
   }
 
   if (props.ruleset && !RulesetData.isLoaded(props.ruleset.ref)) {
@@ -54,7 +54,7 @@ export function RulesetForm(props: { ruleset?: Partial<RulesetDocument> }) {
           <Input name="name" type="text" label="Name"/>
           <Input name="alias" type="text" label="Alias"/>
 
-          <CustomFieldInput field="variables" onChange={formikProps.setFieldValue} values={formikProps.values}/>
+          <CustomFieldInput field="actorFields" onChange={formikProps.setFieldValue} values={formikProps.values}/>
 
           <Button type="button" onClick={() => formikProps.resetForm}>Reset</Button>
           <Button type="submit">Submit</Button>

@@ -5,7 +5,7 @@ import { Formik, FormikProps } from "formik";
 import React from "react";
 import { CustomField } from "types/documents/subdocument/CustomField";
 import { ReadableCustomFieldType } from "types/enums/subdocument/CustomFieldType";
-import { CustomFieldValuesForm } from "./CustomFieldValuesForm";
+import { CustomSelectValuesForm } from "./CustomSelectValuesForm";
 
 /**
  * Renders the options for a custom field type select element
@@ -69,7 +69,7 @@ export function FieldForm(props: FieldFormProps) {
                 <CustomFieldTypeOptions/>
               </Select>
 
-              <CustomFieldValuesForm
+              <CustomSelectValuesForm
                 type={formikProps.values.type}
                 selectValues={formikProps.values.selectValues || []}
                 setSelectValues={(values: any) => formikProps.setFieldValue("selectValues", values)}

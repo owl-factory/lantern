@@ -8,7 +8,7 @@ import { CustomFieldType } from "types/enums/subdocument/CustomFieldType";
 // The list of fields that are allowed to render the custom field value type form
 const ALLOWED_FIELD_TYPES = [CustomFieldType.Select, CustomFieldType.NumberSelect, CustomFieldType.Multiselect];
 
-interface CustomFieldValueInputProps {
+interface CustonSelectValueItemProps {
   index: number;
   value: (number | string)[];
   removeValue: (index: number) => void;
@@ -22,7 +22,7 @@ interface CustomFieldValueInputProps {
  * @param removeValue A function to remove the value
  * @param updateValue A function to update the value
  */
-function CustomFieldValueItem(props: CustomFieldValueInputProps) {
+function CustomSelectValueItem(props: CustonSelectValueItemProps) {
   const initialValues = {
     value: props.value[0],
     text: props.value[1],
@@ -63,7 +63,7 @@ function CustomFieldValueItem(props: CustomFieldValueInputProps) {
   );
 }
 
-interface CustomFieldValuesFormProps {
+interface CustomSelectValuesFormProps {
   type: CustomFieldType;
   selectValues: (number | string)[][];
   setSelectValues: (selectValues: (number | string)[][]) => void;
@@ -75,7 +75,7 @@ interface CustomFieldValuesFormProps {
  * @param selectValues An array of pseudo-tuples containing the value and text of a select option
  * @param setSelectValues A function to set the select values of the parent form
  */
-export function CustomFieldValuesForm(props: CustomFieldValuesFormProps) {
+export function CustomSelectValuesForm(props: CustomSelectValuesFormProps) {
   if (!ALLOWED_FIELD_TYPES.includes(props.type)) { return <></>; }
   if (props.selectValues === undefined) { return <></>; }
 
@@ -110,7 +110,7 @@ export function CustomFieldValuesForm(props: CustomFieldValuesFormProps) {
   const values: JSX.Element[] = [];
   for (let i = 0; i < props.selectValues.length; i++){
     values.push(
-      <CustomFieldValueItem
+      <CustomSelectValueItem
         key={i}
         value={props.selectValues[i]}
         index={i}
