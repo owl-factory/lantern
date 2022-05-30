@@ -1,0 +1,261 @@
+<Sheet>
+  <Page name="Character Sheet" access="edit">
+    <!-- Character Information -->
+    <Row>
+      <Column weight="5">
+        <Background src="/dnd-5e/title-dragon.svg">
+          <TextInput id="name1_1" name="name"/>
+          <Label for="name1_1">Character Name</Label>
+        </Background>
+      </Column>
+
+      <Column weight="7">
+        <Border borderStyle="...">
+          <Row>
+            <Column weight="1">
+              <Row>
+                <Column weight="9">
+                  <TextInput id="class1_1" name="class1"/>
+                </Column>
+                <Column weight="1">
+                  <NumberInput id="level1" min="1"/>
+                </Column>
+              </Row>
+              <Label for="class1_1">Class &amp; Level</Label>
+            </Column>
+
+            <Column weight="1">
+              <TextInput id="background_1" name="background"/>
+              <Label for="background_1">Background</Label>
+            </Column>
+
+            <Column weight="1">
+              <TextInput id="playername_1" name="playername"/>
+              <Label for="playername_1">Player Name</Label>
+            </Column>
+          </Row>
+
+          <Row>
+            <Column weight="1">
+              <TextInput id="race_1" name="race"/>
+              <Label for="race_1">Race</Label>
+            </Column>
+
+            <Column weight="1">
+              <TextInput id="alignment_1" name="alignment"/>
+              <Label for="alignment_1">Alignment</Label>
+            </Column>
+
+            <Column weight="1">
+              <NumberInput id="experience_1" name="experience"/>
+              <Label for="experience_1">Experience Points</Label>
+            </Column>
+          </Row>
+        </Border>
+      </Column>
+    </Row>
+
+    <Row>
+      <!-- Mods, skills, proficiencies -->
+      <Column weight="1">
+        <Row>
+          <Column weight="1">
+            <Prefab name="ability_score" label="Strength" score="strength" mod="str_mod"/>
+            <Prefab name="ability_score" label="Dexterity" score="dexterity" mod="dex_mod"/>
+            <Prefab name="ability_score" label="Constitution" score="constitution" mod="con_mod"/>
+            <Prefab name="ability_score" label="Intelligence" score="intelligence" mod="int_mod"/>
+            <Prefab name="ability_score" label="Wisdom" score="wisdom" mod="wis_mod"/>
+            <Prefab name="ability_score" label="Charisma" score="charisma" mod="cha_mod"/>
+          </Column>
+          <Column weight="2">
+            <Background src="inspiration">
+              <Inline>
+                <Checkbox id="inspiration_1" name="inspiration"/>
+                <Label for="inspiration_1">Inspiration</Label>
+              </Inline>
+            </Background>
+
+            <Background src="proficiency-bonus">
+              <Inline>
+                <NumberInput id="proficiency_bonus_1" name="proficiency_bonus" calculated="true" calculateMethod="calc_proficiency_bonus"/>
+                <Label for="proficiency_bonus_1">Proficiency Bonus</Label>
+              </Inline>
+            </Background>
+
+            <Border borderStyle="simpleBorder">
+              <Prefab name="skill" label="Acrobatics"/>
+            </Border>
+          </Column>
+        </Row>
+      </Column>
+
+      <!-- HP, Attacks, Equipment -->
+      <Column weight="1">
+        <Row>
+          <Column weight="1">
+            <Background src="ac-shield">
+              <NumberInput id="ac_1" name="ac" calculated="optional" calculateMethod="calc_ac"/>
+              <Label for="ac_1">Armor Class</Label>
+            </Background>
+          </Column>
+
+          <Column weight="1">
+            <Background src="simple-box">
+              <NumberInput id="initiative_1" name="initiative" calculated="optional"/>
+              <Label for="initiative_1" action="ac_roll_initiative">Initiative</Label>
+            </Background>
+          </Column>
+
+          <Column weight="1">
+            <Background src="simple-box">
+              <NumberInput id="speed_1" name="speed"/>
+              <Label for="speed_1">Speed</Label>
+            </Background>
+          </Column>
+        </Row>
+
+        <Border>
+          <Inline>
+            <Label for="max_hp_1">Hit Point Maximum</Label>
+            <NumberInput id="max_hp_1" name="max_hp" calculated="optional"/>
+          </Inline>
+          <NumberInput id="hp_1" name="hp"/>
+          <Label for="hp_1">Current Hit Points</Label>
+        </Border>
+
+        <Border>
+          <NumberInput id="temp_hp_1" name="temp_hp"/>
+          <Label for="temp_hp_1">Temporary Hit Points</Label>
+        </Border>
+
+        <Row>
+          <Column weight="1">
+            <Border borderStyle="simplebox">
+              <Inline>
+                <Label for="hit_dice_total_1">Total</Label>
+                <NumberInput id="hit_dice_total_1" name="hit_dice_total" calculated="optional"/>
+              </Inline>
+              <NumberInput id="hit_dice_1" name="hit_dice"/>
+              <Label for="hit_dice_1" action="ac_roll_hit_dice">Hit Dice</Label>
+            </Border>
+          </Column>
+
+          <Column weight="1">
+            <Border borderStyle="simplebox">
+              <Inline>
+                <Label for="death_save_successes_1">Successes</Label>
+                <Background src="line">
+                  <Checkbox id="death_save_successes_1" name="death_save_success_1"/>
+                  <Checkbox id="death_save_successes_1" name="death_save_success_2"/>
+                  <Checkbox id="death_save_successes_1" name="death_save_success_3"/>
+                </Background>
+              </Inline>
+
+              <Inline>
+                <Label for="death_save_failures_1">Failures</Label>
+                <Background src="line">
+                  <Checkbox id="death_save_failures_1" name="death_save_failure_1"/>
+                  <Checkbox id="death_save_failures_1" name="death_save_failure_2"/>
+                  <Checkbox id="death_save_failures_1" name="death_save_failure_3"/>
+                </Background>
+              </Inline>
+              <Label>Death Saves</Label>
+            </Border>
+          </Column>
+        </Row>
+
+        <Border borderStyle="simplebox">
+          <Row>
+            <Column weight="2">Name</Column>
+            <Column weight="1">Attack Bonus</Column>
+            <Column weight="2">Name</Column>
+            <Column weight="1"></Column>
+          </Row>
+          <Loop id="attacks_1" list="attacks" key="attack">
+            <Column weight="2">
+              <TextInput name="attack.name"/>
+            </Column>
+
+            <Column weight="1">
+              <Inline>
+                +
+                <NumberInput name="attack.name"/>
+              </Inline>
+            </Column>
+
+            <Column weight="2">...</Column>
+            <Column weight="1">
+              <Icon icon="sword" action="ac_attack" argument="attack"/>
+              <Icon icon="edit" action="ac_open" argument="attack"/>
+            </Column>
+          </Loop>
+          <Label>Attacks &amp; Spellcasting</Label>
+        </Border>
+
+        <Border borderStyle="simplebox">
+          <Inline>
+            <Loop id="currencies_1" name="global.currencies" key="$currency">
+              <Prefab name="currency" label="$currency.name" index="$currency.index"/>
+            </Loop>
+          </Inline>
+
+          <Loop>
+            <!-- Items and inventory -->
+          </Loop>
+          <Label>Equipment</Label>
+        </Border>
+      </Column>
+
+      <!-- Bio, Features and Traits -->
+      <Column weight="1">
+        <Border borderStyle="simpleborder">
+          <TextArea id="personality_traits_1" name="personality_traits"/>
+          <Label for="personality_traits_1">Personality Traits</Label>
+        </Border>
+
+        <Border borderStyle="simpleborder">
+          <TextArea id="ideals_1" name="ideals"/>
+          <Label for="ideals_1">Ideals</Label>
+        </Border>
+
+        <Border borderStyle="simpleborder">
+          <TextArea id="bonad_1" name="bonds"/>
+          <Label for="bonad_1">Bonds</Label>
+        </Border>
+
+        <Border borderStyle="simpleborder">
+          <TextArea id="flaws_1" name="flaws"/>
+          <Label for="flaws_1">Flaws</Label>
+        </Border>
+
+        <Border borderStyle="simpleBorder">
+          <Loop>
+            <!-- Features and Traits -->
+          </Loop>
+          <Label>Features &amp; Traits</Label>
+        </Border>
+      </Column>
+    </Row>
+  </Page>
+
+  <Prefabs>
+    <NewPrefab name="ability_score" properties="label,score,mod">
+      <Background src="/ability_score.svg">
+        <Label>{{properties.label}}</Label>
+        <NumberInput id="{{properties.mod}}_{{properties.uuid}}" name="{{properties.mod}}" calculated="true"/>
+        <NumberInput id="{{properties.score}}_{{properties.uuid}}" name="{{properties.score}}"/>
+      </Background>
+    </NewPrefab>
+
+    <NewPrefab name="skill" properties="">
+      <Row>
+        <Column weight="1"><Checkbox name="{{properties.skill.key}}"/></Column>
+        <Column weight="1">
+          <NumberInput id="acrobatics_proficiency_1" name="acrobatics_proficiency" calculated="true" calculateMethod="calc_skill_proficiency"/>
+        </Column>
+        <Column weight="3"><Label for="acrobatics_proficiency_1" action="ac_roll_skill">Acrobatics (Dex)</Label></Column>
+      </Row>
+    </NewPrefab>
+  </Prefabs>
+</Sheet>
+
