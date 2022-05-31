@@ -107,6 +107,8 @@ export class DataController<T extends Record<string, unknown>> {
       if (canLoad(packet, reloadPolicy, this.staleTime)) { loadRefs.push(ref); }
     }
 
+    if (loadRefs.length === 0) { return []; }
+
     try {
       const packets = await loadDocuments(loadRefs);
       const docs = getSuccessfulDocuments<T>(packets);

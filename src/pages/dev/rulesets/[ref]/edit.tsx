@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { RulesetForm } from "components/reroll/rulesets/Form";
 import Link from "next/link";
 import { Button } from "@owl-factory/components/button";
+import { toJS } from "mobx";
 
 /**
  * Renders a development page for editing a ruleset
@@ -18,7 +19,7 @@ const EditRuleset = observer(() => {
   React.useEffect(() => {
     RulesetData.load(rulesetRef);
   }, [rulesetRef]);
-  const ruleset = RulesetData.get(rulesetRef);
+  const ruleset = toJS(RulesetData.get(rulesetRef));
 
   return (
     <Page>

@@ -7,6 +7,7 @@ interface InputProps {
   id?: string;
   name: string;
   onChange?: (e: React.ChangeEvent<any>) => void;
+  onBlur?: (e: React.ChangeEvent<any>) => void;
   placeholder?: string;
   style?: CSSProperties;
   type: "text" | "password" | "email" | "number" | "textarea"
@@ -27,6 +28,8 @@ interface InputProps {
 export function Input(props: InputProps) {
   // Makes Formik work right
   const [ field ] = useField(props);
+
+  if (props.onBlur !== undefined) { field.onBlur = props.onBlur; }
 
   // Build the input here so we can return it solo or put it into a floating label
   const input = (

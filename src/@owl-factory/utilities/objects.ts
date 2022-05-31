@@ -106,13 +106,8 @@ export function getDeepKeys(obj: Record<string, unknown>): string[] {
  * @param obj The object to deep copy
  */
 export function deepCopy(obj: Record<string, unknown>) {
-  const newObj: Record<string, unknown> = {};
-  const keys = getDeepKeys(obj);
-  for (const key of keys) {
-    const value = read(obj, key);
-    set(newObj, key, value);
-  }
-  return newObj;
+  // TODO - replace with a better deep copy. The previous version broke arrays
+  return JSON.parse(JSON.stringify(obj));
 }
 
 /**

@@ -118,6 +118,7 @@ export class DataManager<T extends Record<string, unknown>> {
   public async load(targetRefs: Ref64[] | Ref64 | null, reloadPolicy?: ReloadPolicy): Promise<void> {
     if (targetRefs === null) { return; }
     const refs = Array.isArray(targetRefs) ? targetRefs : [targetRefs];
+    if (refs.length === 0) { return; }
     const loadedDocs = await this.data.load(
       refs,
       reloadPolicy || this.reloadPolicy,
@@ -190,6 +191,18 @@ export class DataManager<T extends Record<string, unknown>> {
   }
 
   /**
+   * Determines if a document is loaded
+   * @param ref The ref of a document
+   * @returns True if the document is loaded. False if it is not loaded or missing
+   */
+  public isLoaded(ref?: Ref64): boolean {
+    if (!ref) { return false; }
+    const packet = this.data.get(ref);
+    if (!packet) { return false; }
+    return packet.meta.loaded;
+  }
+
+  /**
    * Adds a single grouping of documents
    * @param name The name of the group to add
    * @param validation A validation function that determines if a document belongs to the group.
@@ -247,7 +260,7 @@ export class DataManager<T extends Record<string, unknown>> {
    * @param docs The documents to create
    * @returns A list of packets, for for each document, returning the created document or an error message
    */
-   @Cacheable()
+  //  @Cacheable()
    public async read(refs: Ref64 | Ref64[]): Promise<CrudPacket<T>[]> {
     if (!Array.isArray(refs)) { refs = [refs]; }
 
