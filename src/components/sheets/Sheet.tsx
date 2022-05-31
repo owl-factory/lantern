@@ -1,31 +1,23 @@
-import { SheetRenderController } from "controllers/layout/SheetController";
+import { ActorSheetData } from "controllers/data/ActorSheetData";
 import { action, makeObservable, observable } from "mobx";
 import { observer } from "mobx-react-lite";
 import React from "react";
+import { SheetPage } from "./SheetPage";
 import { SheetTabs } from "./Tabs";
 
-const PARSER = new DOMParser();
-const sheetController = new SheetRenderController();
 
 const Sheet = observer((props: any) => {
-  const [ xml, setXML ] = React.useState<Document | null>(null);
-  const [ tab, setTab ] = React.useState(0);
+  const [ activeTab, setActiveTab ] = React.useState(0);
 
   React.useEffect(() => {
-    try {
-      const parsedXML = PARSER.parseFromString(props.xml, "text/xml");
-      setXML(parsedXML);
-      sheetController.load(parsedXML);
-    } catch (e) {
-      setXML(null);
-    }
+    ActorSheetData.loadSheet("test", props.xml);
   }, [props.xml]);
-
-  if (xml === null) { return <></>; }
 
   return (
     <div>
-      <SheetTabs tab={tab} setTab={setTab} ctrl={sheetController}/>
+      <SheetTabs id="test" activeTab={activeTab} setActiveTab={setActiveTab} />
+      <hr/>
+      <SheetPage id="test" activeTab={activeTab} />
     </div>
   );
 });

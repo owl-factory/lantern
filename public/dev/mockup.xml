@@ -1,4 +1,8 @@
 <Sheet>
+  <Page name="Bio">
+
+  </Page>
+  
   <Page name="Character Sheet" access="edit">
     <!-- Character Information -->
     <Row>
@@ -236,6 +240,10 @@
         </Border>
       </Column>
     </Row>
+  </Page>
+
+  <Page name="Spells">
+
   </Page>
 
   <Prefabs>
