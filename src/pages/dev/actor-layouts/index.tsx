@@ -1,17 +1,16 @@
-import { rest } from "@owl-factory/https/rest";
 import Page from "components/design/Page";
-import { Layout } from "controllers/layout/Layout";
+import { ActorSheet } from "components/sheets/ActorSheet";
 import React from "react";
 
 export default function ActorLayoutsTest() {
-  let res = "";
+  const [ xml, setXML ] = React.useState("");
   React.useEffect(() => {
-    fetch("/dev/mockup.xml").then(async (result: Response) => {res = await result.text(); console.log(res)});
+    fetch("/dev/mockup.xml").then(async (result: Response) => {setXML(await result.text());});
   }, []);
 
   return (
     <Page>
-      <Layout/>
+      <ActorSheet xml={xml}/>
     </Page>
   );
 }
