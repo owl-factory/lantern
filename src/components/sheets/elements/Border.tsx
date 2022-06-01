@@ -1,6 +1,7 @@
 import React from "react";
 import { BorderElement } from "types/layouts/borderElement";
 import { SheetElement } from "../SheetElement";
+import style from "../styling/Border.module.scss";
 
 interface SheetBorderProps {
   element: BorderElement;
@@ -13,7 +14,7 @@ export function SheetBorder(props: SheetBorderProps) {
     elements.push(<SheetElement element={childElement}/>);
   }
   return (
-    <div style={{borderStyle: "solid", borderWidth: 1}}>
+    <div className={`${style.border}`}>
       {elements}
     </div>
   );

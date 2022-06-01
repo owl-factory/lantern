@@ -1,6 +1,7 @@
 import React from "react";
 import { ColumnElement } from "types/layouts/columnElement";
 import { SheetElement } from "../SheetElement";
+import style from "../styling/Column.module.scss";
 
 interface SheetColumnProps {
   element: ColumnElement;
@@ -13,7 +14,7 @@ export function SheetColumn(props: SheetColumnProps) {
     elements.push(<SheetElement element={childElement}/>);
   }
   return (
-    <div style={{flexGrow: props.element.weight}}>
+    <div className={`${style.column}`} style={{flexGrow: props.element.weight}}>
       {elements}
     </div>
   );

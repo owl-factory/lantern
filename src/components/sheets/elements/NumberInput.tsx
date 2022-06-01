@@ -1,15 +1,22 @@
+import { useField } from "formik";
 import React from "react";
-import { PageElement } from "types/layouts/pageElement";
-import { SheetElement } from "../SheetElement";
+import { NumberInputElement } from "types/layouts/numberInputElement";
+import style from "../styling/Input.module.scss";
 
 interface SheetNumberInputProps {
-  element: PageElement;
+  element: NumberInputElement;
 }
 
 export function SheetNumberInput(props: SheetNumberInputProps) {
+  // Makes Formik work right
+  const [ field ] = useField(props.element);
   return (
-    <>
-      NumberInput
-    </>
+    <div>
+      <input
+        type="number"
+        className={`${style.actorSheetInput}`}
+        {...field}
+      />
+    </div>
   );
 }

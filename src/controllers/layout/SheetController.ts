@@ -102,6 +102,8 @@ function parseSheetElement(sheetElement: Element) {
       return parseIconElement(sheetElement);
     case PageElementType.Label:
       return parseLabelElement(sheetElement);
+    case PageElementType.Checkbox:
+      return parseCheckboxElement(sheetElement);
     case PageElementType.NumberInput:
       return parseNumberInputElement(sheetElement);
     case PageElementType.TextInput:
@@ -208,7 +210,17 @@ function parseLabelElement(labelElement: Element) {
   const elementDetails: LabelElement = {
     element: PageElementType.Label,
     for: labelElement.getAttribute("for") || "",
-    text: "Label",
+    text: labelElement.textContent || "Unknown",
+  };
+
+  return elementDetails;
+}
+
+function parseCheckboxElement(checkboxElement: Element) {
+  const elementDetails: NumberInputElement = {
+    element: PageElementType.Checkbox,
+    id: checkboxElement.getAttribute("id") || "",
+    name: checkboxElement.getAttribute("name") || "missing_name",
   };
 
   return elementDetails;
@@ -218,7 +230,7 @@ function parseNumberInputElement(numberInputElement: Element) {
   const elementDetails: NumberInputElement = {
     element: PageElementType.NumberInput,
     id: numberInputElement.getAttribute("id") || "",
-    name: numberInputElement.getAttribute("name") || "",
+    name: numberInputElement.getAttribute("name") || "missing_name",
   };
 
   return elementDetails;
@@ -228,7 +240,7 @@ function parseTextInputElement(textInputElement: Element) {
   const elementDetails: TextInputElement = {
     element: PageElementType.TextInput,
     id: textInputElement.getAttribute("id") || "",
-    name: textInputElement.getAttribute("name") || "",
+    name: textInputElement.getAttribute("name") || "missing_name",
   };
 
   return elementDetails;
@@ -285,6 +297,8 @@ function elementNameToPageElementType(tagName: string) {
       return PageElementType.Icon;
     case "label":
       return PageElementType.Label;
+    case "checkbox":
+      return PageElementType.Checkbox;
     case "numberinput":
       return PageElementType.NumberInput;
     case "textinput":

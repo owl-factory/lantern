@@ -1,6 +1,7 @@
 import React from "react";
 import { RowElement } from "types/layouts/rowElement";
 import { SheetElement } from "../SheetElement";
+import style from "../styling/Row.module.scss";
 
 interface SheetRowProps {
   element: RowElement;
@@ -13,7 +14,7 @@ export function SheetRow(props: SheetRowProps) {
     elements.push(<SheetElement element={childElement}/>);
   }
   return (
-    <div style={{display: "flex"}}>
+    <div className={`${style.row}`} style={{}}>
       {elements}
     </div>
   );

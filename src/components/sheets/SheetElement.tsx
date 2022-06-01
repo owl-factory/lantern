@@ -12,6 +12,7 @@ import {
   SheetTextArea,
   SheetTextInput,
 } from "./elements";
+import { SheetCheckbox } from "./elements/Checkbox";
 
 export function SheetElement(props: any) {
   switch (props.element?.element) {
@@ -27,6 +28,8 @@ export function SheetElement(props: any) {
       return <SheetInline element={props.element}/>;
     case PageElementType.Label:
       return <SheetLabel element={props.element}/>;
+    case PageElementType.Checkbox:
+      return <SheetCheckbox element={props.element}/>;
     case PageElementType.NumberInput:
       return <SheetNumberInput element={props.element}/>;
     case PageElementType.TextInput:

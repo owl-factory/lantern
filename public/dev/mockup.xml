@@ -22,7 +22,7 @@
                   <TextInput id="class1_1" name="class1"/>
                 </Column>
                 <Column weight="1">
-                  <NumberInput id="level1" min="1"/>
+                  <NumberInput id="level1_1" name="level1" min="1"/>
                 </Column>
               </Row>
               <Label for="class1_1">Class &amp; Level</Label>

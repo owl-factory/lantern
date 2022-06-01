@@ -12,6 +12,7 @@ export enum PageElementType {
 
   Icon,
   Label,
+  Checkbox,
   NumberInput,
   TextInput,
   TextArea,
