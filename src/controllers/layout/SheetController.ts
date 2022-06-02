@@ -1,9 +1,8 @@
-import { action, makeObservable, observable } from "mobx";
+import { action, makeObservable, observable, toJS } from "mobx";
 import { PageElementType } from "types/enums/pageElementType";
 import { BackgroundElement } from "types/layouts/backgroundElement";
 import { BorderElement } from "types/layouts/borderElement";
 import { ColumnElement } from "types/layouts/columnElement";
-import { GenericSheetElement } from "types/layouts/genericElement";
 import { IconElement } from "types/layouts/iconElement";
 import { InlineElement } from "types/layouts/inlineElement";
 import { LabelElement } from "types/layouts/labelElement";
@@ -12,6 +11,10 @@ import { PageElement } from "types/layouts/pageElement";
 import { RowElement } from "types/layouts/rowElement";
 import { TextAreaElement } from "types/layouts/textAreaElement";
 import { TextInputElement } from "types/layouts/textInputElement";
+import { JSDOM } from "jsdom";
+import { parseXML } from "./parser";
+import { LayoutElement } from "types/layouts/layoutElement";
+import { PageableElement } from "types/layouts/pageableElement";
 
 interface SheetPage {
   name: string;
@@ -26,17 +29,18 @@ export interface SheetTab {
 }
 
 export class SheetController<T> {
-  protected parser: DOMParser = new DOMParser();
 
   public tabs: Record<string, SheetTab[]> = {};
-  public pages: Record<string, PageElement[]> = {};
+  public pages: Record<string, PageElement> = {};
+  public prefabs: Record<string, Record<string, PageElement>> = {};
 
   constructor() {
     makeObservable(this, {
       pages: observable,
       tabs: observable,
 
-      loadPages: action,
+      load: action,
+      loadPage: action,
       loadTabs: action,
     });
   }
@@ -47,13 +51,64 @@ export class SheetController<T> {
    * @param xml The raw XML string
    */
   public load(key: string, xml: string) {
-    const xmlDoc: Document = this.parser.parseFromString(xml, "text/xml");
-    const xmlSheets = xmlDoc.getElementsByTagName("Sheet");
-    if (xmlSheets.length === 0) { throw `An invalid XML document was given for key '${key}'`; }
-    const xmlSheet = xmlSheets[0];
+    const xmlDoc: Document = parseXML(xml);
+    const sheet: Element = xmlDoc.children[0];
 
-    this.loadTabs(key, xmlSheet);
-    this.loadPages(key, xmlSheet);
+    if (sheet.tagName.toLocaleLowerCase() !== "sheet") {
+      throw `The first element of an actor sheet must be <Sheet>`;
+    }
+
+    let layout: Element | undefined = undefined;
+    let prefabs: Element | undefined = undefined;
+
+    for (const child of sheet.children) {
+      switch (child.tagName.toLocaleLowerCase()) {
+        case "layout": // TODO - make these cases an enum or variable
+          if (layout) {
+            console.warn("Multiple layouts were given for a single document. Only the first will be rendered");
+            break;
+          }
+          layout = child;
+          break;
+
+        case "prefabs":
+          if (prefabs) {
+            console.warn("Multiple 'prefabs' declarations were made. Only the first will be used");
+            break;
+          }
+          prefabs = child;
+          break;
+
+        default:
+          console.warn(
+            `The element '${child.tagName}' is not allowed as a direct child of the Sheet component. It will be ignored`
+          );
+          break;
+      }
+    }
+
+    if (!layout) { throw `A 'Layout' element is required`; }
+    this.loadPage(key, layout);
+    // console.log("post-load",  toJS(this.pages))
+    // const xmlSheets = xmlDoc.getElementsByTagName("Sheet");
+    // if (xmlSheets.length === 0) { throw `An invalid XML document was given for key '${key}'`; }
+    // const xmlSheet = xmlSheets[0];
+
+    // this.loadTabs(key, xmlSheet);
+    // this.loadPages(key, xmlSheet);
+  }
+
+  public loadPage(key: string, layout: Element) {
+    const elementDetails: LayoutElement = {
+      element: PageElementType.Layout,
+      children: [],
+    };
+
+    for (const childElement of layout.children) {
+      elementDetails.children.push(parseSheetElement(childElement) as any);
+    }
+    console.log(elementDetails)
+    this.pages[key] = elementDetails;
   }
 
   /**
@@ -62,9 +117,9 @@ export class SheetController<T> {
    * @param index The page of the actor sheet to pull
    * @returns A collection of element descriptors for building out the actor sheet
    */
-  public getPage(key: string, index: number) {
-    if (this.pages[key] === undefined) { return { element: PageElementType.Page, children: [] }; }
-    return this.pages[key][index];
+  public getPage(key: string) {
+    if (this.pages[key] === undefined) { return { element: PageElementType.Sheet, children: [] }; }
+    return this.pages[key];
   }
 
   /**
@@ -104,6 +159,11 @@ export class SheetController<T> {
 
     this.pages[key] = pages;
   }
+
+  public loadPrefabs(key: string, xmlDoc: Element): void {
+    const prefabElement = xmlDoc.getElementsByTagName("Prefabs");
+    if (prefabElement.length === 0) { return; } 
+  }
 }
 
 /**
@@ -114,6 +174,8 @@ export class SheetController<T> {
 function parseSheetElement(sheetElement: Element) {
   const pageElementType = elementNameToPageElementType(sheetElement.tagName);
   switch(pageElementType) {
+    case PageElementType.Pageable:
+      return parsePageableElement(sheetElement);
     case PageElementType.Page:
       return parsePageElement(sheetElement);
     case PageElementType.Row:
@@ -143,6 +205,37 @@ function parseSheetElement(sheetElement: Element) {
     case PageElementType.Select:
       return parseSelectElement(sheetElement);
   }
+}
+
+/**
+ * Converts a page element into a page element descriptor
+ * @param pageElement The page element to convert
+ * @returns A page element descriptor
+ */
+ function parsePageableElement(pageElement: Element) {
+  const elementDetails: PageableElement = {
+    element: PageElementType.Pageable,
+    tabs: [],
+    pages: [],
+    children: [],
+  };
+
+  for (const child of pageElement.children) {
+    if (child.tagName.toLocaleLowerCase() === "page") {
+      const tab: SheetTab = {
+        name: child.getAttribute("name") || "Unknown",
+        access: child.getAttribute("access") || "admin",
+      };
+      const page = parsePageElement(child);
+      elementDetails.tabs.push(tab);
+      elementDetails.pages.push(page);
+
+    } else {
+      elementDetails.children.push(parseSheetElement(child) as any);
+    }
+  }
+
+  return elementDetails;
 }
 
 /**
@@ -371,6 +464,8 @@ function elementNameToPageElementType(tagName: string) {
   switch(tagName.toLocaleLowerCase()) {
     case "sheet":
       return PageElementType.Sheet;
+    case "pageable":
+      return PageElementType.Pageable;
     case "page":
       return PageElementType.Page;
     case "prefabs":

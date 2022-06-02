@@ -27,8 +27,8 @@ class ActorSheetDataManager extends DataManager<Partial<ActorSheetDocument>> {
     return this.sheet.getTabs(key);
   }
 
-  public getPage(key: string, index: number) {
-    return this.sheet.getPage(key, index);
+  public getPage(key: string) {
+    return this.sheet.getPage(key);
   }
 }
 

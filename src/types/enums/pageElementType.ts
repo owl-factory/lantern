@@ -1,5 +1,7 @@
 export enum PageElementType {
   Sheet,
+  Layout,
+  Pageable,
   Page,
   Prefabs,
   NewPrefab,

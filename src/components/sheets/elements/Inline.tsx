@@ -8,7 +8,7 @@ interface SheetInlineProps {
 
 /**
  * Renders an inline element that indicates that the contents will be rendered inline
- * @param element The checkbox element description
+ * @param element The inline element description
  */
 export function SheetInline(props: SheetInlineProps) {
   const childElements = props.element.children || [];

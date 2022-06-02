@@ -13,9 +13,15 @@ import {
   SheetTextInput,
 } from "./elements";
 import { SheetCheckbox } from "./elements/Checkbox";
+import { SheetPage } from "./elements/Page";
+import { SheetPageable } from "./elements/Pageable";
 
 export function SheetElement(props: any) {
   switch (props.element?.element) {
+    case PageElementType.Pageable:
+      return <SheetPageable element={props.element}/>;
+    case PageElementType.Page:
+      return <SheetPage element={props.element}/>;
     case PageElementType.Row:
       return <SheetRow element={props.element}/>;
     case PageElementType.Column:

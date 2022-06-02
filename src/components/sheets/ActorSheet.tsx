@@ -1,25 +1,35 @@
 import { ActorSheetData } from "controllers/data/ActorSheetData";
+import { Formik } from "formik";
 import { observer } from "mobx-react-lite";
 import React from "react";
-import { SheetPage } from "./SheetPage";
-import { SheetTabs } from "./Tabs";
+import { SheetElement } from "./SheetElement";
 
 /**
  * Renders an actor sheet
  */
 export const ActorSheet = observer((props: any) => {
-  const [ activeTab, setActiveTab ] = React.useState(0);
-
   React.useEffect(() => {
     ActorSheetData.loadSheet("test", props.xml);
   }, [props.xml]);
 
+  const page = ActorSheetData.getPage("test");
+  const sheetElements: JSX.Element[] = [];
+
+  for(const childElement of page.children || []) {
+    sheetElements.push(
+      <SheetElement id={props.id} element={childElement}/>
+    );
+  }
+
   return (
-    <div>
-      <SheetTabs id="test" activeTab={activeTab} setActiveTab={setActiveTab} />
-      <hr/>
-      <SheetPage id="test" activeTab={activeTab} />
-    </div>
+    <Formik
+      initialValues={{}}
+      onSubmit={console.log}
+    >
+      <>
+        {sheetElements}
+      </>
+    </Formik>
   );
 });
 
