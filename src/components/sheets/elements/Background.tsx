@@ -6,6 +6,10 @@ interface SheetBackgroundProps {
   element: BackgroundElement;
 }
 
+/**
+ * Renders an image of the background
+ * @param element The SheetBackground element description
+ */
 export function SheetBackground(props: SheetBackgroundProps) {
   const childElements = props.element.children || [];
   const elements: JSX.Element[] = [];

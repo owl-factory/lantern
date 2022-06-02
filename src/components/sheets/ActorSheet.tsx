@@ -1,11 +1,25 @@
-import dynamic from "next/dynamic";
+import { ActorSheetData } from "controllers/data/ActorSheetData";
+import { observer } from "mobx-react-lite";
 import React from "react";
+import { SheetPage } from "./SheetPage";
+import { SheetTabs } from "./Tabs";
 
-const Sheet = dynamic(
-  () => import('./Sheet'),
-  { loading: () => <></>, ssr: false},
-);
+/**
+ * Renders an actor sheet
+ */
+export const ActorSheet = observer((props: any) => {
+  const [ activeTab, setActiveTab ] = React.useState(0);
 
-export function ActorSheet(props: any) {
-  return <Sheet xml={props.xml}/>;
-}
+  React.useEffect(() => {
+    ActorSheetData.loadSheet("test", props.xml);
+  }, [props.xml]);
+
+  return (
+    <div>
+      <SheetTabs id="test" activeTab={activeTab} setActiveTab={setActiveTab} />
+      <hr/>
+      <SheetPage id="test" activeTab={activeTab} />
+    </div>
+  );
+});
+

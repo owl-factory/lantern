@@ -5,6 +5,10 @@ interface SheetLabelProps {
   element: LabelElement;
 }
 
+/**
+ * Renders a label
+ * @param element The label element description
+ */
 export function SheetLabel(props: SheetLabelProps) {
   return (
     <label htmlFor={props.element.for}>

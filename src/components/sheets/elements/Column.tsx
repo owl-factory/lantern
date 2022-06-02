@@ -7,6 +7,10 @@ interface SheetColumnProps {
   element: ColumnElement;
 }
 
+/**
+ * Renders a checkbox input element
+ * @param element The checkbox element description
+ */
 export function SheetColumn(props: SheetColumnProps) {
   const childElements = props.element.children || [];
   const elements: JSX.Element[] = [];

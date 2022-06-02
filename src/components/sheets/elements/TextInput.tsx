@@ -7,6 +7,10 @@ interface SheetTextInputProps {
   element: TextInputElement;
 }
 
+/**
+ * Renders a text input element
+ * @param element The text input element description
+ */
 export function SheetTextInput(props: SheetTextInputProps) {
   // Makes Formik work right
   const [ field ] = useField(props.element);

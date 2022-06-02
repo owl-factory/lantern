@@ -7,6 +7,10 @@ interface SheetBorderProps {
   element: BorderElement;
 }
 
+/**
+ * Renders a border around given children
+ * @param element The SheetBorder element description
+ */
 export function SheetBorder(props: SheetBorderProps) {
   const childElements = props.element.children || [];
   const elements: JSX.Element[] = [];

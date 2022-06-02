@@ -7,6 +7,10 @@ interface SheetRowProps {
   element: RowElement;
 }
 
+/**
+ * Renders a row element
+ * @param element The row element description
+ */
 export function SheetRow(props: SheetRowProps) {
   const childElements = props.element.children || [];
   const elements: JSX.Element[] = [];

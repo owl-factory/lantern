@@ -41,6 +41,11 @@ export class SheetController<T> {
     });
   }
 
+  /**
+   * Loads an XML document into the Sheet Controller
+   * @param key The key of the sheet to load
+   * @param xml The raw XML string
+   */
   public load(key: string, xml: string) {
     const xmlDoc: Document = this.parser.parseFromString(xml, "text/xml");
     const xmlSheets = xmlDoc.getElementsByTagName("Sheet");
@@ -51,15 +56,30 @@ export class SheetController<T> {
     this.loadPages(key, xmlSheet);
   }
 
+  /**
+   * Retrieves a single page for rendering
+   * @param key The key of the actor sheet to render
+   * @param index The page of the actor sheet to pull
+   * @returns A collection of element descriptors for building out the actor sheet
+   */
   public getPage(key: string, index: number) {
     if (this.pages[key] === undefined) { return { element: PageElementType.Page, children: [] }; }
     return this.pages[key][index];
   }
 
+  /**
+   * Gets the tabs for an actor sheet
+   * @param key Gets the tabs for the given key
+   */
   public getTabs(key: string) {
     return this.tabs[key];
   }
 
+  /**
+   * Loads in tabs from the XML document
+   * @param key The key of the actor document
+   * @param xmlDoc The parsed XML document
+   */
   public loadTabs(key: string, xmlDoc: Element): void {
     console.log(xmlDoc);
     const pages = xmlDoc.getElementsByTagName("Page");
@@ -70,6 +90,11 @@ export class SheetController<T> {
     this.tabs[key] = tabs;
   }
 
+  /**
+   * Loads in pages from the XML document
+   * @param key The key of the actor document
+   * @param xmlDoc The parsed XML document
+   */
   public loadPages(key: string, xmlDoc: Element): void {
     const pageElements = xmlDoc.getElementsByTagName("Page");
     const pages: any = [];
@@ -81,6 +106,11 @@ export class SheetController<T> {
   }
 }
 
+/**
+ * Parses an unknown sheet element into a readable descriptor
+ * @param sheetElement An unknown sheet element document
+ * @returns A parsed sheet element descriptor
+ */
 function parseSheetElement(sheetElement: Element) {
   const pageElementType = elementNameToPageElementType(sheetElement.tagName);
   switch(pageElementType) {
@@ -115,6 +145,11 @@ function parseSheetElement(sheetElement: Element) {
   }
 }
 
+/**
+ * Converts a page element into a page element descriptor
+ * @param pageElement The page element to convert
+ * @returns A page element descriptor
+ */
 function parsePageElement(pageElement: Element) {
   const elementDetails: PageElement = {
     element: PageElementType.Page,
@@ -128,6 +163,11 @@ function parsePageElement(pageElement: Element) {
   return elementDetails;
 }
 
+/**
+ * Converts a row element into a row element descriptor
+ * @param rowElement The row element to convert
+ * @returns A row element descriptor
+ */
 function parseRowElement(rowElement: Element) {
   const elementDetails: RowElement = {
     element: PageElementType.Row,
@@ -141,6 +181,11 @@ function parseRowElement(rowElement: Element) {
   return elementDetails;
 }
 
+/**
+ * Converts a column element into a column element descriptor
+ * @param columnElement The column element to convert
+ * @returns A column element descriptor
+ */
 function parseColumnElement(columnElement: Element) {
   const elementDetails: ColumnElement = {
     element: PageElementType.Column,
@@ -155,6 +200,11 @@ function parseColumnElement(columnElement: Element) {
   return elementDetails;
 }
 
+/**
+ * Converts a background element into a background element descriptor
+ * @param backgroundElement The background element to convert
+ * @returns A background element descriptor
+ */
 function parseBackgroundElement(backgroundElement: Element) {
   const elementDetails: BackgroundElement = {
     element: PageElementType.Background,
@@ -169,6 +219,11 @@ function parseBackgroundElement(backgroundElement: Element) {
   return elementDetails;
 }
 
+/**
+ * Converts a page element into a page element descriptor
+ * @param pageElement The page element to convert
+ * @returns A page element descriptor
+ */
 function parseBorderElement(borderElement: Element) {
   const elementDetails: BorderElement = {
     element: PageElementType.Border,
@@ -183,6 +238,11 @@ function parseBorderElement(borderElement: Element) {
   return elementDetails;
 }
 
+/**
+ * Converts a inline element into a inline element descriptor
+ * @param inlineElement The inline element to convert
+ * @returns A inline element descriptor
+ */
 function parseInlineElement(inlineElement: Element) {
   const elementDetails: InlineElement = {
     element: PageElementType.Inline,
@@ -196,6 +256,11 @@ function parseInlineElement(inlineElement: Element) {
   return elementDetails;
 }
 
+/**
+ * Converts a icon element into a icon element descriptor
+ * @param iconElement The icon element to convert
+ * @returns A icon element descriptor
+ */
 function parseIconElement(inlineElement: Element) {
   const elementDetails: IconElement = {
     element: PageElementType.Icon,
@@ -205,7 +270,11 @@ function parseIconElement(inlineElement: Element) {
   return elementDetails;
 }
 
-
+/**
+ * Converts a label element into a label element descriptor
+ * @param labelElement The label element to convert
+ * @returns A label element descriptor
+ */
 function parseLabelElement(labelElement: Element) {
   const elementDetails: LabelElement = {
     element: PageElementType.Label,
@@ -216,6 +285,11 @@ function parseLabelElement(labelElement: Element) {
   return elementDetails;
 }
 
+/**
+ * Converts a checkbox element into a checkbox element descriptor
+ * @param pageElement The checkbox element to convert
+ * @returns A checkbox element descriptor
+ */
 function parseCheckboxElement(checkboxElement: Element) {
   const elementDetails: NumberInputElement = {
     element: PageElementType.Checkbox,
@@ -226,6 +300,11 @@ function parseCheckboxElement(checkboxElement: Element) {
   return elementDetails;
 }
 
+/**
+ * Converts a number input element into a number input element descriptor
+ * @param numberInputElement The number input element to convert
+ * @returns A number input element descriptor
+ */
 function parseNumberInputElement(numberInputElement: Element) {
   const elementDetails: NumberInputElement = {
     element: PageElementType.NumberInput,
@@ -236,6 +315,11 @@ function parseNumberInputElement(numberInputElement: Element) {
   return elementDetails;
 }
 
+/**
+ * Converts a text input element into a text input element descriptor
+ * @param textInputElement The text input element to convert
+ * @returns A text input element descriptor
+ */
 function parseTextInputElement(textInputElement: Element) {
   const elementDetails: TextInputElement = {
     element: PageElementType.TextInput,
@@ -246,6 +330,11 @@ function parseTextInputElement(textInputElement: Element) {
   return elementDetails;
 }
 
+/**
+ * Converts a text area element into a text area element descriptor
+ * @param textAreaElement The text area element to convert
+ * @returns A text area element descriptor
+ */
 function parseTextAreaElement(textAreaElement: Element) {
   const elementDetails: TextAreaElement = {
     element: PageElementType.TextArea,
@@ -256,6 +345,11 @@ function parseTextAreaElement(textAreaElement: Element) {
   return elementDetails;
 }
 
+/**
+ * Converts a select element into a select element descriptor
+ * @param selectElement The select element to convert
+ * @returns A select element descriptor
+ */
 function parseSelectElement(selectElement: Element) {
   const elementDetails: TextAreaElement = {
     element: PageElementType.Select,

@@ -6,6 +6,10 @@ interface SheetCheckboxProps {
   element: CheckboxElement;
 }
 
+/**
+ * Renders a checkbox input element
+ * @param element The checkbox element description
+ */
 export function SheetCheckbox(props: SheetCheckboxProps) {
   // Makes Formik work right
   const [ field ] = useField(props.element);
