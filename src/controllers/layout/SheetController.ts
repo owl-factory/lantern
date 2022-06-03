@@ -23,14 +23,14 @@ interface SheetPage {
 }
 
 
-export interface SheetTab {
+export interface SheetTabElement {
   name: string;
   access: string;
 }
 
 export class SheetController<T> {
 
-  public tabs: Record<string, SheetTab[]> = {};
+  public tabs: Record<string, SheetTabElement[]> = {};
   public pages: Record<string, PageElement> = {};
   public prefabs: Record<string, Record<string, PageElement>> = {};
 
@@ -138,7 +138,7 @@ export class SheetController<T> {
   public loadTabs(key: string, xmlDoc: Element): void {
     console.log(xmlDoc);
     const pages = xmlDoc.getElementsByTagName("Page");
-    const tabs: SheetTab[] = [];
+    const tabs: SheetTabElement[] = [];
     for (const page of pages) {
       tabs.push({ name: (page.getAttribute("name") || "Untitled"), access: page.getAttribute("access") || "admin" });
     }
@@ -222,7 +222,7 @@ function parseSheetElement(sheetElement: Element) {
 
   for (const child of pageElement.children) {
     if (child.tagName.toLocaleLowerCase() === "page") {
-      const tab: SheetTab = {
+      const tab: SheetTabElement = {
         name: child.getAttribute("name") || "Unknown",
         access: child.getAttribute("access") || "admin",
       };
