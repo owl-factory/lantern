@@ -90,6 +90,11 @@
 
                 <Border borderStyle="simpleBorder">
                   <Prefab name="skill" label="Acrobatics"/>
+                  <Prefab name="skill" label="Acrobatics"/>
+                  <Prefab name="skill" label="Acrobatics"/>
+                  <Prefab name="skill" label="Acrobatics"/>
+                  <Prefab name="skill" label="Acrobatics"/>
+                  <Label>Skills</Label>
                 </Border>
               </Column>
             </Row>
@@ -249,6 +254,15 @@
         <Pageable>
           <Page name="Test One">
             <Label>Testing!</Label>
+            <Inline>
+              <Radio id="advantage_1" name="advantage_disadvantage" value="1">Advantage</Radio>
+              <Radio id="no_advantage_1" name="advantage_disadvantage" value="0">Normal</Radio>
+              <Radio id="disadvantage_1" name="advantage_disadvantage" value="-1">Disadvantage</Radio>
+            </Inline>
+
+            <Inline><Radio id="advantage_2" name="advantage_disadvantage" value="1"/><Label for="advantage_2">Advantage</Label></Inline>
+            <Inline><Radio id="no_advantage_2" name="advantage_disadvantage" value="0"/><Label for="no_advantage_2">Normal</Label></Inline>
+            <Inline><Radio id="disadvantage_2" name="advantage_disadvantage" value="-1"/><Label for="disadvantage_2">Disadvantage</Label></Inline>
           </Page>
 
           <Page name="Test Two">

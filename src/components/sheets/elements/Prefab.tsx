@@ -1,23 +1,24 @@
 import React from "react";
-import { InlineElement } from "types/layouts/inlineElement";
+import { PrefabElement } from "types/layouts/prefabElement";
 import { SheetElement } from "../SheetElement";
 
-interface SheetInlineProps {
-  element: InlineElement;
+interface SheetPrefabProps {
+  element: PrefabElement;
 }
 
 /**
- * Renders an inline element that indicates that the contents will be rendered inline
- * @param element The inline element description
+ * Renders an image of the prefab
+ * @param element The SheetPrefab element description
  */
-export function SheetInline(props: SheetInlineProps) {
+export function SheetPrefab(props: SheetPrefabProps) {
   const childElements = props.element.children || [];
   const elements: JSX.Element[] = [];
   for (const childElement of childElements) {
     elements.push(<SheetElement key={Math.random()} element={childElement}/>);
   }
+  console.log("Prefab");
   return (
-    <div >
+    <div>
       {elements}
     </div>
   );

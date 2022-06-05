@@ -14,7 +14,7 @@ export function SheetBackground(props: SheetBackgroundProps) {
   const childElements = props.element.children || [];
   const elements: JSX.Element[] = [];
   for (const childElement of childElements) {
-    elements.push(<SheetElement element={childElement}/>);
+    elements.push(<SheetElement key={Math.random()} element={childElement}/>);
   }
   return (
     <div>
