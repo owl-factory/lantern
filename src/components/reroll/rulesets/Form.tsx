@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import React from "react";
 import { RulesetDocument } from "types/documents";
 import { CustomFieldInput } from "../forms/customFields/CustomFieldInput";
+import { StaticVariableInput } from "../forms/staticVariables/StaticVariableInput";
 
 // The initial values of the form
 const INITIAL_VALUES = {
@@ -13,6 +14,7 @@ const INITIAL_VALUES = {
   name: "",
   alias: "",
   actorFields: {},
+  staticVariables: {},
 };
 
 /**
@@ -55,7 +57,10 @@ export function RulesetForm(props: { ruleset?: Partial<RulesetDocument> }) {
           <Input name="alias" type="text" label="Alias"/>
 
           <CustomFieldInput field="actorFields" onChange={formikProps.setFieldValue} values={formikProps.values}/>
-
+          <StaticVariableInput
+            staticVariables={formikProps.values.staticVariables || {}}
+            setStaticVariables={(staticVariables) => formikProps.setFieldValue("staticVariables", staticVariables)}
+          />
           <Button type="button" onClick={() => formikProps.resetForm}>Reset</Button>
           <Button type="submit">Submit</Button>
         </Form>
