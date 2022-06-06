@@ -1,39 +1,32 @@
-import { action, makeObservable, observable, toJS } from "mobx";
-import { elementNameToPageElementType, PageElementType } from "types/enums/pageElementType";
-import { BackgroundElement } from "types/layouts/backgroundElement";
-import { BorderElement } from "types/layouts/borderElement";
-import { ColumnElement } from "types/layouts/columnElement";
-import { IconElement } from "types/layouts/iconElement";
-import { InlineElement } from "types/layouts/inlineElement";
-import { LabelElement } from "types/layouts/labelElement";
-import { NumberInputElement } from "types/layouts/numberInputElement";
-import { PageElement } from "types/layouts/pageElement";
-import { RowElement } from "types/layouts/rowElement";
-import { TextAreaElement } from "types/layouts/textAreaElement";
-import { TextInputElement } from "types/layouts/textInputElement";
-import { JSDOM } from "jsdom";
+import { action, makeObservable, observable } from "mobx";
+import { PageElementType, elementNameToPageElementType } from "types/enums/pageElementType";
+import {
+  BackgroundElementDescriptor,
+  BorderElementDescriptor,
+  ColumnElementDescriptor,
+  IconElementDescriptor,
+  InlineElementDescriptor,
+  LabelElementDescriptor,
+  LayoutElementDescriptor,
+  NumberInputElementDescriptor,
+  PageElementDescriptor,
+  PageableElementDescriptor,
+  RadioButtonElementDescriptor,
+  RadioElementDescriptor,
+  RowElementDescriptor,
+  TextAreaElementDescriptor,
+  TextInputElementDescriptor,
+} from "types/sheetElementDescriptors";
+import { PrefabElementDescriptor } from "types/sheetElementDescriptors/prefab";
 import { parseXML } from "./parser";
-import { LayoutElement } from "types/layouts/layoutElement";
-import { PageableElement } from "types/layouts/pageableElement";
-import { NewPrefabElement } from "types/layouts/newPrefabElement";
-import { PrefabElement } from "types/layouts/prefabElement";
-import { RadioButtonElement } from "types/layouts/radioButtonElement";
-import { RadioElement } from "types/layouts/radioElement";
 
-interface SheetPage {
-  name: string;
-  access: string;
-  children: HTMLCollection;
-}
-
-
-export interface SheetTabElement {
+export interface SheetTabElementDescriptor {
   name: string;
   access: string;
 }
 
 export class SheetController<T> {
-  public sheets: Record<string, PageElement> = {};
+  public sheets: Record<string, PageElementDescriptor> = {};
   public prefabs: Record<string, Record<string, HTMLCollection>> = {};
 
   constructor() {
@@ -55,7 +48,7 @@ export class SheetController<T> {
     const sheet: Element = xmlDoc.children[0];
 
     if (sheet.tagName.toLocaleLowerCase() !== "sheet") {
-      throw `The first element of an actor sheet must be <Sheet>`;
+      throw `The root element of an actor sheet must be <Sheet>`;
     }
 
     const { layout, prefabs } = getBaseElements(sheet);
@@ -65,12 +58,17 @@ export class SheetController<T> {
     if (prefabs) {
       this.loadPrefabs(key, prefabs);
     }
-    console.log("prefabs", this.prefabs)
+
     this.loadSheet(key, layout);
   }
 
+  /**
+   * Parses a raw XML <Layout> element into a descriptor
+   * @param key The key to load the sheet into
+   * @param layout The XML layout element to parse
+   */
   public loadSheet(key: string, layout: Element) {
-    const elementDetails: LayoutElement = {
+    const elementDetails: LayoutElementDescriptor = {
       element: PageElementType.Layout,
       children: [],
     };
@@ -88,11 +86,16 @@ export class SheetController<T> {
    * @param index The page of the actor sheet to pull
    * @returns A collection of element descriptors for building out the actor sheet
    */
-  public getPage(key: string) {
+  public getSheet(key: string): PageElementDescriptor {
     if (this.sheets[key] === undefined) { return { element: PageElementType.Sheet, children: [] }; }
     return this.sheets[key];
   }
 
+  /**
+   * Loads prefabs into the sheet controller
+   * @param key The key to load the prefabs into
+   * @param prefabs The raw XML prefab DOM element
+   */
   public loadPrefabs(key: string, prefabs: Element): void {
     const prefabDetails: Record<string, HTMLCollection> = {};
     for (const newPrefab of prefabs.children) {
@@ -160,7 +163,7 @@ export class SheetController<T> {
    * @returns A page element descriptor
    */
   protected parsePageableElement(key: string, pageElement: Element) {
-    const elementDetails: PageableElement = {
+    const elementDetails: PageableElementDescriptor = {
       element: PageElementType.Pageable,
       tabs: [],
       pages: [],
@@ -169,7 +172,7 @@ export class SheetController<T> {
 
     for (const child of pageElement.children) {
       if (child.tagName.toLocaleLowerCase() === "page") {
-        const tab: SheetTabElement = {
+        const tab: SheetTabElementDescriptor = {
           name: child.getAttribute("name") || "Unknown",
           access: child.getAttribute("access") || "admin",
         };
@@ -191,7 +194,7 @@ export class SheetController<T> {
    * @returns A page element descriptor
    */
   protected parsePageElement(key: string, pageElement: Element) {
-    const elementDetails: PageElement = {
+    const elementDetails: PageElementDescriptor = {
       element: PageElementType.Page,
       children: [],
     };
@@ -209,7 +212,7 @@ export class SheetController<T> {
    * @returns A row element descriptor
    */
   protected parseRowElement(key: string, rowElement: Element) {
-    const elementDetails: RowElement = {
+    const elementDetails: RowElementDescriptor = {
       element: PageElementType.Row,
       children: [],
     };
@@ -227,7 +230,7 @@ export class SheetController<T> {
    * @returns A column element descriptor
    */
   protected parseColumnElement(key: string, columnElement: Element) {
-    const elementDetails: ColumnElement = {
+    const elementDetails: ColumnElementDescriptor = {
       element: PageElementType.Column,
       weight: parseInt(columnElement.getAttribute("weight") || "1"),
       children: [],
@@ -246,7 +249,7 @@ export class SheetController<T> {
    * @returns A background element descriptor
    */
   protected parseBackgroundElement(key: string, backgroundElement: Element) {
-    const elementDetails: BackgroundElement = {
+    const elementDetails: BackgroundElementDescriptor = {
       element: PageElementType.Background,
       src: backgroundElement.getAttribute("src") || "",
       children: [],
@@ -260,12 +263,13 @@ export class SheetController<T> {
   }
 
   /**
-   * Converts a page element into a page element descriptor
-   * @param pageElement The page element to convert
-   * @returns A page element descriptor
+   * Converts a border element into a border element descriptor
+   * @param key The key of the w
+   * @param borderElement The border element to convert
+   * @returns A border element descriptor
    */
   protected parseBorderElement(key: string, borderElement: Element) {
-    const elementDetails: BorderElement = {
+    const elementDetails: BorderElementDescriptor = {
       element: PageElementType.Border,
       borderStyle: borderElement.getAttribute("borderStyle") || "solid",
       children: [],
@@ -284,7 +288,7 @@ export class SheetController<T> {
    * @returns A inline element descriptor
    */
   protected parseInlineElement(key: string, inlineElement: Element) {
-    const elementDetails: InlineElement = {
+    const elementDetails: InlineElementDescriptor = {
       element: PageElementType.Inline,
       children: [],
     };
@@ -302,7 +306,7 @@ export class SheetController<T> {
    * @returns A icon element descriptor
    */
   protected parseIconElement(inlineElement: Element) {
-    const elementDetails: IconElement = {
+    const elementDetails: IconElementDescriptor = {
       element: PageElementType.Icon,
       icon: inlineElement.getAttribute("borderStyle") || "none",
     };
@@ -316,7 +320,7 @@ export class SheetController<T> {
    * @returns A label element descriptor
    */
   protected parseLabelElement(labelElement: Element) {
-    const elementDetails: LabelElement = {
+    const elementDetails: LabelElementDescriptor = {
       element: PageElementType.Label,
       for: labelElement.getAttribute("for") || "",
       text: labelElement.textContent || "Unknown",
@@ -331,7 +335,7 @@ export class SheetController<T> {
    * @returns A checkbox element descriptor
    */
   protected parseCheckboxElement(checkboxElement: Element) {
-    const elementDetails: NumberInputElement = {
+    const elementDetails: NumberInputElementDescriptor = {
       element: PageElementType.Checkbox,
       id: checkboxElement.getAttribute("id") || "",
       name: checkboxElement.getAttribute("name") || "missing_name",
@@ -346,7 +350,7 @@ export class SheetController<T> {
    * @returns A number input element descriptor
    */
   protected parseNumberInputElement(numberInputElement: Element) {
-    const elementDetails: NumberInputElement = {
+    const elementDetails: NumberInputElementDescriptor = {
       element: PageElementType.NumberInput,
       id: numberInputElement.getAttribute("id") || "",
       name: numberInputElement.getAttribute("name") || "missing_name",
@@ -361,7 +365,7 @@ export class SheetController<T> {
    * @returns A text input element descriptor
    */
   protected parseTextInputElement(textInputElement: Element) {
-    const elementDetails: TextInputElement = {
+    const elementDetails: TextInputElementDescriptor = {
       element: PageElementType.TextInput,
       id: textInputElement.getAttribute("id") || "",
       name: textInputElement.getAttribute("name") || "missing_name",
@@ -376,7 +380,7 @@ export class SheetController<T> {
    * @returns A text area element descriptor
    */
   protected parseTextAreaElement(textAreaElement: Element) {
-    const elementDetails: TextAreaElement = {
+    const elementDetails: TextAreaElementDescriptor = {
       element: PageElementType.TextArea,
       id: textAreaElement.getAttribute("id") || "",
       name: textAreaElement.getAttribute("name") || "",
@@ -391,7 +395,7 @@ export class SheetController<T> {
    * @returns A select element descriptor
    */
   protected parseSelectElement(selectElement: Element) {
-    const elementDetails: TextAreaElement = {
+    const elementDetails: TextAreaElementDescriptor = {
       element: PageElementType.Select,
       id: selectElement.getAttribute("id") || "",
       name: selectElement.getAttribute("name") || "",
@@ -401,7 +405,7 @@ export class SheetController<T> {
   }
 
   protected parsePrefabElement(key: string, prefabElement: Element) {
-    const elementDetails: PrefabElement = {
+    const elementDetails: PrefabElementDescriptor = {
       element: PageElementType.Prefab,
       name: prefabElement.getAttribute("name") || "unknown",
       arguments: {},
@@ -421,8 +425,13 @@ export class SheetController<T> {
     return elementDetails;
   }
 
+  /**
+   * Converts a radio element into a radio element descriptor
+   * @param radioElement The radio element to convert
+   * @returns A radio element descriptor
+   */
   protected parseRadioElement(radioElement: Element) {
-    const elementDetails: RadioElement = {
+    const elementDetails: RadioElementDescriptor = {
       element: PageElementType.Radio,
       id: radioElement.getAttribute("id") || "undefined",
       name: radioElement.getAttribute("name") || "undefined",
@@ -433,12 +442,12 @@ export class SheetController<T> {
   }
 
   /**
-   * Converts a label element into a label element descriptor
-   * @param radioButtonElement The label element to convert
-   * @returns A label element descriptor
+   * Converts a radio button element into a radio button element descriptor
+   * @param radioButtonElement The radio button element to convert
+   * @returns A radio button element descriptor
    */
    protected parseRadioButtonElement(radioButtonElement: Element) {
-    const elementDetails: RadioButtonElement = {
+    const elementDetails: RadioButtonElementDescriptor = {
       element: PageElementType.RadioButton,
       id: radioButtonElement.getAttribute("id") || "undefined",
       name: radioButtonElement.getAttribute("name") || "undefined",
@@ -450,6 +459,11 @@ export class SheetController<T> {
   }
 }
 
+/**
+ * Finds and returns the layout and prefabs elements
+ * @param sheet The raw XML sheet DOM element to break out the base elements from
+ * @returns A struct with the layout and prefabs elements
+ */
 function getBaseElements(sheet: Element) {
   let layout: Element | undefined;
   let prefabs: Element | undefined;

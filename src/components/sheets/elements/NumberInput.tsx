@@ -1,10 +1,10 @@
 import { useField } from "formik";
 import React from "react";
-import { NumberInputElement } from "types/layouts/numberInputElement";
+import { NumberInputElementDescriptor } from "types/sheetElementDescriptors";
 import style from "../styling/Input.module.scss";
 
 interface SheetNumberInputProps {
-  element: NumberInputElement;
+  element: NumberInputElementDescriptor;
 }
 
 /**

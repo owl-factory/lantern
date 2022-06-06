@@ -1,12 +1,12 @@
 import React from "react";
-import { PageableElement } from "types/layouts/pageableElement";
+import { PageableElementDescriptor } from "types/sheetElementDescriptors";
 import { SheetElement } from "../SheetElement";
 import { SheetPage } from "./Page";
 import { SheetTabs } from "./Tabs";
 
 
 interface SheetPageableProps {
-  element: PageableElement;
+  element: PageableElementDescriptor;
 }
 
 /**

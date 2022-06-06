@@ -1,5 +1,8 @@
 import { PageElementType } from "types/enums/pageElementType";
 
-export interface GenericSheetElement {
+/**
+ * Describes a generic sheet element
+ */
+export interface GenericSheetElementDescriptor {
   element: PageElementType;
 }

@@ -1,9 +1,9 @@
 import React from "react";
-import { PrefabElement } from "types/layouts/prefabElement";
+import { PrefabElementDescriptor } from "types/sheetElementDescriptors";
 import { SheetElement } from "../SheetElement";
 
 interface SheetPrefabProps {
-  element: PrefabElement;
+  element: PrefabElementDescriptor;
 }
 
 /**

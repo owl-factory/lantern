@@ -1,4 +1,4 @@
-import { SheetTabElement } from "controllers/layout/SheetController";
+import { SheetTabElementDescriptor } from "controllers/layout/SheetController";
 import React from "react";
 
 /**
@@ -33,11 +33,17 @@ function SheetTab(props: SheetTapProps) {
 }
 
 interface SheetTabsProps {
-  tabs: SheetTabElement[];
+  tabs: SheetTabElementDescriptor[];
   activeTab: number;
   setActiveTab: (activeTab: number) => void;
 }
 
+/**
+ * Renders all of the tabs for a given Pageable element
+ * @param tabs An array decribing each tab
+ * @param activeTab The index of the currently active tab
+ * @param setActiveTab A function the set the currently active tab
+ */
 export function SheetTabs(props: SheetTabsProps) {
   // Determines which tabs a user may see
   const viewableTabs: number[] = [];

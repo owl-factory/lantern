@@ -1,10 +1,10 @@
 import { useField } from "formik";
 import React from "react";
-import { TextInputElement } from "types/layouts/textInputElement";
+import { TextInputElementDescriptor } from "types/sheetElementDescriptors";
 import style from "../styling/Input.module.scss";
 
 interface SheetTextInputProps {
-  element: TextInputElement;
+  element: TextInputElementDescriptor;
 }
 
 /**

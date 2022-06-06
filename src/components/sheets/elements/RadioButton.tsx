@@ -1,9 +1,9 @@
 import { useField } from "formik";
 import React from "react";
-import { RadioElement } from "types/layouts/radioElement";
+import { RadioElementDescriptor } from "types/sheetElementDescriptors";
 
 interface SheetRadioProps {
-  element: RadioElement;
+  element: RadioElementDescriptor;
 }
 
 /**

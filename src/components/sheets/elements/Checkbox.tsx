@@ -1,9 +1,9 @@
 import { useField } from "formik";
 import React from "react";
-import { CheckboxElement } from "types/layouts/checkboxElement";
+import { CheckboxElementDescriptor } from "types/sheetElementDescriptors";
 
 interface SheetCheckboxProps {
-  element: CheckboxElement;
+  element: CheckboxElementDescriptor;
 }
 
 /**

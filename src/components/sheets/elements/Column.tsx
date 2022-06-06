@@ -1,10 +1,10 @@
 import React from "react";
-import { ColumnElement } from "types/layouts/columnElement";
+import { ColumnElementDescriptor } from "types/sheetElementDescriptors/column";
 import { SheetElement } from "../SheetElement";
 import style from "../styling/Column.module.scss";
 
 interface SheetColumnProps {
-  element: ColumnElement;
+  element: ColumnElementDescriptor;
 }
 
 /**

@@ -1,8 +1,8 @@
 import React from "react";
-import { LabelElement } from "types/layouts/labelElement";
+import { LabelElementDescriptor } from "types/sheetElementDescriptors";
 
 interface SheetLabelProps {
-  element: LabelElement;
+  element: LabelElementDescriptor;
 }
 
 /**

@@ -1,10 +1,9 @@
 import React from "react";
-import { BackgroundElement } from "types/layouts/backgroundElement";
-import { PageElement } from "types/layouts/pageElement";
+import { PageElementDescriptor } from "types/sheetElementDescriptors";
 import { SheetElement } from "../SheetElement";
 
 interface SheetBackgroundProps {
-  element: PageElement;
+  element: PageElementDescriptor;
 }
 
 /**

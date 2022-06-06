@@ -1,9 +1,9 @@
 import React from "react";
-import { InlineElement } from "types/layouts/inlineElement";
+import { InlineElementDescriptor } from "types/sheetElementDescriptors";
 import { SheetElement } from "../SheetElement";
 
 interface SheetInlineProps {
-  element: InlineElement;
+  element: InlineElementDescriptor;
 }
 
 /**

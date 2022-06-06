@@ -1,11 +1,7 @@
-import { Cacheable } from "@owl-factory/cache/decorators";
 import { DataManager } from "@owl-factory/data/DataManager";
-import { getUniques } from "@owl-factory/utilities/arrays";
-import { Auth } from "controllers/auth";
 import { SheetController } from "controllers/layout/SheetController";
-import { isOwner } from "security/documents";
-import { CampaignDocument } from "types/documents";
 import { ActorSheetDocument } from "types/documents/ActorSheet";
+import { PageElementDescriptor } from "types/sheetElementDescriptors";
 
 class ActorSheetDataManager extends DataManager<Partial<ActorSheetDocument>> {
   public collection = "actorSheets";
@@ -16,6 +12,11 @@ class ActorSheetDataManager extends DataManager<Partial<ActorSheetDocument>> {
     this.sheet = new SheetController();
   }
 
+  /**
+   * Loads raw XML into the sheet controller
+   * @param key The key of the sheet to load into the sheet controller
+   * @param xml The raw XML string to load into the sheet controller
+   */
   public loadSheet(key: string, xml?: string) {
     if (xml) {
       this.sheet.load(key, xml);
@@ -23,8 +24,12 @@ class ActorSheetDataManager extends DataManager<Partial<ActorSheetDocument>> {
     }
   }
 
-  public getPage(key: string) {
-    return this.sheet.getPage(key);
+  /**
+   * Finds and retusn an actor sheet
+   * @param key The key of the sheet to fetch
+   */
+  public getSheet(key: string): PageElementDescriptor {
+    return this.sheet.getSheet(key);
   }
 }
 

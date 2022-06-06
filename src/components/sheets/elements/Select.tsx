@@ -1,8 +1,8 @@
 import React from "react";
-import { SelectElement } from "types/layouts/selectElement";
+import { SelectElementDescriptor } from "types/sheetElementDescriptors";
 
 interface SheetSelectProps {
-  element: SelectElement;
+  element: SelectElementDescriptor;
 }
 
 /**

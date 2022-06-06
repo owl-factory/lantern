@@ -1,10 +1,10 @@
 import React from "react";
-import { RowElement } from "types/layouts/rowElement";
+import { RowElementDescriptor } from "types/sheetElementDescriptors";
 import { SheetElement } from "../SheetElement";
 import style from "../styling/Row.module.scss";
 
 interface SheetRowProps {
-  element: RowElement;
+  element: RowElementDescriptor;
 }
 
 /**

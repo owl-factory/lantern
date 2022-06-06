@@ -1,10 +1,10 @@
 import React from "react";
-import { BorderElement } from "types/layouts/borderElement";
+import { BorderElementDescriptor } from "types/sheetElementDescriptors/border";
 import { SheetElement } from "../SheetElement";
 import style from "../styling/Border.module.scss";
 
 interface SheetBorderProps {
-  element: BorderElement;
+  element: BorderElementDescriptor;
 }
 
 /**

@@ -1,9 +1,9 @@
 import React from "react";
-import { BackgroundElement } from "types/layouts/backgroundElement";
+import { BackgroundElementDescriptor } from "types/sheetElementDescriptors";
 import { SheetElement } from "../SheetElement";
 
 interface SheetBackgroundProps {
-  element: BackgroundElement;
+  element: BackgroundElementDescriptor;
 }
 
 /**
