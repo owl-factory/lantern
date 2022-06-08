@@ -16,10 +16,16 @@ export function StaticVariableInput(props: StaticVariableInput) {
       <div style={{display: "flex"}}>
         <StaticVariableList
           staticVariables={props.staticVariables}
+          setStaticVariables={props.setStaticVariables}
           selectedVariable={selectedVariable}
           setSelectedVariable={setSelectedVariable}
         />
-        <StaticVariableForm />
+        <StaticVariableForm
+          staticVariables={props.staticVariables}
+          setStaticVariables={props.setStaticVariables}
+          selectedVariable={selectedVariable}
+          setSelectedVariable={setSelectedVariable}
+        />
       </div>
     </div>
   );

@@ -1,11 +1,11 @@
 
-enum StaticVariableScalarType {
+export enum StaticVariableScalarType {
   String = "string",
   Number = "number",
   Boolean = "boolean",
 }
 
-enum StaticVariableComplexType {
+export enum StaticVariableComplexType {
   Object = "object",
   StringArray = "string_arr",
   NumberArray = "number_arr",
@@ -13,7 +13,7 @@ enum StaticVariableComplexType {
   ObjectArray = "object_arr",
 }
 
-type StaticVariableType = StaticVariableScalarType | StaticVariableComplexType;
+export type StaticVariableType = StaticVariableScalarType | StaticVariableComplexType;
 
 type Scalar = string | number | boolean;
 
