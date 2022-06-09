@@ -97,7 +97,6 @@ interface StaticVariableFormProps {
  * @param setStaticVariables A function to update and set all static variables
  * @param selectedVariable The key of the currently selected static variable
  * @param setSelectedVariable A function to update the currently selected static variable
- * @returns 
  */
 export function StaticVariableForm(props: StaticVariableFormProps) {
   if (!props.selectedVariable) { return <NullForm/>; }
@@ -118,6 +117,10 @@ export function StaticVariableForm(props: StaticVariableFormProps) {
     value_arr_obj: staticVariable.variableType === StaticVariableComplexType.ObjectArray ? (staticVariable.value as Record<string, string | number | boolean>[]) : [],
   };
   
+  /**
+   * Submits the Static Variable form
+   * @param values The raw form values to submit
+   */
   function onSubmit(values: StaticVariable & StaticVariableFormValues) {
     if (!props.selectedVariable) { return; }
     const staticVariables = { ...props.staticVariables };

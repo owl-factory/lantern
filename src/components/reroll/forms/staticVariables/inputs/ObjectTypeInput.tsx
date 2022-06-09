@@ -1,18 +1,43 @@
-import { Table, TableBody, TableHead, TableHeader } from "components/elements/table";
+import { Button } from "@owl-factory/components/button";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "components/elements/table";
 import React from "react";
+import { StaticVariableScalarType } from "types/documents/subdocument/StaticVariable";
+import { getNextUntitled } from "utilities/helpers";
 
-function ObjectTypeRow() {
-  
+function ObjectTypeRow(props: any) {
+  return (
+    <TableRow>
+      <TableCell></TableCell>
+    </TableRow>
+  );
 }
 
-export function StaticVariableObjectTypeInput(props: any) {
+interface StaticVariableObjectTypeInputProps {
+  objectType: Record<string, StaticVariableScalarType | null>;
+  setObjectType: (objectType: Record<string, StaticVariableScalarType | null>) => void;
+}
+
+export function StaticVariableObjectTypeInput(props: StaticVariableObjectTypeInputProps) {
+  const objectTypeKeys = Object.keys(props.objectType);
+  const rows: JSX.Element[] = [];
+
   function addType() {
-    props.set
-    return;
+    const key = getNextUntitled(objectTypeKeys);
+    const objectType = { ...props.objectType, [key]: StaticVariableScalarType.String };
+    props.setObjectType(objectType);
   }
 
-  function removeType() {
-    return;
+  function removeType(key: string) {
+    const objectType = { ...props.objectType, [key]: null };
+    props.setObjectType(objectType);
+  }
+
+  for (const key of objectTypeKeys) {
+    const objectType = props.objectType[key];
+    if (objectType === null) { continue; }
+    rows.push(
+      <ObjectTypeRow key={key} id={key} />
+    )
   }
 
   return (
@@ -29,6 +54,7 @@ export function StaticVariableObjectTypeInput(props: any) {
 
         </TableBody>
       </Table>
+      <Button onClick={addType}>+</Button>
     </>
   )
 }
