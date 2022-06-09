@@ -10,6 +10,17 @@ import {
 import { StaticVariableInput } from "./StaticVariableInput";
 import { StaticVariableValueInput } from "./StaticVariableValueInput";
 
+interface StaticVariableFormValues {
+  value_string: string,
+  value_number: number;
+  value_boolean: boolean;
+  value_obj: Record<string, number | string | boolean>;
+  value_arr_string: string[];
+  value_arr_number: number[];
+  value_arr_boolean: boolean[];
+  value_arr_obj: Record<string, number | string | boolean>[];
+}
+
 function NullForm() {
   return (
     <div style={{flexGrow: 1}}></div>
@@ -58,18 +69,18 @@ export function StaticVariableForm(props: StaticVariableFormProps) {
 
               <label htmlFor="sv_key">Key</label>
               <Select id="sh_variableType" name="variableType">
-                <option value={StaticVariableScalarType.String}>String</option>
+                <option value={StaticVariableScalarType.String}>Text</option>
                 <option value={StaticVariableScalarType.Number}>Number</option>
                 <option value={StaticVariableScalarType.Boolean}>True / False</option>
 
                 <option value={StaticVariableComplexType.Object}>Object</option>
-                <option value={StaticVariableComplexType.StringArray}>List of Strings</option>
+                <option value={StaticVariableComplexType.StringArray}>List of Text</option>
                 <option value={StaticVariableComplexType.NumberArray}>List of Numbers</option>
                 <option value={StaticVariableComplexType.BooleanArray}>List of True/False</option>
                 <option value={StaticVariableComplexType.ObjectArray}>List of Objects</option>
               </Select>
 
-              <StaticVariableValueInput />
+              <StaticVariableValueInput variableType={formikProps.values.variableType} />
 
               <Button type="button" onClick={() => props.setSelectedVariable(undefined)}>Cancel</Button>
               <Button onClick={formikProps.submitForm}>Save</Button>
