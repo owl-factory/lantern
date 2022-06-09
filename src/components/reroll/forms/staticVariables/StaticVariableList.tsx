@@ -49,6 +49,7 @@ export function StaticVariableList(props: StaticVariableListProps) {
   const items: JSX.Element[] = [];
   const keys = Object.keys(props.staticVariables).sort();
   for (const key of keys) {
+    if (props.staticVariables[key] === null) { continue; }
     const className = props.selectedVariable === key ? styles.active : "";
     items.push(
       <div

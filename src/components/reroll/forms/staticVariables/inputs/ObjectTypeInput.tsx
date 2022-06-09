@@ -7,6 +7,7 @@ function ObjectTypeRow() {
 
 export function StaticVariableObjectTypeInput(props: any) {
   function addType() {
+    props.set
     return;
   }
 
