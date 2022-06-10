@@ -9,6 +9,12 @@ import {
 } from "types/documents/subdocument/StaticVariable";
 import { StaticVariableValueInput } from "./StaticVariableValueInput";
 
+export interface ObjectValueType {
+  key: string;
+  type: StaticVariableScalarType;
+  value: string | number | boolean;
+}
+
 // Scaffolding values for making processing of the different form options easier to do
 export interface StaticVariableFormValues {
   oldKey: string;
@@ -16,11 +22,12 @@ export interface StaticVariableFormValues {
   value_string: string;
   value_number: number;
   value_boolean: boolean;
-  value_obj: Record<string, number | string | boolean>;
+  value_obj: ObjectValueType[];
   value_arr_string: string[];
   value_arr_number: number[];
   value_arr_boolean: boolean[];
   value_arr_obj: Record<string, number | string | boolean>[];
+
 }
 
 /**
@@ -43,7 +50,7 @@ function buildInitialValues(staticVariable: StaticVariable) {
     value_string: "",
     value_number: 0,
     value_boolean: false,
-    value_obj: {},
+    value_obj: [],
     value_arr_string: [],
     value_arr_number: [],
     value_arr_boolean: [],
@@ -61,7 +68,16 @@ function buildInitialValues(staticVariable: StaticVariable) {
       initialValues.value_boolean = staticVariable.value as boolean;
       break;
     case StaticVariableComplexType.Object:
-      initialValues.value_obj = staticVariable.value as Record<string, string | number | boolean>;
+      if (!staticVariable.objectType) { break; }
+      const keys = Object.keys(staticVariable.objectType).sort();
+      for (const key of keys) {
+        const value: ObjectValueType = {
+          key,
+          type: staticVariable.objectType[key],
+          value: (staticVariable.value as any)[key],
+        };
+        initialValues.value_obj.push(value);
+      }
       break;
     case StaticVariableComplexType.StringArray:
       initialValues.value_arr_string = staticVariable.value as string[];
@@ -99,7 +115,12 @@ function processStaticValues(values: StaticVariable & StaticVariableFormValues) 
       delete values.objectType;
       break;
     case StaticVariableComplexType.Object:
-      values.value = values.value_obj;
+      values.objectType = {};
+      values.value = {};
+      for (const value of values.value_obj) {
+        values.objectType[value.key] = value.type;
+        values.value[value.key] = value.value;
+      }
       break;
     case StaticVariableComplexType.StringArray:
       values.value = values.value_arr_string;

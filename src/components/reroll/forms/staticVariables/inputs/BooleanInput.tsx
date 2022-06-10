@@ -1,4 +1,4 @@
-import { Checkbox } from "@owl-factory/components/form";
+import { RadioButton } from "@owl-factory/components/form";
 import React, { ChangeEvent } from "react";
 
 interface StaticVariableScalarInputProps {
@@ -13,6 +13,9 @@ interface StaticVariableScalarInputProps {
  */
 export function StaticVariableBooleanInput(props: StaticVariableScalarInputProps) {
   return (
-    <Checkbox name={props.name || "value_boolean"} value="true" onChange={props.onBlur}/>
+    <>
+      <RadioButton name={props.name || "value_boolean"} value="false" onBlur={props.onBlur} /> False
+      <RadioButton name={props.name || "value_boolean"} value="true" onBlur={props.onBlur}/> True
+    </>
   );
 }
