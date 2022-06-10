@@ -10,7 +10,7 @@ import {
 import { StaticVariableValueInput } from "./StaticVariableValueInput";
 
 // Scaffolding values for making processing of the different form options easier to do
-interface StaticVariableFormValues {
+export interface StaticVariableFormValues {
   oldKey: string;
 
   value_string: string;
@@ -30,6 +30,53 @@ function NullForm() {
   return (
     <div style={{flexGrow: 1}}></div>
   );
+}
+
+/**
+ * Builds initial values from the default starting static variable values
+ * @param staticVariable The given static variable to build initial values from
+ */
+function buildInitialValues(staticVariable: StaticVariable) {
+  const initialValues: StaticVariable & StaticVariableFormValues = {
+    ...staticVariable,
+    oldKey: staticVariable.key,
+    value_string: "",
+    value_number: 0,
+    value_boolean: false,
+    value_obj: {},
+    value_arr_string: [],
+    value_arr_number: [],
+    value_arr_boolean: [],
+    value_arr_obj: [],
+  };
+
+  switch (staticVariable.variableType) {
+    case StaticVariableScalarType.String:
+      initialValues.value_string = staticVariable.value as string;
+      break;
+    case StaticVariableScalarType.Number:
+      initialValues.value_number = staticVariable.value as number;
+      break;
+    case StaticVariableScalarType.Boolean:
+      initialValues.value_boolean = staticVariable.value as boolean;
+      break;
+    case StaticVariableComplexType.Object:
+      initialValues.value_obj = staticVariable.value as Record<string, string | number | boolean>;
+      break;
+    case StaticVariableComplexType.StringArray:
+      initialValues.value_arr_string = staticVariable.value as string[];
+      break;
+    case StaticVariableComplexType.NumberArray:
+      initialValues.value_arr_number = staticVariable.value as number[];
+      break;
+    case StaticVariableComplexType.BooleanArray:
+      initialValues.value_arr_boolean = staticVariable.value as boolean[];
+      break;
+    case StaticVariableComplexType.ObjectArray:
+      initialValues.value_arr_obj = staticVariable.value as Record<string, string | number | boolean>[];
+      break;
+  }
+  return initialValues;
 }
 
 /**
@@ -79,7 +126,7 @@ function processStaticValues(values: StaticVariable & StaticVariableFormValues) 
     variableType: values.variableType,
     objectType: values.objectType,
     value: values.value,
-  }
+  };
 
   return staticVariable;
 }
@@ -104,19 +151,8 @@ export function StaticVariableForm(props: StaticVariableFormProps) {
   if (!props.staticVariables[props.selectedVariable]) { return <NullForm/>; }
 
   // Builds the initial values for the form. Ensures that the StaticVariableFormValues are all set
-  const initialValues: StaticVariable & StaticVariableFormValues = { 
-    ...staticVariable,
-    oldKey: props.staticVariables[props.selectedVariable].key,
-    value_string: staticVariable.variableType === StaticVariableScalarType.String ? (staticVariable.value as string) : "",
-    value_number: staticVariable.variableType === StaticVariableScalarType.Number ? (staticVariable.value as number) : 0,
-    value_boolean: staticVariable.variableType === StaticVariableScalarType.Boolean ? (staticVariable.value as boolean) : false,
-    value_obj: staticVariable.variableType === StaticVariableComplexType.Object ? (staticVariable.value as Record<string, string | number | boolean>) : {},
-    value_arr_string: staticVariable.variableType === StaticVariableComplexType.StringArray ? (staticVariable.value as string[]) : [],
-    value_arr_number: staticVariable.variableType === StaticVariableComplexType.NumberArray ? (staticVariable.value as number[]) : [],
-    value_arr_boolean: staticVariable.variableType === StaticVariableComplexType.BooleanArray ? (staticVariable.value as boolean[]) : [],
-    value_arr_obj: staticVariable.variableType === StaticVariableComplexType.ObjectArray ? (staticVariable.value as Record<string, string | number | boolean>[]) : [],
-  };
-  
+  const initialValues = buildInitialValues(staticVariable);
+
   /**
    * Submits the Static Variable form
    * @param values The raw form values to submit
@@ -136,8 +172,8 @@ export function StaticVariableForm(props: StaticVariableFormProps) {
         initialValues={initialValues}
         onSubmit={onSubmit}
       >
-        {(formikProps: FormikProps<StaticVariable>) => {
-          if (staticVariable.key !== (formikProps.values as any).oldKey) { formikProps.setValues(staticVariable); }
+        {(formikProps: FormikProps<StaticVariable & StaticVariableFormValues>) => {
+          if (staticVariable.key !== (formikProps.values as any).oldKey) { formikProps.setValues(initialValues); }
           return (
             <>
               <label htmlFor="sv_name">Name</label>
@@ -161,7 +197,10 @@ export function StaticVariableForm(props: StaticVariableFormProps) {
                 <option value={StaticVariableComplexType.ObjectArray}>List of Objects</option>
               </Select>
 
-              <StaticVariableValueInput variableType={formikProps.values.variableType} />
+              <StaticVariableValueInput
+                staticVariable={formikProps.values}
+                setStaticVariableField={formikProps.setFieldValue}
+              />
 
               <Button type="button" onClick={() => props.setSelectedVariable(undefined)}>Cancel</Button>
               <Button onClick={formikProps.submitForm}>Save</Button>

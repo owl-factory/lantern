@@ -1,12 +1,18 @@
 import { Input } from "@owl-factory/components/form";
-import React from "react";
+import React, { ChangeEvent } from "react";
 
-interface StaticVariableNumberInputProps {
+interface StaticVariableScalarInputProps {
   name?: string;
+  onBlur?: (e: ChangeEvent<any>) => void;
 }
 
-export function StaticVariableNumberInput(props: StaticVariableNumberInputProps) {
+/**
+ * Renders a number input for the static variable value
+ * @param name The custom name of the text input
+ * @param onBlur A custom function to run when the input loses focus
+ */
+export function StaticVariableNumberInput(props: StaticVariableScalarInputProps) {
   return (
-    <Input type="number" name={props.name || "value_number"}/>
+    <Input type="number" name={props.name || "value_number"} onBlur={props.onBlur}/>
   );
 }
