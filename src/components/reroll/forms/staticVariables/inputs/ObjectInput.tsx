@@ -10,6 +10,7 @@ import { ObjectValueType, StaticVariableFormValues } from "../StaticVariableForm
 import { StaticVariableBooleanInput } from "./BooleanInput";
 import { StaticVariableNumberInput } from "./NumberInput";
 import { StaticVariableTextInput } from "./TextInput";
+import { TypeSelectInput } from "./TypeSelectInput";
 
 interface ObjectValueInputProps {
   type: StaticVariableScalarType;
@@ -77,11 +78,7 @@ function ObjectInputRow(props: ObjectRowInputProps) {
           <TableRow>
             <TableCell><Input type="text" name="key" onBlur={() => update(formikProps.values)} /></TableCell>
             <TableCell>
-              <Select name="type" onBlur={() => update(formikProps.values)}>
-                <option value={StaticVariableScalarType.String}>Text</option>
-                <option value={StaticVariableScalarType.Number}>Number</option>
-                <option value={StaticVariableScalarType.Boolean}>True/False</option>
-              </Select>
+              <TypeSelectInput onBlur={() => update(formikProps.values)}/>
             </TableCell>
             <TableCell>
               <ObjectValueInput type={formikProps.values.type} onBlur={() => update(formikProps.values)}/>

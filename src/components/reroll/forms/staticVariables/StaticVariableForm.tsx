@@ -60,6 +60,8 @@ function buildInitialValues(staticVariable: StaticVariable) {
     arr_object_type: [],
   };
 
+  let keys: string[];
+
   switch (staticVariable.variableType) {
     case StaticVariableScalarType.String:
       initialValues.value_string = staticVariable.value as string;
@@ -72,7 +74,7 @@ function buildInitialValues(staticVariable: StaticVariable) {
       break;
     case StaticVariableComplexType.Object:
       if (!staticVariable.objectType) { break; }
-      const keys = Object.keys(staticVariable.objectType).sort();
+      keys = Object.keys(staticVariable.objectType).sort();
       for (const key of keys) {
         const value: ObjectValueType = {
           key,
@@ -92,6 +94,16 @@ function buildInitialValues(staticVariable: StaticVariable) {
       initialValues.value_arr_boolean = staticVariable.value as boolean[];
       break;
     case StaticVariableComplexType.ObjectArray:
+      if (!staticVariable.objectType) { break; }
+      keys = Object.keys(staticVariable.objectType).sort();
+      for (const key of keys) {
+        const value: ObjectValueType = {
+          key,
+          type: staticVariable.objectType[key],
+          value: (staticVariable.value as any)[key],
+        };
+        initialValues.arr_object_type.push(value);
+      }
       initialValues.value_arr_obj = staticVariable.value as Record<string, string | number | boolean>[];
       break;
   }
@@ -138,6 +150,11 @@ function processStaticValues(values: StaticVariable & StaticVariableFormValues) 
       delete values.objectType;
       break;
     case StaticVariableComplexType.ObjectArray:
+      values.objectType = {};
+      for (const value of values.arr_object_type) {
+        values.objectType[value.key] = value.type;
+      }
+      console.log(values.objectType)
       values.value = values.value_arr_obj;
       break;
   }
