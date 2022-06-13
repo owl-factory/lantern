@@ -56,6 +56,10 @@ interface ObjectRowInputProps {
  */
 function ObjectInputRow(props: ObjectRowInputProps) {
 
+  /**
+   * A wrapper function for the passed update function
+   * @param values The changed values
+   */
   function update(values: ObjectValueType) {
     props.update(props.index, values);
   }

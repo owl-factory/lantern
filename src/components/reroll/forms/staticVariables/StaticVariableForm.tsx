@@ -15,6 +15,7 @@ export interface ObjectValueType {
   value: string | number | boolean;
 }
 
+
 // Scaffolding values for making processing of the different form options easier to do
 export interface StaticVariableFormValues {
   oldKey: string;
@@ -28,6 +29,7 @@ export interface StaticVariableFormValues {
   value_arr_boolean: boolean[];
   value_arr_obj: Record<string, number | string | boolean>[];
 
+  arr_object_type: ObjectValueType[];
 }
 
 /**
@@ -55,6 +57,7 @@ function buildInitialValues(staticVariable: StaticVariable) {
     value_arr_number: [],
     value_arr_boolean: [],
     value_arr_obj: [],
+    arr_object_type: [],
   };
 
   switch (staticVariable.variableType) {
