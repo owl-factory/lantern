@@ -30,8 +30,8 @@ export function StaticVariableValueInput(props: StaticVariableValueInputProps) {
     case StaticVariableComplexType.Object:
       return (
         <StaticVariableObjectInput
-          staticVariable={props.staticVariable}
-          setStaticVariableValueObject={(val: ObjectValueType[]) => props.setStaticVariableField("value_obj", val)}
+          objectValues={props.staticVariable.value_obj}
+          setObjectValue={(val: ObjectValueType[]) => props.setStaticVariableField("value_obj", val)}
         />
       );
     case StaticVariableComplexType.BooleanArray:

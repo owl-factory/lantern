@@ -11,6 +11,7 @@ import { StaticVariableValueInput } from "./StaticVariableValueInput";
 
 export interface ObjectValueType {
   key: string;
+  oldKey?: string;
   type: StaticVariableScalarType;
   value: string | number | boolean;
 }
@@ -27,7 +28,7 @@ export interface StaticVariableFormValues {
   value_arr_string: string[];
   value_arr_number: number[];
   value_arr_boolean: boolean[];
-  value_arr_obj: Record<string, number | string | boolean>[];
+  value_arr_obj: ObjectValueType[][];
 
   arr_object_type: ObjectValueType[];
 }

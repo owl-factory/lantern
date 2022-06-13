@@ -1,5 +1,5 @@
 import { Button } from "@owl-factory/components/button";
-import { Input, Select } from "@owl-factory/components/form";
+import { Input } from "@owl-factory/components/form";
 import { getUniques } from "@owl-factory/utilities/arrays";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "components/elements/table";
 import { Formik, FormikProps } from "formik";
@@ -92,14 +92,14 @@ function ObjectInputRow(props: ObjectRowInputProps) {
 }
 
 interface StaticVariableObjectInputProps {
-  staticVariable: StaticVariable & StaticVariableFormValues;
-  setStaticVariableValueObject: (val: ObjectValueType[]) => void;
+  objectValues: ObjectValueType[];
+  setObjectValue: (val: ObjectValueType[]) => void;
 }
 
 /**
  * Renders an input for creating, updating, and removing an object's fields within a static variable
- * @param staticVariable The static variable this object belongs to
- * @param setStaticVariableValueObject A function that sets the object value to the staticVariable
+ * @param objectValues The array of keys, types, and values in the object
+ * @param setObjectValue A function that sets the updated object value
  */
 export function StaticVariableObjectInput(props: StaticVariableObjectInputProps) {
   const rows: JSX.Element[] = [];
@@ -108,12 +108,12 @@ export function StaticVariableObjectInput(props: StaticVariableObjectInputProps)
    * Adds a new object key/value to the object
    */
   function add() {
-    const value_object = [...props.staticVariable.value_obj];
+    const objectValues = [...props.objectValues];
 
-    const uniqueKeys = getUniques(value_object, "key");
+    const uniqueKeys = getUniques(objectValues, "key");
     const key = getNextUntitled(uniqueKeys);
-    value_object.push({key, type: StaticVariableScalarType.String, value: ""});
-    props.setStaticVariableValueObject(value_object);
+    objectValues.push({key, type: StaticVariableScalarType.String, value: ""});
+    props.setObjectValue(objectValues);
   }
 
   /**
@@ -122,9 +122,9 @@ export function StaticVariableObjectInput(props: StaticVariableObjectInputProps)
    * @param value The new value of the object key/value
    */
   function update(index: number, value: ObjectValueType) {
-    const value_object = [...props.staticVariable.value_obj];
+    const value_object = [...props.objectValues];
     value_object[index] = value;
-    props.setStaticVariableValueObject(value_object);
+    props.setObjectValue(value_object);
   }
 
   /**
@@ -132,13 +132,13 @@ export function StaticVariableObjectInput(props: StaticVariableObjectInputProps)
    * @param index The index of the object key/value to remove
    */
   function remove(index: number) {
-    const value_object = [...props.staticVariable.value_obj];
+    const value_object = [...props.objectValues];
     value_object.splice(index, 1);
-    props.setStaticVariableValueObject(value_object);
+    props.setObjectValue(value_object);
   }
 
-  for (let i = 0; i < props.staticVariable.value_obj.length; i++) {
-    const objectValue = props.staticVariable.value_obj[i];
+  for (let i = 0; i < props.objectValues.length; i++) {
+    const objectValue = props.objectValues[i];
     rows.push(<ObjectInputRow key={i} index={i} objectValue={objectValue} update={update} remove={remove}/>);
   }
 

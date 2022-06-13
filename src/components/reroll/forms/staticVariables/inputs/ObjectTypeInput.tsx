@@ -1,48 +1,95 @@
 import { Button } from "@owl-factory/components/button";
+import { getUniques } from "@owl-factory/utilities/arrays";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "components/elements/table";
+import { Formik, FormikProps } from "formik";
 import React from "react";
 import { StaticVariableScalarType } from "types/documents/subdocument/StaticVariable";
 import { getNextUntitled } from "utilities/helpers";
+import { ObjectValueType } from "../StaticVariableForm";
+import { StaticVariableTextInput } from "./TextInput";
+import { TypeSelectInput } from "./TypeSelectInput";
 
-function ObjectTypeRow(props: any) {
-  return (
-    <TableRow>
-      <TableCell></TableCell>
-    </TableRow>
-  );
+interface ObjectTypeInputProps {
+  objectTypes: ObjectValueType[];
+  setObjectTypes: (objectTypes: ObjectValueType[]) => void;
 }
 
-interface StaticVariableObjectTypeInputProps {
-  objectType: Record<string, StaticVariableScalarType | null>;
-  setObjectType: (objectType: Record<string, StaticVariableScalarType | null>) => void;
-}
-
-export function StaticVariableObjectTypeInput(props: StaticVariableObjectTypeInputProps) {
-  const objectTypeKeys = Object.keys(props.objectType);
+/**
+ * Renders a list of all keys, their types, and their default value
+ * @param objectTypes A list of object types
+ * @param setObjectTypes A function to set the object types
+ */
+export function ObjectTypeInput(props: ObjectTypeInputProps) {
   const rows: JSX.Element[] = [];
 
-  function addType() {
-    const key = getNextUntitled(objectTypeKeys);
-    const objectType = { ...props.objectType, [key]: StaticVariableScalarType.String };
-    props.setObjectType(objectType);
+  /**
+   * Adds a new key and type to the object type definition
+   */
+  function add() {
+    const objectTypes = [...props.objectTypes];
+    const keys = getUniques(objectTypes, "key");
+    const untitledKey = getNextUntitled(keys);
+    objectTypes.push({
+      key: untitledKey,
+      type: StaticVariableScalarType.String,
+      value: "",
+    });
+
+    props.setObjectTypes(objectTypes);
   }
 
-  function removeType(key: string) {
-    const objectType = { ...props.objectType, [key]: null };
-    props.setObjectType(objectType);
+  /**
+   * Updates a single key and type of the object type definition
+   * @param index The index of the key and type to update
+   * @param values The new values of the key and type
+   */
+  function update(index: number, values: ObjectValueType) {
+    const objectTypes = [...props.objectTypes];
+    const oldObjectType = objectTypes[index];
+    if (oldObjectType.key !== values.key) { values.oldKey = oldObjectType.key; }
+    objectTypes[index] = values;
+    props.setObjectTypes(objectTypes);
   }
 
-  for (const key of objectTypeKeys) {
-    const objectType = props.objectType[key];
-    if (objectType === null) { continue; }
+  /**
+   * Removes a single key and type from the object type definition
+   * @param index The index of the key and type to remove
+   */
+  function remove(index: number) {
+    const objectValueTypes = [...props.objectTypes];
+    objectValueTypes.splice(index, 1);
+    props.setObjectTypes(objectValueTypes);
+  }
+
+  for (let i = 0; i < props.objectTypes.length; i++) {
+    const objectValueType = props.objectTypes[i];
     rows.push(
-      <ObjectTypeRow key={key} id={key} />
-    )
+      <Formik
+        key={i}
+        initialValues={ objectValueType }
+        onSubmit={console.log}
+      >
+        {(formikProps: FormikProps<ObjectValueType>) => {
+          // UseEffect is to handle updating the form if an element is deleted
+          React.useEffect(() => {
+            formikProps.setValues(props.objectTypes[i]);
+          }, [props.objectTypes[i]]);
+          return (
+            <TableRow>
+              <TableCell><StaticVariableTextInput name="key" onBlur={() => update(i, formikProps.values)}/></TableCell>
+              <TableCell><TypeSelectInput onBlur={() => update(i, formikProps.values)}/></TableCell>
+              <TableCell>
+                <a href="#" onClick={() => remove(i)}>X</a>
+              </TableCell>
+            </TableRow>
+          );
+        }}
+      </Formik>
+    );
   }
 
   return (
     <>
-      <h4>Object Type</h4>
       <Table>
         <TableHead>
           <TableHeader>Key</TableHeader>
@@ -51,10 +98,10 @@ export function StaticVariableObjectTypeInput(props: StaticVariableObjectTypeInp
         </TableHead>
 
         <TableBody>
-
+          {rows}
         </TableBody>
       </Table>
-      <Button onClick={addType}>+</Button>
+      <Button onClick={add}>+</Button>
     </>
-  )
+  );
 }
