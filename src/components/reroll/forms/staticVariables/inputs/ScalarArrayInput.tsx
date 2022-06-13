@@ -2,8 +2,8 @@ import { Button } from "@owl-factory/components/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "components/elements/table";
 import { Formik, FormikProps } from "formik";
 import React from "react";
+import { StaticVariableFormValues } from "types/components/forms/staticVariables";
 import { StaticVariable, StaticVariableComplexType } from "types/documents/subdocument/StaticVariable";
-import { StaticVariableFormValues } from "../StaticVariableForm";
 import { StaticVariableNumberInput } from "./NumberInput";
 import { StaticVariableTextInput } from "./TextInput";
 

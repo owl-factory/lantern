@@ -3,15 +3,15 @@ import { getUniques } from "@owl-factory/utilities/arrays";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "components/elements/table";
 import { Formik, FormikProps } from "formik";
 import React from "react";
+import { StaticVariableObject } from "types/components/forms/staticVariables";
 import { StaticVariableScalarType } from "types/documents/subdocument/StaticVariable";
 import { getNextUntitled } from "utilities/helpers";
-import { ObjectValueType } from "../StaticVariableForm";
 import { StaticVariableTextInput } from "./TextInput";
 import { TypeSelectInput } from "./TypeSelectInput";
 
 interface ObjectTypeInputProps {
-  objectTypes: ObjectValueType[];
-  setObjectTypes: (objectTypes: ObjectValueType[]) => void;
+  objectTypes: StaticVariableObject[];
+  setObjectTypes: (objectTypes: StaticVariableObject[]) => void;
 }
 
 /**
@@ -43,7 +43,7 @@ export function ObjectTypeInput(props: ObjectTypeInputProps) {
    * @param index The index of the key and type to update
    * @param values The new values of the key and type
    */
-  function update(index: number, values: ObjectValueType) {
+  function update(index: number, values: StaticVariableObject) {
     const objectTypes = [...props.objectTypes];
     const oldObjectType = objectTypes[index];
     if (oldObjectType.key !== values.key) { values.oldKey = oldObjectType.key; }
@@ -69,7 +69,7 @@ export function ObjectTypeInput(props: ObjectTypeInputProps) {
         initialValues={ objectValueType }
         onSubmit={console.log}
       >
-        {(formikProps: FormikProps<ObjectValueType>) => {
+        {(formikProps: FormikProps<StaticVariableObject>) => {
           // UseEffect is to handle updating the form if an element is deleted
           React.useEffect(() => {
             formikProps.setValues(props.objectTypes[i]);

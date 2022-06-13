@@ -1,15 +1,15 @@
 import { Button } from "@owl-factory/components/button";
 import React from "react";
+import { StaticVariableFormValues, StaticVariableObject } from "types/components/forms/staticVariables";
 import { StaticVariable } from "types/documents/subdocument/StaticVariable";
-import { ObjectValueType, StaticVariableFormValues } from "../StaticVariableForm";
 import { StaticVariableObjectInput } from "./ObjectInput";
 import { ObjectTypeInput } from "./ObjectTypeInput";
 
 
 
 interface ObjectArrayInputProps {
-  objectArray: ObjectValueType[][];
-  setObjectArray: (objectArray: ObjectValueType[][]) => void;
+  objectArray: StaticVariableObject[][];
+  setObjectArray: (objectArray: StaticVariableObject[][]) => void;
 }
 
 function ObjectArrayInput(props: ObjectArrayInputProps) {
@@ -17,18 +17,14 @@ function ObjectArrayInput(props: ObjectArrayInputProps) {
 
   function add() {
     const objectArray = [...props.objectArray];
-    // objectArray.push({
-    //   key: 
-    // })
-    // props.setObjectArray()
   }
 
-  function update(index: number, objectValue: ObjectValueType[]) {
-
+  function update(index: number, objectValue: StaticVariableObject[]) {
+    return
   }
 
   function remove() {
-
+    return
   }
 
   for (let i = 0; i < props.objectArray.length; i++) {
@@ -36,7 +32,7 @@ function ObjectArrayInput(props: ObjectArrayInputProps) {
     rows.push(
       <StaticVariableObjectInput
         objectValues={objectValue}
-        setObjectValue={(value: ObjectValueType[]) => update(i, value)}
+        setObjectValue={(value: StaticVariableObject[]) => update(i, value)}
       />
     );
   }
@@ -66,7 +62,7 @@ export function StaticVariableObjectArrayInput(props: StaticVariableObjectArrayI
    * Takes the new object typing and ensures that all changes are handled correctly for each of the values
    * @param objectTypes The new object typing
    */
-  function updateType(objectTypes: ObjectValueType[]) {
+  function updateType(objectTypes: StaticVariableObject[]) {
     props.setStaticVariableField("arr_object_type", objectTypes);
   }
 
@@ -81,7 +77,7 @@ export function StaticVariableObjectArrayInput(props: StaticVariableObjectArrayI
   return (
     <>
       <ObjectTypeInput objectTypes={props.staticVariable.arr_object_type} setObjectTypes={updateType}/>
-      <ObjectArrayInput objectArray={props.staticVariable.value_arr_obj} setObjectArray={updateArray}/>
+      {/* <ObjectArrayInput objectArray={props.staticVariable.value_arr_obj} setObjectArray={updateArray}/> */}
     </>
   );
 }

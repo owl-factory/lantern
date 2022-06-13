@@ -4,9 +4,9 @@ import { getUniques } from "@owl-factory/utilities/arrays";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "components/elements/table";
 import { Formik, FormikProps } from "formik";
 import React, { ChangeEvent } from "react";
-import { StaticVariable, StaticVariableScalarType } from "types/documents/subdocument/StaticVariable";
+import { StaticVariableObject } from "types/components/forms/staticVariables";
+import { StaticVariableScalarType } from "types/documents/subdocument/StaticVariable";
 import { getNextUntitled } from "utilities/helpers";
-import { ObjectValueType, StaticVariableFormValues } from "../StaticVariableForm";
 import { StaticVariableBooleanInput } from "./BooleanInput";
 import { StaticVariableNumberInput } from "./NumberInput";
 import { StaticVariableTextInput } from "./TextInput";
@@ -43,9 +43,9 @@ function ObjectValueInput(props: ObjectValueInputProps) {
 
 interface ObjectRowInputProps {
   index: number;
-  objectValue: ObjectValueType;
+  objectValue: StaticVariableObject;
   remove: (index: number) => void;
-  update: (index: number, values: ObjectValueType) => void;
+  update: (index: number, values: StaticVariableObject) => void;
 }
 
 /**
@@ -61,7 +61,7 @@ function ObjectInputRow(props: ObjectRowInputProps) {
    * A wrapper function for the passed update function
    * @param values The changed values
    */
-  function update(values: ObjectValueType) {
+  function update(values: StaticVariableObject) {
     props.update(props.index, values);
   }
 
@@ -70,7 +70,7 @@ function ObjectInputRow(props: ObjectRowInputProps) {
       initialValues={props.objectValue}
       onSubmit={console.log}
     >
-      {(formikProps: FormikProps<ObjectValueType>) => {
+      {(formikProps: FormikProps<StaticVariableObject>) => {
         React.useEffect(() => {
           formikProps.setValues(props.objectValue);
         }, [props.objectValue]);
@@ -92,8 +92,8 @@ function ObjectInputRow(props: ObjectRowInputProps) {
 }
 
 interface StaticVariableObjectInputProps {
-  objectValues: ObjectValueType[];
-  setObjectValue: (val: ObjectValueType[]) => void;
+  objectValues: StaticVariableObject[];
+  setObjectValue: (val: StaticVariableObject[]) => void;
 }
 
 /**
@@ -121,7 +121,7 @@ export function StaticVariableObjectInput(props: StaticVariableObjectInputProps)
    * @param index The index of the object key/value to update
    * @param value The new value of the object key/value
    */
-  function update(index: number, value: ObjectValueType) {
+  function update(index: number, value: StaticVariableObject) {
     const value_object = [...props.objectValues];
     value_object[index] = value;
     props.setObjectValue(value_object);

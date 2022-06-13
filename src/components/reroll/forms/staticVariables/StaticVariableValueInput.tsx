@@ -10,8 +10,8 @@ import { StaticVariableBooleanInput } from "./inputs/BooleanInput";
 import { StaticVariableNumberInput } from "./inputs/NumberInput";
 import { StaticVariableObjectInput } from "./inputs/ObjectInput";
 import { StaticVariableTextInput } from "./inputs/TextInput";
-import { ObjectValueType, StaticVariableFormValues } from "./StaticVariableForm";
 import { StaticVariableObjectArrayInput } from "./inputs/ObjectArrayInput";
+import { StaticVariableFormValues, StaticVariableObject } from "types/components/forms/staticVariables";
 
 interface StaticVariableValueInputProps {
   staticVariable: StaticVariable & StaticVariableFormValues;
@@ -31,7 +31,7 @@ export function StaticVariableValueInput(props: StaticVariableValueInputProps) {
       return (
         <StaticVariableObjectInput
           objectValues={props.staticVariable.value_obj}
-          setObjectValue={(val: ObjectValueType[]) => props.setStaticVariableField("value_obj", val)}
+          setObjectValue={(val: StaticVariableObject[]) => props.setStaticVariableField("value_obj", val)}
         />
       );
     case StaticVariableComplexType.BooleanArray:
