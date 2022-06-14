@@ -8,6 +8,11 @@ interface StaticVariableInput {
   setStaticVariables: (staticVariables: Record<string, StaticVariable>) => void;
 }
 
+/**
+ * Renders a list of all static variables and a form for editing them
+ * @param staticVariables A dictionary of all static variables for the current document indexed by their keys
+ * @param setStaticVariables A function to update the static variables
+ */
 export function StaticVariableInput(props: StaticVariableInput) {
   const [ selectedVariable, setSelectedVariable ] = React.useState<string | undefined>(undefined);
   return (

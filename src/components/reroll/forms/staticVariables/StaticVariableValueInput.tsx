@@ -18,6 +18,11 @@ interface StaticVariableValueInputProps {
   setStaticVariableField: (field: string, value: any, shouldValidate?: boolean | undefined) => void;
 }
 
+/**
+ * Renders the appropriate input for the static variable value depending on the currently selected type
+ * @param staticVariable The active static variable being modified
+ * @param setStaticVariableField A function to set a single field in the static variable
+ */
 export function StaticVariableValueInput(props: StaticVariableValueInputProps) {
   if (!props.staticVariable) { return <></>; }
   switch (props.staticVariable.variableType) {

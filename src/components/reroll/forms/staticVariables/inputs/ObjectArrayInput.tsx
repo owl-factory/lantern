@@ -12,6 +12,9 @@ interface ObjectArrayInputProps {
   setObjectArray: (objectArray: StaticVariableObject[][]) => void;
 }
 
+/**
+ * TODO - work in progress
+ */
 function ObjectArrayInput(props: ObjectArrayInputProps) {
   const rows: JSX.Element[] = [];
 
