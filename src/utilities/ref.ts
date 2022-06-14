@@ -16,6 +16,7 @@ export const collections: CollectionMap = [
   { id: "I", string: "scenes" },
   { id: "K", string: "files" },
   { id: "L", string: "modules" },
+  { id: "J", string: Collection.ActorSheets },
 ];
 
 /**
