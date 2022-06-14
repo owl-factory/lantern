@@ -16,7 +16,7 @@ export function SheetPrefab(props: SheetPrefabProps) {
   for (const childElement of childElements) {
     elements.push(<SheetElement key={Math.random()} element={childElement}/>);
   }
-  console.log("Prefab");
+
   return (
     <div>
       {elements}
