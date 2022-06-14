@@ -63,6 +63,15 @@ export class SheetController<T> {
   }
 
   /**
+   * Unloads a sheet from the controller
+   * @param key The key of the sheet to unload
+   */
+  public unload(key: string) {
+    delete this.sheets[key];
+    delete this.prefabs[key];
+  }
+
+  /**
    * Parses a raw XML <Layout> element into a descriptor
    * @param key The key to load the sheet into
    * @param layout The XML layout element to parse
