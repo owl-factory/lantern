@@ -27,11 +27,16 @@ export class DataManager<T extends Record<string, unknown>> {
   public url = "/";
   public reloadPolicy = ReloadPolicy.IfStale;
   public staleTime = 30 * 60 * 1000;
+  public softLoadDelay = 250; // The default number of milliseconds to delay before sending a soft load request
 
   // Subcomponents //
   public batching: BatchingController;
   public data: DataController<T>;
   public grouping: GroupingController<T>;
+
+  // Soft Load //
+  protected softLoadTimeout: any; // Holds the timeout function for a soft load, if any is present
+  protected softLoadItems: Record<Ref64, 1> = {}; // Refs to load when the next soft load fires
 
   constructor(url: string) {
     this.url = url;
@@ -129,6 +134,36 @@ export class DataManager<T extends Record<string, unknown>> {
     // Other caching and saving are handled in setMany
 
     return;
+  }
+
+  /**
+   * Adds the given documents to a timed-firing request to group as many refs into a single request as possible
+   * @param targetRefs The target ref or refs to pull
+   * @param delay An optional value that overrides the default delay when creating a new softLoad timer.
+   *  It will not update the current timer
+   */
+  public softLoad(targetRefs: Ref64[] | Ref64 | null | undefined, delay?: number) {
+    // Do nothing if we have no refs to add
+    if (!targetRefs || (Array.isArray(targetRefs) && targetRefs.length === 0)) { return; }
+
+    // Create the timeout function if none exists
+    if (!this.softLoadTimeout) {
+      this.softLoadTimeout = setTimeout(
+        // Grabs all saved refs and puts them into a list of refs, loads, and resets the items and timeout
+        () => {
+          const refs = Object.keys(this.softLoadItems);
+          this.load(refs);
+          this.softLoadItems = {};
+          this.softLoadTimeout = null;
+        },
+        delay ? delay : this.softLoadDelay
+      );
+    }
+
+    const refs = Array.isArray(targetRefs) ? targetRefs : [targetRefs];
+    for (const ref of refs) {
+      this.softLoadItems[ref] = 1;
+    }
   }
 
   /**

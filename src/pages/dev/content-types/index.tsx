@@ -13,6 +13,9 @@ import React from "react";
  */
 const ContentTypeRow = observer((props: { id: Ref64 }) => {
   const contentType = ContentTypeData.get(props.id);
+  React.useEffect(() => {
+    if (contentType?.ruleset?.ref) { RulesetData.softLoad((contentType.ruleset)?.ref); }
+  }, [contentType, contentType?.ruleset?.ref]);
   if (!contentType) { return <></>; }
 
   const ruleset = RulesetData.get((contentType.ruleset)?.ref);
@@ -22,7 +25,7 @@ const ContentTypeRow = observer((props: { id: Ref64 }) => {
       <TableCell>{contentType.name}</TableCell>
       <TableCell>{ruleset?.name || contentType.ruleset?.name}</TableCell>
       <TableCell>
-        <Link href={`/dev/content-types/${contentType.ref}/edit`}>Edit</Link>
+        <Link href={`/dev/content-types/${contentType.ref}/edit`}>Edit</Link>&nbsp;
         <a href="#" onClick={() => ContentTypeData.delete(contentType.ref as string)}>Delete</a>
       </TableCell>
     </TableRow>
