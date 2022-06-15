@@ -23,8 +23,8 @@ const ActorSheetRow = observer((props: { id: Ref64 }) => {
       <TableCell>{actorSheet.name}</TableCell>
       <TableCell>{ruleset?.name}</TableCell>
       <TableCell>
-        <Link href={`/dev/actor-sheets/${actorSheet.ref}`}>View</Link>
-        <Link href={`/dev/actor-sheets/${actorSheet.ref}/edit`}>Edit</Link>
+        <Link href={`/dev/actor-sheets/${actorSheet.ref}`}>View</Link>&nbsp;
+        <Link href={`/dev/actor-sheets/${actorSheet.ref}/edit`}>Edit</Link>&nbsp;
         <a href="#" onClick={() => ActorSheetData.delete(actorSheet.ref as string)}>Delete</a>
       </TableCell>
     </TableRow>
