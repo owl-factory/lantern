@@ -1,7 +1,7 @@
 
 import * as fauna from "@owl-factory/database/integration/fauna";
 import { RequireLogin } from "@owl-factory/database/decorators/modifiers";
-import { Create, Fetch, Search, Update } from "@owl-factory/database/decorators/decorators";
+import { Create, Delete, Fetch, Search, Update } from "@owl-factory/database/decorators/decorators";
 import { Collection, FaunaIndex } from "src/fauna";
 import { FaunaIndexOptions } from "@owl-factory/database/types/fauna";
 import { ActorSheetDocument } from "types/documents/ActorSheet";
@@ -21,6 +21,14 @@ class $ActorSheetLogic {
   public async create(doc: Partial<ActorSheetDocument>): Promise<ActorSheetDocument> {
     return await access.create(collection, doc);
   }
+
+  /**
+   * Deletes a single actor sheet, if present
+   * @param ref The ref of the document to delete
+   * @returns The deleted document
+   */
+  @Delete(collection, ["*"], (ref) => access.fetch(collection, ref))
+  public async delete(ref: Ref64) { return await access.remove(collection, ref); }
 
   /**
    * Fetches one actor sheet from its ref
