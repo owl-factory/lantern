@@ -23,6 +23,10 @@ export default function DevIndex() {
       <Link href="/dev/actor-sheets">List Actor Sheets</Link><br/>
       <br/>
 
+      <h2>Actors</h2>
+      <Link href="/dev/actors">List Actors</Link><br/>
+      <br/>
+
       <h2>Content Types</h2>
       <Link href="/dev/content-types">List Content Types</Link><br/>
       <Link href="/dev/content-types/new">Create Content Types</Link><br/>
