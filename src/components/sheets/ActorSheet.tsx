@@ -1,12 +1,12 @@
 import { ActorSheetData } from "controllers/data/ActorSheetData";
-import { Formik } from "formik";
-import { toJS } from "mobx";
+import { Form, Formik, FormikProps } from "formik";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { SheetElement } from "./SheetElement";
 
 interface ActorSheetProps {
   id: string;
+  onSubmit: (values: Record<string, unknown>) => void;
 }
 
 /**
@@ -15,23 +15,35 @@ interface ActorSheetProps {
  */
 export const ActorSheet = observer((props: ActorSheetProps) => {
   const sheet = ActorSheetData.getSheet(props.id);
-  const sheetElements: JSX.Element[] = [];
-
-  // Renders each of the children of the base sheet
-  for(const childElement of sheet.children || []) {
-    sheetElements.push(
-      <SheetElement element={childElement}/>
-    );
-  }
 
   return (
     <Formik
       initialValues={{}}
+      
       onSubmit={console.log}
     >
-      <>
-        {sheetElements}
-      </>
+      {(formikProps: FormikProps<Record<string, unknown>>) => {
+        // Renders each of the children of the base sheet
+        const sheetElements: JSX.Element[] = [];
+
+        function onChange(e: any) {
+          console.log(e)
+          // props.onSubmit(formikProps.values);
+          return;
+        } 
+
+        for(const childElement of sheet.children || []) {
+          sheetElements.push(
+            <SheetElement element={childElement} />
+          );
+        }
+
+        return (
+          <>
+            {sheetElements}
+          </>
+        );
+      }}
     </Formik>
   );
 });
