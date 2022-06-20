@@ -38,9 +38,21 @@ async function updateActors(this: HTTPHandler, req: NextApiRequest) {
   this.returnSuccess({ docs: actorSheets });
 }
 
+/**
+ * Deletes one or more actors
+ * @param this The Handler class calling this function
+ * @param req The request to the server
+ */
+ async function deleteActors(this: HTTPHandler, req: NextApiRequest) {
+  requireLogin();
+  const actors = await deleteMany(ActorLogic.delete, req.body.refs);
+  this.returnSuccess({ docs: actors });
+}
+
 
 export default createEndpoint({
   POST: getActors,
   PUT: createActors,
   PATCH: updateActors,
+  DELETE: deleteActors,
 });
