@@ -20,6 +20,7 @@ const RulesetRow = observer((props: { id: Ref64 }) => {
       <TableCell>{ruleset.alias}</TableCell>
       <TableCell>
         <Link href={`/dev/rulesets/${ruleset.ref}/edit`}>Edit</Link>
+        <Link href={`/dev/rulesets/${ruleset.ref}/new-module`}>New Module</Link>&nbsp;
         <a onClick={() => RulesetData.delete(ruleset.ref as string)}>Delete</a>
       </TableCell>
     </TableRow>
