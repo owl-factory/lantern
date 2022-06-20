@@ -8,7 +8,11 @@ import { RulesetData } from "controllers/data/RulesetData";
 import { observer } from "mobx-react-lite";
 import { useRouter } from "next/router";
 import React from "react";
+import { GiConsoleController } from "react-icons/gi";
 
+/**
+ * Renders a page for viewing a single actor
+ */
 function ActorView() {
   const router = useRouter();
   const ref = router.query.ref as string;
@@ -17,6 +21,7 @@ function ActorView() {
     ActorData.load(ref);
   }, [ref]);
 
+  // Ensures that the actor sheet and campaign are loaded in
   const actor = ActorData.get(ref);
   React.useEffect(() => {
     if (!actor) { return; }
@@ -25,6 +30,7 @@ function ActorView() {
     if (actor.campaign) { CampaignData.load(actor.campaign.ref); }
   });
 
+  // Ensures that the actor sheet is loaded in to the sheet controller
   const actorSheet = ActorSheetData.get(actor?.actorSheet?.ref);
   React.useEffect(() => {
     if (!actorSheet || !actorSheet.ref) { return; }
@@ -33,11 +39,15 @@ function ActorView() {
 
   if (!actor) { return <></>; }
 
+  /**
+   * Submits the updated values of an actor to the database
+   * @param values The new actor values to save
+   */
   function onSubmit(values: Record<string, unknown>) {
+    console.log(":Hi")
     if (!actor) { return; }
     actor.values = values;
-    console.log(actor);
-    // ActorData.update(actor);
+    ActorData.update(actor);
   }
 
   return (
@@ -46,7 +56,11 @@ function ActorView() {
         <h1>{actor.name}</h1>&nbsp;
         <Button onClick={() => router.push("/dev/actors")}>Back</Button>
       </div>
-      { actor.actorSheet?.ref ? <ActorSheet id={actor.actorSheet?.ref} onSubmit={onSubmit}/> : <></> }
+      {
+        actor.actorSheet?.ref ?
+        <ActorSheet id={actor.actorSheet?.ref} onSubmit={onSubmit} values={actor.values}/> :
+        <></>
+      }
     </Page>
   );
 }

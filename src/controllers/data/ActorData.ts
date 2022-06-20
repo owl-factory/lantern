@@ -34,6 +34,8 @@ class ActorDataManager extends DataManager<Partial<ActorDocument>> {
    */
    public async update(actor: Partial<ActorDocument>) {
     // TODO - validation
+    if (actor.values?.name) { actor.name = actor.values.name as string; }
+    // TODO - duplicate over other fields
     const res = await this.$update(actor);
     return res[0];
   }

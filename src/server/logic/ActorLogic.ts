@@ -55,6 +55,10 @@ class $ActorLogic {
   }
 }
 
+/**
+ * Generates a random actor name
+ * @todo Optimize in the future, move to a new file, and perhaps read from FS?
+ */
 function randomActorName() {
   const forenames = [
     "Waals",

@@ -1,12 +1,14 @@
+import { Button } from "@owl-factory/components/button";
 import { ActorSheetData } from "controllers/data/ActorSheetData";
-import { Form, Formik, FormikProps } from "formik";
+import { Formik, Form, FormikProps } from "formik";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { SheetElement } from "./SheetElement";
 
 interface ActorSheetProps {
   id: string;
-  onSubmit: (values: Record<string, unknown>) => void;
+  onSubmit?: (values: Record<string, unknown>) => void;
+  values?: Record<string, unknown>;
 }
 
 /**
@@ -16,34 +18,23 @@ interface ActorSheetProps {
 export const ActorSheet = observer((props: ActorSheetProps) => {
   const sheet = ActorSheetData.getSheet(props.id);
 
+  // Renders each of the children of the base sheet
+  const sheetElements: JSX.Element[] = [];
+  for(const childElement of sheet.children || []) {
+    sheetElements.push(
+      <SheetElement element={childElement} />
+    );
+  }
+
   return (
     <Formik
-      initialValues={{}}
-      
-      onSubmit={console.log}
+      initialValues={props.values || {}}
+      onSubmit={props.onSubmit || console.log}
     >
-      {(formikProps: FormikProps<Record<string, unknown>>) => {
-        // Renders each of the children of the base sheet
-        const sheetElements: JSX.Element[] = [];
-
-        function onChange(e: any) {
-          console.log(e)
-          // props.onSubmit(formikProps.values);
-          return;
-        } 
-
-        for(const childElement of sheet.children || []) {
-          sheetElements.push(
-            <SheetElement element={childElement} />
-          );
-        }
-
-        return (
-          <>
-            {sheetElements}
-          </>
-        );
-      }}
+        <Form>
+          <Button type="submit">Save</Button>
+          {sheetElements}
+        </Form>
     </Formik>
   );
 });
