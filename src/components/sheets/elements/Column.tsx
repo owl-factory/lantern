@@ -4,6 +4,7 @@ import { SheetElement } from "../SheetElement";
 import style from "../styling/Column.module.scss";
 
 interface SheetColumnProps {
+  id: string;
   element: ColumnElementDescriptor;
 }
 
@@ -15,7 +16,7 @@ export function SheetColumn(props: SheetColumnProps) {
   const childElements = props.element.children || [];
   const elements: JSX.Element[] = [];
   for (const childElement of childElements) {
-    elements.push(<SheetElement key={Math.random()} element={childElement}/>);
+    elements.push(<SheetElement key={Math.random()} id={props.id}  element={childElement}/>);
   }
   return (
     <div className={`${style.column}`} style={{flexGrow: props.element.weight}}>

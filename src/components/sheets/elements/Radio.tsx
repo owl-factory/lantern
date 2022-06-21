@@ -3,6 +3,7 @@ import React from "react";
 import { RadioElementDescriptor } from "types/sheetElementDescriptors";
 
 interface SheetRadioProps {
+  id: string;
   element: RadioElementDescriptor;
 }
 

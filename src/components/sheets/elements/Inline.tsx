@@ -3,6 +3,7 @@ import { InlineElementDescriptor } from "types/sheetElementDescriptors";
 import { SheetElement } from "../SheetElement";
 
 interface SheetInlineProps {
+  id: string;
   element: InlineElementDescriptor;
 }
 
@@ -14,7 +15,7 @@ export function SheetInline(props: SheetInlineProps) {
   const childElements = props.element.children || [];
   const elements: JSX.Element[] = [];
   for (const childElement of childElements) {
-    elements.push(<SheetElement key={Math.random()} element={childElement}/>);
+    elements.push(<SheetElement key={Math.random()} id={props.id} element={childElement}/>);
   }
   return (
     <div >

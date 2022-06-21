@@ -4,6 +4,7 @@ import { TextInputElementDescriptor } from "types/sheetElementDescriptors";
 import style from "../styling/Input.module.scss";
 
 interface SheetTextInputProps {
+  id: string;
   element: TextInputElementDescriptor;
 }
 

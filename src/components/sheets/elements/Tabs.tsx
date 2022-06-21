@@ -1,4 +1,5 @@
-import { SheetTabElementDescriptor } from "controllers/layout/SheetController";
+
+import { SheetTabElementDescriptor } from "controllers/actor/ActorSheetController";
 import React from "react";
 
 /**

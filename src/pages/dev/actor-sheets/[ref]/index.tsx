@@ -27,15 +27,10 @@ function ViewActorSheet() {
   }, [ref]);
 
   const actorSheet = ActorSheetData.get(ref);
-  React.useEffect(() => {
-    ActorSheetData.loadSheet(ref);
-  }, [actorSheet]);
-  if (!actorSheet) { return <ViewActorSheetLoading/>; }
-
   return (
     <Page>
       <div style={{display: "flex"}}>
-        <h1>{actorSheet.name}</h1>&nbsp;
+        <h1>{actorSheet?.name}</h1>&nbsp;
         <Link href="/dev/actor-sheets"><Button>Back</Button></Link>
       </div>
       <hr/>

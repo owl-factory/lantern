@@ -1,6 +1,6 @@
 import { Button } from "@owl-factory/components/button";
-import { ActorSheetData } from "controllers/data/ActorSheetData";
-import { Formik, Form, FormikProps } from "formik";
+import { ActorController } from "controllers/actor/ActorController";
+import { Formik, Form } from "formik";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { SheetElement } from "./SheetElement";
@@ -16,13 +16,13 @@ interface ActorSheetProps {
  * @param id The ref or temporary key of a sheet to load
  */
 export const ActorSheet = observer((props: ActorSheetProps) => {
-  const sheet = ActorSheetData.getSheet(props.id);
+  const sheet = ActorController.getSheet(props.id);
 
   // Renders each of the children of the base sheet
   const sheetElements: JSX.Element[] = [];
   for(const childElement of sheet.children || []) {
     sheetElements.push(
-      <SheetElement element={childElement} />
+      <SheetElement id={props.id} element={childElement} />
     );
   }
 

@@ -6,6 +6,7 @@ import { SheetTabs } from "./Tabs";
 
 
 interface SheetPageableProps {
+  id: string;
   element: PageableElementDescriptor;
 }
 
@@ -20,14 +21,14 @@ export function SheetPageable(props: SheetPageableProps) {
   // Renders all the children that are not part of the pageable pages themself
   const nonPageChildren: JSX.Element[] = [];
   for (const childElement of childElements) {
-    nonPageChildren.push(<SheetElement key={Math.random()} element={childElement}/>);
+    nonPageChildren.push(<SheetElement key={Math.random()} id={props.id} element={childElement}/>);
   }
 
   return (
     <div>
       <SheetTabs activeTab={activeTab} setActiveTab={setActiveTab} tabs={props.element.tabs}/>
       <hr/>
-      <SheetPage element={props.element.pages[activeTab]}/>
+      <SheetPage id={props.id} element={props.element.pages[activeTab]}/>
       {nonPageChildren}
     </div>
   );
