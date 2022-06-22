@@ -1,4 +1,4 @@
-import { action, computed, makeObservable, observable } from "mobx";
+import { action, computed, makeObservable, observable, toJS } from "mobx";
 import { ActorSheetDocument } from "types/documents/ActorSheet";
 import { PageElementDescriptor } from "types/sheetElementDescriptors";
 import { SheetController } from "./ActorSheetController";
@@ -100,6 +100,21 @@ class $ActorController {
     return false;
   }
 
+  /**
+   * Gets an actor by their actor ref
+   * @param renderRef The ref of the render to check for the actor's true ref
+   */
+  public getActor(renderRef: string): Record<string, unknown> {
+    let actorRef = "";
+    if (this.$renders[renderRef]) { actorRef = this.$renders[renderRef].actorRef; }
+    return this.actorController.getActorValues(actorRef);
+  }
+
+  /**
+   * Grabs the sheet for the given render
+   * @param ref The ref of the render to fetch the sheet for
+   * @returns The found sheet
+   */
   public getSheet(ref: string): PageElementDescriptor {
     let sheetRef = "";
     if (this.$renders[ref]) { sheetRef = this.$renders[ref].sheetRef; }
@@ -108,10 +123,12 @@ class $ActorController {
 
   /**
    * Determines if the actor is loaded. Returns true if it is, false otherwise
-   * @param ref The ref of the actor to check
+   * @param renderRef The ref of the actor to check
    */
-  public isActorLoaded(ref: string): boolean {
-    return this.actorController.isActorLoaded(ref);
+  public isActorLoaded(renderRef: string): boolean {
+    let actorRef = "";
+    if (this.$renders[renderRef]) { actorRef = this.$renders[renderRef].actorRef; }
+    return this.actorController.isActorLoaded(actorRef);
   }
 
   /**

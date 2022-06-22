@@ -1,5 +1,4 @@
-import { action, makeObservable, observable } from "mobx";
-import { StaticVariableScalarType } from "types/documents/subdocument/StaticVariable";
+import { action, makeObservable, observable, toJS } from "mobx";
 
 export class ActorSubController {
   public $actorValues: Record<string, Record<string, unknown>> = {};
@@ -20,12 +19,23 @@ export class ActorSubController {
   }
 
   /**
+   * Grabs the values for an actor
+   * @param ref The ref of the actor to fetch
+   * @returns The found actor values or an empty struct
+   */
+  public getActorValues(ref: string): Record<string, unknown> {
+    const actor = this.$actorValues[ref];
+    if (!actor) { return {}; }
+    return actor;
+  }
+
+  /**
    * Loads in an actor to the actor controller
    * @param ref The ref of the actor being loaded in
    * @param values The actor's data values
    */
   public loadActor(ref: string, values: Record<string, unknown>) {
-    this.$actorFields[ref] = values;
+    this.$actorValues[ref] = values;
     this.generateFields(ref);
   }
 

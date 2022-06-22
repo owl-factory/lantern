@@ -1,6 +1,5 @@
 import { DataManager } from "@owl-factory/data/DataManager";
 import { ActorSheetDocument } from "types/documents/ActorSheet";
-import { PageElementDescriptor } from "types/sheetElementDescriptors";
 
 class ActorSheetDataManager extends DataManager<Partial<ActorSheetDocument>> {
   public collection = "actorSheets";

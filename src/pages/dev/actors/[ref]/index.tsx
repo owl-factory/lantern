@@ -31,7 +31,8 @@ function ActorView() {
     if (actor.campaign) { CampaignData.load(actor.campaign.ref); }
 
     renderID = ActorController.createRender(ref, actor.actorSheet?.ref as string, actor.campaign?.ref as string);
-  });
+    ActorController.loadActor(ref, actor.values || {});
+  }, [actor]);
 
   // Ensures that the actor sheet is loaded in to the sheet controller
   const actorSheet = ActorSheetData.get(actor?.actorSheet?.ref);
@@ -58,7 +59,7 @@ function ActorView() {
         <h1>{actor.name}</h1>&nbsp;
         <Button onClick={() => router.push("/dev/actors")}>Back</Button>
       </div>
-      <ActorSheet id={actor.ref as string} onSubmit={onSubmit} values={actor.values}/>
+      <ActorSheet id={actor.ref as string} onSubmit={onSubmit}/>
     </Page>
   );
 }
