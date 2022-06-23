@@ -1,5 +1,8 @@
 import { action, makeObservable, observable, toJS } from "mobx";
 
+/**
+ * A sub controller for managing the actors within an ActorController
+ */
 export class ActorSubController {
   public $actorValues: Record<string, Record<string, unknown>> = {};
   public $actorFields: Record<string, Record<string, unknown>> = {};
@@ -51,6 +54,11 @@ export class ActorSubController {
     return (actor !== undefined);
   }
 
+  /**
+   * Determines if an actor with the given ref is currently loaded.
+   * @param ref The ref of the actor to check
+   * @returns True if the actor is present and loaded. False otherwise
+   */
   public isActorLoaded(ref: string): boolean {
     return (this.$actorValues[ref] !== undefined);
   }
