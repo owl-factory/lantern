@@ -3,6 +3,7 @@
     <Pageable>
       <Page name="Bio">
         <Label>Bio</Label>
+        <Label>{{character.name}}</Label>
       </Page>
       
       <Page name="Character Sheet" access="edit">

@@ -1,7 +1,7 @@
 import { action, computed, makeObservable, observable, toJS } from "mobx";
 import { ActorSheetDocument } from "types/documents/ActorSheet";
 import { PageElementDescriptor } from "types/sheetElementDescriptors";
-import { SheetController } from "./ActorSheetController";
+import { isVariable, SheetController } from "./ActorSheetController";
 import { ActorSubController } from "./ActorSubController";
 
 interface RenderGroup {
@@ -177,6 +177,29 @@ class $ActorController {
   public isRulesetLoaded(ref: string): boolean {
     return false;
   }
+
+  public parseText(id: string, value: unknown): string {
+    if (typeof value === "string") return value;
+    else if (!Array.isArray(value)) { return value as string; } // Should never happen
+    
+    let output = '';
+    for (const chunk of value) {
+      if (Array.isArray(chunk)) { output += this.decodeVariable(id, chunk); }
+      else { output += chunk; }
+    }
+    return output;
+  }
+
+  public decodeVariable(id: string, chunk: string[]) {
+    switch (chunk[0]) {
+      case "character":
+        const value = this.getActorField(id, chunk[1]);
+        return value;
+    }
+
+  }
 }
+
+
 
 export const ActorController = new $ActorController();

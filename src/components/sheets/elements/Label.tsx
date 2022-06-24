@@ -1,3 +1,5 @@
+import { ActorController } from "controllers/actor/ActorController";
+import { observer } from "mobx-react-lite";
 import React from "react";
 import { LabelElementDescriptor } from "types/sheetElementDescriptors";
 
@@ -10,10 +12,11 @@ interface SheetLabelProps {
  * Renders a label
  * @param element The label element description
  */
-export function SheetLabel(props: SheetLabelProps) {
+export const SheetLabel = observer((props: SheetLabelProps) => {
+  const text = ActorController.parseText(props.id, props.element.text);
   return (
     <label htmlFor={props.element.for}>
-      {props.element.text}
+      {text}
     </label>
   );
-}
+});

@@ -336,7 +336,7 @@ export class SheetController<T> {
     const elementDetails: LabelElementDescriptor = {
       element: PageElementType.Label,
       for: labelElement.getAttribute("for") || "",
-      text: labelElement.textContent || "Unknown",
+      text: divideStringIntoVariables(labelElement.textContent) || "Unknown",
     };
 
     return elementDetails;
@@ -508,8 +508,87 @@ function getBaseElements(sheet: Element) {
   return { layout, prefabs };
 }
 
+/**
+ * Parses a string into a collection of static values and pesudo-tuples to prepare for decoding when on display
+ * @param value The string to parse
+ * @returns An array of strings or pseudo-tuples containing either static values or variables, respectively
+ */
+function divideStringIntoVariables(value: string | null): (string | string[])[] {
+  const chunks: (string | string[])[] = [];
+  if (value === null) { return [""]; }
+  while(true) {
+    const variableStart = value.search(/{{/);
+    if (variableStart === -1) {
+      chunks.push(value);
+      break;
+    }
+    const variableEnd = value.search(/}}/);
+    // Case: variable start, but no end
+    if (variableEnd === -1) {
+      chunks.push(value);
+      console.error("An improper variable format was used");
+      break;
+    }
 
+    if (variableStart > 0) {
+      const staticString = value.substring(0, variableStart);
+      // value = value.substring(variableStart);
+      chunks.push(staticString);
+    }
 
+    const variableChunk = value.substring(variableStart, variableEnd + 2);
+    const decodedVariable = decodeVariable(variableChunk);
+
+    chunks.push(decodedVariable);
+    value = value.substring(variableEnd + 2);
+  }
+
+  return chunks;
+}
+
+/**
+ * Checks if the given value is a viable variable
+ * @param potentialVariable The potential variable
+ * @returns True if is is a viable variable, false otherwise
+ */
+export function isVariable(potentialVariable: string | string[]): boolean {
+  if (!Array.isArray(potentialVariable)) { return false; }
+  return true;
+}
+
+/**
+ * Decodes a variable into a pseudo-tuple for easier access when rendered into a sheet
+ * @param str The variable string
+ * @returns A pseudo-tuple. Slot 0 is the variable group, slot 1 is the variable name.
+ * Invalid variables are returned as a string
+ */
+function decodeVariable(str: string) {
+  const fullVariable = str.substring(2, str.length - 2);
+  const periodIndex = fullVariable.search(/\./);
+  const group = fullVariable.substring(0, periodIndex).toLowerCase(); // Put into lowercase for ease of access
+  const variableName = fullVariable.substring(periodIndex + 1);
+
+  if (!isValidVariableGroup(group)) {
+    return fullVariable; // Full variable is a 'failed variable'
+  }
+  // TODO - error checking
+
+  return [group, variableName];
+}
+
+/**
+ * Checks if a given variable group is valid. 
+ * @param group The group to check for validity
+ * @returns True if the group is valid, false otherwise
+ */
+function isValidVariableGroup(group: string) {
+  switch (group) {
+    case "character":
+      return true;
+    default:
+      return false;
+  }
+}
 
 
 

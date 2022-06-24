@@ -5,5 +5,5 @@ import { GenericSheetElementDescriptor } from "./generic";
  */
 export interface LabelElementDescriptor extends GenericSheetElementDescriptor {
   for: string;
-  text: string;
+  text: string | string[];
 }
