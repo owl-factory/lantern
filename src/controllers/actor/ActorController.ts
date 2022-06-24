@@ -101,13 +101,44 @@ class $ActorController {
   }
 
   /**
-   * Gets an actor by their actor ref
+   * Gets an actor by their render ref
    * @param renderRef The ref of the render to check for the actor's true ref
    */
   public getActor(renderRef: string): Record<string, unknown> {
     let actorRef = "";
     if (this.$renders[renderRef]) { actorRef = this.$renders[renderRef].actorRef; }
     return this.actorController.getActorValues(actorRef);
+  }
+
+  /**
+   * Gets the actor ref from the current render
+   * @param renderRef The ref of the render to get the actor from
+   * @returns The actor ref or the shared none ID
+   */
+  public getActorRef(renderRef: string): string {
+    if (!this.$renders[renderRef]) { return "temp"; }
+    const actorRef = this.$renders[renderRef].actorRef;
+    return actorRef;
+  }
+
+  /**
+   * Gets an actor by their render ref and the field
+   * @param renderRef The ref of the render to check for the actor's true ref
+   */
+   public getActorField(renderRef: string, field: string): any {
+    if (!this.$renders[renderRef]) { return undefined; }
+    const actorRef = this.$renders[renderRef].actorRef;
+    return this.actorController.getActorFieldValue(actorRef, field);
+  }
+
+  /**
+   * Sets a single value within an actor by their render ref and the field
+   * @param renderRef The ref of the render to check for the actor's true ref
+   */
+   public setActorField(renderRef: string, field: string, value: any) {
+    if (!this.$renders[renderRef]) { return; }
+    const actorRef = this.$renders[renderRef].actorRef;
+    this.actorController.setActorFieldValue(actorRef, field, value);
   }
 
   /**
