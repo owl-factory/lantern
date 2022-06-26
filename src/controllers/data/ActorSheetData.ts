@@ -21,6 +21,11 @@ class ActorSheetDataManager extends DataManager<Partial<ActorSheetDocument>> {
     if (xml) {
       this.sheet.load(key, xml);
       return;
+    } else {
+      const sheet = this.get(key);
+      if (!sheet || !sheet.xml) { return;}
+
+      this.sheet.load(key, sheet.xml);
     }
   }
 
