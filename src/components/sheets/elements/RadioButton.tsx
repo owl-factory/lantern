@@ -17,7 +17,7 @@ interface SheetRadioButtonProps {
  */
 export const SheetRadioButton = observer((props: SheetRadioButtonProps) => {
   const ref = React.createRef<HTMLInputElement>();
-  const element = ActorController.parseVariables<RadioElementDescriptor>(props.id, props.element, VARIABLE_FIELDS);
+  const element = ActorController.renderVariables<RadioElementDescriptor>(props.id, props.element, VARIABLE_FIELDS);
   const fieldValue = ActorController.getActorField(props.id, element.name);
 
   /**

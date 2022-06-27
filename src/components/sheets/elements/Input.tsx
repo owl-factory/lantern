@@ -23,15 +23,15 @@ interface SheetInputProps extends IndividualSheetInputProps {
  */
 const SheetInput = observer((props: SheetInputProps) => {
   const ref = React.createRef<HTMLInputElement>();
-  const element = ActorController.parseVariables<TextInputElementDescriptor>(props.id, props.element, VARIABLE_FIELDS);
+  const element = ActorController.renderVariables<TextInputElementDescriptor>(props.id, props.element, VARIABLE_FIELDS);
 
   /**
    * Updates the ActorController to have the changed values
    * @param ev The triggering onChange event
    */
   function onChange(e: React.ChangeEvent<HTMLInputElement>) {
-    ActorController.setActorField(props.id, props.element.name, e.target.value);
-    e.target.value = ActorController.getActorField(props.id, props.element.name);
+    ActorController.setActorField(props.id, element.name, e.target.value);
+    e.target.value = ActorController.getActorField(props.id, element.name);
   }
 
   // Handles the case where we have two or more elements of the same name, and one of them is changed
@@ -39,8 +39,8 @@ const SheetInput = observer((props: SheetInputProps) => {
   React.useEffect(() => {
     if (!ref.current) { return; }
     if (ref.current === document.activeElement) { return; }
-    ref.current.value = ActorController.getActorField(props.id, props.element.name);
-  }, [ActorController.getActorField(props.id, props.element.name)]);
+    ref.current.value = ActorController.getActorField(props.id, element.name);
+  }, [ActorController.getActorField(props.id, element.name)]);
 
   return (
     <div>

@@ -17,7 +17,7 @@ interface SheetCheckboxProps {
 export const SheetCheckbox = observer((props: SheetCheckboxProps) => {
   const ref = React.createRef<HTMLInputElement>();
 
-  const element = ActorController.parseVariables<CheckboxElementDescriptor>(props.id, props.element, VARIABLE_FIELDS);
+  const element = ActorController.renderVariables<CheckboxElementDescriptor>(props.id, props.element, VARIABLE_FIELDS);
   const key = generateCheckboxName(element.name, element.value);
   const checked = ActorController.getActorField(props.id, key);
 

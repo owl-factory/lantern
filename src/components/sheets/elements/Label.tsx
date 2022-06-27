@@ -15,7 +15,7 @@ interface SheetLabelProps {
  * @param element The label element description
  */
 export const SheetLabel = observer((props: SheetLabelProps) => {
-  const element = ActorController.parseVariables<LabelElementDescriptor>(props.id, props.element, VARIABLE_FIELDS);
+  const element = ActorController.renderVariables<LabelElementDescriptor>(props.id, props.element, VARIABLE_FIELDS);
 
   return (
     <label htmlFor={element.for}>

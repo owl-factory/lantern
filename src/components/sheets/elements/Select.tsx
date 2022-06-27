@@ -15,7 +15,7 @@ interface SheetSelectProps {
  * @todo Implement
  */
 export function SheetSelect(props: SheetSelectProps) {
-  const element = ActorController.parseVariables<SelectElementDescriptor>(props.id, props.element, VARIABLE_FIELDS);
+  const element = ActorController.renderVariables<SelectElementDescriptor>(props.id, props.element, VARIABLE_FIELDS);
 
   return (
     <>

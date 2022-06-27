@@ -1,7 +1,7 @@
 import { action, computed, makeObservable, observable, toJS } from "mobx";
 import { ActorSheetDocument } from "types/documents/ActorSheet";
 import { PageElementDescriptor } from "types/sheetElementDescriptors";
-import { GenericSheetElementDescriptor } from "types/sheetElementDescriptors/generic";
+import { GenericSheetElementDescriptor, SheetVariableTuple } from "types/sheetElementDescriptors/generic";
 import { isVariable, SheetController } from "./ActorSheetController";
 import { ActorSubController } from "./ActorSubController";
 
@@ -180,13 +180,13 @@ class $ActorController {
   }
 
   /**
-   * Parses the variables of an element
-   * @param id The ID of the render to parse variables for
-   * @param element The element descriptor containing the actor sheet fields to parse
-   * @param fields The specific fields in the element descriptor to parse variables for
+   * Renders the variables of an element into useable strings
+   * @param id The ID of the render to render variables for
+   * @param element The element descriptor containing the actor sheet fields to render
+   * @param fields The specific fields in the element descriptor to render variables for
    * @returns A subset of the given element with the specified fields
    */
-  public parseVariables<T extends GenericSheetElementDescriptor>(
+  public renderVariables<T extends GenericSheetElementDescriptor>(
     id: string,
     element: T,
     fields: string[]
@@ -196,25 +196,37 @@ class $ActorController {
     for (const field of fields) {
       if (!(field in element)) { continue; }
       const value = element[field as (keyof T)];
-      parsedVariables[field] = ActorController.parseVariable(id, value);
+      parsedVariables[field] = ActorController.renderVariable(id, value);
     }
 
     return parsedVariables;
   }
 
-  public parseVariable(id: string, value: unknown): string {
+  /**
+   * Renders out a single variable
+   * @param id The ID of the render
+   * @param value The object containing the information required to render
+   * @returns A single string containing the rendered value
+   */
+  public renderVariable(id: string, value: unknown): string {
     if (typeof value === "string") return value;
     else if (!Array.isArray(value)) { return value as string; } // Should never happen
 
     let output = '';
     for (const chunk of value) {
-      if (Array.isArray(chunk)) { output += this.decodeVariable(id, chunk); }
+      if (Array.isArray(chunk)) { output += this.convertVariableToData(id, chunk); }
       else { output += chunk; }
     }
     return output;
   }
 
-  public decodeVariable(id: string, chunk: string[]) {
+  /**
+   * Converts a variable tuple
+   * @param id The ID of the render
+   * @param chunk The variable tuple to decode
+   * @returns The value of the decoded variable
+   */
+  public convertVariableToData(id: string, chunk: SheetVariableTuple) {
     switch (chunk[0]) {
       case "character":
         const value = this.getActorField(id, chunk[1]);
