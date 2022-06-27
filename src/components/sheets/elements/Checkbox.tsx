@@ -1,8 +1,9 @@
 import { ActorController } from "controllers/actor/ActorController";
-import { useField } from "formik";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { CheckboxElementDescriptor } from "types/sheetElementDescriptors";
+
+const VARIABLE_FIELDS = ["id", "name", "value"];
 
 interface SheetCheckboxProps {
   id: string;
@@ -16,7 +17,8 @@ interface SheetCheckboxProps {
 export const SheetCheckbox = observer((props: SheetCheckboxProps) => {
   const ref = React.createRef<HTMLInputElement>();
 
-  const key = generateCheckboxName(props.element.name, props.element.value);
+  const element = ActorController.parseVariables<CheckboxElementDescriptor>(props.id, props.element, VARIABLE_FIELDS);
+  const key = generateCheckboxName(element.name, element.value);
   const checked = ActorController.getActorField(props.id, key);
 
   /**
@@ -39,6 +41,7 @@ export const SheetCheckbox = observer((props: SheetCheckboxProps) => {
   return (
     <input
       type="checkbox"
+      id={element.id}
       ref={ref}
       defaultChecked={checked}
       name={key}

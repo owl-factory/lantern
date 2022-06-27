@@ -3,6 +3,8 @@ import { observer } from "mobx-react-lite";
 import React from "react";
 import { LabelElementDescriptor } from "types/sheetElementDescriptors";
 
+const VARIABLE_FIELDS = ["for", "text"];
+
 interface SheetLabelProps {
   id: string;
   element: LabelElementDescriptor;
@@ -13,10 +15,11 @@ interface SheetLabelProps {
  * @param element The label element description
  */
 export const SheetLabel = observer((props: SheetLabelProps) => {
-  const text = ActorController.parseText(props.id, props.element.text);
+  const element = ActorController.parseVariables<LabelElementDescriptor>(props.id, props.element, VARIABLE_FIELDS);
+
   return (
-    <label htmlFor={props.element.for}>
-      {text}
+    <label htmlFor={element.for}>
+      {element.text}
     </label>
   );
 });

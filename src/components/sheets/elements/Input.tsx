@@ -1,12 +1,14 @@
 import { ActorController } from "controllers/actor/ActorController";
 import { observer } from "mobx-react-lite";
 import React from "react";
-import { TextInputElementDescriptor } from "types/sheetElementDescriptors";
+import { NumberInputElementDescriptor, TextInputElementDescriptor } from "types/sheetElementDescriptors";
 import style from "../styling/Input.module.scss";
+
+const VARIABLE_FIELDS = ["id", "name"];
 
 interface IndividualSheetInputProps {
   id: string;
-  element: TextInputElementDescriptor;
+  element: NumberInputElementDescriptor | TextInputElementDescriptor;
 }
 
 interface SheetInputProps extends IndividualSheetInputProps {
@@ -21,6 +23,7 @@ interface SheetInputProps extends IndividualSheetInputProps {
  */
 const SheetInput = observer((props: SheetInputProps) => {
   const ref = React.createRef<HTMLInputElement>();
+  const element = ActorController.parseVariables<TextInputElementDescriptor>(props.id, props.element, VARIABLE_FIELDS);
 
   /**
    * Updates the ActorController to have the changed values
@@ -43,13 +46,13 @@ const SheetInput = observer((props: SheetInputProps) => {
     <div>
       <input
         ref={ref}
-        id={props.element.id}
+        id={element.id}
         type={props.type}
-        name={props.element.name}
+        name={element.name}
         className={`${style.actorSheetInput}`}
         onChange={onChange}
         autoComplete="off"
-        defaultValue={ActorController.getActorField(props.id, props.element.name)}
+        defaultValue={ActorController.getActorField(props.id, element.name)}
       />
     </div>
   );

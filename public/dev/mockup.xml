@@ -207,7 +207,7 @@
             <Border borderStyle="simplebox">
               <Inline>
                 <Loop id="currencies_1" name="global.currencies" key="$currency">
-                  <Prefab name="currency" label="$currency.name" index="$currency.index"/>
+                  <Prefab name="currency" label="{{$currency.name}}" index="{{$currency.index}}"/>
                 </Loop>
               </Inline>
 

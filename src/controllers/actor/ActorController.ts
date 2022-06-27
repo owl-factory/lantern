@@ -1,6 +1,7 @@
 import { action, computed, makeObservable, observable, toJS } from "mobx";
 import { ActorSheetDocument } from "types/documents/ActorSheet";
 import { PageElementDescriptor } from "types/sheetElementDescriptors";
+import { GenericSheetElementDescriptor } from "types/sheetElementDescriptors/generic";
 import { isVariable, SheetController } from "./ActorSheetController";
 import { ActorSubController } from "./ActorSubController";
 
@@ -178,10 +179,33 @@ class $ActorController {
     return false;
   }
 
-  public parseText(id: string, value: unknown): string {
+  /**
+   * Parses the variables of an element
+   * @param id The ID of the render to parse variables for
+   * @param element The element descriptor containing the actor sheet fields to parse
+   * @param fields The specific fields in the element descriptor to parse variables for
+   * @returns A subset of the given element with the specified fields
+   */
+  public parseVariables<T extends GenericSheetElementDescriptor>(
+    id: string,
+    element: T,
+    fields: string[]
+  ): Record<string, string> {
+    const parsedVariables: Record<string, string> = {};
+
+    for (const field of fields) {
+      if (!(field in element)) { continue; }
+      const value = element[field as (keyof T)];
+      parsedVariables[field] = ActorController.parseVariable(id, value);
+    }
+
+    return parsedVariables;
+  }
+
+  public parseVariable(id: string, value: unknown): string {
     if (typeof value === "string") return value;
     else if (!Array.isArray(value)) { return value as string; } // Should never happen
-    
+
     let output = '';
     for (const chunk of value) {
       if (Array.isArray(chunk)) { output += this.decodeVariable(id, chunk); }
