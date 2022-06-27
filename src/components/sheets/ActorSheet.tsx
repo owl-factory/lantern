@@ -6,21 +6,15 @@ import React from "react";
 import { SheetElement } from "./SheetElement";
 
 interface ActorSheetProps {
-  xml: string;
+  id: string;
 }
 
 /**
  * Renders an actor sheet
- * @param xml The XML string to render into a form
+ * @param id The ref or temporary key of a sheet to load
  */
 export const ActorSheet = observer((props: ActorSheetProps) => {
-  // Loads the actor sheet from the testing xml
-  // TODO - move this elsewhere; the actor sheet should only pull the sheet id
-  React.useEffect(() => {
-    ActorSheetData.loadSheet("test", props.xml);
-  }, [props.xml]);
-
-  const sheet = ActorSheetData.getSheet("test");
+  const sheet = ActorSheetData.getSheet(props.id);
   const sheetElements: JSX.Element[] = [];
 
   // Renders each of the children of the base sheet
