@@ -13,6 +13,29 @@ class ActorSheetDataManager extends DataManager<Partial<ActorSheetDocument>> {
   }
 
   /**
+   * Creates a new actor sheet
+   * @param actorSheet The actor sheet to create
+   * @returns The created actor sheet
+   */
+  public async create(actorSheet: Partial<ActorSheetDocument>) {
+    // TODO - validation
+
+    const res = await this.$create(actorSheet);
+    return res[0];
+  }
+
+  /**
+   * Updates an actor sheet
+   * @param actorSheet The actor sheet to update
+   * @returns The updated actor sheet
+   */
+  public async update(actorSheet: Partial<ActorSheetDocument>) {
+    // TODO - validation
+    const res = await this.$update(actorSheet);
+    return res[0];
+  }
+
+  /**
    * Loads raw XML into the sheet controller
    * @param key The key of the sheet to load into the sheet controller
    * @param xml The raw XML string to load into the sheet controller
@@ -27,6 +50,14 @@ class ActorSheetDataManager extends DataManager<Partial<ActorSheetDocument>> {
 
       this.sheet.load(key, sheet.xml);
     }
+  }
+
+  /**
+   * Unloads a sheet
+   * @param key The key of the sheet to unload
+   */
+  public unloadSheet(key: string) {
+    this.sheet.unload(key);
   }
 
   /**
