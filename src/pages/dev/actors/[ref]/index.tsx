@@ -9,6 +9,7 @@ import { RulesetData } from "controllers/data/RulesetData";
 import { observer } from "mobx-react-lite";
 import { useRouter } from "next/router";
 import React from "react";
+import { RulesetDocument } from "types/documents";
 
 /**
  * Renders a page for viewing a single actor
@@ -26,20 +27,30 @@ function ActorView() {
   const actor = ActorData.get(ref);
   React.useEffect(() => {
     if (!actor) { return; }
+    // Load in dependencies
     RulesetData.load(actor.ruleset?.ref as string);
     if (actor.actorSheet) { ActorSheetData.load(actor.actorSheet.ref); }
     if (actor.campaign) { CampaignData.load(actor.campaign.ref); }
 
-    renderID = ActorController.createRender(ref, actor.actorSheet?.ref as string, actor.campaign?.ref as string);
+    renderID = ActorController.createRender(
+      ref,
+      actor.actorSheet?.ref as string,
+      actor.ruleset?.ref as string,
+    );
     ActorController.loadActor(ref, actor.values || {});
   }, [actor]);
 
   // Ensures that the actor sheet is loaded in to the sheet controller
   const actorSheet = ActorSheetData.get(actor?.actorSheet?.ref);
   React.useEffect(() => {
-    if (!actorSheet || !actorSheet.ref) { return; }
-    ActorController.loadSheet(actorSheet.ref, actorSheet.xml || "");
+    if (actorSheet && actorSheet.ref) { ActorController.loadSheet(actorSheet.ref, actorSheet.xml || ""); }
   }, [actorSheet]);
+
+  // Ensures that the ruleset is loaded in to the sheet controller
+  const ruleset = RulesetData.get(actor?.ruleset?.ref);
+  React.useEffect(() => {
+    if (ruleset && ruleset.ref) { ActorController.loadRuleset(ruleset.ref as string, ruleset as RulesetDocument); }
+  }, [ruleset]);
 
   if (!actor) { return <></>; }
 
