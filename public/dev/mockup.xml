@@ -2,8 +2,18 @@
   <Layout>
     <Pageable>
       <Page name="Bio">
-        <Label>Bio</Label>
-        <Label>Border style: {{sheet.borderStyle}}</Label>
+        <!-- <Row>
+          <Label>Bio</Label>
+          <Label>Border style: {{sheet.borderStyle}}</Label>
+        </Row>
+        <Loop key="letter" list="a|b|c" delimiter="|">
+          <Label>Letter: {{letter}}</Label>
+        </Loop> -->
+
+        <Loop key="greeting" list="{{rules.greetings}}">
+          <Label>Greeting: {{greeting}}</Label>
+        </Loop>
+
       </Page>
       
       <Page name="Character Sheet" access="edit">
@@ -183,8 +193,9 @@
                 <Column weight="2">Name</Column>
                 <Column weight="1"></Column>
               </Row>
-              <Loop id="attacks_1" list="attacks" key="attack">
+              <Loop id="attacks_1" list="a|b|c" key="attack" delimiter="|">
                 <Column weight="2">
+                  <Label>{{attack}}</Label>
                   <TextInput name="attack.name"/>
                 </Column>
 

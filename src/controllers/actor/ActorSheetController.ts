@@ -18,7 +18,8 @@ import {
   TextAreaElementDescriptor,
   TextInputElementDescriptor,
 } from "types/sheetElementDescriptors";
-import { ParsedSheetVariable, SheetVariableTuple } from "types/sheetElementDescriptors/generic";
+import { GenericSheetElementDescriptor, ParsedSheetVariable, SheetVariableTuple } from "types/sheetElementDescriptors/generic";
+import { LoopElementDescriptor } from "types/sheetElementDescriptors/loop";
 import { PrefabElementDescriptor } from "types/sheetElementDescriptors/prefab";
 
 export interface SheetTabElementDescriptor {
@@ -194,6 +195,8 @@ export class SheetController<T> {
       case PageElementType.Select:
         return this.parseSelectElement(sheetElement);
 
+      case PageElementType.Loop:
+        return this.parseLoopElement(key, sheetElement);
       case PageElementType.Prefab:
         return this.parsePrefabElement(key, sheetElement);
     }
@@ -488,7 +491,7 @@ export class SheetController<T> {
    * @param radioButtonElement The radio button element to convert
    * @returns A radio button element descriptor
    */
-   protected parseRadioButtonElement(radioButtonElement: Element) {
+  protected parseRadioButtonElement(radioButtonElement: Element) {
     const elementDetails: RadioButtonElementDescriptor = {
       element: PageElementType.RadioButton,
       id: parseVariableString(radioButtonElement.getAttribute("id") || "undefined"),
@@ -497,6 +500,34 @@ export class SheetController<T> {
       label: parseVariableString(radioButtonElement.textContent || "Unknown"),
     };
 
+    return elementDetails;
+  }
+
+  protected parseLoopElement(key: string, loopElement: Element) {
+    const rawList = loopElement.getAttribute("list") || "";
+    const listType = rawList.search("{{") === -1 ? "static" : "variable";
+    // console.log(loopElement, listType)
+    let list: string[] | SheetVariableTuple;
+    switch (listType) {
+      case "static":
+        list = rawList.split(loopElement.getAttribute("delimiter") || ",");
+        break;
+      case "variable":
+        list = parseVariableString(rawList) as SheetVariableTuple;
+        break;
+    }
+
+    const elementDetails: LoopElementDescriptor = {
+      element: PageElementType.Loop,
+      children: [],
+      listType,
+      list,
+      key: loopElement.getAttribute("key") || "unknown",
+    };
+
+    for (const child of loopElement.children) {
+      elementDetails.children.push(this.parseSheetElement(key, child) as GenericSheetElementDescriptor);
+    }
     return elementDetails;
   }
 }
@@ -610,7 +641,6 @@ function encodeVariableIntoTuple(str: string): (string | SheetVariableTuple) {
     return fullVariable; // Full variable is a 'failed variable'
   }
   // TODO - error checking
-
   return [group, variableName];
 }
 
@@ -620,15 +650,6 @@ function encodeVariableIntoTuple(str: string): (string | SheetVariableTuple) {
  * @returns True if the group is valid, false otherwise
  */
 function isValidVariableGroup(group: string) {
-  switch (group) {
-    case "character":
-    case "rules":
-    case "sheet":
-      return true;
-    default:
-      return false;
-  }
+  return true;
 }
-
-
 

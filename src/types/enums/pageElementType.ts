@@ -29,6 +29,9 @@ export enum PageElementType {
   TextArea, // An input specifically for adding formatted text, eg markdown
   Select, // A select input
 
+  // Functional Elements that perform tasks but do not directly appear
+  Loop,
+
 }
 
 /**
@@ -78,6 +81,8 @@ export function elementNameToPageElementType(tagName: string) {
       return PageElementType.TextArea;
     case "select":
       return PageElementType.Select;
+    case "loop":
+      return PageElementType.Loop;
     case "prefab":
       return PageElementType.Prefab;
 

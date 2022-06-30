@@ -1,3 +1,4 @@
+import { read } from "@owl-factory/utilities/objects";
 import { action, makeObservable, observable } from "mobx";
 import { RulesetDocument } from "types/documents";
 import { ActorSheetDocument } from "types/documents/ActorSheet";
@@ -194,14 +195,16 @@ class $ActorController {
   public renderVariables<T extends GenericSheetElementDescriptor>(
     id: string,
     element: T,
-    fields: string[]
+    fields: string[],
+    properties: Record<string, Record<string, string | unknown>>
   ): Record<string, string> {
     const parsedVariables: Record<string, string> = {};
+    console.log(element)
 
     for (const field of fields) {
       if (!(field in element)) { continue; }
-      const value = element[field as (keyof T)];
-      parsedVariables[field] = ActorController.renderVariable(id, value);
+      const elementField = element[field as (keyof T)]; // TODO - rename value. It is incredibly ambiguous
+      parsedVariables[field] = ActorController.renderVariable(id, elementField, properties);
     }
 
     return parsedVariables;
@@ -210,16 +213,21 @@ class $ActorController {
   /**
    * Renders out a single variable
    * @param id The ID of the render
-   * @param value The object containing the information required to render
+   * @param elementField The object containing the information required to render
    * @returns A single string containing the rendered value
    */
-  public renderVariable(id: string, value: unknown): string {
-    if (typeof value === "string") return value;
-    else if (!Array.isArray(value)) { return value as string; } // Should never happen
+  public renderVariable(
+    id: string,
+    elementField: unknown,
+    properties: Record<string, Record<string, string | unknown>>
+  ): string {
+    console.log("elementField", elementField)
+    if (typeof elementField === "string") return elementField;
+    else if (!Array.isArray(elementField)) { return elementField as string; } // Should never happen
 
     let output = '';
-    for (const chunk of value) {
-      if (Array.isArray(chunk)) { output += this.convertVariableToData(id, chunk); }
+    for (const chunk of elementField) {
+      if (Array.isArray(chunk)) { output += this.convertVariableToData(id, chunk, properties); }
       else { output += chunk; }
     }
     return output;
@@ -231,8 +239,13 @@ class $ActorController {
    * @param chunk The variable tuple to decode
    * @returns The value of the decoded variable
    */
-  public convertVariableToData(id: string, chunk: SheetVariableTuple) {
+  public convertVariableToData(
+    id: string,
+    chunk: SheetVariableTuple,
+    properties: Record<string, Record<string, string | unknown>>
+  ) {
     const { rulesetRef, sheetRef } = this.$renders[id];
+    console.log("chunk!", chunk)
     switch (chunk[0]) {
       case "character":
         const characterValue = this.getActorField(id, chunk[1]);
@@ -243,6 +256,13 @@ class $ActorController {
       case "sheet":
         const sheetValue = this.sheetController.getVariable(sheetRef, chunk[1]);
         return sheetValue;
+      default:
+        // Case where the initial part is empty
+        // TODO - use $ for variables instead within {{ expressions }}
+        if (chunk[0] === "") { return read(properties, chunk[1]); }
+        else if (!(chunk[0] in properties)) { return undefined; }
+        const loopValue = read(properties[chunk[0]], chunk[1]);
+        return loopValue;
     }
 
   }
