@@ -1,7 +1,9 @@
+import { Button } from "@owl-factory/components/button";
 import { Page } from "components/design";
 import { ActorSheet } from "components/sheets/ActorSheet";
 import { ActorSheetData } from "controllers/data/ActorSheetData";
 import { observer } from "mobx-react-lite";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
 
@@ -32,7 +34,11 @@ function ViewActorSheet() {
 
   return (
     <Page>
-      <h1>{actorSheet.name}</h1>
+      <div style={{display: "flex"}}>
+        <h1>{actorSheet.name}</h1>&nbsp;
+        <Link href="/dev/actor-sheets"><Button>Back</Button></Link>
+      </div>
+      <hr/>
       <ActorSheet id={ref}/>
     </Page>
   );

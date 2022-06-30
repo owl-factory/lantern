@@ -1,8 +1,10 @@
+import { Button } from "@owl-factory/components/button";
 import { Page } from "components/design";
 import { ActorSheetForm } from "components/reroll/actorSheets/Form";
 import { ActorSheetData } from "controllers/data/ActorSheetData";
 import { RulesetData } from "controllers/data/RulesetData";
 import { observer } from "mobx-react-lite";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
 import { ActorSheetDocument } from "types/documents/ActorSheet";
@@ -13,7 +15,7 @@ import { ActorSheetDocument } from "types/documents/ActorSheet";
 function EditActorSheet() {
   const router = useRouter();
   const ref = router.query.ref as string;
-  
+
   // Ensures that the actor sheet is loaded
   React.useEffect(() => {
     ActorSheetData.load(ref);
@@ -47,11 +49,15 @@ function EditActorSheet() {
 
   return (
     <Page>
-      <h1>Edit {actorSheet.name}</h1>
+      <div style={{display: "flex"}}>
+        <h1>Edit {actorSheet.name}</h1>&nbsp;
+        <Link href="/dev/actor-sheets"><Button>Back</Button></Link>
+      </div>
       <i>A {ruleset.name} actor sheet</i>
+      <hr/>
       <ActorSheetForm ruleset={ruleset.ref as string} actorSheet={actorSheet} onSubmit={save}/>
     </Page>
-  )
+  );
 }
 
 export default observer(EditActorSheet);
