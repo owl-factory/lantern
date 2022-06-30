@@ -3,13 +3,11 @@ import { observer } from "mobx-react-lite";
 import React from "react";
 import { NumberInputElementDescriptor, TextInputElementDescriptor } from "types/sheetElementDescriptors";
 import style from "../styling/Input.module.scss";
+import { SheetElementProps } from "../types";
 
 const VARIABLE_FIELDS = ["id", "name"];
 
-interface IndividualSheetInputProps {
-  id: string;
-  element: NumberInputElementDescriptor | TextInputElementDescriptor;
-}
+type IndividualSheetInputProps = SheetElementProps<NumberInputElementDescriptor | TextInputElementDescriptor>
 
 interface SheetInputProps extends IndividualSheetInputProps {
   type: string;

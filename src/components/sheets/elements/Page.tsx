@@ -1,21 +1,17 @@
 import React from "react";
 import { PageElementDescriptor } from "types/sheetElementDescriptors";
 import { SheetElement } from "../SheetElement";
-
-interface SheetBackgroundProps {
-  id: string;
-  element: PageElementDescriptor;
-}
+import { SheetElementProps } from "../types";
 
 /**
  * Renders an image of the background
  * @param element The SheetBackground element description
  */
-export function SheetPage(props: SheetBackgroundProps) {
+export function SheetPage(props: SheetElementProps<PageElementDescriptor>) {
   const childElements = props.element.children || [];
   const elements: JSX.Element[] = [];
   for (const childElement of childElements) {
-    elements.push(<SheetElement key={Math.random()} id={props.id} element={childElement}/>);
+    elements.push(<SheetElement key={Math.random()} {...props} element={childElement}/>);
   }
   return (
     <div>
