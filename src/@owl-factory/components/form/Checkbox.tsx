@@ -1,5 +1,5 @@
 import { useField } from "formik";
-import React from "react";
+import React, { ChangeEvent } from "react";
 
 interface CheckboxProps {
   ariaLabel?: string;
@@ -7,6 +7,7 @@ interface CheckboxProps {
   disabled?: boolean;
   id?: string;
   label?: string;
+  onChange?: (e: ChangeEvent<any>) => void;
   name: string;
   type?: "checkbox" | "switch"
   value: string;
@@ -27,6 +28,7 @@ interface CheckboxProps {
 export function Checkbox(props: CheckboxProps) {
   // Makes Formik work right
   const [ field ] = useField(props.name);
+  const onChange = props.onChange ? props.onChange : field.onChange;
 
   const checkbox = (
     <input
@@ -35,6 +37,7 @@ export function Checkbox(props: CheckboxProps) {
       aria-label={props.ariaLabel}
       className="form-check-input"
       id={props.id || props.name}
+      onChange={onChange}
       value={props.value}
     />
   );

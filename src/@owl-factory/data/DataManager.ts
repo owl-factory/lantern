@@ -12,7 +12,6 @@ import { getUpdatedAt, isValidRef } from "./helpers/fields";
 import { CrudPacket } from "@owl-factory/types/object";
 import { getUniques } from "@owl-factory/utilities/arrays";
 import { getSuccessfulDocuments } from "./helpers/data";
-import { action, makeObservable, observable } from "mobx";
 import { Cacheable } from "@owl-factory/cache/decorators";
 
 /**
