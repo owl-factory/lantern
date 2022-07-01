@@ -1,3 +1,4 @@
+import { splitExpressionValue } from "components/sheets/utilities/expressions/parse";
 import { parseXML } from "controllers/layout/parser";
 import { action, makeObservable, observable } from "mobx";
 import { PageElementType, elementNameToPageElementType } from "types/enums/pageElementType";
@@ -18,7 +19,6 @@ import {
   TextAreaElementDescriptor,
   TextInputElementDescriptor,
 } from "types/sheetElementDescriptors";
-import { ParsedSheetVariable, SheetVariableTuple } from "types/sheetElementDescriptors/generic";
 import { PrefabElementDescriptor } from "types/sheetElementDescriptors/prefab";
 
 export interface SheetTabElementDescriptor {
@@ -364,8 +364,8 @@ export class SheetController<T> {
   protected parseLabelElement(labelElement: Element) {
     const elementDetails: LabelElementDescriptor = {
       element: PageElementType.Label,
-      for: parseVariableString(labelElement.getAttribute("for") || ""),
-      text: parseVariableString(labelElement.textContent || "Unknown"),
+      for: splitExpressionValue(labelElement.getAttribute("for") || ""),
+      text: splitExpressionValue(labelElement.textContent || "Unknown"),
     };
 
     return elementDetails;
@@ -379,8 +379,8 @@ export class SheetController<T> {
   protected parseCheckboxElement(checkboxElement: Element) {
     const elementDetails: NumberInputElementDescriptor = {
       element: PageElementType.Checkbox,
-      id: parseVariableString(checkboxElement.getAttribute("id") || ""),
-      name: parseVariableString(checkboxElement.getAttribute("name") || "missing_name"),
+      id: splitExpressionValue(checkboxElement.getAttribute("id") || ""),
+      name: splitExpressionValue(checkboxElement.getAttribute("name") || "missing_name"),
     };
 
     return elementDetails;
@@ -394,8 +394,8 @@ export class SheetController<T> {
   protected parseNumberInputElement(numberInputElement: Element) {
     const elementDetails: NumberInputElementDescriptor = {
       element: PageElementType.NumberInput,
-      id: parseVariableString(numberInputElement.getAttribute("id") || ""),
-      name: parseVariableString(numberInputElement.getAttribute("name") || "missing_name"),
+      id: splitExpressionValue(numberInputElement.getAttribute("id") || ""),
+      name: splitExpressionValue(numberInputElement.getAttribute("name") || "missing_name"),
     };
 
     return elementDetails;
@@ -409,8 +409,8 @@ export class SheetController<T> {
   protected parseTextInputElement(textInputElement: Element) {
     const elementDetails: TextInputElementDescriptor = {
       element: PageElementType.TextInput,
-      id: parseVariableString(textInputElement.getAttribute("id") || ""),
-      name: parseVariableString(textInputElement.getAttribute("name") || "missing_name"),
+      id: splitExpressionValue(textInputElement.getAttribute("id") || ""),
+      name: splitExpressionValue(textInputElement.getAttribute("name") || "missing_name"),
     };
 
     return elementDetails;
@@ -424,8 +424,8 @@ export class SheetController<T> {
   protected parseTextAreaElement(textAreaElement: Element) {
     const elementDetails: TextAreaElementDescriptor = {
       element: PageElementType.TextArea,
-      id: parseVariableString(textAreaElement.getAttribute("id") || ""),
-      name: parseVariableString(textAreaElement.getAttribute("name") || ""),
+      id: splitExpressionValue(textAreaElement.getAttribute("id") || ""),
+      name: splitExpressionValue(textAreaElement.getAttribute("name") || ""),
     };
 
     return elementDetails;
@@ -439,8 +439,8 @@ export class SheetController<T> {
   protected parseSelectElement(selectElement: Element) {
     const elementDetails: TextAreaElementDescriptor = {
       element: PageElementType.Select,
-      id: parseVariableString(selectElement.getAttribute("id") || ""),
-      name: parseVariableString(selectElement.getAttribute("name") || ""),
+      id: splitExpressionValue(selectElement.getAttribute("id") || ""),
+      name: splitExpressionValue(selectElement.getAttribute("name") || ""),
     };
 
     return elementDetails;
@@ -475,9 +475,9 @@ export class SheetController<T> {
   protected parseRadioElement(radioElement: Element) {
     const elementDetails: RadioElementDescriptor = {
       element: PageElementType.Radio,
-      id: parseVariableString(radioElement.getAttribute("id") || "undefined"),
-      name: parseVariableString(radioElement.getAttribute("name") || "undefined"),
-      value: parseVariableString(radioElement.getAttribute("value") || "1"),
+      id: splitExpressionValue(radioElement.getAttribute("id") || "undefined"),
+      name: splitExpressionValue(radioElement.getAttribute("name") || "undefined"),
+      value: splitExpressionValue(radioElement.getAttribute("value") || "1"),
     };
 
     return elementDetails;
@@ -491,10 +491,10 @@ export class SheetController<T> {
    protected parseRadioButtonElement(radioButtonElement: Element) {
     const elementDetails: RadioButtonElementDescriptor = {
       element: PageElementType.RadioButton,
-      id: parseVariableString(radioButtonElement.getAttribute("id") || "undefined"),
-      name: parseVariableString(radioButtonElement.getAttribute("name") || "undefined"),
-      value: parseVariableString(radioButtonElement.getAttribute("value") || "1"),
-      label: parseVariableString(radioButtonElement.textContent || "Unknown"),
+      id: splitExpressionValue(radioButtonElement.getAttribute("id") || "undefined"),
+      name: splitExpressionValue(radioButtonElement.getAttribute("name") || "undefined"),
+      value: splitExpressionValue(radioButtonElement.getAttribute("value") || "1"),
+      label: splitExpressionValue(radioButtonElement.textContent || "Unknown"),
     };
 
     return elementDetails;
@@ -545,90 +545,3 @@ function getBaseElements(sheet: Element) {
   }
   return { layout, prefabs, variables };
 }
-
-/**
- * Parses a string into a collection of static values and pesudo-tuples to prepare for decoding when on display
- * @param value The string to parse
- * @returns An array of strings or pseudo-tuples containing either static values or variables, respectively
- */
-function parseVariableString(value: string | null): ParsedSheetVariable {
-  const chunks: ParsedSheetVariable = [];
-  if (value === null || value === undefined) { return [""]; }
-  while(true) {
-    const variableStart = value.search(/{{/);
-    if (variableStart === -1) {
-      chunks.push(value);
-      break;
-    }
-    const variableEnd = value.search(/}}/);
-    // Case: variable start, but no end
-    if (variableEnd === -1) {
-      chunks.push(value);
-      console.error("An improper variable format was used");
-      break;
-    }
-
-    if (variableStart > 0) {
-      const staticString = value.substring(0, variableStart);
-      // value = value.substring(variableStart);
-      chunks.push(staticString);
-    }
-
-    const variableChunk = value.substring(variableStart, variableEnd + 2);
-    const decodedVariable = encodeVariableIntoTuple(variableChunk);
-
-    chunks.push(decodedVariable);
-    value = value.substring(variableEnd + 2);
-  }
-
-  return chunks;
-}
-
-/**
- * Checks if the given value is a viable variable
- * @param potentialVariable The potential variable
- * @returns True if is is a viable variable, false otherwise
- */
-export function isVariable(potentialVariable: string | string[]): boolean {
-  if (!Array.isArray(potentialVariable)) { return false; }
-  return true;
-}
-
-/**
- * Decodes a variable into a pseudo-tuple for easier access when rendered into a sheet
- * @param str The variable string
- * @returns A pseudo-tuple. Slot 0 is the variable group, slot 1 is the variable name.
- * Invalid variables are returned as a string
- */
-function encodeVariableIntoTuple(str: string): (string | SheetVariableTuple) {
-  const fullVariable = str.substring(2, str.length - 2);
-  const periodIndex = fullVariable.search(/\./);
-  const group = fullVariable.substring(0, periodIndex).toLowerCase(); // Put into lowercase for ease of access
-  const variableName = fullVariable.substring(periodIndex + 1);
-
-  if (!isValidVariableGroup(group)) {
-    return fullVariable; // Full variable is a 'failed variable'
-  }
-  // TODO - error checking
-
-  return [group, variableName];
-}
-
-/**
- * Checks if a given variable group is valid.
- * @param group The group to check for validity
- * @returns True if the group is valid, false otherwise
- */
-function isValidVariableGroup(group: string) {
-  switch (group) {
-    case "character":
-    case "rules":
-    case "sheet":
-      return true;
-    default:
-      return false;
-  }
-}
-
-
-

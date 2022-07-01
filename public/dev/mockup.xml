@@ -3,7 +3,7 @@
     <Pageable>
       <Page name="Bio">
         <Label>Bio</Label>
-        <Label>Border style: {{sheet.borderStyle}}</Label>
+        <Label>Border style: {$sheet.borderStyle}</Label>
       </Page>
       
       <Page name="Character Sheet" access="edit">
@@ -207,7 +207,7 @@
             <Border borderStyle="simplebox">
               <Inline>
                 <Loop id="currencies_1" name="global.currencies" key="$currency">
-                  <Prefab name="currency" label="{{$currency.name}}" index="{{$currency.index}}"/>
+                  <Prefab name="currency" label="{$currency.name}" index="{$currency.index}"/>
                 </Loop>
               </Inline>
 
@@ -277,15 +277,15 @@
   <Prefabs>
     <NewPrefab name="ability_score" properties="label,score,mod">
       <Background src="/ability_score.svg">
-        <Label>{{properties.label}}</Label>
-        <NumberInput id="{{properties.mod}}_{{properties.uuid}}" name="{{properties.mod}}" calculated="true"/>
-        <NumberInput id="{{properties.score}}_{{properties.uuid}}" name="{{properties.score}}"/>
+        <Label>{$properties.label}</Label>
+        <NumberInput id="{$properties.mod}_{$properties.uuid}" name="{$properties.mod}" calculated="true"/>
+        <NumberInput id="{$properties.score}_{$properties.uuid}" name="{$properties.score}"/>
       </Background>
     </NewPrefab>
 
     <NewPrefab name="skill" properties="">
       <Row>
-        <Column weight="1"><Checkbox name="{{properties.skill.key}}"/></Column>
+        <Column weight="1"><Checkbox name="{$properties.skill.key}"/></Column>
         <Column weight="1">
           <NumberInput id="acrobatics_proficiency_1" name="acrobatics_proficiency" calculated="true" calculateMethod="calc_skill_proficiency"/>
         </Column>
@@ -294,7 +294,7 @@
     </NewPrefab>
   </Prefabs>
 
-  <!-- Variables are sheet-defined values for having consistent values throughout the sheet. They can be accessed with {{sheet.[variableName]}} -->
+  <!-- Variables are sheet-defined values for having consistent values throughout the sheet. They can be accessed with {$sheet.[variableName]} -->
   <Variables>
     <Variable type="string" name="borderStyle" value="default-border-style"/> 
   </Variables>

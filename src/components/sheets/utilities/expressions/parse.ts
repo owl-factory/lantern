@@ -1,11 +1,11 @@
 import { string } from "yup/lib/locale";
 
-interface ExpressionItem {
+export interface ExpressionItem {
   type: ExpressionType;
   value?: string;
 }
 
-interface Expression {
+export interface Expression {
   items: ExpressionItem[];
 }
 
@@ -13,7 +13,7 @@ const EXPRESSION_PART_REGEXES = [
   /(\$[a-zA-Z0-9][a-zA-Z0-9.]*[a-zA-Z0-9]?)/, // Variable name regex ($foo.bar)
 ];
 
-enum ExpressionType {
+export enum ExpressionType {
   Variable,
 }
 
@@ -23,31 +23,31 @@ enum ExpressionType {
  * @returns An array of string and Expression objects
  */
 export function splitExpressionValue(str: string): (string | Expression)[] {
-  const expr: (string | Expression)[] = [];
+  const exprs: (string | Expression)[] = [];
   let currentString = str;
   let i = 0;
   while(true) {
     const nextExpressionIndex = getNextExpressionStart(currentString);
     // There are no further expressions, so escape out
     if (nextExpressionIndex === -1) {
-      expr.push(currentString);
+      exprs.push(currentString);
       break;
     }
     else if (nextExpressionIndex > 0) {
-      expr.push(currentString.substring(0, nextExpressionIndex));
+      exprs.push(currentString.substring(0, nextExpressionIndex));
       currentString = currentString.substring(nextExpressionIndex);
     }
     const nextExpressionEnd = getNextExpressionEnd(currentString);
-    const expressionString = currentString.substring(0, nextExpressionEnd);
-    currentString = currentString.substring(nextExpressionEnd);
+    const expressionString = currentString.substring(0, nextExpressionEnd + 1);
+    currentString = currentString.substring(nextExpressionEnd + 1);
 
-    expr.push(parseExpression(expressionString));
+    exprs.push(parseExpression(expressionString));
 
     // Safety net. If something breaks this prevents an infinite loop
     i++; if (i>1000) { break; }
   }
 
-  return expr;
+  return exprs;
 }
 
 /**
@@ -87,17 +87,18 @@ function getNextExpressionEnd(str: string): number {
  * @param str The string containing an expression to parse
  */
 function parseExpression(str: string): Expression {
-  if (str[0] !== '{' || str[str.length - 1] !== '}') {
-    throw `An improper expression was given in the 'parseExpression' function. Expression: '${str}'`;
-  }
-
   const expr: Expression = { items: [] };
+
+  if (str[0] !== '{' || str[str.length - 1] !== '}') {
+    console.error(`An improper expression was given in the 'parseExpression' function. Expression: '${str}'`);
+    return expr;
+  }
 
   // Removes the curly braces at the beginning and ends, as well as any padding spaces
   let currentString = str.substring(1, str.length - 1).trim();
   let i = 0;
   while(true) {
-    if (length === 0) { break; }
+    if (currentString.length === 0) { break; }
     const nextExpressionType = getNextExpressionType(currentString);
     const nextExpressionEndIndex = getNextExpressionEndIndex(currentString, nextExpressionType);
     const expressionString = currentString.substring(0, nextExpressionEndIndex);
@@ -109,7 +110,6 @@ function parseExpression(str: string): Expression {
 
     if (++i > 1000) { break; }
   }
-
   return expr;
 }
 
@@ -152,7 +152,7 @@ function convertExpressionItemString(str: string, expressionType: ExpressionType
     case ExpressionType.Variable:
       const variableExpressionItem: ExpressionItem = {
         type: expressionType,
-        value: str,
+        value: str.substring(1), // Substring 1 is to remove the '$' indicating a variable
       };
       return variableExpressionItem;
   }
