@@ -2,12 +2,11 @@ import { Button } from "@owl-factory/components/button";
 import { Input } from "@owl-factory/components/form";
 import { TextArea } from "@owl-factory/components/form/TextArea";
 import { Ref64 } from "@owl-factory/types";
-import { ActorSheet } from "components/sheets/ActorSheet";
-import { ActorController } from "controllers/actor/ActorController";
-import { ActorSheetData } from "controllers/data/ActorSheetData";
 import { Formik, FormikProps } from "formik";
 import { observer } from "mobx-react-lite";
+import { ActorController } from "nodes/actor-sheets";
 import React from "react";
+import { ActorSheet } from "src/nodes/actor-sheets/components/ActorSheet";
 import { ActorSheetDocument } from "types/documents/ActorSheet";
 
 // The initial values for the form if no actor sheet is given
@@ -25,7 +24,7 @@ interface ActorSheetFormProps {
 
 /**
  * Renders a form for editing an actor sheet using the XML text area
- * @param renderID The id of the render used for this 
+ * @param renderID The id of the render used for this
  * @param actorSheet The actor sheet currently being edited, if any. Null if creating a new sheet
  * @param ruleset The ref of the current ruleset this sheet belongs to
  * @param onSubmit The function to call when the form is submitted
