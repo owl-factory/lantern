@@ -34,6 +34,7 @@ const ActorRow = observer((props: ActorRowProps) => {
       <TableCell>{actor.actorType}</TableCell>
       <TableCell>{ruleset?.name}</TableCell>
       <TableCell>
+        <a href={`/dev/actors/${actor.ref}`}>View</a>&nbsp;
       </TableCell>
     </TableRow>
   );
