@@ -1,0 +1,12 @@
+// Creates an index for listing all actors. This is a temporary actors index and should be tightened eventually
+CreateIndex({
+  name: "all_actors",
+  source: Collection("actors"),
+  values: [
+    { field: ["data", "updatedAt"]},
+    { field: ["ref"]},
+    { field: ["data", "name"]},
+    { field: ["data", "actorType"]},
+    { field: ["data", "ruleset", "ref"]},
+  ],
+})

@@ -35,10 +35,6 @@ const ActorSheetRow = observer((props: { id: Ref64 }) => {
  * Renders a table for listing out actor sheets
  */
 const ActorSheetTable = observer(() => {
-  React.useEffect(() => {
-    ActorSheetData.searchIndex(`/api/actor-sheets/all`);
-  }, []);
-
   const rows: JSX.Element[] = [];
   const sheetRefs = ActorSheetData.search({});
   for (const sheetRef of sheetRefs) {
@@ -63,6 +59,10 @@ const ActorSheetTable = observer(() => {
  * Renders a page containing a list of actor sheets
  */
 export default function ActorSheetList() {
+  React.useEffect(() => {
+    ActorSheetData.searchIndex(`/api/actor-sheets/all`);
+  }, []);
+
   return (
     <Page>
       <h1>Actor Sheet Layouts</h1>
