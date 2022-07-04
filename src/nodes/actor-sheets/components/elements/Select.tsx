@@ -1,7 +1,7 @@
-import { ActorController } from "controllers/actor/ActorController";
+import { ActorController } from "../../controllers/ActorController";
 import React from "react";
-import { SelectElementDescriptor } from "types/sheetElementDescriptors";
-import { SheetElementProps } from "../types";
+import { SelectElementDescriptor } from "nodes/actor-sheets/types/elements";
+import { SheetElementProps } from "nodes/actor-sheets/types";
 
 const VARIABLE_FIELDS = ["id", "name"];
 

@@ -1,8 +1,8 @@
 import React from "react";
-import { ColumnElementDescriptor } from "types/sheetElementDescriptors/column";
+import { ColumnElementDescriptor } from "nodes/actor-sheets/types/elements/column";
 import { SheetElement } from "../SheetElement";
-import style from "../styling/Column.module.scss";
-import { SheetElementProps } from "../types";
+import style from "../../styles/Column.module.scss";
+import { SheetElementProps } from "../../types";
 
 /**
  * Renders a checkbox input element

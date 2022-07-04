@@ -1,5 +1,5 @@
 
-import { SheetTabElementDescriptor } from "controllers/actor/ActorSheetController";
+import { SheetTabElementDescriptor } from "../../types";
 import React from "react";
 
 /**

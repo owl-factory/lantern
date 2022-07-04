@@ -1,4 +1,4 @@
-import { GenericSheetElementDescriptor } from "types/sheetElementDescriptors/generic";
+import { GenericSheetElementDescriptor } from "nodes/actor-sheets/types/elements/generic";
 
 /**
  * Describes a sheet NewPrefab element

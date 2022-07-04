@@ -1,10 +1,10 @@
-import { read } from "@owl-factory/utilities/objects";
+import { Expression, ExpressionType } from "nodes/actor-sheets/utilities/expressions/parse";
 import { action, makeObservable, observable } from "mobx";
 import { RulesetDocument } from "types/documents";
 import { ActorSheetDocument } from "types/documents/ActorSheet";
-import { PageElementDescriptor } from "types/sheetElementDescriptors";
-import { GenericSheetElementDescriptor, SheetVariableTuple } from "types/sheetElementDescriptors/generic";
-import { SheetController } from "./ActorSheetController";
+import { PageElementDescriptor } from "nodes/actor-sheets/types/elements";
+import { GenericSheetElementDescriptor } from "nodes/actor-sheets/types/elements/generic";
+import { SheetController } from "./SheetController";
 import { ActorSubController } from "./ActorSubController";
 import { RuleVariableGroup, RulesetController } from "./RulesetController";
 
@@ -212,25 +212,43 @@ class $ActorController {
 
   /**
    * Renders out a single variable
-   * @param id The ID of the render
-   * @param elementField The object containing the information required to render
+   * @param renderID The ID of the render
+   * @param exprs An array containing an expression or string(s) to render out
    * @returns A single string containing the rendered value
    */
-  public renderVariable(
-    id: string,
-    elementField: unknown,
-    properties: Record<string, Record<string, string | unknown>>
-  ): string {
-    console.log("elementField", elementField)
-    if (typeof elementField === "string") return elementField;
-    else if (!Array.isArray(elementField)) { return elementField as string; } // Should never happen
+  public renderVariable(renderID: string, exprs: (string | Expression)[]): string {
+    // Base case where we ensure that we have the correct type
+    if (!Array.isArray(exprs) || exprs.length === 0) { return ""; }
+    let renderedResult = "";
+    for (const expr of exprs) {
+      // Not an expression, just a string
+      if (typeof expr === "string") {
+        renderedResult += expr;
+        continue;
+      }
 
-    let output = '';
-    for (const chunk of elementField) {
-      if (Array.isArray(chunk)) { output += this.convertVariableToData(id, chunk, properties); }
-      else { output += chunk; }
+      renderedResult += this.renderExpression(renderID, expr);
     }
-    return output;
+
+    return renderedResult;
+  }
+
+  /**
+   * Renders an expression into a string
+   * @param renderID The ID of the render to use for determining the expression values
+   * @param expr The expression to render out
+   */
+  public renderExpression(renderID: string, expr: Expression) {
+    let renderedResult = "";
+    for (const item of expr.items) {
+      switch (item.type) {
+        case ExpressionType.Variable:
+          renderedResult += this.convertVariableToData(renderID, item.value || "");
+          break;
+      }
+
+    }
+    return renderedResult;
   }
 
   /**
@@ -241,20 +259,35 @@ class $ActorController {
    */
   public convertVariableToData(
     id: string,
-    chunk: SheetVariableTuple,
+    variable: string, // Check type
     properties: Record<string, Record<string, string | unknown>>
   ) {
+    if (!variable) { return ""; }
+
+    const firstPeriodIndex = variable.search(/\./);
+
+    // Grabs the first portion of the variable for determining where to look for the value
+    let firstAddress, remainderAddress;
+    if (firstPeriodIndex > 0) {
+      firstAddress = variable.substring(0, firstPeriodIndex);
+      remainderAddress = variable.substring(firstPeriodIndex + 1);
+    } else {
+      firstAddress = variable;
+      remainderAddress = variable;
+    }
+
     const { rulesetRef, sheetRef } = this.$renders[id];
-    console.log("chunk!", chunk)
-    switch (chunk[0]) {
+    switch (firstAddress) {
       case "character":
-        const characterValue = this.getActorField(id, chunk[1]);
+        const characterValue = this.getActorField(id, remainderAddress);
         return characterValue;
       case "rules":
-        const ruleValue = this.rulesetController.getRulesetVariable(rulesetRef, RuleVariableGroup.STATIC, chunk[1]);
+        const ruleValue = this.rulesetController.getRulesetVariable(
+          rulesetRef, RuleVariableGroup.STATIC, remainderAddress
+        );
         return ruleValue;
       case "sheet":
-        const sheetValue = this.sheetController.getVariable(sheetRef, chunk[1]);
+        const sheetValue = this.sheetController.getVariable(sheetRef, remainderAddress);
         return sheetValue;
       default:
         // Case where the initial part is empty

@@ -1,13 +1,12 @@
 import { Button } from "@owl-factory/components/button";
 import { Page } from "components/design";
-import { ActorSheet } from "components/sheets/ActorSheet";
-import { ActorController } from "controllers/actor/ActorController";
 import { ActorData } from "controllers/data/ActorData";
 import { ActorSheetData } from "controllers/data/ActorSheetData";
 import { CampaignData } from "controllers/data/CampaignData";
 import { RulesetData } from "controllers/data/RulesetData";
 import { observer } from "mobx-react-lite";
 import { useRouter } from "next/router";
+import { ActorController, ActorSheet } from "nodes/actor-sheets";
 import React from "react";
 import { RulesetDocument } from "types/documents";
 

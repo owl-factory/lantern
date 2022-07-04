@@ -1,8 +1,8 @@
 import React from "react";
-import { BorderElementDescriptor } from "types/sheetElementDescriptors/border";
+import { BorderElementDescriptor } from "nodes/actor-sheets/types/elements/border";
 import { SheetElement } from "../SheetElement";
-import style from "../styling/Border.module.scss";
-import { SheetElementProps } from "../types";
+import style from "../../styles/Border.module.scss";
+import { SheetElementProps } from "../../types";
 
 /**
  * Renders a border around given children

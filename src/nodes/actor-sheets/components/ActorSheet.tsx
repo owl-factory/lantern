@@ -1,8 +1,8 @@
 import { Button } from "@owl-factory/components/button";
-import { ActorController } from "controllers/actor/ActorController";
 import { ActorData } from "controllers/data/ActorData";
 import { observer } from "mobx-react-lite";
 import React from "react";
+import { ActorController } from "../controllers/ActorController";
 import { SheetElement } from "./SheetElement";
 
 interface ActorSheetProps {

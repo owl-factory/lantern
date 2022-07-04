@@ -1,21 +1,20 @@
 import React from "react";
-import { RowElementDescriptor } from "types/sheetElementDescriptors";
+import { PageElementDescriptor } from "nodes/actor-sheets/types/elements";
 import { SheetElement } from "../SheetElement";
-import style from "../styling/Row.module.scss";
-import { SheetElementProps } from "../types";
+import { SheetElementProps } from "../../types";
 
 /**
- * Renders a row element
- * @param element The row element description
+ * Renders an image of the background
+ * @param element The SheetBackground element description
  */
-export function SheetRow(props: SheetElementProps<RowElementDescriptor>) {
+export function SheetPage(props: SheetElementProps<PageElementDescriptor>) {
   const childElements = props.element.children || [];
   const elements: JSX.Element[] = [];
   for (const childElement of childElements) {
     elements.push(<SheetElement key={Math.random()} {...props} element={childElement}/>);
   }
   return (
-    <div className={`${style.row}`} style={{}}>
+    <div>
       {elements}
     </div>
   );

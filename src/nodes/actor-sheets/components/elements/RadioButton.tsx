@@ -1,9 +1,8 @@
-import { ActorController } from "controllers/actor/ActorController";
-import { useField } from "formik";
 import { observer } from "mobx-react-lite";
 import React from "react";
-import { RadioElementDescriptor } from "types/sheetElementDescriptors";
-import { SheetElementProps } from "../types";
+import { RadioElementDescriptor } from "nodes/actor-sheets/types/elements";
+import { ActorController } from "../../controllers/ActorController";
+import { SheetElementProps } from "../../types";
 
 const VARIABLE_FIELDS = ["id", "name", "value"];
 

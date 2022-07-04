@@ -1,7 +1,7 @@
 import React from "react";
-import { InlineElementDescriptor } from "types/sheetElementDescriptors";
+import { InlineElementDescriptor } from "nodes/actor-sheets/types/elements";
 import { SheetElement } from "../SheetElement";
-import { SheetElementProps } from "../types";
+import { SheetElementProps } from "../../types";
 
 /**
  * Renders an inline element that indicates that the contents will be rendered inline

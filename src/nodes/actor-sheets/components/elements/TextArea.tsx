@@ -1,9 +1,8 @@
-import { ActorController } from "controllers/actor/ActorController";
-import { useField } from "formik";
 import React from "react";
-import { TextAreaElementDescriptor } from "types/sheetElementDescriptors";
-import style from "../styling/Input.module.scss";
-import { SheetElementProps } from "../types";
+import { TextAreaElementDescriptor } from "nodes/actor-sheets/types/elements";
+import style from "../../styles/Input.module.scss";
+import { SheetElementProps } from "../../types";
+import { ActorController } from "../../controllers/ActorController";
 
 const VARIABLE_FIELDS = ["id", "name"];
 

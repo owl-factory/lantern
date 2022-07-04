@@ -1,6 +1,6 @@
-import { GenericSheetElementDescriptor } from "types/sheetElementDescriptors/generic";
-import { PageElementDescriptor } from "types/sheetElementDescriptors";
-import { SheetTabElementDescriptor } from "../../controllers/actor/ActorSheetController";
+import { GenericSheetElementDescriptor } from "nodes/actor-sheets/types/elements/generic";
+import { PageElementDescriptor } from "nodes/actor-sheets/types/elements";
+import { SheetTabElementDescriptor } from "nodes/actor-sheets/types";
 
 /**
  * Describes a sheet pageable element

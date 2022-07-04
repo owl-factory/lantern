@@ -1,7 +1,7 @@
 import React from "react";
-import { PageableElementDescriptor } from "types/sheetElementDescriptors";
+import { PageableElementDescriptor } from "nodes/actor-sheets/types/elements";
 import { SheetElement } from "../SheetElement";
-import { SheetElementProps } from "../types";
+import { SheetElementProps } from "../../types";
 import { SheetPage } from "./Page";
 import { SheetTabs } from "./Tabs";
 

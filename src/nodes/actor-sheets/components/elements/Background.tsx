@@ -1,7 +1,7 @@
 import React from "react";
-import { BackgroundElementDescriptor } from "types/sheetElementDescriptors";
+import { BackgroundElementDescriptor } from "nodes/actor-sheets/types/elements";
 import { SheetElement } from "../SheetElement";
-import { SheetElementProps } from "../types";
+import { SheetElementProps } from "../../types";
 
 /**
  * Renders an image of the background

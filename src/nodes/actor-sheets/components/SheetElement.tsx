@@ -17,8 +17,8 @@ import {
   SelectElementDescriptor,
   TextAreaElementDescriptor,
   TextInputElementDescriptor,
-} from "types/sheetElementDescriptors";
-import { GenericSheetElementDescriptor } from "types/sheetElementDescriptors/generic";
+} from "nodes/actor-sheets/types/elements";
+import { GenericSheetElementDescriptor } from "nodes/actor-sheets/types/elements/generic";
 import {
   SheetBackground,
   SheetBorder,
