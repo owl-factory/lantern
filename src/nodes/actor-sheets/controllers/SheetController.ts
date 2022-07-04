@@ -19,8 +19,10 @@ import {
   TextInputElementDescriptor,
 } from "nodes/actor-sheets/types/elements";
 import { PrefabElementDescriptor } from "nodes/actor-sheets/types/elements/prefab";
-import { SheetTabElementDescriptor } from "../types";
+import { ParsedExpressionString, SheetTabElementDescriptor } from "../types";
 import { parseXML } from "../utilities/parser";
+import { LoopElementDescriptor } from "../types/elements/loop";
+import { GenericSheetElementDescriptor } from "../types/elements/generic";
 
 export class SheetController<T> {
   public sheets: Record<string, PageElementDescriptor> = {};
@@ -498,17 +500,21 @@ export class SheetController<T> {
     return elementDetails;
   }
 
+  /**
+   * Parses a loop element
+   * @param key The ID of the sheet this element belongs to
+   * @param loopElement The raw XML element of the loop
+   */
   protected parseLoopElement(key: string, loopElement: Element) {
     const rawList = loopElement.getAttribute("list") || "";
-    const listType = rawList.search("{{") === -1 ? "static" : "variable";
-    // console.log(loopElement, listType)
-    let list: string[] | SheetVariableTuple;
+    const listType = rawList.search("{") === -1 ? "static" : "variable"; // TODO - need a better method for this
+    let list: ParsedExpressionString;
     switch (listType) {
       case "static":
         list = rawList.split(loopElement.getAttribute("delimiter") || ",");
         break;
       case "variable":
-        list = parseVariableString(rawList) as SheetVariableTuple;
+        list = splitExpressionValue(rawList);
         break;
     }
 

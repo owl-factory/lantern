@@ -1,4 +1,3 @@
-import { Expression, ExpressionType } from "nodes/actor-sheets/utilities/expressions/parse";
 import { action, makeObservable, observable } from "mobx";
 import { RulesetDocument } from "types/documents";
 import { ActorSheetDocument } from "types/documents/ActorSheet";
@@ -7,6 +6,9 @@ import { GenericSheetElementDescriptor } from "nodes/actor-sheets/types/elements
 import { SheetController } from "./SheetController";
 import { ActorSubController } from "./ActorSubController";
 import { RuleVariableGroup, RulesetController } from "./RulesetController";
+import { read } from "@owl-factory/utilities/objects";
+import { Expression, ParsedExpressionString, SheetProperties } from "../types";
+import { ExpressionType } from "../enums/expressionType";
 
 interface RenderGroup {
   actorRef: string;
@@ -196,14 +198,14 @@ class $ActorController {
     id: string,
     element: T,
     fields: string[],
-    properties: Record<string, Record<string, string | unknown>>
+    properties: SheetProperties
   ): Record<string, string> {
     const parsedVariables: Record<string, string> = {};
-    console.log(element)
 
     for (const field of fields) {
       if (!(field in element)) { continue; }
-      const elementField = element[field as (keyof T)]; // TODO - rename value. It is incredibly ambiguous
+
+      const elementField: ParsedExpressionString = element[field as (keyof T)] as unknown as ParsedExpressionString; 
       parsedVariables[field] = ActorController.renderVariable(id, elementField, properties);
     }
 
@@ -216,7 +218,7 @@ class $ActorController {
    * @param exprs An array containing an expression or string(s) to render out
    * @returns A single string containing the rendered value
    */
-  public renderVariable(renderID: string, exprs: (string | Expression)[]): string {
+  public renderVariable(renderID: string, exprs: ParsedExpressionString, properties: SheetProperties): string {
     // Base case where we ensure that we have the correct type
     if (!Array.isArray(exprs) || exprs.length === 0) { return ""; }
     let renderedResult = "";
@@ -227,7 +229,7 @@ class $ActorController {
         continue;
       }
 
-      renderedResult += this.renderExpression(renderID, expr);
+      renderedResult += this.renderExpression(renderID, expr, properties);
     }
 
     return renderedResult;
@@ -238,12 +240,12 @@ class $ActorController {
    * @param renderID The ID of the render to use for determining the expression values
    * @param expr The expression to render out
    */
-  public renderExpression(renderID: string, expr: Expression) {
+  public renderExpression(renderID: string, expr: Expression, properties: SheetProperties) {
     let renderedResult = "";
     for (const item of expr.items) {
       switch (item.type) {
         case ExpressionType.Variable:
-          renderedResult += this.convertVariableToData(renderID, item.value || "");
+          renderedResult += this.convertVariableToData(renderID, item.value || "", properties);
           break;
       }
 
@@ -257,11 +259,7 @@ class $ActorController {
    * @param chunk The variable tuple to decode
    * @returns The value of the decoded variable
    */
-  public convertVariableToData(
-    id: string,
-    variable: string, // Check type
-    properties: Record<string, Record<string, string | unknown>>
-  ) {
+  public convertVariableToData(id: string, variable: string, properties: SheetProperties) {
     if (!variable) { return ""; }
 
     const firstPeriodIndex = variable.search(/\./);
@@ -278,24 +276,26 @@ class $ActorController {
 
     const { rulesetRef, sheetRef } = this.$renders[id];
     switch (firstAddress) {
+      // The value comes from the character sheet
       case "character":
         const characterValue = this.getActorField(id, remainderAddress);
         return characterValue;
+      // The value comes from plugins, campaign, or ruleset
       case "rules":
         const ruleValue = this.rulesetController.getRulesetVariable(
           rulesetRef, RuleVariableGroup.STATIC, remainderAddress
         );
         return ruleValue;
+      // A value defined by the sheet
       case "sheet":
         const sheetValue = this.sheetController.getVariable(sheetRef, remainderAddress);
         return sheetValue;
+      // A custom value in the properties defined by a loop
       default:
-        // Case where the initial part is empty
-        // TODO - use $ for variables instead within {{ expressions }}
-        if (chunk[0] === "") { return read(properties, chunk[1]); }
-        else if (!(chunk[0] in properties)) { return undefined; }
-        const loopValue = read(properties[chunk[0]], chunk[1]);
-        return loopValue;
+        // Base case to prevent deep reads if they're unnecessary
+        if (!(firstAddress in properties)) { return ""; }
+        const propertiesValue = read(properties, variable);
+        return propertiesValue;
     }
 
   }

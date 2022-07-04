@@ -36,7 +36,9 @@ import { SheetPage } from "./elements/Page";
 import { SheetPageable } from "./elements/Pageable";
 import { SheetPrefab } from "./elements/Prefab";
 import { SheetRadioButton } from "./elements/RadioButton";
-import { SheetElementProps } from "./types";
+import { SheetElementProps } from "../types";
+import { LoopElementDescriptor } from "../types/elements/loop";
+import { SheetLoop } from "./elements/Loop";
 
 /**
  * Determines which sheet element to render based on the descriptor element type given
@@ -74,6 +76,9 @@ export function SheetElement(props: SheetElementProps<GenericSheetElementDescrip
       return <SheetTextArea {...props} element={props.element as TextAreaElementDescriptor}/>;
     case PageElementType.Select:
       return <SheetSelect {...props} element={props.element as SelectElementDescriptor}/>;
+
+    case PageElementType.Loop:
+      return <SheetLoop {...props} element={props.element as LoopElementDescriptor}/>;
 
     case PageElementType.Prefab:
       return <SheetPrefab {...props} element={props.element as PrefabElementDescriptor}/>;

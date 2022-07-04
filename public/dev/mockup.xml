@@ -2,9 +2,19 @@
   <Layout>
     <Pageable>
       <Page name="Bio">
+       <Label>Letters:</Label>
+        <Loop key="letter" list="a|b|c" delimiter="|">
+          <Label>{letter}</Label>
+        </Loop>
 
-        <Loop key="greeting" list="{{rules.greetings}}">
-          <Label>Greeting: {{greeting}}</Label>
+        <Label>A List of Greetings:</Label>
+        <Loop key="greeting" list="{$rules.greetings}">
+          <Label>Greeting: {$greeting}</Label>
+        </Loop>
+
+       <Label>A List of Actions:</Label>
+        <Loop key="action" list="{$rules.actions}">
+          <Label>Action: {$action.name}</Label>
         </Loop>
 
         <Label>Bio</Label>
@@ -190,7 +200,7 @@
               </Row>
               <Loop id="attacks_1" list="a|b|c" key="attack" delimiter="|">
                 <Column weight="2">
-                  <Label>{{attack}}</Label>
+                  <Label>{$attack}</Label>
                   <TextInput name="attack.name"/>
                 </Column>
 

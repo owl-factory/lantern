@@ -11,7 +11,12 @@ const VARIABLE_FIELDS = ["id", "name"];
  * @todo Implement
  */
 export function SheetSelect(props: SheetElementProps<SelectElementDescriptor>) {
-  const element = ActorController.renderVariables<SelectElementDescriptor>(props.id, props.element, VARIABLE_FIELDS);
+  const element = ActorController.renderVariables<SelectElementDescriptor>(
+    props.id,
+    props.element,
+    VARIABLE_FIELDS,
+    props.properties
+  );
 
   return (
     <>

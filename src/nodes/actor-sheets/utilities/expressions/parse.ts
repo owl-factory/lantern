@@ -1,31 +1,24 @@
-export interface ExpressionItem {
-  type: ExpressionType;
-  value?: string;
-}
-
-export interface Expression {
-  items: ExpressionItem[];
-}
+import { ExpressionType } from "nodes/actor-sheets/enums/expressionType";
+import { Expression, ExpressionItem, ParsedExpressionString } from "nodes/actor-sheets/types";
 
 const EXPRESSION_PART_REGEXES = [
   /(\$[a-zA-Z0-9][a-zA-Z0-9.]*[a-zA-Z0-9]?)/, // Variable name regex ($foo.bar)
 ];
-
-export enum ExpressionType {
-  Variable,
-}
 
 /**
  * Splits a string value up into expression
  * @param str The string potentially containing one or more expressions
  * @returns An array of string and Expression objects
  */
-export function splitExpressionValue(str: string): (string | Expression)[] {
-  const exprs: (string | Expression)[] = [];
+export function splitExpressionValue(str: string): ParsedExpressionString {
+  const exprs: ParsedExpressionString = [];
   let currentString = str;
   let i = 0;
   while(true) {
     const nextExpressionIndex = getNextExpressionStart(currentString);
+    // Prevents an empty string from being added to the end of the expression list
+    if (currentString.length === 0) { break; }
+
     // There are no further expressions, so escape out
     if (nextExpressionIndex === -1) {
       exprs.push(currentString);
@@ -121,7 +114,8 @@ function getNextExpressionType(str: string): ExpressionType {
     case '$':
       return ExpressionType.Variable;
     default:
-      throw "Invalid expression type";
+      console.error(`Invalid expression type: '${str}'`);
+      return ExpressionType.Invalid;
   }
 }
 
@@ -130,7 +124,7 @@ function getNextExpressionType(str: string): ExpressionType {
  * @param str The string containing one or more expression items
  * @param expressionType The type of the first expression in the string
  */
-function getNextExpressionEndIndex(str: string, expressionType: ExpressionType) {
+function getNextExpressionEndIndex(str: string, expressionType: ExpressionType): number {
   switch (expressionType) {
     case ExpressionType.Variable:
       // Regex finds the next instance of a character not used in a variable or a $ not at the start of the string
@@ -138,6 +132,7 @@ function getNextExpressionEndIndex(str: string, expressionType: ExpressionType) 
       if (variableEndIndex === -1) { return str.length; }
       return variableEndIndex;
   }
+  return -1;
 }
 
 /**
@@ -153,5 +148,13 @@ function convertExpressionItemString(str: string, expressionType: ExpressionType
         value: str.substring(1), // Substring 1 is to remove the '$' indicating a variable
       };
       return variableExpressionItem;
+    case ExpressionType.Invalid:
+    default:
+      // In the case of the invalid, print the string (or ignore it)
+      const invalidExpressionItem: ExpressionItem = {
+        type: expressionType,
+        value: str,
+      };
+      return invalidExpressionItem;
   }
 }

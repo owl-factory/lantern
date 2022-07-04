@@ -21,7 +21,12 @@ interface SheetInputProps extends IndividualSheetInputProps {
  */
 const SheetInput = observer((props: SheetInputProps) => {
   const ref = React.createRef<HTMLInputElement>();
-  const element = ActorController.renderVariables<TextInputElementDescriptor>(props.id, props.element, VARIABLE_FIELDS);
+  const element = ActorController.renderVariables<TextInputElementDescriptor>(
+    props.id,
+    props.element,
+    VARIABLE_FIELDS,
+    props.properties,
+  );
 
   /**
    * Updates the ActorController to have the changed values
