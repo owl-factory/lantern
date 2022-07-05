@@ -5,6 +5,7 @@ import { BaseDocument } from "./BaseDocument";
 // A partial clone of the content document type for storage within the actor document
 export interface ActorContent {
   parent?: Ref64; // The parent content that this is copied from
+  contentTypeRef?: Ref64;
   values: Record<string, Scalar>;
 }
 

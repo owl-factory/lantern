@@ -15,9 +15,12 @@ export function parseButtonElement(buttonElement: Element) {
     action: parseButtonAction(buttonElement.getAttribute("action") || "none"),
   };
 
-  switch (elementDetails.action) {
+  switch (elementDetails.action.toLowerCase()) {
     case ButtonAction.Alert:
       elementDetails.alert = splitExpressionValue(buttonElement.getAttribute("alert") || "");
+      break;
+    case ButtonAction.CreateContent:
+      elementDetails.contentGroup = splitExpressionValue(buttonElement.getAttribute("contentGroup") || "none");
       break;
   }
 
@@ -33,6 +36,8 @@ function parseButtonAction(actionString: string) {
   switch(actionString.toLowerCase()) {
     case ButtonAction.Alert:
       return ButtonAction.Alert;
+    case ButtonAction.CreateContent:
+      return ButtonAction.CreateContent;
     default:
       return ButtonAction.None;
   }
