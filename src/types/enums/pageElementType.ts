@@ -21,6 +21,7 @@ export enum PageElementType {
   // Styling Elements without children
   Icon, // An Icon selected from a list of icons
   Label, // Applies a label to an input, or creates text
+  Button, // A button that performs an action
   Checkbox, // A checkbox input element
   Radio, // A simple radio input
   RadioButton, // A simple radio input styled as a button
@@ -67,6 +68,8 @@ export function elementNameToPageElementType(tagName: string) {
       return PageElementType.Icon;
     case "label":
       return PageElementType.Label;
+    case "button":
+      return PageElementType.Button;
     case "checkbox":
       return PageElementType.Checkbox;
     case "radio":

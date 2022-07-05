@@ -4,7 +4,7 @@
       <Page name="Bio">
        <Label>Letters:</Label>
         <Loop key="letter" list="a|b|c" delimiter="|">
-          <Label>{letter}</Label>
+          <Label>{$letter}</Label>
         </Loop>
 
         <Label>A List of Greetings:</Label>
@@ -19,6 +19,8 @@
 
         <Label>Bio</Label>
         <Label>Border style: {$sheet.borderStyle}</Label>
+
+        <Button action="alert" alert="Hello there!">Test</Button>
       </Page>
       
       <Page name="Character Sheet" access="edit">
