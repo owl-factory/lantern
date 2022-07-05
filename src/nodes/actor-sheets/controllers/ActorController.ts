@@ -9,6 +9,8 @@ import { RuleVariableGroup, RulesetController } from "./RulesetController";
 import { read } from "@owl-factory/utilities/objects";
 import { Expression, ParsedExpressionString, SheetProperties } from "../types";
 import { ExpressionType } from "../enums/expressionType";
+import { ActorDocument } from "types/documents/Actor";
+import { Scalar } from "types";
 
 interface RenderGroup {
   actorRef: string;
@@ -58,7 +60,9 @@ class $ActorController {
    * @param ref The ref of the actor being loaded in
    * @param actor The actor's values to load into the controller
    */
-  public loadActor(ref: string, actor: Record<string, unknown>, force?: boolean): void {
+  public loadActor(ref: string, actor?: Partial<ActorDocument>, force?: boolean): void {
+    // Undefined case to simplify loads from the ActorDataController
+    if (!actor) { return; }
     if (!force && this.actorController.isActorLoaded(ref)) { return; }
     this.actorController.loadActor(ref, actor);
   }
@@ -113,7 +117,7 @@ class $ActorController {
    * Gets an actor by their render ref
    * @param renderRef The ref of the render to check for the actor's true ref
    */
-  public getActor(renderRef: string): Record<string, unknown> {
+  public getActor(renderRef: string): Record<string, Scalar> {
     let actorRef = "";
     if (this.$renders[renderRef]) { actorRef = this.$renders[renderRef].actorRef; }
     return this.actorController.getActorValues(actorRef);
@@ -274,12 +278,15 @@ class $ActorController {
       remainderAddress = variable;
     }
 
-    const { rulesetRef, sheetRef } = this.$renders[id];
+    const { actorRef, rulesetRef, sheetRef } = this.$renders[id];
     switch (firstAddress) {
       // The value comes from the character sheet
       case "character":
         const characterValue = this.getActorField(id, remainderAddress);
         return characterValue;
+      case "content":
+        const contentValue = this.actorController.getContent(actorRef, remainderAddress);
+        return contentValue;
       // The value comes from plugins, campaign, or ruleset
       case "rules":
         const ruleValue = this.rulesetController.getRulesetVariable(
