@@ -1,11 +1,15 @@
 import { observer } from "mobx-react-lite";
 import { ActorController } from "nodes/actor-sheets";
-import { Expression, SheetElementProps, SheetProperties } from "nodes/actor-sheets/types";
-import { LoopElementDescriptor } from "nodes/actor-sheets/types/elements/loop";
+import { SheetElementProps, SheetProperties } from "nodes/actor-sheets/types";
+import { LoopDescriptor } from "nodes/actor-sheets/types/elements/loop";
+import { Expression } from "nodes/actor-sheets/types/expressions";
 import React from "react";
 import { SheetElement } from "../SheetElement";
 
-function SheetLoopItem(props: SheetElementProps<LoopElementDescriptor>) {
+/**
+ * Renders each item of a loop
+ */
+function SheetLoopItem(props: SheetElementProps<LoopDescriptor>) {
   const childElements = props.element.children || [];
   const elements: JSX.Element[] = [];
   for (const childElement of childElements) {
@@ -20,7 +24,10 @@ function SheetLoopItem(props: SheetElementProps<LoopElementDescriptor>) {
   );
 }
 
-export const SheetLoop = observer((props: SheetElementProps<LoopElementDescriptor>) => {
+/**
+ * Loops through a given list and prints the contained elements repeatedly
+ */
+export const SheetLoop = observer((props: SheetElementProps<LoopDescriptor>) => {
   const key = props.element.key; // The key used for storing the variable
   if (key in props.properties) { return <>Error with loop. The key is already in use</>; }
 

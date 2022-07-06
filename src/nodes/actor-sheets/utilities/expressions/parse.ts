@@ -1,5 +1,5 @@
 import { ExpressionType } from "nodes/actor-sheets/enums/expressionType";
-import { Expression, ExpressionItem, ParsedExpressionString } from "nodes/actor-sheets/types";
+import { Expression, ExpressionItem, ParsedExpressionString } from "nodes/actor-sheets/types/expressions";
 
 const EXPRESSION_PART_REGEXES = [
   /(\$[a-zA-Z0-9][a-zA-Z0-9.]*[a-zA-Z0-9]?)/, // Variable name regex ($foo.bar)

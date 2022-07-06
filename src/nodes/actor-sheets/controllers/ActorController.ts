@@ -1,16 +1,16 @@
 import { action, makeObservable, observable } from "mobx";
 import { RulesetDocument } from "types/documents";
 import { ActorSheetDocument } from "types/documents/ActorSheet";
-import { PageElementDescriptor } from "nodes/actor-sheets/types/elements";
+import { PageDescriptor } from "nodes/actor-sheets/types/elements";
 import { GenericSheetElementDescriptor } from "nodes/actor-sheets/types/elements/generic";
 import { SheetController } from "./SheetController";
 import { ActorSubController } from "./ActorSubController";
 import { RuleVariableGroup, RulesetController } from "./RulesetController";
 import { read } from "@owl-factory/utilities/objects";
-import { Expression, ParsedExpressionString, SheetProperties } from "../types";
+import { SheetProperties } from "../types";
 import { ExpressionType } from "../enums/expressionType";
 import { ActorContent, ActorDocument } from "types/documents/Actor";
-import { Scalar } from "types";
+import { Expression, ParsedExpressionString } from "../types/expressions";
 
 interface RenderGroup {
   actorRef: string;
@@ -196,7 +196,7 @@ class $ActorController {
    * @param ref The ref of the render to fetch the sheet for
    * @returns The found sheet
    */
-  public getSheet(ref: string): PageElementDescriptor {
+  public getSheet(ref: string): PageDescriptor {
     let sheetRef = "";
     if (this.$renders[ref]) { sheetRef = this.$renders[ref].sheetRef; }
     return this.sheetController.getSheet(sheetRef);
@@ -246,7 +246,7 @@ class $ActorController {
     for (const field of fields) {
       if (!(field in element)) { continue; }
 
-      const elementField: ParsedExpressionString = element[field as (keyof T)] as unknown as ParsedExpressionString; 
+      const elementField: ParsedExpressionString = element[field as (keyof T)] as unknown as ParsedExpressionString;
       parsedVariables[field] = ActorController.renderVariable(id, elementField, properties);
     }
 

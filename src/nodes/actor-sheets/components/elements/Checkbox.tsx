@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite";
 import React from "react";
-import { CheckboxElementDescriptor } from "nodes/actor-sheets/types/elements";
+import { CheckboxDescriptor } from "nodes/actor-sheets/types/elements";
 import { ActorController } from "../../controllers/ActorController";
 import { SheetElementProps } from "../../types";
 
@@ -10,10 +10,10 @@ const VARIABLE_FIELDS = ["id", "name", "value"];
  * Renders a checkbox input element
  * @param element The checkbox element description
  */
-export const SheetCheckbox = observer((props: SheetElementProps<CheckboxElementDescriptor>) => {
+export const SheetCheckbox = observer((props: SheetElementProps<CheckboxDescriptor>) => {
   const ref = React.createRef<HTMLInputElement>();
 
-  const element = ActorController.renderVariables<CheckboxElementDescriptor>(
+  const element = ActorController.renderVariables<CheckboxDescriptor>(
     props.id,
     props.element,
     VARIABLE_FIELDS,
