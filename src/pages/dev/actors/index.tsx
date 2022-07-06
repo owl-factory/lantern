@@ -35,6 +35,7 @@ const ActorRow = observer((props: ActorRowProps) => {
       <TableCell>{ruleset?.name}</TableCell>
       <TableCell>
         <a href={`/dev/actors/${actor.ref}`}>View</a>&nbsp;
+        <a href="#" onClick={() => ActorData.delete(actor.ref as string)}>Delete</a>&nbsp;
       </TableCell>
     </TableRow>
   );
