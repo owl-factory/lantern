@@ -1,5 +1,7 @@
 // A list of all collections used within the Fauna database for Reroll
 export enum Collection {
+  Actors = "actors",
+  ActorSheets = "actor_sheets",
   Campaigns = "campaigns",
   Characters = "characters",
   ContentTypes = "content_types",
@@ -13,6 +15,10 @@ export enum Collection {
 }
 
 export enum FaunaIndex {
+  AllActors="all_actors",
+
+  AllActorSheets="all_actor_sheets",
+
   CampaignsByUser="campaigns_by_user",
   CharactersByUser="characters_by_user",
 
@@ -34,6 +40,12 @@ export enum FaunaIndex {
 }
 
 export const FaunaIndexTerms = {
+  [FaunaIndex.AllActors]: ["updatedAt", "ref", "name", "actorType", "ruleset.ref"],
+
+  // DO NOT INCLUDE XML FOR LARGER INDEXES IN FUTURE
+  [FaunaIndex.AllActorSheets]: ["updatedAt", "ref", "name", "ruleset.ref", "xml"],
+
+  [FaunaIndex.CampaignsByUser]: ["lastPlayedAt", "ref", "name", "banner.src"],
   [FaunaIndex.CampaignsByUser]: ["lastPlayedAt", "ref", "name", "banner.src"],
   [FaunaIndex.CharactersByUser]: ["updatedAt", "ref", "name", "ruleset.ref", "campaign.ref", "profile.src"],
 

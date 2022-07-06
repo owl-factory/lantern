@@ -6,6 +6,8 @@ interface RadioButtonProps {
   disabled?: boolean;
   id?: string;
   label?: string;
+  onBlur?: (e: React.ChangeEvent<any>) => void;
+  onChange?: (e: React.ChangeEvent<any>) => void;
   name: string;
   value: string;
 }
@@ -16,6 +18,8 @@ interface RadioButtonProps {
  * @param disabled True if the input should be disabled
  * @param id The id of the checkbox. Defaults to the value for name
  * @param label An optional label for the checkbox
+ * @param onBlur The action to run when the input loses focus
+ * @param onChange The action to run when the input is changed
  * @param name The name of the input. Required for Formik to work correctly
  * @param type Determines whether to render a checkbox or switch. Defaults to checkbox
  * @param value The desired value of the checkbox
@@ -24,6 +28,8 @@ interface RadioButtonProps {
 export function RadioButton(props: RadioButtonProps) {
   // Makes Formik work right
   const [ field ] = useField(props.name);
+
+  if (props.onBlur !== undefined) { field.onBlur = props.onBlur; }
 
   const checkbox = (
     <input
