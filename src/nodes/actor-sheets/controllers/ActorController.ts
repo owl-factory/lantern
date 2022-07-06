@@ -117,10 +117,10 @@ class $ActorController {
    * Gets an actor by their render ref
    * @param renderRef The ref of the render to check for the actor's true ref
    */
-  public getActor(renderRef: string): Record<string, Scalar> {
+  public getActor(renderRef: string): Partial<ActorDocument> {
     let actorRef = "";
     if (this.$renders[renderRef]) { actorRef = this.$renders[renderRef].actorRef; }
-    return this.actorController.getActorValues(actorRef);
+    return this.actorController.getActor(actorRef);
   }
 
   /**
@@ -177,6 +177,18 @@ class $ActorController {
     if (!this.$renders[renderID]) { return; }
     const actorRef = this.$renders[renderID].actorRef;
     this.actorController.pushNewContent(actorRef, contentGroup, content);
+  }
+
+  /**
+   * Removes a single item from an actor's contents
+   * @param renderID The ID of the render that will be having a content item removed
+   * @param contentGroup The type of content that will be having an item removed
+   * @param index The index of the content item to remove
+   */
+  public deleteContentItem(renderID: string, contentGroup: string, index: number) {
+    if (!this.$renders[renderID]) { return; }
+    const actorRef = this.$renders[renderID].actorRef;
+    this.actorController.deleteContentItem(actorRef, contentGroup, index);
   }
 
   /**

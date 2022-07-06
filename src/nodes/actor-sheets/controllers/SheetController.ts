@@ -527,6 +527,7 @@ export class SheetController<T> {
       listType,
       list,
       key: loopElement.getAttribute("key") || "unknown",
+      index: loopElement.getAttribute("index"),
     };
 
     for (const child of loopElement.children) {

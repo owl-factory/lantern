@@ -9,3 +9,13 @@ import { ActorController } from "nodes/actor-sheets";
 export function createContent(renderID: string, contentGroup: string) {
   ActorController.pushNewContent(renderID, contentGroup);
 }
+
+/**
+ * Removes a piece of content from a list
+ * @param renderID The ID of the render to remove a piece of content from
+ * @param contentGroup The type of content being removed
+ * @param index The index of the content to remove
+ */
+export function deleteContent(renderID: string, contentGroup: string, index: number) {
+  ActorController.deleteContentItem(renderID, contentGroup, index);
+}

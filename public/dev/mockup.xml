@@ -234,10 +234,12 @@
               </Loop>
               <Label>Equipment</Label>
               <Button action="createContent" contentGroup="items">+</Button>
-              <Loop list="{$content.items}" key="item">
+              <Loop list="{$content.items}" key="item" index="index">
+                <Label>{$index} </Label>
                 <Label>{$item.weight} </Label>
                 <Label>{$item.name} </Label>
                 <Label>{$item.quantity} </Label>
+                <Button action="deleteContent" index="{$index}" contentGroup="items">-</Button>
               </Loop>
             </Border>
           </Column>
