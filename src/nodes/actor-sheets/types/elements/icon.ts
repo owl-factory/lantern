@@ -3,6 +3,6 @@ import { GenericSheetElementDescriptor } from "./generic";
 /**
  * Describes a sheet icon element
  */
-export interface IconElementDescriptor extends GenericSheetElementDescriptor {
+export interface IconDescriptor extends GenericSheetElementDescriptor {
   icon: string;
 }

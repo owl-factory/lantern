@@ -1,5 +1,5 @@
 import React from "react";
-import { BorderElementDescriptor } from "nodes/actor-sheets/types/elements/border";
+import { BorderDescriptor } from "nodes/actor-sheets/types/elements/border";
 import { SheetElement } from "../SheetElement";
 import style from "../../styles/Border.module.scss";
 import { SheetElementProps } from "../../types";
@@ -8,7 +8,7 @@ import { SheetElementProps } from "../../types";
  * Renders a border around given children
  * @param element The SheetBorder element description
  */
-export function SheetBorder(props: SheetElementProps<BorderElementDescriptor>) {
+export function SheetBorder(props: SheetElementProps<BorderDescriptor>) {
   const childElements = props.element.children || [];
   const elements: JSX.Element[] = [];
   for (const childElement of childElements) {

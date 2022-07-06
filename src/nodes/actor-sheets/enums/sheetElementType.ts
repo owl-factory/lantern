@@ -1,4 +1,4 @@
-export enum PageElementType {
+export enum SheetElementType {
   // Control element types with children
   Sheet, // Wraps the entire XML document
   Layout, // Indicates that the contents are what should be rendered by the engine
@@ -24,7 +24,6 @@ export enum PageElementType {
   Button, // A button that performs an action
   Checkbox, // A checkbox input element
   Radio, // A simple radio input
-  RadioButton, // A simple radio input styled as a button
   NumberInput, // An input specifically for adding numbers
   TextInput, // An input specifically for adding non-formatted text
   TextArea, // An input specifically for adding formatted text, eg markdown
@@ -45,51 +44,50 @@ export enum PageElementType {
 export function elementNameToPageElementType(tagName: string) {
   switch(tagName.toLocaleLowerCase()) {
     case "sheet":
-      return PageElementType.Sheet;
+      return SheetElementType.Sheet;
     case "pageable":
-      return PageElementType.Pageable;
+      return SheetElementType.Pageable;
     case "page":
-      return PageElementType.Page;
+      return SheetElementType.Page;
     case "prefabs":
-      return PageElementType.Prefabs;
+      return SheetElementType.Prefabs;
     case "newprefab":
-      return PageElementType.NewPrefab;
+      return SheetElementType.NewPrefab;
     case "row":
-      return PageElementType.Row;
+      return SheetElementType.Row;
     case "column":
-      return PageElementType.Column;
+      return SheetElementType.Column;
     case "background":
-      return PageElementType.Background;
+      return SheetElementType.Background;
     case "border":
-      return PageElementType.Border;
+      return SheetElementType.Border;
     case "inline":
-      return PageElementType.Inline;
+      return SheetElementType.Inline;
     case "icon":
-      return PageElementType.Icon;
+      return SheetElementType.Icon;
     case "label":
-      return PageElementType.Label;
+      return SheetElementType.Label;
     case "button":
-      return PageElementType.Button;
+      return SheetElementType.Button;
     case "checkbox":
-      return PageElementType.Checkbox;
+      return SheetElementType.Checkbox;
     case "radio":
-      return PageElementType.Radio;
     case "radiobutton":
-      return PageElementType.RadioButton;
+      return SheetElementType.Radio;
     case "numberinput":
-      return PageElementType.NumberInput;
+      return SheetElementType.NumberInput;
     case "textinput":
-      return PageElementType.TextInput;
+      return SheetElementType.TextInput;
     case "textarea":
-      return PageElementType.TextArea;
+      return SheetElementType.TextArea;
     case "select":
-      return PageElementType.Select;
+      return SheetElementType.Select;
     case "loop":
-      return PageElementType.Loop;
+      return SheetElementType.Loop;
     case "prefab":
-      return PageElementType.Prefab;
+      return SheetElementType.Prefab;
 
     default:
-      return PageElementType.Unknown;
+      return SheetElementType.Unknown;
   }
 }

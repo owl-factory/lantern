@@ -3,6 +3,6 @@ import { GenericSheetElementDescriptor } from "./generic";
 /**
  * Describes a sheet inline element
  */
-export interface InlineElementDescriptor extends GenericSheetElementDescriptor {
+export interface InlineDescriptor extends GenericSheetElementDescriptor {
   children: GenericSheetElementDescriptor[];
 }

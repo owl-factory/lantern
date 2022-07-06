@@ -1,7 +1,7 @@
 import React from "react";
 import { observer } from "mobx-react-lite";
 import { SheetElementProps } from "nodes/actor-sheets/types";
-import { ButtonElementDescriptor } from "nodes/actor-sheets/types/elements/button";
+import { ButtonDescriptor } from "nodes/actor-sheets/types/elements/button";
 import { ActorController } from "nodes/actor-sheets";
 import { ButtonAction } from "../../enums/buttonActions";
 import * as actions from "../../utilities/elements/button/actions";
@@ -11,8 +11,8 @@ const VARIABLE_FIELDS = ["text", "alert", "contentGroup", "index"];
 /**
  * Renders a button that performs an action when clicked
  */
-export const SheetButton = observer((props: SheetElementProps<ButtonElementDescriptor>) => {
-  const elementVariables = ActorController.renderVariables<ButtonElementDescriptor>(
+export const SheetButton = observer((props: SheetElementProps<ButtonDescriptor>) => {
+  const elementVariables = ActorController.renderVariables<ButtonDescriptor>(
     props.id,
     props.element,
     VARIABLE_FIELDS,

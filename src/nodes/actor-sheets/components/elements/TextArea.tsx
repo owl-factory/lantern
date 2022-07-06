@@ -1,5 +1,5 @@
 import React from "react";
-import { TextAreaElementDescriptor } from "nodes/actor-sheets/types/elements";
+import { TextAreaDescriptor } from "nodes/actor-sheets/types/elements";
 import style from "../../styles/Input.module.scss";
 import { SheetElementProps } from "../../types";
 import { ActorController } from "../../controllers/ActorController";
@@ -10,9 +10,9 @@ const VARIABLE_FIELDS = ["id", "name"];
  * Renders a text area input element
  * @param element The text area element description
  */
-export function SheetTextArea(props: SheetElementProps<TextAreaElementDescriptor>) {
+export function SheetTextArea(props: SheetElementProps<TextAreaDescriptor>) {
   const ref = React.createRef<HTMLTextAreaElement>();
-  const element = ActorController.renderVariables<TextAreaElementDescriptor>(
+  const element = ActorController.renderVariables<TextAreaDescriptor>(
     props.id,
     props.element,
     VARIABLE_FIELDS,

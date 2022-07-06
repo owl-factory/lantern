@@ -1,5 +1,5 @@
 import React from "react";
-import { PageableElementDescriptor } from "nodes/actor-sheets/types/elements";
+import { PageableDescriptor } from "nodes/actor-sheets/types/elements";
 import { SheetElement } from "../SheetElement";
 import { SheetElementProps } from "../../types";
 import { SheetPage } from "./Page";
@@ -9,7 +9,7 @@ import { SheetTabs } from "./Tabs";
  * Renders an image of the background
  * @param element The SheetBackground element description
  */
-export function SheetPageable(props: SheetElementProps<PageableElementDescriptor>) {
+export function SheetPageable(props: SheetElementProps<PageableDescriptor>) {
   const [ activeTab, setActiveTab ] = React.useState(0);
   const childElements = props.element.children || [];
 

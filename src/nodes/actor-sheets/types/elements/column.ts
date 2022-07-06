@@ -3,7 +3,7 @@ import { GenericSheetElementDescriptor } from "./generic";
 /**
  * Describes a sheet column element
  */
-export interface ColumnElementDescriptor extends GenericSheetElementDescriptor {
+export interface ColumnDescriptor extends GenericSheetElementDescriptor {
   children: GenericSheetElementDescriptor[];
   weight: number;
 }

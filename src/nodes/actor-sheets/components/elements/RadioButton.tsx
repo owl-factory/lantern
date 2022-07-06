@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite";
 import React from "react";
-import { RadioElementDescriptor } from "nodes/actor-sheets/types/elements";
+import { RadioDescriptor } from "nodes/actor-sheets/types/elements";
 import { ActorController } from "../../controllers/ActorController";
 import { SheetElementProps } from "../../types";
 
@@ -10,9 +10,9 @@ const VARIABLE_FIELDS = ["id", "name", "value"];
  * Renders a radio input element
  * @param element The radio element description
  */
-export const SheetRadioButton = observer((props: SheetElementProps<RadioElementDescriptor>) => {
+export const SheetRadioButton = observer((props: SheetElementProps<RadioDescriptor>) => {
   const ref = React.createRef<HTMLInputElement>();
-  const element = ActorController.renderVariables<RadioElementDescriptor>(
+  const element = ActorController.renderVariables<RadioDescriptor>(
     props.id,
     props.element,
     VARIABLE_FIELDS,

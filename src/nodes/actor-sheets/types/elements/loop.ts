@@ -1,8 +1,8 @@
-import { ParsedExpressionString } from "..";
+import { ParsedExpressionString } from "../expressions";
 import { GenericSheetElementDescriptor } from "./generic";
 
 // Describes a loop element
-export interface LoopElementDescriptor extends GenericSheetElementDescriptor {
+export interface LoopDescriptor extends GenericSheetElementDescriptor {
   children: GenericSheetElementDescriptor[];
 
   listType: "static" | "variable"; // Internal use. Determines if we need to fetch a variable
