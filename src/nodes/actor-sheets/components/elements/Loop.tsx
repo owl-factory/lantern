@@ -14,7 +14,12 @@ function SheetLoopItem(props: SheetElementProps<LoopDescriptor>) {
   const elements: JSX.Element[] = [];
   for (const childElement of childElements) {
     elements.push(
-      <SheetElement key={Math.random()} id={props.id} element={childElement} properties={props.properties}/>
+      <SheetElement
+        key={props.properties.$prefix + childElement.$key}
+        id={props.id}
+        element={childElement}
+        properties={props.properties}
+      />
     );
   }
   return (
@@ -46,10 +51,12 @@ export const SheetLoop = observer((props: SheetElementProps<LoopDescriptor>) => 
 
   let i = 0;
   for (const listItem of list) {
-    const properties: SheetProperties = {...props.properties, [key]: listItem};
+    const prefix = `${props.properties.$prefix}-${key}_${i}`; // Updated prefix to contain a loop-specific variable
+    const properties: SheetProperties = {...props.properties, [key]: listItem, $prefix: prefix};
     if (props.element.index) { properties[props.element.index] = i; }
+
     loopedElements.push(
-      <SheetLoopItem key={listItem.toString()} {...props} properties={properties}/>
+      <SheetLoopItem key={prefix} {...props} properties={properties}/>
     );
     i++;
   }

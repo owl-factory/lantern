@@ -1,17 +1,16 @@
 import { SheetElementType } from "nodes/actor-sheets/enums/sheetElementType";
 import { SheetState } from "nodes/actor-sheets/types";
-import { GenericSheetElementDescriptor } from "nodes/actor-sheets/types/elements/generic";
 import { LoopDescriptor } from "nodes/actor-sheets/types/elements/loop";
 import { ParsedExpressionString } from "nodes/actor-sheets/types/expressions";
 import { splitExpressionValue } from "../expressions/parse";
-import { parseUnknownElement } from "./unknown";
+import { parseChildrenElements } from "./children";
 
 /**
  * Parses a loop element
  * @param key The ID of the sheet this element belongs to
  * @param element The raw XML element of the loop
  */
-export function parseLoopElement(key: string, element: Element, state: SheetState) {
+export function parseLoopElement(element: Element, state: SheetState) {
   const rawList = element.getAttribute("list") || "";
   const listType = rawList.search("{") === -1 ? "static" : "variable"; // TODO - need a better method for this
   let list: ParsedExpressionString;
@@ -25,6 +24,7 @@ export function parseLoopElement(key: string, element: Element, state: SheetStat
   }
 
   const elementDetails: LoopDescriptor = {
+    $key: state.key,
     element: SheetElementType.Loop,
     children: [],
     listType,
@@ -33,8 +33,8 @@ export function parseLoopElement(key: string, element: Element, state: SheetStat
     index: element.getAttribute("index"),
   };
 
-  for (const child of element.children) {
-    elementDetails.children.push(parseUnknownElement(key, child, state) as GenericSheetElementDescriptor);
-  }
+  state.key = ""; // Reset the key so that we can append the looped keys to the base key when rendering
+  elementDetails.children = parseChildrenElements(element.children, state);
+
   return elementDetails;
 }

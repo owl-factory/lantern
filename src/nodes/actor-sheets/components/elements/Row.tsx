@@ -12,7 +12,7 @@ export function SheetRow(props: SheetElementProps<RowDescriptor>) {
   const childElements = props.element.children || [];
   const elements: JSX.Element[] = [];
   for (const childElement of childElements) {
-    elements.push(<SheetElement key={Math.random()} {...props} element={childElement}/>);
+    elements.push(<SheetElement key={props.properties.$prefix + childElement.$key} {...props} element={childElement}/>);
   }
   return (
     <div className={`${style.row}`} style={{}}>

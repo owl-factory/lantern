@@ -11,7 +11,7 @@ export function SheetPage(props: SheetElementProps<PageDescriptor>) {
   const childElements = props.element.children || [];
   const elements: JSX.Element[] = [];
   for (const childElement of childElements) {
-    elements.push(<SheetElement key={Math.random()} {...props} element={childElement}/>);
+    elements.push(<SheetElement key={props.properties.$prefix + childElement.$key} {...props} element={childElement}/>);
   }
   return (
     <div>

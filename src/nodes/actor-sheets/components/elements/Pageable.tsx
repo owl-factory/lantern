@@ -16,7 +16,9 @@ export function SheetPageable(props: SheetElementProps<PageableDescriptor>) {
   // Renders all the children that are not part of the pageable pages themself
   const nonPageChildren: JSX.Element[] = [];
   for (const childElement of childElements) {
-    nonPageChildren.push(<SheetElement key={Math.random()} {...props} element={childElement}/>);
+    nonPageChildren.push(
+      <SheetElement key={props.properties.$prefix + childElement.$key} {...props} element={childElement}/>
+    );
   }
 
   return (

@@ -10,6 +10,7 @@ import { splitExpressionValue } from "../expressions/parse";
  */
 export function parseLabelElement(element: Element, state: SheetState) {
   const elementDetails: LabelDescriptor = {
+    $key: state.key,
     element: SheetElementType.Label,
     for: splitExpressionValue(element.getAttribute("for") || ""),
     text: splitExpressionValue(element.textContent || "Unknown"),
