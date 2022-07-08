@@ -3,6 +3,7 @@ import { Input } from "@owl-factory/components/form";
 import { TextArea } from "@owl-factory/components/form/TextArea";
 import { Ref64 } from "@owl-factory/types";
 import { ActorSheet } from "components/sheets/ActorSheet";
+import { ActorController } from "controllers/actor/ActorController";
 import { ActorSheetData } from "controllers/data/ActorSheetData";
 import { Formik, FormikProps } from "formik";
 import { observer } from "mobx-react-lite";
@@ -30,14 +31,15 @@ interface ActorSheetFormProps {
 export const ActorSheetForm = observer((props: ActorSheetFormProps) => {
   const initialValues = props.actorSheet ? props.actorSheet : INITIAL_VALUES;
   const id = "temp";
+  const renderID = ActorController.createRender(null, id, null);
 
   // Ensures that the actor sheet XML is loaded into the preview
   React.useEffect(() => {
-    ActorSheetData.unloadSheet(id);
+    ActorController.unloadSheet(id);
     if (props.actorSheet && props.actorSheet.xml) {
-      ActorSheetData.loadSheet(id, props.actorSheet.xml);
+      ActorController.loadSheet(id, props.actorSheet.xml);
     }
-  }, [props.actorSheet])
+  }, [props.actorSheet]);
 
   return (
     <div>
@@ -51,7 +53,7 @@ export const ActorSheetForm = observer((props: ActorSheetFormProps) => {
              * Refreshes the XML preview based on the contents of the XML
              */
             function refresh() {
-              ActorSheetData.loadSheet(id, formikProps.values.xml || "");
+              ActorController.loadSheet(id, formikProps.values.xml || "");
             }
 
             return (
@@ -68,7 +70,7 @@ export const ActorSheetForm = observer((props: ActorSheetFormProps) => {
         }
       </Formik>
       <hr/>
-      <ActorSheet id={id}/>
+      <ActorSheet id={renderID}/>
     </div>
   )
 });

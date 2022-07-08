@@ -3,6 +3,7 @@ import { PrefabElementDescriptor } from "types/sheetElementDescriptors";
 import { SheetElement } from "../SheetElement";
 
 interface SheetPrefabProps {
+  id: string;
   element: PrefabElementDescriptor;
 }
 
@@ -14,7 +15,7 @@ export function SheetPrefab(props: SheetPrefabProps) {
   const childElements = props.element.children || [];
   const elements: JSX.Element[] = [];
   for (const childElement of childElements) {
-    elements.push(<SheetElement key={Math.random()} element={childElement}/>);
+    elements.push(<SheetElement key={Math.random()} id={props.id} element={childElement}/>);
   }
 
   return (

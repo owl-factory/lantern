@@ -1,6 +1,7 @@
 import { Button } from "@owl-factory/components/button";
 import { Page } from "components/design";
 import { ActorSheet } from "components/sheets/ActorSheet";
+import { ActorController } from "controllers/actor/ActorController";
 import { ActorSheetData } from "controllers/data/ActorSheetData";
 import { observer } from "mobx-react-lite";
 import Link from "next/link";
@@ -21,6 +22,7 @@ function ViewActorSheetLoading() {
 function ViewActorSheet() {
   const router = useRouter();
   const ref = router.query.ref as string;
+  const renderID = ActorController.createRender(null, ref, null);
 
   React.useEffect(() => {
     ActorSheetData.load(ref);
@@ -28,18 +30,17 @@ function ViewActorSheet() {
 
   const actorSheet = ActorSheetData.get(ref);
   React.useEffect(() => {
-    ActorSheetData.loadSheet(ref);
+    if (!actorSheet) { return; }
+    ActorController.loadSheet(ref, actorSheet.xml as string);
   }, [actorSheet]);
-  if (!actorSheet) { return <ViewActorSheetLoading/>; }
-
   return (
     <Page>
       <div style={{display: "flex"}}>
-        <h1>{actorSheet.name}</h1>&nbsp;
+        <h1>{actorSheet?.name}</h1>&nbsp;
         <Link href="/dev/actor-sheets"><Button>Back</Button></Link>
       </div>
       <hr/>
-      <ActorSheet id={ref}/>
+      <ActorSheet id={renderID}/>
     </Page>
   );
 }

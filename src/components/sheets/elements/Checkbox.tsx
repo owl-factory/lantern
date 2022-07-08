@@ -3,6 +3,7 @@ import React from "react";
 import { CheckboxElementDescriptor } from "types/sheetElementDescriptors";
 
 interface SheetCheckboxProps {
+  id: string;
   element: CheckboxElementDescriptor;
 }
 
