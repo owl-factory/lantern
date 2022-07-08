@@ -24,8 +24,8 @@ export function SheetTextArea(props: SheetElementProps<TextAreaDescriptor>) {
    * @param ev The triggering onChange event
    */
   function onChange(ev: React.ChangeEvent<HTMLTextAreaElement>) {
-    ActorController.setActorField(props.id, element.name, ev.target.value);
-    ev.target.value = ActorController.getActorField(props.id, element.name);
+    ActorController.updateActorField(props.id, element.name, props.properties, ev.target.value);
+    ev.target.value = ActorController.getActorField(props.id, element.name, props.properties).toString();
   }
 
   // Handles the case where we have two or more elements of the same name, and one of them is changed
@@ -33,8 +33,8 @@ export function SheetTextArea(props: SheetElementProps<TextAreaDescriptor>) {
   React.useEffect(() => {
     if (!ref.current) { return; }
     if (ref.current === document.activeElement) { return; }
-    ref.current.value = ActorController.getActorField(props.id, element.name);
-  }, [ActorController.getActorField(props.id, element.name)]);
+    ref.current.value = ActorController.getActorField(props.id, element.name, props.properties).toString();
+  }, [ActorController.getActorField(props.id, element.name, props.properties)]);
 
   return (
     <div>
@@ -45,7 +45,7 @@ export function SheetTextArea(props: SheetElementProps<TextAreaDescriptor>) {
         onChange={onChange}
         className={`${style.actorSheetInput}`}
         rows={4}
-        defaultValue={ActorController.getActorField(props.id, element.name)}
+        defaultValue={ActorController.getActorField(props.id, element.name, props.properties).toString()}
       />
     </div>
   );

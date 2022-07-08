@@ -37,22 +37,31 @@ export const SheetLoop = observer((props: SheetElementProps<LoopDescriptor>) => 
   if (key in props.properties) { return <>Error with loop. The key is already in use</>; }
 
   const loopedElements = [];
+  let variableName;
   let list: (string | Record<string, string>)[] = [];
   if (props.element.listType === "static") { list = props.element.list as string[]; }
   else {
-    // TODO - fix this super jank functionality
+    // TODO - fix this super jank variable name get
+    variableName = (props.element.list[0] as Expression).items[0].value;
     list = ActorController.convertVariableToData(
       props.id,
-      (props.element.list[0] as Expression).items[0].value || "",
+      variableName || "",
       props.properties as any
-    );
+    ) as (string | Record<string, string>)[];
     if (list === undefined) { list = []; }
   }
 
   let i = 0;
   for (const listItem of list) {
     const prefix = `${props.properties.$prefix}-${key}_${i}`; // Updated prefix to contain a loop-specific variable
-    const properties: SheetProperties = {...props.properties, [key]: listItem, $prefix: prefix};
+    const properties: SheetProperties = {
+      ...props.properties,
+      $source: { ...props.properties.$source },
+      $index: {...props.properties.$index, [key]: i },
+      [key]: listItem,
+    };
+    if (variableName) { properties.$source[key] = variableName; }
+
     if (props.element.index) { properties[props.element.index] = i; }
 
     loopedElements.push(

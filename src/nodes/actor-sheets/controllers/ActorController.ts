@@ -11,6 +11,8 @@ import { SheetProperties } from "../types";
 import { ExpressionType } from "../enums/expressionType";
 import { ActorContent, ActorDocument } from "types/documents/Actor";
 import { Expression, ParsedExpressionString } from "../types/expressions";
+import { Scalar } from "types";
+import { parseContentFieldArguments } from "../utilities/field";
 
 interface RenderGroup {
   actorRef: string;
@@ -138,20 +140,45 @@ class $ActorController {
    * Gets an actor by their render ref and the field
    * @param renderRef The ref of the render to check for the actor's true ref
    */
-   public getActorField(renderRef: string, field: string): any {
-    if (!this.$renders[renderRef]) { return undefined; }
+   public getActorField(renderRef: string, field: string, properties: SheetProperties): Scalar {
+    // Quits out early if the actor doesn't exist
+    if (!this.$renders[renderRef]) { return ""; }
     const actorRef = this.$renders[renderRef].actorRef;
-    return this.actorController.getActorFieldValue(actorRef, field);
+
+    // Actors do not and should not have any periods
+    if (field.search(/\./) === -1) {
+      return this.actorController.getFieldValue(actorRef, field) || "";
+    }
+
+    const { contentType, index, name } = parseContentFieldArguments(field, properties);
+
+    // Catches all failure cases where some piece of data is missing
+    if (contentType === "" || index === undefined || index < 0 || name === "") { return ""; }
+
+    return this.actorController.getContentField(actorRef, contentType, index, name);
   }
 
   /**
    * Sets a single value within an actor by their render ref and the field
    * @param renderRef The ref of the render to check for the actor's true ref
    */
-  public setActorField(renderRef: string, field: string, value: any) {
+  public updateActorField(renderRef: string, field: string, properties: SheetProperties, value: any) {
+    // Quits out early if the actor doesn't exist
     if (!this.$renders[renderRef]) { return; }
     const actorRef = this.$renders[renderRef].actorRef;
-    this.actorController.setActorFieldValue(actorRef, field, value);
+
+    // Actors do not and should not have any periods
+    if (field.search(/\./) === -1) {
+      this.actorController.updateFieldValue(actorRef, field, value);
+      return;
+    }
+
+    const { contentType, index, name } = parseContentFieldArguments(field, properties);
+
+    // Catches all failure cases where some piece of data is missing
+    if (contentType === "" || index === undefined || index < 0 || name === "") { return; }
+
+    this.actorController.updateContentField(actorRef, contentType, index, name, value);
   }
 
   /**
@@ -319,7 +346,7 @@ class $ActorController {
     switch (firstAddress) {
       // The value comes from the character sheet
       case "character":
-        const characterValue = this.getActorField(id, remainderAddress);
+        const characterValue = this.getActorField(id, remainderAddress, properties);
         return characterValue;
       case "content":
         const contentValue = this.actorController.getContent(actorRef, remainderAddress);

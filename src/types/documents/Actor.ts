@@ -2,11 +2,13 @@ import { Ref64 } from "@owl-factory/types";
 import { Scalar } from "types";
 import { BaseDocument } from "./BaseDocument";
 
-// A partial clone of the content document type for storage within the actor document
-export interface ActorContent {
-  parent?: Ref64; // The parent content that this is copied from
-  contentTypeRef?: Ref64;
-  values: Record<string, Scalar>;
+// A partial and flattened clone of the content document type for storage within the actor document
+export type ActorContent = Record<string, Scalar> & ActorContentMetadata;
+
+// The metadata for a piece of actor content for fields that need to be present
+export interface ActorContentMetadata {
+  $parentRef?: Ref64; // The parent content that this is copied from
+  $contentType?: string; // The content type key that this item belongs to. TODO - required once content types are done
 }
 
 export interface ActorDocument extends BaseDocument {
