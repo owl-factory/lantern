@@ -161,10 +161,17 @@
                 <TableRow>
                   <TableCell><Label>Type</Label></TableCell>
                   <TableCell><Label>Attribute</Label></TableCell>
+                  <TableCell></TableCell>
                 </TableRow>
                 <Loop list="{$content.languages}" key="language" index="languageIndex">
                   <TableRow>
-                    <TableCell><TextInput id="language_name_{$index}" name="language.name"/></TableCell>
+                    <TableCell>
+                      <Select name="language.type">
+                        <Loop list="{$rules.languageTypes}" key="languageType">
+                          <Option value="{$languageType}">{$languageType}</Option>
+                        </Loop>
+                      </Select>
+                    </TableCell>
                     <TableCell><TextInput id="language_proficiency_{$index}" name="language.proficiency"/></TableCell>
                     <TableCell><Button action="deleteContent" index="{$languageIndex}" contentGroup="languages">-</Button></TableCell>
                   </TableRow>

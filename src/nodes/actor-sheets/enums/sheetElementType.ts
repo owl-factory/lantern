@@ -20,6 +20,7 @@ export enum SheetElementType {
   Table, // Indicates that the children are part of a table
   TableRow, // Contains a single row of table cells
   TableCell, // A single cell within a table
+  Select, // A select input
 
   // Styling Elements without children
   Icon, // An Icon selected from a list of icons
@@ -30,7 +31,7 @@ export enum SheetElementType {
   NumberInput, // An input specifically for adding numbers
   TextInput, // An input specifically for adding non-formatted text
   TextArea, // An input specifically for adding formatted text, eg markdown
-  Select, // A select input
+  Option, // A select input option
 
   // Functional Elements that perform tasks but do not directly appear
   Loop,
@@ -90,6 +91,8 @@ export function elementNameToPageElementType(tagName: string) {
       return SheetElementType.TextArea;
     case "select":
       return SheetElementType.Select;
+    case "option":
+      return SheetElementType.Option;
     case "loop":
       return SheetElementType.Loop;
     case "prefab":

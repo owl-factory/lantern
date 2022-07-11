@@ -1,7 +1,8 @@
 import { SheetElementType } from "nodes/actor-sheets/enums/sheetElementType";
 import { SheetState } from "nodes/actor-sheets/types";
-import { TextAreaDescriptor } from "nodes/actor-sheets/types/elements";
+import { SelectDescriptor } from "nodes/actor-sheets/types/elements";
 import { splitExpressionValue } from "../expressions/parse";
+import { parseChildrenElements } from "./children";
 
 /**
  * Converts a select element into a select element descriptor
@@ -9,12 +10,15 @@ import { splitExpressionValue } from "../expressions/parse";
  * @returns A select element descriptor
  */
 export function parseSelectElement(element: Element, state: SheetState) {
-  const elementDetails: TextAreaDescriptor = {
+  const elementDetails: SelectDescriptor = {
     $key: state.key,
     element: SheetElementType.Select,
     id: splitExpressionValue(element.getAttribute("id") || ""),
     name: splitExpressionValue(element.getAttribute("name") || ""),
+    children: [],
   };
+
+  elementDetails.children = parseChildrenElements(element.children, state);
 
   return elementDetails;
 }

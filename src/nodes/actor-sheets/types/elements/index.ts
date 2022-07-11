@@ -8,6 +8,7 @@ export * from "./label";
 export * from "./layout";
 export * from "./newPrefab";
 export * from "./numberInput";
+export * from "./option";
 export * from "./pageable";
 export * from "./page";
 export * from "./prefab";

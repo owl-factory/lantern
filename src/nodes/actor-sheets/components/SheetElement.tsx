@@ -7,17 +7,18 @@ import {
   InlineDescriptor,
   LabelDescriptor,
   NumberInputDescriptor,
+  OptionDescriptor,
   PageDescriptor,
   PageableDescriptor,
   PrefabDescriptor,
   RadioButtonDescriptor,
   RowDescriptor,
   SelectDescriptor,
+  TableCellDescriptor,
+  TableDescriptor,
+  TableRowDescriptor,
   TextAreaDescriptor,
   TextInputDescriptor,
-  TableDescriptor,
-  TableCellDescriptor,
-  TableRowDescriptor,
 } from "nodes/actor-sheets/types/elements";
 import { GenericSheetElementDescriptor } from "nodes/actor-sheets/types/elements/generic";
 import {
@@ -27,6 +28,7 @@ import {
   SheetInline,
   SheetLabel,
   SheetNumberInput,
+  SheetOption,
   SheetRow,
   SheetSelect,
   SheetTextArea,
@@ -90,6 +92,8 @@ export function SheetElement(props: SheetElementProps<GenericSheetElementDescrip
       return <SheetTextArea {...props} element={props.element as TextAreaDescriptor}/>;
     case SheetElementType.Select:
       return <SheetSelect {...props} element={props.element as SelectDescriptor}/>;
+    case SheetElementType.Option:
+      return <SheetOption {...props} element={props.element as OptionDescriptor}/>;
 
     case SheetElementType.Loop:
       return <SheetLoop {...props} element={props.element as LoopDescriptor}/>;

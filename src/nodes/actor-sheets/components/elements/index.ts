@@ -4,6 +4,7 @@ export * from "./Column";
 export * from "./Inline";
 export * from "./Label";
 export * from "./Input";
+export * from "./Option";
 export * from "./Row";
 export * from "./TextArea";
 export * from "./Select";
