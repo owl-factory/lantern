@@ -23,9 +23,9 @@ function SheetLoopItem(props: SheetElementProps<LoopDescriptor>) {
     );
   }
   return (
-    <div>
+    <>
       {elements}
-    </div>
+    </>
   );
 }
 
@@ -71,8 +71,8 @@ export const SheetLoop = observer((props: SheetElementProps<LoopDescriptor>) => 
   }
 
   return (
-    <div>
+    <>
       {loopedElements}
-    </div>
+    </>
   );
 });

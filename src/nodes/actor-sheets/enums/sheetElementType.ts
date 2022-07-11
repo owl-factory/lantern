@@ -17,6 +17,9 @@ export enum SheetElementType {
   Background, // Places an image or svg behind the given children
   Border, // Places a border around the children
   Inline, // Indicates that the children should be rendered inline but without specific spacing
+  Table, // Indicates that the children are part of a table
+  TableRow, // Contains a single row of table cells
+  TableCell, // A single cell within a table
 
   // Styling Elements without children
   Icon, // An Icon selected from a list of icons
@@ -75,6 +78,12 @@ export function elementNameToPageElementType(tagName: string) {
       return SheetElementType.Radio;
     case "numberinput":
       return SheetElementType.NumberInput;
+    case "table":
+      return SheetElementType.Table;
+    case "tablecell":
+      return SheetElementType.TableCell;
+    case "tablerow":
+      return SheetElementType.TableRow;
     case "textinput":
       return SheetElementType.TextInput;
     case "textarea":

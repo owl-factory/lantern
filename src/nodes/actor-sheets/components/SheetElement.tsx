@@ -15,6 +15,9 @@ import {
   SelectDescriptor,
   TextAreaDescriptor,
   TextInputDescriptor,
+  TableDescriptor,
+  TableCellDescriptor,
+  TableRowDescriptor,
 } from "nodes/actor-sheets/types/elements";
 import { GenericSheetElementDescriptor } from "nodes/actor-sheets/types/elements/generic";
 import {
@@ -40,6 +43,9 @@ import { ButtonDescriptor } from "../types/elements/button";
 import { SheetButton } from "./elements/Button";
 import { SheetElementType } from "../enums/sheetElementType";
 import { LoopDescriptor } from "../types/elements/loop";
+import { SheetTable } from "./elements/Table";
+import { SheetTableCell } from "./elements/TableCell";
+import { SheetTableRow } from "./elements/TableRow";
 
 /**
  * Determines which sheet element to render based on the descriptor element type given
@@ -72,6 +78,12 @@ export function SheetElement(props: SheetElementProps<GenericSheetElementDescrip
      return <SheetRadioButton {...props} element={props.element as RadioButtonDescriptor}/>;
     case SheetElementType.NumberInput:
       return <SheetNumberInput {...props} element={props.element as NumberInputDescriptor}/>;
+    case SheetElementType.Table:
+      return <SheetTable {...props} element={props.element as TableDescriptor}/>;
+    case SheetElementType.TableCell:
+      return <SheetTableCell {...props} element={props.element as TableCellDescriptor}/>;
+    case SheetElementType.TableRow:
+      return <SheetTableRow {...props} element={props.element as TableRowDescriptor}/>;
     case SheetElementType.TextInput:
       return <SheetTextInput {...props} element={props.element as TextInputDescriptor}/>;
     case SheetElementType.TextArea:

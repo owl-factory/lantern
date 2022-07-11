@@ -2,7 +2,7 @@ import { ExpressionType } from "nodes/actor-sheets/enums/expressionType";
 import { Expression, ExpressionItem, ParsedExpressionString } from "nodes/actor-sheets/types/expressions";
 
 const EXPRESSION_PART_REGEXES = [
-  /(\$[a-zA-Z0-9][a-zA-Z0-9.]*[a-zA-Z0-9]?)/, // Variable name regex ($foo.bar)
+  /(\$[a-zA-Z0-9-_][a-zA-Z0-9.]*[a-zA-Z0-9-_]?)/, // Variable name regex ($foo.bar)
 ];
 
 /**
@@ -128,7 +128,7 @@ function getNextExpressionEndIndex(str: string, expressionType: ExpressionType):
   switch (expressionType) {
     case ExpressionType.Variable:
       // Regex finds the next instance of a character not used in a variable or a $ not at the start of the string
-      const variableEndIndex = str.search(/(?<!^)(\$|[^a-zA-Z0-9.])/);
+      const variableEndIndex = str.search(/(?<!^)(\$|[^a-zA-Z0-9.-_])/);
       if (variableEndIndex === -1) { return str.length; }
       return variableEndIndex;
   }

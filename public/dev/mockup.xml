@@ -8,8 +8,8 @@
         </Loop>
 
         <Label>A List of Greetings:</Label>
-        <Loop key="greeting" list="{$rules.greetings}">
-          <Label>Greeting: {$greeting}</Label>
+        <Loop key="language" list="{$rules.languageTypes}">
+          <Label>Language Types: {$language}</Label>
         </Loop>
 
        <Label>A List of Actions:</Label>
@@ -84,13 +84,13 @@
           <Column weight="1">
             <Row>
               <Column weight="1">
-                <Prefab name="ability_score" label="Strength" score="strength" mod="str_mod"/>
-                <Prefab name="ability_score" label="Dexterity" score="dexterity" mod="dex_mod"/>
-                <Prefab name="ability_score" label="Constitution" score="constitution" mod="con_mod"/>
-                <Prefab name="ability_score" label="Intelligence" score="intelligence" mod="int_mod"/>
-                <Prefab name="ability_score" label="Wisdom" score="wisdom" mod="wis_mod"/>
-                <Prefab name="ability_score" label="Charisma" score="charisma" mod="cha_mod"/>
+                <Loop list="{$rules.ability_scores}" key="ability_score">
+                  <Label>{$ability_score.label}</Label>
+                  <NumberInput name="{$ability_score.mod}" /> <!-- The modifier-->
+                  <NumberInput name="{$ability_score.score}" /> <!-- The total ability score -->
+                </Loop>
               </Column>
+
               <Column weight="2">
                 <Background src="inspiration">
                   <Inline>
@@ -107,15 +107,72 @@
                 </Background>
 
                 <Border borderStyle="simpleBorder">
-                  <Prefab name="skill" label="Acrobatics"/>
-                  <Prefab name="skill" label="Acrobatics"/>
-                  <Prefab name="skill" label="Acrobatics"/>
-                  <Prefab name="skill" label="Acrobatics"/>
-                  <Prefab name="skill" label="Acrobatics"/>
+                  <Loop list="{$rules.savingThrows}" index="savingThrowIndex" key="savingThrow">
+                    <Inline>
+                      <Checkbox name="{$savingThrow.proficiency}"/>
+                      <NumberInput name="{$savingThrow.mod}"/>
+                      <Label>{$savingThrow.name}</Label>
+                    </Inline>
+                  </Loop>
+                </Border>
+
+                <Border borderStyle="simpleBorder">
+                  <Loop list="{$rules.abilities}" key="ability">
+                    <Checkbox name="{$ability.proficiency}"/>
+                    <NumberInput name="{$ability.mod}"/>
+                    <Label>
+                      {$ability.ability} ({$ability.mod_name})
+                    </Label>
+                  </Loop>
                   <Label>Skills</Label>
                 </Border>
               </Column>
             </Row>
+
+            <Border>
+              <Inline>
+                <Label>1{$character.wisdom_mod}</Label>
+                <Label>Passive Wisdom (Perception)</Label>
+              </Inline>
+            </Border>
+
+            <Border>
+              <Table>
+                <TableRow>
+                  <TableCell><Label>Tool</Label></TableCell>
+                  <TableCell><Label>Pro</Label></TableCell>
+                  <TableCell><Label>Attribute</Label></TableCell>
+                </TableRow>
+                <Loop list="{$content.tools}" key="tool" index="toolIndex">
+                  <TableRow>
+                    <TableCell><TextInput id="tool_name_{$index}" name="tool.name"/></TableCell>
+                    <TableCell><NumberInput id="tool_proficiency_{$index}" name="tool.proficiency"/></TableCell>
+                    <TableCell><TextInput id="tool_attribute_{$index}" name="tool.attribute"/></TableCell>
+                    <TableCell><Button action="deleteContent" index="{$toolIndex}" contentGroup="tools">-</Button></TableCell>
+                  </TableRow>
+                </Loop>
+              </Table>
+              <Button action="createContent" contentGroup="tools">+</Button>
+              <Label>Tool Proficiencies &amp; Custom Skills</Label> 
+            </Border>
+
+            <Border>
+              <Table>
+                <TableRow>
+                  <TableCell><Label>Type</Label></TableCell>
+                  <TableCell><Label>Attribute</Label></TableCell>
+                </TableRow>
+                <Loop list="{$content.languages}" key="language" index="languageIndex">
+                  <TableRow>
+                    <TableCell><TextInput id="language_name_{$index}" name="language.name"/></TableCell>
+                    <TableCell><TextInput id="language_proficiency_{$index}" name="language.proficiency"/></TableCell>
+                    <TableCell><Button action="deleteContent" index="{$languageIndex}" contentGroup="languages">-</Button></TableCell>
+                  </TableRow>
+                </Loop>
+              </Table>
+              <Button action="createContent" contentGroup="languages">+</Button>
+              <Label>Other Proficiencies &amp; Languages</Label> 
+            </Border>
           </Column>
 
           <!-- HP, Attacks, Equipment -->
