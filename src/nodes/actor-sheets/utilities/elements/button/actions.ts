@@ -1,4 +1,5 @@
 import { ActorController } from "nodes/actor-sheets";
+import { StateType } from "nodes/actor-sheets/enums/stateTypes";
 
 /**
  * An action run by a click from an Actor Sheet button element.
@@ -18,4 +19,14 @@ export function createContent(renderID: string, contentGroup: string) {
  */
 export function deleteContent(renderID: string, contentGroup: string, index: number) {
   ActorController.deleteContentItem(renderID, contentGroup, index);
+}
+
+/**
+ * Toggles a collapse state to be open or closed
+ * @param renderID The ID of the render using this state
+ * @param key The ID of the collapse element to toggle the open or closed state
+ */
+export function toggleCollapse(renderID: string, key: string) {
+  const currentState = ActorController.getState(renderID, StateType.Collapse, key);
+  ActorController.setState(renderID, StateType.Collapse, key, !currentState);
 }

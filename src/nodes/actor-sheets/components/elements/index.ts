@@ -1,5 +1,6 @@
 export * from "./Background";
 export * from "./Border";
+export * from "./Collapse";
 export * from "./Column";
 export * from "./Inline";
 export * from "./Label";

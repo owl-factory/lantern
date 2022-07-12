@@ -13,6 +13,8 @@ import { ActorContent, ActorDocument } from "types/documents/Actor";
 import { Expression, ParsedExpressionString } from "../types/expressions";
 import { Scalar } from "types";
 import { parseContentFieldArguments } from "../utilities/field";
+import { StateController } from "./StateController";
+import { StateType } from "../enums/stateTypes";
 
 interface RenderGroup {
   actorRef: string;
@@ -30,6 +32,7 @@ class $ActorController {
   protected actorController = new ActorSubController();
   protected rulesetController = new RulesetController();
   protected sheetController = new SheetController<Partial<ActorSheetDocument>>();
+  protected stateController = new StateController();
 
   constructor() {
     makeObservable(this, {
@@ -227,6 +230,28 @@ class $ActorController {
     let sheetRef = "";
     if (this.$renders[ref]) { sheetRef = this.$renders[ref].sheetRef; }
     return this.sheetController.getSheet(sheetRef);
+  }
+
+  /**
+   * Fetches the state from the state controller
+   * @param renderID The render ID the state is used for
+   * @param stateType The type of state being fetched
+   * @param key The key of the state to fetch
+   * @returns The found state value. Undefined if none is found
+   */
+  public getState(renderID: string, stateType: StateType, key: string): Scalar | undefined {
+    return this.stateController.getState(renderID, stateType, key);
+  }
+
+  /**
+   * Sets a value within the state
+   * @param renderID The render ID the state is used for
+   * @param stateType The type of state being set
+   * @param key The key of the state to set
+   * @param value The new value to set in the state
+   */
+  public setState(renderID: string, stateType: StateType, key: string, value: Scalar){
+    this.stateController.setState(renderID, stateType, key, value);
   }
 
   /**

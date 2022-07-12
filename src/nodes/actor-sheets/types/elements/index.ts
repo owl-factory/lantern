@@ -1,6 +1,7 @@
 export * from "./background";
 export * from "./border";
 export * from "./checkbox";
+export * from "./collapse";
 export * from "./column";
 export * from "./icon";
 export * from "./inline";

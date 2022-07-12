@@ -21,6 +21,7 @@ export enum SheetElementType {
   TableRow, // Contains a single row of table cells
   TableCell, // A single cell within a table
   Select, // A select input
+  Collapse, // A div that can collapse or open
 
   // Styling Elements without children
   Icon, // An Icon selected from a list of icons
@@ -85,6 +86,8 @@ export function elementNameToPageElementType(tagName: string) {
       return SheetElementType.TableCell;
     case "tablerow":
       return SheetElementType.TableRow;
+    case "collapse":
+      return SheetElementType.Collapse;
     case "textinput":
       return SheetElementType.TextInput;
     case "textarea":

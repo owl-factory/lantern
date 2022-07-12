@@ -19,8 +19,10 @@ export const SheetLabel = observer((props: SheetElementProps<LabelDescriptor>) =
   );
 
   return (
-    <label htmlFor={element.for}>
-      {element.text}
-    </label>
+    <div>
+      <label htmlFor={element.for}>
+        {element.text}
+      </label>
+    </div>
   );
 });

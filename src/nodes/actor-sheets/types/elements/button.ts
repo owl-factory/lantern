@@ -10,8 +10,9 @@ export interface ButtonDescriptor extends GenericSheetElementDescriptor {
   // The message posted when doing an alert action
   alert?: ParsedExpressionString;
 
-  // An argument used for any functional argument that requires an index
-  index?: ParsedExpressionString;
+  // General arguments that can be shared among many actions
+  index?: ParsedExpressionString; // An argument used for any functional argument that requires an index
+  target?: ParsedExpressionString; // The target of this action
 
   // Content Create and Delete
   contentGroup?: ParsedExpressionString; // The content group being acted upon

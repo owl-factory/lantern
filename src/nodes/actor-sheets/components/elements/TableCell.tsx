@@ -14,7 +14,7 @@ export function SheetTableCell(props: SheetElementProps<TableCellDescriptor>) {
     elements.push(<SheetElement key={props.properties.$prefix + childElement.$key} {...props} element={childElement}/>);
   }
   return (
-    <td >
+    <td colSpan={props.element.width}>
       {elements}
     </td>
   );
