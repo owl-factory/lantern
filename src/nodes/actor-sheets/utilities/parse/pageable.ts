@@ -13,6 +13,7 @@ export function parsePageableElement(element: Element, state: SheetState) {
   const elementDetails: PageableDescriptor = {
     $key: state.key,
     element: SheetElementType.Pageable,
+    id: element.getAttribute("id") || "none",
     tabs: [],
     pages: [],
     children: [],

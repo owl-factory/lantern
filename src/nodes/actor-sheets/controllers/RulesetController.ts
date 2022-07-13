@@ -55,7 +55,6 @@ export class RulesetController {
    * @returns A value, if found. Undefined otherwise
    */
   public getRulesetVariable(ref: string, variableGroup: RuleVariableGroup, field: string): unknown {
-    console.log(ref, variableGroup, field)
     const ruleset = this.getRuleset(ref);
     switch (variableGroup) {
       case RuleVariableGroup.STATIC:

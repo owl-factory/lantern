@@ -1,6 +1,5 @@
 import { SheetElementType, elementNameToPageElementType } from "nodes/actor-sheets/enums/sheetElementType";
 import { SheetState } from "nodes/actor-sheets/types";
-import { GenericSheetElementDescriptor } from "nodes/actor-sheets/types/elements/generic";
 import { parseBackgroundElement } from "./background";
 import { parseBorderElement } from "./border";
 import { parseButtonElement } from "./button";
@@ -22,6 +21,7 @@ import { parseSelectElement } from "./select";
 import { parseTableElement } from "./table";
 import { parseTableCellElement } from "./table-cell";
 import { parseTableRowElement } from "./table-row";
+import { parseTabsElement } from "./tabs";
 import { parseTextAreaElement } from "./text-area";
 import { parseTextInputElement } from "./text-input";
 
@@ -35,6 +35,8 @@ export function parseUnknownElement(element: Element, state: SheetState) {
   switch(pageElementType) {
     case SheetElementType.Pageable:
       return parsePageableElement(element, state);
+    case SheetElementType.Tabs:
+      return parseTabsElement(element, state);
     case SheetElementType.Page:
       return parsePageElement(element, state);
     case SheetElementType.Row:

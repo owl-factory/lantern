@@ -36,6 +36,7 @@ export class StateController {
     if (!(renderID in this.$state)) {
       this.$state[renderID] = {
         [StateType.Collapse]: {},
+        [StateType.CurrentPage]: {},
       };
     }
     this.$state[renderID][stateType][key] = value;

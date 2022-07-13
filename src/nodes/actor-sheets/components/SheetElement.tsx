@@ -18,6 +18,7 @@ import {
   TableCellDescriptor,
   TableDescriptor,
   TableRowDescriptor,
+  TabsDescriptor,
   TextAreaDescriptor,
   TextInputDescriptor,
 } from "nodes/actor-sheets/types/elements";
@@ -50,6 +51,7 @@ import { LoopDescriptor } from "../types/elements/loop";
 import { SheetTable } from "./elements/Table";
 import { SheetTableCell } from "./elements/TableCell";
 import { SheetTableRow } from "./elements/TableRow";
+import { SheetTabs } from "./elements/Tabs";
 
 /**
  * Determines which sheet element to render based on the descriptor element type given
@@ -60,6 +62,8 @@ export function SheetElement(props: SheetElementProps<GenericSheetElementDescrip
   switch (props.element?.element) {
     case SheetElementType.Pageable:
       return <SheetPageable {...props} element={props.element as PageableDescriptor}/>;
+    case SheetElementType.Tabs:
+      return <SheetTabs {...props} element={props.element as TabsDescriptor}/>;
     case SheetElementType.Page:
       return <SheetPage {...props} element={props.element as PageDescriptor}/>;
     case SheetElementType.Row:

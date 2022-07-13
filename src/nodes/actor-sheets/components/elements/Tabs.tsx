@@ -1,5 +1,8 @@
-
-import { SheetTabElementDescriptor } from "../../types";
+import { observer } from "mobx-react-lite";
+import { ActorController } from "nodes/actor-sheets/controllers/ActorController";
+import { StateType } from "nodes/actor-sheets/enums/stateTypes";
+import { SheetElementProps } from "nodes/actor-sheets/types";
+import { TabsDescriptor } from "nodes/actor-sheets/types/elements";
 import React from "react";
 
 /**
@@ -33,51 +36,45 @@ function SheetTab(props: SheetTabProps) {
   );
 }
 
-interface SheetTabsProps {
-  tabs: SheetTabElementDescriptor[];
-  activeTab: number;
-  setActiveTab: (activeTab: number) => void;
-}
-
 /**
- * Renders all of the tabs for a given Pageable element
- * @param tabs An array decribing each tab
- * @param activeTab The index of the currently active tab
- * @param setActiveTab A function the set the currently active tab
+ * Renders all of the tabs for a specific Pageable element
+ * @param element The tabs element description
  */
-export function SheetTabs(props: SheetTabsProps) {
+export const SheetTabs = observer((props: SheetElementProps<TabsDescriptor>) => {
+  const tabs = ActorController.getTabs(props.id, props.element.for) as { name: string }[];
+
+  let activeTab = ActorController.getState(props.id, StateType.CurrentPage, props.element.for) || 0;
+  if (typeof activeTab === "string") { activeTab = parseInt(activeTab); }
+  else if (typeof activeTab !== "number" ) { activeTab = 0; }
+
+  // Renders no tabs if there is nothing viewable
+  if (tabs === undefined || tabs.length <= 1) { return <NullTab/>; }
+
   // Determines which tabs a user may see
   const viewableTabs: number[] = [];
-  for (let i = 0; i < props.tabs.length || 0; i++) {
+  for (let i = 0; i < tabs.length || 0; i++) {
     viewableTabs.push(i);
   }
 
-  // Handles case where a user cannot see a given tab
-  React.useEffect(() => {
-    if (!viewableTabs.includes(props.activeTab)) {
-      props.setActiveTab(viewableTabs[0] || 0);
-    }
-  }, []);
+  // Sets the active tab state
+  function setActiveTab(index: number) {
+    ActorController.setState(props.id, StateType.CurrentPage, props.element.for, index);
+  }
 
-  // Renders no tabs if there is nothing viewable
-  if (props.tabs === undefined || props.tabs.length <= 1) { return <NullTab/>; }
-
-  const tabs: JSX.Element[] = [];
+  const tabElements: JSX.Element[] = [];
   for (const viewableTab of viewableTabs) {
-    tabs.push(
+    tabElements.push(
       <SheetTab
         key={viewableTab}
         index={viewableTab}
-        name={props.tabs[viewableTab].name}
-        activeTab={props.activeTab}
-        setActiveTab={props.setActiveTab}
+        name={tabs[viewableTab].name}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
       />
     );
   }
 
   return (
-    <div >
-      {tabs}
-    </div>
+    <div>{tabElements}</div>
   );
-}
+});
