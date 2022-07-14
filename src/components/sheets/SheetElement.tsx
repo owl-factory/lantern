@@ -35,7 +35,6 @@ import { SheetCheckbox } from "./elements/Checkbox";
 import { SheetPage } from "./elements/Page";
 import { SheetPageable } from "./elements/Pageable";
 import { SheetPrefab } from "./elements/Prefab";
-import { SheetRadio } from "./elements/Radio";
 import { SheetRadioButton } from "./elements/RadioButton";
 
 interface SheetElementProps {
@@ -69,7 +68,6 @@ export function SheetElement(props: SheetElementProps) {
     case PageElementType.Checkbox:
       return <SheetCheckbox id={props.id} element={props.element as CheckboxElementDescriptor}/>;
     case PageElementType.Radio:
-      return <SheetRadio id={props.id} element={props.element as RadioElementDescriptor}/>;
     case PageElementType.RadioButton:
      return <SheetRadioButton id={props.id} element={props.element as RadioButtonElementDescriptor}/>;
     case PageElementType.NumberInput:

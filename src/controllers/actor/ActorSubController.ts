@@ -15,6 +15,7 @@ export class ActorSubController {
       $actorValues: observable,
       $actorFields: observable,
 
+      setActorFieldValue: action,
       loadActor: action,
       generateFields: action,
       unloadActor: action,
@@ -30,6 +31,29 @@ export class ActorSubController {
     const actor = this.$actorValues[ref];
     if (!actor) { return {}; }
     return actor;
+  }
+
+  /**
+   * Gets the value of a single actor field
+   * @param ref The ref of the render this actor is a part of
+   * @param fieldName The name of the field being fetched
+   * @returns The value of the field. Undefined if not present
+   */
+  public getActorFieldValue(ref: string, fieldName: string) {
+    const actor = this.getActorValues(ref);
+    if (!(fieldName in actor)) { return undefined; }
+    return actor[fieldName];
+  }
+
+  /**
+   * Sets a value to a single actor field
+   * @param ref The ref of the render the target actor is a part of
+   * @param fieldName The nam of the field being fetched
+   * @param value The new value to save to the field
+   */
+  public setActorFieldValue(ref: string, fieldName: string, value: any) {
+    if (!this.isActorLoaded(ref)) { return; }
+    this.$actorValues[ref][fieldName] = value;
   }
 
   /**

@@ -1,6 +1,6 @@
 import { Button } from "@owl-factory/components/button";
 import { ActorController } from "controllers/actor/ActorController";
-import { Form, Formik, FormikProps } from "formik";
+import { ActorData } from "controllers/data/ActorData";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { SheetElement } from "./SheetElement";
@@ -16,7 +16,6 @@ interface ActorSheetProps {
  */
 export const ActorSheet = observer((props: ActorSheetProps) => {
   const sheet = ActorController.getSheet(props.id);
-  const actor = ActorController.getActor(props.id);
 
   // Renders each of the children of the base sheet
   const sheetElements: JSX.Element[] = [];
@@ -26,23 +25,23 @@ export const ActorSheet = observer((props: ActorSheetProps) => {
     );
   }
 
+  /**
+   * Takes the actor values and saves them into the appropriate actor
+   */
+  function save() {
+    const actorRef = ActorController.getActorRef(props.id);
+    const actor = ActorData.get(actorRef);
+    if (!actor) { return; }
+    const actorValues = ActorController.getActor(props.id);
+    actor.values = actorValues;
+    ActorData.update(actor);
+  }
+
   return (
-    <Formik
-      initialValues={actor || {}}
-      onSubmit={props.onSubmit || console.log}
-    >
-      {(formikProps: FormikProps<any>) => {
-        React.useEffect(() => {
-          formikProps.setValues(actor);
-        }, [actor]);
-        return (
-          <Form>
-            <Button type="submit">Save</Button>
-            {sheetElements}
-          </Form>
-        );
-      }}
-    </Formik>
+    <>
+      <Button type="button" onClick={save}>Save</Button>
+      {sheetElements}
+    </>
   );
 });
 
