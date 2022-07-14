@@ -6,6 +6,11 @@ import "src/init"; // Runs the initialize code for all backend functionality
 
 type RequestFunction = (req: NextApiRequest, res: NextApiResponse) => void;
 type PossibleMethods = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+// An enum describing the different supported types that may be returned from the API
+export enum HttpHandlerReturnType {
+  JSON="json",
+  XML="xml",
+}
 
 export class HTTPHandler {
   public GET?: RequestFunction;
@@ -13,6 +18,9 @@ export class HTTPHandler {
   public PUT?: RequestFunction;
   public PATCH?: RequestFunction;
   public DELETE?: RequestFunction;
+
+  // The return type that the Handler will use
+  public returnFormat = HttpHandlerReturnType.JSON;
 
   private req: NextApiRequest;
   private res: NextApiResponse;
@@ -62,13 +70,24 @@ export class HTTPHandler {
     }
   }
 
-  public returnSuccess(data: Record<string, unknown>): void {
+  public returnSuccess(data: Record<string, unknown> | string): void {
     const responseBody = {
       success: true,
       data: data,
       message: "",
     };
-    this.res.status(200).json(responseBody);
+    switch(this.returnFormat) {
+      default:
+        console.warn(`The return method '${this.returnFormat}' is not a valid format within the HTTPHandler.`);
+      // eslint-disable-next-line no-fallthrough
+      case "json":
+        this.res.status(200).json(responseBody);
+        break;
+      case "xml":
+        this.res.status(200).setHeader("Content-Type", "application/xml").send(data);
+        break;
+
+    }
   }
 
   public returnError(code: number, message: string): void {
