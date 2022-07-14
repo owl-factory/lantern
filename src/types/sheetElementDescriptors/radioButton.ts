@@ -1,11 +1,11 @@
-import { GenericSheetElementDescriptor } from "./generic";
+import { GenericSheetElementDescriptor, ParsedSheetVariable } from "./generic";
 
 /**
  * Describes a sheet radio button element
  */
 export interface RadioButtonElementDescriptor extends GenericSheetElementDescriptor {
-  id?: string;
-  name: string;
-  value: string;
-  label: string;
+  id?: ParsedSheetVariable;
+  name: ParsedSheetVariable;
+  value: ParsedSheetVariable;
+  label: ParsedSheetVariable;
 }

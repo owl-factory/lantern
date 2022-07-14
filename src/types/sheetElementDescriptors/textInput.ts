@@ -1,9 +1,9 @@
-import { GenericSheetElementDescriptor } from "./generic";
+import { GenericSheetElementDescriptor, ParsedSheetVariable } from "./generic";
 
 /**
  * Describes a sheet text input element
  */
 export interface TextInputElementDescriptor extends GenericSheetElementDescriptor {
-  id: string;
-  name: string;
+  id: ParsedSheetVariable;
+  name: ParsedSheetVariable;
 }
