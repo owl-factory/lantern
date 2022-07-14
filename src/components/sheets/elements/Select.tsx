@@ -2,6 +2,7 @@ import React from "react";
 import { SelectElementDescriptor } from "types/sheetElementDescriptors";
 
 interface SheetSelectProps {
+  id: string;
   element: SelectElementDescriptor;
 }
 

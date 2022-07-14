@@ -16,11 +16,14 @@ export default function DevIndex() {
 
       <h2>Modules</h2>
       <Link href="/dev/modules">List Modules</Link><br/>
-      <Link href="/dev/modules/new">Create Module</Link><br/>
       <br/>
 
       <h2>Actor Sheets</h2>
       <Link href="/dev/actor-sheets">List Actor Sheets</Link><br/>
+      <br/>
+
+      <h2>Actors</h2>
+      <Link href="/dev/actors">List Actors</Link><br/>
       <br/>
 
       <h2>Content Types</h2>

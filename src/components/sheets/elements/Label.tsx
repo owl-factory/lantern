@@ -2,6 +2,7 @@ import React from "react";
 import { LabelElementDescriptor } from "types/sheetElementDescriptors";
 
 interface SheetLabelProps {
+  id: string;
   element: LabelElementDescriptor;
 }
 

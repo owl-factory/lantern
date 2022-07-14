@@ -1,3 +1,4 @@
+import { parseXML } from "controllers/layout/parser";
 import { action, makeObservable, observable } from "mobx";
 import { PageElementType, elementNameToPageElementType } from "types/enums/pageElementType";
 import {
@@ -18,7 +19,6 @@ import {
   TextInputElementDescriptor,
 } from "types/sheetElementDescriptors";
 import { PrefabElementDescriptor } from "types/sheetElementDescriptors/prefab";
-import { parseXML } from "./parser";
 
 export interface SheetTabElementDescriptor {
   name: string;
@@ -65,10 +65,14 @@ export class SheetController<T> {
   /**
    * Unloads a sheet from the controller
    * @param key The key of the sheet to unload
+   * @returns True if a sheet was successfully unloaded, false if one is not found, 
    */
-  public unload(key: string) {
+  public unload(key: string): boolean {
+    const sheet = this.sheets[key];
     delete this.sheets[key];
     delete this.prefabs[key];
+
+    return (sheet !== undefined);
   }
 
   /**

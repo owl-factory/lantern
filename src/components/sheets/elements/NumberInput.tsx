@@ -4,6 +4,7 @@ import { NumberInputElementDescriptor } from "types/sheetElementDescriptors";
 import style from "../styling/Input.module.scss";
 
 interface SheetNumberInputProps {
+  id: string;
   element: NumberInputElementDescriptor;
 }
 

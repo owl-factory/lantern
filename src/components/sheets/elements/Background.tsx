@@ -3,6 +3,7 @@ import { BackgroundElementDescriptor } from "types/sheetElementDescriptors";
 import { SheetElement } from "../SheetElement";
 
 interface SheetBackgroundProps {
+  id: string;
   element: BackgroundElementDescriptor;
 }
 
@@ -14,7 +15,7 @@ export function SheetBackground(props: SheetBackgroundProps) {
   const childElements = props.element.children || [];
   const elements: JSX.Element[] = [];
   for (const childElement of childElements) {
-    elements.push(<SheetElement key={Math.random()} element={childElement}/>);
+    elements.push(<SheetElement key={Math.random()} id={props.id}  element={childElement}/>);
   }
   return (
     <div>
