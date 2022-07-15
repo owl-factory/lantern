@@ -1,3 +1,6 @@
+/**
+ * Calculates the nth number in the fibbonacci sequence
+ */
 export default () => {
   self.onmessage = (message) => {
     const num = message.data;
