@@ -13,6 +13,10 @@ import React from "react";
  */
 const ContentRow = observer((props: { id: string }) => {
   const content = ContentData.get(props.id);
+  React.useEffect(() => {
+    if (content?.ruleset?.ref) { RulesetData.softLoad((content.ruleset)?.ref); }
+    if (content?.contentType?.ref) { ContentTypeData.softLoad((content.contentType)?.ref); }
+  }, [content, content?.ruleset?.ref]);
   if (!content) { return <></>; }
 
   const contentType = ContentTypeData.get(content.contentType?.ref);
@@ -24,7 +28,7 @@ const ContentRow = observer((props: { id: string }) => {
       <TableCell>{contentType?.name || content.contentType?.name}</TableCell>
       <TableCell>{ruleset?.name || content.ruleset?.name}</TableCell>
       <TableCell>
-        <Link href={`/dev/contents/${content.ref}/edit`}>Edit</Link>
+        <Link href={`/dev/contents/${content.ref}/edit`}>Edit</Link>&nbsp;
         <a href="#" onClick={() => ContentData.delete(content.ref as string)}>Delete</a>
       </TableCell>
     </TableRow>
