@@ -1,21 +1,17 @@
 import React from "react";
 import { PrefabElementDescriptor } from "types/sheetElementDescriptors";
 import { SheetElement } from "../SheetElement";
-
-interface SheetPrefabProps {
-  id: string;
-  element: PrefabElementDescriptor;
-}
+import { SheetElementProps } from "../types";
 
 /**
  * Renders an image of the prefab
  * @param element The SheetPrefab element description
  */
-export function SheetPrefab(props: SheetPrefabProps) {
+export function SheetPrefab(props: SheetElementProps<PrefabElementDescriptor>) {
   const childElements = props.element.children || [];
   const elements: JSX.Element[] = [];
   for (const childElement of childElements) {
-    elements.push(<SheetElement key={Math.random()} id={props.id} element={childElement}/>);
+    elements.push(<SheetElement key={Math.random()} {...props} element={childElement}/>);
   }
 
   return (

@@ -9,7 +9,7 @@ function NullTab() {
   return (<></>);
 }
 
-interface SheetTapProps {
+interface SheetTabProps {
   activeTab: number;
   setActiveTab: (activeTab: number) => void;
   name: string;
@@ -23,7 +23,7 @@ interface SheetTapProps {
  * @param name The name of the page to render within the tab
  * @param index The current tab's index
  */
-function SheetTab(props: SheetTapProps) {
+function SheetTab(props: SheetTabProps) {
   const style: any = {};
   if (props.activeTab === props.index) { style.backgroundColor = "lightblue"; }
   return (

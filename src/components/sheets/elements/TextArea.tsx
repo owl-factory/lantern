@@ -3,19 +3,15 @@ import { useField } from "formik";
 import React from "react";
 import { TextAreaElementDescriptor } from "types/sheetElementDescriptors";
 import style from "../styling/Input.module.scss";
+import { SheetElementProps } from "../types";
 
 const VARIABLE_FIELDS = ["id", "name"];
-
-interface SheetTextAreaProps {
-  id: string;
-  element: TextAreaElementDescriptor;
-}
 
 /**
  * Renders a text area input element
  * @param element The text area element description
  */
-export function SheetTextArea(props: SheetTextAreaProps) {
+export function SheetTextArea(props: SheetElementProps<TextAreaElementDescriptor>) {
   const ref = React.createRef<HTMLTextAreaElement>();
   const element = ActorController.renderVariables<TextAreaElementDescriptor>(props.id, props.element, VARIABLE_FIELDS);
 

@@ -3,19 +3,15 @@ import { useField } from "formik";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { RadioElementDescriptor } from "types/sheetElementDescriptors";
+import { SheetElementProps } from "../types";
 
 const VARIABLE_FIELDS = ["id", "name", "value"];
-
-interface SheetRadioButtonProps {
-  id: string;
-  element: RadioElementDescriptor;
-}
 
 /**
  * Renders a radio input element
  * @param element The radio element description
  */
-export const SheetRadioButton = observer((props: SheetRadioButtonProps) => {
+export const SheetRadioButton = observer((props: SheetElementProps<RadioElementDescriptor>) => {
   const ref = React.createRef<HTMLInputElement>();
   const element = ActorController.renderVariables<RadioElementDescriptor>(props.id, props.element, VARIABLE_FIELDS);
   const fieldValue = ActorController.getActorField(props.id, element.name);
