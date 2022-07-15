@@ -232,7 +232,7 @@ class $ActorController {
    * @returns The value of the decoded variable
    */
   public convertVariableToData(id: string, chunk: SheetVariableTuple) {
-    const { rulesetRef } = this.$renders[id];
+    const { rulesetRef, sheetRef } = this.$renders[id];
     switch (chunk[0]) {
       case "character":
         const characterValue = this.getActorField(id, chunk[1]);
@@ -240,11 +240,12 @@ class $ActorController {
       case "rules":
         const ruleValue = this.rulesetController.getRulesetVariable(rulesetRef, RuleVariableGroup.STATIC, chunk[1]);
         return ruleValue;
+      case "sheet":
+        const sheetValue = this.sheetController.getVariable(sheetRef, chunk[1]);
+        return sheetValue;
     }
 
   }
 }
-
-
 
 export const ActorController = new $ActorController();

@@ -3,7 +3,7 @@
     <Pageable>
       <Page name="Bio">
         <Label>Bio</Label>
-        <Label>{{character.name}}</Label>
+        <Label>Border style: {{sheet.borderStyle}}</Label>
       </Page>
       
       <Page name="Character Sheet" access="edit">
@@ -293,4 +293,9 @@
       </Row>
     </NewPrefab>
   </Prefabs>
+
+  <!-- Variables are sheet-defined values for having consistent values throughout the sheet. They can be accessed with {{sheet.[variableName]}} -->
+  <Variables>
+    <Variable type="string" name="borderStyle" value="default-border-style"/> 
+  </Variables>
 </Sheet>

@@ -29,6 +29,7 @@ export interface SheetTabElementDescriptor {
 export class SheetController<T> {
   public sheets: Record<string, PageElementDescriptor> = {};
   public prefabs: Record<string, Record<string, HTMLCollection>> = {};
+  public variables: Record<string, Record<string, unknown>> = {};
 
   constructor() {
     makeObservable(this, {
@@ -52,13 +53,12 @@ export class SheetController<T> {
       throw `The root element of an actor sheet must be <Sheet>`;
     }
 
-    const { layout, prefabs } = getBaseElements(sheet);
+    const { layout, prefabs, variables } = getBaseElements(sheet);
 
     if (!layout) { throw `A 'Layout' element is required`; }
     this.prefabs[key] = {};
-    if (prefabs) {
-      this.loadPrefabs(key, prefabs);
-    }
+    if (prefabs) { this.loadPrefabs(key, prefabs); }
+    if (variables) { this.loadVariables(key, variables); }
 
     this.loadSheet(key, layout);
   }
@@ -119,6 +119,34 @@ export class SheetController<T> {
     }
 
     this.prefabs[key] = prefabDetails;
+  }
+
+  /**
+   * Loads variables into the sheet controller
+   * @param key The key to load the variables into
+   * @param sheetElement The raw XML variables DOM element
+   */
+  public loadVariables(key: string, variables: Element): void {
+    const variableDetails: Record<string, unknown> = {};
+    for (const newVariable of variables.children) {
+      if (newVariable.tagName.toLocaleLowerCase() !== "variable") { continue; }
+      const name = newVariable.getAttribute("name") || "unknown";
+      variableDetails[name] = newVariable.getAttribute("value");
+    }
+
+    this.variables[key] = variableDetails;
+  }
+
+  /**
+   * Gets a single variable from a loaded sheet
+   * @param key The key of the sheet to get the variable from
+   * @param field The field containing the variable
+   * @returns The variable, if present, or undefined
+   */
+  public getVariable(key: string, field: string) {
+    const variables = this.variables[key];
+    if (!variables) { return undefined; }
+    return variables[field];
   }
 
   /** Backend **/
@@ -481,6 +509,7 @@ export class SheetController<T> {
 function getBaseElements(sheet: Element) {
   let layout: Element | undefined;
   let prefabs: Element | undefined;
+  let variables: Element | undefined;
   for (const child of sheet.children) {
     switch (child.tagName.toLocaleLowerCase()) {
       case "layout": // TODO - make these cases an enum or variable
@@ -493,10 +522,18 @@ function getBaseElements(sheet: Element) {
 
       case "prefabs":
         if (prefabs) {
-          console.warn("Multiple 'prefabs' declarations were made. Only the first will be used");
+          console.warn("Multiple 'Prefabs' declarations were made. Only the first will be used");
           break;
         }
         prefabs = child;
+        break;
+
+      case "variables":
+        if (variables) {
+          console.warn("Multiple 'Variables' declarations were made. Only the first will be used");
+          break;
+        }
+        variables = child;
         break;
 
       default:
@@ -506,7 +543,7 @@ function getBaseElements(sheet: Element) {
         break;
     }
   }
-  return { layout, prefabs };
+  return { layout, prefabs, variables };
 }
 
 /**
@@ -586,6 +623,7 @@ function isValidVariableGroup(group: string) {
   switch (group) {
     case "character":
     case "rules":
+    case "sheet":
       return true;
     default:
       return false;
