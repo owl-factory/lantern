@@ -44,6 +44,12 @@
       "fauna/*": [
         "src/fauna/*"
       ],
+      "nodes": [
+        "src/nodes"
+      ],
+      "nodes/*": [
+        "src/nodes/*"
+      ],
       "server": [
         "src/server"
       ],
