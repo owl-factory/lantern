@@ -5,21 +5,21 @@
       <Page name="Bio">
        <Label>Letters:</Label>
         <Loop key="letter" list="a|b|c" delimiter="|">
-          <Label>{$letter}</Label>
+          <Label>${letter}</Label>
         </Loop>
 
         <Label>A List of Greetings:</Label>
-        <Loop key="language" list="{$rules.languageTypes}">
-          <Label>Language Types: {$language}</Label>
+        <Loop key="language" list="${rules.languageTypes}">
+          <Label>Language Types: ${language}</Label>
         </Loop>
 
        <Label>A List of Actions:</Label>
-        <Loop key="action" list="{$rules.actions}">
-          <Label>Action: {$action.name}</Label>
+        <Loop key="action" list="${rules.actions}">
+          <Label>Action: ${action.name}</Label>
         </Loop>
 
         <Label>Bio</Label>
-        <Label>Border style: {$sheet.borderStyle}</Label>
+        <Label>Border style: ${sheet.borderStyle}</Label>
 
         <Button action="alert" alert="Hello there!">Test</Button>
 
@@ -91,10 +91,10 @@
           <Column weight="1">
             <Row>
               <Column weight="1">
-                <Loop list="{$rules.ability_scores}" key="ability_score">
-                  <Label>{$ability_score.label}</Label>
-                  <NumberInput name="{$ability_score.mod}" /> <!-- The modifier-->
-                  <NumberInput name="{$ability_score.score}" /> <!-- The total ability score -->
+                <Loop list="${rules.ability_scores}" key="ability_score">
+                  <Label>${ability_score.label}</Label>
+                  <NumberInput name="${ability_score.mod}" /> <!-- The modifier-->
+                  <NumberInput name="${ability_score.score}" /> <!-- The total ability score -->
                 </Loop>
               </Column>
 
@@ -114,23 +114,23 @@
                 </Background>
 
                 <Border borderStyle="simpleBorder">
-                  <Loop list="{$rules.savingThrows}" index="savingThrowIndex" key="savingThrow">
+                  <Loop list="${rules.savingThrows}" index="savingThrowIndex" key="savingThrow">
                     <Inline>
-                      <Checkbox name="{$savingThrow.proficiency}"/>
-                      <NumberInput name="{$savingThrow.mod}"/>
-                      <Label>{$savingThrow.name}</Label>
+                      <Checkbox name="${savingThrow.proficiency}"/>
+                      <NumberInput name="${savingThrow.mod}"/>
+                      <Label>${savingThrow.name}</Label>
                     </Inline>
                   </Loop>
                   <Label>Saving Throws</Label>
                 </Border>
 
                 <Border borderStyle="simpleBorder">
-                  <Loop list="{$rules.abilities}" key="ability">
+                  <Loop list="${rules.abilities}" key="ability">
                     <Inline>
-                      <Checkbox name="{$ability.proficiency}"/>
-                      <NumberInput name="{$ability.mod}"/>
+                      <Checkbox name="${ability.proficiency}"/>
+                      <NumberInput name="${ability.mod}"/>
                       <Label>
-                        {$ability.ability} ({$ability.mod_name})
+                        ${ability.ability} (${ability.mod_name})
                       </Label>
                     </Inline>
                   </Loop>
@@ -141,7 +141,7 @@
 
             <Border>
               <Inline>
-                <Label>1{$character.wisdom_mod}</Label>
+                <Label>1${character.wisdom_mod}</Label>
                 <Label>Passive Wisdom (Perception)</Label>
               </Inline>
             </Border>
@@ -153,12 +153,12 @@
                   <TableCell><Label>Pro</Label></TableCell>
                   <TableCell><Label>Attribute</Label></TableCell>
                 </TableRow>
-                <Loop list="{$content.tools}" key="tool" index="toolIndex">
+                <Loop list="${content.tools}" key="tool" index="toolIndex">
                   <TableRow>
-                    <TableCell><TextInput id="tool_name_{$index}" name="tool.name"/></TableCell>
-                    <TableCell><NumberInput id="tool_proficiency_{$index}" name="tool.proficiency"/></TableCell>
-                    <TableCell><TextInput id="tool_attribute_{$index}" name="tool.attribute"/></TableCell>
-                    <TableCell><Button action="deleteContent" index="{$toolIndex}" contentGroup="tools">-</Button></TableCell>
+                    <TableCell><TextInput id="tool_name_${index}" name="tool.name"/></TableCell>
+                    <TableCell><NumberInput id="tool_proficiency_${index}" name="tool.proficiency"/></TableCell>
+                    <TableCell><TextInput id="tool_attribute_${index}" name="tool.attribute"/></TableCell>
+                    <TableCell><Button action="deleteContent" index="${toolIndex}" contentGroup="tools">-</Button></TableCell>
                   </TableRow>
                 </Loop>
               </Table>
@@ -173,17 +173,17 @@
                   <TableCell><Label>Attribute</Label></TableCell>
                   <TableCell></TableCell>
                 </TableRow>
-                <Loop list="{$content.languages}" key="language" index="languageIndex">
+                <Loop list="${content.languages}" key="language" index="languageIndex">
                   <TableRow>
                     <TableCell>
                       <Select name="language.type">
-                        <Loop list="{$rules.languageTypes}" key="languageType">
-                          <Option value="{$languageType}">{$languageType}</Option>
+                        <Loop list="${rules.languageTypes}" key="languageType">
+                          <Option value="${languageType}">${languageType}</Option>
                         </Loop>
                       </Select>
                     </TableCell>
-                    <TableCell><TextInput id="language_proficiency_{$index}" name="language.proficiency"/></TableCell>
-                    <TableCell><Button action="deleteContent" index="{$languageIndex}" contentGroup="languages">-</Button></TableCell>
+                    <TableCell><TextInput id="language_proficiency_${index}" name="language.proficiency"/></TableCell>
+                    <TableCell><Button action="deleteContent" index="${languageIndex}" contentGroup="languages">-</Button></TableCell>
                   </TableRow>
                 </Loop>
               </Table>
@@ -276,14 +276,14 @@
                   <TableCell><Label>Damage/Type</Label></TableCell>
                   <TableCell><Label>Name</Label></TableCell>
                 </TableRow>
-                <Loop list="{$content.attacks}" key="attack" index="attack_index">
+                <Loop list="${content.attacks}" key="attack" index="attack_index">
                   <TableRow>
                     <TableCell><TextInput name="attack.name"/></TableCell>
                     <TableCell><NumberInput name="attack.attackBonus"/></TableCell>
                     <TableCell></TableCell>
                     <TableCell>
                       <Inline>
-                        <Button action="deleteContent" contentGroup="attacks" index="{$attack_index}">-</Button>
+                        <Button action="deleteContent" contentGroup="attacks" index="${attack_index}">-</Button>
                         <Icon icon="sword" action="ac_attack" argument="attack"/>
                         <Icon icon="edit" action="ac_open" argument="attack"/>
                       </Inline>
@@ -304,7 +304,7 @@
               </Row>
               <Loop id="attacks_1" list="a|b|c" key="attack" delimiter="|">
                 <Column weight="2">
-                  <Label>{$attack}</Label>
+                  <Label>${attack}</Label>
                   <TextInput name="attack.name"/>
                 </Column>
 
@@ -327,7 +327,7 @@
             <Border borderStyle="simplebox">
               <Inline>
                 <Loop id="currencies_1" name="global.currencies" key="$currency">
-                  <Prefab name="currency" label="{$currency.name}" index="{$currency.index}"/>
+                  <Prefab name="currency" label="${currency.name}" index="${currency.index}"/>
                 </Loop>
               </Inline>
 
@@ -345,35 +345,35 @@
                   <TableCell></TableCell>
                 </TableRow>
 
-                <Loop list="{$content.items}" key="item" index="index">
+                <Loop list="${content.items}" key="item" index="index">
                   <TableRow>
-                    <TableCell><Label>{$index} </Label></TableCell>
-                    <TableCell><NumberInput id="content_weight_{$index}" name="item.weight"/></TableCell>
-                    <TableCell><TextInput id="content_name_{$index}" name="item.name"/></TableCell>
-                    <TableCell><NumberInput id="content_quantity_{$index}" name="item.quantity"/></TableCell>
+                    <TableCell><Label>${index} </Label></TableCell>
+                    <TableCell><NumberInput id="content_weight_${index}" name="item.weight"/></TableCell>
+                    <TableCell><TextInput id="content_name_${index}" name="item.name"/></TableCell>
+                    <TableCell><NumberInput id="content_quantity_${index}" name="item.quantity"/></TableCell>
                     <TableCell></TableCell>
                     <TableCell>
-                      <Button action="toggleCollapse" target="item_collapse_{$index}">V</Button>
-                      <Button action="deleteContent" index="{$index}" contentGroup="items">-</Button>
+                      <Button action="toggleCollapse" target="item_collapse_${index}">V</Button>
+                      <Button action="deleteContent" index="${index}" contentGroup="items">-</Button>
                     </TableCell>
                   </TableRow>
-                  <Collapse id="item_collapse_{$index}">
+                  <Collapse id="item_collapse_${index}">
                     <TableRow>
                       <TableCell width="5">
                         <Inline>
-                          <Checkbox id="content_equipped_{$index}" name="item.equipped"/>
+                          <Checkbox id="content_equipped_${index}" name="item.equipped"/>
                           <Label>Equipped</Label>
                         </Inline>
                         <Inline>
-                          <Checkbox id="content_use-as-resource_{$index}" name="item.isResource"/>
+                          <Checkbox id="content_use-as-resource_${index}" name="item.isResource"/>
                           <Label>Use as a Resource</Label>
                         </Inline>
                         <Inline>
-                          <Checkbox id="content_is-attack_{$index}" name="item.hasAttack"/>
+                          <Checkbox id="content_is-attack_${index}" name="item.hasAttack"/>
                           <Label>Has an Attack</Label>
                         </Inline>
-                        <Label for="content_description_{$index}">Description</Label>
-                        <TextArea id="content_description_{$index}" name="item.description"/>
+                        <Label for="content_description_${index}">Description</Label>
+                        <TextArea id="content_description_${index}" name="item.description"/>
                       </TableCell>
                     </TableRow>
                   </Collapse>
@@ -442,15 +442,15 @@
   <Prefabs>
     <NewPrefab name="ability_score" properties="label,score,mod">
       <Background src="/ability_score.svg">
-        <Label>{$properties.label}</Label>
-        <NumberInput id="{$properties.mod}_{$properties.uuid}" name="{$properties.mod}" calculated="true"/>
-        <NumberInput id="{$properties.score}_{$properties.uuid}" name="{$properties.score}"/>
+        <Label>${properties.label}</Label>
+        <NumberInput id="${properties.mod}_${properties.uuid}" name="${properties.mod}" calculated="true"/>
+        <NumberInput id="${properties.score}_${properties.uuid}" name="${properties.score}"/>
       </Background>
     </NewPrefab>
 
     <NewPrefab name="skill" properties="">
       <Row>
-        <Column weight="1"><Checkbox name="{$properties.skill.key}"/></Column>
+        <Column weight="1"><Checkbox name="${properties.skill.key}"/></Column>
         <Column weight="1">
           <NumberInput id="acrobatics_proficiency_1" name="acrobatics_proficiency" calculated="true" calculateMethod="calc_skill_proficiency"/>
         </Column>
@@ -459,7 +459,7 @@
     </NewPrefab>
   </Prefabs>
 
-  <!-- Variables are sheet-defined values for having consistent values throughout the sheet. They can be accessed with {$sheet.[variableName]} -->
+  <!-- Variables are sheet-defined values for having consistent values throughout the sheet. They can be accessed with ${sheet.[variableName]} -->
   <Variables>
     <Variable type="string" name="borderStyle" value="default-border-style"/> 
   </Variables>

@@ -5,7 +5,7 @@ import { GenericSheetElementDescriptor } from "./generic";
 export interface LoopDescriptor extends GenericSheetElementDescriptor {
   children: GenericSheetElementDescriptor[];
 
-  listType: "static" | "variable"; // Internal use. Determines if we need to fetch a variable
+  delimiter: string;
   list: ParsedExpressionString;
   key: string; // The name of the variable used to access this variable
   index: string | null; // The name used to access the index

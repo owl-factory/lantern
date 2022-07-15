@@ -11,34 +11,40 @@ const EXPRESSION_PART_REGEXES = [
  * @returns An array of string and Expression objects
  */
 export function splitExpressionValue(str: string): ParsedExpressionString {
-  const exprs: ParsedExpressionString = [];
-  let currentString = str;
-  let i = 0;
-  while(true) {
-    const nextExpressionIndex = getNextExpressionStart(currentString);
-    // Prevents an empty string from being added to the end of the expression list
-    if (currentString.length === 0) { break; }
+  const value: ParsedExpressionString = {
+    value: str,
+    isExpression: str.search(/^\$\{|[^\\]\$\{/) !== -1,
+  };
+  return value;
 
-    // There are no further expressions, so escape out
-    if (nextExpressionIndex === -1) {
-      exprs.push(currentString);
-      break;
-    }
-    else if (nextExpressionIndex > 0) {
-      exprs.push(currentString.substring(0, nextExpressionIndex));
-      currentString = currentString.substring(nextExpressionIndex);
-    }
-    const nextExpressionEnd = getNextExpressionEnd(currentString);
-    const expressionString = currentString.substring(0, nextExpressionEnd + 1);
-    currentString = currentString.substring(nextExpressionEnd + 1);
+  // const exprs: ParsedExpressionString = [];
+  // let currentString = str;
+  // let i = 0;
+  // while(true) {
+  //   const nextExpressionIndex = getNextExpressionStart(currentString);
+  //   // Prevents an empty string from being added to the end of the expression list
+  //   if (currentString.length === 0) { break; }
 
-    exprs.push(parseExpression(expressionString));
+  //   // There are no further expressions, so escape out
+  //   if (nextExpressionIndex === -1) {
+  //     exprs.push(currentString);
+  //     break;
+  //   }
+  //   else if (nextExpressionIndex > 0) {
+  //     exprs.push(currentString.substring(0, nextExpressionIndex));
+  //     currentString = currentString.substring(nextExpressionIndex);
+  //   }
+  //   const nextExpressionEnd = getNextExpressionEnd(currentString);
+  //   const expressionString = currentString.substring(0, nextExpressionEnd + 1);
+  //   currentString = currentString.substring(nextExpressionEnd + 1);
 
-    // Safety net. If something breaks this prevents an infinite loop
-    i++; if (i>1000) { break; }
-  }
+  //   exprs.push(parseExpression(expressionString));
 
-  return exprs;
+  //   // Safety net. If something breaks this prevents an infinite loop
+  //   i++; if (i>1000) { break; }
+  // }
+
+  // return exprs;
 }
 
 /**

@@ -320,24 +320,13 @@ class $ActorController {
   /**
    * Renders out a single variable
    * @param renderID The ID of the render
-   * @param exprs An array containing an expression or string(s) to render out
+   * @param expr An array containing an expression or string(s) to render out
    * @returns A single string containing the rendered value
    */
-  public renderVariable(renderID: string, exprs: ParsedExpressionString, properties: SheetProperties): string {
-    // Base case where we ensure that we have the correct type
-    if (!Array.isArray(exprs) || exprs.length === 0) { return ""; }
-    let renderedResult = "";
-    for (const expr of exprs) {
-      // Not an expression, just a string
-      if (typeof expr === "string") {
-        renderedResult += expr;
-        continue;
-      }
+  public renderVariable(renderID: string, expr: ParsedExpressionString, properties: SheetProperties): string {
+    if (!expr.isExpression) { return expr.value; }
 
-      renderedResult += this.renderExpression(renderID, expr, properties);
-    }
-
-    return renderedResult;
+    return "";
   }
 
   /**

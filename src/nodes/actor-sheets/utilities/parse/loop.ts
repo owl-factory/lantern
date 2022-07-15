@@ -11,24 +11,14 @@ import { parseChildrenElements } from "./children";
  * @param element The raw XML element of the loop
  */
 export function parseLoopElement(element: Element, state: SheetState) {
-  const rawList = element.getAttribute("list") || "";
-  const listType = rawList.search("{") === -1 ? "static" : "variable"; // TODO - need a better method for this
-  let list: ParsedExpressionString;
-  switch (listType) {
-    case "static":
-      list = rawList.split(element.getAttribute("delimiter") || ",");
-      break;
-    case "variable":
-      list = splitExpressionValue(rawList);
-      break;
-  }
+  const list = splitExpressionValue(element.getAttribute("list") || "");
 
   const elementDetails: LoopDescriptor = {
     $key: state.key,
     element: SheetElementType.Loop,
     children: [],
-    listType,
     list,
+    delimiter: element.getAttribute("delimiter") || ",",
     key: element.getAttribute("key") || "unknown",
     index: element.getAttribute("index"),
   };

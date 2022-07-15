@@ -39,16 +39,18 @@ export const SheetLoop = observer((props: SheetElementProps<LoopDescriptor>) => 
   const loopedElements = [];
   let variableName;
   let list: (string | Record<string, string>)[] = [];
-  if (props.element.listType === "static") { list = props.element.list as string[]; }
+  if (!props.element.list.isExpression) { list = props.element.list.value.split(props.element.delimiter); }
   else {
-    // TODO - fix this super jank variable name get
-    variableName = (props.element.list[0] as Expression).items[0].value;
-    list = ActorController.convertVariableToData(
-      props.id,
-      variableName || "",
-      props.properties as any
-    ) as (string | Record<string, string>)[];
-    if (list === undefined) { list = []; }
+    list = [];
+    // const expr = props.element.list[0] as Expression;
+    // // TODO - fix this super jank variable name get
+    // variableName = (props.element.list[0] as Expression).items[0].value;
+    // list = ActorController.convertVariableToData(
+    //   props.id,
+    //   variableName || "",
+    //   props.properties as any
+    // ) as (string | Record<string, string>)[];
+    // if (list === undefined) { list = []; }
   }
 
   let i = 0;
