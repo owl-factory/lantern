@@ -1,6 +1,7 @@
 import { Button } from "@owl-factory/components/button";
 import { Page } from "components/design";
 import { ActorSheetForm } from "components/reroll/actorSheets/Form";
+import { ActorController } from "controllers/actor/ActorController";
 import { ActorSheetData } from "controllers/data/ActorSheetData";
 import { RulesetData } from "controllers/data/RulesetData";
 import { observer } from "mobx-react-lite";
@@ -16,21 +17,26 @@ function EditActorSheet() {
   const router = useRouter();
   const ref = router.query.ref as string;
 
+  const [ renderID, setRenderID ] = React.useState("");
+
   // Ensures that the actor sheet is loaded
-  React.useEffect(() => {
-    ActorSheetData.load(ref);
-  }, [ref]);
+  React.useEffect(() => { ActorSheetData.load(ref); }, [ref]);
 
   const actorSheet = ActorSheetData.get(ref);
 
-  // Ensures that the dependent ruleset is loaded
+  // Ensures that the dependent ruleset is loaded and creates the render ID
   React.useEffect(() => {
     if (actorSheet && actorSheet.ruleset && actorSheet.ruleset.ref) {
+      setRenderID(ActorController.createRender(null, "temp", actorSheet.ruleset.ref));
       RulesetData.load(actorSheet.ruleset.ref);
     }
   }, [actorSheet]);
 
+  // Ensures that the ruleset is loaded into the controller
   const ruleset = RulesetData.get(actorSheet?.ruleset?.ref);
+  React.useEffect(() => {
+    if (ruleset && ruleset.ref) { ActorController.loadRuleset(ruleset.ref, ruleset); }
+  }, [ruleset]);
 
   // Return an empty case if either the actor sheet or ruleset are not present
   if (!actorSheet || !ruleset) { return <></>; }
@@ -55,7 +61,7 @@ function EditActorSheet() {
       </div>
       <i>A {ruleset.name} actor sheet</i>
       <hr/>
-      <ActorSheetForm ruleset={ruleset.ref as string} actorSheet={actorSheet} onSubmit={save}/>
+      <ActorSheetForm renderID={renderID} ruleset={ruleset.ref as string} actorSheet={actorSheet} onSubmit={save}/>
     </Page>
   );
 }

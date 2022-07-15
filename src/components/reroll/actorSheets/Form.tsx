@@ -14,9 +14,10 @@ import { ActorSheetDocument } from "types/documents/ActorSheet";
 const INITIAL_VALUES = {
   name: "",
   xml: "",
-}
+};
 
 interface ActorSheetFormProps {
+  renderID: string;
   actorSheet?: Partial<ActorSheetDocument>;
   ruleset: Ref64;
   onSubmit: (actorSheet: Partial<ActorSheetDocument>) => void;
@@ -24,14 +25,14 @@ interface ActorSheetFormProps {
 
 /**
  * Renders a form for editing an actor sheet using the XML text area
+ * @param renderID The id of the render used for this 
  * @param actorSheet The actor sheet currently being edited, if any. Null if creating a new sheet
  * @param ruleset The ref of the current ruleset this sheet belongs to
  * @param onSubmit The function to call when the form is submitted
  */
 export const ActorSheetForm = observer((props: ActorSheetFormProps) => {
   const initialValues = props.actorSheet ? props.actorSheet : INITIAL_VALUES;
-  const id = "temp";
-  const renderID = ActorController.createRender(null, id, null);
+  const id = "temp"; // TODO - grab from the ActorController
 
   // Ensures that the actor sheet XML is loaded into the preview
   React.useEffect(() => {
@@ -57,7 +58,7 @@ export const ActorSheetForm = observer((props: ActorSheetFormProps) => {
             }
 
             return (
-              <>  
+              <>
                 <label htmlFor="name">Name</label>
                 <Input type="text" id="name" name="name"/>
                 <label htmlFor="XML Input">XML&nbsp;</label>
@@ -65,12 +66,12 @@ export const ActorSheetForm = observer((props: ActorSheetFormProps) => {
                 <Button onClick={refresh}>Refresh</Button><br/><br/>
                 <Button type="submit" onClick={formikProps.submitForm}>Submit</Button>
               </>
-            )
+            );
           }
         }
       </Formik>
       <hr/>
-      <ActorSheet id={renderID}/>
+      <ActorSheet id={props.renderID}/>
     </div>
-  )
+  );
 });

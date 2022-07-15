@@ -1,14 +1,17 @@
-import { action, computed, makeObservable, observable, toJS } from "mobx";
+import { action, makeObservable, observable } from "mobx";
+import { RulesetDocument } from "types/documents";
 import { ActorSheetDocument } from "types/documents/ActorSheet";
 import { PageElementDescriptor } from "types/sheetElementDescriptors";
 import { GenericSheetElementDescriptor, SheetVariableTuple } from "types/sheetElementDescriptors/generic";
-import { isVariable, SheetController } from "./ActorSheetController";
+import { SheetController } from "./ActorSheetController";
 import { ActorSubController } from "./ActorSubController";
+import { RuleVariableGroup, RulesetController } from "./RulesetController";
 
 interface RenderGroup {
   actorRef: string;
   sheetRef: string;
-  rulesetRef: string;
+  rulesetRef: string; // The actual ruleset, not the campaign
+  // campaignRef: string;
 }
 
 /**
@@ -18,6 +21,7 @@ class $ActorController {
   public $renders: Record<string, RenderGroup> = {};
 
   protected actorController = new ActorSubController();
+  protected rulesetController = new RulesetController();
   protected sheetController = new SheetController<Partial<ActorSheetDocument>>();
 
   constructor() {
@@ -42,6 +46,7 @@ class $ActorController {
     if (!actorRef) { actorRef = "temp"; }
     if (!rulesetRef) { rulesetRef = "temp"; }
     this.$renders[id] = { actorRef, sheetRef, rulesetRef };
+
     return id;
   }
 
@@ -69,8 +74,8 @@ class $ActorController {
    * @param ref The ref of the ruleset
    * @param ruleset The combined values of the ruleset and campaign that may be accessed
    */
-  public loadRuleset(ref: string, ruleset: Record<string, unknown>): void {
-    return;
+  public loadRuleset(ref: string, ruleset: Partial<RulesetDocument>): void {
+    this.rulesetController.loadRuleset(ref, ruleset);
   }
 
   /**
@@ -83,22 +88,22 @@ class $ActorController {
   }
 
   /**
+   * Unloads a single ruleset
+   * @param ref The ref of the ruleset to unload
+   * @todo Implement
+   * @returns True if a ruleset was successfully unloaded, false if one is not found
+   */
+   public unloadRuleset(ref: string): boolean {
+    return this.rulesetController.unloadRuleset(ref);
+  }
+
+  /**
    * Unloads a single sheet
    * @param ref The ref of the sheet to unload
    * @returns True if a sheet was successfully unloaded, false if one is not found
    */
   public unloadSheet(ref: string): boolean {
     return this.sheetController.unload(ref);
-  }
-
-  /**
-   * Unloads a single ruleset
-   * @param ref The ref of the ruleset to unload
-   * @todo Implement
-   * @returns True if a ruleset was successfully unloaded, false if one is not found
-   */
-  public unloadRuleset(ref: string): boolean {
-    return false;
   }
 
   /**
@@ -227,10 +232,14 @@ class $ActorController {
    * @returns The value of the decoded variable
    */
   public convertVariableToData(id: string, chunk: SheetVariableTuple) {
+    const { rulesetRef } = this.$renders[id];
     switch (chunk[0]) {
       case "character":
-        const value = this.getActorField(id, chunk[1]);
-        return value;
+        const characterValue = this.getActorField(id, chunk[1]);
+        return characterValue;
+      case "rules":
+        const ruleValue = this.rulesetController.getRulesetVariable(rulesetRef, RuleVariableGroup.STATIC, chunk[1]);
+        return ruleValue;
     }
 
   }

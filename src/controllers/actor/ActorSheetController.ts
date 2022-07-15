@@ -66,7 +66,7 @@ export class SheetController<T> {
   /**
    * Unloads a sheet from the controller
    * @param key The key of the sheet to unload
-   * @returns True if a sheet was successfully unloaded, false if one is not found, 
+   * @returns True if a sheet was successfully unloaded, false if one is not found,
    */
   public unload(key: string): boolean {
     const sheet = this.sheets[key];
@@ -578,13 +578,14 @@ function encodeVariableIntoTuple(str: string): (string | SheetVariableTuple) {
 }
 
 /**
- * Checks if a given variable group is valid. 
+ * Checks if a given variable group is valid.
  * @param group The group to check for validity
  * @returns True if the group is valid, false otherwise
  */
 function isValidVariableGroup(group: string) {
   switch (group) {
     case "character":
+    case "rules":
       return true;
     default:
       return false;
