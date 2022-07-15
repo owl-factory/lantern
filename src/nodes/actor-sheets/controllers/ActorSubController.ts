@@ -26,6 +26,8 @@ export class ActorSubController {
       loadActor: action,
       generateFields: action,
       unloadActor: action,
+      pushNewContent: action,
+      deleteContentItem: action,
 
       setContent: action,
     });

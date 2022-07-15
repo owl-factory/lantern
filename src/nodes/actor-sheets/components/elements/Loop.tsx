@@ -42,7 +42,9 @@ export const SheetLoop = observer((props: SheetElementProps<LoopDescriptor>) => 
   if (props.element.listType === "static") { list = props.element.list as string[]; }
   else {
     // TODO - fix this super jank variable name get
-    variableName = (props.element.list[0] as Expression).items[0].value;
+    const expr = props.element.list[0] as Expression;
+    if (!expr) { return <></>; }
+    variableName = expr.items[0].value;
     list = ActorController.convertVariableToData(
       props.id,
       variableName || "",

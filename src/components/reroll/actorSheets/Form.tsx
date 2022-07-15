@@ -70,7 +70,7 @@ export const ActorSheetForm = observer((props: ActorSheetFormProps) => {
         }
       </Formik>
       <hr/>
-      <ActorSheet id={props.renderID}/>
+      {/* <ActorSheet id={props.renderID}/> */}
     </div>
   );
 });

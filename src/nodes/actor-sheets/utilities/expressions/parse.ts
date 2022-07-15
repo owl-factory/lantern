@@ -5,12 +5,122 @@ const EXPRESSION_PART_REGEXES = [
   /(\$[a-zA-Z0-9-_][a-zA-Z0-9.]*[a-zA-Z0-9-_]?)/, // Variable name regex ($foo.bar)
 ];
 
+interface ParsedExpression {
+  type: ExpressionType;
+  value?: string;
+}
+
+/**
+ * 
+ * @param str 
+ * @returns 
+ */
+export function splitExpressionValue(str: string): ParsedExpressionString {
+  const splitStrs: string[] = splitStringsAndExpressions(str.trim());
+  const parsedStrings: ParsedExpressionString = [];
+  for (const splitStr of splitStrs) {
+    // If the string is too short for an expression, or doesn't start with an expression
+    if (splitStr.length < 3 || splitStr[0] !== '$' || splitStr[1] !== '{') {
+      parsedStrings.push(splitStr);
+      continue;
+    }
+    const rawExprItems = parseExpressionString(splitStr);
+    const exprItem = parseRawExpressionItems(rawExprItems);
+    console.log(rawExprItems);
+    parsedStrings.push();
+  }
+
+  return [];
+}
+
+function splitStringsAndExpressions(str: string): string[] {
+  const splitStrs: string[] = [];
+  const length = str.length;
+
+  let ignoreNext = false;
+  let lastStart = 0;
+  let isExpression = false;
+  for (let i = 0; i < length; i++) {
+    // Ignores the next character. Set by backslashes
+    if (ignoreNext) {
+      ignoreNext = false;
+      continue;
+    }
+    const char = str[i];
+    switch(char) {
+      case '\\':
+        ignoreNext = true;
+        continue;
+      case '$':
+        // Skips if this is the end of the string or if this is inside another expression
+        if (i + 1 >= length || isExpression) { continue; }
+
+        // Checks the next char to ensure this is an expression. If not, skip
+        const nextChar = str[i + 1];
+        if (nextChar !== '{') { continue; }
+
+        // Saves the preceeding string
+        if (lastStart !== i) {
+          splitStrs.push(str.substring(lastStart, i));
+          lastStart = i;
+        }
+
+        isExpression = true;
+        continue;
+      case '}':
+        // Do nothing if this is not currently an expression
+        if (!isExpression) { continue; }
+
+        // Adds in the expression string
+        splitStrs.push(str.substring(lastStart, i + 1));
+        lastStart = i + 1;
+        isExpression = false;
+    }
+  }
+
+  // Handle case where the expression is unterminated
+  if (isExpression) { throw `The expression in string '${str}' was not properly terminated`; }
+
+  // Add in the last piece of string if not a expression
+  const lastStr = str.substring(lastStart);
+  if (lastStr.length) { splitStrs.push(str.substring(lastStart)); }
+
+  return splitStrs;
+}
+
+function parseExpressionString(str: string): ParsedExpression[] {
+  const exprItems: ParsedExpression[] = [];
+  let exprStr = str.substring(2, str.length - 1).trim();
+
+  let i = 0;
+  while (exprStr.length > 0) {
+    const nextExprType = getNextExpressionType(exprStr);
+    const nextExprEnd = getNextExpressionEndIndex(exprStr, nextExprType);
+
+    const exprItem: ParsedExpression = { type: nextExprType };
+    if (
+      nextExprType === ExpressionType.Variable ||
+      nextExprType === ExpressionType.Function ||
+      nextExprType === ExpressionType.Number
+    ) {
+      exprItem.value = exprStr.substring(0, nextExprEnd);
+    }
+    exprItems.push(exprItem);
+    exprStr = exprStr.substring(nextExprEnd).trim();
+
+    if (i++ > 1000) { throw "ParseStringExpression overloop"; }
+  }
+
+  return exprItems;
+}
+
 /**
  * Splits a string value up into expression
  * @param str The string potentially containing one or more expressions
  * @returns An array of string and Expression objects
  */
-export function splitExpressionValue(str: string): ParsedExpressionString {
+export function splitExpressionValue2(str: string): ParsedExpressionString {
+  return [];
   const exprs: ParsedExpressionString = [];
   let currentString = str;
   let i = 0;
@@ -80,7 +190,7 @@ function getNextExpressionEnd(str: string): number {
 function parseExpression(str: string): Expression {
   const expr: Expression = { items: [] };
 
-  if (str[0] !== '{' || str[str.length - 1] !== '}') {
+  if (str[0] !== '$' || str[1] !== '{' || str[str.length - 1] !== '}') {
     console.error(`An improper expression was given in the 'parseExpression' function. Expression: '${str}'`);
     return expr;
   }
@@ -88,13 +198,13 @@ function parseExpression(str: string): Expression {
   // Removes the curly braces at the beginning and ends, as well as any padding spaces
   let currentString = str.substring(1, str.length - 1).trim();
   let i = 0;
-  while(true) {
-    if (currentString.length === 0) { break; }
+  while(currentString.length > 0) {
     const nextExpressionType = getNextExpressionType(currentString);
     const nextExpressionEndIndex = getNextExpressionEndIndex(currentString, nextExpressionType);
     const expressionString = currentString.substring(0, nextExpressionEndIndex);
+
     // TODO - check that this doesn't break anything with an out-of-bounds index overflow
-    currentString = currentString.substring(nextExpressionEndIndex);
+    currentString = currentString.substring(nextExpressionEndIndex).trim();
 
     const exprItem = convertExpressionItemString(expressionString, nextExpressionType);
     expr.items.push(exprItem);
@@ -109,14 +219,29 @@ function parseExpression(str: string): Expression {
  * @param str The string containing one or more expression items
  */
 function getNextExpressionType(str: string): ExpressionType {
-  const firstChar = str[0];
+  const trimmedStr = str.trim();
+  const firstChar = trimmedStr[0];
   switch (firstChar) {
-    case '$':
-      return ExpressionType.Variable;
-    default:
-      console.error(`Invalid expression type: '${str}'`);
+    case '+':
+      return ExpressionType.Add;
+    case '-':
+      return ExpressionType.Subtract;
+    case '*':
+      return ExpressionType.Multiply;
+    case '/':
+      return ExpressionType.Divide;
+    case undefined:
       return ExpressionType.Invalid;
   }
+
+  // Anything starting with a number is necessarily a number
+  if (firstChar.search(/[0-9]/) === 0) { return ExpressionType.Number; }
+  else if (str.search(/^[a-zA-Z][a-zA-Z0-9\-_]*(\.[a-zA-Z][a-zA-Z0-9\-_]*)*\(/) === 0) {
+    return ExpressionType.Function;
+  }
+  else if (str.search(/^[a-zA-Z][a-zA-Z0-9\-_]*(\.[a-zA-Z][a-zA-Z0-9\-_]*)*/) === 0) { return ExpressionType.Variable; }
+
+  return ExpressionType.Invalid;
 }
 
 /**
@@ -126,6 +251,17 @@ function getNextExpressionType(str: string): ExpressionType {
  */
 function getNextExpressionEndIndex(str: string, expressionType: ExpressionType): number {
   switch (expressionType) {
+    case ExpressionType.Add:
+    case ExpressionType.Subtract:
+    case ExpressionType.Multiply:
+    case ExpressionType.Divide:
+      return 1;
+    case ExpressionType.Number:
+      // Regex finds the next instance of a non-number character
+      const numberEndIndex = str.search(/[^0-9]/);
+      if (numberEndIndex === -1) { return str.length; }
+      return numberEndIndex;
+
     case ExpressionType.Variable:
       // Regex finds the next instance of a character not used in a variable or a $ not at the start of the string
       const variableEndIndex = str.search(/(?<!^)(\$|[^a-zA-Z0-9.-_])/);
@@ -133,6 +269,11 @@ function getNextExpressionEndIndex(str: string, expressionType: ExpressionType):
       return variableEndIndex;
   }
   return -1;
+}
+
+function parseRawExpressionItems(exprItems: ParsedExpression[]) {
+  const rawExprItems = [...exprItems];
+  
 }
 
 /**
@@ -145,7 +286,7 @@ function convertExpressionItemString(str: string, expressionType: ExpressionType
     case ExpressionType.Variable:
       const variableExpressionItem: ExpressionItem = {
         type: expressionType,
-        value: str.substring(1), // Substring 1 is to remove the '$' indicating a variable
+        value: str,
       };
       return variableExpressionItem;
     case ExpressionType.Invalid:
