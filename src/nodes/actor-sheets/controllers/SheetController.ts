@@ -166,6 +166,12 @@ export class SheetController<T> {
     return this.tabs[sheetID][key];
   }
 
+  public getAllVariables(key: string) {
+    const variables = this.variables[key];
+    if (!variables) { return {}; }
+    return variables;
+  }
+
   /**
    * Gets a single variable from a loaded sheet
    * @param key The key of the sheet to get the variable from

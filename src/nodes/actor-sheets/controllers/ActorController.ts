@@ -1,4 +1,4 @@
-import { action, makeObservable, observable } from "mobx";
+import { action, makeObservable, observable, toJS } from "mobx";
 import { RulesetDocument } from "types/documents";
 import { ActorSheetDocument } from "types/documents/ActorSheet";
 import { PageDescriptor } from "nodes/actor-sheets/types/elements";
@@ -15,6 +15,10 @@ import { Scalar } from "types";
 import { parseContentFieldArguments } from "../utilities/field";
 import { StateController } from "./StateController";
 import { StateType } from "../enums/stateTypes";
+import { newWebWorker } from "@owl-factory/web-worker";
+import SandboxedCodeWorker from "../workers/sandboxed-code.worker";
+import { SandboxWorkerMessage } from "../types/workers";
+import { isClient } from "@owl-factory/utilities/client";
 
 interface RenderGroup {
   actorRef: string;
@@ -28,18 +32,28 @@ interface RenderGroup {
  */
 class $ActorController {
   public $renders: Record<string, RenderGroup> = {};
+  public $variables: Record<string, Scalar | Scalar[]> = {};
 
   protected actorController = new ActorSubController();
   protected rulesetController = new RulesetController();
   protected sheetController = new SheetController<Partial<ActorSheetDocument>>();
   protected stateController = new StateController();
+  protected worker!: Worker;
 
   constructor() {
+    const worker = newWebWorker(SandboxedCodeWorker);
+    if (isClient) {
+      (worker as Worker).onmessage = (message: any) => this.setVariables(message);
+      this.worker = worker as Worker;
+    }
     makeObservable(this, {
       $renders: observable,
+      $variables: observable,
 
       createRender: action,
+      setVariables: action,
     });
+
   }
 
   /**
@@ -311,7 +325,7 @@ class $ActorController {
       if (!(field in element)) { continue; }
 
       const elementField: ParsedExpressionString = element[field as (keyof T)] as unknown as ParsedExpressionString;
-      parsedVariables[field] = ActorController.renderVariable(id, elementField, properties);
+      parsedVariables[field] = ActorController.renderVariable(id, element, field, elementField, properties);
     }
 
     return parsedVariables;
@@ -323,10 +337,32 @@ class $ActorController {
    * @param expr An array containing an expression or string(s) to render out
    * @returns A single string containing the rendered value
    */
-  public renderVariable(renderID: string, expr: ParsedExpressionString, properties: SheetProperties): string {
+  public renderVariable<T extends GenericSheetElementDescriptor>(
+    renderID: string,
+    element: T,
+    fieldName: string,
+    expr: ParsedExpressionString,
+    properties: SheetProperties
+  ): string {
     if (!expr.isExpression) { return expr.value; }
+    const key = getFieldKey(element, fieldName);
+    // console.log(key)
+    const { actorRef, sheetRef, rulesetRef } = this.$renders[renderID];
+    const message: SandboxWorkerMessage = {
+      ...properties,
+      actor: toJS(this.actorController.getActorValues(actorRef)),
+      character: toJS(this.actorController.getActorValues(actorRef)),
+      content: toJS(this.actorController.getAllContent(actorRef)),
+      rules: toJS(this.rulesetController.getRuleset(rulesetRef).staticVariables),
+      sheet: toJS(this.sheetController.getAllVariables(sheetRef)),
+      expr: expr.value,
+      _key: key,
+    };
 
-    return "";
+    this.worker.postMessage(message);
+    const value = this.$variables[key];
+
+    return value as any;
   }
 
   /**
@@ -345,6 +381,12 @@ class $ActorController {
 
     }
     return renderedResult;
+  }
+
+  public setVariables(msg: any) {
+    const value = this.$variables[msg.data.key];
+    if (value === msg.data.value) { return; }
+    this.$variables[msg.data.key] = msg.data.value;
   }
 
   /**
@@ -399,3 +441,8 @@ class $ActorController {
 }
 
 export const ActorController = new $ActorController();
+
+function getFieldKey<T extends GenericSheetElementDescriptor>(element: T, fieldName: string) {
+  const key = `${element.$key}_${fieldName}`;
+  return key;
+}

@@ -80,6 +80,11 @@ export class ActorSubController {
     this.$actorValues[ref][fieldName] = value;
   }
 
+  public getAllContent(ref: string): Record<string, ActorContent[]> {
+    if (!this.isActorLoaded(ref)) { return {}; }
+    return this.$content[ref] || {};
+  }
+
   /**
    * Grabs a specific list of content for an actor
    * @param ref The ref of the actor to grab the content from
