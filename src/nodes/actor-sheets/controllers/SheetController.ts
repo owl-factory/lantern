@@ -19,8 +19,10 @@ import {
   TextInputElementDescriptor,
 } from "nodes/actor-sheets/types/elements";
 import { PrefabElementDescriptor } from "nodes/actor-sheets/types/elements/prefab";
-import { SheetTabElementDescriptor } from "../types";
+import { ParsedExpressionString, SheetTabElementDescriptor } from "../types";
 import { parseXML } from "../utilities/parser";
+import { LoopElementDescriptor } from "../types/elements/loop";
+import { GenericSheetElementDescriptor } from "../types/elements/generic";
 
 export class SheetController<T> {
   public sheets: Record<string, PageElementDescriptor> = {};
@@ -190,6 +192,8 @@ export class SheetController<T> {
       case PageElementType.Select:
         return this.parseSelectElement(sheetElement);
 
+      case PageElementType.Loop:
+        return this.parseLoopElement(key, sheetElement);
       case PageElementType.Prefab:
         return this.parsePrefabElement(key, sheetElement);
     }
@@ -484,7 +488,7 @@ export class SheetController<T> {
    * @param radioButtonElement The radio button element to convert
    * @returns A radio button element descriptor
    */
-   protected parseRadioButtonElement(radioButtonElement: Element) {
+  protected parseRadioButtonElement(radioButtonElement: Element) {
     const elementDetails: RadioButtonElementDescriptor = {
       element: PageElementType.RadioButton,
       id: splitExpressionValue(radioButtonElement.getAttribute("id") || "undefined"),
@@ -493,6 +497,38 @@ export class SheetController<T> {
       label: splitExpressionValue(radioButtonElement.textContent || "Unknown"),
     };
 
+    return elementDetails;
+  }
+
+  /**
+   * Parses a loop element
+   * @param key The ID of the sheet this element belongs to
+   * @param loopElement The raw XML element of the loop
+   */
+  protected parseLoopElement(key: string, loopElement: Element) {
+    const rawList = loopElement.getAttribute("list") || "";
+    const listType = rawList.search("{") === -1 ? "static" : "variable"; // TODO - need a better method for this
+    let list: ParsedExpressionString;
+    switch (listType) {
+      case "static":
+        list = rawList.split(loopElement.getAttribute("delimiter") || ",");
+        break;
+      case "variable":
+        list = splitExpressionValue(rawList);
+        break;
+    }
+
+    const elementDetails: LoopElementDescriptor = {
+      element: PageElementType.Loop,
+      children: [],
+      listType,
+      list,
+      key: loopElement.getAttribute("key") || "unknown",
+    };
+
+    for (const child of loopElement.children) {
+      elementDetails.children.push(this.parseSheetElement(key, child) as GenericSheetElementDescriptor);
+    }
     return elementDetails;
   }
 }

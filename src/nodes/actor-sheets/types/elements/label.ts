@@ -1,9 +1,10 @@
-import { GenericSheetElementDescriptor, ParsedSheetVariable } from "./generic";
+import { ParsedExpressionString } from "..";
+import { GenericSheetElementDescriptor } from "./generic";
 
 /**
  * Describes a sheet label element
  */
 export interface LabelElementDescriptor extends GenericSheetElementDescriptor {
-  for: ParsedSheetVariable;
-  text: ParsedSheetVariable;
+  for: ParsedExpressionString;
+  text: ParsedExpressionString;
 }

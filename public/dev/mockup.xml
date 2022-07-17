@@ -2,6 +2,21 @@
   <Layout>
     <Pageable>
       <Page name="Bio">
+       <Label>Letters:</Label>
+        <Loop key="letter" list="a|b|c" delimiter="|">
+          <Label>{letter}</Label>
+        </Loop>
+
+        <Label>A List of Greetings:</Label>
+        <Loop key="greeting" list="{$rules.greetings}">
+          <Label>Greeting: {$greeting}</Label>
+        </Loop>
+
+       <Label>A List of Actions:</Label>
+        <Loop key="action" list="{$rules.actions}">
+          <Label>Action: {$action.name}</Label>
+        </Loop>
+
         <Label>Bio</Label>
         <Label>Border style: {$sheet.borderStyle}</Label>
       </Page>
@@ -183,8 +198,9 @@
                 <Column weight="2">Name</Column>
                 <Column weight="1"></Column>
               </Row>
-              <Loop id="attacks_1" list="attacks" key="attack">
+              <Loop id="attacks_1" list="a|b|c" key="attack" delimiter="|">
                 <Column weight="2">
+                  <Label>{$attack}</Label>
                   <TextInput name="attack.name"/>
                 </Column>
 
