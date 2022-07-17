@@ -30,7 +30,8 @@ export const ActorSheet = observer((props: ActorSheetProps) => {
     sheetElements.push(
       <SheetElement
         key={props.id + childElement.$key}
-        id={props.id}
+        $key={props.id + childElement.$key}
+        renderID={props.id}
         element={childElement}
         properties={properties}
       />

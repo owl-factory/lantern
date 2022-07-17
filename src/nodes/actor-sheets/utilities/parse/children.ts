@@ -13,12 +13,13 @@ export function parseChildrenElements(elements: HTMLCollection, state: SheetStat
   const counts: Record<string, number> = {};
 
   for (const element of elements) {
+    const newState = { ...state };
     // Counts the tags to ensure unique keys at this level
     const tag = element.tagName.toLocaleLowerCase();
     if (counts[tag] === undefined) { counts[tag] = 0; }
-    state.key += `-${tag}_${counts[tag]}`;
+    newState.key += `-${tag}_${counts[tag]}`;
 
-    const child = parseUnknownElement(element, state);
+    const child = parseUnknownElement(element, newState);
 
     if (!child) { continue; }
     children.push(child);

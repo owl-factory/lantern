@@ -2,7 +2,8 @@ import { GenericSheetElementDescriptor } from "nodes/actor-sheets/types/elements
 import { Scalar } from "types";
 
 export interface SheetElementProps<T extends GenericSheetElementDescriptor> {
-  id: string;
+  $key: string; // The key used to identify the element in a loop
+  renderID: string; // The ID used for this current render
   element: T;
   properties: SheetProperties;
 }

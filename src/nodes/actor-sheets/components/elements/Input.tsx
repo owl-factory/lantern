@@ -22,7 +22,7 @@ interface SheetInputProps extends IndividualSheetInputProps {
 const SheetInput = observer((props: SheetInputProps) => {
   const ref = React.createRef<HTMLInputElement>();
   const element = ActorController.renderVariables<TextInputDescriptor>(
-    props.id,
+    props.renderID,
     props.element,
     VARIABLE_FIELDS,
     props.properties,
@@ -33,8 +33,8 @@ const SheetInput = observer((props: SheetInputProps) => {
    * @param ev The triggering onChange event
    */
   function onChange(e: React.ChangeEvent<HTMLInputElement>) {
-    ActorController.updateActorField(props.id, element.name, props.properties, e.target.value);
-    e.target.value = ActorController.getActorField(props.id, element.name, props.properties).toString();
+    ActorController.updateActorField(props.renderID, element.name, props.properties, e.target.value);
+    e.target.value = ActorController.getActorField(props.renderID, element.name, props.properties).toString();
   }
 
   // Handles the case where we have two or more elements of the same name, and one of them is changed
@@ -42,8 +42,8 @@ const SheetInput = observer((props: SheetInputProps) => {
   React.useEffect(() => {
     if (!ref.current) { return; }
     if (ref.current === document.activeElement) { return; }
-    ref.current.value = ActorController.getActorField(props.id, element.name, props.properties).toString();
-  }, [ActorController.getActorField(props.id, element.name, props.properties)]);
+    ref.current.value = ActorController.getActorField(props.renderID, element.name, props.properties).toString();
+  }, [ActorController.getActorField(props.renderID, element.name, props.properties)]);
 
   return (
     <div>
@@ -55,7 +55,7 @@ const SheetInput = observer((props: SheetInputProps) => {
         className={`${style.actorSheetInput}`}
         onChange={onChange}
         autoComplete="off"
-        defaultValue={ActorController.getActorField(props.id, element.name, props.properties).toString()}
+        defaultValue={ActorController.getActorField(props.renderID, element.name, props.properties).toString()}
       />
     </div>
   );
