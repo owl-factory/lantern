@@ -12,7 +12,7 @@ const VARIABLE_FIELDS = ["value", "text"];
  */
 export const SheetOption = observer((props: SheetElementProps<OptionDescriptor>) => {
   const element = ActorController.renderVariables<OptionDescriptor>(
-    props.id,
+    props.renderID,
     props.element,
     VARIABLE_FIELDS,
     props.properties,

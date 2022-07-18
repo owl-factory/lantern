@@ -4,7 +4,7 @@ import { StateType } from "nodes/actor-sheets/enums/stateTypes";
 import { SheetElementProps } from "nodes/actor-sheets/types";
 import { CollapseDescriptor } from "nodes/actor-sheets/types/elements";
 import React from "react";
-import { SheetElement } from "../SheetElement";
+import { SheetChildren } from "./Children";
 
 const VARIABLE_FIELDS = ["id"];
 
@@ -14,24 +14,18 @@ const VARIABLE_FIELDS = ["id"];
  */
 export const SheetCollapse = observer((props: SheetElementProps<CollapseDescriptor>) => {
   const element = ActorController.renderVariables<CollapseDescriptor>(
-    props.id,
+    props.renderID,
     props.element,
     VARIABLE_FIELDS,
     props.properties,
   );
 
   // Renders nothing if the state is false
-  if (!ActorController.getState(props.id, StateType.Collapse, element.id)) { return <></>; }
-
-  const childElements = props.element.children || [];
-  const elements: JSX.Element[] = [];
-  for (const childElement of childElements) {
-    elements.push(<SheetElement key={props.properties.$prefix + childElement.$key} {...props} element={childElement}/>);
-  }
+  if (!ActorController.getState(props.renderID, StateType.Collapse, element.id)) { return <></>; }
 
   return (
     <>
-      {elements}
+      <SheetChildren {...props}/>
     </>
   );
 });

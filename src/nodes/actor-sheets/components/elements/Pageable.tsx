@@ -6,13 +6,14 @@ import { SheetPage } from "./Page";
 import { StateType } from "nodes/actor-sheets/enums/stateTypes";
 import { ActorController } from "nodes/actor-sheets/controllers/ActorController";
 import { observer } from "mobx-react-lite";
+import { SheetChildren } from "./Children";
 
 /**
  * Renders an image of the background
  * @param element The SheetBackground element description
  */
 export const SheetPageable = observer((props: SheetElementProps<PageableDescriptor>) => {
-  const activeTab = ActorController.getState(props.id, StateType.CurrentPage, props.element.id) as number || 0;
+  const activeTab = ActorController.getState(props.renderID, StateType.CurrentPage, props.element.id) as number || 0;
   const childElements = props.element.children || [];
 
   // Renders all the children that are not part of the pageable pages themself
@@ -26,7 +27,7 @@ export const SheetPageable = observer((props: SheetElementProps<PageableDescript
   return (
     <div>
       <SheetPage {...props} element={props.element.pages[activeTab]}/>
-      {nonPageChildren}
+      <SheetChildren {...props} />
     </div>
   );
 });

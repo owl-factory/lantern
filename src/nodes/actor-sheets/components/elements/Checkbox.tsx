@@ -14,21 +14,21 @@ export const SheetCheckbox = observer((props: SheetElementProps<CheckboxDescript
   const ref = React.createRef<HTMLInputElement>();
 
   const element = ActorController.renderVariables<CheckboxDescriptor>(
-    props.id,
+    props.renderID,
     props.element,
     VARIABLE_FIELDS,
     props.properties,
   );
   const key = generateCheckboxName(element.name, element.value);
-  const checked = !!ActorController.getActorField(props.id, key, props.properties);
+  const checked = !!ActorController.getActorField(props.renderID, key, props.properties);
 
   /**
    * Handles the onChange event in the radio buttons. Updates the ActorController values
    * @param ev The triggering onChange event
    */
   function onChange(ev: React.ChangeEvent<HTMLInputElement>) {
-    ActorController.updateActorField(props.id, key, props.properties, ev.target.checked);
-    ev.target.checked = !!ActorController.getActorField(props.id, key, props.properties);
+    ActorController.updateActorField(props.renderID, key, props.properties, ev.target.checked);
+    ev.target.checked = !!ActorController.getActorField(props.renderID, key, props.properties);
   }
 
   // Handles the case where we have two or more elements of the same name, and one of them is changed
@@ -36,8 +36,8 @@ export const SheetCheckbox = observer((props: SheetElementProps<CheckboxDescript
   React.useEffect(() => {
     if (!ref.current) { return; }
     if (ref.current === document.activeElement) { return; }
-    ref.current.checked = !!ActorController.getActorField(props.id, key, props.properties);
-  }, [ActorController.getActorField(props.id, key, props.properties)]);
+    ref.current.checked = !!ActorController.getActorField(props.renderID, key, props.properties);
+  }, [ActorController.getActorField(props.renderID, key, props.properties)]);
 
   return (
     <input
