@@ -13,6 +13,7 @@ const VARIABLE_FIELDS = ["for", "text"];
 export const SheetLabel = observer((props: SheetElementProps<LabelDescriptor>) => {
   const element = ActorController.renderVariables<LabelDescriptor>(
     props.renderID,
+    props.$key,
     props.element,
     VARIABLE_FIELDS,
     props.properties,

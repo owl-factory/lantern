@@ -9,7 +9,7 @@
         </Loop>
 
         <Label>A List of Greetings:</Label>
-        <Loop key="language"  listSource="rules.languageTypes">
+        <Loop key="language" listSource="rules.languageTypes">
           <Label>Language Types: ${language}</Label>
         </Loop>
 
@@ -141,7 +141,7 @@
 
             <Border>
               <Inline>
-                <Label>1${character.wisdom_mod}</Label>
+                <Label>${Math.floor((character.wisdom_ability_score - 10) / 2) + 10}</Label>
                 <Label>Passive Wisdom (Perception)</Label>
               </Inline>
             </Border>
@@ -155,9 +155,9 @@
                 </TableRow>
                 <Loop listSource="content.tools" key="tool" index="toolIndex">
                   <TableRow>
-                    <TableCell><TextInput id="tool_name_${index}" name="tool.name"/></TableCell>
-                    <TableCell><NumberInput id="tool_proficiency_${index}" name="tool.proficiency"/></TableCell>
-                    <TableCell><TextInput id="tool_attribute_${index}" name="tool.attribute"/></TableCell>
+                    <TableCell><TextInput id="tool_name_${toolIndex}" name="tool.name"/></TableCell>
+                    <TableCell><NumberInput id="tool_proficiency_${toolIndex}" name="tool.proficiency"/></TableCell>
+                    <TableCell><TextInput id="tool_attribute_${toolIndex}" name="tool.attribute"/></TableCell>
                     <TableCell><Button action="deleteContent" index="${toolIndex}" contentGroup="tools">-</Button></TableCell>
                   </TableRow>
                 </Loop>
@@ -177,12 +177,12 @@
                   <TableRow>
                     <TableCell>
                       <Select name="language.type">
-                        <Loop list="${rules.languageTypes}" key="languageType">
+                        <Loop listSource="rules.languageTypes" key="languageType">
                           <Option value="${languageType}">${languageType}</Option>
                         </Loop>
                       </Select>
                     </TableCell>
-                    <TableCell><TextInput id="language_proficiency_${index}" name="language.proficiency"/></TableCell>
+                    <TableCell><TextInput id="language_proficiency_${languageIndex}" name="language.proficiency"/></TableCell>
                     <TableCell><Button action="deleteContent" index="${languageIndex}" contentGroup="languages">-</Button></TableCell>
                   </TableRow>
                 </Loop>
@@ -326,14 +326,11 @@
 
             <Border borderStyle="simplebox">
               <Inline>
-                <Loop id="currencies_1" name="global.currencies" key="$currency">
+                <!-- <Loop id="currencies_1" name="global.currencies" key="$currency">
                   <Prefab name="currency" label="${currency.name}" index="${currency.index}"/>
-                </Loop>
+                </Loop> -->
               </Inline>
 
-              <Loop>
-                <!-- Items and inventory -->
-              </Loop>
               <Label>Equipment</Label>
               <Button action="createContent" contentGroup="items">+</Button>
               <Table>
@@ -405,9 +402,6 @@
             </Border>
 
             <Border borderStyle="simpleBorder">
-              <Loop>
-                <!-- Features and Traits -->
-              </Loop>
               <Label>Features &amp; Traits</Label>
             </Border>
           </Column>

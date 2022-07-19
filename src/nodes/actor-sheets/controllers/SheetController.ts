@@ -76,7 +76,11 @@ export class SheetController<T> {
       prefabs: this.prefabs[key],
     };
 
-    elementDetails.children = parseChildrenElements(layout.children, startingState);
+    try {
+      elementDetails.children = parseChildrenElements(layout.children, startingState);
+    } catch (e) {
+      console.warn(e);
+    }
 
     this.sheets[key] = elementDetails;
   }

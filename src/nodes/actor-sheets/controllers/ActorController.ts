@@ -159,7 +159,7 @@ class $ActorController {
    */
    public getActorField(renderRef: string, field: string, properties: SheetProperties): Scalar {
     // Quits out early if the actor doesn't exist
-    if (!this.$renders[renderRef]) { return ""; }
+    if (!this.$renders[renderRef] || !field) { return ""; }
     const actorRef = this.$renders[renderRef].actorRef;
 
     // Actors do not and should not have any periods
@@ -315,6 +315,7 @@ class $ActorController {
    */
   public renderVariables<T extends GenericSheetElementDescriptor>(
     id: string,
+    elementKey: string,
     element: T,
     fields: string[],
     properties: SheetProperties
@@ -325,7 +326,7 @@ class $ActorController {
       if (!(field in element)) { continue; }
 
       const elementField: ParsedExpressionString = element[field as (keyof T)] as unknown as ParsedExpressionString;
-      parsedVariables[field] = ActorController.renderVariable(id, element, field, elementField, properties);
+      parsedVariables[field] = ActorController.renderVariable(id, elementKey, element, field, elementField, properties);
     }
 
     return parsedVariables;
@@ -339,13 +340,14 @@ class $ActorController {
    */
   public renderVariable<T extends GenericSheetElementDescriptor>(
     renderID: string,
+    elementKey: string,
     element: T,
     fieldName: string,
     expr: ParsedExpressionString,
     properties: SheetProperties
   ): string {
     if (!expr.isExpression) { return expr.value; }
-    const key = getFieldKey(element, fieldName);
+    const key = `${elementKey}__${fieldName}`;
     // console.log(key)
     const { actorRef, sheetRef, rulesetRef } = this.$renders[renderID];
     const message: SandboxWorkerMessage = {
