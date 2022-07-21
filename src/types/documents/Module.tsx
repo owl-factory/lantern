@@ -7,6 +7,6 @@ export interface ModuleDocument extends BaseDocument {
   alias: string;
   ruleset: {
     ref: Ref64;
-    name: string;
+    name?: string;
   }
 }

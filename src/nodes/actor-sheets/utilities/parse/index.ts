@@ -28,7 +28,7 @@ export function parseFirstLevelElements(sheet: Element) {
       case "variables":
         for (const variableChild of child.children) {
           if (variableChild.tagName.toLowerCase() !== "variable") { continue; }
-          prefabs.push(variableChild);
+          variables.push(variableChild);
         }
         break;
 
