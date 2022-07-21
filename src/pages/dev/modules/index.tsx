@@ -12,6 +12,10 @@ import React from "react";
  */
 const ModuleRow = observer((props: any) => {
   const module = ModuleData.get(props.id);
+  React.useEffect(() => {
+    if (module?.ruleset?.ref) { RulesetData.softLoad((module.ruleset)?.ref); }
+  }, [module, module?.ruleset?.ref]);
+
   if (!module) { return <></>; }
 
   const ruleset = RulesetData.get((module.ruleset)?.ref);
@@ -19,9 +23,9 @@ const ModuleRow = observer((props: any) => {
   return (
     <TableRow>
       <TableCell>{module.name}</TableCell>
-      <TableCell>{ruleset?.name || module.ruleset?.name}</TableCell>
+      <TableCell>{ruleset?.name}</TableCell>
       <TableCell>
-        <Link href={`/dev/modules/${module.ref}/edit`}>Edit</Link>
+        <Link href={`/dev/modules/${module.ref}/edit`}>Edit</Link>&nbsp;
         <a href="#" onClick={() => ModuleData.delete(module.ref as string)}>Delete</a>
       </TableCell>
     </TableRow>
