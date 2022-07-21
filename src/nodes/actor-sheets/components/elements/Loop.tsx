@@ -14,18 +14,19 @@ export const SheetLoop = observer((props: SheetElementProps<LoopDescriptor>) => 
   if (key in props.properties) { return <>Error with loop. The key is already in use</>; }
 
   const loopedElements = [];
-  let variableName;
   let list: (string | Record<string, string>)[] = [];
-  if (props.element.listType === "static") { list = props.element.list as string[]; }
-  else {
-    // TODO - fix this super jank variable name get
-    variableName = (props.element.list[0] as Expression).items[0].value;
-    list = ActorController.convertVariableToData(
+  if (props.element.listSource) {
+    const listValue = ActorController.convertVariableToData(
       props.renderID,
-      variableName || "",
+      props.element.listSource,
       props.properties as any
-    ) as (string | Record<string, string>)[];
-    if (list === undefined) { list = []; }
+    );
+    if (typeof listValue === "string") { list = listValue.split(props.element.delimiter); }
+    else if (Array.isArray(listValue)) { list = listValue; }
+    else { list = []; }
+  }
+  else if (props.element.list) {
+    list = props.element.list;
   }
 
   let i = 0;
@@ -38,7 +39,7 @@ export const SheetLoop = observer((props: SheetElementProps<LoopDescriptor>) => 
       $prefix: prefix,
       [key]: listItem,
     };
-    if (variableName) { properties.$source[key] = variableName; }
+    if (props.element.listSource) { properties.$source[key] = props.element.listSource; }
 
     if (props.element.index) { properties[props.element.index] = i; }
 

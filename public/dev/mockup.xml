@@ -9,12 +9,12 @@
         </Loop>
 
         <Label>A List of Greetings:</Label>
-        <Loop key="language" list="{$rules.languageTypes}">
+        <Loop key="language" listSource="rules.languageTypes">
           <Label>Language Types: {$language}</Label>
         </Loop>
 
        <Label>A List of Actions:</Label>
-        <Loop key="action" list="{$rules.actions}">
+        <Loop key="action" listSource="rules.actions">
           <Label>Action: {$action.name}</Label>
         </Loop>
 
@@ -91,7 +91,7 @@
           <Column weight="1">
             <Row>
               <Column weight="1">
-                <Loop list="{$rules.ability_scores}" key="ability_score">
+                <Loop listSource="rules.ability_scores" key="ability_score">
                   <Label>{$ability_score.label}</Label>
                   <NumberInput name="{$ability_score.mod}" /> <!-- The modifier-->
                   <NumberInput name="{$ability_score.score}" /> <!-- The total ability score -->
@@ -114,7 +114,7 @@
                 </Background>
 
                 <Border borderStyle="simpleBorder">
-                  <Loop list="{$rules.savingThrows}" index="savingThrowIndex" key="savingThrow">
+                  <Loop listSource="rules.savingThrows" index="savingThrowIndex" key="savingThrow">
                     <Inline>
                       <Checkbox name="{$savingThrow.proficiency}"/>
                       <NumberInput name="{$savingThrow.mod}"/>
@@ -125,7 +125,7 @@
                 </Border>
 
                 <Border borderStyle="simpleBorder">
-                  <Loop list="{$rules.abilities}" key="ability">
+                  <Loop listSource="rules.abilities" key="ability">
                     <Inline>
                       <Checkbox name="{$ability.proficiency}"/>
                       <NumberInput name="{$ability.mod}"/>
@@ -153,7 +153,7 @@
                   <TableCell><Label>Pro</Label></TableCell>
                   <TableCell><Label>Attribute</Label></TableCell>
                 </TableRow>
-                <Loop list="{$content.tools}" key="tool" index="toolIndex">
+                <Loop listSource="content.tools" key="tool" index="toolIndex">
                   <TableRow>
                     <TableCell><TextInput id="tool_name_{$index}" name="tool.name"/></TableCell>
                     <TableCell><NumberInput id="tool_proficiency_{$index}" name="tool.proficiency"/></TableCell>
@@ -173,11 +173,11 @@
                   <TableCell><Label>Attribute</Label></TableCell>
                   <TableCell></TableCell>
                 </TableRow>
-                <Loop list="{$content.languages}" key="language" index="languageIndex">
+                <Loop listSource="content.languages" key="language" index="languageIndex">
                   <TableRow>
                     <TableCell>
                       <Select name="language.type">
-                        <Loop list="{$rules.languageTypes}" key="languageType">
+                        <Loop listSource="rules.languageTypes" key="languageType">
                           <Option value="{$languageType}">{$languageType}</Option>
                         </Loop>
                       </Select>
@@ -276,7 +276,7 @@
                   <TableCell><Label>Damage/Type</Label></TableCell>
                   <TableCell><Label>Name</Label></TableCell>
                 </TableRow>
-                <Loop list="{$content.attacks}" key="attack" index="attack_index">
+                <Loop listSource="content.attacks" key="attack" index="attack_index">
                   <TableRow>
                     <TableCell><TextInput name="attack.name"/></TableCell>
                     <TableCell><NumberInput name="attack.attackBonus"/></TableCell>
@@ -345,7 +345,7 @@
                   <TableCell></TableCell>
                 </TableRow>
 
-                <Loop list="{$content.items}" key="item" index="index">
+                <Loop listSource="content.items" key="item" index="index">
                   <TableRow>
                     <TableCell><Label>{$index} </Label></TableCell>
                     <TableCell><NumberInput id="content_weight_{$index}" name="item.weight"/></TableCell>

@@ -11,27 +11,26 @@ import { parseChildrenElements } from "./children";
  * @param element The raw XML element of the loop
  */
 export function parseLoopElement(element: Element, state: SheetState) {
-  const rawList = element.getAttribute("list") || "";
-  const listType = rawList.search("{") === -1 ? "static" : "variable"; // TODO - need a better method for this
-  let list: ParsedExpressionString;
-  switch (listType) {
-    case "static":
-      list = rawList.split(element.getAttribute("delimiter") || ",");
-      break;
-    case "variable":
-      list = splitExpressionValue(rawList);
-      break;
+  const list = element.getAttribute("list");
+  const listSource = element.getAttribute("listSource");
+  const delimiter = element.getAttribute("delimiter") || ",";
+
+  // TODO - allow this to throw
+  if ((list === null || list.length === 0) && (listSource === null || listSource.length === 0)) {
+    console.error("Sheet Parse Exception: the <Loop> element requires a 'list' or a 'listSource' attribute.");
   }
 
-  const elementDetails: LoopDescriptor = {
-    $key: state.key,
+  const elementDetails: Partial<LoopDescriptor> = {
     element: SheetElementType.Loop,
+    $key: state.key,
     children: [],
-    listType,
-    list,
+    delimiter,
     key: element.getAttribute("key") || "unknown",
     index: element.getAttribute("index"),
   };
+
+  if (listSource) { elementDetails.listSource = listSource; }
+  if (list) { elementDetails.list = list.split(delimiter); }
 
   state.key = ""; // Reset the key so that we can append the looped keys to the base key when rendering
   elementDetails.children = parseChildrenElements(element.children, state);
