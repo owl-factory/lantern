@@ -2,12 +2,13 @@ import { Button } from "@owl-factory/components/button";
 import { ActorData } from "controllers/data/ActorData";
 import { observer } from "mobx-react-lite";
 import React from "react";
+import { Scalar } from "types";
 import { ActorController } from "../controllers/ActorController";
 import { SheetElement } from "./SheetElement";
 
 interface ActorSheetProps {
   id: string;
-  onSubmit?: (values: Record<string, unknown>) => void;
+  onSubmit?: (values: Record<string, Scalar>) => void;
 }
 
 /**

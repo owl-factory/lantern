@@ -1,5 +1,12 @@
 import { Ref64 } from "@owl-factory/types";
+import { Scalar } from "types";
 import { BaseDocument } from "./BaseDocument";
+
+// A partial clone of the content document type for storage within the actor document
+export interface ActorContent {
+  parent?: Ref64; // The parent content that this is copied from
+  values: Record<string, Scalar>;
+}
 
 export interface ActorDocument extends BaseDocument {
   actorType: string;
@@ -12,5 +19,8 @@ export interface ActorDocument extends BaseDocument {
   campaign: {
     ref: Ref64;
   }
-  values: Record<string, unknown>;
+  // Simple values defined by the user in custom fields. The bread and butter of the actor's content
+  values: Record<string, Scalar>;
+  // ...
+  content: Record<string, ActorContent[]>;
 }

@@ -231,6 +231,11 @@
                 <!-- Items and inventory -->
               </Loop>
               <Label>Equipment</Label>
+              <Loop list="{$content.items}" key="item">
+                <Label>{$item.weight} </Label>
+                <Label>{$item.name} </Label>
+                <Label>{$item.quantity} </Label>
+              </Loop>
             </Border>
           </Column>
 

@@ -1,19 +1,24 @@
 import { action, makeObservable, observable, toJS } from "mobx";
+import { Scalar } from "types";
+import { ActorContent, ActorDocument } from "types/documents/Actor";
 
 /**
  * A sub controller for managing the actors within an ActorController
  */
 export class ActorSubController {
-  public $actorValues: Record<string, Record<string, unknown>> = {};
+  public $actorValues: Record<string, Record<string, Scalar>> = {};
   public $actorFields: Record<string, Record<string, unknown>> = {};
+  public $content: Record<string, Record<string, ActorContent[]>> = {};
 
   constructor() {
     this.$actorValues = {};
     this.$actorFields = {};
+    this.$content = {};
 
     makeObservable(this, {
       $actorValues: observable,
       $actorFields: observable,
+      $content: observable,
 
       setActorFieldValue: action,
       loadActor: action,
@@ -27,7 +32,7 @@ export class ActorSubController {
    * @param ref The ref of the actor to fetch
    * @returns The found actor values or an empty struct
    */
-  public getActorValues(ref: string): Record<string, unknown> {
+  public getActorValues(ref: string): Record<string, Scalar> {
     const actor = this.$actorValues[ref];
     if (!actor) { return {}; }
     return actor;
@@ -57,13 +62,26 @@ export class ActorSubController {
   }
 
   /**
+   * Grabs a specific list of content for an actor 
+   * @param ref The ref of the actor to grab the content from
+   * @param contentKey The key of the content to fetch
+   * @returns An array of the content. Returns an empty array if nothing is found
+   */
+  public getContent(ref: string, contentKey: string): ActorContent[] {
+    if (!this.isActorLoaded(ref)) { return []; }
+    const content = this.$content[ref][contentKey] || [];
+    return content;
+  }
+
+  /**
    * Loads in an actor to the actor controller
    * @param ref The ref of the actor being loaded in
    * @param values The actor's data values
    */
-  public loadActor(ref: string, values: Record<string, unknown>) {
-    this.$actorValues[ref] = values;
+  public loadActor(ref: string, actor: Partial<ActorDocument>) {
+    this.$actorValues[ref] = actor.values || {};
     this.generateFields(ref);
+    this.$content[ref] = actor.content || {};
   }
 
   /**

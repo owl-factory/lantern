@@ -8,6 +8,7 @@ import { observer } from "mobx-react-lite";
 import { useRouter } from "next/router";
 import { ActorController, ActorSheet } from "nodes/actor-sheets";
 import React from "react";
+import { Scalar } from "types";
 import { RulesetDocument } from "types/documents";
 
 /**
@@ -36,7 +37,7 @@ function ActorView() {
       actor.actorSheet?.ref as string,
       actor.ruleset?.ref as string,
     );
-    ActorController.loadActor(ref, actor.values || {});
+    ActorController.loadActor(ref, actor);
   }, [actor]);
 
   // Ensures that the actor sheet is loaded in to the sheet controller
@@ -57,7 +58,7 @@ function ActorView() {
    * Submits the updated values of an actor to the database
    * @param values The new actor values to save
    */
-  function onSubmit(values: Record<string, unknown>) {
+  function onSubmit(values: Record<string, Scalar>) {
     if (!actor) { return; }
     actor.values = values;
     ActorData.update(actor);
