@@ -25,7 +25,11 @@ const EditModule = observer(() => {
       <h1>Edit Module {module?.name}</h1>
       <Link href="/dev/modules"><Button>Back</Button></Link>
       {/* Ensures that the form isn't rendered until after the document is loaded in */}
-      { module ? <ModuleForm module={module}/> : undefined }
+      {
+        (module && module.ruleset) ?
+        <ModuleForm module={module} rulesetRef={module.ruleset?.ref as string} /> :
+        undefined
+      }
     </Page>
   );
 });
