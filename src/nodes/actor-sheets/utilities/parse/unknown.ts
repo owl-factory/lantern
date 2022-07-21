@@ -11,6 +11,7 @@ import { parseInlineElement } from "./inline";
 import { parseLabelElement } from "./label";
 import { parseLoopElement } from "./loop";
 import { parseNumberInputElement } from "./number-input";
+import { parseOptionElement } from "./option";
 import { parsePageElement } from "./page";
 import { parsePageableElement } from "./pageable";
 import { parsePrefabElement } from "./prefab";
@@ -54,7 +55,6 @@ export function parseUnknownElement(element: Element, state: SheetState) {
       return parseTableRowElement(element, state);
 
 
-
     case SheetElementType.Icon:
       return parseIconElement(element, state);
     case SheetElementType.Label:
@@ -73,6 +73,8 @@ export function parseUnknownElement(element: Element, state: SheetState) {
       return parseTextAreaElement(element, state);
     case SheetElementType.Select:
       return parseSelectElement(element, state);
+    case SheetElementType.Option:
+      return parseOptionElement(element, state);
 
     case SheetElementType.Loop:
       return parseLoopElement(element, state);
