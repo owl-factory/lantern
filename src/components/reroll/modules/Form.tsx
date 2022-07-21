@@ -7,32 +7,36 @@ import { observer } from "mobx-react-lite";
 import { useRouter } from "next/router";
 import React from "react";
 import { ModuleDocument } from "types/documents";
-import { RulesetOptions } from "../rulesets/Options";
 
 const INITIAL_VALUES = {
   ref: "",
   name: "",
   alias: "",
-  "ruleset.ref": null,
 };
 
 /**
  * Renders a form for creating or updating a module
+ * @param module The pre-existing module to edit
+ * @param rulesetRef The ruleset this module belongs to
  */
-export const ModuleForm = observer((props: { module?: Partial<ModuleDocument> }) => {
+export const ModuleForm = observer((props: { module?: Partial<ModuleDocument>, rulesetRef: string }) => {
   // Ensures that the data is pulled in from the database
-  React.useEffect(() => {
-    RulesetData.searchIndex(`/api/rulesets/list`);
-  }, []);
-
   const router = useRouter();
   const initialValues = props.module || INITIAL_VALUES;
+  const ruleset = RulesetData.get(props.rulesetRef);
+
+  React.useEffect(() => {
+    RulesetData.load(props.rulesetRef);
+  }, [props.rulesetRef]);
 
   /**
    * Submits the form values to create or update a module
    * @param values The module values from the form
    */
   function onSubmit(values: Partial<ModuleDocument>) {
+    // Ensures that the ruleset values are present and up to date
+    if (!ruleset) { return; }
+    values.ruleset = { ref: ruleset.ref as string, name: ruleset.name as string };
     try {
       if (values.ref) { ModuleData.update(values).then(() => router.push(`/dev/modules`)); }
       else { ModuleData.create(values).then(() => router.push(`/dev/modules`)); }
@@ -50,9 +54,6 @@ export const ModuleForm = observer((props: { module?: Partial<ModuleDocument> })
         <Form>
           <Input name="name" type="text" label="Name"/>
           <Input name="alias" type="text" label="Alias"/>
-          <Select name="ruleset.ref">
-            <RulesetOptions parameters={{ group: "data" }}/>
-          </Select>
           <Button type="button" onClick={() => formikProps.resetForm}>Reset</Button>
           <Button type="submit">Submit</Button>
         </Form>

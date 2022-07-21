@@ -38,6 +38,7 @@ const ActorSheetRow = observer((props: { id: Ref64 }) => {
       <TableCell>
         <Link href={`/dev/actor-sheets/${actorSheet.ref}`}>View</Link>&nbsp;
         <Link href={`/dev/actor-sheets/${actorSheet.ref}/edit`}>Edit</Link>&nbsp;
+        <a href={`/api/actor-sheets/${actorSheet.ref}/export.xml`} download={`${actorSheet.name}.xml`}>Export</a>&nbsp;
         <a href="#" onClick={createActor}>New Character</a>&nbsp;
         <a href="#" onClick={() => ActorSheetData.delete(actorSheet.ref as string)}>Delete</a>
       </TableCell>

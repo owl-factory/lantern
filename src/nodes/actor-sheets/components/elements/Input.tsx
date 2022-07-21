@@ -34,7 +34,7 @@ const SheetInput = observer((props: SheetInputProps) => {
    */
   function onChange(e: React.ChangeEvent<HTMLInputElement>) {
     ActorController.updateActorField(props.id, element.name, props.properties, e.target.value);
-    e.target.value = ActorController.getActorField(props.id, element.name, props.properties).toString();
+    e.target.value = (ActorController.getActorField(props.id, element.name, props.properties) || "").toString();
   }
 
   // Handles the case where we have two or more elements of the same name, and one of them is changed
@@ -42,7 +42,7 @@ const SheetInput = observer((props: SheetInputProps) => {
   React.useEffect(() => {
     if (!ref.current) { return; }
     if (ref.current === document.activeElement) { return; }
-    ref.current.value = ActorController.getActorField(props.id, element.name, props.properties).toString();
+    ref.current.value = (ActorController.getActorField(props.id, element.name, props.properties) || "").toString();
   }, [ActorController.getActorField(props.id, element.name, props.properties)]);
 
   return (
@@ -55,7 +55,7 @@ const SheetInput = observer((props: SheetInputProps) => {
         className={`${style.actorSheetInput}`}
         onChange={onChange}
         autoComplete="off"
-        defaultValue={ActorController.getActorField(props.id, element.name, props.properties).toString()}
+        defaultValue={(ActorController.getActorField(props.id, element.name, props.properties) || "").toString()}
       />
     </div>
   );
