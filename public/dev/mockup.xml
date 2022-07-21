@@ -233,6 +233,7 @@
                 <!-- Items and inventory -->
               </Loop>
               <Label>Equipment</Label>
+              <Button action="createContent" contentGroup="items">+</Button>
               <Loop list="{$content.items}" key="item">
                 <Label>{$item.weight} </Label>
                 <Label>{$item.name} </Label>

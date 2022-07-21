@@ -9,7 +9,7 @@ import { RuleVariableGroup, RulesetController } from "./RulesetController";
 import { read } from "@owl-factory/utilities/objects";
 import { Expression, ParsedExpressionString, SheetProperties } from "../types";
 import { ExpressionType } from "../enums/expressionType";
-import { ActorDocument } from "types/documents/Actor";
+import { ActorContent, ActorDocument } from "types/documents/Actor";
 import { Scalar } from "types";
 
 interface RenderGroup {
@@ -148,10 +148,35 @@ class $ActorController {
    * Sets a single value within an actor by their render ref and the field
    * @param renderRef The ref of the render to check for the actor's true ref
    */
-   public setActorField(renderRef: string, field: string, value: any) {
+  public setActorField(renderRef: string, field: string, value: any) {
     if (!this.$renders[renderRef]) { return; }
     const actorRef = this.$renders[renderRef].actorRef;
     this.actorController.setActorFieldValue(actorRef, field, value);
+  }
+
+  /**
+   * Fetches the actor content for the given render ID and content group
+   * @param renderID The ID of the render to get the content for
+   * @param contentGroup The group of content to retrieve
+   * @returns An array of actor contents. If none is found, an empty array is returned
+   */
+  public getContent(renderID: string, contentGroup: string): ActorContent[] {
+    if (!this.$renders[renderID]) { return []; }
+    const actorRef = this.$renders[renderID].actorRef;
+    const content = this.actorController.getContent(actorRef, contentGroup);
+    return content;
+  }
+
+  /**
+   * Pushes a new piece of content to the end of a content's list
+   * @param renderID The ID of the render to push a new content item to
+   * @param contentGroup The group of content that is gaining a new addition
+   * @param content Optionally defined content. If none is given, default values will be provided
+   */
+  public pushNewContent(renderID: string, contentGroup: string, content?: ActorContent) {
+    if (!this.$renders[renderID]) { return; }
+    const actorRef = this.$renders[renderID].actorRef;
+    this.actorController.pushNewContent(actorRef, contentGroup, content);
   }
 
   /**

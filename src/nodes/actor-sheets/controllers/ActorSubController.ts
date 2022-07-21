@@ -1,3 +1,4 @@
+import { Ref64 } from "@owl-factory/types";
 import { action, makeObservable, observable, toJS } from "mobx";
 import { Scalar } from "types";
 import { ActorContent, ActorDocument } from "types/documents/Actor";
@@ -24,6 +25,8 @@ export class ActorSubController {
       loadActor: action,
       generateFields: action,
       unloadActor: action,
+
+      setContent: action,
     });
   }
 
@@ -74,6 +77,17 @@ export class ActorSubController {
   }
 
   /**
+   * Updates the content of a specific actor and content type
+   * @param ref The ref of the actor to set the new content within
+   * @param contentKey The content group that is being updated
+   * @param content The new list of content to be stored
+   */
+  public setContent(ref: string, contentKey: string, content: ActorContent[]) {
+    if (!this.isActorLoaded(ref)) { return []; }
+    this.$content[ref][contentKey] = content;
+  }
+
+  /**
    * Loads in an actor to the actor controller
    * @param ref The ref of the actor being loaded in
    * @param values The actor's data values
@@ -82,6 +96,19 @@ export class ActorSubController {
     this.$actorValues[ref] = actor.values || {};
     this.generateFields(ref);
     this.$content[ref] = actor.content || {};
+  }
+
+  /**
+   * Pushes a new content item to a list of content for an actor and content type
+   * @param ref The ref of the actor getting a new content item
+   * @param contentGroup The content type the new item is being added to
+   * @param newContent Optionally defined content being added. If none is given, defaults will be provided
+   */
+  public pushNewContent(ref: string, contentGroup: string, newContent?: ActorContent) {
+    const contents = this.getContent(ref, contentGroup);
+    newContent = normalizeActorContent(ref, contentGroup, newContent);
+    contents.push(newContent);
+    this.setContent(ref, contentGroup, contents);
   }
 
   /**
@@ -136,3 +163,16 @@ function determineType(value: unknown) {
   return "string";
 }
 
+/**
+ * Normalizes the actor content by ensuring that all fields are present and have reasonable defaults
+ * @todo Implement once content types are further hashed out
+ * @param actorRef The ref of the actor this content is being added to
+ * @param contentGroup The type of content being added
+ * @param content An optional definition of the new content being added. If none is provided, defaults will be set
+ *  based off of the content type
+ */
+function normalizeActorContent(actorRef: Ref64, contentGroup: string, content?: ActorContent) {
+  if (!content) { content = { values: {} }; }
+  // TODO - implement loading in default values for the content type fields
+  return content;
+}
