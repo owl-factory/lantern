@@ -5,4 +5,5 @@ import { GenericSheetElementDescriptor } from "./generic";
  */
 export interface TableCellDescriptor extends GenericSheetElementDescriptor {
   children: GenericSheetElementDescriptor[];
+  width: number;
 }

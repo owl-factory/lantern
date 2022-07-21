@@ -5,6 +5,7 @@ import { parseBackgroundElement } from "./background";
 import { parseBorderElement } from "./border";
 import { parseButtonElement } from "./button";
 import { parseCheckboxElement } from "./checkbox";
+import { parseCollapseElement } from "./collapse";
 import { parseColumnElement } from "./column";
 import { parseIconElement } from "./icon";
 import { parseInlineElement } from "./inline";
@@ -53,6 +54,9 @@ export function parseUnknownElement(element: Element, state: SheetState) {
       return parseTableCellElement(element, state);
     case SheetElementType.TableRow:
       return parseTableRowElement(element, state);
+
+    case SheetElementType.Collapse:
+      return parseCollapseElement(element, state);
 
 
     case SheetElementType.Icon:

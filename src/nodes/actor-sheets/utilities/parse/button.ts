@@ -29,6 +29,9 @@ export function parseButtonElement(element: Element, state: SheetState) {
       elementDetails.contentGroup = splitExpressionValue(element.getAttribute("contentGroup") || "none");
       elementDetails.index = splitExpressionValue(element.getAttribute("index") || "");
       break;
+    case ButtonAction.ToggleCollapse:
+      elementDetails.target =  splitExpressionValue(element.getAttribute("target") || "");
+      break;
 
   }
 
@@ -48,6 +51,8 @@ function parseButtonAction(actionString: string) {
       return ButtonAction.CreateContent;
     case ButtonAction.DeleteContent:
       return ButtonAction.DeleteContent;
+    case ButtonAction.ToggleCollapse:
+      return ButtonAction.ToggleCollapse;
     default:
       return ButtonAction.None;
   }

@@ -7,5 +7,7 @@ export enum ButtonAction {
   CreateContent="createcontent",
   DeleteContent="deletecontent",
 
+  ToggleCollapse="togglecollapse",
+
   None="none",
 }

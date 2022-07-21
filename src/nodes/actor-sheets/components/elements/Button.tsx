@@ -6,7 +6,7 @@ import { ActorController } from "nodes/actor-sheets";
 import { ButtonAction } from "../../enums/buttonActions";
 import * as actions from "../../utilities/elements/button/actions";
 
-const VARIABLE_FIELDS = ["text", "alert", "contentGroup", "index"];
+const VARIABLE_FIELDS = ["text", "alert", "contentGroup", "index", "target"];
 
 /**
  * Renders a button that performs an action when clicked
@@ -49,5 +49,8 @@ function onClick(
     case ButtonAction.DeleteContent:
       actions.deleteContent(renderID, element.contentGroup, parseInt(element.index));
       break;
+
+    case ButtonAction.ToggleCollapse:
+      actions.toggleCollapse(renderID, element.target);
   }
 }

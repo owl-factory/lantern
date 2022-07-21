@@ -14,8 +14,10 @@ export function SheetInline(props: SheetElementProps<InlineDescriptor>) {
     elements.push(<SheetElement key={props.properties.$prefix + childElement.$key} {...props} element={childElement}/>);
   }
   return (
-    <div >
-      {elements}
+    <div style={{ display: "block" }}>
+      <div style={{display: "flex"}}>
+        {elements}
+      </div>
     </div>
   );
 }

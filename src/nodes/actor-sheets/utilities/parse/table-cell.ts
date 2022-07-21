@@ -12,6 +12,7 @@ export function parseTableCellElement(element: Element, state: SheetState) {
   const elementDetails: TableCellDescriptor = {
     $key: state.key,
     element: SheetElementType.TableCell,
+    width: parseInt(element.getAttribute("width") || element.getAttribute("colspan") || "1"),
     children: [],
   };
 

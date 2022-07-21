@@ -3,6 +3,7 @@ import {
   BackgroundDescriptor,
   BorderDescriptor,
   CheckboxDescriptor,
+  CollapseDescriptor,
   ColumnDescriptor,
   InlineDescriptor,
   LabelDescriptor,
@@ -24,6 +25,7 @@ import { GenericSheetElementDescriptor } from "nodes/actor-sheets/types/elements
 import {
   SheetBackground,
   SheetBorder,
+  SheetCollapse,
   SheetColumn,
   SheetInline,
   SheetLabel,
@@ -86,6 +88,8 @@ export function SheetElement(props: SheetElementProps<GenericSheetElementDescrip
       return <SheetTableCell {...props} element={props.element as TableCellDescriptor}/>;
     case SheetElementType.TableRow:
       return <SheetTableRow {...props} element={props.element as TableRowDescriptor}/>;
+    case SheetElementType.Collapse:
+      return <SheetCollapse {...props} element={props.element as CollapseDescriptor}/>;
     case SheetElementType.TextInput:
       return <SheetTextInput {...props} element={props.element as TextInputDescriptor}/>;
     case SheetElementType.TextArea:
