@@ -6,6 +6,7 @@ import { SheetTabElementDescriptor } from "nodes/actor-sheets/types";
  * Describes a sheet pageable element
  */
 export interface PageableDescriptor extends GenericSheetElementDescriptor {
+  id: string;
   tabs: SheetTabElementDescriptor[];
   pages: PageDescriptor[];
   children: GenericSheetElementDescriptor[];

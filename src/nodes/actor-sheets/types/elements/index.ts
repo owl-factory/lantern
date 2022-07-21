@@ -18,6 +18,7 @@ export * from "./radio";
 export * from "./row";
 export * from "./select";
 export * from "./table";
+export * from "./tabs";
 export * from "./tableCell";
 export * from "./tableRow";
 export * from "./textArea";

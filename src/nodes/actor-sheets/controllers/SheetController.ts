@@ -5,10 +5,12 @@ import { parseXML } from "../utilities/parser";
 import { parseFirstLevelElements } from "../utilities/parse";
 import { SheetElementType } from "../enums/sheetElementType";
 import { parseChildrenElements } from "../utilities/parse/children";
+import { ParsedTab } from "../types/parsedTab";
 
 export class SheetController<T> {
   public sheets: Record<string, PageDescriptor> = {};
   public prefabs: Record<string, Record<string, HTMLCollection>> = {};
+  public tabs: Record<string, Record<string, ParsedTab[]>> = {};
   public variables: Record<string, Record<string, unknown>> = {};
 
   constructor() {
@@ -41,6 +43,7 @@ export class SheetController<T> {
     if (variables) { this.loadVariables(key, variables); }
 
     this.loadSheet(key, layout);
+    this.loadTabs(key, layout);
   }
 
   /**
@@ -121,6 +124,46 @@ export class SheetController<T> {
     }
 
     this.variables[key] = variableDetails;
+  }
+
+  /**
+   * Loads tabs in for a sheet
+   * @param sheetID The ID of the sheet that the tabs are being loaded in for
+   * @param layout The base layout XML
+   */
+  public loadTabs(sheetID: string, layout: Element) {
+    const allPageTabs: Record<string, ParsedTab[]> = {};
+    const pageables = layout.getElementsByTagName("Pageable");
+
+    for (const pageable of pageables) {
+      const pageableID = pageable.getAttribute("id");
+      if (!pageableID) { return; }
+
+      const singlePageTabs: ParsedTab[] = [];
+      for (const child of pageable.children) {
+        if (child.tagName !== "Page") { continue; }
+
+        const name = child.getAttribute("name");
+        if (!name) { continue; }
+
+        const tab: any = { name };
+        singlePageTabs.push(tab);
+      }
+      allPageTabs[pageableID] = singlePageTabs;
+    }
+
+    this.tabs[sheetID] = allPageTabs;
+  }
+
+  /**
+   * Fetches tabs for a specific sheet and Pageable element
+   * @param sheetID The ID of the sheet to fetch the tab information from
+   * @param key The Pageable ID to fetch the tabs for
+   * @returns An array of tab objects
+   */
+  public getTabs(sheetID: string, key: string) {
+    if (!(sheetID in this.tabs) || !this.tabs[sheetID] || !(key in this.tabs[sheetID])) { return []; }
+    return this.tabs[sheetID][key];
   }
 
   /**

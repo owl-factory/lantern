@@ -255,6 +255,18 @@ class $ActorController {
   }
 
   /**
+   * Fetches the tabs for a particular render and Pageable element
+   * @param renderID The ID of the render to fetch the tabs for
+   * @param key The ID of the pageable element to fetch the tabs for
+   * @returns An array of tab objects
+   */
+  public getTabs(renderID: string, key: string) {
+    let sheetRef = "";
+    if (this.$renders[renderID]) { sheetRef = this.$renders[renderID].sheetRef; }
+    return this.sheetController.getTabs(sheetRef, key);
+  }
+
+  /**
    * Determines if the actor is loaded. Returns true if it is, false otherwise
    * @param renderRef The ref of the actor to check
    */

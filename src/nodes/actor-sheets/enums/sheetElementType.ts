@@ -3,6 +3,7 @@ export enum SheetElementType {
   Sheet, // Wraps the entire XML document
   Layout, // Indicates that the contents are what should be rendered by the engine
   Pageable, // Indicates that the contents can be paged between
+  Tabs, // An element that renders out the tabs for a given Pageable element
   Prefabs, // Declares that the contents are pre-made prefabs
   NewPrefab, // Declares that the contents are a prefab of a given name
 
@@ -51,6 +52,8 @@ export function elementNameToPageElementType(tagName: string) {
       return SheetElementType.Sheet;
     case "pageable":
       return SheetElementType.Pageable;
+    case "tabs":
+      return SheetElementType.Tabs;
     case "page":
       return SheetElementType.Page;
     case "prefabs":

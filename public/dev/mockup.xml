@@ -1,6 +1,7 @@
 <Sheet>
   <Layout>
-    <Pageable>
+    <Tabs for="main_page"/>
+    <Pageable id="main_page">
       <Page name="Bio">
        <Label>Letters:</Label>
         <Loop key="letter" list="a|b|c" delimiter="|">
@@ -415,7 +416,7 @@
 
       <Page name="Spells">
         <Label>Spells</Label>
-        <Pageable>
+        <Pageable id="testing">
           <Page name="Test One">
             <Label>Testing!</Label>
             <Inline>
@@ -433,6 +434,7 @@
             <Label>It works!</Label>
           </Page>
         </Pageable>
+        <Tabs for="testing"/>
       </Page>
     </Pageable>
   </Layout>
