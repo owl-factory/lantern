@@ -23,6 +23,7 @@ import { ParsedExpressionString, SheetTabElementDescriptor } from "../types";
 import { parseXML } from "../utilities/parser";
 import { LoopElementDescriptor } from "../types/elements/loop";
 import { GenericSheetElementDescriptor } from "../types/elements/generic";
+import { parseButtonElement } from "../utilities/elements/button/parse";
 
 export class SheetController<T> {
   public sheets: Record<string, PageElementDescriptor> = {};
@@ -177,6 +178,8 @@ export class SheetController<T> {
         return this.parseIconElement(sheetElement);
       case PageElementType.Label:
         return this.parseLabelElement(sheetElement);
+      case PageElementType.Button:
+        return parseButtonElement(sheetElement);
       case PageElementType.Checkbox:
         return this.parseCheckboxElement(sheetElement);
       case PageElementType.Radio:

@@ -39,6 +39,8 @@ import { SheetRadioButton } from "./elements/RadioButton";
 import { SheetElementProps } from "../types";
 import { LoopElementDescriptor } from "../types/elements/loop";
 import { SheetLoop } from "./elements/Loop";
+import { ButtonElementDescriptor } from "../types/elements/button";
+import { SheetButton } from "./elements/Button";
 
 /**
  * Determines which sheet element to render based on the descriptor element type given
@@ -63,6 +65,8 @@ export function SheetElement(props: SheetElementProps<GenericSheetElementDescrip
       return <SheetInline {...props} element={props.element as InlineElementDescriptor}/>;
     case PageElementType.Label:
       return <SheetLabel {...props} element={props.element as LabelElementDescriptor}/>;
+    case PageElementType.Button:
+      return <SheetButton {...props} element={props.element as ButtonElementDescriptor}/>;
     case PageElementType.Checkbox:
       return <SheetCheckbox {...props} element={props.element as CheckboxElementDescriptor}/>;
     case PageElementType.Radio:
