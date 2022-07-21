@@ -10,6 +10,7 @@ import { splitExpressionValue } from "../expressions/parse";
  */
 export function parseNumberInputElement(element: Element, state: SheetState) {
   const elementDetails: NumberInputDescriptor = {
+    $key: state.key,
     element: SheetElementType.NumberInput,
     id: splitExpressionValue(element.getAttribute("id") || ""),
     name: splitExpressionValue(element.getAttribute("name") || "missing_name"),

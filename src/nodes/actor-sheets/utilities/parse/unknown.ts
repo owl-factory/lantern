@@ -1,5 +1,6 @@
 import { SheetElementType, elementNameToPageElementType } from "nodes/actor-sheets/enums/sheetElementType";
 import { SheetState } from "nodes/actor-sheets/types";
+import { GenericSheetElementDescriptor } from "nodes/actor-sheets/types/elements/generic";
 import { parseBackgroundElement } from "./background";
 import { parseBorderElement } from "./border";
 import { parseButtonElement } from "./button";
@@ -24,23 +25,23 @@ import { parseTextInputElement } from "./text-input";
  * @param element An unknown sheet element document
  * @returns A parsed sheet element descriptor
  */
-export function parseUnknownElement(key: string, element: Element, state: SheetState) {
+export function parseUnknownElement(element: Element, state: SheetState) {
   const pageElementType = elementNameToPageElementType(element.tagName);
   switch(pageElementType) {
     case SheetElementType.Pageable:
-      return parsePageableElement(key, element, state);
+      return parsePageableElement(element, state);
     case SheetElementType.Page:
-      return parsePageElement(key, element, state);
+      return parsePageElement(element, state);
     case SheetElementType.Row:
-      return parseRowElement(key, element, state);
+      return parseRowElement(element, state);
     case SheetElementType.Column:
-      return parseColumnElement(key, element, state);
+      return parseColumnElement(element, state);
     case SheetElementType.Background:
-      return parseBackgroundElement(key, element, state);
+      return parseBackgroundElement(element, state);
     case SheetElementType.Border:
-      return parseBorderElement(key, element, state);
+      return parseBorderElement(element, state);
     case SheetElementType.Inline:
-      return parseInlineElement(key, element, state);
+      return parseInlineElement(element, state);
 
 
     case SheetElementType.Icon:
@@ -63,8 +64,8 @@ export function parseUnknownElement(key: string, element: Element, state: SheetS
       return parseSelectElement(element, state);
 
     case SheetElementType.Loop:
-      return parseLoopElement(key, element, state);
+      return parseLoopElement(element, state);
     case SheetElementType.Prefab:
-      return parsePrefabElement(key, element, state);
+      return parsePrefabElement(element, state);
   }
 }

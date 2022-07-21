@@ -31,7 +31,6 @@ export enum SheetElementType {
 
   // Functional Elements that perform tasks but do not directly appear
   Loop,
-
 }
 
 /**

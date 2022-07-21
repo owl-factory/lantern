@@ -1,23 +1,21 @@
 import { SheetElementType } from "nodes/actor-sheets/enums/sheetElementType";
 import { SheetState } from "nodes/actor-sheets/types";
 import { ColumnDescriptor } from "nodes/actor-sheets/types/elements";
-import { parseUnknownElement } from "./unknown";
-
+import { parseChildrenElements } from "./children";
 /**
  * Converts a column element into a column element descriptor
- * @param columnElement The column element to convert
+ * @param element The column element to convert
  * @returns A column element descriptor
  */
-export function parseColumnElement(key: string, columnElement: Element, state: SheetState) {
+export function parseColumnElement(element: Element, state: SheetState) {
   const elementDetails: ColumnDescriptor = {
+    $key: state.key,
     element: SheetElementType.Column,
-    weight: parseInt(columnElement.getAttribute("weight") || "1"),
+    weight: parseInt(element.getAttribute("weight") || "1"),
     children: [],
   };
 
-  for (const childElement of columnElement.children) {
-    elementDetails.children.push(parseUnknownElement(key, childElement, state) as any);
-  }
+  elementDetails.children = parseChildrenElements(element.children, state);
 
   return elementDetails;
 }

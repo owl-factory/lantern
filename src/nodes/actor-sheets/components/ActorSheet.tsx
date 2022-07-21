@@ -22,7 +22,12 @@ export const ActorSheet = observer((props: ActorSheetProps) => {
   const sheetElements: JSX.Element[] = [];
   for(const childElement of sheet.children || []) {
     sheetElements.push(
-      <SheetElement id={props.id} element={childElement} properties={{}}/>
+      <SheetElement
+        key={props.id + childElement.$key}
+        id={props.id}
+        element={childElement}
+        properties={{$prefix: props.id}}
+      />
     );
   }
 

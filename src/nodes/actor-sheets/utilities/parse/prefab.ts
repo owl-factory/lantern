@@ -1,10 +1,16 @@
 import { SheetElementType } from "nodes/actor-sheets/enums/sheetElementType";
 import { SheetState } from "nodes/actor-sheets/types";
 import { PrefabDescriptor } from "nodes/actor-sheets/types/elements";
-import { parseUnknownElement } from "./unknown";
+import { parseChildrenElements } from "./children";
 
-export function parsePrefabElement(key: string, element: Element, state: SheetState) {
+/**
+ * Parses a prefab element, replacing it with the stored prefab definitions
+ * @param element The raw prefab XML
+ * @param state The current sheet state
+ */
+export function parsePrefabElement(element: Element, state: SheetState) {
   const elementDetails: PrefabDescriptor = {
+    $key: state.key,
     element: SheetElementType.Prefab,
     name: element.getAttribute("name") || "unknown",
     arguments: {},
@@ -18,8 +24,7 @@ export function parsePrefabElement(key: string, element: Element, state: SheetSt
   }
 
   const childElements = prefabDefinition;
-  for (const childElement of childElements) {
-    elementDetails.children.push(parseUnknownElement(key, childElement, state) as any);
-  }
+  elementDetails.children = parseChildrenElements(childElements, state);
+
   return elementDetails;
 }

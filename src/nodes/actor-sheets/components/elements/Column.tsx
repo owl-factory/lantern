@@ -12,7 +12,7 @@ export function SheetColumn(props: SheetElementProps<ColumnDescriptor>) {
   const childElements = props.element.children || [];
   const elements: JSX.Element[] = [];
   for (const childElement of childElements) {
-    elements.push(<SheetElement key={Math.random()} {...props} element={childElement}/>);
+    elements.push(<SheetElement key={props.properties.$prefix + childElement.$key} {...props} element={childElement}/>);
   }
   return (
     <div className={`${style.column}`} style={{flexGrow: props.element.weight}}>

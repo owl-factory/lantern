@@ -9,6 +9,7 @@ import { IconDescriptor } from "nodes/actor-sheets/types/elements";
  */
 export function parseIconElement(element: Element, state: SheetState) {
   const elementDetails: IconDescriptor = {
+    $key: state.key,
     element: SheetElementType.Icon,
     icon: element.getAttribute("icon") || "none",
   };

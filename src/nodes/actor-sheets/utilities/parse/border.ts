@@ -1,7 +1,7 @@
 import { SheetElementType } from "nodes/actor-sheets/enums/sheetElementType";
 import { SheetState } from "nodes/actor-sheets/types";
 import { BorderDescriptor } from "nodes/actor-sheets/types/elements";
-import { parseUnknownElement } from "./unknown";
+import { parseChildrenElements } from "./children";
 
 /**
  * Converts a border element into a border element descriptor
@@ -9,16 +9,15 @@ import { parseUnknownElement } from "./unknown";
  * @param element The border element to convert
  * @returns A border element descriptor
  */
-export function parseBorderElement(key: string, element: Element, state: SheetState) {
+export function parseBorderElement(element: Element, state: SheetState) {
   const elementDetails: BorderDescriptor = {
+    $key: state.key,
     element: SheetElementType.Border,
     borderStyle: element.getAttribute("borderStyle") || "solid",
     children: [],
   };
 
-  for (const childElement of element.children) {
-    elementDetails.children.push(parseUnknownElement(key, childElement, state) as any);
-  }
+  elementDetails.children = parseChildrenElements(element.children, state);
 
   return elementDetails;
 }

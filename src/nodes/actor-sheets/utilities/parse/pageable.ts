@@ -9,8 +9,9 @@ import { parseUnknownElement } from "./unknown";
  * @param element The page element to convert
  * @returns A page element descriptor
  */
-export function parsePageableElement(key: string, element: Element, state: SheetState) {
+export function parsePageableElement(element: Element, state: SheetState) {
   const elementDetails: PageableDescriptor = {
+    $key: state.key,
     element: SheetElementType.Pageable,
     tabs: [],
     pages: [],
@@ -23,12 +24,12 @@ export function parsePageableElement(key: string, element: Element, state: Sheet
         name: child.getAttribute("name") || "Unknown",
         access: child.getAttribute("access") || "admin",
       };
-      const page = parsePageElement(key, child, state);
+      const page = parsePageElement(child, state);
       elementDetails.tabs.push(tab);
       elementDetails.pages.push(page);
 
     } else {
-      elementDetails.children.push(parseUnknownElement(key, child, state) as any);
+      elementDetails.children.push(parseUnknownElement(child, state) as any);
     }
   }
 

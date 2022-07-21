@@ -10,6 +10,7 @@ import { splitExpressionValue } from "../expressions/parse";
  */
 export function parseRadioElement(element: Element, state: SheetState) {
   const elementDetails: RadioButtonDescriptor = {
+    $key: state.key,
     element: SheetElementType.Radio,
     id: splitExpressionValue(element.getAttribute("id") || "undefined"),
     name: splitExpressionValue(element.getAttribute("name") || "undefined"),

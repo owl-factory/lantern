@@ -10,6 +10,7 @@ import { splitExpressionValue } from "../expressions/parse";
  */
 export function parseCheckboxElement(element: Element, state: SheetState) {
   const elementDetails: CheckboxDescriptor = {
+    $key: state.key,
     element: SheetElementType.Checkbox,
     id: splitExpressionValue(element.getAttribute("id") || ""),
     name: splitExpressionValue(element.getAttribute("name") || "missing_name"),

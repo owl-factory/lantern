@@ -11,6 +11,7 @@ import { splitExpressionValue } from "../expressions/parse";
  */
 export function parseButtonElement(element: Element, state: SheetState) {
   const elementDetails: ButtonDescriptor = {
+    $key: state.key,
     element: SheetElementType.Button,
     text: splitExpressionValue(element.textContent || ""),
     action: parseButtonAction(element.getAttribute("action") || "none"),

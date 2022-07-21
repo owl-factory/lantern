@@ -4,7 +4,7 @@ import { SheetState } from "../types";
 import { parseXML } from "../utilities/parser";
 import { parseFirstLevelElements } from "../utilities/parse";
 import { SheetElementType } from "../enums/sheetElementType";
-import { parseUnknownElement } from "../utilities/parse/unknown";
+import { parseChildrenElements } from "../utilities/parse/children";
 
 export class SheetController<T> {
   public sheets: Record<string, PageDescriptor> = {};
@@ -63,17 +63,17 @@ export class SheetController<T> {
    */
   public loadSheet(key: string, layout: Element) {
     const elementDetails: LayoutDescriptor = {
+      $key: "",
       element: SheetElementType.Layout,
       children: [],
     };
 
     const startingState: SheetState = {
+      key: "",
       prefabs: this.prefabs[key],
     };
 
-    for (const childElement of layout.children) {
-      elementDetails.children.push(parseUnknownElement(key, childElement, startingState) as any);
-    }
+    elementDetails.children = parseChildrenElements(layout.children, startingState);
 
     this.sheets[key] = elementDetails;
   }
@@ -85,7 +85,9 @@ export class SheetController<T> {
    * @returns A collection of element descriptors for building out the actor sheet
    */
   public getSheet(key: string): PageDescriptor {
-    if (this.sheets[key] === undefined) { return { element: SheetElementType.Sheet, children: [] }; }
+    if (this.sheets[key] === undefined) {
+      return { $key: "-missing-sheet", element: SheetElementType.Sheet, children: [] };
+    }
     return this.sheets[key];
   }
 

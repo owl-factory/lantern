@@ -10,6 +10,7 @@ import { splitExpressionValue } from "../expressions/parse";
  */
 export function parseSelectElement(element: Element, state: SheetState) {
   const elementDetails: TextAreaDescriptor = {
+    $key: state.key,
     element: SheetElementType.Select,
     id: splitExpressionValue(element.getAttribute("id") || ""),
     name: splitExpressionValue(element.getAttribute("name") || ""),
