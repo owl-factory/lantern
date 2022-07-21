@@ -41,9 +41,9 @@ function SheetTab(props: SheetTabProps) {
  * @param element The tabs element description
  */
 export const SheetTabs = observer((props: SheetElementProps<TabsDescriptor>) => {
-  const tabs = ActorController.getTabs(props.id, props.element.for) as { name: string }[];
+  const tabs = ActorController.getTabs(props.renderID, props.element.for) as { name: string }[];
 
-  let activeTab = ActorController.getState(props.id, StateType.CurrentPage, props.element.for) || 0;
+  let activeTab = ActorController.getState(props.renderID, StateType.CurrentPage, props.element.for) || 0;
   if (typeof activeTab === "string") { activeTab = parseInt(activeTab); }
   else if (typeof activeTab !== "number" ) { activeTab = 0; }
 
@@ -58,7 +58,7 @@ export const SheetTabs = observer((props: SheetElementProps<TabsDescriptor>) => 
 
   // Sets the active tab state
   function setActiveTab(index: number) {
-    ActorController.setState(props.id, StateType.CurrentPage, props.element.for, index);
+    ActorController.setState(props.renderID, StateType.CurrentPage, props.element.for, index);
   }
 
   const tabElements: JSX.Element[] = [];

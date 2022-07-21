@@ -13,14 +13,14 @@ const VARIABLE_FIELDS = ["text", "alert", "contentGroup", "index", "target"];
  */
 export const SheetButton = observer((props: SheetElementProps<ButtonDescriptor>) => {
   const elementVariables = ActorController.renderVariables<ButtonDescriptor>(
-    props.id,
+    props.renderID,
     props.element,
     VARIABLE_FIELDS,
     props.properties,
   );
 
   return (
-    <button onClick={() => onClick(props.element.action, props.id, elementVariables)}>
+    <button onClick={() => onClick(props.element.action, props.renderID, elementVariables)}>
       {elementVariables.text}
     </button>
   );

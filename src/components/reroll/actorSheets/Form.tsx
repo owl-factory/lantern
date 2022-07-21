@@ -70,7 +70,11 @@ export const ActorSheetForm = observer((props: ActorSheetFormProps) => {
         }
       </Formik>
       <hr/>
-      <ActorSheet id={props.renderID}/>
+      {() => {
+        // Try/Catch block prevents issues within the actor sheet preventing updating of the XML
+        try { return <ActorSheet id={props.renderID}/>; }
+        catch (e) { return <></>; }
+      }}
     </div>
   );
 });

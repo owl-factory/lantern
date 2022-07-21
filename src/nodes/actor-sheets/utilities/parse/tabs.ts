@@ -1,7 +1,6 @@
 import { SheetElementType } from "nodes/actor-sheets/enums/sheetElementType";
 import { SheetState } from "nodes/actor-sheets/types";
 import { TabsDescriptor } from "nodes/actor-sheets/types/elements";
-import { parseChildrenElements } from "./children";
 
 /**
  * Converts a row element into a row element descriptor
