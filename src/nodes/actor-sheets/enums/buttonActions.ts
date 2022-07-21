@@ -5,6 +5,7 @@ export enum ButtonAction {
 
   // Content manipulation
   CreateContent="createcontent",
+  DeleteContent="deletecontent",
 
   None="none",
 }

@@ -1,4 +1,5 @@
 import { GenericSheetElementDescriptor } from "nodes/actor-sheets/types/elements/generic";
+import { Scalar } from "types";
 import { ExpressionType } from "../enums/expressionType";
 
 export interface SheetElementProps<T extends GenericSheetElementDescriptor> {
@@ -13,7 +14,7 @@ export interface SheetTabElementDescriptor {
 }
 
 // Describes variables that are created during the render of the sheet
-export type SheetProperties = Record<string, (string | Record<string, string | unknown>)>;
+export type SheetProperties = Record<string, (Scalar | Record<string, string | unknown>)>;
 
 // Describes the contents of an expression
 export interface Expression {

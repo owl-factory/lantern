@@ -33,9 +33,8 @@ export const ActorSheet = observer((props: ActorSheetProps) => {
     const actorRef = ActorController.getActorRef(props.id);
     const actor = ActorData.get(actorRef);
     if (!actor) { return; }
-    const actorValues = ActorController.getActor(props.id);
-    actor.values = actorValues;
-    ActorData.update(actor);
+    const updatedActor = ActorController.getActor(props.id);
+    ActorData.update(updatedActor);
   }
 
   return (

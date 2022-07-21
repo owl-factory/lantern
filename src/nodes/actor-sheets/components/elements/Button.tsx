@@ -6,7 +6,7 @@ import { ActorController } from "nodes/actor-sheets";
 import { ButtonAction } from "../../enums/buttonActions";
 import * as actions from "../../utilities/elements/button/actions";
 
-const VARIABLE_FIELDS = ["text", "alert", "contentGroup"];
+const VARIABLE_FIELDS = ["text", "alert", "contentGroup", "index"];
 
 /**
  * Renders a button that performs an action when clicked
@@ -44,6 +44,10 @@ function onClick(
 
     case ButtonAction.CreateContent:
       actions.createContent(renderID, element.contentGroup);
+      break;
+
+    case ButtonAction.DeleteContent:
+      actions.deleteContent(renderID, element.contentGroup, parseInt(element.index));
       break;
   }
 }

@@ -31,6 +31,21 @@ export class ActorSubController {
   }
 
   /**
+   * Returns a partial actor document from  what has been stored in the actor controller
+   * @param ref The ref of the actor to fetch
+   * @returns A partial actor document with the current data
+   */
+  public getActor(ref: string): Partial<ActorDocument> {
+    if (!this.isActorLoaded(ref)) { return { ref }; }
+    const actor: Partial<ActorDocument> = {
+      ref,
+      values: this.$actorValues[ref] || {},
+      content: this.$content[ref] || {},
+    };
+    return actor;
+  }
+
+  /**
    * Grabs the values for an actor
    * @param ref The ref of the actor to fetch
    * @returns The found actor values or an empty struct
@@ -65,7 +80,7 @@ export class ActorSubController {
   }
 
   /**
-   * Grabs a specific list of content for an actor 
+   * Grabs a specific list of content for an actor
    * @param ref The ref of the actor to grab the content from
    * @param contentKey The key of the content to fetch
    * @returns An array of the content. Returns an empty array if nothing is found
@@ -108,6 +123,18 @@ export class ActorSubController {
     const contents = this.getContent(ref, contentGroup);
     newContent = normalizeActorContent(ref, contentGroup, newContent);
     contents.push(newContent);
+    this.setContent(ref, contentGroup, contents);
+  }
+
+  /**
+   * Removes a single item from an actor's contents
+   * @param ref The ID of the actor that will be having a content item removed
+   * @param contentGroup The type of content that will be having an item removed
+   * @param index The index of the content item to remove
+   */
+  public deleteContentItem(ref: string, contentGroup: string, index: number) {
+    const contents = this.getContent(ref, contentGroup);
+    contents.splice(index, 1);
     this.setContent(ref, contentGroup, contents);
   }
 

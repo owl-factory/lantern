@@ -37,11 +37,14 @@ export const SheetLoop = observer((props: SheetElementProps<LoopElementDescripto
     if (list === undefined) { list = []; }
   }
 
+  let i = 0;
   for (const listItem of list) {
     const properties: SheetProperties = {...props.properties, [key]: listItem};
+    if (props.element.index) { properties[props.element.index] = i; }
     loopedElements.push(
       <SheetLoopItem key={listItem.toString()} {...props} properties={properties}/>
     );
+    i++;
   }
 
   return (

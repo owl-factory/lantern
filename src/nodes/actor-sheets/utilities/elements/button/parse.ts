@@ -22,6 +22,11 @@ export function parseButtonElement(buttonElement: Element) {
     case ButtonAction.CreateContent:
       elementDetails.contentGroup = splitExpressionValue(buttonElement.getAttribute("contentGroup") || "none");
       break;
+    case ButtonAction.DeleteContent:
+      elementDetails.contentGroup = splitExpressionValue(buttonElement.getAttribute("contentGroup") || "none");
+      elementDetails.index = splitExpressionValue(buttonElement.getAttribute("index") || "");
+      break;
+
   }
 
   return elementDetails;
@@ -38,6 +43,8 @@ function parseButtonAction(actionString: string) {
       return ButtonAction.Alert;
     case ButtonAction.CreateContent:
       return ButtonAction.CreateContent;
+    case ButtonAction.DeleteContent:
+      return ButtonAction.DeleteContent;
     default:
       return ButtonAction.None;
   }
