@@ -17,6 +17,9 @@ import { parsePrefabElement } from "./prefab";
 import { parseRadioElement } from "./radio";
 import { parseRowElement } from "./row";
 import { parseSelectElement } from "./select";
+import { parseTableElement } from "./table";
+import { parseTableCellElement } from "./table-cell";
+import { parseTableRowElement } from "./table-row";
 import { parseTextAreaElement } from "./text-area";
 import { parseTextInputElement } from "./text-input";
 
@@ -42,6 +45,14 @@ export function parseUnknownElement(element: Element, state: SheetState) {
       return parseBorderElement(element, state);
     case SheetElementType.Inline:
       return parseInlineElement(element, state);
+
+    case SheetElementType.Table:
+      return parseTableElement(element, state);
+    case SheetElementType.TableCell:
+      return parseTableCellElement(element, state);
+    case SheetElementType.TableRow:
+      return parseTableRowElement(element, state);
+
 
 
     case SheetElementType.Icon:

@@ -155,7 +155,7 @@ class $ActorController {
     // Catches all failure cases where some piece of data is missing
     if (contentType === "" || index === undefined || index < 0 || name === "") { return ""; }
 
-    return this.actorController.getContentField(actorRef, contentType, index, name);
+    return this.actorController.getContentField(actorRef, contentType, index, name) || "";
   }
 
   /**

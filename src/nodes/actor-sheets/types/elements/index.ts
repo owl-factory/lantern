@@ -15,5 +15,8 @@ export * from "./radioButton";
 export * from "./radio";
 export * from "./row";
 export * from "./select";
+export * from "./table";
+export * from "./tableCell";
+export * from "./tableRow";
 export * from "./textArea";
 export * from "./textInput";
