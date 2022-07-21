@@ -19,7 +19,8 @@ const RulesetRow = observer((props: { id: Ref64 }) => {
       <TableCell>{ruleset.name}</TableCell>
       <TableCell>{ruleset.alias}</TableCell>
       <TableCell>
-        <Link href={`/dev/rulesets/${ruleset.ref}/edit`}>Edit</Link>&nbsp;
+        <Link href={`/dev/rulesets/${ruleset.ref}/edit`}>Edit</Link>
+        <Link href={`/dev/rulesets/${ruleset.ref}/new-module`}>New Module</Link>&nbsp;
         <Link href={`/dev/rulesets/${ruleset.ref}/new-actor-sheet`}>New Character Sheet</Link>&nbsp;
         <a onClick={() => RulesetData.delete(ruleset.ref as string)}>Delete</a>
       </TableCell>
