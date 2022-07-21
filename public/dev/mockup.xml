@@ -236,9 +236,10 @@
               <Button action="createContent" contentGroup="items">+</Button>
               <Loop list="{$content.items}" key="item" index="index">
                 <Label>{$index} </Label>
-                <Label>{$item.weight} </Label>
-                <Label>{$item.name} </Label>
-                <Label>{$item.quantity} </Label>
+                <NumberInput id="content_weight_{$index}" name="item.weight"/>
+                <TextInput id="content_name_{$index}" name="item.name"/>
+                <NumberInput id="content_quantity_{$index}" name="item.quantity"/>
+                <Checkbox id="content_equipped_{$index}" name="item.equipped"/>
                 <Button action="deleteContent" index="{$index}" contentGroup="items">-</Button>
               </Loop>
             </Border>

@@ -21,7 +21,8 @@ export class ActorSubController {
       $actorFields: observable,
       $content: observable,
 
-      setActorFieldValue: action,
+      updateFieldValue: action,
+      updateContentField: action,
       loadActor: action,
       generateFields: action,
       unloadActor: action,
@@ -62,7 +63,7 @@ export class ActorSubController {
    * @param fieldName The name of the field being fetched
    * @returns The value of the field. Undefined if not present
    */
-  public getActorFieldValue(ref: string, fieldName: string) {
+  public getFieldValue(ref: string, fieldName: string) {
     const actor = this.getActorValues(ref);
     if (!(fieldName in actor)) { return undefined; }
     return actor[fieldName];
@@ -74,7 +75,7 @@ export class ActorSubController {
    * @param fieldName The nam of the field being fetched
    * @param value The new value to save to the field
    */
-  public setActorFieldValue(ref: string, fieldName: string, value: any) {
+  public updateFieldValue(ref: string, fieldName: string, value: any) {
     if (!this.isActorLoaded(ref)) { return; }
     this.$actorValues[ref][fieldName] = value;
   }
@@ -98,8 +99,41 @@ export class ActorSubController {
    * @param content The new list of content to be stored
    */
   public setContent(ref: string, contentKey: string, content: ActorContent[]) {
-    if (!this.isActorLoaded(ref)) { return []; }
+    if (!this.isActorLoaded(ref)) { return; }
     this.$content[ref][contentKey] = content;
+  }
+
+  /**
+   * Fetches a value from a specific content item
+   * @param actorRef The actor ref to fetch the content from
+   * @param contentType The type of content to fetch from the actor
+   * @param index The index that the content is at within the content list
+   * @param field The specific field to retrieve from the content
+   * @returns The content, if present, or an empty string
+   */
+  public getContentField(actorRef: string, contentType: string, index: number, field: string) {
+    if (!this.$content[actorRef]) { return ""; } // Return if not loaded
+    // Ensures the array is present if not already
+    if (!this.$content[actorRef][contentType]) { this.$content[actorRef][contentType] = []; }
+    if (this.$content[actorRef][contentType].length <= index) { return ""; }
+
+    return this.$content[actorRef][contentType][index][field];
+  }
+
+  /**
+   * Updates a single field within a specific content item
+   * @param actorRef The actor ref to fetch the content from
+   * @param contentType The type of content to fetch from the actor
+   * @param index The index that the content is at within the content list
+   * @param field The specific field to retrieve from the content
+   * @param value The new value to be set
+   */
+  public updateContentField(actorRef: string, contentType: string, index: number, field: string, value: Scalar) {
+    if (!this.$content[actorRef]) { return; } // Return if not loaded
+    if (!this.$content[actorRef][contentType]) { this.$content[actorRef][contentType] = []; }
+    if (this.$content[actorRef][contentType].length <= index) { return; }
+
+    this.$content[actorRef][contentType][index][field] = value;
   }
 
   /**
@@ -199,7 +233,7 @@ function determineType(value: unknown) {
  *  based off of the content type
  */
 function normalizeActorContent(actorRef: Ref64, contentGroup: string, content?: ActorContent) {
-  if (!content) { content = { values: {} }; }
+  if (!content) { content = { }; }
   // TODO - implement loading in default values for the content type fields
   return content;
 }

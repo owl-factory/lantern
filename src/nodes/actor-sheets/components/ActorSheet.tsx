@@ -4,6 +4,7 @@ import { observer } from "mobx-react-lite";
 import React from "react";
 import { Scalar } from "types";
 import { ActorController } from "../controllers/ActorController";
+import { SheetProperties } from "../types";
 import { SheetElement } from "./SheetElement";
 
 interface ActorSheetProps {
@@ -17,6 +18,11 @@ interface ActorSheetProps {
  */
 export const ActorSheet = observer((props: ActorSheetProps) => {
   const sheet = ActorController.getSheet(props.id);
+  const properties: SheetProperties = {
+    $prefix: props.id,
+    $source: {},
+    $index: {},
+  };
 
   // Renders each of the children of the base sheet
   const sheetElements: JSX.Element[] = [];
@@ -26,7 +32,7 @@ export const ActorSheet = observer((props: ActorSheetProps) => {
         key={props.id + childElement.$key}
         id={props.id}
         element={childElement}
-        properties={{$prefix: props.id}}
+        properties={properties}
       />
     );
   }

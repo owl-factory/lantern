@@ -18,14 +18,14 @@ export const SheetRadioButton = observer((props: SheetElementProps<RadioDescript
     VARIABLE_FIELDS,
     props.properties,
   );
-  const fieldValue = ActorController.getActorField(props.id, element.name);
+  const fieldValue = ActorController.getActorField(props.id, element.name, props.properties);
 
   /**
    * Handles the onChange event in the radio buttons. Updates the ActorController values
    * @param ev The triggering onChange event
    */
   function onChange(ev: React.ChangeEvent<HTMLInputElement>) {
-    ActorController.setActorField(props.id, element.name, ev.target.value);
+    ActorController.updateActorField(props.id, element.name, props.properties, ev.target.value);
     ev.target.checked = true;
   }
 
