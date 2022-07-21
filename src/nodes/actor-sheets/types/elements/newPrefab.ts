@@ -3,7 +3,7 @@ import { GenericSheetElementDescriptor } from "nodes/actor-sheets/types/elements
 /**
  * Describes a sheet NewPrefab element
  */
-export interface NewPrefabElementDescriptor extends GenericSheetElementDescriptor {
+export interface NewPrefabDescriptor extends GenericSheetElementDescriptor {
   name: string;
   children: GenericSheetElementDescriptor[];
 }

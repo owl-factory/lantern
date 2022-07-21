@@ -1,5 +1,5 @@
 import React from "react";
-import { RowElementDescriptor } from "nodes/actor-sheets/types/elements";
+import { RowDescriptor } from "nodes/actor-sheets/types/elements";
 import { SheetElement } from "../SheetElement";
 import style from "../../styles/Row.module.scss";
 import { SheetElementProps } from "../../types";
@@ -8,7 +8,7 @@ import { SheetElementProps } from "../../types";
  * Renders a row element
  * @param element The row element description
  */
-export function SheetRow(props: SheetElementProps<RowElementDescriptor>) {
+export function SheetRow(props: SheetElementProps<RowDescriptor>) {
   const childElements = props.element.children || [];
   const elements: JSX.Element[] = [];
   for (const childElement of childElements) {

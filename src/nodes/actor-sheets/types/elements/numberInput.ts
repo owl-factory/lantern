@@ -1,10 +1,10 @@
-import { ParsedExpressionString } from "..";
+import { ParsedExpressionString } from "../expressions";
 import { GenericSheetElementDescriptor } from "./generic";
 
 /**
  * Describes a sheet number input element
  */
-export interface NumberInputElementDescriptor extends GenericSheetElementDescriptor {
+export interface NumberInputDescriptor extends GenericSheetElementDescriptor {
   id: ParsedExpressionString;
   name: ParsedExpressionString;
 }

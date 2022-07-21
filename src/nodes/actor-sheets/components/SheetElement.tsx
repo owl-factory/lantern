@@ -1,22 +1,20 @@
 import React from "react";
-import { PageElementType } from "types/enums/pageElementType";
 import {
-  BackgroundElementDescriptor,
-  BorderElementDescriptor,
-  CheckboxElementDescriptor,
-  ColumnElementDescriptor,
-  InlineElementDescriptor,
-  LabelElementDescriptor,
-  NumberInputElementDescriptor,
-  PageElementDescriptor,
-  PageableElementDescriptor,
-  PrefabElementDescriptor,
-  RadioButtonElementDescriptor,
-  RadioElementDescriptor,
-  RowElementDescriptor,
-  SelectElementDescriptor,
-  TextAreaElementDescriptor,
-  TextInputElementDescriptor,
+  BackgroundDescriptor,
+  BorderDescriptor,
+  CheckboxDescriptor,
+  ColumnDescriptor,
+  InlineDescriptor,
+  LabelDescriptor,
+  NumberInputDescriptor,
+  PageDescriptor,
+  PageableDescriptor,
+  PrefabDescriptor,
+  RadioButtonDescriptor,
+  RowDescriptor,
+  SelectDescriptor,
+  TextAreaDescriptor,
+  TextInputDescriptor,
 } from "nodes/actor-sheets/types/elements";
 import { GenericSheetElementDescriptor } from "nodes/actor-sheets/types/elements/generic";
 import {
@@ -37,10 +35,11 @@ import { SheetPageable } from "./elements/Pageable";
 import { SheetPrefab } from "./elements/Prefab";
 import { SheetRadioButton } from "./elements/RadioButton";
 import { SheetElementProps } from "../types";
-import { LoopElementDescriptor } from "../types/elements/loop";
 import { SheetLoop } from "./elements/Loop";
-import { ButtonElementDescriptor } from "../types/elements/button";
+import { ButtonDescriptor } from "../types/elements/button";
 import { SheetButton } from "./elements/Button";
+import { SheetElementType } from "../enums/sheetElementType";
+import { LoopDescriptor } from "../types/elements/loop";
 
 /**
  * Determines which sheet element to render based on the descriptor element type given
@@ -49,43 +48,42 @@ import { SheetButton } from "./elements/Button";
  */
 export function SheetElement(props: SheetElementProps<GenericSheetElementDescriptor>) {
   switch (props.element?.element) {
-    case PageElementType.Pageable:
-      return <SheetPageable {...props} element={props.element as PageableElementDescriptor}/>;
-    case PageElementType.Page:
-      return <SheetPage {...props} element={props.element as PageElementDescriptor}/>;
-    case PageElementType.Row:
-      return <SheetRow {...props} element={props.element as RowElementDescriptor}/>;
-    case PageElementType.Column:
-      return <SheetColumn {...props} element={props.element as ColumnElementDescriptor}/>;
-    case PageElementType.Background:
-      return <SheetBackground {...props} element={props.element as BackgroundElementDescriptor}/>;
-    case PageElementType.Border:
-      return <SheetBorder {...props} element={props.element as BorderElementDescriptor}/>;
-    case PageElementType.Inline:
-      return <SheetInline {...props} element={props.element as InlineElementDescriptor}/>;
-    case PageElementType.Label:
-      return <SheetLabel {...props} element={props.element as LabelElementDescriptor}/>;
-    case PageElementType.Button:
-      return <SheetButton {...props} element={props.element as ButtonElementDescriptor}/>;
-    case PageElementType.Checkbox:
-      return <SheetCheckbox {...props} element={props.element as CheckboxElementDescriptor}/>;
-    case PageElementType.Radio:
-    case PageElementType.RadioButton:
-     return <SheetRadioButton {...props} element={props.element as RadioButtonElementDescriptor}/>;
-    case PageElementType.NumberInput:
-      return <SheetNumberInput {...props} element={props.element as NumberInputElementDescriptor}/>;
-    case PageElementType.TextInput:
-      return <SheetTextInput {...props} element={props.element as TextInputElementDescriptor}/>;
-    case PageElementType.TextArea:
-      return <SheetTextArea {...props} element={props.element as TextAreaElementDescriptor}/>;
-    case PageElementType.Select:
-      return <SheetSelect {...props} element={props.element as SelectElementDescriptor}/>;
+    case SheetElementType.Pageable:
+      return <SheetPageable {...props} element={props.element as PageableDescriptor}/>;
+    case SheetElementType.Page:
+      return <SheetPage {...props} element={props.element as PageDescriptor}/>;
+    case SheetElementType.Row:
+      return <SheetRow {...props} element={props.element as RowDescriptor}/>;
+    case SheetElementType.Column:
+      return <SheetColumn {...props} element={props.element as ColumnDescriptor}/>;
+    case SheetElementType.Background:
+      return <SheetBackground {...props} element={props.element as BackgroundDescriptor}/>;
+    case SheetElementType.Border:
+      return <SheetBorder {...props} element={props.element as BorderDescriptor}/>;
+    case SheetElementType.Inline:
+      return <SheetInline {...props} element={props.element as InlineDescriptor}/>;
+    case SheetElementType.Label:
+      return <SheetLabel {...props} element={props.element as LabelDescriptor}/>;
+    case SheetElementType.Button:
+      return <SheetButton {...props} element={props.element as ButtonDescriptor}/>;
+    case SheetElementType.Checkbox:
+      return <SheetCheckbox {...props} element={props.element as CheckboxDescriptor}/>;
+    case SheetElementType.Radio:
+     return <SheetRadioButton {...props} element={props.element as RadioButtonDescriptor}/>;
+    case SheetElementType.NumberInput:
+      return <SheetNumberInput {...props} element={props.element as NumberInputDescriptor}/>;
+    case SheetElementType.TextInput:
+      return <SheetTextInput {...props} element={props.element as TextInputDescriptor}/>;
+    case SheetElementType.TextArea:
+      return <SheetTextArea {...props} element={props.element as TextAreaDescriptor}/>;
+    case SheetElementType.Select:
+      return <SheetSelect {...props} element={props.element as SelectDescriptor}/>;
 
-    case PageElementType.Loop:
-      return <SheetLoop {...props} element={props.element as LoopElementDescriptor}/>;
+    case SheetElementType.Loop:
+      return <SheetLoop {...props} element={props.element as LoopDescriptor}/>;
 
-    case PageElementType.Prefab:
-      return <SheetPrefab {...props} element={props.element as PrefabElementDescriptor}/>;
+    case SheetElementType.Prefab:
+      return <SheetPrefab {...props} element={props.element as PrefabDescriptor}/>;
   }
   return <></>;
 }

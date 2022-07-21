@@ -1,13 +1,13 @@
 import { observer } from "mobx-react-lite";
 import React from "react";
-import { NumberInputElementDescriptor, TextInputElementDescriptor } from "nodes/actor-sheets/types/elements";
+import { NumberInputDescriptor, TextInputDescriptor } from "nodes/actor-sheets/types/elements";
 import style from "../../styles/Input.module.scss";
 import { SheetElementProps } from "../../types";
 import { ActorController } from "../../controllers/ActorController";
 
 const VARIABLE_FIELDS = ["id", "name"];
 
-type IndividualSheetInputProps = SheetElementProps<NumberInputElementDescriptor | TextInputElementDescriptor>
+type IndividualSheetInputProps = SheetElementProps<NumberInputDescriptor | TextInputDescriptor>
 
 interface SheetInputProps extends IndividualSheetInputProps {
   type: string;
@@ -21,7 +21,7 @@ interface SheetInputProps extends IndividualSheetInputProps {
  */
 const SheetInput = observer((props: SheetInputProps) => {
   const ref = React.createRef<HTMLInputElement>();
-  const element = ActorController.renderVariables<TextInputElementDescriptor>(
+  const element = ActorController.renderVariables<TextInputDescriptor>(
     props.id,
     props.element,
     VARIABLE_FIELDS,
