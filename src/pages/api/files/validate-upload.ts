@@ -19,7 +19,7 @@ async function validateUpload(this: HTTPHandler, req: NextApiRequest) {
   requirePermission("uploadFile");
 
   const fileDoc = await FileLogic.fetch(req.body.file.ref);
-  console.log(fileDoc)
+  console.log(fileDoc);
   // If we're not pending, then there is nothing to be done. Exit.
   if (!fileDoc.isPending) {
     this.returnSuccess({ file: fileDoc });
@@ -39,7 +39,7 @@ async function validateUpload(this: HTTPHandler, req: NextApiRequest) {
   fileDoc.sizeInBytes = fileMetadata.ContentLength || -1;
   fileDoc.mimetype = fileMetadata.ContentType as Mimetype;
   fileDoc.src = req.body.file.src;
-  
+
   // Check DB for latest information on the user's storage
   const account = await UserLogic.fetch(Auth.user?.ref || "");
   validateAccountHasSpace(account, fileDoc.sizeInBytes);

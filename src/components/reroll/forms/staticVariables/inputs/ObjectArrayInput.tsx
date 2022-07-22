@@ -23,11 +23,11 @@ function ObjectArrayInput(props: ObjectArrayInputProps) {
   }
 
   function update(index: number, objectValue: StaticVariableObject[]) {
-    return
+    return;
   }
 
   function remove() {
-    return
+    return;
   }
 
   for (let i = 0; i < props.objectArray.length; i++) {
