@@ -22,7 +22,7 @@ export function SceneRenderer({ sceneController }: SceneRendererProps): JSX.Elem
     return () => {
       app.stop();
     };
-  }, []);
+  }, [sceneController]);
 
   return <div ref={ref} />;
 }

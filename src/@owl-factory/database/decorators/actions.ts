@@ -35,9 +35,8 @@ export function validateDocument(descriptor: LogicDescriptor, doc: any) {
   // TODO - make this required by default. SERIOUSLY. SECURITY VULN. DO NOT KEEP
   if (!descriptor.validation) {
     if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "test") {
-
+      console.warn("SET VALIDATION OR MAKE VALIDATION REQUIRED BY DEFAULT");
     }
-    console.warn("SET VALIDATION OR MAKE VALIDATION REQUIRED BY DEFAULT");
     return;
   }
   const result = descriptor.validation(doc);

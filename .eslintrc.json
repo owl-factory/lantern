@@ -1,0 +1,8 @@
+{
+  "extends": "next/core-web-vitals",
+  "rules": {
+    "semi": 1,
+    "comma-dangle": [1, "always-multiline"],
+    "no-trailing-spaces": 1
+  }
+}
