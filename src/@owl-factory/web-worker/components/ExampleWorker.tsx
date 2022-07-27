@@ -2,6 +2,9 @@ import React from "react";
 import { newWebWorker } from "../utilities";
 import ExampleSandboxWorker from "../workers/sandbox-example.worker";
 
+/**
+ * Renders a component that loads a web worker for example purposes
+ */
 export function ExampleWorker() {
   // State is required for handling onComponentLoad
   const [ worker, setWorker ] = React.useState<Worker | null>(null);

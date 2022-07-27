@@ -80,6 +80,11 @@ export class ActorSubController {
     this.$actorValues[ref][fieldName] = value;
   }
 
+  /**
+   * Gets all content for a single actor
+   * @param ref The ref of the actor to fetch the content from
+   * @returns All content for the actor. Returns an empty struct if none is found
+   */
   public getAllContent(ref: string): Record<string, ActorContent[]> {
     if (!this.isActorLoaded(ref)) { return {}; }
     return this.$content[ref] || {};

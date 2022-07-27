@@ -1,7 +1,10 @@
 /**
- * Calculates the nth number in the fibbonacci sequence
+ * An example of code that can be used within a web worker. The self.onmessage function is required
  */
 export default () => {
+  /**
+   * Calculates the nth number in the fibbonacci sequence
+   */
   self.onmessage = (message) => {
     const num = message.data;
     let num1 = 0;

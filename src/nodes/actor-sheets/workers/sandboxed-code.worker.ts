@@ -22,6 +22,7 @@ export default () => {
     "Object": 1,
     "RegExp": 1,
     "String": 1,
+    "Symbol": 1, // TODO - double check that this is safe
     "Error": 1,
     "EvalError": 1,
     "RangeError": 1,
@@ -43,6 +44,7 @@ export default () => {
     "NaN": 1,
     "undefined": 1,
 
+    // TODO - Testing values below here. Remove for production
     "console": 1,
   };
 
@@ -52,12 +54,12 @@ export default () => {
     // If the whitelist has this property, do nothing
     if (Object.prototype.hasOwnProperty.call(wl, prop)) { return; }
 
-    // Object.defineProperty(global, prop, {
-    //   get: function() {
-    //     throw `Security Exception: cannot access ${prop}`;
-    //   },
-    //   configurable: false,
-    // });
+    Object.defineProperty(global, prop, {
+      get: function() {
+        throw `Security Exception: cannot access ${prop}`;
+      },
+      configurable: false,
+    });
   });
 
   // Loops through all of the property names for the global object. For anything that is not whitelisted,
@@ -66,12 +68,12 @@ export default () => {
     // If the whitelist has this property, do nothing
     if (Object.prototype.hasOwnProperty.call(wl, prop)) { return; }
 
-    // Object.defineProperty((global as any).__proto__, prop, {
-    //   get: function() {
-    //     throw `Security Exception: cannot access ${prop}`;
-    //   },
-    //   configurable: false,
-    // });
+    Object.defineProperty((global as any).__proto__, prop, {
+      get: function() {
+        throw `Security Exception: cannot access ${prop}`;
+      },
+      configurable: false,
+    });
   });
 
   // Monkeypatches the Array.join() function to limit the maximum length of either the array or the new value between

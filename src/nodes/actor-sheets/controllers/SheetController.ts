@@ -170,6 +170,11 @@ export class SheetController<T> {
     return this.tabs[sheetID][key];
   }
 
+  /**
+   * Gets all variables for a given sheet
+   * @param key The sheet ID of the variables to grab
+   * @returns A struct of all variables for a given sheet ID. Returns an empty struct if none is found
+   */
   public getAllVariables(key: string) {
     const variables = this.variables[key];
     if (!variables) { return {}; }

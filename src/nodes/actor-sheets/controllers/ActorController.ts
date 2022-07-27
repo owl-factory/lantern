@@ -8,9 +8,8 @@ import { ActorSubController } from "./ActorSubController";
 import { RuleVariableGroup, RulesetController } from "./RulesetController";
 import { read } from "@owl-factory/utilities/objects";
 import { SheetProperties } from "../types";
-import { ExpressionType } from "../enums/expressionType";
 import { ActorContent, ActorDocument } from "types/documents/Actor";
-import { Expression, ParsedExpressionString } from "../types/expressions";
+import { ParsedExpressionString } from "../types/expressions";
 import { Scalar } from "types";
 import { parseContentFieldArguments } from "../utilities/field";
 import { StateController } from "./StateController";
@@ -368,23 +367,9 @@ class $ActorController {
   }
 
   /**
-   * Renders an expression into a string
-   * @param renderID The ID of the render to use for determining the expression values
-   * @param expr The expression to render out
+   * A callback function run when recieving a response from the web worker
+   * @param msg The message recieved from the web worker to set the variables locally
    */
-  public renderExpression(renderID: string, expr: Expression, properties: SheetProperties) {
-    let renderedResult = "";
-    for (const item of expr.items) {
-      switch (item.type) {
-        case ExpressionType.Variable:
-          renderedResult += this.convertVariableToData(renderID, item.value || "", properties);
-          break;
-      }
-
-    }
-    return renderedResult;
-  }
-
   public setVariables(msg: any) {
     const value = this.$variables[msg.data.key];
     if (value === msg.data.value) { return; }
@@ -444,7 +429,3 @@ class $ActorController {
 
 export const ActorController = new $ActorController();
 
-function getFieldKey<T extends GenericSheetElementDescriptor>(element: T, fieldName: string) {
-  const key = `${element.$key}_${fieldName}`;
-  return key;
-}
