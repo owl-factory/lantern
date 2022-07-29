@@ -2,7 +2,7 @@ import React from "react";
 import { TextAreaDescriptor } from "nodes/actor-sheets/types/elements";
 import style from "../../styles/Input.module.scss";
 import { SheetElementProps } from "../../types";
-import { ActorController } from "../../controllers/ActorController";
+import { ActorController } from "../../controllers/ActorSheetController";
 
 const VARIABLE_FIELDS = ["id", "name"];
 
@@ -25,8 +25,8 @@ export function SheetTextArea(props: SheetElementProps<TextAreaDescriptor>) {
    * @param ev The triggering onChange event
    */
   function onChange(ev: React.ChangeEvent<HTMLTextAreaElement>) {
-    ActorController.updateActorField(props.renderID, element.name, props.properties, ev.target.value);
-    ev.target.value = ActorController.getActorField(props.renderID, element.name, props.properties).toString();
+    ActorController.setActor(props.renderID, element.name, props.properties, ev.target.value);
+    ev.target.value = ActorController.getActor(props.renderID, element.name, props.properties).toString();
   }
 
   // Handles the case where we have two or more elements of the same name, and one of them is changed
@@ -34,8 +34,8 @@ export function SheetTextArea(props: SheetElementProps<TextAreaDescriptor>) {
   React.useEffect(() => {
     if (!ref.current) { return; }
     if (ref.current === document.activeElement) { return; }
-    ref.current.value = ActorController.getActorField(props.renderID, element.name, props.properties).toString();
-  }, [ActorController.getActorField(props.renderID, element.name, props.properties)]);
+    ref.current.value = ActorController.getActor(props.renderID, element.name, props.properties).toString();
+  }, [ActorController.getActor(props.renderID, element.name, props.properties)]);
 
   return (
     <div>
@@ -46,7 +46,7 @@ export function SheetTextArea(props: SheetElementProps<TextAreaDescriptor>) {
         onChange={onChange}
         className={`${style.actorSheetInput}`}
         rows={4}
-        defaultValue={ActorController.getActorField(props.renderID, element.name, props.properties).toString()}
+        defaultValue={ActorController.getActor(props.renderID, element.name, props.properties).toString()}
       />
     </div>
   );

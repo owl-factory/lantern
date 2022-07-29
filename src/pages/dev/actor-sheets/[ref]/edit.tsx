@@ -27,7 +27,7 @@ function EditActorSheet() {
   // Ensures that the dependent ruleset is loaded and creates the render ID
   React.useEffect(() => {
     if (actorSheet && actorSheet.ruleset && actorSheet.ruleset.ref) {
-      setRenderID(ActorController.createRender(null, "temp", actorSheet.ruleset.ref));
+      setRenderID(ActorController.newRender("temp", "temp", actorSheet.ruleset.ref));
       RulesetData.load(actorSheet.ruleset.ref);
     }
   }, [actorSheet]);

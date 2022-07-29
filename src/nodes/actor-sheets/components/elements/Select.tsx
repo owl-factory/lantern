@@ -1,4 +1,4 @@
-import { ActorController } from "../../controllers/ActorController";
+import { ActorController } from "../../controllers/ActorSheetController";
 import React from "react";
 import { SelectDescriptor } from "nodes/actor-sheets/types/elements";
 import { SheetElementProps } from "nodes/actor-sheets/types";
@@ -24,14 +24,14 @@ export function SheetSelect(props: SheetElementProps<SelectDescriptor>) {
    * @param ev The triggering onChange event
    */
    function onChange(ev: React.ChangeEvent<HTMLSelectElement>) {
-    ActorController.updateActorField(props.renderID, element.name, props.properties, ev.target.value);
-    ev.target.value = ActorController.getActorField(props.renderID, element.name, props.properties).toString();
+    ActorController.setActor(props.renderID, element.name, props.properties, ev.target.value);
+    ev.target.value = ActorController.getActor(props.renderID, element.name, props.properties).toString();
   }
 
   return (
     <select
       name={element.name}
-      defaultValue={ActorController.getActorField(props.renderID, element.name, props.properties).toString()}
+      defaultValue={ActorController.getActor(props.renderID, element.name, props.properties).toString()}
       onChange={onChange}
     >
       <SheetChildren {...props}/>

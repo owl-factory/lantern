@@ -44,6 +44,7 @@ export class SheetController<T> {
 
     this.loadSheet(key, layout);
     this.loadTabs(key, layout);
+    console.log("sheets", this.sheets)
   }
 
   /**

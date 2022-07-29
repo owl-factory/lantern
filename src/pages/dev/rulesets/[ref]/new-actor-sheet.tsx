@@ -35,7 +35,7 @@ function NewActorSheet() {
   React.useEffect(() => {
     if (ruleset && ruleset.ref) {
       ActorController.loadRuleset(ruleset.ref, ruleset);
-      setRenderID(ActorController.createRender(null, "temp", ruleset.ref));
+      setRenderID(ActorController.newRender("temp", "temp", ruleset.ref));
     }
   }, [ruleset]);
 

@@ -1,2 +1,2 @@
-export { ActorController } from "./controllers/ActorController";
+export { ActorController } from "./controllers/ActorSheetController";
 export { ActorSheet } from "./components/ActorSheet";

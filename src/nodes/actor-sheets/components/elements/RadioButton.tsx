@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { RadioDescriptor } from "nodes/actor-sheets/types/elements";
-import { ActorController } from "../../controllers/ActorController";
+import { ActorController } from "../../controllers/ActorSheetController";
 import { SheetElementProps } from "../../types";
 
 const VARIABLE_FIELDS = ["id", "name", "value"];
@@ -19,14 +19,14 @@ export const SheetRadioButton = observer((props: SheetElementProps<RadioDescript
     VARIABLE_FIELDS,
     props.properties,
   );
-  const fieldValue = ActorController.getActorField(props.renderID, element.name, props.properties);
+  const fieldValue = ActorController.getActor(props.renderID, element.name, props.properties);
 
   /**
    * Handles the onChange event in the radio buttons. Updates the ActorController values
    * @param ev The triggering onChange event
    */
   function onChange(ev: React.ChangeEvent<HTMLInputElement>) {
-    ActorController.updateActorField(props.renderID, element.name, props.properties, ev.target.value);
+    ActorController.setActor(props.renderID, element.name, props.properties, ev.target.value);
     ev.target.checked = true;
   }
 

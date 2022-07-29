@@ -8,7 +8,7 @@ import { StateType } from "nodes/actor-sheets/enums/stateTypes";
  * @param contentGroup The type of content that is being created
  */
 export function createContent(renderID: string, contentGroup: string) {
-  ActorController.pushNewContent(renderID, contentGroup);
+  ActorController.pushContent(renderID, contentGroup, {});
 }
 
 /**
@@ -18,7 +18,7 @@ export function createContent(renderID: string, contentGroup: string) {
  * @param index The index of the content to remove
  */
 export function deleteContent(renderID: string, contentGroup: string, index: number) {
-  ActorController.deleteContentItem(renderID, contentGroup, index);
+  ActorController.deleteContent(renderID, contentGroup, index);
 }
 
 /**

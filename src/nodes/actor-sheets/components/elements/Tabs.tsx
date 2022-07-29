@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-import { ActorController } from "nodes/actor-sheets/controllers/ActorController";
+import { ActorController } from "nodes/actor-sheets/controllers/ActorSheetController";
 import { StateType } from "nodes/actor-sheets/enums/stateTypes";
 import { SheetElementProps } from "nodes/actor-sheets/types";
 import { TabsDescriptor } from "nodes/actor-sheets/types/elements";

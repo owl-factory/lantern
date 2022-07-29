@@ -1,6 +1,6 @@
 import { action, makeObservable, observable } from "mobx";
+import { StateType } from "nodes/actor-sheets/enums/stateTypes";
 import { Scalar } from "types";
-import { StateType } from "../enums/stateTypes";
 
 // Handles the state for each render of a sheet, allowing for local consistency but not saved to a database
 export class StateController {
