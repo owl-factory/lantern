@@ -1,9 +1,8 @@
 import React from "react";
 import {
-  StaticVariable,
   StaticVariableComplexType,
+  StaticVariableMetadata,
   StaticVariableScalarType,
-  StaticVariableType,
 } from "types/documents/subdocument/StaticVariable";
 import { StaticVariableScalarArrayInput } from "./inputs/ScalarArrayInput";
 import { StaticVariableBooleanInput } from "./inputs/BooleanInput";
@@ -14,7 +13,7 @@ import { StaticVariableObjectArrayInput } from "./inputs/ObjectArrayInput";
 import { StaticVariableFormValues, StaticVariableObject } from "types/components/forms/staticVariables";
 
 interface StaticVariableValueInputProps {
-  staticVariable: StaticVariable & StaticVariableFormValues;
+  staticVariable: StaticVariableMetadata & StaticVariableFormValues;
   setStaticVariableField: (field: string, value: any, shouldValidate?: boolean | undefined) => void;
 }
 

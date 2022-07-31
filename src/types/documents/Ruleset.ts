@@ -1,6 +1,6 @@
 import { Ref64 } from "@owl-factory/types";
 import { BaseDocument } from "./BaseDocument";
-import { StaticVariable } from "./subdocument/StaticVariable";
+import { StaticVariables } from "./subdocument/StaticVariable";
 
 export interface ActorType {
   name: string; // The name of the actor type, readable to the user ("Player Character, Non-Player Character")
@@ -17,7 +17,8 @@ export interface RulesetDocument extends BaseDocument {
   actorFields: Record<string, unknown>; // Variable names and types to be used by the actors for this ruleset
   actorTypes: ActorType[]; // The different kinds of actors supported by this ruleset by default
 
-  staticVariables: Record<string, StaticVariable>;
+  // Static variables serving as 'rules' and flags and values for the ruleset
+  rules: StaticVariables;
 
   // Indicates whether a ruleset is official or not. Official rulesets are those that are offically supported
   // on the app, be they first party (D&D 5e) or third party (Star Wars 5e).

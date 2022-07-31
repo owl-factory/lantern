@@ -354,7 +354,7 @@ class $ActorController {
       actor: toJS(this.actorController.getActorValues(actorRef)),
       character: toJS(this.actorController.getActorValues(actorRef)),
       content: toJS(this.actorController.getAllContent(actorRef)),
-      rules: toJS(this.rulesetController.getRuleset(rulesetRef).staticVariables),
+      rules: toJS(this.rulesetController.getRuleset(rulesetRef).rules.values),
       sheet: toJS(this.sheetController.getAllVariables(sheetRef)),
       expr: expr.value,
       _key: key,

@@ -314,8 +314,8 @@ export class DataManager<T extends Record<string, unknown>> {
     if (!Array.isArray(docs)) { docs = [docs]; }
 
     const packets = await crud.update<T>(this.url, docs);
-    const createdDocs = getSuccessfulDocuments(packets);
-    this.setMany(createdDocs);
+    const updatedDocs = getSuccessfulDocuments(packets);
+    this.setMany(updatedDocs);
     return packets;
   }
 

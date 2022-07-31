@@ -1,19 +1,20 @@
 import { StaticVariableFormValues, StaticVariableObject } from "types/components/forms/staticVariables";
 import {
-  StaticVariable,
+  StaticVariableValue,
   StaticVariableComplexType,
+  StaticVariableMetadata,
   StaticVariableScalarType,
 } from "types/documents/subdocument/StaticVariable";
 
 
 /**
  * Builds initial values from the default starting static variable values
- * @param staticVariable The given static variable to build initial values from
+ * @param value The given static variable to build initial values from
  */
-export function buildInitialValues(staticVariable: StaticVariable) {
-  const initialValues: StaticVariable & StaticVariableFormValues = {
-    ...staticVariable,
-    oldKey: staticVariable.key,
+export function buildInitialValues(value: StaticVariableValue, metadata: StaticVariableMetadata) {
+  const initialValues: StaticVariableMetadata & StaticVariableFormValues = {
+    ...metadata,
+    oldKey: metadata.key,
     value_string: "",
     value_number: 0,
     value_boolean: false,
@@ -27,36 +28,36 @@ export function buildInitialValues(staticVariable: StaticVariable) {
 
   let keys: string[];
 
-  switch (staticVariable.variableType) {
+  switch (metadata.variableType) {
     case StaticVariableScalarType.String:
-      initialValues.value_string = staticVariable.value as string;
+      initialValues.value_string = value as string;
       break;
     case StaticVariableScalarType.Number:
-      initialValues.value_number = staticVariable.value as number;
+      initialValues.value_number = value as number;
       break;
     case StaticVariableScalarType.Boolean:
-      initialValues.value_boolean = staticVariable.value as boolean;
+      initialValues.value_boolean = value as boolean;
       break;
     case StaticVariableComplexType.Object:
-      if (!staticVariable.objectType) { break; }
-      keys = Object.keys(staticVariable.objectType).sort();
+      if (!metadata.objectType) { break; }
+      keys = Object.keys(metadata.objectType).sort();
       for (const key of keys) {
-        const value: StaticVariableObject = {
+        const objectValue: StaticVariableObject = {
           key,
-          type: staticVariable.objectType[key],
-          value: (staticVariable.value as any)[key],
+          type: metadata.objectType[key],
+          value: (value as any)[key],
         };
-        initialValues.value_obj.push(value);
+        initialValues.value_obj.push(objectValue);
       }
       break;
     case StaticVariableComplexType.StringArray:
-      initialValues.value_arr_string = staticVariable.value as string[];
+      initialValues.value_arr_string = value as string[];
       break;
     case StaticVariableComplexType.NumberArray:
-      initialValues.value_arr_number = staticVariable.value as number[];
+      initialValues.value_arr_number = value as number[];
       break;
     case StaticVariableComplexType.BooleanArray:
-      initialValues.value_arr_boolean = staticVariable.value as boolean[];
+      initialValues.value_arr_boolean = value as boolean[];
       break;
     case StaticVariableComplexType.ObjectArray:
       // TODO - implement object array
@@ -81,38 +82,39 @@ export function buildInitialValues(staticVariable: StaticVariable) {
  * @param values The values from the StaticVariable form to process
  * @returns The processed and cleaned static variable values
  */
-export function processStaticValues(values: StaticVariable & StaticVariableFormValues) {
+export function processStaticValues(values: StaticVariableMetadata & StaticVariableFormValues) {
+  let value: StaticVariableValue = "";
   switch (values.variableType) {
     case StaticVariableScalarType.String:
-      values.value = values.value_string;
+      value = values.value_string;
       delete values.objectType;
       break;
     case StaticVariableScalarType.Number:
-      values.value = values.value_number;
+      value = values.value_number;
       delete values.objectType;
       break;
     case StaticVariableScalarType.Boolean:
-      values.value = values.value_boolean;
+      value = values.value_boolean;
       delete values.objectType;
       break;
     case StaticVariableComplexType.Object:
       values.objectType = {};
-      values.value = {};
-      for (const value of values.value_obj) {
-        values.objectType[value.key] = value.type;
-        values.value[value.key] = value.value;
+      value = {};
+      for (const objectValue of values.value_obj) {
+        values.objectType[objectValue.key] = objectValue.type;
+        value[objectValue.key] = objectValue.value;
       }
       break;
     case StaticVariableComplexType.StringArray:
-      values.value = values.value_arr_string;
+      value = values.value_arr_string;
       delete values.objectType;
       break;
     case StaticVariableComplexType.NumberArray:
-      values.value = values.value_arr_number;
+      value = values.value_arr_number;
       delete values.objectType;
       break;
     case StaticVariableComplexType.BooleanArray:
-      values.value = values.value_arr_boolean;
+      value = values.value_arr_boolean;
       delete values.objectType;
       break;
     case StaticVariableComplexType.ObjectArray:
@@ -127,14 +129,13 @@ export function processStaticValues(values: StaticVariable & StaticVariableFormV
   }
 
   // Packages up the values into a static variable
-  const staticVariable: StaticVariable = {
+  const metadata: StaticVariableMetadata = {
     name: values.name,
     key: values.key,
     description: values.description,
     variableType: values.variableType,
     objectType: values.objectType,
-    value: values.value,
   };
 
-  return staticVariable;
+  return { metadata, value };
 }

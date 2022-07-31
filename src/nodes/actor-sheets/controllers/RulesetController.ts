@@ -1,13 +1,13 @@
 import { read } from "@owl-factory/utilities/objects";
 import { action, makeObservable, observable } from "mobx";
 import { RulesetDocument } from "types/documents";
-import { StaticVariable } from "types/documents/subdocument/StaticVariable";
+import { StaticVariables } from "types/documents/subdocument/StaticVariable";
 
 interface RulesetControllerItem {
   name: string; // The name of the ruleset
   alias: string; // The name of the alias
   actorFields: Record<string, unknown>; // The actor fields
-  staticVariables: Record<string, StaticVariable>; // The custom, static variables
+  rules: StaticVariables; // The custom, static variables
 }
 
 // An empty default ruleset
@@ -15,7 +15,7 @@ const EMPTY_RULESET: RulesetControllerItem = {
   name: "Test Ruleset",
   alias: "test",
   actorFields: {},
-  staticVariables: {},
+  rules: { metadata: {}, values: {} },
 };
 
 // The types of variables stored within the ruleset
@@ -58,7 +58,7 @@ export class RulesetController {
     const ruleset = this.getRuleset(ref);
     switch (variableGroup) {
       case RuleVariableGroup.STATIC:
-        const staticField = ruleset.staticVariables;
+        const staticField = ruleset.rules.values;
         const value = read(staticField, field);
         if (!value) { return undefined; }
         return (value as any).value;
@@ -75,7 +75,8 @@ export class RulesetController {
       name: ruleset.name || "Unknown",
       alias: ruleset.alias || "unknown",
       actorFields: ruleset.actorFields || {},
-      staticVariables: ruleset.staticVariables || {},
+      rules: ruleset.rules || { metadata: {}, values: {} },
+
     };
     this.$rulesets[ref] = rules;
   }
