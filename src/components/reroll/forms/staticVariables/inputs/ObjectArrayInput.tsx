@@ -1,7 +1,7 @@
 import { Button } from "@owl-factory/components/button";
 import React from "react";
 import { StaticVariableFormValues, StaticVariableObject } from "types/components/forms/staticVariables";
-import { StaticVariable } from "types/documents/subdocument/StaticVariable";
+import { StaticVariableMetadata } from "types/documents/subdocument/StaticVariable";
 import { StaticVariableObjectInput } from "./ObjectInput";
 import { ObjectTypeInput } from "./ObjectTypeInput";
 
@@ -50,7 +50,7 @@ function ObjectArrayInput(props: ObjectArrayInputProps) {
 }
 
 interface StaticVariableObjectArrayInputProps {
-  staticVariable: StaticVariable & StaticVariableFormValues;
+  staticVariable: StaticVariableMetadata & StaticVariableFormValues;
   setStaticVariableField: (field: string, value: any, shouldValidate?: boolean | undefined) => void;
 }
 

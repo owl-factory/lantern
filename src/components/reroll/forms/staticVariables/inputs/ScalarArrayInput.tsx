@@ -3,12 +3,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "c
 import { Formik, FormikProps } from "formik";
 import React from "react";
 import { StaticVariableFormValues } from "types/components/forms/staticVariables";
-import { StaticVariable, StaticVariableComplexType } from "types/documents/subdocument/StaticVariable";
+import { StaticVariableComplexType, StaticVariableMetadata } from "types/documents/subdocument/StaticVariable";
 import { StaticVariableNumberInput } from "./NumberInput";
 import { StaticVariableTextInput } from "./TextInput";
 
 interface StaticVariableScalarArrayInputProps {
-  staticVariable: StaticVariable & StaticVariableFormValues;
+  staticVariable: StaticVariableMetadata & StaticVariableFormValues;
   setStaticVariableField: (field: string, value: any, shouldValidate?: boolean | undefined) => void;
 }
 

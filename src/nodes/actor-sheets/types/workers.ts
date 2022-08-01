@@ -1,6 +1,6 @@
 import { Scalar } from "types";
 import { ActorContent } from "types/documents/Actor";
-import { StaticVariable } from "types/documents/subdocument/StaticVariable";
+import { StaticVariableValue } from "types/documents/subdocument/StaticVariable";
 
 // The contents of the message data to the actor sheet sandboxed web worker
 export type SandboxWorkerMessage = StaticSandboxWorkerMessage & Record<string, Scalar | unknown>;
@@ -9,6 +9,6 @@ export type SandboxWorkerMessage = StaticSandboxWorkerMessage & Record<string, S
 export interface StaticSandboxWorkerMessage {
   expr: string;
   actor: Record<string, Scalar>;
-  rules: Record<string, StaticVariable>;
+  rules: Record<string, StaticVariableValue>;
   content: Record<string, ActorContent[]>;
 }

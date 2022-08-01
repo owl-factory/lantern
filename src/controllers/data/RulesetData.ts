@@ -43,7 +43,7 @@ class RulesetDataManager extends DataManager<Partial<RulesetDocument>> {
     validateUpdatedRuleset(doc);
 
     const packets = await super.$update(doc);
-    if (packets.length === 0) { throw `An unexpected error occured when creating the document ${doc.name}`; }
+    if (packets.length === 0) { throw `An unexpected error occured when updating the ruleset document ${doc.name}`; }
     else if (!packets[0].success) { throw packets[0].messages; }
     return packets[0].doc as Partial<RulesetDocument>;
   }
