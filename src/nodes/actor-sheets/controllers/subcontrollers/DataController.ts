@@ -77,7 +77,6 @@ export class DataController {
    public set(source: DataSource, renderIDs: RenderGroup, value: unknown, key: string, index?: number) {
     switch(source) {
       case DataSource.Actor:
-        console.log("Yoo", renderIDs, value, key)
         this.setActor(renderIDs.actorID, value as Scalar, key);
         break;
 
@@ -199,7 +198,6 @@ export class DataController {
     }
     if (this.$actor[actorID] === undefined) { this.$actor[actorID] = {}; }
     this.$actor[actorID][key] = value as Scalar;
-    console.log(this.$actor[actorID])
   }
 
   private setContent(actorID: string, value: unknown[], key: string) {

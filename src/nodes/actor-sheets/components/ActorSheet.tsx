@@ -43,8 +43,8 @@ export const ActorSheet = observer((props: ActorSheetProps) => {
    * Takes the actor values and saves them into the appropriate actor
    */
   function save() {
-    const { ref, actor } = ActorController.exportActor(props.id);
-    if (!isValidRef(ref)) { return; } // Don't save any test actors
+    const actor= ActorController.exportActor(props.id);
+    if (!isValidRef(actor.ref)) { return; } // Don't save any test actors
     ActorData.update(actor);
   }
 

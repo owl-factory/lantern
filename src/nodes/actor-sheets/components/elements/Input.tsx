@@ -34,7 +34,6 @@ const SheetInput = observer((props: SheetInputProps) => {
    * @param ev The triggering onChange event
    */
   function onChange(e: React.ChangeEvent<HTMLInputElement>) {
-    console.log("Shange!")
     ActorController.setActor(props.renderID, element.name, props.properties, e.target.value);
     e.target.value = ActorController.getActor(props.renderID, element.name, props.properties).toString();
   }

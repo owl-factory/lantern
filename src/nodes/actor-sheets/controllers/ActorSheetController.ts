@@ -3,7 +3,7 @@ import { RulesetDocument } from "types/documents";
 import { ActorSheetDocument } from "types/documents/ActorSheet";
 import { PageDescriptor } from "nodes/actor-sheets/types/elements";
 import { GenericSheetElementDescriptor } from "nodes/actor-sheets/types/elements/generic";
-import { SheetController } from "./SheetControllerOld";
+import { SheetController } from "./subcontrollers/SheetController";
 import { ActorSubController } from "./ActorSubController";
 import { RuleVariableGroup, RulesetController } from "./RulesetController";
 import { read } from "@owl-factory/utilities/objects";
@@ -21,8 +21,8 @@ import { DataController } from "./subcontrollers/DataController";
 import { DataSource } from "../enums/dataSource";
 import { extractVariables } from "../utilities/parse";
 import { parseXML } from "../utilities/parser";
-import { StaticVariable } from "types/documents/subdocument/StaticVariable";
 import { StateController } from "./subcontrollers/StateController";
+import { StaticVariableValue } from "types/documents/subdocument/StaticVariable";
 
 
 /**
@@ -33,7 +33,7 @@ class $ActorController {
   public $variables: Record<string, Scalar | Scalar[]> = {};
 
   protected dataController = new DataController();
-  protected sheetController = new SheetController<Partial<ActorSheetDocument>>();
+  protected sheetController = new SheetController();
   protected stateController = new StateController();
   protected worker!: Worker;
 
@@ -85,8 +85,8 @@ class $ActorController {
    * @param ruleset The ruleset data being loaded in
    */
   public loadRuleset(rulesetID: string, ruleset: Partial<RulesetDocument>) {
-    console.log("rules", ruleset.staticVariables)
-    this.dataController.load(DataSource.Ruleset, rulesetID, ruleset.staticVariables);
+    if (!ruleset.rules) return;
+    this.dataController.load(DataSource.Ruleset, rulesetID, ruleset.rules.values);
   }
 
   /**
@@ -98,7 +98,6 @@ class $ActorController {
     if (sheet.xml === undefined) { return; }
     const xml = parseXML(sheet.xml);
     const variables = extractVariables(xml);
-    console.log('sheet vars', variables)
 
     this.load(DataSource.Sheet, sheetID, variables);
     this.sheetController.load(sheetID, sheet.xml);
@@ -169,6 +168,7 @@ class $ActorController {
    * @param renderID The ref of the render to check for the actor's true ref
    */
   public getActor(renderID: string, field: string, properties: SheetProperties): Scalar {
+    if (!field) { return ""; }
     // Actors do not and should not have any periods
     if (field.search(/\./) === -1) {
       return (this.get(DataSource.Actor, renderID, field) || "") as Scalar;
@@ -211,8 +211,6 @@ class $ActorController {
    * @param value The new value to set
    */
   public setActor(renderID: string, field: string, properties: SheetProperties, value: any) {
-    console.log(renderID, field, properties, value)
-
     // Actors do not and should not have any periods
     if (field.search(/\./) === -1) {
       this.set(DataSource.Actor, renderID, value, field);
@@ -222,7 +220,7 @@ class $ActorController {
     const { contentType, index, name } = parseContentFieldArguments(field, properties);
     const content = this.get(DataSource.Content, renderID, contentType, index);
     content[name] = value;
-    this.set(DataSource.Content, renderID, value, contentType, index);
+    this.set(DataSource.Content, renderID, content, contentType, index);
   }
 
   /**
@@ -272,11 +270,12 @@ class $ActorController {
    * Gets an actor by their render ref
    * @param renderID The ref of the render to check for the actor's true ref
    */
-  public exportActor(renderID: string): { ref: string, actor: Partial<ActorDocument> } {
+  public exportActor(renderID: string): Partial<ActorDocument> {
     const actor: Partial<ActorDocument> = {};
+    actor.ref = this.$renders[renderID].actorID;
     actor.values = this.export(DataSource.Actor, renderID) as Record<string, Scalar> | undefined;
     actor.content = this.export(DataSource.Content, renderID) as Record<string, ActorContent[]> | undefined;
-    return { ref: this.$renders[renderID].actorID, actor };
+    return actor;
   }
 
   /**
@@ -296,8 +295,6 @@ class $ActorController {
 
   /** EXPORT END **/
 
-  
-
   /**
    * Grabs the sheet for the given render
    * @param ref The ref of the render to fetch the sheet for
@@ -306,7 +303,6 @@ class $ActorController {
   public getSheet(ref: string): PageDescriptor {
     let sheetRef = "";
     if (this.$renders[ref]) { sheetRef = this.$renders[ref].sheetID; }
-    console.log(sheetRef);
     return this.sheetController.getSheet(sheetRef);
   }
 
@@ -386,14 +382,13 @@ class $ActorController {
   ): string {
     if (!expr.isExpression) { return expr.value; }
     const key = `${elementKey}__${fieldName}`;
-    // console.log(key)
     const message: SandboxWorkerMessage = {
       ...properties,
       actor: toJS(this.export(DataSource.Actor, renderID) as Record<string, Scalar>),
       character: toJS(this.export(DataSource.Actor, renderID) as Record<string, Scalar>),
       content: toJS(this.export(DataSource.Content, renderID) as Record<string, ActorContent[]>),
-      rules: toJS(this.export(DataSource.Ruleset, renderID) as Record<string, StaticVariable>),
-      sheet: toJS(this.export(DataSource.Sheet, renderID) as Record<string, StaticVariable>),
+      rules: toJS(this.export(DataSource.Ruleset, renderID) as Record<string, StaticVariableValue>),
+      sheet: toJS(this.export(DataSource.Sheet, renderID) as any),
       expr: expr.value,
       _key: key,
     };

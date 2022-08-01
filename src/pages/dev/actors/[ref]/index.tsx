@@ -31,7 +31,7 @@ function ActorView() {
     RulesetData.load(actor.ruleset?.ref as string);
     if (actor.actorSheet) { ActorSheetData.load(actor.actorSheet.ref); }
     if (actor.campaign) { CampaignData.load(actor.campaign.ref); }
-    console.log("ref", ref)
+
     setRenderID(ActorController.newRender(
       ref,
       actor.ruleset?.ref as string,
@@ -63,7 +63,7 @@ function ActorView() {
     actor.values = values;
     ActorData.update(actor);
   }
-  console.log("renderID", renderID)
+
   return (
     <Page>
       <div style={{ display: "flex" }}>

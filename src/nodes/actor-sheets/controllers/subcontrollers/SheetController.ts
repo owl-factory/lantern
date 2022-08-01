@@ -34,7 +34,7 @@ export class SheetController {
       throw `The root element of an actor sheet must be <Sheet>`;
     }
 
-    const { layout, prefabs, variables } = parseFirstLevelElements(sheet);
+    const { layout, prefabs } = parseFirstLevelElements(sheet);
 
     if (!layout) { throw `A 'Layout' element is required`; }
     this.prefabs[key] = {};

@@ -3,6 +3,7 @@ import React from "react";
 import { SelectDescriptor } from "nodes/actor-sheets/types/elements";
 import { SheetElementProps } from "nodes/actor-sheets/types";
 import { SheetChildren } from "./Children";
+import { observer } from "mobx-react-lite";
 
 const VARIABLE_FIELDS = ["id", "name"];
 
@@ -10,7 +11,7 @@ const VARIABLE_FIELDS = ["id", "name"];
  * Renders a select input element
  * @param element The select element description
  */
-export function SheetSelect(props: SheetElementProps<SelectDescriptor>) {
+export const SheetSelect = observer((props: SheetElementProps<SelectDescriptor>) => {
   const element = ActorController.renderVariables<SelectDescriptor>(
     props.renderID,
     props.$key,
@@ -37,4 +38,4 @@ export function SheetSelect(props: SheetElementProps<SelectDescriptor>) {
       <SheetChildren {...props}/>
     </select>
   );
-}
+});
