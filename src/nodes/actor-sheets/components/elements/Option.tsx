@@ -11,7 +11,7 @@ const VARIABLE_FIELDS = ["value", "text"];
  * @param element The option element description
  */
 export const SheetOption = observer((props: SheetElementProps<OptionDescriptor>) => {
-  const element = ActorController.renderVariables<OptionDescriptor>(
+  const element = ActorController.renderExpressions<OptionDescriptor>(
     props.renderID,
     props.$key,
     props.element,

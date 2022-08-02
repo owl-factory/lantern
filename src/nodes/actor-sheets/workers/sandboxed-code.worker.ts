@@ -1,4 +1,7 @@
-import { SandboxWorkerMessage } from "../types/workers";
+import { Scalar } from "types";
+import { ActorContent } from "types/documents/Actor";
+import { StaticVariableValue } from "types/documents/subdocument/StaticVariable";
+import { SandboxWorkerMessage, SandboxWorkerRenderMessage, SandboxWorkerSetMessage } from "../types/workers";
 
 /**
  * Runs a small function within a sandboxed environment
@@ -104,13 +107,70 @@ export default () => {
 
   // END WHITELISTING BOILERPLATE //
 
-  self.onmessage = (message: MessageEvent<SandboxWorkerMessage>) => {
-    const keys = Object.keys(message.data);
+  const $character: Record<string, Record<string, Scalar>> = {};
+  const $content: Record<string, Record<string, ActorContent[]>> = {};
+  const $rules: Record<string, Record<string, StaticVariableValue>> = {};
+  const $sheet: Record<string, Record<string, Scalar>> = {};
+
+  /**
+   * Processes and renders an expression out into a usable string safely.
+   * NOTE: All function-defined variables are marked with '$'
+   * @param $data The data passed in by the message with instructions on how to process the expression
+   */
+  function renderExpression($data: SandboxWorkerRenderMessage) {
+    const keys = Object.keys($data.properties);
     for (const field of keys) {
-      const str = `var ${field} = ${JSON.stringify(message.data[field])};`;
+      if (field in ["character", "content", "rules", "sheet"]) continue;
+      const str = `var ${field} = ${JSON.stringify($data.properties[field])};`;
       eval(str);
     }
-    const res = eval(`\`${message.data.expr}\``);
-    postMessage({ value: res, key: message.data._key });
+    const character = $character[$data.renderIDs.actorID];
+    const content = $content[$data.renderIDs.actorID];
+    const rules = $rules[$data.renderIDs.rulesetID];
+    const sheet = $sheet[$data.renderIDs.sheetID];
+    const $res = eval(`\`${$data.expression}\``);
+    postMessage({ value: $res, key: $data.key });
+  }
+
+  /**
+   * Saves external data to a specific location within the web worker for faster access
+   * @param data Contains the instructions for what to save and where
+   */
+  function set(data: SandboxWorkerSetMessage) {
+    switch (data.group) {
+      case "character":
+        if (!data.key) { $character[data.id] = data.value as Record<string, Scalar>; }
+        else { $character[data.id][data.key] = data.value as Scalar; }
+        break;
+      case "content":
+        if (!data.key) { $content[data.id] = data.value as Record<string, ActorContent[]>; }
+        else { $content[data.id][data.key] = data.value as ActorContent[]; }
+        break;
+      case "rules":
+        if (!data.key) { $rules[data.id] = data.value as Record<string, StaticVariableValue>; }
+        else { $rules[data.id][data.key] = data.value as StaticVariableValue; }
+        break;
+      case "sheet":
+        if (!data.key) { $sheet[data.id] = data.value as Record<string, Scalar>; }
+        else { $sheet[data.id][data.key] = data.value as Scalar; }
+        break;
+    }
+  }
+
+  /**
+   * Handles recieving a message from the main thread and deciding which action to perform
+   * @param message The message from the main thread starting the fetch or save processes
+   */
+  self.onmessage = (message: MessageEvent<SandboxWorkerMessage>) => {
+    const data: SandboxWorkerMessage = message.data;
+    switch (data.action) {
+      // We need to use hard-coded strings here because importing the enums breaks the worker
+      case "expression":
+        renderExpression(data as SandboxWorkerRenderMessage);
+        break;
+      case "set":
+        set(data as SandboxWorkerSetMessage);
+        break;
+    }
   };
 };

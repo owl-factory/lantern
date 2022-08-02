@@ -3,6 +3,7 @@ import React from "react";
 import { LabelDescriptor } from "nodes/actor-sheets/types/elements";
 import { ActorController } from "../../controllers/ActorSheetController";
 import { SheetElementProps } from "../../types";
+import { autorun, reaction } from "mobx";
 
 const VARIABLE_FIELDS = ["for", "text"];
 
@@ -11,7 +12,7 @@ const VARIABLE_FIELDS = ["for", "text"];
  * @param element The label element description
  */
 export const SheetLabel = observer((props: SheetElementProps<LabelDescriptor>) => {
-  const element = ActorController.renderVariables<LabelDescriptor>(
+  const element = ActorController.renderExpressions<LabelDescriptor>(
     props.renderID,
     props.$key,
     props.element,

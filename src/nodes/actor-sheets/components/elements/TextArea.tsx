@@ -12,7 +12,7 @@ const VARIABLE_FIELDS = ["id", "name"];
  */
 export function SheetTextArea(props: SheetElementProps<TextAreaDescriptor>) {
   const ref = React.createRef<HTMLTextAreaElement>();
-  const element = ActorController.renderVariables<TextAreaDescriptor>(
+  const element = ActorController.renderExpressions<TextAreaDescriptor>(
     props.renderID,
     props.$key,
     props.element,

@@ -4,8 +4,6 @@ import { ActorSheetDocument } from "types/documents/ActorSheet";
 import { PageDescriptor } from "nodes/actor-sheets/types/elements";
 import { GenericSheetElementDescriptor } from "nodes/actor-sheets/types/elements/generic";
 import { SheetController } from "./subcontrollers/SheetController";
-import { ActorSubController } from "./ActorSubController";
-import { RuleVariableGroup, RulesetController } from "./RulesetController";
 import { read } from "@owl-factory/utilities/objects";
 import { RenderGroup, SheetProperties } from "../types";
 import { ActorContent, ActorDocument } from "types/documents/Actor";
@@ -13,16 +11,12 @@ import { ParsedExpressionString } from "../types/expressions";
 import { Scalar } from "types";
 import { parseContentFieldArguments } from "../utilities/field";
 import { StateType } from "../enums/stateTypes";
-import { newWebWorker } from "@owl-factory/web-worker";
-import SandboxedCodeWorker from "../workers/sandboxed-code.worker";
-import { SandboxWorkerMessage } from "../types/workers";
-import { isClient } from "@owl-factory/utilities/client";
 import { DataController } from "./subcontrollers/DataController";
 import { DataSource } from "../enums/dataSource";
 import { extractVariables } from "../utilities/parse";
 import { parseXML } from "../utilities/parser";
 import { StateController } from "./subcontrollers/StateController";
-import { StaticVariableValue } from "types/documents/subdocument/StaticVariable";
+import { WebWorkerController } from "./subcontrollers/WebWorkerController";
 
 
 /**
@@ -35,21 +29,13 @@ class $ActorController {
   protected dataController = new DataController();
   protected sheetController = new SheetController();
   protected stateController = new StateController();
-  protected worker!: Worker;
-
+  protected workerController = new WebWorkerController();
 
   constructor() {
-    const worker = newWebWorker(SandboxedCodeWorker);
-    if (isClient) {
-      (worker as Worker).onmessage = (message: any) => this.setVariables(message);
-      this.worker = worker as Worker;
-    }
     makeObservable(this, {
       $renders: observable,
-      $variables: observable,
 
       newRender: action,
-      setVariables: action,
     });
   }
 
@@ -112,6 +98,7 @@ class $ActorController {
   protected load(source: DataSource, id: string, value: unknown) {
     try {
       this.dataController.load(source, id, value);
+      this.workerController.set(source, id, value);
     } catch (e) {
       console.error(e);
     }
@@ -256,6 +243,9 @@ class $ActorController {
     const renderIDs = this.$renders[renderID];
     try {
       this.dataController.set(source, renderIDs, value, key, index);
+      // Sets to the web worker on a change
+      const workerValue = this.dataController.get(source, renderIDs, key, index);
+      this.workerController.set(source, renderIDs.actorID, workerValue, key); // TODO - select id from source
     } catch (e) {
       console.error(e);
       return;
@@ -342,25 +332,27 @@ class $ActorController {
 
   /**
    * Renders the variables of an element into useable strings
-   * @param id The ID of the render to render variables for
+   * @param renderID The ID of the render to render variables for
    * @param element The element descriptor containing the actor sheet fields to render
-   * @param fields The specific fields in the element descriptor to render variables for
+   * @param attributes The specific fields in the element descriptor to render variables for
    * @returns A subset of the given element with the specified fields
    */
-  public renderVariables<T extends GenericSheetElementDescriptor>(
-    id: string,
+  public renderExpressions<T extends GenericSheetElementDescriptor>(
+    renderID: string,
     elementKey: string,
     element: T,
-    fields: string[],
+    attributes: string[],
     properties: SheetProperties
   ): Record<string, string> {
     const parsedVariables: Record<string, string> = {};
 
-    for (const field of fields) {
-      if (!(field in element)) { continue; }
+    for (const attributeName of attributes) {
+      if (!(attributeName in element)) { continue; }
 
-      const elementField: ParsedExpressionString = element[field as (keyof T)] as unknown as ParsedExpressionString;
-      parsedVariables[field] = ActorController.renderVariable(id, elementKey, element, field, elementField, properties);
+      const elementField = element[attributeName as (keyof T)] as unknown as ParsedExpressionString;
+      parsedVariables[attributeName] = this.renderExpression(
+        renderID, elementKey, attributeName, elementField, properties
+      );
     }
 
     return parsedVariables;
@@ -372,41 +364,15 @@ class $ActorController {
    * @param expr An array containing an expression or string(s) to render out
    * @returns A single string containing the rendered value
    */
-  public renderVariable<T extends GenericSheetElementDescriptor>(
+  public renderExpression(
     renderID: string,
     elementKey: string,
-    element: T,
-    fieldName: string,
-    expr: ParsedExpressionString,
+    attributeName: string,
+    expression: ParsedExpressionString,
     properties: SheetProperties
   ): string {
-    if (!expr.isExpression) { return expr.value; }
-    const key = `${elementKey}__${fieldName}`;
-    const message: SandboxWorkerMessage = {
-      ...properties,
-      actor: toJS(this.export(DataSource.Actor, renderID) as Record<string, Scalar>),
-      character: toJS(this.export(DataSource.Actor, renderID) as Record<string, Scalar>),
-      content: toJS(this.export(DataSource.Content, renderID) as Record<string, ActorContent[]>),
-      rules: toJS(this.export(DataSource.Ruleset, renderID) as Record<string, StaticVariableValue>),
-      sheet: toJS(this.export(DataSource.Sheet, renderID) as any),
-      expr: expr.value,
-      _key: key,
-    };
-
-    this.worker.postMessage(message);
-    const value = this.$variables[key];
-
-    return value as any;
-  }
-
-  /**
-   * A callback function run when recieving a response from the web worker
-   * @param msg The message recieved from the web worker to set the variables locally
-   */
-  public setVariables(msg: any) {
-    const value = this.$variables[msg.data.key];
-    if (value === msg.data.value) { return; }
-    this.$variables[msg.data.key] = msg.data.value;
+    const renderIDs = toJS(this.$renders[renderID]);
+    return this.workerController.get(renderIDs, elementKey, attributeName, expression, properties);
   }
 
   /**

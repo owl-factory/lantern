@@ -12,7 +12,7 @@ const VARIABLE_FIELDS = ["id", "name"];
  * @param element The select element description
  */
 export const SheetSelect = observer((props: SheetElementProps<SelectDescriptor>) => {
-  const element = ActorController.renderVariables<SelectDescriptor>(
+  const element = ActorController.renderExpressions<SelectDescriptor>(
     props.renderID,
     props.$key,
     props.element,
