@@ -9,13 +9,16 @@ import { splitExpressionValue } from "../expressions/parse";
  * @returns A radio button element descriptor
  */
 export function parseRadioElement(element: Element, state: SheetState) {
+  const name = element.getAttribute("name");
+  if (name === null) { throw "Radio input requires a name"; }
+
   const elementDetails: RadioButtonDescriptor = {
     $key: state.key,
     element: SheetElementType.Radio,
     id: splitExpressionValue(element.getAttribute("id") || "undefined"),
-    name: splitExpressionValue(element.getAttribute("name") || "undefined"),
+    name: splitExpressionValue(name),
     value: splitExpressionValue(element.getAttribute("value") || "1"),
-    label: splitExpressionValue(element.textContent || "Unknown"),
+    label: splitExpressionValue(element.textContent || ""),
   };
 
   return elementDetails;

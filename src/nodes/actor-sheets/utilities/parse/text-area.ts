@@ -9,11 +9,14 @@ import { splitExpressionValue } from "../expressions/parse";
  * @returns A text area element descriptor
  */
 export function parseTextAreaElement(element: Element, state: SheetState) {
+  const name = element.getAttribute("name");
+  if (name === null) { throw "Text Area input requires a name"; }
+
   const elementDetails: TextAreaDescriptor = {
     $key: state.key,
     element: SheetElementType.TextArea,
     id: splitExpressionValue(element.getAttribute("id") || ""),
-    name: splitExpressionValue(element.getAttribute("name") || ""),
+    name: splitExpressionValue(name),
   };
 
   return elementDetails;

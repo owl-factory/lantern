@@ -9,11 +9,14 @@ import { splitExpressionValue } from "../expressions/parse";
  * @returns A text input element descriptor
  */
 export function parseTextInputElement(element: Element, state: SheetState) {
+  const name = element.getAttribute("name");
+  if (name === null) { throw "Text input requires a name"; }
+
   const elementDetails: TextInputDescriptor = {
     $key: state.key,
     element: SheetElementType.TextInput,
     id: splitExpressionValue(element.getAttribute("id") || ""),
-    name: splitExpressionValue(element.getAttribute("name") || "missing_name"),
+    name: splitExpressionValue(name),
   };
 
   return elementDetails;

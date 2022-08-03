@@ -71,8 +71,8 @@ class $ActorController {
    * @param ruleset The ruleset data being loaded in
    */
   public loadRuleset(rulesetID: string, ruleset: Partial<RulesetDocument>) {
-    if (!ruleset.rules) return;
-    this.dataController.load(DataSource.Ruleset, rulesetID, ruleset.rules.values);
+    if (!ruleset.rules) { this.load(DataSource.Ruleset, rulesetID, {}); }
+    else { this.load(DataSource.Ruleset, rulesetID, ruleset.rules.values); }
   }
 
   /**

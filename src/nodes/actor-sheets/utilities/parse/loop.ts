@@ -1,8 +1,6 @@
 import { SheetElementType } from "nodes/actor-sheets/enums/sheetElementType";
 import { SheetState } from "nodes/actor-sheets/types";
 import { LoopDescriptor } from "nodes/actor-sheets/types/elements/loop";
-import { ParsedExpressionString } from "nodes/actor-sheets/types/expressions";
-import { splitExpressionValue } from "../expressions/parse";
 import { parseChildrenElements } from "./children";
 
 /**
@@ -17,7 +15,7 @@ export function parseLoopElement(element: Element, state: SheetState) {
 
   // TODO - allow this to throw
   if ((list === null || list.length === 0) && (listSource === null || listSource.length === 0)) {
-    console.error("Sheet Parse Exception: the <Loop> element requires a 'list' or a 'listSource' attribute.");
+    throw "Loop element requires a 'list' or a 'listSource' attribute.";
   }
 
   const elementDetails: Partial<LoopDescriptor> = {

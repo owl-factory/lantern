@@ -124,10 +124,10 @@ export default () => {
       const str = `var ${field} = ${JSON.stringify($data.properties[field])};`;
       eval(str);
     }
-    const character = $character[$data.renderIDs.actorID];
-    const content = $content[$data.renderIDs.actorID];
-    const rules = $rules[$data.renderIDs.rulesetID];
-    const sheet = $sheet[$data.renderIDs.sheetID];
+    const character = $character[$data.renderIDs.actorID] || {};
+    const content = $content[$data.renderIDs.actorID] || {};
+    const rules = $rules[$data.renderIDs.rulesetID] || {};
+    const sheet = $sheet[$data.renderIDs.sheetID] || {};
     const $res = eval(`\`${$data.expression}\``);
     postMessage({ value: $res, key: $data.key });
   }

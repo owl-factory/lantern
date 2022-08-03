@@ -10,6 +10,9 @@ import { parseChildrenElements } from "./children";
  * @returns A select element descriptor
  */
 export function parseSelectElement(element: Element, state: SheetState) {
+  const name = element.getAttribute("name");
+  if (name === null) { throw "Select input requires a name"; }
+
   const elementDetails: SelectDescriptor = {
     $key: state.key,
     element: SheetElementType.Select,

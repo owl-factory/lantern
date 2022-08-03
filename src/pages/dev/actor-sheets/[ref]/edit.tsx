@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { ActorController } from "nodes/actor-sheets";
 import React from "react";
+import { RulesetDocument } from "types/documents";
 import { ActorSheetDocument } from "types/documents/ActorSheet";
 
 /**
@@ -18,22 +19,21 @@ function EditActorSheet() {
   const ref = router.query.ref as string;
 
   const [ renderID, setRenderID ] = React.useState("");
+  const actorSheet = ActorSheetData.get(ref);
+  const ruleset = RulesetData.get(actorSheet?.ruleset?.ref);
 
   // Ensures that the actor sheet is loaded
   React.useEffect(() => { ActorSheetData.load(ref); }, [ref]);
 
-  const actorSheet = ActorSheetData.get(ref);
-
   // Ensures that the dependent ruleset is loaded and creates the render ID
   React.useEffect(() => {
     if (actorSheet && actorSheet.ruleset && actorSheet.ruleset.ref) {
-      setRenderID(ActorController.newRender("temp", "temp", actorSheet.ruleset.ref));
+      setRenderID(ActorController.newRender("development-actor", actorSheet.ruleset.ref, "development-sheet"));
       RulesetData.load(actorSheet.ruleset.ref);
     }
   }, [actorSheet]);
 
   // Ensures that the ruleset is loaded into the controller
-  const ruleset = RulesetData.get(actorSheet?.ruleset?.ref);
   React.useEffect(() => {
     if (ruleset && ruleset.ref) { ActorController.loadRuleset(ruleset.ref, ruleset); }
   }, [ruleset]);

@@ -31,15 +31,19 @@ interface ActorSheetFormProps {
  */
 export const ActorSheetForm = observer((props: ActorSheetFormProps) => {
   const initialValues = props.actorSheet ? props.actorSheet : INITIAL_VALUES;
-  const id = "temp"; // TODO - grab from the ActorController
 
   // Ensures that the actor sheet XML is loaded into the preview
   React.useEffect(() => {
-    ActorController.unloadSheet(id);
+    ActorController.unloadSheet("development-sheet");
     if (props.actorSheet) {
-      ActorController.loadSheet(id, props.actorSheet);
+      ActorController.loadSheet("development-sheet", props.actorSheet);
     }
   }, [props.actorSheet]);
+
+  // Try/Catch block prevents issues within the actor sheet preventing updating of the XML
+  let actorSheet;
+  try { actorSheet = <ActorSheet id={props.renderID}/>; }
+  catch (e) { actorSheet = <>{e}</>; }
 
   return (
     <div>
@@ -53,7 +57,7 @@ export const ActorSheetForm = observer((props: ActorSheetFormProps) => {
              * Refreshes the XML preview based on the contents of the XML
              */
             function refresh() {
-              ActorController.loadSheet(id, { xml: formikProps.values.xml});
+              ActorController.loadSheet("development-sheet", { xml: formikProps.values.xml});
             }
 
             return (
@@ -70,11 +74,7 @@ export const ActorSheetForm = observer((props: ActorSheetFormProps) => {
         }
       </Formik>
       <hr/>
-      {() => {
-        // Try/Catch block prevents issues within the actor sheet preventing updating of the XML
-        try { return <ActorSheet id={props.renderID}/>; }
-        catch (e) { return <></>; }
-      }}
+      {actorSheet}
     </div>
   );
 });
