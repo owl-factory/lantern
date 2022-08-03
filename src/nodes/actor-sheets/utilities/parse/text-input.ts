@@ -2,6 +2,7 @@ import { SheetElementType } from "nodes/actor-sheets/enums/sheetElementType";
 import { SheetState } from "nodes/actor-sheets/types";
 import { TextInputDescriptor } from "nodes/actor-sheets/types/elements";
 import { splitExpressionValue } from "../expressions/parse";
+import { validateVariable } from "../validation";
 
 /**
  * Converts a text input element into a text input element descriptor
@@ -11,6 +12,7 @@ import { splitExpressionValue } from "../expressions/parse";
 export function parseTextInputElement(element: Element, state: SheetState) {
   const name = element.getAttribute("name");
   if (name === null) { throw "Text input requires a name"; }
+  validateVariable(name);
 
   const elementDetails: TextInputDescriptor = {
     $key: state.key,

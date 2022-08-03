@@ -1,6 +1,7 @@
 import { SheetElementType } from "nodes/actor-sheets/enums/sheetElementType";
 import { SheetState } from "nodes/actor-sheets/types";
 import { LoopDescriptor } from "nodes/actor-sheets/types/elements/loop";
+import { validateVariable } from "../validation";
 import { parseChildrenElements } from "./children";
 
 /**
@@ -12,18 +13,19 @@ export function parseLoopElement(element: Element, state: SheetState) {
   const list = element.getAttribute("list");
   const listSource = element.getAttribute("listSource");
   const delimiter = element.getAttribute("delimiter") || ",";
+  const key = element.getAttribute("key") || "unknown";
 
-  // TODO - allow this to throw
   if ((list === null || list.length === 0) && (listSource === null || listSource.length === 0)) {
     throw "Loop element requires a 'list' or a 'listSource' attribute.";
   }
+  validateVariable(key);
 
   const elementDetails: Partial<LoopDescriptor> = {
     element: SheetElementType.Loop,
     $key: state.key,
     children: [],
     delimiter,
-    key: element.getAttribute("key") || "unknown",
+    key: key,
     index: element.getAttribute("index"),
   };
 
