@@ -1,4 +1,4 @@
-import { ExplodeMethod, ExplodeOptions, RollOptions, RollThreshold } from "../types";
+import { DropKeepOptions, ExplodeMethod, ExplodeOptions, RerollOptions, RollOptions, RollThreshold } from "../types";
 import { RollArgument } from "../types/parse";
 
 export function parse(rollExpression: string): RollOptions {
@@ -57,8 +57,8 @@ export function parse(rollExpression: string): RollOptions {
 
       case RollArgument.Reroll:
         const rerollResult = parseReroll(currentExpression, opts);
-        opts.reroll = rerollResult;
-        currentExpression = rerollResult.postRerollResult;
+        opts.reroll = rerollResult.reroll;
+        currentExpression = rerollResult.postRerollExpression;
     }
   }
 }
@@ -125,12 +125,22 @@ function parseExplode(
   // Exit if that's the end of the string
   if (partialRollExpression.length === 1) { return { explode, postExplodeExpression: "" }; }
 
-  if (partialRollExpression[1] === '!') { explode.method = ExplodeMethod.Compounding; }
-  else if (partialRollExpression[1] === 'p') { explode.method = ExplodeMethod.Penetrating; }
+  let functionLength = 1;
+  const secondChar = partialRollExpression[1];
+  switch (secondChar) {
+    case '!':
+      explode.method = ExplodeMethod.Compounding;
+      functionLength = 2;
+      break;
+    case 'p':
+      explode.method = ExplodeMethod.Penetrating;
+      functionLength = 2;
+      break;
+  }
 
-  if (partialRollExpression.length === 2) { return { explode, postExplodeExpression: "" }; }
+  if (partialRollExpression.length === functionLength) { return { explode, postExplodeExpression: "" }; }
 
-  const postExplodeExpression = partialRollExpression.slice(2);
+  const postExplodeExpression = partialRollExpression.slice(functionLength);
 
   const { threshold, postThresholdExpression } = parseThreshold(postExplodeExpression);
   if (!threshold) { return { explode, postExplodeExpression }; }
@@ -138,16 +148,148 @@ function parseExplode(
   return { explode, postExplodeExpression: postThresholdExpression };
 }
 
-function parseDrop(rollExpression: string, opts: RollOptions) {
-  // TODO
+/**
+ * Parses a drop function and its argument
+ * @param rollExpression The current partial roll expression to extract a drop function and argument from
+ * @param opts The current options of the currently parsed roll expression
+ * @returns An object containing the drop options and the remaining expression after the parse
+ */
+function parseDrop(rollExpression: string, opts: RollOptions): { drop: DropKeepOptions, postDropExpression: string } {
+  if (rollExpression.length < 2) { throw `Roll Parse Exception: An invalid drop expression was provided`; }
+  const firstChar = rollExpression[0];
+  const secondChar = rollExpression[1];
+
+  // This should never occur, but present for safety's sake
+  if (firstChar !== 'd') {
+    throw `Roll Parse Exception: The function '${firstChar}${secondChar || ""}' is not a valid argument`;
+  }
+
+  let dropHighest = false;
+  let length = 2;
+
+  switch(secondChar) {
+    case 'h':
+      dropHighest = true;
+      break;
+    case 'l':
+      dropHighest = false;
+      break;
+    default:
+      // If the second char is not a number, this is an invalid expression
+      if (isNaN(parseInt(secondChar))) {
+        throw `Roll Parse Exception: The function '${firstChar}${secondChar || ""}' is not a valid argument`;
+      }
+      length = 1;
+      break;
+  }
+
+  const partialExpression = rollExpression.slice(length);
+  const dropAmount = getNextNumberInString(partialExpression);
+  if (isNaN(dropAmount.value)) {
+    throw `Roll Parse Exception: The argument following drop ${dropHighest ? "highest" : "lowest"} is invalid`;
+  }
+
+  const drop: DropKeepOptions = opts.drop || {};
+  if (dropHighest) {
+    // Set if the highest is not set or if the new highest value is greater than the previous value
+    if (drop.highest === undefined || drop.highest < dropAmount.value) { drop.highest = dropAmount.value; }
+  } else {
+    // Set if the lowest is not set or if the new lowest value is greater than the previous value
+    if (drop.lowest === undefined || drop.lowest < dropAmount.value) { drop.lowest = dropAmount.value; }
+  }
+
+  return { drop, postDropExpression: partialExpression.slice(dropAmount.length) };
 }
 
+/**
+ * Parses a keep function and its argument
+ * @param rollExpression The current partial roll expression to extract a keep function and argument from
+ * @param opts The current options of the currently parsed roll expression
+ * @returns An object containing the keep options and the remaining expression after the parse
+ */
 function parseKeep(rollExpression: string, opts: RollOptions) {
- // TODO
+  if (rollExpression.length < 2) { throw `Roll Parse Exception: An invalid keep expression was provided`; }
+  const firstChar = rollExpression[0];
+  const secondChar = rollExpression[1];
+
+  // This should never occur, but present for safety's sake
+  if (firstChar !== 'k') {
+    throw `Roll Parse Exception: The function '${firstChar}${secondChar || ""}' is not a valid argument`;
+  }
+
+  let keepHighest = true;
+  let length = 2;
+
+  switch(secondChar) {
+    case 'h':
+      keepHighest = true;
+      break;
+    case 'l':
+      keepHighest = false;
+      break;
+    default:
+      // If the second char is not a number, this is an invalid expression
+      if (isNaN(parseInt(secondChar))) {
+        throw `Roll Parse Exception: The function '${firstChar}${secondChar || ""}' is not a valid argument`;
+      }
+      length = 1;
+      break;
+  }
+
+  const partialExpression = rollExpression.slice(length);
+  const keepAmount = getNextNumberInString(partialExpression);
+  if (isNaN(keepAmount.value)) {
+    throw `Roll Parse Exception: The argument following keep ${keepHighest ? "highest" : "lowest"} is invalid`;
+  }
+
+  const keep: DropKeepOptions = opts.drop || {};
+  if (keepHighest) {
+    // Set if the highest is not set or if the new highest value is greater than the previous value
+    if (keep.highest === undefined || keep.highest < keepAmount.value) { keep.highest = keepAmount.value; }
+  } else {
+    // Set if the lowest is not set or if the new lowest value is greater than the previous value
+    if (keep.lowest === undefined || keep.lowest < keepAmount.value) { keep.lowest = keepAmount.value; }
+  }
+
+  if (keep.highest !== undefined && keep.lowest !== undefined) {
+    throw `Roll Parse Exception: dice rolls do not support both Keep Highest and Keep Lowest`;
+  }
+
+  return { keep, postKeepExpression: partialExpression.slice(keepAmount.length) };
 }
 
 function parseReroll(rollExpression: string, opts: RollOptions) {
-  // TODO
+  if (rollExpression.length < 2) { throw `Roll Parse Exception: An invalid reroll expression was provided`; }
+  const firstChar = rollExpression[0];
+  const secondChar = rollExpression[1];
+
+  // The first should never occur, but present for safety's sake
+  // The second character must be o (once), less than, greater than, or a number. If none of these are met, throw
+  if (firstChar !== 'r' || !(secondChar in ["o", "<", ">"]) || isNaN(parseInt(secondChar))) {
+    throw `Roll Parse Exception: The function '${firstChar}${secondChar || ""}' is not a valid argument`;
+  }
+
+  let length = 1;
+  let once = false;
+
+  if (secondChar === 'o') {
+    length = 2;
+    once = true;
+  }
+  const partialExpression = rollExpression.slice(length);
+  const threshold = parseThreshold(partialExpression);
+
+  if (!threshold.threshold) {
+    // eslint-disable-next-line max-len
+    throw `Roll Parse Exception: The reroll ${once ? "once " : ""}function requires a valid equals, greater than, or less than argument`;
+  }
+
+  const rerollOptions: RerollOptions = {
+    threshold: threshold.threshold,
+    once: once || (opts.reroll?.once || false), // One reroll once argument applies to all rerolls
+  };
+
+  return { reroll: rerollOptions, postRerollExpression: threshold.postThresholdExpression };
 }
 
 /**
@@ -290,3 +432,15 @@ function getNextNumberInString(str: string): { value: number, length: number } {
   if (matchArray === null) { return { value: NaN, length: 0 }; }
   return { value: parseFloat(matchArray[0]), length: matchArray[0].length };
 }
+
+export const exportedForTesting= {
+  ensureDefaults,
+  parseCount,
+  parseSize,
+  parseExplode,
+  parseThreshold,
+  parseDrop,
+  parseKeep,
+  mergeThresholds,
+  determineNextArgument,
+};
