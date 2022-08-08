@@ -242,7 +242,7 @@ function parseKeep(rollExpression: string, opts: RollOptions) {
     throw `Roll Parse Exception: The argument following keep ${keepHighest ? "highest" : "lowest"} is invalid`;
   }
 
-  const keep: DropKeepOptions = opts.drop || {};
+  const keep: DropKeepOptions = opts.keep || {};
   if (keepHighest) {
     // Set if the highest is not set or if the new highest value is greater than the previous value
     if (keep.highest === undefined || keep.highest < keepAmount.value) { keep.highest = keepAmount.value; }
@@ -265,7 +265,7 @@ function parseReroll(rollExpression: string, opts: RollOptions) {
 
   // The first should never occur, but present for safety's sake
   // The second character must be o (once), less than, greater than, or a number. If none of these are met, throw
-  if (firstChar !== 'r' || !(secondChar in ["o", "<", ">"]) || isNaN(parseInt(secondChar))) {
+  if (firstChar !== 'r' || (!["o", "<", ">"].includes(secondChar) && isNaN(parseInt(secondChar)))) {
     throw `Roll Parse Exception: The function '${firstChar}${secondChar || ""}' is not a valid argument`;
   }
 
@@ -323,8 +323,8 @@ function mergeThresholds(original: RollThreshold = {}, newest: RollThreshold = {
   }
 
   if (newest.equalTo !== undefined) {
-    if (threshold.equalTo === undefined) { threshold.equalTo = newest.equalTo; }
-    else { threshold.equalTo = threshold.equalTo.concat(newest.equalTo); }
+    if (threshold.equalTo === undefined) { threshold.equalTo = newest.equalTo.sort(); }
+    else { threshold.equalTo = threshold.equalTo.concat(newest.equalTo).sort(); }
   }
 
   return threshold;
@@ -415,7 +415,9 @@ function determineNextArgument(rollExpression: string): RollArgument {
       return RollArgument.Keep;
     case 'r': // Reroll
       return RollArgument.Reroll;
-    case 's':
+    case '<':
+    case '>':
+    case '=':
       return RollArgument.Success;
   }
   throw `Dice Roll Exception: the argument ${firstChar}${secondChar || ""} is invalid`;
@@ -441,6 +443,7 @@ export const exportedForTesting= {
   parseThreshold,
   parseDrop,
   parseKeep,
+  parseReroll,
   mergeThresholds,
   determineNextArgument,
 };
