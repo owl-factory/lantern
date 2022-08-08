@@ -2,6 +2,8 @@
 export interface RollResponse {
   result: number;
   rolls: RollResult[];
+  rerolls: RollResult[];
+  explodedRolls: RollResult[];
 }
 
 // Describes the result of a single die roll
