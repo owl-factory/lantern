@@ -2,7 +2,7 @@ import { SheetElementType } from "nodes/actor-sheets/enums/sheetElementType";
 import { SheetState } from "nodes/actor-sheets/types";
 import { SelectDescriptor } from "nodes/actor-sheets/types/elements";
 import { splitExpressionValue } from "../expressions/parse";
-import { validateVariable } from "../validation";
+import { validateVariableAccess } from "../validation";
 import { parseChildrenElements } from "./children";
 
 /**
@@ -13,7 +13,7 @@ import { parseChildrenElements } from "./children";
 export function parseSelectElement(element: Element, state: SheetState) {
   const name = element.getAttribute("name");
   if (name === null) { throw "Select input requires a name"; }
-  validateVariable(name);
+  validateVariableAccess(name);
 
   const elementDetails: SelectDescriptor = {
     $key: state.key,
