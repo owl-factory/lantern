@@ -8,9 +8,12 @@ import { ParsedExpressionString } from "nodes/actor-sheets/types/expressions";
 export function splitExpressionValue(str: string): ParsedExpressionString {
   const value: ParsedExpressionString = {
     value: str,
-    isExpression: str.search(/^\$\{|[^\\]\$\{/) !== -1,
+    isExpression: isExpression(str),
   };
   return value;
 
 }
 
+export function isExpression(str: string) {
+  return str.search(/^\$\{|[^\\]\$\{/) !== -1;
+}

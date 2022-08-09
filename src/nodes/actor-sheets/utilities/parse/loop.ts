@@ -1,7 +1,7 @@
 import { SheetElementType } from "nodes/actor-sheets/enums/sheetElementType";
 import { SheetState } from "nodes/actor-sheets/types";
 import { LoopDescriptor } from "nodes/actor-sheets/types/elements/loop";
-import { validateVariable } from "../validation";
+import { validateVariableAccess, validateVariableDeclaration } from "../validation";
 import { parseChildrenElements } from "./children";
 
 /**
@@ -18,7 +18,7 @@ export function parseLoopElement(element: Element, state: SheetState) {
   if ((list === null || list.length === 0) && (listSource === null || listSource.length === 0)) {
     throw "Loop element requires a 'list' or a 'listSource' attribute.";
   }
-  validateVariable(key);
+  validateVariableDeclaration(key);
 
   const elementDetails: Partial<LoopDescriptor> = {
     element: SheetElementType.Loop,

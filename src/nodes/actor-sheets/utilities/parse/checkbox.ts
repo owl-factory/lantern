@@ -2,7 +2,7 @@ import { SheetElementType } from "nodes/actor-sheets/enums/sheetElementType";
 import { SheetState } from "nodes/actor-sheets/types";
 import { CheckboxDescriptor } from "nodes/actor-sheets/types/elements";
 import { splitExpressionValue } from "../expressions/parse";
-import { validateVariable } from "../validation";
+import { validateVariableAccess } from "../validation";
 
 /**
  * Converts a checkbox element into a checkbox element descriptor
@@ -12,7 +12,7 @@ import { validateVariable } from "../validation";
 export function parseCheckboxElement(element: Element, state: SheetState) {
   const name = element.getAttribute("name");
   if (name === null) { throw "Checkbox input requires a name"; }
-  validateVariable(name);
+  validateVariableAccess(name);
 
   const elementDetails: CheckboxDescriptor = {
     $key: state.key,

@@ -2,7 +2,7 @@ import { SheetElementType } from "nodes/actor-sheets/enums/sheetElementType";
 import { SheetState } from "nodes/actor-sheets/types";
 import { NumberInputDescriptor } from "nodes/actor-sheets/types/elements";
 import { splitExpressionValue } from "../expressions/parse";
-import { validateVariable } from "../validation";
+import { validateVariableAccess } from "../validation";
 
 /**
  * Converts a number input element into a number input element descriptor
@@ -12,7 +12,7 @@ import { validateVariable } from "../validation";
 export function parseNumberInputElement(element: Element, state: SheetState) {
   const name = element.getAttribute("name");
   if (name === null) { throw "Number input requires a name"; }
-  validateVariable(name);
+  validateVariableAccess(name);
 
   const elementDetails: NumberInputDescriptor = {
     $key: state.key,
