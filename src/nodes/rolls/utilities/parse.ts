@@ -1,6 +1,48 @@
 import { DropKeepOptions, ExplodeMethod, ExplodeOptions, RerollOptions, RollOptions, RollThreshold } from "../types";
-import { RollArgument } from "../types/parse";
+import { RollArgument, RollPart } from "../types/parse";
 
+// 1. Detects the 1d20 (or 1dF) format
+// 2. Detects the explode argument, if any. Explodes come right after the regular roll and only once
+// 3. Additional arguments for critical success, failure, reroll, keep, drop, etc.
+//                  1.                 2.                        3.
+const ROLL_REGEX = /[0-9]+d([0-9]+|[f])(![!pc]?(<<?|>>?)?[0-9]*)?((c[sf]|d[hl]?|k[kl]?|ro?|f)(<<?|>>?)?[0-9]+)*/;
+
+/**
+ * Splits a roll up into dice rolls and strings without a roll
+ * @param rollExpression The expression to split up into roll chunks and non-roll chunks
+ * @returns An array of objects with the value and a isRoll flag
+ */
+export function splitRoll(rollExpression: string): RollPart[] {
+  const parts: RollPart[] = [];
+  let currentExpr = rollExpression;
+
+  let i = 0;
+  while(true) {
+    const nextRollAt = currentExpr.search(ROLL_REGEX);
+    if (nextRollAt > 0) { parts.push({ value: currentExpr.substring(0, nextRollAt), isRoll: false }); }
+    else if (nextRollAt === -1) {
+      parts.push({ value: currentExpr, isRoll: false });
+      break;
+    }
+
+    const rollStr = currentExpr.match(ROLL_REGEX);
+    // This shouldn't happen, but just in case it does
+    if (rollStr === null) { break; }
+    parts.push({ value: rollStr[0], isRoll: true });
+    currentExpr = currentExpr.substring(nextRollAt + rollStr[0].length);
+
+    if (currentExpr.length === 0) { break; }
+    if (i++ > 1000) { console.error("Roll Parse Exception: Split Roll function exceeded loop bounds."); break; }
+  }
+
+  return parts;
+}
+
+/**
+ * Parses a roll expression into system-readable options
+ * @param rollExpression The roll expression to parse
+ * @returns AN object containing the instructions for how to run this roll
+ */
 export function parse(rollExpression: string): RollOptions {
   // Extracts the number of dice to roll
   const { count, postCountExpression } = parseCount(rollExpression.trim());
@@ -103,7 +145,7 @@ function parseSize(partialRollExpression: string): { size: number, postSizeExpre
     return { size, postSizeExpression: "" };
   }
   size = parseInt(partialRollExpression.slice(0, sizeEnd));
-  const postSizeExpression = partialRollExpression.slice(sizeEnd + 1);
+  const postSizeExpression = partialRollExpression.slice(sizeEnd);
   return { size, postSizeExpression };
 }
 

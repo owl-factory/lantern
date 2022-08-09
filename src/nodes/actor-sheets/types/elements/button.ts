@@ -16,4 +16,7 @@ export interface ButtonDescriptor extends GenericSheetElementDescriptor {
 
   // Content Create and Delete
   contentGroup?: ParsedExpressionString; // The content group being acted upon
+
+  // The roll to run when activated
+  roll?: ParsedExpressionString;
 }

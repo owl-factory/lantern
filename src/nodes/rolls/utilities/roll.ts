@@ -5,7 +5,9 @@ import { ExplodeMethod, RollOptions, RollResponse, RollResult, RollThreshold } f
  * @param opts The parsed options defining how the roll should proceed
  * @returns An object containing the three different kinds of rolls
  */
-export function rollDice(opts: RollOptions): { rolls: number[], explodedRolls: number[], rerolls: number[] } {
+export function rollDiceWithOptions(
+  opts: RollOptions
+): { rolls: number[], explodedRolls: number[], rerolls: number[] } {
   const rolls: number[] = [];
   const explodedRolls: number[] = [];
   const rerolls: number[] = [];
@@ -87,7 +89,7 @@ function doesTriggerExplode(value: number, opts: RollOptions) {
  * @param size The size of the die to roll
  */
 function makeRoll(size: number) {
-  return Math.ceil(Math.random() * (size - 1));
+  return Math.ceil(Math.random() * size);
 }
 
 /**
@@ -104,12 +106,12 @@ export function qualifyRoll(
   opts: RollOptions
 ): RollResponse {
   const response: RollResponse = {
-    result: 0,
-    rolls: [],
-    rerolls: [],
-    explodedRolls: [],
+    result: "",
+    // rolls: [],
+    // rerolls: [],
+    // explodedRolls: [],
   };
-
+  let diceTotal = 0;
   let rerollCount = 0;
 
   for (const roll of rolls) {
@@ -125,8 +127,8 @@ export function qualifyRoll(
       criticalFailure: doesValueMeetThreshold(roll, opts.criticalFailure),
     };
 
-    response.rolls.push(result);
-    if (!dropped) { response.result += roll; }
+    // response.rolls.push(result);
+    if (!dropped) { diceTotal += roll; }
   }
 
   for (const roll of rerolls) {
@@ -140,10 +142,10 @@ export function qualifyRoll(
       failure: doesValueMeetThreshold(roll, opts.failure),
       criticalSuccess: doesValueMeetThreshold(roll, opts.criticalSuccess),
       criticalFailure: doesValueMeetThreshold(roll, opts.criticalFailure),
-    }
+    };
 
-    response.rolls.push(result);
-    if (!dropped) { response.result += roll; }
+    // response.rolls.push(result);
+    if (!dropped) { diceTotal += roll; }
   }
 
   for (const roll of explodedRolls) {
@@ -159,9 +161,11 @@ export function qualifyRoll(
       criticalFailure: doesValueMeetThreshold(roll, opts.criticalFailure),
     };
 
-    response.rolls.push(result);
+    // response.rolls.push(result);
+    diceTotal += explodedRoll;
   }
 
+  response.result = diceTotal.toString();
   return response;
 }
 

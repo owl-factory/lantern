@@ -29,6 +29,8 @@
           <Label>Testing the collapse! Look! Words!</Label>
         </Collapse>
 
+        <Button action="roll" roll="1d20cs20">Roll 1d20</Button>
+
         <!-- This will render an error message and not break the sheet -->
         <TextInput/>
       </Page>
@@ -121,7 +123,7 @@
                     <Inline>
                       <Checkbox name="${savingThrow.proficiency}"/>
                       <NumberInput name="${savingThrow.mod}"/>
-                      <Label>${savingThrow.name}</Label>
+                      <Button action="roll" roll="1d20+${character[savingThrow.mod]}+${savingThrow.proficiency ? character.proficiency_bonus || 0 : 0}">${savingThrow.name}</Button>
                     </Inline>
                   </Loop>
                   <Label>Saving Throws</Label>

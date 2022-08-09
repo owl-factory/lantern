@@ -1,2 +1,2 @@
 
-export { roll } from "./utilities";
+export { rollDice } from "./utilities";
