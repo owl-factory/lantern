@@ -1,5 +1,6 @@
 import { ActorController } from "nodes/actor-sheets";
 import { StateType } from "nodes/actor-sheets/enums/stateTypes";
+import { Mediator, MediatorMessage } from "nodes/mediator";
 import { rollDice } from "nodes/rolls";
 
 /**
@@ -37,8 +38,7 @@ export function toggleCollapse(renderID: string, key: string) {
  * @param renderID The ID of the render this roll is for
  * @param rollStr The string to roll
  */
-export function rollAction(renderID: string, rollStr: string) {
+export function rollAction(_renderID: string, rollStr: string) {
   const rollResult = rollDice(rollStr);
-  // TODO - add handling to print this to the user's page
-  console.log(rollResult);
+  Mediator.send(MediatorMessage.Roll, "actorSheet", { roll: rollResult});
 }
