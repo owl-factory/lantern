@@ -1,4 +1,4 @@
-import { action, makeObservable, observable } from "mobx";
+import { action, makeObservable, observable, toJS } from "mobx";
 import { DataSource } from "nodes/actor-sheets/enums/dataSource";
 import { RenderGroup } from "nodes/actor-sheets/types";
 import { Scalar } from "types";
@@ -12,6 +12,15 @@ export class DataController {
   public $sheet: Record<string, Record<string, Scalar>> = {};
   // Ruleset variables
   public $ruleset: Record<string, Record<string, unknown>> = {};
+
+  // Unlinked, non-MobX data to send into the sandboxed webworker
+  // Actor and Actor Content data
+  protected unlinkedActor: Record<string, Record<string, Scalar>> = {};
+  protected unlinkedContent: Record<string, Record<string, ActorContent[]>> = {};
+  // Sheet Variables
+  protected unlinkedSheet: Record<string, Record<string, Scalar>> = {};
+  // Ruleset variables
+  protected unlinkedRuleset: Record<string, Record<string, unknown>> = {};
 
   constructor() {
     makeObservable(this, {
@@ -100,15 +109,19 @@ export class DataController {
           throw `Actor Sheet Data Exception: Setting an actor must be a record containing scalar values`;
         }
         this.$actor[id] = value as Record<string, Scalar>;
+        this.unlinkedActor[id] = toJS(value) as Record<string, Scalar>;
         break;
       case DataSource.Content:
         this.$content[id] = value as any;
+        this.unlinkedContent[id] = toJS(value) as any;
         break;
       case DataSource.Ruleset:
         this.$ruleset[id] = value as any;
+        this.unlinkedRuleset[id] = toJS(value) as any;
         break;
       case DataSource.Sheet:
         this.$sheet[id] = value as any;
+        this.unlinkedSheet[id] = toJS(value) as any;
         break;
     }
   }
@@ -122,15 +135,19 @@ export class DataController {
     switch(source) {
       case DataSource.Actor:
         delete this.$actor[id];
+        delete this.unlinkedActor[id];
         break;
       case DataSource.Content:
         delete this.$content[id];
+        delete this.unlinkedContent[id];
         break;
       case DataSource.Ruleset:
         delete this.$ruleset[id];
+        delete this.unlinkedRuleset[id];
         break;
       case DataSource.Sheet:
         delete this.$sheet[id];
+        delete this.unlinkedSheet[id];
         break;
     }
   }
@@ -191,24 +208,44 @@ export class DataController {
     return sheet[key];
   }
 
+  /**
+   * Sets an actor's field
+   * @param actorID The ID of the actor fields to set locally
+   * @param value The value to set
+   * @param key The key the value will be stored in
+   */
   private setActor(actorID: string, value: Scalar, key: string) {
     // Sets a scalar
     if (!isScalar(value)) {
       throw `Actor Sheet Data Exception: A scalar value is required for setting an actor's field value.`;
     }
-    if (this.$actor[actorID] === undefined) { this.$actor[actorID] = {}; }
+    if (this.$actor[actorID] === undefined) {
+      this.$actor[actorID] = {};
+      this.unlinkedActor[actorID] = {};
+    }
     this.$actor[actorID][key] = value as Scalar;
+    this.unlinkedActor[actorID][key] = value as Scalar;
   }
 
+  /**
+   * Sets a list of content within an actor
+   * @param actorID The ID of the actor to set the content within
+   * @param value The value to set within the actor's content
+   * @param key The content field to set within the actor
+   */
   private setContent(actorID: string, value: unknown[], key: string) {
     if (!Array.isArray(value)) {
       throw `Actor Sheet Data Exception: An array is required for setting a content list`;
     }
 
     // Ensures that there's a struct for storing this content data if none is present
-    if (this.$content[actorID] === undefined) { this.$content[actorID] = {}; }
+    if (this.$content[actorID] === undefined) {
+      this.$content[actorID] = {};
+      this.unlinkedContent[actorID] = {};
+    }
 
     this.$content[actorID][key] = value;
+    this.unlinkedContent[actorID][key] = value;
   }
 
   /**
@@ -224,17 +261,25 @@ export class DataController {
 
     // Ensures that there is a struct and array to place data if this isn't loaded
     // This should never happen, but this is present for safety
-    if (this.$content[actorID] === undefined) { this.$content[actorID] = {}; }
-    if (this.$content[actorID][key] === undefined) this.$content[actorID][key] = [];
+    if (this.$content[actorID] === undefined) {
+      this.$content[actorID] = {};
+      this.unlinkedContent[actorID] = {};
+    }
+    if (this.$content[actorID][key] === undefined) {
+      this.$content[actorID][key] = [];
+      this.unlinkedContent[actorID][key] = [];
+    }
 
     // Cases for index in range
     if (index >= 0 && index < this.$content[actorID][key].length) {
       // Removes an item if the value is null
       if (value === null) {
         this.$content[actorID][key] = this.$content[actorID][key].splice(index, 1);
+        this.unlinkedContent[actorID][key] = this.unlinkedContent[actorID][key].splice(index, 1);
         return;
       }
       this.$content[actorID][key][index] = value;
+      this.unlinkedContent[actorID][key][index] = value;
       return;
     }
 
@@ -243,6 +288,7 @@ export class DataController {
     }
 
     this.$content[actorID][key].push(value);
+    this.unlinkedContent[actorID][key].push(value);
   }
 }
 

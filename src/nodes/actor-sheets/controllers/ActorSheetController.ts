@@ -17,6 +17,8 @@ import { extractVariables } from "../utilities/parse";
 import { parseXML } from "../utilities/parser";
 import { StateController } from "./subcontrollers/StateController";
 import { WebWorkerController } from "./subcontrollers/WebWorkerController";
+import { Mediator, MediatorMessage } from "nodes/mediator";
+import { MediatorRequest } from "nodes/mediator/types/mediator";
 
 
 /**
@@ -98,7 +100,7 @@ class $ActorController {
   protected load(source: DataSource, id: string, value: unknown) {
     try {
       this.dataController.load(source, id, value);
-      this.workerController.set(source, id, value);
+      // this.workerController.set(source, id, value);
     } catch (e) {
       console.error(e);
     }
@@ -244,8 +246,8 @@ class $ActorController {
     try {
       this.dataController.set(source, renderIDs, value, key, index);
       // Sets to the web worker on a change
-      const workerValue = this.dataController.get(source, renderIDs, key, index);
-      this.workerController.set(source, renderIDs.actorID, workerValue, key); // TODO - select id from source
+      // const workerValue = this.dataController.get(source, renderIDs, key, index);
+      // this.workerController.set(source, renderIDs.actorID, workerValue, key); // TODO - select id from source
     } catch (e) {
       console.error(e);
       return;
@@ -337,22 +339,41 @@ class $ActorController {
    * @param attributes The specific fields in the element descriptor to render variables for
    * @returns A subset of the given element with the specified fields
    */
-  public renderExpressions<T extends GenericSheetElementDescriptor>(
+  public async renderExpressions<T extends GenericSheetElementDescriptor>(
     renderID: string,
     elementKey: string,
     element: T,
     attributes: string[],
     properties: SheetProperties
-  ): Record<string, string> {
+  ): Promise<Record<string, string>> {
     const parsedVariables: Record<string, string> = {};
+
+    const invokedAttributes: string[] = [];
+    const promises: Promise<unknown>[] = [];
 
     for (const attributeName of attributes) {
       if (!(attributeName in element)) { continue; }
 
       const elementField = element[attributeName as (keyof T)] as unknown as ParsedExpressionString;
-      parsedVariables[attributeName] = this.renderExpression(
-        renderID, elementKey, attributeName, elementField, properties
+
+      if (!elementField.isExpression) {
+        parsedVariables[attributeName] = elementField.value;
+        continue;
+      }
+
+      invokedAttributes.push(attributeName);
+      promises.push(
+        Mediator.request(
+          MediatorRequest.Sandbox, {
+          expression: elementField,
+          properties,
+        })
       );
+    }
+
+    const resolvedPromises = await Promise.all(promises);
+    for (let i = 0; i < invokedAttributes.length; i++) {
+      parsedVariables[invokedAttributes[i]] =  resolvedPromises[i] as string;
     }
 
     return parsedVariables;

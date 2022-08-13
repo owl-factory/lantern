@@ -1,4 +1,4 @@
-import { MediatorContents, MediatorHandler, MediatorMessage } from "../types/mediator";
+import { MediatorContents, MediatorHandler, MediatorMessage, MediatorRequest } from "../types/mediator";
 
 /**
  * The base Mediator class used for communication between different
@@ -14,19 +14,33 @@ export class $Mediator {
   public reset() { this.handler = {}; }
 
   /**
-   * Recieves a message from a service and runs it through the appropriate handler
+   * Requests data from another controller
+   * @param requestType The type of message sent to another service to recieve data back
+   * @param contents The contents of the request
+   */
+  public async request(requestType: MediatorRequest, contents: Partial<MediatorContents>): Promise<unknown> {
+    const handler = this.handler[requestType];
+    if (handler === undefined) { return; }
+    try {
+      return handler(contents as MediatorContents);
+    } catch (e) {
+      console.error(e);
+      return;
+    }
+  }
+
+  /**
+   * Posts a message to the mediator, which handles sending the message to the appropriate controllers
    * @param message The type of message this post is making
    * @param contents The contents of the message
    */
-  public async send(message: MediatorMessage, source: string, contents: Partial<MediatorContents>): Promise<unknown> {
+  public post(message: MediatorMessage, source: string, contents: Partial<MediatorContents>): void {
     contents.source = source;
     const handler = this.handler[message];
-    if (handler === undefined) {
-      // TODO - do something?
-      return;
-    }
+    if (handler === undefined) { return; }
     try {
-      return handler(contents as MediatorContents);
+      handler(contents as MediatorContents);
+      return;
     } catch (e) {
       console.error(e);
       return;
