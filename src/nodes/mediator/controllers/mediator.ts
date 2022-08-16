@@ -35,8 +35,8 @@ export class $Mediator {
    * @param contents The contents of the message
    * @returns A possible value from another controller within a promise. Returns 'null' if it fails
    */
-  public async requests(message: MediatorRequest, contents: Partial<MediatorContents>): Promise<unknown> {
-    return this.run(message, contents);
+  public async requests<T>(message: MediatorRequest, contents: Partial<MediatorContents>): Promise<T> {
+    return this.run(message, contents) as Promise<T>;
   }
 
   /**
