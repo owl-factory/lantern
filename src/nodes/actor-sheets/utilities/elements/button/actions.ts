@@ -40,5 +40,5 @@ export function toggleCollapse(renderID: string, key: string) {
  */
 export function rollAction(_renderID: string, rollStr: string) {
   const rollResult = rollDice(rollStr);
-  Mediator.post(MediatorMessage.Roll, "actorSheet", { roll: rollResult});
+  Mediator.post(MediatorMessage.Roll, { roll: rollResult});
 }
