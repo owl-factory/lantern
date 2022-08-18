@@ -16,7 +16,8 @@ import { DataSource } from "../enums/dataSource";
 import { extractVariables } from "../utilities/parse";
 import { parseXML } from "../utilities/parser";
 import { StateController } from "./subcontrollers/StateController";
-import { WebWorkerController } from "./subcontrollers/WebWorkerController";
+import { Mediator } from "nodes/mediator";
+import { MediatorPost, MediatorRequest } from "nodes/mediator/types/mediator";
 
 
 /**
@@ -29,7 +30,6 @@ class $ActorController {
   protected dataController = new DataController();
   protected sheetController = new SheetController();
   protected stateController = new StateController();
-  protected workerController = new WebWorkerController();
 
   constructor() {
     makeObservable(this, {
@@ -98,7 +98,7 @@ class $ActorController {
   protected load(source: DataSource, id: string, value: unknown) {
     try {
       this.dataController.load(source, id, value);
-      this.workerController.set(source, id, value);
+      Mediator.post(MediatorPost.SetSandbox, {source, id, value});
     } catch (e) {
       console.error(e);
     }
@@ -245,7 +245,8 @@ class $ActorController {
       this.dataController.set(source, renderIDs, value, key, index);
       // Sets to the web worker on a change
       const workerValue = this.dataController.get(source, renderIDs, key, index);
-      this.workerController.set(source, renderIDs.actorID, workerValue, key); // TODO - select id from source
+      // TODO - select id from source
+      Mediator.post(MediatorPost.SetSandbox, {source, id: renderIDs.actorID, value: workerValue, key});
     } catch (e) {
       console.error(e);
       return;
@@ -337,22 +338,19 @@ class $ActorController {
    * @param attributes The specific fields in the element descriptor to render variables for
    * @returns A subset of the given element with the specified fields
    */
-  public renderExpressions<T extends GenericSheetElementDescriptor>(
+  public async renderExpressions<T extends GenericSheetElementDescriptor>(
     renderID: string,
-    elementKey: string,
     element: T,
     attributes: string[],
     properties: SheetProperties
-  ): Record<string, string> {
+  ): Promise<Record<string, string>> {
     const parsedVariables: Record<string, string> = {};
 
     for (const attributeName of attributes) {
       if (!(attributeName in element)) { continue; }
 
       const elementField = element[attributeName as (keyof T)] as unknown as ParsedExpressionString;
-      parsedVariables[attributeName] = this.renderExpression(
-        renderID, elementKey, attributeName, elementField, properties
-      );
+      parsedVariables[attributeName] = (await this.renderExpression(renderID, elementField, properties)) as string;
     }
 
     return parsedVariables;
@@ -364,15 +362,13 @@ class $ActorController {
    * @param expr An array containing an expression or string(s) to render out
    * @returns A single string containing the rendered value
    */
-  public renderExpression(
+  public async renderExpression(
     renderID: string,
-    elementKey: string,
-    attributeName: string,
     expression: ParsedExpressionString,
     properties: SheetProperties
-  ): string {
+  ) {
     const renderIDs = toJS(this.$renders[renderID]);
-    return this.workerController.get(renderIDs, elementKey, attributeName, expression, properties);
+    return Mediator.requests(MediatorRequest.SandboxExpr, {renderIDs, expression, properties});
   }
 
   /**

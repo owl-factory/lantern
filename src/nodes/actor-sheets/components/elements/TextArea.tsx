@@ -12,13 +12,16 @@ const VARIABLE_FIELDS = ["id", "name"];
  */
 export function SheetTextArea(props: SheetElementProps<TextAreaDescriptor>) {
   const ref = React.createRef<HTMLTextAreaElement>();
-  const element = ActorController.renderExpressions<TextAreaDescriptor>(
-    props.renderID,
-    props.$key,
-    props.element,
-    VARIABLE_FIELDS,
-    props.properties,
-  );
+  const [ element, setElement ] = React.useState<any>({});
+
+  React.useEffect(() => {
+    ActorController.renderExpressions<TextAreaDescriptor>(
+      props.renderID,
+      props.element,
+      VARIABLE_FIELDS,
+      props.properties,
+    ).then(setElement);
+  }, []);
 
   /**
    * Updates the ActorController to have the changed values

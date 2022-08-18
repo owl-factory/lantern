@@ -11,13 +11,16 @@ const VARIABLE_FIELDS = ["for", "text"];
  * @param element The label element description
  */
 export const SheetLabel = observer((props: SheetElementProps<LabelDescriptor>) => {
-  const element = ActorController.renderExpressions<LabelDescriptor>(
-    props.renderID,
-    props.$key,
-    props.element,
-    VARIABLE_FIELDS,
-    props.properties,
-  );
+  const [ element, setElement ] = React.useState<any>({});
+
+  React.useEffect(() => {
+    ActorController.renderExpressions<LabelDescriptor>(
+      props.renderID,
+      props.element,
+      VARIABLE_FIELDS,
+      props.properties,
+    ).then(setElement);
+  }, []);
 
   return (
     <div>

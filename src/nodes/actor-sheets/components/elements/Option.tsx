@@ -11,13 +11,16 @@ const VARIABLE_FIELDS = ["value", "text"];
  * @param element The option element description
  */
 export const SheetOption = observer((props: SheetElementProps<OptionDescriptor>) => {
-  const element = ActorController.renderExpressions<OptionDescriptor>(
-    props.renderID,
-    props.$key,
-    props.element,
-    VARIABLE_FIELDS,
-    props.properties,
-  );
+  const [ element, setElement ] = React.useState<any>({});
+
+  React.useEffect(() => {
+    ActorController.renderExpressions<OptionDescriptor>(
+      props.renderID,
+      props.element,
+      VARIABLE_FIELDS,
+      props.properties,
+    ).then(setElement);
+  }, []);
 
   return (
     <option value={element.value}>

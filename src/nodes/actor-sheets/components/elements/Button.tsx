@@ -12,17 +12,20 @@ const VARIABLE_FIELDS = ["text", "alert", "contentGroup", "index", "roll", "targ
  * Renders a button that performs an action when clicked
  */
 export const SheetButton = observer((props: SheetElementProps<ButtonDescriptor>) => {
-  const elementVariables = ActorController.renderExpressions<ButtonDescriptor>(
-    props.renderID,
-    props.$key,
-    props.element,
-    VARIABLE_FIELDS,
-    props.properties,
-  );
+  const [ element, setElement ] = React.useState<any>({});
+
+  React.useEffect(() => {
+    ActorController.renderExpressions<ButtonDescriptor>(
+      props.renderID,
+      props.element,
+      VARIABLE_FIELDS,
+      props.properties,
+    ).then(setElement);
+  }, []);
 
   return (
-    <button onClick={() => onClick(props.element.action, props.renderID, elementVariables)}>
-      {elementVariables.text}
+    <button onClick={() => onClick(props.element.action, props.renderID, element)}>
+      {element.text}
     </button>
   );
 });
