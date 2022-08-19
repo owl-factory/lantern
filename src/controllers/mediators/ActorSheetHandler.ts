@@ -15,7 +15,6 @@ import { ParsedExpressionString, SheetProperties } from "nodes/sandbox/types";
  */
 async function expr(contents: MediatorContents) {
   return SandboxController.expr(
-    contents.renderIDs as RenderGroup,
     contents.expression as ParsedExpressionString,
     contents.properties as SheetProperties,
   );
@@ -29,21 +28,7 @@ function roll(contents: MediatorContents) {
   console.log(contents);
 }
 
-/**
- * Sets data in the sandbox web worker
- * @param contents The arguments describing what to edit in the sandbox web worker
- */
-function setSandbox(contents: MediatorContents) {
-  SandboxController.set(
-    contents.source as DataSource,
-    contents.id as string,
-    contents.value,
-    contents.key as string | undefined
-  );
-}
-
 export const ActorSheetMediatorHandler: MediatorHandler = {
   [MediatorRequest.SandboxExpr]: expr,
   [MediatorMessage.Roll]: roll,
-  [MediatorMessage.SetSandbox]: setSandbox,
 };

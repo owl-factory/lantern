@@ -1,4 +1,3 @@
-import { ParsedExpressionString } from "../expressions";
 import { GenericSheetElementDescriptor } from "./generic";
 
 // Describes a loop element

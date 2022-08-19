@@ -1,6 +1,6 @@
 import { RenderGroup, SheetProperties } from ".";
 import { DataSource } from "../enums/dataSource";
-import { WorkerAction } from "../enums/workerAction";
+import { SandboxAction } from "../enums/workerAction";
 
 // The contents of the message data to the actor sheet sandboxed web worker
 export type SandboxWorkerMessage = SandboxWorkerRenderMessage | SandboxWorkerSetMessage;
@@ -24,7 +24,7 @@ export interface SandboxWorkerSetMessage extends BaseSandboxWorkerMessage {
 
 // Describes the shared fields for any message to the Sandbox Web Worker
 interface BaseSandboxWorkerMessage {
-  action: WorkerAction; // The action the Sandboxed Web Worker will undertake
+  action: SandboxAction; // The action the Sandboxed Web Worker will undertake
 }
 
 // The data contained within the response from the Sandboxed Web Worker

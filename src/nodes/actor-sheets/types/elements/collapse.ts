@@ -1,4 +1,4 @@
-import { ParsedExpressionString } from "../expressions";
+import { ParsedExpression } from "../../../../types/expressions";
 import { GenericSheetElementDescriptor } from "./generic";
 
 /**
@@ -6,6 +6,6 @@ import { GenericSheetElementDescriptor } from "./generic";
  */
 export interface CollapseDescriptor extends GenericSheetElementDescriptor {
   children: GenericSheetElementDescriptor[];
-  id: ParsedExpressionString;
+  id: ParsedExpression;
   defaultState: boolean;
 }

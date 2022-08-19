@@ -7,7 +7,7 @@ import { SheetController } from "./subcontrollers/SheetController";
 import { read } from "@owl-factory/utilities/objects";
 import { RenderGroup, SheetProperties } from "../types";
 import { ActorContent, ActorDocument } from "types/documents/Actor";
-import { ParsedExpressionString } from "../types/expressions";
+import { ParsedExpression } from "../../../types/expressions";
 import { Scalar } from "types";
 import { parseContentFieldArguments } from "../utilities/field";
 import { StateType } from "../enums/stateTypes";
@@ -346,29 +346,34 @@ class $ActorController {
   ): Promise<Record<string, string>> {
     const parsedVariables: Record<string, string> = {};
 
+    const renderIDs = this.$renders[renderID];
+
     for (const attributeName of attributes) {
       if (!(attributeName in element)) { continue; }
 
-      const elementField = element[attributeName as (keyof T)] as unknown as ParsedExpressionString;
-      parsedVariables[attributeName] = (await this.renderExpression(renderID, elementField, properties)) as string;
+      const parsedExpression = element[attributeName as (keyof T)] as unknown as ParsedExpression;
+      if (!parsedExpression.hasExpression || parsedExpression.value === "") {
+        parsedVariables[attributeName] = parsedExpression.value;
+        continue;
+      }
+
+      const exprVariables = this.dataController.getExprVariables(renderIDs, parsedExpression.variables || []) as any;
+      properties.character = exprVariables.actor;
+      properties.content = exprVariables.content;
+      properties.ruleset = exprVariables.ruleset;
+      properties.sheet = exprVariables.sheet;
+
+      parsedVariables[attributeName] = (
+        await Mediator.requests(MediatorRequest.SandboxExpr, {expression: parsedExpression, properties})
+      ) as string;
+
+      delete properties.character;
+      delete properties.content;
+      delete properties.ruleset;
+      delete properties.sheet;
     }
 
     return parsedVariables;
-  }
-
-  /**
-   * Renders out a single variable
-   * @param renderID The ID of the render
-   * @param expr An array containing an expression or string(s) to render out
-   * @returns A single string containing the rendered value
-   */
-  public async renderExpression(
-    renderID: string,
-    expression: ParsedExpressionString,
-    properties: SheetProperties
-  ) {
-    const renderIDs = toJS(this.$renders[renderID]);
-    return Mediator.requests(MediatorRequest.SandboxExpr, {renderIDs, expression, properties});
   }
 
   /**
