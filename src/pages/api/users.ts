@@ -3,7 +3,7 @@ import { NextApiRequest } from "next";
 import { UserLogic } from "server/logic/UserLogic";
 
 import { HTTPHandler, createEndpoint } from "@owl-factory/https";
-import { fetchMany } from "server/logic/many";
+import { fetchMany, updateMany } from "server/logic/many";
 
 /**
  * Fetches the given rulesets
@@ -21,8 +21,8 @@ async function getUsers(this: HTTPHandler, req: NextApiRequest) {
  * @param req The request to the servert
  */
 async function updateUser(this: HTTPHandler, req: NextApiRequest) {
-  const updatedUser = await UserLogic.update(req.body.ref, req.body.doc);
-  this.returnSuccess({ doc: updatedUser });
+  const users = await updateMany(UserLogic.update, req.body.docs);
+  this.returnSuccess({ docs: users });
 }
 
 export default createEndpoint({
