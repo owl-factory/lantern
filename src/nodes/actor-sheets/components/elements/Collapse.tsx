@@ -15,6 +15,7 @@ const VARIABLE_FIELDS = ["id"];
 export const SheetCollapse = observer((props: SheetElementProps<CollapseDescriptor>) => {
   const element = ActorController.renderVariables<CollapseDescriptor>(
     props.renderID,
+    props.$key,
     props.element,
     VARIABLE_FIELDS,
     props.properties,

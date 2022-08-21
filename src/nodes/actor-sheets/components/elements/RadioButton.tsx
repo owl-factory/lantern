@@ -14,6 +14,7 @@ export const SheetRadioButton = observer((props: SheetElementProps<RadioDescript
   const ref = React.createRef<HTMLInputElement>();
   const element = ActorController.renderVariables<RadioDescriptor>(
     props.renderID,
+    props.$key,
     props.element,
     VARIABLE_FIELDS,
     props.properties,

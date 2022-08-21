@@ -81,6 +81,16 @@ export class ActorSubController {
   }
 
   /**
+   * Gets all content for a single actor
+   * @param ref The ref of the actor to fetch the content from
+   * @returns All content for the actor. Returns an empty struct if none is found
+   */
+  public getAllContent(ref: string): Record<string, ActorContent[]> {
+    if (!this.isActorLoaded(ref)) { return {}; }
+    return this.$content[ref] || {};
+  }
+
+  /**
    * Grabs a specific list of content for an actor
    * @param ref The ref of the actor to grab the content from
    * @param contentKey The key of the content to fetch

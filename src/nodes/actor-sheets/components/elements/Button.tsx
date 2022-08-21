@@ -14,6 +14,7 @@ const VARIABLE_FIELDS = ["text", "alert", "contentGroup", "index", "target"];
 export const SheetButton = observer((props: SheetElementProps<ButtonDescriptor>) => {
   const elementVariables = ActorController.renderVariables<ButtonDescriptor>(
     props.renderID,
+    props.$key,
     props.element,
     VARIABLE_FIELDS,
     props.properties,

@@ -1,4 +1,4 @@
-import { action, makeObservable, observable } from "mobx";
+import { action, makeObservable, observable, toJS } from "mobx";
 import { RulesetDocument } from "types/documents";
 import { ActorSheetDocument } from "types/documents/ActorSheet";
 import { PageDescriptor } from "nodes/actor-sheets/types/elements";
@@ -8,13 +8,16 @@ import { ActorSubController } from "./ActorSubController";
 import { RuleVariableGroup, RulesetController } from "./RulesetController";
 import { read } from "@owl-factory/utilities/objects";
 import { SheetProperties } from "../types";
-import { ExpressionType } from "../enums/expressionType";
 import { ActorContent, ActorDocument } from "types/documents/Actor";
-import { Expression, ParsedExpressionString } from "../types/expressions";
+import { ParsedExpressionString } from "../types/expressions";
 import { Scalar } from "types";
 import { parseContentFieldArguments } from "../utilities/field";
 import { StateController } from "./StateController";
 import { StateType } from "../enums/stateTypes";
+import { newWebWorker } from "@owl-factory/web-worker";
+import SandboxedCodeWorker from "../workers/sandboxed-code.worker";
+import { SandboxWorkerMessage } from "../types/workers";
+import { isClient } from "@owl-factory/utilities/client";
 
 interface RenderGroup {
   actorRef: string;
@@ -28,18 +31,28 @@ interface RenderGroup {
  */
 class $ActorController {
   public $renders: Record<string, RenderGroup> = {};
+  public $variables: Record<string, Scalar | Scalar[]> = {};
 
   protected actorController = new ActorSubController();
   protected rulesetController = new RulesetController();
   protected sheetController = new SheetController<Partial<ActorSheetDocument>>();
   protected stateController = new StateController();
+  protected worker!: Worker;
 
   constructor() {
+    const worker = newWebWorker(SandboxedCodeWorker);
+    if (isClient) {
+      (worker as Worker).onmessage = (message: any) => this.setVariables(message);
+      this.worker = worker as Worker;
+    }
     makeObservable(this, {
       $renders: observable,
+      $variables: observable,
 
       createRender: action,
+      setVariables: action,
     });
+
   }
 
   /**
@@ -145,7 +158,7 @@ class $ActorController {
    */
    public getActorField(renderRef: string, field: string, properties: SheetProperties): Scalar {
     // Quits out early if the actor doesn't exist
-    if (!this.$renders[renderRef]) { return ""; }
+    if (!this.$renders[renderRef] || !field) { return ""; }
     const actorRef = this.$renders[renderRef].actorRef;
 
     // Actors do not and should not have any periods
@@ -301,6 +314,7 @@ class $ActorController {
    */
   public renderVariables<T extends GenericSheetElementDescriptor>(
     id: string,
+    elementKey: string,
     element: T,
     fields: string[],
     properties: SheetProperties
@@ -311,7 +325,7 @@ class $ActorController {
       if (!(field in element)) { continue; }
 
       const elementField: ParsedExpressionString = element[field as (keyof T)] as unknown as ParsedExpressionString;
-      parsedVariables[field] = ActorController.renderVariable(id, elementField, properties);
+      parsedVariables[field] = ActorController.renderVariable(id, elementKey, element, field, elementField, properties);
     }
 
     return parsedVariables;
@@ -320,42 +334,46 @@ class $ActorController {
   /**
    * Renders out a single variable
    * @param renderID The ID of the render
-   * @param exprs An array containing an expression or string(s) to render out
+   * @param expr An array containing an expression or string(s) to render out
    * @returns A single string containing the rendered value
    */
-  public renderVariable(renderID: string, exprs: ParsedExpressionString, properties: SheetProperties): string {
-    // Base case where we ensure that we have the correct type
-    if (!Array.isArray(exprs) || exprs.length === 0) { return ""; }
-    let renderedResult = "";
-    for (const expr of exprs) {
-      // Not an expression, just a string
-      if (typeof expr === "string") {
-        renderedResult += expr;
-        continue;
-      }
+  public renderVariable<T extends GenericSheetElementDescriptor>(
+    renderID: string,
+    elementKey: string,
+    element: T,
+    fieldName: string,
+    expr: ParsedExpressionString,
+    properties: SheetProperties
+  ): string {
+    if (!expr.isExpression) { return expr.value; }
+    const key = `${elementKey}__${fieldName}`;
+    // console.log(key)
+    const { actorRef, sheetRef, rulesetRef } = this.$renders[renderID];
+    const message: SandboxWorkerMessage = {
+      ...properties,
+      actor: toJS(this.actorController.getActorValues(actorRef)),
+      character: toJS(this.actorController.getActorValues(actorRef)),
+      content: toJS(this.actorController.getAllContent(actorRef)),
+      rules: toJS(this.rulesetController.getRuleset(rulesetRef).staticVariables),
+      sheet: toJS(this.sheetController.getAllVariables(sheetRef)),
+      expr: expr.value,
+      _key: key,
+    };
 
-      renderedResult += this.renderExpression(renderID, expr, properties);
-    }
+    this.worker.postMessage(message);
+    const value = this.$variables[key];
 
-    return renderedResult;
+    return value as any;
   }
 
   /**
-   * Renders an expression into a string
-   * @param renderID The ID of the render to use for determining the expression values
-   * @param expr The expression to render out
+   * A callback function run when recieving a response from the web worker
+   * @param msg The message recieved from the web worker to set the variables locally
    */
-  public renderExpression(renderID: string, expr: Expression, properties: SheetProperties) {
-    let renderedResult = "";
-    for (const item of expr.items) {
-      switch (item.type) {
-        case ExpressionType.Variable:
-          renderedResult += this.convertVariableToData(renderID, item.value || "", properties);
-          break;
-      }
-
-    }
-    return renderedResult;
+  public setVariables(msg: any) {
+    const value = this.$variables[msg.data.key];
+    if (value === msg.data.value) { return; }
+    this.$variables[msg.data.key] = msg.data.value;
   }
 
   /**
@@ -410,3 +428,4 @@ class $ActorController {
 }
 
 export const ActorController = new $ActorController();
+

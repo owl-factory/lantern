@@ -76,7 +76,11 @@ export class SheetController<T> {
       prefabs: this.prefabs[key],
     };
 
-    elementDetails.children = parseChildrenElements(layout.children, startingState);
+    try {
+      elementDetails.children = parseChildrenElements(layout.children, startingState);
+    } catch (e) {
+      console.warn(e);
+    }
 
     this.sheets[key] = elementDetails;
   }
@@ -164,6 +168,17 @@ export class SheetController<T> {
   public getTabs(sheetID: string, key: string) {
     if (!(sheetID in this.tabs) || !this.tabs[sheetID] || !(key in this.tabs[sheetID])) { return []; }
     return this.tabs[sheetID][key];
+  }
+
+  /**
+   * Gets all variables for a given sheet
+   * @param key The sheet ID of the variables to grab
+   * @returns A struct of all variables for a given sheet ID. Returns an empty struct if none is found
+   */
+  public getAllVariables(key: string) {
+    const variables = this.variables[key];
+    if (!variables) { return {}; }
+    return variables;
   }
 
   /**

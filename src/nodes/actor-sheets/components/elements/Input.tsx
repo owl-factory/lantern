@@ -23,6 +23,7 @@ const SheetInput = observer((props: SheetInputProps) => {
   const ref = React.createRef<HTMLInputElement>();
   const element = ActorController.renderVariables<TextInputDescriptor>(
     props.renderID,
+    props.$key,
     props.element,
     VARIABLE_FIELDS,
     props.properties,

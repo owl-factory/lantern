@@ -14,6 +14,7 @@ export function SheetTextArea(props: SheetElementProps<TextAreaDescriptor>) {
   const ref = React.createRef<HTMLTextAreaElement>();
   const element = ActorController.renderVariables<TextAreaDescriptor>(
     props.renderID,
+    props.$key,
     props.element,
     VARIABLE_FIELDS,
     props.properties,

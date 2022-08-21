@@ -15,6 +15,7 @@ export const SheetCheckbox = observer((props: SheetElementProps<CheckboxDescript
 
   const element = ActorController.renderVariables<CheckboxDescriptor>(
     props.renderID,
+    props.$key,
     props.element,
     VARIABLE_FIELDS,
     props.properties,
