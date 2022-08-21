@@ -90,11 +90,11 @@ export class HTTPHandler {
     }
   }
 
-  public returnError(code: number, message: string): void {
+  public returnError(code: number, message: unknown): void {
     const responseBody = {
       success: false,
-      data: {},
-      message,
+      data: { error: message },
+      message: JSON.stringify(message), // TODO - remove
     };
     this.res.status(code).json(responseBody);
   }
