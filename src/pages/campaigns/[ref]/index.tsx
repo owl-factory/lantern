@@ -15,6 +15,7 @@ import { getSession, requireClientLogin } from "@owl-factory/auth/session";
 import { getCampaignPage } from "src/pages/api/campaigns/[ref]";
 import { handleAPI } from "@owl-factory/https/apiHandler";
 import { getUniques } from "@owl-factory/utilities/arrays";
+import Image from "next/image";
 
 interface BannerProps {
   campaign: CampaignDocument;
@@ -28,7 +29,7 @@ interface BannerProps {
  * @param isOwner True if the current user is the owner. False otherwise.
  */
 const Banner = observer(({ campaign, isOwner }: any) => {
-  let image = <img src={campaign.banner.src}/>;
+  let image = <Image src={campaign.banner.src} alt="TODO"/>;
 
   if(isOwner) {
     /**
@@ -62,7 +63,7 @@ interface PlayerProps {
 const Player = observer((props: PlayerProps) => {
   return (
     <div>
-      <img src={props.player?.avatar?.src} width="30px" height="30px"/>
+      <Image src={props.player?.avatar?.src||""} width="30px" height="30px" alt="TODO"/>
       {props.player.name || props.player.username}&nbsp;
       {props.player.ref === props.campaign.ownedBy?.ref ? "(GM) ": ""}
       <Link href={`/profile/${props.player.username}`}><a>Profile</a></Link>

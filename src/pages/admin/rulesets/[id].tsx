@@ -31,14 +31,14 @@ function AdminRuleset(props: AdminRulesetProps) {
   // Loads the cached data in and updates with the details from the API
   React.useEffect(() => {
     RulesetData.set(props.ruleset);
-  }, []);
+  }, [props.ruleset]);
 
+  const newRuleset = RulesetData.get(ruleset.ref as string);
   // Updates the ruleset when something in the ruleset manager is updated
   React.useEffect(() => {
-    const newRuleset = RulesetData.get(ruleset.ref as string);
     if (!newRuleset) { return; }
     setRuleset(newRuleset);
-  }, [RulesetData.get(ruleset.ref as string)]);
+  }, [newRuleset]);
 
   return (
     <Page>

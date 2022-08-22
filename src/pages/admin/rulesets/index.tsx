@@ -13,7 +13,6 @@ import { Card, Row, Table } from "react-bootstrap";
 import { MdLockOpen, MdLockOutline, MdPageview, MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { InitialProps } from "types/client";
 import { RulesetDocument, UserDocument } from "types/documents";
-import { getSession } from "@owl-factory/auth/session";
 import { rest } from "@owl-factory/https/rest";
 import { RulesetData } from "controllers/data/RulesetData";
 import { Col } from "@owl-factory/components/flex";
@@ -216,12 +215,12 @@ function AdminRulesets(props: AdminRulesetsProps) {
 
   React.useEffect(() => {
     RulesetData.setMany(props.rulesets);
-  }, []);
+  }, [props.rulesets]);
 
   React.useEffect(() => {
     const rulesetRefs = RulesetData.search({ group: "data" });
     setRulesets(RulesetData.getMany(rulesetRefs));
-  }, [RulesetData]);
+  }, []);
 
   rulesets.forEach((ruleset: Partial<RulesetDocument>, index: number) => {
     rulesetRows.push(<RulesetRow key={ruleset.ref} index={index + 1} ruleset={ruleset}/>);
