@@ -1,5 +1,5 @@
-import { getSession } from "@owl-factory/auth/session";
-import { rest } from "@owl-factory/https/rest";
+import { getSession } from "@owl-factory/auth";
+import { rest } from "@owl-factory/https";
 
 const maxImageSize = 10000000;
 export const typeRegex = /image\/(jpeg|png|webp)/;

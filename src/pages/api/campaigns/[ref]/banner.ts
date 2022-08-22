@@ -3,7 +3,7 @@ import { NextApiRequest } from "next";
 import { CampaignLogic } from "server/logic/CampaignLogic";
 import { FileLogic } from "server/logic/FileLogic";
 
-import { HTTPHandler, createEndpoint } from "@owl-factory/https";
+import { HTTPHandler, createEndpoint } from "@owl-factory/https/backend";
 import { CampaignDocument } from "types/documents";
 
 /**

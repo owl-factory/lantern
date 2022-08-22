@@ -1,5 +1,5 @@
 import { RulesetDocument } from "types/documents";
-import { DataManager } from "@owl-factory/data/DataManager";
+import { DataManager } from "@owl-factory/data";
 import { isPublic } from "server/logic/security";
 import { isOwner } from "security/documents";
 import { requireLogin, requirePermission } from "utilities/validation/account";

@@ -2,7 +2,7 @@ import "reflect-metadata";
 import { NextApiRequest } from "next";
 import { UserLogic } from "server/logic/UserLogic";
 
-import { HTTPHandler, createEndpoint } from "@owl-factory/https";
+import { HTTPHandler, createEndpoint } from "@owl-factory/https/backend";
 import { validateRef } from "utilities/validation/ref";
 import { passwordFormValidationSchema } from "utilities/validation/users/passwords";
 import { validate } from "utilities/validation";

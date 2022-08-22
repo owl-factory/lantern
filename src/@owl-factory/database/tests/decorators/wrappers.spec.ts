@@ -1,4 +1,4 @@
-import { LogicDescriptor } from "@owl-factory/database/decorators/types";
+import { LogicDescriptor } from "@owl-factory/database/utilities/decorators/types";
 import {
   setCreateFields,
   trimReadFields,
@@ -7,14 +7,14 @@ import {
   validateDynamicAccess,
   validateLogin,
   validateStaticAccess,
-} from "@owl-factory/database/decorators/actions";
+} from "@owl-factory/database/utilities/decorators/actions";
 import {
   createWrapper,
   deleteWrapper,
   fetchWrapper,
   updateWrapper,
-} from "@owl-factory/database/decorators/wrappers";
-import { isValidCollection, isValidRef } from "@owl-factory/data/helpers/fields";
+} from "@owl-factory/database/utilities/decorators/wrappers";
+import { isValidCollection, isValidRef } from "@owl-factory/data/utilities/fields";
 
 import "@owl-factory/database/tests/mocks/decorators/actions";
 import "@owl-factory/data/tests/mocks/helpers/fields";

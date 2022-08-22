@@ -2,7 +2,7 @@ import "reflect-metadata";
 import { NextApiRequest } from "next";
 import { RulesetLogic } from "server/logic/RulesetLogic";
 
-import { HTTPHandler, createEndpoint } from "@owl-factory/https";
+import { HTTPHandler, createEndpoint } from "@owl-factory/https/backend";
 
 /**
  * Fetches a single ruleset

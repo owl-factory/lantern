@@ -1,7 +1,7 @@
-import { AlertController } from "@owl-factory/components/alert";
+import { AlertController } from "@owl-factory/alerts";
 import { Button } from "@owl-factory/components/button";
 import { Input } from "@owl-factory/components/form";
-import { rest } from "@owl-factory/https/rest";
+import { rest } from "@owl-factory/https";
 import { Page } from "components/design";
 import { Auth } from "controllers/auth";
 import { ErrorMessage, Form, Formik, FormikHelpers } from "formik";

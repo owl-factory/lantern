@@ -1,4 +1,4 @@
-import { Role } from "@owl-factory/auth/types";
+import { Role } from "@owl-factory/auth";
 import { getUniques } from "@owl-factory/utilities/arrays";
 import { permissions } from "./permissions";
 

@@ -7,9 +7,9 @@ import {
   validateDynamicAccess,
   validateLogin,
   validateStaticAccess,
-} from "@owl-factory/database/decorators/actions";
-import { LogicDescriptor } from "@owl-factory/database/decorators/types";
-import { getDefaultDocument } from "@owl-factory/database/migrations/fauna/access";
+} from "@owl-factory/database/utilities/decorators/actions";
+import { LogicDescriptor } from "@owl-factory/database/utilities/decorators/types";
+import { getDefaultDocument } from "@owl-factory/database/utilities/migrations/fauna/access";
 import { Auth } from "controllers/auth";
 import { UserDocument } from "types/documents";
 

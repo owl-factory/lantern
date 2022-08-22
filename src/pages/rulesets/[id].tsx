@@ -10,12 +10,12 @@ import React from "react";
 import { MdBlock, MdBuild, MdInfo } from "react-icons/md";
 import { TableComponentProps } from "types/design";
 import { ContextMenuBuilder, TableBuilder } from "utilities/design";
-import { rest } from "@owl-factory/https/rest";
+import { rest } from "@owl-factory/https";
 import * as Yup from "yup";
 import { Col, Row } from "@owl-factory/components/flex";
 import { Button } from "@owl-factory/components/button";
 import { Breadcrumbs } from "@owl-factory/components/Breadcrumbs";
-import { handleAPI } from "@owl-factory/https/apiHandler";
+import { handleAPI } from "@owl-factory/https";
 
 interface FetchContentTypeData {
   contentTypes: any[];

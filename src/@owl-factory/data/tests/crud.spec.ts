@@ -1,7 +1,7 @@
 import { MOCK_URL, rest } from "@owl-factory/https/tests/mocks/rest";
 import { create, del, read, update } from "../crud";
 
-jest.mock("@owl-factory/https/rest", () => ({
+jest.mock("@owl-factory/https", () => ({
   rest: rest,
   request: rest,
 }));
@@ -86,4 +86,4 @@ describe("delete", () => {
   });
 });
 
-// jest.unmock("@owl-factory/https/rest");
+// jest.unmock("@owl-factory/https");

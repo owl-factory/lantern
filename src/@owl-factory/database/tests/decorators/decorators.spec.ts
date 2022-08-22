@@ -1,4 +1,4 @@
-import { Create, Delete, Fetch, Search, Update } from "@owl-factory/database/decorators/decorators";
+import { Create, Delete, Fetch, Search, Update } from "@owl-factory/database/utilities/decorators/decorators";
 
 describe("Decorators", () => {
   const collection = "collection";

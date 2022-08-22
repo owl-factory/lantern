@@ -1,4 +1,4 @@
-import { DataManager } from "@owl-factory/data/DataManager";
+import { DataManager } from "@owl-factory/data";
 import { Ref64 } from "@owl-factory/types";
 import { ContentTypeDocument } from "types/documents";
 import { requireLogin, requirePermission } from "utilities/validation/account";

@@ -9,10 +9,8 @@ import { Card, Row } from "react-bootstrap";
 import { MdInfo } from "react-icons/md";
 import { InitialProps } from "types/client";
 import { RulesetDocument } from "types/documents";
-import { rest } from "@owl-factory/https/rest";
-import { getSession } from "@owl-factory/auth/session";
 import { getRulesets } from "src/pages/api/rulesets/[id]";
-import { handleAPI } from "@owl-factory/https/apiHandler";
+import { handleAPI } from "@owl-factory/https";
 
 interface AdminRulesetProps extends InitialProps {
   ruleset: RulesetDocument;

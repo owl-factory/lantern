@@ -1,4 +1,4 @@
-import { DataManager } from "@owl-factory/data/DataManager";
+import { DataManager } from "@owl-factory/data";
 import { ActorSheetDocument } from "types/documents/ActorSheet";
 
 class ActorSheetDataManager extends DataManager<Partial<ActorSheetDocument>> {

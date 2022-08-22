@@ -1,6 +1,6 @@
-import { DataManager } from "@owl-factory/data/DataManager";
+import { DataManager } from "@owl-factory/data";
 import { ReloadPolicy } from "@owl-factory/data/enums";
-import { rest } from "@owl-factory/https/rest";
+import { rest } from "@owl-factory/https";
 import { Ref64 } from "@owl-factory/types";
 import { Auth } from "controllers/auth";
 import { isOwner } from "security/documents";

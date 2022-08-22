@@ -1,8 +1,9 @@
 import "reflect-metadata";
 import { NextApiRequest } from "next";
 
-import { HTTPHandler, createEndpoint } from "@owl-factory/https";
+import { createEndpoint } from "@owl-factory/https/backend";
 import { ActorSheetLogic } from "server/logic/ActorSheetLogic";
+import { HTTPHandler } from "@owl-factory/https/backend";
 
 /**
  * Fetches the given rulesets

@@ -2,8 +2,8 @@
 import { Collection, FaunaIndex } from "src/fauna";
 import { Ref64 } from "@owl-factory/types";
 import { ModuleDocument } from "types/documents";
-import { Create, Delete, Fetch, Search, Update } from "@owl-factory/database/decorators/decorators";
-import * as fauna from "@owl-factory/database/integration/fauna";
+import { Create, Delete, Fetch, Search, Update } from "@owl-factory/database/utilities/decorators/decorators";
+import * as fauna from "@owl-factory/database/utilities/integration/fauna";
 
 import * as access from "./access";
 import { FaunaIndexOptions } from "@owl-factory/database/types/fauna";

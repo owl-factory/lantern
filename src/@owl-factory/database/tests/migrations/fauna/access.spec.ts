@@ -1,5 +1,5 @@
-import { getDefaultDocument, getMigrations, getVersion } from "@owl-factory/database/migrations/fauna/access";
-import { defaultDocuments, migrations, versions } from "@owl-factory/database/migrations/fauna/data";
+import { getDefaultDocument, getMigrations, getVersion } from "@owl-factory/database/utilities/migrations/fauna/access";
+import { defaultDocuments, migrations, versions } from "@owl-factory/database/utilities/migrations/fauna/data";
 import { MigrationAction, RawMigration, RawMigrationAction } from "@owl-factory/database/types/migrations/fauna";
 
 describe("getVersion", () => {

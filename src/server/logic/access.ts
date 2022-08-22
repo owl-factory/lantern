@@ -1,4 +1,4 @@
-import * as fauna from "@owl-factory/database/integration/fauna";
+import * as fauna from "@owl-factory/database/utilities/integration/fauna";
 import { Ref64 } from "@owl-factory/types";
 
 /**

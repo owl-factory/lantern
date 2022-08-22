@@ -1,11 +1,11 @@
 
-import { Create, Delete, Fetch, Search, Update } from "@owl-factory/database/decorators/decorators";
+import { Create, Delete, Fetch, Search, Update } from "@owl-factory/database/utilities/decorators/decorators";
 import { Collection, FaunaIndex } from "src/fauna";
 import { Ref64 } from "@owl-factory/types";
 import { ContentDocument, RulesetDocument } from "types/documents";
-import * as fauna from "@owl-factory/database/integration/fauna";
+import * as fauna from "@owl-factory/database/utilities/integration/fauna";
 import { FaunaIndexOptions } from "@owl-factory/database/types/fauna";
-import { toRef } from "@owl-factory/database/conversion/fauna/to";
+import { toRef } from "@owl-factory/database/utilities/conversion/fauna/to";
 import { Auth } from "controllers/auth";
 import * as access from "./access";
 

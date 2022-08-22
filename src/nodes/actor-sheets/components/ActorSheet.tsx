@@ -1,5 +1,5 @@
 import { Button } from "@owl-factory/components/button";
-import { isValidRef } from "@owl-factory/data/helpers/fields";
+import { isValidRef } from "@owl-factory/data/utilities/fields";
 import { ActorData } from "controllers/data/ActorData";
 import { observer } from "mobx-react-lite";
 import React from "react";

@@ -4,7 +4,7 @@ import React from "react";
 import { Button } from "@owl-factory/components/button";
 import { Col, Row } from "@owl-factory/components/flex";
 import { Card } from "@owl-factory/components/card";
-import { AlertController } from "@owl-factory/components/alert/AlertController";
+import { AlertController } from "@owl-factory/alerts";
 import { Auth } from "controllers/auth";
 import { signOut } from "utilities/auth";
 import { CampaignData } from "controllers/data/CampaignData";

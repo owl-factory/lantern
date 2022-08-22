@@ -1,10 +1,10 @@
 import { FileDocument, UserDocument } from "types/documents";
 import { Collection, FaunaIndex } from "src/fauna";
-import * as fauna from "@owl-factory/database/integration/fauna";
+import * as fauna from "@owl-factory/database/utilities/integration/fauna";
 import { Ref64 } from "@owl-factory/types";
-import { Create, Delete, Fetch, Search, Update } from "@owl-factory/database/decorators/decorators";
+import { Create, Delete, Fetch, Search, Update } from "@owl-factory/database/utilities/decorators/decorators";
 import { FaunaIndexOptions } from "@owl-factory/database/types/fauna";
-import { toRef } from "@owl-factory/database/conversion/fauna/to";
+import { toRef } from "@owl-factory/database/utilities/conversion/fauna/to";
 import { Auth } from "controllers/auth";
 import { generateS3Filepath, generateS3Key } from "utilities/files";
 import * as access from "./access";

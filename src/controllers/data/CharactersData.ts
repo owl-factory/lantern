@@ -1,4 +1,4 @@
-import { DataManager } from "@owl-factory/data/DataManager";
+import { DataManager } from "@owl-factory/data";
 import { isOwner } from "security/documents";
 import { CharacterDocument } from "types/documents";
 
