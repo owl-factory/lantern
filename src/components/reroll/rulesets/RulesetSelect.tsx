@@ -13,19 +13,16 @@ interface RulesetSelectProps {
  * any user-specific rulesets
  */
 export const RulesetSelect = observer((props: RulesetSelectProps) => {
-  const [ rulesets, setRulesets ] = React.useState<Partial<RulesetDocument>[]>([]);
 
-  React.useEffect(() => {
-    const rulesetRefs = RulesetData.search({ group: "data", sort: ["name"] });
-    // TODO - include user rulesets & last used rulesets as a top option
-    setRulesets(RulesetData.getMany(rulesetRefs));
-  }, [RulesetData.lastTouched]);
+  const rulesetRefs = RulesetData.search({ group: "data", sort: ["name"] });
 
   // Renders the rulesets into selectable options
   const rulesetOptions: JSX.Element[] = [<option key="no-ruleset" value="">-- Select a Ruleset --</option>];
-  rulesets.forEach((ruleset: Partial<RulesetDocument>) => {
+  for (const rulesetRef of rulesetRefs) {
+    const ruleset = RulesetData.get(rulesetRef);
+    if (!ruleset) { continue; }
     rulesetOptions.push(<option key={ruleset.ref} value={ruleset.ref}>{ruleset.name}</option>);
-  });
+  }
 
   return (
     <Select name={props.name}>

@@ -2,7 +2,7 @@
 import { Button } from "@owl-factory/components/button";
 import React from "react";
 import { FileDocument } from "types/documents";
-import { ImageDetailsModal, ImageList, ListFormat } from "components/reroll/library/images";
+import { ImageDetailsModal, ImageList, ListFormat } from "components/reroll/images";
 import { ImageCreationFormModal } from "./forms/ImageCreationForm";
 
 interface ImageListProps {

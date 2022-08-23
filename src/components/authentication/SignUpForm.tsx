@@ -1,9 +1,9 @@
 import React from "react";
 import { ErrorMessage, Formik, Form as FormikForm } from "formik";
-import * as Yup from "yup";
 import { Button } from "@owl-factory/components/button";
 import { Input } from "@owl-factory/components/form";
 import { signUp } from "utilities/auth";
+import { signUpValidationSchema } from "utilities/validation/users/signup";
 
 /** Initial form values */
 const initialValues = {
@@ -11,16 +11,6 @@ const initialValues = {
   email: "",
   password: "",
 };
-
-/** Validation for the login form */
-const validationSchema = Yup.object({
-  username: Yup.string()
-    .required("Required"),
-  email: Yup.string()
-    .required("Required"),
-  password: Yup.string()
-    .required("Required"),
-});
 
 /**
  * Renders the form for logging in
@@ -38,7 +28,7 @@ export function SignUpForm(): JSX.Element {
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={validationSchema}
+      validationSchema={signUpValidationSchema}
       onSubmit={submit}
     >
       <FormikForm>

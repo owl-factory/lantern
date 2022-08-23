@@ -1,4 +1,4 @@
-import { IndexTable, Page } from "components/design";
+import { Page } from "components/design";
 import { Card, CardBody, CardHeader } from "@owl-factory/components/card";
 import { Input } from "@owl-factory/components/form";
 import { Modal } from "@owl-factory/components/modal";
@@ -10,12 +10,10 @@ import React from "react";
 import { MdBlock, MdBuild, MdInfo } from "react-icons/md";
 import { TableComponentProps } from "types/design";
 import { ContextMenuBuilder, TableBuilder } from "utilities/design";
-import { rest } from "@owl-factory/https";
 import * as Yup from "yup";
 import { Col, Row } from "@owl-factory/components/flex";
 import { Button } from "@owl-factory/components/button";
 import { Breadcrumbs } from "@owl-factory/components/Breadcrumbs";
-import { handleAPI } from "@owl-factory/https";
 
 interface FetchContentTypeData {
   contentTypes: any[];
@@ -140,31 +138,12 @@ function ContentTypeModal({ handleClose, modal }: { handleClose: () => void, mod
  * @param ruleset The ruleset to describe in this page
  */
 function RulesetPage({
-  contentTypes,
-  contentTypeCount,
   ruleset,
 }: RulesetPageProps): JSX.Element {
   if (ruleset === undefined) { return <Page><Error statusCode={404}/></Page>; }
 
   const [ contentTypeModal, setContentTypeModal ] = React.useState(false); // Boolean for rendering the modal
   function handleContentTypeClose() { setContentTypeModal(false); } // Handles closing the modal
-
-  /**
-   * The function to fetch new content types
-   * @param filters The filters for the data to fetch
-   * @param limit The maximum number of documents to return
-   * @param skip The total number of documents to skip before returning
-   * @param sort The key to sort by
-   */
-  async function fetchContentTypes(
-    filters: Record<string, unknown>,
-    limit: number,
-    skip: number,
-    sort: string
-  ): Promise<any> {
-    // TODO - implement
-    // return { content: res.data.contentTypes, count: 0 };
-  }
 
   return (
     <Page>
@@ -178,15 +157,6 @@ function RulesetPage({
         </button>
       </h2>
       <ContentTypeModal modal={contentTypeModal} handleClose={handleContentTypeClose}/>
-      <IndexTable
-        content={contentTypes}
-        contentCount={contentTypeCount}
-        fetchContent={fetchContentTypes}
-        filters={{}}
-        limit={initialContentTypeLimit}
-        sort={initialContentTypeSort}
-        tableBuilder={contentTypeTableBuilder}
-      />
     </Page>
   );
 }

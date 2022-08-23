@@ -15,6 +15,7 @@ export const ImageCreationForm = observer(({onSave}: any) => {
     "upload",
   ];
 
+  // TODO - fix image create
   const onSubmit = async (image: Partial<FileDocument>, method: AssetUploadSource) => {
     // ImageManager.createOne(image, method)
     // .then(() => {
