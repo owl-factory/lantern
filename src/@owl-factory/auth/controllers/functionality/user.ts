@@ -31,7 +31,7 @@ export function fromReq(this: AuthController<unknown>, req: NextApiRequest) {
     return;
   }
 
-  this.fromAPI(JSON.parse(user), permissions, jwt);
+  this.fromAPI(JSON.parse(user), permissions || "", jwt);
 }
 
 /**
