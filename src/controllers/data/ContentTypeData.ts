@@ -5,6 +5,7 @@ import { requireLogin, requirePermission } from "utilities/validation/account";
 import { validateNewContentType, validateUpdatedContentType } from "utilities/validation/contentType";
 import { RulesetData } from "./RulesetData";
 
+// Manages data for content type Documents
 class ContentTypeDataManager extends DataManager<Partial<ContentTypeDocument>> {
   public collection = "content-types";
 

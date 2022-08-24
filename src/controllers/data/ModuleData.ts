@@ -7,6 +7,7 @@ import { validateNewModule, validateUpdatedModule } from "utilities/validation/m
 import { RulesetData } from "./RulesetData";
 
 
+// Manages data for Module Documents
 class ModuleDataManager extends DataManager<Partial<ModuleDocument>> {
   public collection = Collection.Files;
 

@@ -7,7 +7,7 @@ import { Interactable, SceneController } from "../SceneController";
  * @param target The target sprite or container to interact with
  * @param sceneController The scene, as `this` is unavailable
  */
-export function onPanStart(event: InteractionEvent, target: Interactable, sceneController: SceneController): void {
+export function onPanStart(_event: InteractionEvent, _target: Interactable, sceneController: SceneController): void {
   sceneController.viewport.drag({ mouseButtons: undefined });
 }
 
@@ -17,7 +17,7 @@ export function onPanStart(event: InteractionEvent, target: Interactable, sceneC
  * @param target The target sprite or container to interact with
  * @param sceneController The scene, as `this` is unavailable
  */
-export function onPanEnd(event: InteractionEvent, target: Interactable, sceneController: SceneController): void {
+export function onPanEnd(_event: InteractionEvent, _target: Interactable, sceneController: SceneController): void {
   sceneController.viewport.drag({ mouseButtons: "middle" });
 
 }
@@ -28,6 +28,6 @@ export function onPanEnd(event: InteractionEvent, target: Interactable, sceneCon
  * @param target The target sprite or container to interact with
  * @param sceneController The scene, as `this` is unavailable
  */
-export function onPanMove(event: InteractionEvent, target: Interactable, sceneController: SceneController): void {
+export function onPanMove(_event: InteractionEvent, _target: Interactable, sceneController: SceneController): void {
   // Empty
 }

@@ -8,7 +8,6 @@ import * as dispatch from "controllers/play/dispatch";
 import * as host from "controllers/play/host";
 import * as logging from "controllers/play/logging";
 import * as message from "controllers/play/message";
-import * as send from "controllers/play/send";
 import * as socketEvents from "controllers/play/socketEvents";
 
 /**

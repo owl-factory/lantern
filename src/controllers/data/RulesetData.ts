@@ -4,6 +4,8 @@ import { isPublic } from "server/logic/security";
 import { isOwner } from "security/documents";
 import { requireLogin, requirePermission } from "utilities/validation/account";
 import { validateNewRuleset, validateUpdatedRuleset } from "utilities/validation/ruleset";
+
+// Manages data for Ruleset Documents
 class RulesetDataManager extends DataManager<Partial<RulesetDocument>> {
   public collection = "rulesets";
 
