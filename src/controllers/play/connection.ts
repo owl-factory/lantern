@@ -4,6 +4,9 @@ import { GameServer } from "controllers/play";
 import { UserDocument } from "types/documents";
 import { Dispatch, DispatchEvent } from "types/reroll/play";
 
+// TODO - move into a node
+// TODO - create a PeerJS connection @owl-factory
+
 /**
  * Runs all of the actions required to connect the current player to the socket, peer, and table.
  * As each depends on the previous action, there are layers to the connection implementation

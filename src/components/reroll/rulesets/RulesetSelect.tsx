@@ -2,7 +2,6 @@ import { Select } from "@owl-factory/components/form";
 import { RulesetData } from "controllers/data/RulesetData";
 import { observer } from "mobx-react-lite";
 import React from "react";
-import { RulesetDocument } from "types/documents";
 
 interface RulesetSelectProps {
   name: string;

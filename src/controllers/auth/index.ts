@@ -3,6 +3,7 @@ import { UserDocument } from "types/documents";
 import { permissions } from "types/security/permissions";
 import { roles } from "types/security/roles";
 
+// An Authetication controller for reroll
 class RerollAuthController extends AuthController<UserDocument> {
   constructor() { super(); }
 

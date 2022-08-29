@@ -11,6 +11,7 @@ import { requireLogin } from "utilities/validation/account";
 import { validateFileUploadCreationDoc, validateRawFile } from "utilities/validation/file";
 import { UserData } from "./UserData";
 
+// Manages data for File Documents
 class FileDataManager extends DataManager<Partial<FileDocument>> {
   public collection = Collection.Files;
 

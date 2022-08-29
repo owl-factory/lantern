@@ -7,6 +7,7 @@ import { requireLogin, requirePermission } from "utilities/validation/account";
 import { validateNewContent, validateUpdatedContent } from "utilities/validation/content";
 import { RulesetData } from "./RulesetData";
 
+// Manages data for Content Documents
 class ContentDataManager extends DataManager<Partial<ContentDocument>> {
   public collection = "contents";
 

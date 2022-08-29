@@ -6,6 +6,7 @@ import { Auth } from "controllers/auth";
 import { isOwner } from "security/documents";
 import { UserDocument } from "types/documents";
 
+// Manages data for User Documents
 class UserDataManager extends DataManager<Partial<UserDocument>> {
   public collection = "users";
 

@@ -4,6 +4,7 @@ import { Auth } from "controllers/auth";
 import { isOwner } from "security/documents";
 import { CampaignDocument } from "types/documents";
 
+// Manages data for Campaign Documents
 class CampaignDataManager extends DataManager<Partial<CampaignDocument>> {
   public collection = "campaigns";
 
