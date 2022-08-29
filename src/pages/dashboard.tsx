@@ -11,10 +11,16 @@ import { CampaignData } from "controllers/data/CampaignData";
 import { observer } from "mobx-react-lite";
 
 const Dashboard = observer(() => {
+  const [ name, setName ] = React.useState("");
+
+  // UseEffect prevents issue with hydration
+  React.useEffect(() => {
+    setName(Auth.user?.name || "");
+  }, []);
 
   return (
     <Page>
-      <h3>Welcome back {Auth.user?.name || Auth.user?.username}!</h3>
+      <h3>Welcome back {name}!</h3>
 
       <Button onClick={() => signOut()}>Log Out</Button>
       {/* Recent Games */}
