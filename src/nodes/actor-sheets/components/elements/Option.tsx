@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { OptionDescriptor } from "nodes/actor-sheets/types/elements";
-import { ActorController } from "../../controllers/ActorController";
+import { ActorController } from "../../controllers/ActorSheetController";
 import { SheetElementProps } from "../../types";
 
 const VARIABLE_FIELDS = ["value", "text"];

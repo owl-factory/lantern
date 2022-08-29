@@ -36,8 +36,8 @@ export const ActorSheetForm = observer((props: ActorSheetFormProps) => {
   // Ensures that the actor sheet XML is loaded into the preview
   React.useEffect(() => {
     ActorController.unloadSheet(id);
-    if (props.actorSheet && props.actorSheet.xml) {
-      ActorController.loadSheet(id, props.actorSheet.xml);
+    if (props.actorSheet) {
+      ActorController.loadSheet(id, props.actorSheet);
     }
   }, [props.actorSheet]);
 
@@ -53,7 +53,7 @@ export const ActorSheetForm = observer((props: ActorSheetFormProps) => {
              * Refreshes the XML preview based on the contents of the XML
              */
             function refresh() {
-              ActorController.loadSheet(id, formikProps.values.xml || "");
+              ActorController.loadSheet(id, { xml: formikProps.values.xml});
             }
 
             return (

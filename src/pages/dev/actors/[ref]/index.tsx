@@ -17,7 +17,7 @@ import { RulesetDocument } from "types/documents";
 function ActorView() {
   const router = useRouter();
   const ref = router.query.ref as string;
-  let renderID = "";
+  const [ renderID, setRenderID ] = React.useState("");
 
   React.useEffect(() => {
     ActorData.load(ref);
@@ -32,18 +32,18 @@ function ActorView() {
     if (actor.actorSheet) { ActorSheetData.load(actor.actorSheet.ref); }
     if (actor.campaign) { CampaignData.load(actor.campaign.ref); }
 
-    renderID = ActorController.createRender(
+    setRenderID(ActorController.newRender(
       ref,
-      actor.actorSheet?.ref as string,
       actor.ruleset?.ref as string,
-    );
+      actor.actorSheet?.ref as string,
+      ));
     ActorController.loadActor(ref, actor);
   }, [actor]);
 
   // Ensures that the actor sheet is loaded in to the sheet controller
   const actorSheet = ActorSheetData.get(actor?.actorSheet?.ref);
   React.useEffect(() => {
-    if (actorSheet && actorSheet.ref) { ActorController.loadSheet(actorSheet.ref, actorSheet.xml || ""); }
+    if (actorSheet && actorSheet.ref) { ActorController.loadSheet(actorSheet.ref, actorSheet); }
   }, [actorSheet]);
 
   // Ensures that the ruleset is loaded in to the sheet controller
@@ -70,7 +70,7 @@ function ActorView() {
         <h1>{actor.name}</h1>&nbsp;
         <Button onClick={() => router.push("/dev/actors")}>Back</Button>
       </div>
-      <ActorSheet id={actor.ref as string} onSubmit={onSubmit}/>
+      <ActorSheet id={renderID} onSubmit={onSubmit}/>
     </Page>
   );
 }

@@ -1,17 +1,16 @@
 import { action, makeObservable, observable } from "mobx";
+import { SheetElementType } from "nodes/actor-sheets/enums/sheetElementType";
+import { SheetState } from "nodes/actor-sheets/types";
 import { LayoutDescriptor, PageDescriptor } from "nodes/actor-sheets/types/elements";
-import { SheetState } from "../types";
-import { parseXML } from "../utilities/parser";
-import { parseFirstLevelElements } from "../utilities/parse";
-import { SheetElementType } from "../enums/sheetElementType";
-import { parseChildrenElements } from "../utilities/parse/children";
-import { ParsedTab } from "../types/parsedTab";
+import { ParsedTab } from "nodes/actor-sheets/types/parsedTab";
+import { parseFirstLevelElements } from "nodes/actor-sheets/utilities/parse";
+import { parseChildrenElements } from "nodes/actor-sheets/utilities/parse/children";
+import { parseXML } from "nodes/actor-sheets/utilities/parser";
 
-export class SheetController<T> {
+export class SheetController {
   public sheets: Record<string, PageDescriptor> = {};
   public prefabs: Record<string, Record<string, HTMLCollection>> = {};
   public tabs: Record<string, Record<string, ParsedTab[]>> = {};
-  public variables: Record<string, Record<string, unknown>> = {};
 
   constructor() {
     makeObservable(this, {
@@ -35,12 +34,11 @@ export class SheetController<T> {
       throw `The root element of an actor sheet must be <Sheet>`;
     }
 
-    const { layout, prefabs, variables } = parseFirstLevelElements(sheet);
+    const { layout, prefabs } = parseFirstLevelElements(sheet);
 
     if (!layout) { throw `A 'Layout' element is required`; }
     this.prefabs[key] = {};
     if (prefabs) { this.loadPrefabs(key, prefabs); }
-    if (variables) { this.loadVariables(key, variables); }
 
     this.loadSheet(key, layout);
     this.loadTabs(key, layout);
@@ -115,22 +113,6 @@ export class SheetController<T> {
   }
 
   /**
-   * Loads variables into the sheet controller
-   * @param key The key to load the variables into
-   * @param sheetElement The raw XML variables DOM element
-   */
-  public loadVariables(key: string, variables: Element[]): void {
-    const variableDetails: Record<string, unknown> = {};
-    for (const newVariable of variables) {
-      if (newVariable.tagName.toLocaleLowerCase() !== "variable") { continue; }
-      const name = newVariable.getAttribute("name") || "unknown";
-      variableDetails[name] = newVariable.getAttribute("value");
-    }
-
-    this.variables[key] = variableDetails;
-  }
-
-  /**
    * Loads tabs in for a sheet
    * @param sheetID The ID of the sheet that the tabs are being loaded in for
    * @param layout The base layout XML
@@ -168,28 +150,5 @@ export class SheetController<T> {
   public getTabs(sheetID: string, key: string) {
     if (!(sheetID in this.tabs) || !this.tabs[sheetID] || !(key in this.tabs[sheetID])) { return []; }
     return this.tabs[sheetID][key];
-  }
-
-  /**
-   * Gets all variables for a given sheet
-   * @param key The sheet ID of the variables to grab
-   * @returns A struct of all variables for a given sheet ID. Returns an empty struct if none is found
-   */
-  public getAllVariables(key: string) {
-    const variables = this.variables[key];
-    if (!variables) { return {}; }
-    return variables;
-  }
-
-  /**
-   * Gets a single variable from a loaded sheet
-   * @param key The key of the sheet to get the variable from
-   * @param field The field containing the variable
-   * @returns The variable, if present, or undefined
-   */
-  public getVariable(key: string, field: string) {
-    const variables = this.variables[key];
-    if (!variables) { return undefined; }
-    return variables[field];
   }
 }
