@@ -231,7 +231,7 @@ export class DataController {
     if (index >= 0 && index < this.$content[actorID][key].length) {
       // Removes an item if the value is null
       if (value === null) {
-        this.$content[actorID][key] = this.$content[actorID][key].splice(index, 1);
+        this.$content[actorID][key].splice(index, 1);
         return;
       }
       this.$content[actorID][key][index] = value;

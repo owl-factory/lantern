@@ -12,13 +12,16 @@ const VARIABLE_FIELDS = ["id", "name", "value"];
  */
 export const SheetRadioButton = observer((props: SheetElementProps<RadioDescriptor>) => {
   const ref = React.createRef<HTMLInputElement>();
-  const element = ActorController.renderExpressions<RadioDescriptor>(
-    props.renderID,
-    props.$key,
-    props.element,
-    VARIABLE_FIELDS,
-    props.properties,
-  );
+  const [ element, setElement ] = React.useState<any>({});
+
+  React.useEffect(() => {
+    ActorController.renderExpressions<RadioDescriptor>(
+      props.renderID,
+      props.element,
+      VARIABLE_FIELDS,
+      props.properties,
+    ).then(setElement);
+  }, []);
   const fieldValue = ActorController.getActor(props.renderID, element.name, props.properties);
 
   /**

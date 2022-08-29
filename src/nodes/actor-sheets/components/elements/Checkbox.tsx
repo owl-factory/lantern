@@ -12,14 +12,16 @@ const VARIABLE_FIELDS = ["id", "name", "value"];
  */
 export const SheetCheckbox = observer((props: SheetElementProps<CheckboxDescriptor>) => {
   const ref = React.createRef<HTMLInputElement>();
+  const [ element, setElement ] = React.useState<any>({});
 
-  const element = ActorController.renderExpressions<CheckboxDescriptor>(
-    props.renderID,
-    props.$key,
-    props.element,
-    VARIABLE_FIELDS,
-    props.properties,
-  );
+  React.useEffect(() => {
+    ActorController.renderExpressions<CheckboxDescriptor>(
+      props.renderID,
+      props.element,
+      VARIABLE_FIELDS,
+      props.properties,
+    ).then(setElement);
+  }, []);
   const key = generateCheckboxName(element.name, element.value);
   const checked = !!ActorController.getActor(props.renderID, key, props.properties);
 

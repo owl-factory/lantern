@@ -12,13 +12,16 @@ const VARIABLE_FIELDS = ["id", "name"];
  * @param element The select element description
  */
 export const SheetSelect = observer((props: SheetElementProps<SelectDescriptor>) => {
-  const element = ActorController.renderExpressions<SelectDescriptor>(
-    props.renderID,
-    props.$key,
-    props.element,
-    VARIABLE_FIELDS,
-    props.properties
-  );
+  const [ element, setElement ] = React.useState<any>({});
+
+  React.useEffect(() => {
+    ActorController.renderExpressions<SelectDescriptor>(
+      props.renderID,
+      props.element,
+      VARIABLE_FIELDS,
+      props.properties,
+    ).then(setElement);
+  }, []);
 
   /**
    * Updates the ActorController to have the changed values
