@@ -12,7 +12,7 @@ const VARIABLE_FIELDS = ["text", "alert", "contentGroup", "index", "target"];
  * Renders a button that performs an action when clicked
  */
 export const SheetButton = observer((props: SheetElementProps<ButtonDescriptor>) => {
-  const elementVariables = ActorController.renderVariables<ButtonDescriptor>(
+  const elementVariables = ActorController.renderExpressions<ButtonDescriptor>(
     props.renderID,
     props.$key,
     props.element,

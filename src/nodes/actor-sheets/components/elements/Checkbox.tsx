@@ -13,7 +13,7 @@ const VARIABLE_FIELDS = ["id", "name", "value"];
 export const SheetCheckbox = observer((props: SheetElementProps<CheckboxDescriptor>) => {
   const ref = React.createRef<HTMLInputElement>();
 
-  const element = ActorController.renderVariables<CheckboxDescriptor>(
+  const element = ActorController.renderExpressions<CheckboxDescriptor>(
     props.renderID,
     props.$key,
     props.element,

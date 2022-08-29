@@ -12,7 +12,7 @@ const VARIABLE_FIELDS = ["id", "name", "value"];
  */
 export const SheetRadioButton = observer((props: SheetElementProps<RadioDescriptor>) => {
   const ref = React.createRef<HTMLInputElement>();
-  const element = ActorController.renderVariables<RadioDescriptor>(
+  const element = ActorController.renderExpressions<RadioDescriptor>(
     props.renderID,
     props.$key,
     props.element,
