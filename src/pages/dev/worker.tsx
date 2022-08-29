@@ -1,6 +1,6 @@
 import { Page } from "components/design";
 import React from "react";
-import { ExampleWorker } from "@owl-factory/web-worker/components/ExampleWorker";
+import { ExampleWorker } from "@owl-factory/web-worker/examples/ExampleWorker";
 
 /**
  * A test page for demonstrating that the web worker code works
