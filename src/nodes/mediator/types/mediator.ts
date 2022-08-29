@@ -8,12 +8,14 @@ interface StaticMediatorContents {
 
 // The different kinds of actions that can be posted to a mediator
 export enum MediatorPost {
+  Chat, // Indicates a chat message has been posted by the current user
   Roll, // Indicates that a roll has been made
 }
 
 // The different kinds of actions that can be requested via a mediator
 export enum MediatorRequest {
-
+  ChatActors,
+  ChatMessages,
 }
 
 // Defines the different kinds of MediatorMessages and the actions to take. 
