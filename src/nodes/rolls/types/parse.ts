@@ -8,3 +8,8 @@ export enum RollArgument {
   Drop,
   Reroll,
 }
+
+export interface RollPart {
+  value: string;
+  isRoll: boolean;
+}

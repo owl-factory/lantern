@@ -6,7 +6,7 @@ import { ActorController } from "nodes/actor-sheets";
 import { ButtonAction } from "../../enums/buttonActions";
 import * as actions from "../../utilities/elements/button/actions";
 
-const VARIABLE_FIELDS = ["text", "alert", "contentGroup", "index", "target"];
+const VARIABLE_FIELDS = ["text", "alert", "contentGroup", "index", "roll", "target"];
 
 /**
  * Renders a button that performs an action when clicked
@@ -53,5 +53,10 @@ function onClick(
 
     case ButtonAction.ToggleCollapse:
       actions.toggleCollapse(renderID, element.target);
+      break;
+
+    case ButtonAction.Roll:
+      actions.rollAction(renderID, element.roll);
+      break;
   }
 }

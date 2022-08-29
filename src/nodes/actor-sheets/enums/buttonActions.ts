@@ -3,11 +3,16 @@
 export enum ButtonAction {
   Alert="alert",
 
+  // SHEET INTERACTION //
   // Content manipulation
   CreateContent="createcontent",
   DeleteContent="deletecontent",
 
   ToggleCollapse="togglecollapse",
+
+  // END SHEET INTERACTION //
+
+  Roll="roll",
 
   None="none",
 }

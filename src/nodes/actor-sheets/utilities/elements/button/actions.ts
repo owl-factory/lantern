@@ -1,5 +1,6 @@
 import { ActorController } from "nodes/actor-sheets";
 import { StateType } from "nodes/actor-sheets/enums/stateTypes";
+import { rollDice } from "nodes/rolls";
 
 /**
  * An action run by a click from an Actor Sheet button element.
@@ -29,4 +30,15 @@ export function deleteContent(renderID: string, contentGroup: string, index: num
 export function toggleCollapse(renderID: string, key: string) {
   const currentState = ActorController.getState(renderID, StateType.Collapse, key);
   ActorController.setState(renderID, StateType.Collapse, key, !currentState);
+}
+
+/**
+ * Runs a roll based on the string passed by the roll action
+ * @param renderID The ID of the render this roll is for
+ * @param rollStr The string to roll
+ */
+export function rollAction(renderID: string, rollStr: string) {
+  const rollResult = rollDice(rollStr);
+  // TODO - add handling to print this to the user's page
+  console.log(rollResult);
 }
