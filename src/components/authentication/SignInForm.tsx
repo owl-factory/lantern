@@ -1,23 +1,15 @@
 import React from "react";
 import { ErrorMessage, Formik, Form as FormikForm } from "formik";
-import * as Yup from "yup";
 import { Button } from "@owl-factory/components/button";
 import { Input } from "@owl-factory/components/form";
 import { signIn } from "utilities/auth";
+import { loginFormValidationSchema } from "utilities/validation/users/login";
 
 /** Initial form values */
 const initialValues = {
   username: "",
   password: "",
 };
-
-/** Validation for the login form */
-const validationSchema = Yup.object({
-  username: Yup.string()
-    .required("Required"),
-  password: Yup.string()
-    .required("Required"),
-});
 
 /**
  * Renders the form for logging in
@@ -35,7 +27,7 @@ export function SignInForm(): JSX.Element {
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={validationSchema}
+      validationSchema={loginFormValidationSchema}
       onSubmit={submit}
     >
       <FormikForm>

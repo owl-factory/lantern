@@ -4,7 +4,7 @@ import { COS_30 } from "./consts";
 import { MapController } from "./map";
 import { GridType } from "./SceneController";
 
-
+// Describes a controller in charge of rendering the grid
 class $GridController {
 
   public type: GridType = GridType.Squares;

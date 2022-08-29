@@ -8,6 +8,8 @@ import { MapController } from "controllers/maps/map";
 import { GridController } from "controllers/maps/grid";
 import { observer } from "mobx-react-lite";
 
+// TODO - break this file up into a node!
+
 // The default width of the grid count inputs
 const DEFAULT_GRID_INPUT_WIDTH="4.5em";
 // The default width of the pixel input

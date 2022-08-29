@@ -1,6 +1,6 @@
 
-import { Create, Delete, Fetch, Update } from "@owl-factory/database/decorators/decorators";
-import { RequireLogin } from "@owl-factory/database/decorators/modifiers";
+import { Create, Delete, Fetch, Update } from "@owl-factory/database/utilities/decorators/decorators";
+import { RequireLogin } from "@owl-factory/database/utilities/decorators/modifiers";
 import { SceneDocument } from "types/documents";
 import { Collection } from "src/fauna";
 import { Ref64 } from "@owl-factory/types";

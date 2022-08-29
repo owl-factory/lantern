@@ -1,4 +1,4 @@
-import { isValidCollection, isValidRef } from "../../../helpers/fields";
+import { isValidCollection, isValidRef } from "../../../utilities/fields";
 
 (isValidRef as any).mockImplementation((_ref: unknown) => {
   return true;

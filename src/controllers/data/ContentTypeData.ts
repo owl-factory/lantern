@@ -1,10 +1,11 @@
-import { DataManager } from "@owl-factory/data/DataManager";
+import { DataManager } from "@owl-factory/data";
 import { Ref64 } from "@owl-factory/types";
 import { ContentTypeDocument } from "types/documents";
 import { requireLogin, requirePermission } from "utilities/validation/account";
 import { validateNewContentType, validateUpdatedContentType } from "utilities/validation/contentType";
 import { RulesetData } from "./RulesetData";
 
+// Manages data for content type Documents
 class ContentTypeDataManager extends DataManager<Partial<ContentTypeDocument>> {
   public collection = "content-types";
 

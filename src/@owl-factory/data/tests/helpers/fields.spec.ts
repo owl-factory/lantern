@@ -1,5 +1,5 @@
 
-import { getUpdatedAt, isValidCollection, isValidRef } from "@owl-factory/data/helpers/fields";
+import { getUpdatedAt, isValidCollection, isValidRef } from "@owl-factory/data/utilities/fields";
 import "@owl-factory/utilities/tests/mocks/ref";
 
 jest.mock("@owl-factory/utilities/ref");

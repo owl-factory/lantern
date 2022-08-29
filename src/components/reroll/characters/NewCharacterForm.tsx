@@ -10,7 +10,7 @@ interface NewCharacterFormValues {
   character: Partial<CharacterDocument>;
 }
 
-export function NewCharacterForm(props: any) {
+export function NewCharacterForm() {
   async function createNewCharacter(values: NewCharacterFormValues) {
     // const character = await CharactersData.create(values.character);
   }

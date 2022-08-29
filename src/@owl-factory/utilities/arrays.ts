@@ -7,13 +7,15 @@ import { read } from "@owl-factory/utilities/objects";
  */
 export function arrayToList(arr?: string[]): string {
   let list = "";
-  if (arr === undefined) { return list; }
+  if (arr === undefined || !Array.isArray(arr)) { return list; }
 
   const lastIndex = arr.length - 1;
-  arr.forEach((item: string, index: number) => {
+  let i = 0;
+  for (const item of arr) {
     list += item;
-    if (index !== lastIndex) { list += ", ";}
-  });
+    i++;
+    if (i !== lastIndex) { list += ", ";}
+  }
   return list;
 }
 

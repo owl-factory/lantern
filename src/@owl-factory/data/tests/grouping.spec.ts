@@ -1,4 +1,4 @@
-import { GroupingController } from "@owl-factory/data/grouping";
+import { GroupingController } from "../controllers/GroupingController";
 
 let gc: GroupingController<Record<string, unknown>>;
 let doc1: Record<string, unknown>;

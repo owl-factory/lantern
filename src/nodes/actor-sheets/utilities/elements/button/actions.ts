@@ -1,5 +1,7 @@
 import { ActorController } from "nodes/actor-sheets";
 import { StateType } from "nodes/actor-sheets/enums/stateTypes";
+import { Mediator, MediatorMessage } from "nodes/mediator";
+import { rollDice } from "nodes/rolls";
 
 /**
  * An action run by a click from an Actor Sheet button element.
@@ -8,7 +10,7 @@ import { StateType } from "nodes/actor-sheets/enums/stateTypes";
  * @param contentGroup The type of content that is being created
  */
 export function createContent(renderID: string, contentGroup: string) {
-  ActorController.pushNewContent(renderID, contentGroup);
+  ActorController.pushContent(renderID, contentGroup, {});
 }
 
 /**
@@ -18,7 +20,7 @@ export function createContent(renderID: string, contentGroup: string) {
  * @param index The index of the content to remove
  */
 export function deleteContent(renderID: string, contentGroup: string, index: number) {
-  ActorController.deleteContentItem(renderID, contentGroup, index);
+  ActorController.deleteContent(renderID, contentGroup, index);
 }
 
 /**
@@ -29,4 +31,14 @@ export function deleteContent(renderID: string, contentGroup: string, index: num
 export function toggleCollapse(renderID: string, key: string) {
   const currentState = ActorController.getState(renderID, StateType.Collapse, key);
   ActorController.setState(renderID, StateType.Collapse, key, !currentState);
+}
+
+/**
+ * Runs a roll based on the string passed by the roll action
+ * @param renderID The ID of the render this roll is for
+ * @param rollStr The string to roll
+ */
+export function rollAction(_renderID: string, rollStr: string) {
+  const rollResult = rollDice(rollStr);
+  Mediator.post(MediatorMessage.Roll, { roll: rollResult});
 }

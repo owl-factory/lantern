@@ -13,7 +13,7 @@ import { ContentTypeData } from "controllers/data/ContentTypeData";
 import { RulesetData } from "controllers/data/RulesetData";
 import { getUniques } from "@owl-factory/utilities/arrays";
 import { getMyContent } from "./api/my-content";
-import { handleAPI } from "@owl-factory/https/apiHandler";
+import { handleAPI } from "@owl-factory/https";
 
 interface MyContentProps extends InitialProps {
   contents: ContentDocument[];

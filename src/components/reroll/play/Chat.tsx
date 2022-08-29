@@ -2,7 +2,7 @@ import { Tooltip } from "@owl-factory/components/tooltip";
 import { Form, Formik } from "formik";
 import { observer } from "mobx-react-lite";
 import React from "react";
-import { MessageDocument } from "types/documents";
+import { OldMessageDocument } from "types/documents";
 import { GameServer } from "controllers/play";
 import { Input, Select } from "@owl-factory/components/form";
 
@@ -53,7 +53,7 @@ function MessageTime({ createdAt }: {createdAt?: Date}) {
   );
 }
 
-function shouldSmooth(message: MessageDocument, previousMessages: MessageDocument[], index: number) {
+function shouldSmooth(message: OldMessageDocument, previousMessages: OldMessageDocument[], index: number) {
   if (index === 0) { return false; }
 
   let count = 0;
@@ -78,7 +78,7 @@ function shouldSmooth(message: MessageDocument, previousMessages: MessageDocumen
  * Renders a single message
  * @param message The message doc object to render
  */
-function Message({ messages, index }: { messages: MessageDocument[], index: number }): JSX.Element {
+function Message({ messages, index }: { messages: OldMessageDocument[], index: number }): JSX.Element {
   const message = messages[index];
   if (typeof message.createdAt === "string") { message.createdAt = new Date(message.createdAt); }
 
@@ -110,7 +110,7 @@ export const Chat = observer((props: ChatProps) => {
   if (!server.isReady)
     return <></>;
 
-  function sendMessage(values: MessageDocument) {
+  function sendMessage(values: OldMessageDocument) {
     // message.
     server?.fireTextMessage(values);
   }
@@ -120,7 +120,7 @@ export const Chat = observer((props: ChatProps) => {
     <option value="">{server.user.name}</option>,
   ];
 
-  server.state.messages.forEach((_: MessageDocument, index: number) => {
+  server.state.messages.forEach((_: OldMessageDocument, index: number) => {
     messageBlock.push(<Message messages={server.state.messages} index={index} key={index}/>);
   });
 
@@ -129,8 +129,8 @@ export const Chat = observer((props: ChatProps) => {
       <h2>Chat</h2>
       {messageBlock}
       <Formik
-        initialValues={{sendAs: "", content: ""} as MessageDocument}
-        onSubmit={(values: MessageDocument) => sendMessage(values)}
+        initialValues={{sendAs: "", content: ""} as any}
+        onSubmit={(values: OldMessageDocument) => sendMessage(values)}
       >
       {() => (
         <Form>

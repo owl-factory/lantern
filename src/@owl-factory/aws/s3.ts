@@ -80,6 +80,7 @@ async function getObjectMetadata(path: string): Promise<HeadObjectCommandOutput 
  * @returns 
  */
 async function upload(url: string, file: File) {
+  // TODO - add typing for response
   return await fetch(url, { method: "PUT", body: file });
 }
 

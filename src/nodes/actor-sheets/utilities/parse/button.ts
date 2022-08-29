@@ -33,6 +33,12 @@ export function parseButtonElement(element: Element, state: SheetState) {
       elementDetails.target =  splitExpressionValue(element.getAttribute("target") || "");
       break;
 
+    case ButtonAction.Roll:
+      const roll = element.getAttribute("roll");
+      if (!roll) throw "The Button action 'roll' requires a roll attribute";
+      // Rolls can have variables in them prior to rolling, so they need to be processed like expressions, then rolled
+      elementDetails.roll = splitExpressionValue(roll);
+      break;
   }
 
   return elementDetails;
@@ -51,6 +57,8 @@ function parseButtonAction(actionString: string) {
       return ButtonAction.CreateContent;
     case ButtonAction.DeleteContent:
       return ButtonAction.DeleteContent;
+    case ButtonAction.Roll:
+      return ButtonAction.Roll;
     case ButtonAction.ToggleCollapse:
       return ButtonAction.ToggleCollapse;
     default:

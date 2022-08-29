@@ -1,6 +1,6 @@
 import { Button } from "@owl-factory/components/button";
 import { Page } from "components/design";
-import { ActorSheetForm } from "components/reroll/actorSheets/Form";
+import { ActorSheetForm } from "nodes/actor-sheets";
 import { ActorSheetData } from "controllers/data/ActorSheetData";
 import { RulesetData } from "controllers/data/RulesetData";
 import { observer } from "mobx-react-lite";
@@ -35,7 +35,7 @@ function NewActorSheet() {
   React.useEffect(() => {
     if (ruleset && ruleset.ref) {
       ActorController.loadRuleset(ruleset.ref, ruleset);
-      setRenderID(ActorController.createRender(null, "temp", ruleset.ref));
+      setRenderID(ActorController.newRender("temp", "temp", ruleset.ref));
     }
   }, [ruleset]);
 

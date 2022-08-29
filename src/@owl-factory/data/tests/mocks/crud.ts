@@ -1,4 +1,4 @@
-import { create, del, read, update } from "@owl-factory/data/crud";
+import { create, del, read, update } from "../../controllers/functionality/crud";
 import { CrudPacket } from "@owl-factory/types/object";
 
 (create as any).mockImplementation(async (_url: string, _docs: any[]): Promise<CrudPacket<any>[]> => {

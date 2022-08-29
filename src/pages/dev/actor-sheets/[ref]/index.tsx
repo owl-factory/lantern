@@ -21,7 +21,7 @@ function ViewActorSheetLoading() {
 function ViewActorSheet() {
   const router = useRouter();
   const ref = router.query.ref as string;
-  const renderID = ActorController.createRender(null, ref, null);
+  const renderID = ActorController.newRender("temp", ref, "temp");
 
   React.useEffect(() => {
     ActorSheetData.load(ref);
@@ -30,7 +30,7 @@ function ViewActorSheet() {
   const actorSheet = ActorSheetData.get(ref);
   React.useEffect(() => {
     if (!actorSheet) { return; }
-    ActorController.loadSheet(ref, actorSheet.xml as string);
+    ActorController.loadSheet(ref, { xml: actorSheet.xml as string });
   }, [actorSheet]);
   return (
     <Page>

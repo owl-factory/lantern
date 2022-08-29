@@ -1,4 +1,4 @@
-import { getMigrationFilenames } from "@owl-factory/database/migrations/fauna/file";
+import { getMigrationFilenames } from "@owl-factory/database/utilities/migrations/fauna/file";
 import fs from "fs";
 
 jest.mock("fs");

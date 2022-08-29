@@ -1,8 +1,8 @@
+import { toJS } from "mobx";
 import { observer } from "mobx-react-lite";
 import { ActorController } from "nodes/actor-sheets";
 import { SheetElementProps, SheetProperties } from "nodes/actor-sheets/types";
 import { LoopDescriptor } from "nodes/actor-sheets/types/elements/loop";
-import { Expression } from "nodes/actor-sheets/types/expressions";
 import React from "react";
 import { SheetChildren } from "./Children";
 
@@ -37,7 +37,7 @@ export const SheetLoop = observer((props: SheetElementProps<LoopDescriptor>) => 
       $source: { ...props.properties.$source },
       $index: {...props.properties.$index, [key]: i },
       $prefix: prefix,
-      [key]: listItem,
+      [key]: toJS(listItem),
     };
     if (props.element.listSource) { properties.$source[key] = props.element.listSource; }
 

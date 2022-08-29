@@ -1,4 +1,4 @@
-import { $toArray, $toDate, $toItem } from "@owl-factory/database/conversion/fauna/to";
+import { $toArray, $toDate, $toItem } from "@owl-factory/database/utilities/conversion/fauna/to";
 import { query as q } from "faunadb";
 
 test("toArray test", () => {

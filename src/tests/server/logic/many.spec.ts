@@ -1,6 +1,5 @@
 import { createMany, deleteMany, fetchMany, updateMany } from "server/logic/many";
 
-
 describe("createMany", () => {
   test("success", async () => {
     const create = jest.fn(async (doc: any) => doc);

@@ -3,7 +3,7 @@ import { NextApiRequest } from "next";
 import { CampaignLogic } from "server/logic/CampaignLogic";
 import { SceneLogic } from "server/logic/SceneLogic";
 
-import { HTTPHandler, createEndpoint } from "@owl-factory/https";
+import { HTTPHandler, createEndpoint } from "@owl-factory/https/backend";
 
 
 /**

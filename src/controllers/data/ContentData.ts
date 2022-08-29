@@ -1,5 +1,5 @@
-import { DataManager } from "@owl-factory/data/DataManager";
-import { rest } from "@owl-factory/https/rest";
+import { DataManager } from "@owl-factory/data";
+import { rest } from "@owl-factory/https";
 import { Ref64 } from "@owl-factory/types";
 import { isOwner } from "security/documents";
 import { ContentDocument } from "types/documents";
@@ -7,6 +7,7 @@ import { requireLogin, requirePermission } from "utilities/validation/account";
 import { validateNewContent, validateUpdatedContent } from "utilities/validation/content";
 import { RulesetData } from "./RulesetData";
 
+// Manages data for Content Documents
 class ContentDataManager extends DataManager<Partial<ContentDocument>> {
   public collection = "contents";
 

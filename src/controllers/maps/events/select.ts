@@ -29,7 +29,7 @@ export function onSelectStart(event: InteractionEvent, target: Interactable, sce
  * @param target The target sprite or container to interact with
  * @param sceneController The scene, as `this` is unavailable
  */
-export function onSelectEnd(event: InteractionEvent, target: Interactable, sceneController: SceneController): void {
+export function onSelectEnd(_event: InteractionEvent, target: Interactable, sceneController: SceneController): void {
   if (!target.dragging || !target.data) { return; }
   sceneController.viewport.plugins.resume('drag');
   const newPosition = sceneController.snap(target.data.getLocalPosition(target.parent));
@@ -46,7 +46,7 @@ export function onSelectEnd(event: InteractionEvent, target: Interactable, scene
  * @param target The target sprite or container to interact with
  * @param sceneController The scene, as `this` is unavailable
  */
-export function onSelectMove(event: InteractionEvent, target: Interactable, sceneController: SceneController): void {
+export function onSelectMove(_event: InteractionEvent, target: Interactable, sceneController: SceneController): void {
   if (!target.dragging || !target.data) { return; }
   const newPosition = target.data.getLocalPosition(target.parent);
   target.x = newPosition.x;

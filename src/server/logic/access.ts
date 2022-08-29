@@ -1,4 +1,4 @@
-import * as fauna from "@owl-factory/database/integration/fauna";
+import * as fauna from "@owl-factory/database/utilities/integration/fauna";
 import { Ref64 } from "@owl-factory/types";
 
 /**
@@ -47,8 +47,13 @@ export async function fetch<T>(collection: string, ref: Ref64): Promise<T> {
  * @param doc The changes to make in the document
  * @returns The full updated document
  */
-export async function update<T>(collection: string, ref: Ref64, doc: Partial<T>): Promise<T> {
-  const updatedDoc = await fauna.updateOne<T>(ref, doc);
+export async function update<T>(
+  collection: string,
+  ref: Ref64,
+  doc: Partial<T>,
+  optional?: { credentials?: string }
+): Promise<T> {
+  const updatedDoc = await fauna.updateOne<T>(ref, doc, optional);
   if (updatedDoc === undefined) {
     throw `A document in collection '${collection}' with ref '${ref}' could not be updated`;
   }

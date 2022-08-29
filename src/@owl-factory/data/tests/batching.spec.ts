@@ -1,4 +1,4 @@
-import { BatchingController } from "@owl-factory/data/batching";
+import { BatchingController } from "../controllers/BatchingController";
 
 describe("BatchingController Functions", () => {
   let batching: BatchingController;

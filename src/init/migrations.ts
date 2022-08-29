@@ -1,8 +1,8 @@
-import { importMigrations } from "@owl-factory/database/migrations/fauna";
-import { setBaseDocument } from "@owl-factory/database/migrations/fauna/access";
+import { importMigrations } from "@owl-factory/database/utilities/migrations/fauna";
+import { setBaseDocument } from "@owl-factory/database/utilities/migrations/fauna/access";
 import { isServer } from "@owl-factory/utilities/client";
 import { Collection } from "fauna";
-import { baseDocument } from "types/documents";
+import { baseDocument } from "types/documents"; // TODO - remove this dependency!
 
 let HAS_RUN = false;
 const CAN_RUN = isServer; // Whether or not the migrations can be run regardless of if they have or not

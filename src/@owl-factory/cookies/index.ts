@@ -1,4 +1,4 @@
-import { getCtx } from "@owl-factory/next/ctx";
+import { getCtx } from "@owl-factory/next";
 import {
   destroyCookie as destroyNookieCookie,
   parseCookies as parseNookieCookies,

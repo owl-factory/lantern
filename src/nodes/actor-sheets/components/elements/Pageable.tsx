@@ -4,7 +4,7 @@ import { SheetElement } from "../SheetElement";
 import { SheetElementProps } from "../../types";
 import { SheetPage } from "./Page";
 import { StateType } from "nodes/actor-sheets/enums/stateTypes";
-import { ActorController } from "nodes/actor-sheets/controllers/ActorController";
+import { ActorController } from "nodes/actor-sheets/controllers/ActorSheetController";
 import { observer } from "mobx-react-lite";
 import { SheetChildren } from "./Children";
 

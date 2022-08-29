@@ -4,9 +4,10 @@ import { Formik, FormikProps } from "formik";
 import React from "react";
 import { StaticVariableFormValues } from "types/components/forms/staticVariables";
 import {
-  StaticVariable,
   StaticVariableComplexType,
+  StaticVariableMetadata,
   StaticVariableScalarType,
+  StaticVariables,
 } from "types/documents/subdocument/StaticVariable";
 import { buildInitialValues, processStaticValues } from "utilities/staticVariable/helpers";
 import { StaticVariableValueInput } from "./StaticVariableValueInput";
@@ -23,38 +24,44 @@ function NullForm() {
 
 
 interface StaticVariableFormProps {
-  staticVariables: Record<string, StaticVariable>;
-  setStaticVariables: (staticVariables: Record<string, StaticVariable>) => void;
-  selectedVariable: string | undefined;
-  setSelectedVariable: (selectedVariable: string | undefined) => void;
+  variables: StaticVariables;
+  setVariables: (staticVariables: StaticVariables) => void;
+  selected: string | undefined;
+  setSelected: (selectedVariable: string | undefined) => void;
 }
 
 /**
  * Renders the form for editing a static variable
- * @param staticVariables The full list of static variables
- * @param setStaticVariables A function to update and set all static variables
- * @param selectedVariable The key of the currently selected static variable
- * @param setSelectedVariable A function to update the currently selected static variable
+ * @param variables The full list of static variables
+ * @param setVariables A function to update and set all static variables
+ * @param selected The key of the currently selected static variable
+ * @param setSelected A function to update the currently selected static variable
  */
 export function StaticVariableForm(props: StaticVariableFormProps) {
-  if (!props.selectedVariable) { return <NullForm/>; }
-  const staticVariable = props.staticVariables[props.selectedVariable];
-  if (!props.staticVariables[props.selectedVariable]) { return <NullForm/>; }
+  if (!props.selected) { return <NullForm/>; }
+  const currentMetadata = props.variables.metadata[props.selected];
+  const currentValue = props.variables.values[props.selected];
+  if (!currentMetadata) { return <NullForm/>; }
 
   // Builds the initial values for the form. Ensures that the StaticVariableFormValues are all set
-  const initialValues = buildInitialValues(staticVariable);
+  const initialValues = buildInitialValues(currentValue, currentMetadata);
 
   /**
    * Submits the Static Variable form
-   * @param values The raw form values to submit
+   * @param formValues The raw form values to submit
    */
-  function onSubmit(values: StaticVariable & StaticVariableFormValues) {
-    if (!props.selectedVariable) { return; }
-    const staticVariables = { ...props.staticVariables };
-    (staticVariables[props.selectedVariable] as any) = null;
-    staticVariables[values.key] = processStaticValues(values);
-    props.setStaticVariables(staticVariables);
-    props.setSelectedVariable(undefined);
+  function onSubmit(formValues: StaticVariableMetadata & StaticVariableFormValues) {
+    if (!props.selected) { return; }
+    const metadata = { ...props.variables.metadata };
+    const values = { ...props.variables.values };
+    (metadata[props.selected] as any) = null;
+    (values[props.selected] as any) = null;
+    const processedValues = processStaticValues(formValues);
+
+    values[formValues.key] = processedValues.value;
+    metadata[formValues.key] = processedValues.metadata;
+    props.setVariables({ metadata, values });
+    props.setSelected(undefined);
   }
 
   return (
@@ -63,8 +70,8 @@ export function StaticVariableForm(props: StaticVariableFormProps) {
         initialValues={initialValues}
         onSubmit={onSubmit}
       >
-        {(formikProps: FormikProps<StaticVariable & StaticVariableFormValues>) => {
-          if (staticVariable.key !== (formikProps.values as any).oldKey) { formikProps.setValues(initialValues); }
+        {(formikProps: FormikProps<StaticVariableMetadata & StaticVariableFormValues>) => {
+          if (currentMetadata.key !== (formikProps.values as any).oldKey) { formikProps.setValues(initialValues); }
           return (
             <>
               <label htmlFor="sv_name">Name</label>
@@ -93,7 +100,7 @@ export function StaticVariableForm(props: StaticVariableFormProps) {
                 setStaticVariableField={formikProps.setFieldValue}
               />
 
-              <Button type="button" onClick={() => props.setSelectedVariable(undefined)}>Cancel</Button>
+              <Button type="button" onClick={() => props.setSelected(undefined)}>Cancel</Button>
               <Button onClick={formikProps.submitForm}>Save</Button>
             </>
           );

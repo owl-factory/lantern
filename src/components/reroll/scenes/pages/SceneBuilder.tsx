@@ -5,6 +5,8 @@ import { PixiController } from "controllers/maps/pixi";
 import { SceneOverlay } from "../SceneOverlay";
 import { MapController } from "controllers/maps/map";
 
+// TODO - put this in its own node
+
 const app = new Application({
   width: window.innerWidth,
   height: window.innerHeight - 62,

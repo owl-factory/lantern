@@ -1,12 +1,12 @@
-import { ParsedExpressionString } from "../expressions";
+import { ParsedExpression } from "../../../../types/expressions";
 import { GenericSheetElementDescriptor } from "./generic";
 
 /**
  * Describes a sheet radio button element
  */
 export interface RadioButtonDescriptor extends GenericSheetElementDescriptor {
-  id?: ParsedExpressionString;
-  name: ParsedExpressionString;
-  value: ParsedExpressionString;
-  label: ParsedExpressionString;
+  id?: ParsedExpression;
+  name: ParsedExpression;
+  value: ParsedExpression;
+  label: ParsedExpression;
 }

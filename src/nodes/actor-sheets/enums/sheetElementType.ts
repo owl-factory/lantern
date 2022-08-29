@@ -37,6 +37,9 @@ export enum SheetElementType {
 
   // Functional Elements that perform tasks but do not directly appear
   Loop,
+
+  // Non-functional components. This indicates an error somewhere in the parsing
+  Error,
 }
 
 /**
