@@ -28,6 +28,9 @@
         <Collapse id="test_collapse">
           <Label>Testing the collapse! Look! Words!</Label>
         </Collapse>
+
+        <!-- This will render an error message and not break the sheet -->
+        <TextInput/>
       </Page>
       
       <Page name="Character Sheet" access="edit">

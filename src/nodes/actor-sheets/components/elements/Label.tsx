@@ -3,7 +3,6 @@ import React from "react";
 import { LabelDescriptor } from "nodes/actor-sheets/types/elements";
 import { ActorController } from "../../controllers/ActorSheetController";
 import { SheetElementProps } from "../../types";
-import { autorun, reaction } from "mobx";
 
 const VARIABLE_FIELDS = ["for", "text"];
 
