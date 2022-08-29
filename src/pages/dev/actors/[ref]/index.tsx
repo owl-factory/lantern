@@ -4,9 +4,11 @@ import { ActorData } from "controllers/data/ActorData";
 import { ActorSheetData } from "controllers/data/ActorSheetData";
 import { CampaignData } from "controllers/data/CampaignData";
 import { RulesetData } from "controllers/data/RulesetData";
+import { ActorSheetMediatorHandler } from "controllers/mediators/ActorSheetHandler";
 import { observer } from "mobx-react-lite";
 import { useRouter } from "next/router";
 import { ActorController, ActorSheet } from "nodes/actor-sheets";
+import { Mediator } from "nodes/mediator";
 import React from "react";
 import { Scalar } from "types";
 import { RulesetDocument } from "types/documents";
@@ -18,6 +20,12 @@ function ActorView() {
   const router = useRouter();
   const ref = router.query.ref as string;
   const [ renderID, setRenderID ] = React.useState("");
+
+  // Initializes the Mediator
+  React.useEffect(() => {
+    Mediator.set(ActorSheetMediatorHandler);
+    return () => { Mediator.reset(); };
+  }, []);
 
   React.useEffect(() => {
     ActorData.load(ref);

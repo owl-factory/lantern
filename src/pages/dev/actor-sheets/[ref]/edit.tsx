@@ -3,12 +3,13 @@ import { Page } from "components/design";
 import { ActorSheetForm } from "components/reroll/actorSheets/Form";
 import { ActorSheetData } from "controllers/data/ActorSheetData";
 import { RulesetData } from "controllers/data/RulesetData";
+import { ActorSheetMediatorHandler } from "controllers/mediators/ActorSheetHandler";
 import { observer } from "mobx-react-lite";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { ActorController } from "nodes/actor-sheets";
+import { Mediator } from "nodes/mediator";
 import React from "react";
-import { RulesetDocument } from "types/documents";
 import { ActorSheetDocument } from "types/documents/ActorSheet";
 
 /**
@@ -21,6 +22,12 @@ function EditActorSheet() {
   const [ renderID, setRenderID ] = React.useState("");
   const actorSheet = ActorSheetData.get(ref);
   const ruleset = RulesetData.get(actorSheet?.ruleset?.ref);
+
+  // Initializes the Mediator
+  React.useEffect(() => {
+    Mediator.set(ActorSheetMediatorHandler);
+    return () => { Mediator.reset(); };
+  }, []);
 
   // Ensures that the actor sheet is loaded
   React.useEffect(() => { ActorSheetData.load(ref); }, [ref]);
