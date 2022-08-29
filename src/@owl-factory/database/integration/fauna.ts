@@ -75,6 +75,18 @@ export async function findManyByIDs<T>(ids: Ref64[]): Promise<T[]> {
 }
 
 /**
+ * Identifies a document by the ID and password
+ * @param id The Ref64 ID of the document to check
+ * @param password The password of the document
+ * @returns True if the password matches the document, false otherwise
+ */
+export async function identify(id: Ref64, password: string): Promise<boolean> {
+  const client = getServerClient();
+  const ref = toRef(id);
+  return client.query(q.Identify(ref, password));
+}
+
+/**
  * Searches by a specified index
  * TODO - unlink from fauna index or have a way to set that
  * @param index The FaunaIndex to search
@@ -108,15 +120,22 @@ export async function searchByIndex<T>(
  * @param doc The partial document to update in the database
  * @returns The fully updated document
  */
-export async function updateOne<T>(id: Ref64, doc: Partial<T>): Promise<T> {
+export async function updateOne<T>(
+  id: Ref64,
+  doc: Partial<T>,
+  options?:  { credentials?: string }
+): Promise<T> {
   const client = getServerClient();
   const ref = toRef(id);
   const patchDoc = toFauna(doc);
 
-  const result: FaunaDocument = await client.query(q.Update(ref, patchDoc));
+  if (options) {
+    if (options.credentials) { patchDoc.credentials = { password: options.credentials }; }
+  }
 
+  const result: FaunaDocument = await client.query(q.Update(ref, patchDoc));
   if (!result) {
-    throw "An error occured while updating a document";
+    throw "Fauna Integration Exception: An error occured while updating a document";
   }
 
   const parsedResult = fromFauna(result);

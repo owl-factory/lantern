@@ -1,11 +1,10 @@
-import { Ref64 } from "@owl-factory/types";
+import type { Ref64 } from "@owl-factory/types";
 import { UserDocument } from "types/documents";
 import * as fauna from "@owl-factory/database/integration/fauna";
 import { Collection, FaunaIndex } from "src/fauna";
 import { Fetch, Search, SignIn, SignUp, Update } from "@owl-factory/database/decorators/decorators";
-import { FaunaIndexOptions } from "@owl-factory/database/types/fauna";
+import type { FaunaIndexOptions } from "@owl-factory/database/types/fauna";
 import { isEmail } from "@owl-factory/utilities/strings";
-import { isOwner } from "security/documents";
 import * as access from "./access";
 
 const COOKIE_FIELDS = ["ref", "username", "email", "name", "avatar.*", "role", "permissions", "boost"];
@@ -32,6 +31,16 @@ const collection = Collection.Users;
 
 class $UserLogic {
   /**
+   * Attempts to identify the given document with the password
+   * @param ref The ref of the user document to identify
+   * @param password The password to use to identify the document
+   * @returns True if the password matches the user document, false otherwise
+   */
+  public async identify(ref: Ref64, password: string) {
+    return await fauna.identify(ref, password);
+  }
+
+  /**
    * Fetches one user from its ID
    * @param id The Ref64 ID of the document to fetch
    * @returns The user document
@@ -41,6 +50,12 @@ class $UserLogic {
     return await access.fetch(collection, ref);
   }
 
+  /**
+   * Searches for users with a specific username
+   * @param username The username to search by
+   * @param options Any additional options to configure the search
+   * @returns A list of all users matching that username
+   */
   @Search(["*"])
   public async searchByUsername(username: string, options?: FaunaIndexOptions): Promise<UserDocument[]> {
     const users = await fauna.searchByIndex<UserDocument>(FaunaIndex.UsersByUsername, [username], options);
@@ -67,6 +82,17 @@ class $UserLogic {
   @Update(collection, ["*"], ["avatar.ref", "avatar.src"], (ref) => access.fetch(collection, ref))
   public async updateAvatar(ref: Ref64, doc: Partial<UserDocument>): Promise<UserDocument> {
     return await access.update(collection, ref, doc);
+  }
+
+  /**
+   * Updates the user's password
+   * @param ref The ref of the user document to update
+   * @param oldPassword The old password
+   * @param password The new password
+   */
+  public async updatePassword(ref: Ref64, password: string): Promise<UserDocument> {
+    return await access.update<UserDocument>(
+      collection, ref, {}, { credentials: password });
   }
 
   /**
