@@ -1,4 +1,5 @@
-import { action, makeObservable, observable } from "mobx";
+import { read, set } from "@owl-factory/utilities/objects";
+import { action, makeObservable, observable, toJS } from "mobx";
 import { DataSource } from "nodes/actor-sheets/enums/dataSource";
 import { RenderGroup } from "nodes/actor-sheets/types";
 import { Scalar } from "types";
@@ -133,6 +134,42 @@ export class DataController {
         delete this.$sheet[id];
         break;
     }
+  }
+
+  /**
+   * Gets the variables used for a specific expression, allowing it to be faster 
+   * @param renderIDs The IDs of the data that is being rendered
+   * @param varNames The variable names that are used in an expression rendering
+   */
+  public getExprVariables(renderIDs: RenderGroup, varNames: string[]) {
+    const exprVariables = {};
+    for (const name of varNames) {
+      const leadingName = name.replace(/\..*/, "");
+      const remainderName = name.replace(/^[^.]+?\./, "");
+
+      let value;
+      switch(leadingName) {
+        case "character":
+          value = read(this.$actor[renderIDs.actorID], remainderName);
+          const actorName = `actor.${remainderName}`;
+          set(exprVariables, actorName, toJS(value));
+          continue;
+        case "content":
+          value = read(this.$content[renderIDs.actorID], remainderName);
+          break;
+        case "ruleset":
+          value = read(this.$ruleset[renderIDs.rulesetID], remainderName);
+          break;
+        case "sheet":
+          value = read(this.$sheet[renderIDs.sheetID], remainderName);
+          break;
+        default:
+          continue;
+      }
+
+      set(exprVariables, name, toJS(value));
+    }
+    return exprVariables;
   }
 
   /**

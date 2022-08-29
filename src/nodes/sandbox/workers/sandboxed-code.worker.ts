@@ -107,55 +107,31 @@ export default () => {
 
   // END WHITELISTING BOILERPLATE //
 
-  const $character: Record<string, Record<string, Scalar>> = {};
-  const $content: Record<string, Record<string, ActorContent[]>> = {};
-  const $rules: Record<string, Record<string, StaticVariableValue>> = {};
-  const $sheet: Record<string, Record<string, Scalar>> = {};
-
   /**
    * Processes and renders an expression out into a usable string safely.
    * NOTE: All function-defined variables are marked with '$'
-   * @param $data The data passed in by the message with instructions on how to process the expression
+   * @param data The data passed in by the message with instructions on how to process the expression
    */
-  function renderExpression($data: SandboxWorkerRenderMessage) {
-    const keys = Object.keys($data.properties);
-    for (const field of keys) {
-      if (field in ["character", "content", "rules", "sheet"]) continue;
-      const str = `var ${field} = ${JSON.stringify($data.properties[field])};`;
-      eval(str);
-    }
-
-    const character = $character[$data.renderIDs.actorID] || {};
-    const content = $content[$data.renderIDs.actorID] || {};
-    const rules = $rules[$data.renderIDs.rulesetID] || {};
-    const sheet = $sheet[$data.renderIDs.sheetID] || {};
-    const $res = eval(`\`${$data.expression}\``);
-    postMessage({ values: $res, success: true, message: "", promiseID: $data.promiseID });
+  function renderExpression(data: SandboxWorkerRenderMessage) {
+    const res = encapsulateExpr(data.expression, data.properties);
+    postMessage({ values: res, success: true, message: "", promiseID: data.promiseID });
   }
 
   /**
-   * Saves external data to a specific location within the web worker for faster access
-   * @param data Contains the instructions for what to save and where
+   * Encapsulates the expression to isolate it from any additional variables that it could access
+   * @param expr The expression to render
+   * @param $properties The potential values that the expression may use when rendering
+   * @returns The rendered expression
    */
-  function set(data: SandboxWorkerSetMessage) {
-    switch (data.group) {
-      case "character":
-        if (!data.key) { $character[data.id] = data.value as Record<string, Scalar>; }
-        else { $character[data.id][data.key] = data.value as Scalar; }
-        break;
-      case "content":
-        if (!data.key) { $content[data.id] = data.value as Record<string, ActorContent[]>; }
-        else { $content[data.id][data.key] = data.value as ActorContent[]; }
-        break;
-      case "rules":
-        if (!data.key) { $rules[data.id] = data.value as Record<string, StaticVariableValue>; }
-        else { $rules[data.id][data.key] = data.value as StaticVariableValue; }
-        break;
-      case "sheet":
-        if (!data.key) { $sheet[data.id] = data.value as Record<string, Scalar>; }
-        else { $sheet[data.id][data.key] = data.value as Scalar; }
-        break;
+  function encapsulateExpr(expr: string, $properties?: Record<string, unknown>): string {
+    if (!$properties) $properties = {};
+    const keys = Object.keys($properties);
+    for (const field of keys) {
+      const str = `var ${field} = ${JSON.stringify($properties[field])};`;
+      eval(str);
     }
+    $properties = undefined;
+    return eval(`\`${expr}\``);
   }
 
   /**
@@ -168,9 +144,6 @@ export default () => {
       // We need to use hard-coded strings here because importing the enums breaks the worker
       case "expression":
         renderExpression(data as SandboxWorkerRenderMessage);
-        break;
-      case "set":
-        set(data as SandboxWorkerSetMessage);
         break;
     }
   };

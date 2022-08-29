@@ -1,4 +1,4 @@
-import { isExpression } from "../expressions/parse";
+import { hasExpression } from "../expressions/parse";
 
 /**
  * Validates that the given string is in a valid format for accessing a variable
@@ -7,7 +7,7 @@ import { isExpression } from "../expressions/parse";
 export function validateVariableAccess(str: string) {
   if (str.length === 0) { throw `A variable name cannot be empty`; }
   // We can't know if an expression is valid at parse time, so we ignore it
-  if (isExpression(str)) { return; }
+  if (hasExpression(str)) { return; }
   const groups = str.split('.');
   for (const group of groups) {
     if (!isValidVariableName(group)) {
@@ -25,7 +25,7 @@ export function validateVariableAccess(str: string) {
 export function validateVariableDeclaration(str: string) {
   if (str.length === 0) { throw `A variable name cannot be empty`; }
   // We can't know if an expression is valid at parse time, so we ignore it
-  if (isExpression(str)) { return; }
+  if (hasExpression(str)) { return; }
   if (!isValidVariableName(str)) {
     // eslint-disable-next-line max-len
     throw `The name '${str}' is not a valid variable name. Variables must start with a letter and contain only letters, numbers, dashes, or underscores.`;
