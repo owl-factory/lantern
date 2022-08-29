@@ -1,5 +1,5 @@
 import React from "react";
-import { StaticVariableMetadata, StaticVariables } from "types/documents/subdocument/StaticVariable";
+import { StaticVariables } from "types/documents/subdocument/StaticVariable";
 import { StaticVariableForm } from "./StaticVariableForm";
 import { StaticVariableList } from "./StaticVariableList";
 

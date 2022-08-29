@@ -11,7 +11,6 @@ import { CampaignData } from "controllers/data/CampaignData";
 import { RulesetData } from "controllers/data/RulesetData";
 import { Modal } from "@owl-factory/components/modal";
 import { NewCharacterForm } from "components/reroll/characters/NewCharacterForm";
-import { CharacterSheet } from "components/reroll/characters/character-sheet/CharacterSheet";
 import { Ref64 } from "@owl-factory/types";
 import { getUniques } from "@owl-factory/utilities/arrays";
 import { handleAPI } from "@owl-factory/https";
@@ -175,7 +174,7 @@ export function MyCharacters (props: MyCharactersProps) {
         <div className="d-none d-md-block col-md-8">
           Character Sheet
           <hr/>
-          <CharacterSheet activeCharacter={activeCharacter}/>
+          {/* <CharacterSheet activeCharacter={activeCharacter}/> */}
         </div>
       </div>
 

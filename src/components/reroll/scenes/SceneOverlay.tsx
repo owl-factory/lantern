@@ -4,11 +4,13 @@ import { observer } from "mobx-react-lite";
 import React from "react";
 import { MdGridOn, MdImage, MdSupervisorAccount } from "react-icons/md";
 import { GridForm } from "./forms/grid";
-import { MapModeReadable as MAP_MODE_READABLE, MapMode, ModeController } from "controllers/maps/mode";
+import { MapMode, ModeController } from "controllers/maps/mode";
 import styles from "./SceneOverlay.module.scss";
 import { ButtonGroup } from "react-bootstrap";
 import { MapDraggable } from "controllers/maps/map";
 
+
+// TODO - break into node for scene
 
 function dragStart(event: any) {
   event.dataTransfer.setData("id", event.target.id);

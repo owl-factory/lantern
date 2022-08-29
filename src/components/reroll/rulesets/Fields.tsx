@@ -17,6 +17,7 @@ interface FieldsProps {
 
 /**
  * Renders the Fields tool for creating and editing fields
+ * @todo Break this up into smaller subcomponents or a node
  * @param props.fields The object of fields to render
  * @param props.setFields The function to update the fields object
  */

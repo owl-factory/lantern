@@ -3,7 +3,7 @@ import { CampaignData } from "controllers/data/CampaignData";
 import { observer } from "mobx-react-lite";
 import Link from "next/link";
 import React from "react";
-import { Nav, NavDropdown, Navbar } from "react-bootstrap";
+import { Nav, NavDropdown, Navbar } from "react-bootstrap"; // TODO - remove react-bootstrap
 import { CampaignDocument, UserDocument } from "types/documents";
 import { signOut } from "utilities/auth";
 
@@ -19,13 +19,6 @@ interface LoggedInNavProps {
  */
  function ElevatedDropdown() {
   const navItems: JSX.Element[] = [];
-  // if(isAdmin(user as unknown as MyUserDocument)) {
-  //   navItems.push(
-  //     <Link href={`${ADMIN_ENDPOINT}/rulesets`} passHref key="rulesets">
-  //       <NavDropdown.Item>Rulesets</NavDropdown.Item>
-  //     </Link>
-  //   );
-  // }
 
   if (navItems.length === 0) { return <></>; }
 

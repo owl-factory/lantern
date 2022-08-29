@@ -6,10 +6,8 @@ interface ToolboxProps {
 
   children: React.ReactNode;
 }
-
+// TODO - determine what this is, how useful it is to keep, and comment if we do want to keep it
 export function Toolbox(props: ToolboxProps): JSX.Element {
-
-
   return (
     <div
       className={`toolbox ${props.open ? "open" : "closed"}`}

@@ -5,7 +5,6 @@ import styles from "./HeaderBar.module.scss";
 import dynamic from "next/dynamic";
 import { Auth } from "controllers/auth";
 
-
 function LoggedInNavPlaceholder() {
   return (<></>);
 }
