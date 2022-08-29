@@ -19,6 +19,7 @@ import { arrayToList, getUniques } from "@owl-factory/utilities/arrays";
 import { Auth } from "controllers/auth";
 import { handleAPI } from "@owl-factory/https/apiHandler";
 import { getProfile } from "../api/profile/[username]";
+import { Loading } from "@owl-factory/components/loading";
 
 /**
  * Renders a small section indicating how long a player has been a member, their hours played,
@@ -228,10 +229,6 @@ const Avatar = observer(({ user, isMyPage }: ProfileImageProps) => {
   );
 });
 
-interface ProfileProps extends InitialProps {
-  user: UserDocument;
-}
-
 /**
  * Renders a user's profile page.
  * @param props.success True if the request succeeded. False otherwise
@@ -239,42 +236,18 @@ interface ProfileProps extends InitialProps {
  * @param props.message A message, if any, explaining the success value
  * @param props.session The current user's session, if any
  */
-function Profile(props: ProfileProps): JSX.Element {
-  if (!props.success) {
-    console.error(404);
-
-    return <>Error</>;
-  }
+function Profile(): JSX.Element {
   const router = useRouter();
-  const [ user, setUser ] = React.useState<Partial<UserDocument>>(props.user);
-  const [ isMyPage, setIsMyPage ] = React.useState(calculateIfUserIsOwner());
+  const username = router.query.username as string | undefined;
+
+  React.useEffect(() => {
+    UserData.loadByUsername(username);
+  }, [username]);
+
+  const user = UserData.getByUsername(username);
+  const isMyPage = calculateIfUserIsOwner();
+
   const [ players, setPlayers ] = React.useState<Partial<UserDocument>[]>([]);
-
-  // Loads in everything from local storage and inserts new user ingo the Manager
-  React.useEffect(() => {
-    UserData.set(props.user);
-
-    const playerIDs: string[] = [];
-    props.user.recentPlayers?.forEach((player: Partial<UserDocument>) => {
-      playerIDs.push(player.ref as string);
-    });
-    UserData.load(playerIDs);
-
-    FileData.load(props.user.avatar.ref);
-  }, []);
-
-  React.useEffect(() => {
-    const playerIDs = getUniques(user.recentPlayers, "ref");
-    setPlayers(UserData.getMany(playerIDs));
-  }, [UserData.lastTouched]);
-
-  // Updates the current user when they change
-  React.useEffect(() => {
-    const newUser = UserData.get(props.user.ref as string);
-    if (!newUser) { return; }
-
-    setUser(newUser);
-  }, [UserData.lastTouched]);
 
   /**
    * Determines if the current player is the owner of the profile page.
@@ -282,7 +255,7 @@ function Profile(props: ProfileProps): JSX.Element {
    */
   function calculateIfUserIsOwner() {
     if (!Auth.isLoggedIn) { return false; }
-    if (Auth.user?.ref === user.ref) { return true; }
+    if (user && Auth.user?.ref === user.ref) { return true; }
     return false;
   }
 
@@ -291,9 +264,11 @@ function Profile(props: ProfileProps): JSX.Element {
    * @param values The user document values to save to the database
    */
   async function saveUser(values: Record<string, unknown>) {
-    return;
-    // await UserData.update(user.ref as string, values);
+    if (!user || !user.ref) { return; }
+    UserData.updateProfile(user.ref, values);
   }
+
+  if (!user) { return <Page><Loading/></Page>; }
 
   return (
     <Page>
@@ -314,9 +289,6 @@ function Profile(props: ProfileProps): JSX.Element {
   );
 }
 
-export async function getServerSideProps(ctx: any) {
-  return await handleAPI(ctx, getProfile);
-}
 
 
 export default observer(Profile);
