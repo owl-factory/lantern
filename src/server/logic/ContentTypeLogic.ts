@@ -15,7 +15,7 @@ class $ContentTypeLogic {
    * @returns The created document, if successful
    */
   @Create(["*"], ["*"])
-  public async create(doc: Partial<ContentTypeDocument>): Promise<ContentTypeDocument> { 
+  public async create(doc: Partial<ContentTypeDocument>): Promise<ContentTypeDocument> {
     // TODO - ensure that user can access parent ruleset
     return await access.create(collection, doc);
   }
