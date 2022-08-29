@@ -66,8 +66,8 @@ export function RulesetForm(props: { ruleset?: Partial<RulesetDocument> }) {
 
           <CustomFieldInput field="actorFields" onChange={formikProps.setFieldValue} values={formikProps.values}/>
           <StaticVariableInput
-            staticVariables={formikProps.values.staticVariables || {}}
-            setStaticVariables={(staticVariables) => formikProps.setFieldValue("staticVariables", staticVariables)}
+            variables={formikProps.values.rules || { metadata: {}, values: {} }}
+            setVariables={(rules) => formikProps.setFieldValue("rules", rules)}
           />
           <Button type="button" onClick={() => formikProps.resetForm}>Reset</Button>
           <Button type="submit">Submit</Button>
