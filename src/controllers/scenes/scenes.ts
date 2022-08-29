@@ -1,5 +1,4 @@
-import { isError } from "@owl-factory/errors";
-import { AlertController } from "@owl-factory/components/alert/AlertController";
+import { AlertController } from "@owl-factory/alerts";
 import { CampaignData } from "controllers/data/CampaignData";
 import { SceneData } from "controllers/data/SceneData";
 import { action, makeObservable, observable } from "mobx";
@@ -58,7 +57,7 @@ class $SceneController {
     }
 
     const campaign = await CampaignData.get(scene.campaign?.ref as string) as Partial<CampaignDocument>;
-    if (campaign === undefined || isError(campaign)) {
+    if (campaign === undefined) {
       AlertController.error("An error occured while trying to load the campaign");
       return;
     }

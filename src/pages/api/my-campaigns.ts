@@ -1,8 +1,7 @@
 import "reflect-metadata";
 import { NextApiRequest } from "next";
 import { CampaignLogic } from "server/logic/CampaignLogic";
-
-import { HTTPHandler, createEndpoint } from "@owl-factory/https";
+import { HTTPHandler, createEndpoint } from "@owl-factory/https/backend";
 
 /**
  * Fetches all of the current user's campaigns

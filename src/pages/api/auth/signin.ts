@@ -1,9 +1,9 @@
 import "reflect-metadata";
 import { NextApiRequest } from "next";
-import { HTTPHandler, createEndpoint } from "@owl-factory/https";
+import { HTTPHandler, createEndpoint } from "@owl-factory/https/backend";
 import { UserLogic } from "server/logic/UserLogic";
 import { UserDocument } from "types/documents";
-import { buildFullPermissions, permissionsToBinary } from "@owl-factory/auth/permissions";
+import { buildFullPermissions, permissionsToBinary } from "@owl-factory/auth";
 import { binaryToBase64 } from "@owl-factory/utilities/numbers/base2";
 
 

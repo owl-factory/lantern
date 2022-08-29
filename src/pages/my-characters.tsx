@@ -14,7 +14,7 @@ import { NewCharacterForm } from "components/reroll/characters/NewCharacterForm"
 import { CharacterSheet } from "components/reroll/characters/character-sheet/CharacterSheet";
 import { Ref64 } from "@owl-factory/types";
 import { getUniques } from "@owl-factory/utilities/arrays";
-import { handleAPI } from "@owl-factory/https/apiHandler";
+import { handleAPI } from "@owl-factory/https";
 import { getMyCharacters } from "./api/my-characters";
 import { CharactersData } from "controllers/data/CharactersData";
 

@@ -1,6 +1,6 @@
-import { DataManager } from "../DataManager";
-import * as caching from "../caching";
-import { isValidRef } from "../helpers/fields";
+import { DataManager } from "../controllers/DataManager";
+import * as caching from "../controllers/functionality/caching";
+import { isValidRef } from "../utilities/fields";
 
 import "@owl-factory/data/tests/mocks/helpers/fields";
 
@@ -245,7 +245,7 @@ describe("cacheAction", () => {
 
 describe("create",  () => {
   test("test", async () => {
-    const result = await dm.create({ ref: "ref" });
+    const result = await dm.$create({ ref: "ref" });
     expect(result).toBeDefined();
     expect(result.length).toBe(1);
     expect(result[0].doc.ref).toBe("create");
@@ -263,7 +263,7 @@ describe("read",  () => {
 
 describe("update",  () => {
   test("test", async () => {
-    const result = await dm.update({ ref: "ref" });
+    const result = await dm.$update({ ref: "ref" });
     expect(result).toBeDefined();
     expect(result.length).toBe(1);
     expect(result[0].doc.ref).toBe("update");
@@ -272,7 +272,7 @@ describe("update",  () => {
 
 describe("delete",  () => {
   test("test", async () => {
-    const result = await dm.create(["1", "2"]);
+    const result = await dm.$create(["1", "2"]);
     expect(result).toBeDefined();
     expect(result.length).toBe(1);
     expect(result[0].doc.ref).toBe("create");

@@ -1,8 +1,7 @@
 import React from "react";
 import { Page } from "components/design";
 import { NextPageContext } from "next";
-import { rest } from "@owl-factory/https/rest";
-import { getSession } from "@owl-factory/auth/session";
+import { rest } from "@owl-factory/https";
 import { FileDocument, UserDocument } from "types/documents";
 import { Formik, Form as FormikForm } from "formik";
 import { Button } from "@owl-factory/components/button";
@@ -17,7 +16,7 @@ import { FileData } from "controllers/data/FileData";
 import { UserData } from "controllers/data/UserData";
 import { arrayToList, getUniques } from "@owl-factory/utilities/arrays";
 import { Auth } from "controllers/auth";
-import { handleAPI } from "@owl-factory/https/apiHandler";
+import { handleAPI } from "@owl-factory/https";
 import { getProfile } from "../api/profile/[username]";
 import { Loading } from "@owl-factory/components/loading";
 

@@ -1,5 +1,4 @@
-import { AuthController } from "@owl-factory/auth/AuthController";
-import { setGlobalAuth, setGlobalPermissions, setGlobalRoles } from "@owl-factory/auth/globals";
+import { AuthController, setGlobalAuth, setGlobalPermissions, setGlobalRoles } from "@owl-factory/auth";
 import { UserDocument } from "types/documents";
 import { permissions } from "types/security/permissions";
 import { roles } from "types/security/roles";

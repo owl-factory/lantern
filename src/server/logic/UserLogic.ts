@@ -1,8 +1,8 @@
 import type { Ref64 } from "@owl-factory/types";
 import { UserDocument } from "types/documents";
-import * as fauna from "@owl-factory/database/integration/fauna";
+import * as fauna from "@owl-factory/database/utilities/integration/fauna";
 import { Collection, FaunaIndex } from "src/fauna";
-import { Fetch, Search, SignIn, SignUp, Update } from "@owl-factory/database/decorators/decorators";
+import { Fetch, Search, SignIn, SignUp, Update } from "@owl-factory/database/utilities/decorators/decorators";
 import type { FaunaIndexOptions } from "@owl-factory/database/types/fauna";
 import { isEmail } from "@owl-factory/utilities/strings";
 import * as access from "./access";

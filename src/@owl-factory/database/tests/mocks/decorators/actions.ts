@@ -7,8 +7,8 @@ import {
   validateDynamicAccess,
   validateLogin,
   validateStaticAccess,
-} from "@owl-factory/database/decorators/actions";
-import { LogicDescriptor } from "../../../decorators/types";
+} from "@owl-factory/database/utilities/decorators/actions";
+import { LogicDescriptor } from "../../../utilities/decorators/types";
 
 (validateDynamicAccess as any).mockImplementation((_descriptor: LogicDescriptor, _doc: any) => {
   return;

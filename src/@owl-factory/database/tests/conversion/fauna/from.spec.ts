@@ -1,4 +1,3 @@
-import { query as q } from "faunadb";
 import {
   $fromArray,
   $fromDate,
@@ -6,7 +5,7 @@ import {
   $fromRecord,
   $getFaunaDataType,
   $isFaunaRef,
-} from "@owl-factory/database/conversion/fauna/from";
+} from "@owl-factory/database/utilities/conversion/fauna/from";
 
 test("fromArray", () => {
   const arr = [ "a", "b" ];

@@ -2,7 +2,7 @@ import "reflect-metadata";
 import { NextApiRequest } from "next";
 import { CharacterLogic } from "server/logic/CharacterLogic";
 
-import { HTTPHandler, createEndpoint } from "@owl-factory/https";
+import { HTTPHandler, createEndpoint } from "@owl-factory/https/backend";
 import { createMany, deleteMany, fetchMany, updateMany } from "server/logic/many";
 
 

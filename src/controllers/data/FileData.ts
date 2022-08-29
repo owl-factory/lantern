@@ -1,7 +1,7 @@
 import { s3 } from "@owl-factory/aws/s3";
-import { DataManager } from "@owl-factory/data/DataManager";
-import { rest } from "@owl-factory/https/rest";
-import { ServerResponse } from "@owl-factory/https/types";
+import { DataManager } from "@owl-factory/data";
+import { rest } from "@owl-factory/https";
+import { ServerResponse } from "@owl-factory/https";
 import { Collection } from "fauna";
 import { isOwner } from "security/documents";
 import { FileDocument, UserDocument } from "types/documents";

@@ -1,5 +1,5 @@
-import { DataManager } from "@owl-factory/data/DataManager";
-import { rest } from "@owl-factory/https/rest";
+import { DataManager } from "@owl-factory/data";
+import { rest } from "@owl-factory/https";
 import { Ref64 } from "@owl-factory/types";
 import { isOwner } from "security/documents";
 import { ContentDocument } from "types/documents";

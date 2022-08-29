@@ -2,7 +2,7 @@ import "reflect-metadata";
 import { NextApiRequest } from "next";
 import { FileLogic } from "server/logic/FileLogic";
 
-import { HTTPHandler, createEndpoint } from "@owl-factory/https";
+import { HTTPHandler, createEndpoint } from "@owl-factory/https/backend";
 
 /**
  * Gets the information to render the current user's library page

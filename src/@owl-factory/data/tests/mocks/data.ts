@@ -1,7 +1,7 @@
 import { Ref64 } from "@owl-factory/types";
 import { CrudPacket } from "@owl-factory/types/object";
 import { ReloadPolicy } from "../../enums";
-import { newMetadata, newPacket } from "../../helpers/caching";
+import { newMetadata, newPacket } from "../../utilities/caching";
 import { Packet } from "../../types";
 
 // TODO - simplify the mock functions. Require overrides for certain cases

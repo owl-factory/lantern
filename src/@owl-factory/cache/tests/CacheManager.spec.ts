@@ -1,4 +1,4 @@
-import { CacheManager } from "../CacheManager";
+import { CacheManager } from "../controllers/CacheManager";
 import { CacheItem } from "../types";
 
 jest.mock("@owl-factory/cache/async");

@@ -3,7 +3,7 @@ import { NextApiRequest } from "next";
 import { CampaignLogic } from "server/logic/CampaignLogic";
 import { UserLogic } from "server/logic/UserLogic";
 
-import { HTTPHandler, createEndpoint } from "@owl-factory/https";
+import { HTTPHandler, createEndpoint } from "@owl-factory/https/backend";
 import { getUniques } from "@owl-factory/utilities/arrays";
 import { fetchMany } from "server/logic/many";
 

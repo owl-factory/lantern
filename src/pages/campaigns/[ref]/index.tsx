@@ -2,7 +2,7 @@ import { Page } from "components/design";
 import { NextPageContext } from "next";
 import Link from "next/link";
 import React from "react";
-import { rest } from "@owl-factory/https/rest";
+import { rest } from "@owl-factory/https";
 import { ImageSelectionWrapper } from "components/reroll/library/images/ImageSelectionWrapper";
 import { CampaignDocument, FileDocument, UserDocument } from "types/documents";
 import { observer } from "mobx-react-lite";
@@ -11,9 +11,8 @@ import { AssetUploadSource } from "types/enums/files/createMethod";
 import { Ref64 } from "@owl-factory/types";
 import { CampaignData } from "controllers/data/CampaignData";
 import { UserData } from "controllers/data/UserData";
-import { getSession, requireClientLogin } from "@owl-factory/auth/session";
 import { getCampaignPage } from "src/pages/api/campaigns/[ref]";
-import { handleAPI } from "@owl-factory/https/apiHandler";
+import { handleAPI } from "@owl-factory/https";
 import { getUniques } from "@owl-factory/utilities/arrays";
 
 interface BannerProps {

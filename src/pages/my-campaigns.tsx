@@ -3,7 +3,6 @@ import { Loading } from "@owl-factory/components/loading";
 import { Input } from "@owl-factory/components/form";
 import { Formik } from "formik";
 import { observer } from "mobx-react-lite";
-import { NextPageContext } from "next";
 import Link from "next/link";
 import React from "react";
 import { Button, Card, Col, Row } from "react-bootstrap";
@@ -11,12 +10,7 @@ import { InitialProps } from "types/client";
 import { CampaignDocument, RulesetDocument } from "types/documents";
 import { CampaignData } from "controllers/data/CampaignData";
 import { RulesetData } from "controllers/data/RulesetData";
-import { pagePermission } from "@owl-factory/auth/permissions";
-import { onApiError } from "@owl-factory/next/page-handling";
-import { getMyCampaigns } from "./api/my-campaigns";
-import { handleAPI } from "@owl-factory/https/apiHandler";
 import { Ref64 } from "@owl-factory/types";
-import { makeAutoObservable } from "mobx";
 
 interface MyCampaignsProps extends InitialProps {
   campaigns: CampaignDocument[];
@@ -78,8 +72,6 @@ const CampaignTile = observer((props: CampaignTileProps) => {
  * @param campaigns The initial light campaign information fetched from the API
  */
 const MyCampaigns = observer(() => {
-  pagePermission("viewMyCampaigns");
-
   React.useEffect(() => { CampaignData.searchMyCampaigns(); }, []);
 
   const campaignRefs = CampaignData.search({ group: "my-campaigns" });

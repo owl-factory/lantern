@@ -1,5 +1,5 @@
-import { getClient } from "@owl-factory/database/client/fauna";
-import { rest } from "@owl-factory/https/rest";
+import { getClient } from "@owl-factory/database/utilities/client/fauna";
+import { rest } from "@owl-factory/https";
 import { Client, query as q } from "faunadb";
 import { makeAutoObservable } from "mobx";
 import { CampaignDocument, FileDocument } from "types/documents";
