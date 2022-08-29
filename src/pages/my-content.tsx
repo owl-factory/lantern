@@ -62,13 +62,13 @@ function MyContent(props: MyContentProps): JSX.Element {
 
     const uniqueRulesets = getUniques(props.contents, "ruleset.ref");
     RulesetData.load(uniqueRulesets);
-  }, []);
+  }, [props.contents]);
 
   // Use this to prevent too many rerenders
   React.useEffect(() => {
     const contentRefs = ContentData.search({ group: "owned-content" });
     setContents(ContentData.getMany(contentRefs));
-  }, [ContentData.lastTouched]);
+  }, []);
 
   function match(doc: AnyDocument) {
     if (!props.session) { return false; }

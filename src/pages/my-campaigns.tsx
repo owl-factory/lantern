@@ -34,7 +34,7 @@ const CampaignTile = observer((props: CampaignTileProps) => {
 
   React.useEffect(() => {
     setCampaign(CampaignData.get(props.campaignRef) || {});
-  }, [CampaignData.lastTouched]);
+  }, [props.campaignRef]);
 
   React.useEffect(() => {
     if (!campaign || campaign.ruleset?.ref === undefined) { setRuleset({}); return; }

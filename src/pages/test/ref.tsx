@@ -8,9 +8,10 @@ import { collections, decode, encode } from "utilities/ref";
 export default function RefTest() {
   const [ result, setResult ] = React.useState("");
 
-  const options: JSX.Element[] = [<option value=""></option>];
+  let index = 0;
+  const options: JSX.Element[] = [<option key="" value=""></option>];
   collections.forEach((collection: any) => {
-    options.push(<option value={collection.string}>{collection.string}</option>);
+    options.push(<option key={collection.id} value={collection.string}>{collection.string}</option>);
   });
 
   function onSubmit(values: any) {

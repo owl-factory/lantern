@@ -140,9 +140,10 @@ function ContentTypeModal({ handleClose, modal }: { handleClose: () => void, mod
 function RulesetPage({
   ruleset,
 }: RulesetPageProps): JSX.Element {
+  const [ contentTypeModal, setContentTypeModal ] = React.useState(false); // Boolean for rendering the modal
+
   if (ruleset === undefined) { return <Page><Error statusCode={404}/></Page>; }
 
-  const [ contentTypeModal, setContentTypeModal ] = React.useState(false); // Boolean for rendering the modal
   function handleContentTypeClose() { setContentTypeModal(false); } // Handles closing the modal
 
   return (

@@ -19,6 +19,7 @@ import { Auth } from "controllers/auth";
 import { handleAPI } from "@owl-factory/https";
 import { getProfile } from "../api/profile/[username]";
 import { Loading } from "@owl-factory/components/loading";
+import Image from "next/image";
 
 /**
  * Renders a small section indicating how long a player has been a member, their hours played,
@@ -185,7 +186,7 @@ function RecentPlayer({ player }: { player: Partial<UserDocument> }) {
     <div>
       <Link href={`/profile/${player.username}`}>
         <a>
-          <img width="30px" height="30px" src={src}/>
+          <Image width="30px" height="30px" src={src} alt="" />
           <span style={{paddingLeft: "10px"}}>{player.name || player.username}</span>
         </a>
       </Link>
@@ -206,7 +207,7 @@ interface ProfileImageProps {
  */
 const Avatar = observer(({ user, isMyPage }: ProfileImageProps) => {
 
-  let image = <img src={user.avatar?.src} width="200px" height="200px"/>;
+  let image = <Image src={user.avatar?.src || ""} width="200px" height="200px" alt="" />;
 
   async function onSubmit(fileDocument: Partial<FileDocument>, method: AssetUploadSource) {
     // await UserData.updateAvatar(user.ref, fileDocument, method);
