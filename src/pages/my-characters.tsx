@@ -15,7 +15,6 @@ import { CharacterSheet } from "components/reroll/characters/character-sheet/Cha
 import { Ref64 } from "@owl-factory/types";
 import { getUniques } from "@owl-factory/utilities/arrays";
 import { handleAPI } from "@owl-factory/https/apiHandler";
-import { getMyCharacters } from "./api/my-characters";
 import { CharactersData } from "controllers/data/CharactersData";
 
 interface MyCharactersProps extends InitialProps {
@@ -196,10 +195,6 @@ interface MyCharactersResult {
   characters: CharacterDocument[];
   campaigns: CampaignDocument[];
   rulesets: RulesetDocument[];
-}
-
-export async function getServerSideProps(ctx: NextPageContext) {
-  return await handleAPI(ctx, getMyCharacters);
 }
 
 export default observer(MyCharacters);

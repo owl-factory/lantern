@@ -1,7 +1,4 @@
-import { destroyCookie, getCookie, setCookie } from "@owl-factory/cookies";
 import { action, makeObservable, observable } from "mobx";
-import { NextApiRequest } from "next";
-import { Permission, Role } from "./types";
 
 import * as cookies from "./functionality/cookies";
 import * as security from "./functionality/security";

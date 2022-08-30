@@ -1,31 +1,34 @@
 import "reflect-metadata";
 import { NextApiRequest } from "next";
-import { CampaignLogic } from "server/logic/CampaignLogic";
-import { CharacterLogic } from "server/logic/CharacterLogic";
 
 import { HTTPHandler, createEndpoint } from "@owl-factory/https";
-import { getUniques } from "@owl-factory/utilities/arrays";
-import { fetchMany } from "server/logic/many";
+import { Auth } from "controllers/auth";
+import { query } from "@owl-factory/database/integration/postgres";
 
 /**
  * Gets a list of a user's characters
  */
-export async function getMyCharacters(_req: NextApiRequest) {
-  const characters = await CharacterLogic.searchMyCharacters({ size: 200 });
-  // TODO - remove the need for the campaign search, since we have the cache now
-  const campaignRefs = getUniques(characters, "campaign.ref");
-  const campaigns = await fetchMany(CampaignLogic.fetch, campaignRefs);
-  return { characters: characters, campaigns };
+async function getMyCharacters(this: HTTPHandler, req: NextApiRequest) {
+  if (!Auth.isLoggedIn) {
+    this.returnError(403, "You must be logged in to access this resource");
+    return;
+  }
+  try {
+    const actors = await query(`
+      SELECT 
+        actors.id,
+        actors.name,
+        actors.ruleset_id,
+        actors.campaign_id,
+        actors.actor_sheet_id
+      FROM public.actors
+    `);
+    console.log(actors);
+    this.returnSuccess({ actors });
+  } catch (e) {
+    this.returnError(500, e as string);
+  }
 }
 
-/**
- * Fetches all of a user's campaigns
- * @param this The Handler class calling this function
- * @param req The request to the server
- */
-async function getMyCharactersRequest(this: HTTPHandler, req: NextApiRequest) {
-  this.returnSuccess(await getMyCharacters(req));
-}
-
-export default createEndpoint({GET: getMyCharactersRequest});
+export default createEndpoint({ GET: getMyCharacters, POST: getMyCharacters });
 

@@ -1,6 +1,7 @@
-import { Ref64 } from "@owl-factory/types";
+import { Ref64, UUID } from "@owl-factory/types";
+import { DataType } from "ts-postgres";
 import { Scalar } from "types";
-import { BaseDocument } from "./BaseDocument";
+import { BaseDocument, BaseDocumentConversionMap, BaseDocumentV2 } from "./BaseDocument";
 
 // A partial and flattened clone of the content document type for storage within the actor document
 export type ActorContent = Record<string, Scalar> & ActorContentMetadata;
@@ -27,3 +28,23 @@ export interface ActorDocument extends BaseDocument {
   // ...
   content: Record<string, ActorContent[]>;
 }
+
+export interface ActorDocumentV2 extends BaseDocumentV2 {
+  name: string;
+  ruleset_id: UUID;
+  campaign_id: UUID;
+  actor_sheet_id: UUID;
+  fields: Record<string, Scalar>;
+  content: Record<string, ActorContent[]>;
+}
+
+export const ActorConversionMap: Record<keyof ActorDocumentV2, DataType> = {
+  ...BaseDocumentConversionMap,
+  name: DataType.Text,
+  ruleset_id: DataType.Uuid,
+  campaign_id: DataType.Uuid,
+  actor_sheet_id: DataType.Uuid,
+  fields: DataType.Json,
+  content: DataType.Json,
+};
+

@@ -7,17 +7,17 @@ import { AuthController } from "./AuthController";
 import { permissionsToBinary } from "./permissions";
 import { Permission, Role } from "./types";
 
-let globalAuth: AuthController<unknown> | undefined;
-let globalRoles: Record<string, Role> | undefined;
-let globalPermissions: Permission[] | undefined;
-let globalPermissionKeys: string[] | undefined;
+let globalAuth: AuthController<unknown> | undefined = undefined;
+let GLOBAL_ROLES: Record<string, Role> | undefined = undefined;
+let globalPermissions: Permission[] | undefined = undefined;
+let globalPermissionKeys: string[] | undefined = undefined;
 const compressedRolePermissions: Record<string, string> = {};
 
 /**
  * Fetches the global authentication controller, allowing the site-defined controller to be
  * accessed by @owl-factory code
  */
- export function getGlobalAuth(): AuthController<any> {
+export function getGlobalAuth(): AuthController<any> {
   if (globalAuth === undefined) { throw "The global authentication has not been set."; }
   return globalAuth;
 }
@@ -26,8 +26,8 @@ const compressedRolePermissions: Record<string, string> = {};
  * Fetches the global roles, allowing the site-defined roles to be accessed by @owl-factory code
  */
  export function getGlobalRoles(): Record<string, Role> {
-  if (globalRoles === undefined) { throw "The global roles have not been set."; }
-  return globalRoles;
+  if (GLOBAL_ROLES === undefined) { throw "The global roles have not been set."; }
+  return GLOBAL_ROLES;
 }
 
 /**
@@ -35,9 +35,9 @@ const compressedRolePermissions: Record<string, string> = {};
  * @param role The key of the role to grab, if any
  */
 export function getGlobalRole(role: string): Role {
-  if (globalRoles === undefined) { throw "The global roles have not been set."; }
-  if (!(role in globalRoles)) { throw `The role ${role} does not exist in globalRoles`; }
-  return globalRoles[role];
+  if (GLOBAL_ROLES === undefined) { throw "The global roles have not been set."; }
+  if (!(role in GLOBAL_ROLES)) { throw `The role ${role} does not exist in globalRoles`; }
+  return GLOBAL_ROLES[role];
 }
 
 /**
@@ -80,7 +80,7 @@ export function setGlobalAuth(newAuth: AuthController<unknown>) {
  * @param newRoles The new roles to set as a global value
  */
 export function setGlobalRoles(newRoles: Record<string, Role>) {
-  globalRoles = newRoles;
+  GLOBAL_ROLES = newRoles;
   setCompressedRolePermissions();
 }
 
@@ -99,7 +99,7 @@ export function setGlobalPermissions(newPermissions: Permission[]) {
  * This function should be run at buildtime.
  */
 function setCompressedRolePermissions() {
-  const roles = globalRoles;
+  const roles = GLOBAL_ROLES;
   const permissions = globalPermissions;
 
   if (roles === undefined || permissions === undefined) { return; }

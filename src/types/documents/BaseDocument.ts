@@ -1,4 +1,5 @@
-import { Ref64 } from "@owl-factory/types";
+import type { Ref64, UUID } from "@owl-factory/types";
+import { DataType } from "ts-postgres";
 
 export interface BaseDocument {
   ref: Ref64;
@@ -12,6 +13,18 @@ export interface BaseDocument {
   updatedBy: { ref: Ref64 | null; };
 }
 
+export interface BaseDocumentV2 {
+  id: UUID;
+
+  owned_by: UUID;
+  created_at: Date;
+  created_by: UUID;
+  updated_at: Date;
+  updated_by: UUID;
+  deleted_at: Date;
+  deleted_by: UUID;
+}
+
 export const baseDocument = {
   ref: "",
   name: "",
@@ -22,4 +35,16 @@ export const baseDocument = {
   createdBy: { ref: "" },
   updatedAt: new Date(),
   updatedBy: { ref: "" },
+};
+
+
+export const BaseDocumentConversionMap: Record<keyof BaseDocumentV2, DataType> = {
+  id: DataType.Uuid,
+  owned_by: DataType.Uuid,
+  created_at: DataType.Timestamp,
+  created_by: DataType.Uuid,
+  updated_at: DataType.Timestamp,
+  updated_by: DataType.Uuid,
+  deleted_at: DataType.Timestamp,
+  deleted_by: DataType.Uuid,
 };

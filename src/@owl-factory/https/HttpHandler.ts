@@ -3,6 +3,7 @@ import { Auth } from "controllers/auth";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Context } from "types/server";
 import "src/init"; // Runs the initialize code for all backend functionality
+import { closeClient } from "@owl-factory/database/client/postgres";
 
 type RequestFunction = (req: NextApiRequest, res: NextApiResponse) => void;
 type PossibleMethods = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
@@ -67,6 +68,8 @@ export class HTTPHandler {
           `An unexpected error occured. If this continues occuring, please contact our staff!`
         );
       }
+    } finally {
+      // closeClient();
     }
   }
 
