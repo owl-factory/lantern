@@ -106,6 +106,10 @@ export function toSet(
  */
 function convertFieldTo(originalValue: unknown, dataType: DataType): QueryParam {
   const param: QueryParam = { value: "", dataType };
+
+  // If the originalValue is null, return it without handling conversion since this value is being removed
+  if (originalValue === null) { return { value: null, dataType }; }
+
   try {
     switch (dataType) {
       case DataType.Date:

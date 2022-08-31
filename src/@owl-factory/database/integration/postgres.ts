@@ -3,7 +3,12 @@ import { getClient } from "../client/postgres";
 import { fromQuery } from "../conversion/postgres/from";
 import { QueryParam } from "../types/postgres";
 
-
+/**
+ * Queries the Postgres database
+ * @param queryStr The raw query string to submit
+ * @param params The values used within the query to prevent any injection attacks
+ * @returns The results of the query
+ */
 export async function query(queryStr: string, params: QueryParam[] = []) {
   const client = await getClient();
 
@@ -21,8 +26,12 @@ export async function query(queryStr: string, params: QueryParam[] = []) {
     parsedTypes.push(param.dataType);
   }
 
-  console.log(queryStr, parsedParams, parsedTypes)
-  const result = await client.query(queryStr, parsedParams, parsedTypes);
+  try {
+    const result = await client.query(queryStr, parsedParams, parsedTypes);
+    // TODO - add handling for different query responses
+    return fromQuery(result);
+  } catch (e: unknown) {
+    throw "An error occurred when running the query";
+  }
 
-  return fromQuery(result);
 }

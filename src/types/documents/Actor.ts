@@ -1,3 +1,4 @@
+import { ConversionMap } from "@owl-factory/database/postgres";
 import { Ref64, UUID } from "@owl-factory/types";
 import { DataType } from "ts-postgres";
 import { Scalar } from "types";
@@ -30,16 +31,20 @@ export interface ActorDocument extends BaseDocument {
 }
 
 export interface ActorDocumentV2 extends BaseDocumentV2 {
-  name: string;
-  ruleset_id: UUID;
-  campaign_id: UUID;
-  actor_sheet_id: UUID;
-  fields: Record<string, Scalar>;
-  content: Record<string, ActorContent[]>;
+  id: UUID; // The document ID
+  owned_by: UUID; // The owner of the document
+  name: string; // The actor's name
+  ruleset_id: UUID; // The ruleset that this actor belongs to
+  campaign_id: UUID | null; // The campaign that this actor belongs to
+  actor_sheet_id: UUID; // The actor sheet used by this actor
+  fields: Record<string, Scalar>; // The custom fields useable by inputs by the user
+  content: Record<string, ActorContent[]>; // The non-scalar and scalable content of the user, like spells or inventory
 }
 
-export const ActorConversionMap: Record<keyof ActorDocumentV2, DataType> = {
+export const ActorConversionMap: ConversionMap<ActorDocumentV2> = {
   ...BaseDocumentConversionMap,
+  id: DataType.Uuid,
+  owned_by: DataType.Uuid,
   name: DataType.Text,
   ruleset_id: DataType.Uuid,
   campaign_id: DataType.Uuid,
@@ -47,4 +52,3 @@ export const ActorConversionMap: Record<keyof ActorDocumentV2, DataType> = {
   fields: DataType.Json,
   content: DataType.Json,
 };
-

@@ -14,9 +14,6 @@ export interface BaseDocument {
 }
 
 export interface BaseDocumentV2 {
-  id: UUID;
-
-  owned_by: UUID;
   created_at: Date;
   created_by: UUID;
   updated_at: Date;
@@ -39,8 +36,6 @@ export const baseDocument = {
 
 
 export const BaseDocumentConversionMap: Record<keyof BaseDocumentV2, DataType> = {
-  id: DataType.Uuid,
-  owned_by: DataType.Uuid,
   created_at: DataType.Timestamp,
   created_by: DataType.Uuid,
   updated_at: DataType.Timestamp,

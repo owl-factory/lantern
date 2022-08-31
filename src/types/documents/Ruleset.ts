@@ -1,5 +1,7 @@
-import { Ref64 } from "@owl-factory/types";
-import { BaseDocument } from "./BaseDocument";
+import { ConversionMap } from "@owl-factory/database/postgres";
+import { Ref64, UUID } from "@owl-factory/types";
+import { DataType } from "ts-postgres";
+import { BaseDocument, BaseDocumentV2 } from "./BaseDocument";
 import { StaticVariable } from "./subdocument/StaticVariable";
 
 export interface ActorType {
@@ -29,3 +31,15 @@ export interface RulesetDocument extends BaseDocument {
   // copyrighted material or is against TOS. Should be used in conjunction with setting isPublic to false
   isLocked: boolean;
 }
+
+export interface RulesetDocumentV2 extends BaseDocumentV2 {
+  id: UUID;
+  name: string; // The name of the ruleset
+  owner_id: UUID; // The owner of the ruleset
+}
+
+export const RulesetConversionMap: ConversionMap<RulesetDocumentV2> = {
+  id: DataType.Uuid,
+  name: DataType.Text,
+  owner_id: DataType.Uuid,
+};

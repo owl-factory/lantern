@@ -37,21 +37,14 @@ async function updateActor(this: HTTPHandler, req: NextApiRequest) {
   const setStatement = toSet(req.body.actor, ActorConversionMap);
   const params = setStatement.params;
   let i = params.length + 1;
-  try {
-    const queryStr = `
-      UPDATE public.actors
-      ${setStatement.queryStr}
-      WHERE id = $${i++}
-    `;
-    params.push({ value: req.query.ref as string, dataType: DataType.Uuid });
-
-    const queryRes = await query(queryStr, params);
-    this.returnSuccess({actor: queryRes});
-    return;
-  } catch (e) {
-    this.returnError(500, e as string);
-    return;
-  }
+  const queryStr = `
+    UPDATE public.actors
+    ${setStatement.queryStr}
+    WHERE id = $${i++}
+  `;
+  params.push({ value: req.query.ref as string, dataType: DataType.Uuid });
+  const queryRes = await query(queryStr, params);
+  this.returnSuccess({actor: queryRes});
 }
 
 /**
@@ -64,21 +57,15 @@ async function updateActor(this: HTTPHandler, req: NextApiRequest) {
   const params = setStatement.params;
   let i = params.length + 1;
 
-  try {
-    const queryStr = `
-      UPDATE public.actors
-      ${setStatement.queryStr}
-      WHERE id = $${i++}
-    `;
-    params.push({ value: req.query.ref as string, dataType: DataType.Uuid });
+  const queryStr = `
+    UPDATE public.actors
+    ${setStatement.queryStr}
+    WHERE id = $${i++}
+  `;
+  params.push({ value: req.query.ref as string, dataType: DataType.Uuid });
 
-    const queryRes = await query(queryStr, params);
-    this.returnSuccess({actor: queryRes});
-    return;
-  } catch (e) {
-    this.returnError(500, e as string);
-    return;
-  }
+  const queryRes = await query(queryStr, params);
+  this.returnSuccess({actor: queryRes});
 }
 
 
