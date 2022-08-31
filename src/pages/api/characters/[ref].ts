@@ -1,6 +1,6 @@
 import { toSet } from "@owl-factory/database/conversion/postgres/to";
-import { query } from "@owl-factory/database/integration/postgres";
-import { HTTPHandler, createEndpoint } from "@owl-factory/https";
+import { query } from "@owl-factory/database/utilities/integration/postgres";
+import { createEndpoint, HTTPHandler } from "@owl-factory/https/backend";
 import { NextApiRequest } from "next";
 import "reflect-metadata";
 import { DataType } from "ts-postgres";

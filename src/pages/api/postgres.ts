@@ -1,6 +1,6 @@
 import { convertFrom  } from "@owl-factory/database/conversion/postgres/from";
-import { query } from "@owl-factory/database/integration/postgres";
-import { HTTPHandler, createEndpoint } from "@owl-factory/https";
+import { query } from "@owl-factory/database/utilities/integration/postgres";
+import { HTTPHandler, createEndpoint } from "@owl-factory/https/backend";
 import { NextApiRequest } from "next";
 import "reflect-metadata";
 import { ActorConversionMap } from "types/documents/Actor";
