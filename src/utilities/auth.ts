@@ -1,4 +1,4 @@
-import { rest } from "@owl-factory/https/rest";
+import { rest } from "@owl-factory/https";
 import { Auth } from "controllers/auth";
 import { UserDocument } from "types/documents";
 import Router from "next/router";

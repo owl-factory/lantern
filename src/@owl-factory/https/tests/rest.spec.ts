@@ -1,4 +1,4 @@
-import { $formatURL, toURLParams } from "../rest";
+import { $formatURL, toURLParams } from "../utilities/rest";
 
 test("formatUrl test", () => {
   const shortURL = "/page1";

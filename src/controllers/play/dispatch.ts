@@ -1,7 +1,7 @@
-import { MessageDocument } from "types/documents";
+import { OldMessageDocument } from "types/documents";
 import { Dispatch, DispatchEvent, GameState, HistoricalDispatch, HostPriorityQueue } from "types/reroll/play";
 import { GameServer } from "controllers/play";
-import { rest } from "@owl-factory/https/rest";
+import { rest } from "@owl-factory/https";
 
 export interface RawDispatch {
   fuid?: string;

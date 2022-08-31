@@ -1,6 +1,12 @@
 import { GenericSheetElementDescriptor } from "nodes/actor-sheets/types/elements/generic";
 import { Scalar } from "types";
 
+export interface RenderGroup {
+  actorID: string;
+  rulesetID: string;
+  sheetID: string;
+}
+
 export interface SheetElementProps<T extends GenericSheetElementDescriptor> {
   $key: string; // The key used to identify the element in a loop
   renderID: string; // The ID used for this current render

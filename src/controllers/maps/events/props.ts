@@ -1,4 +1,4 @@
-import { Container, Graphics, InteractionEvent } from "pixi.js";
+import { InteractionEvent } from "pixi.js";
 import { Prop, SceneController } from "../SceneController";
 
 /**
@@ -38,7 +38,7 @@ export function onPointerUp(event: InteractionEvent, prop: Prop, sceneController
   resetClickedAnchor(prop, event);
 }
 
-export function onPointerMove(event: InteractionEvent, prop: Prop, sceneController: SceneController): void {
+export function onPointerMove(_event: InteractionEvent, prop: Prop, _sceneController: SceneController): void {
   if (!prop.dragging || !prop.data) { return; }
   const newPosition = prop.data.getLocalPosition(prop.parent);
   prop.x = newPosition.x;

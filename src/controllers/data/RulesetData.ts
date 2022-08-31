@@ -1,9 +1,11 @@
 import { RulesetDocument } from "types/documents";
-import { DataManager } from "@owl-factory/data/DataManager";
+import { DataManager } from "@owl-factory/data";
 import { isPublic } from "server/logic/security";
 import { isOwner } from "security/documents";
 import { requireLogin, requirePermission } from "utilities/validation/account";
 import { validateNewRuleset, validateUpdatedRuleset } from "utilities/validation/ruleset";
+
+// Manages data for Ruleset Documents
 class RulesetDataManager extends DataManager<Partial<RulesetDocument>> {
   public collection = "rulesets";
 
@@ -43,7 +45,7 @@ class RulesetDataManager extends DataManager<Partial<RulesetDocument>> {
     validateUpdatedRuleset(doc);
 
     const packets = await super.$update(doc);
-    if (packets.length === 0) { throw `An unexpected error occured when creating the document ${doc.name}`; }
+    if (packets.length === 0) { throw `An unexpected error occured when updating the ruleset document ${doc.name}`; }
     else if (!packets[0].success) { throw packets[0].messages; }
     return packets[0].doc as Partial<RulesetDocument>;
   }

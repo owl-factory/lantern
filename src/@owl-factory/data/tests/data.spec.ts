@@ -1,6 +1,6 @@
-import { DataController } from "@owl-factory/data/data";
-import { newMetadata, newPacket } from "@owl-factory/data/helpers/caching";
-import { Packet } from "@owl-factory/data/types";
+import { DataController } from "../controllers/DataController";
+import { newMetadata, newPacket } from "../utilities/caching";
+import { Packet } from "../types";
 
 
 describe("DataController Functions", () => {

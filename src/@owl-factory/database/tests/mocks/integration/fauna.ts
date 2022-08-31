@@ -1,4 +1,14 @@
-import { createOne, deleteOne, findByID, findManyByIDs, searchByIndex, signIn, signOut, signUp, updateOne } from "@owl-factory/database/integration/fauna";
+import { 
+  createOne,
+  deleteOne,
+  findByID,
+  findManyByIDs,
+  searchByIndex,
+  signIn,
+  signOut,
+  signUp,
+  updateOne,
+} from "@owl-factory/database/utilities/integration/fauna";
 import { FaunaIndexOptions } from "@owl-factory/database/types/fauna";
 import { Expr } from "faunadb";
 

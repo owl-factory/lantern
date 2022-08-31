@@ -3,6 +3,8 @@ import { Container } from "@pixi/display";
 import { Sprite } from "@pixi/sprite";
 import { MapController } from "./map";
 
+// TODO - move to a node
+
 /**
  * Handles the background of the map, including the size, color, and image(s) that serve as the map or setting
  */

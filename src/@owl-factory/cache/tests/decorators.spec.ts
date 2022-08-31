@@ -1,5 +1,5 @@
-import { cache } from "../CacheManager";
-import { Cacheable, cacheWrapper } from "../decorators";
+import { cache } from "../controllers/CacheManager";
+import { Cacheable, cacheWrapper } from "../utilities/decorators";
 
 jest.mock("@owl-factory/cache/async");
 

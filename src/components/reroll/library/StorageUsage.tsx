@@ -76,7 +76,7 @@ interface StorageSectionProps {
 /**
  * Renders out the key for understanding the different bar colors and their meaning
  */
- function StorageKey() {
+function StorageKey() {
   const storageKeyItems: JSX.Element[] = [];
   const keys = Object.keys(storageTypes);
   keys.forEach((key: string) => {

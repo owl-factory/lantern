@@ -11,7 +11,7 @@ interface AuthCardSectionProps {
   setSection: React.Dispatch<React.SetStateAction<AuthCardSection>>;
 }
 
-export enum AuthCardSection {
+enum AuthCardSection {
   login, signup, forgotPassword
 }
 

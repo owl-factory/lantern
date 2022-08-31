@@ -1,5 +1,5 @@
 
-import { importMigrations } from "@owl-factory/database/migrations/fauna";
+import { importMigrations } from "@owl-factory/database/utilities/migrations/fauna";
 import { Ref64 } from "@owl-factory/types";
 import { isClient } from "@owl-factory/utilities/client";
 import { Collection } from "fauna";

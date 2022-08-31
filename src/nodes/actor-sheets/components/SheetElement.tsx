@@ -52,6 +52,8 @@ import { SheetTable } from "./elements/Table";
 import { SheetTableCell } from "./elements/TableCell";
 import { SheetTableRow } from "./elements/TableRow";
 import { SheetTabs } from "./elements/Tabs";
+import { ErrorDescriptor } from "../types/elements/error";
+import { SheetError } from "./elements/Error";
 
 /**
  * Determines which sheet element to render based on the descriptor element type given
@@ -108,6 +110,9 @@ export function SheetElement(props: SheetElementProps<GenericSheetElementDescrip
 
     case SheetElementType.Prefab:
       return <SheetPrefab {...props} element={props.element as PrefabDescriptor}/>;
+
+    case SheetElementType.Error:
+      return <SheetError {...props} element={props.element as ErrorDescriptor}/>;
   }
   return <></>;
 }

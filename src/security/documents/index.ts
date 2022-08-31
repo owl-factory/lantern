@@ -7,6 +7,6 @@ import { AnyDocument } from "types/documents";
  * @param myUser The current user object to check for ownership
  */
  export function isOwner(doc?: Partial<AnyDocument>): boolean {
-  if (!doc || !Auth.isLoggedIn) { return false; }
+  if (!doc || !Auth?.isLoggedIn) { return false; }
   return (!doc.ownedBy || doc.ownedBy.ref === Auth.user?.ref);
 }

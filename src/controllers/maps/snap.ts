@@ -1,6 +1,10 @@
 import { Point } from "pixi.js";
 import { GridType, SceneController } from "./SceneController";
 
+/**
+ * Determines where a token should snap to when placed
+ * @param dropPoint The position that a token was dropped at
+ */
 export function snap(this: SceneController, dropPoint: Point ): Point {
   let x, y: number;
   switch(this.gridType) {

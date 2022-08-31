@@ -1,10 +1,10 @@
-import { Cacheable } from "@owl-factory/cache/decorators";
-import { DataManager } from "@owl-factory/data/DataManager";
+import { DataManager } from "@owl-factory/data";
 import { getUniques } from "@owl-factory/utilities/arrays";
 import { Auth } from "controllers/auth";
 import { isOwner } from "security/documents";
 import { CampaignDocument } from "types/documents";
 
+// Manages data for Campaign Documents
 class CampaignDataManager extends DataManager<Partial<CampaignDocument>> {
   public collection = "campaigns";
 

@@ -1,4 +1,4 @@
-import { getDefaultDocument } from "@owl-factory/database/migrations/fauna/access";
+import { getDefaultDocument } from "@owl-factory/database/utilities/migrations/fauna/access";
 import { Auth } from "controllers/auth";
 import { isOwner } from "security/documents";
 import { isPlayer } from "security/documents/campaigns";

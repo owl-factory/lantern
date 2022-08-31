@@ -32,59 +32,67 @@ import { parseTextInputElement } from "./text-input";
  */
 export function parseUnknownElement(element: Element, state: SheetState) {
   const pageElementType = elementNameToPageElementType(element.tagName);
-  switch(pageElementType) {
-    case SheetElementType.Pageable:
-      return parsePageableElement(element, state);
-    case SheetElementType.Tabs:
-      return parseTabsElement(element, state);
-    case SheetElementType.Page:
-      return parsePageElement(element, state);
-    case SheetElementType.Row:
-      return parseRowElement(element, state);
-    case SheetElementType.Column:
-      return parseColumnElement(element, state);
-    case SheetElementType.Background:
-      return parseBackgroundElement(element, state);
-    case SheetElementType.Border:
-      return parseBorderElement(element, state);
-    case SheetElementType.Inline:
-      return parseInlineElement(element, state);
+  try {
+    switch(pageElementType) {
+      case SheetElementType.Pageable:
+        return parsePageableElement(element, state);
+      case SheetElementType.Tabs:
+        return parseTabsElement(element, state);
+      case SheetElementType.Page:
+        return parsePageElement(element, state);
+      case SheetElementType.Row:
+        return parseRowElement(element, state);
+      case SheetElementType.Column:
+        return parseColumnElement(element, state);
+      case SheetElementType.Background:
+        return parseBackgroundElement(element, state);
+      case SheetElementType.Border:
+        return parseBorderElement(element, state);
+      case SheetElementType.Inline:
+        return parseInlineElement(element, state);
 
-    case SheetElementType.Table:
-      return parseTableElement(element, state);
-    case SheetElementType.TableCell:
-      return parseTableCellElement(element, state);
-    case SheetElementType.TableRow:
-      return parseTableRowElement(element, state);
+      case SheetElementType.Table:
+        return parseTableElement(element, state);
+      case SheetElementType.TableCell:
+        return parseTableCellElement(element, state);
+      case SheetElementType.TableRow:
+        return parseTableRowElement(element, state);
 
-    case SheetElementType.Collapse:
-      return parseCollapseElement(element, state);
+      case SheetElementType.Collapse:
+        return parseCollapseElement(element, state);
 
 
-    case SheetElementType.Icon:
-      return parseIconElement(element, state);
-    case SheetElementType.Label:
-      return parseLabelElement(element, state);
-    case SheetElementType.Button:
-      return parseButtonElement(element, state);
-    case SheetElementType.Checkbox:
-      return parseCheckboxElement(element, state);
-    case SheetElementType.Radio:
-      return parseRadioElement(element, state);
-    case SheetElementType.NumberInput:
-      return parseNumberInputElement(element, state);
-    case SheetElementType.TextInput:
-      return parseTextInputElement(element, state);
-    case SheetElementType.TextArea:
-      return parseTextAreaElement(element, state);
-    case SheetElementType.Select:
-      return parseSelectElement(element, state);
-    case SheetElementType.Option:
-      return parseOptionElement(element, state);
+      case SheetElementType.Icon:
+        return parseIconElement(element, state);
+      case SheetElementType.Label:
+        return parseLabelElement(element, state);
+      case SheetElementType.Button:
+        return parseButtonElement(element, state);
+      case SheetElementType.Checkbox:
+        return parseCheckboxElement(element, state);
+      case SheetElementType.Radio:
+        return parseRadioElement(element, state);
+      case SheetElementType.NumberInput:
+        return parseNumberInputElement(element, state);
+      case SheetElementType.TextInput:
+        return parseTextInputElement(element, state);
+      case SheetElementType.TextArea:
+        return parseTextAreaElement(element, state);
+      case SheetElementType.Select:
+        return parseSelectElement(element, state);
+      case SheetElementType.Option:
+        return parseOptionElement(element, state);
 
-    case SheetElementType.Loop:
-      return parseLoopElement(element, state);
-    case SheetElementType.Prefab:
-      return parsePrefabElement(element, state);
+      case SheetElementType.Loop:
+        return parseLoopElement(element, state);
+      case SheetElementType.Prefab:
+        return parsePrefabElement(element, state);
+    }
+  } catch (e) {
+    return {
+      $key: state.key,
+      element: SheetElementType.Error,
+      error: e,
+    };
   }
 }

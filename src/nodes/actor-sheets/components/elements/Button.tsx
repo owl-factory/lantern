@@ -6,22 +6,26 @@ import { ActorController } from "nodes/actor-sheets";
 import { ButtonAction } from "../../enums/buttonActions";
 import * as actions from "../../utilities/elements/button/actions";
 
-const VARIABLE_FIELDS = ["text", "alert", "contentGroup", "index", "target"];
+const VARIABLE_FIELDS = ["text", "alert", "contentGroup", "index", "roll", "target"];
 
 /**
  * Renders a button that performs an action when clicked
  */
 export const SheetButton = observer((props: SheetElementProps<ButtonDescriptor>) => {
-  const elementVariables = ActorController.renderVariables<ButtonDescriptor>(
-    props.renderID,
-    props.element,
-    VARIABLE_FIELDS,
-    props.properties,
-  );
+  const [ element, setElement ] = React.useState<any>({});
+
+  React.useEffect(() => {
+    ActorController.renderExpressions<ButtonDescriptor>(
+      props.renderID,
+      props.element,
+      VARIABLE_FIELDS,
+      props.properties,
+    ).then(setElement);
+  }, []);
 
   return (
-    <button onClick={() => onClick(props.element.action, props.renderID, elementVariables)}>
-      {elementVariables.text}
+    <button onClick={() => onClick(props.element.action, props.renderID, element)}>
+      {element.text}
     </button>
   );
 });
@@ -52,5 +56,10 @@ function onClick(
 
     case ButtonAction.ToggleCollapse:
       actions.toggleCollapse(renderID, element.target);
+      break;
+
+    case ButtonAction.Roll:
+      actions.rollAction(renderID, element.roll);
+      break;
   }
 }

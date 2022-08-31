@@ -7,7 +7,7 @@ import { observer } from "mobx-react-lite";
 import { FileDocument } from "types/documents";
 import { InitialProps } from "types/client";
 import { FileData } from "controllers/data/FileData";
-import { handleAPI } from "@owl-factory/https/apiHandler";
+import { handleAPI } from "@owl-factory/https";
 import { getLibraryPage } from "./api/library";
 
 interface LibraryProps extends InitialProps {

@@ -1,4 +1,4 @@
-import { Dynamic, RequireLogin, Static } from "@owl-factory/database/decorators/modifiers";
+import { Dynamic, RequireLogin, Static } from "@owl-factory/database/utilities/decorators/modifiers";
 
 describe("RequireLogin", () => {
   let descriptor: any;

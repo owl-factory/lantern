@@ -3,7 +3,7 @@ import React from "react";
 import { NumberInputDescriptor, TextInputDescriptor } from "nodes/actor-sheets/types/elements";
 import style from "../../styles/Input.module.scss";
 import { SheetElementProps } from "../../types";
-import { ActorController } from "../../controllers/ActorController";
+import { ActorController } from "../../controllers/ActorSheetController";
 
 const VARIABLE_FIELDS = ["id", "name"];
 
@@ -21,20 +21,24 @@ interface SheetInputProps extends IndividualSheetInputProps {
  */
 const SheetInput = observer((props: SheetInputProps) => {
   const ref = React.createRef<HTMLInputElement>();
-  const element = ActorController.renderVariables<TextInputDescriptor>(
-    props.renderID,
-    props.element,
-    VARIABLE_FIELDS,
-    props.properties,
-  );
+  const [ element, setElement ] = React.useState<any>({});
+
+  React.useEffect(() => {
+    ActorController.renderExpressions<TextInputDescriptor>(
+      props.renderID,
+      props.element,
+      VARIABLE_FIELDS,
+      props.properties,
+    ).then(setElement);
+  }, []);
 
   /**
    * Updates the ActorController to have the changed values
    * @param ev The triggering onChange event
    */
   function onChange(e: React.ChangeEvent<HTMLInputElement>) {
-    ActorController.updateActorField(props.renderID, element.name, props.properties, e.target.value);
-    e.target.value = ActorController.getActorField(props.renderID, element.name, props.properties).toString();
+    ActorController.setActor(props.renderID, element.name, props.properties, e.target.value);
+    e.target.value = ActorController.getActor(props.renderID, element.name, props.properties).toString();
   }
 
   // Handles the case where we have two or more elements of the same name, and one of them is changed
@@ -42,8 +46,8 @@ const SheetInput = observer((props: SheetInputProps) => {
   React.useEffect(() => {
     if (!ref.current) { return; }
     if (ref.current === document.activeElement) { return; }
-    ref.current.value = ActorController.getActorField(props.renderID, element.name, props.properties).toString();
-  }, [ActorController.getActorField(props.renderID, element.name, props.properties)]);
+    ref.current.value = ActorController.getActor(props.renderID, element.name, props.properties).toString();
+  }, [ActorController.getActor(props.renderID, element.name, props.properties)]);
 
   return (
     <div>
@@ -55,7 +59,7 @@ const SheetInput = observer((props: SheetInputProps) => {
         className={`${style.actorSheetInput}`}
         onChange={onChange}
         autoComplete="off"
-        defaultValue={ActorController.getActorField(props.renderID, element.name, props.properties).toString()}
+        defaultValue={ActorController.getActor(props.renderID, element.name, props.properties).toString()}
       />
     </div>
   );

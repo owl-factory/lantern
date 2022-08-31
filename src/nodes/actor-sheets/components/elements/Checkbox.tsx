@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { CheckboxDescriptor } from "nodes/actor-sheets/types/elements";
-import { ActorController } from "../../controllers/ActorController";
+import { ActorController } from "../../controllers/ActorSheetController";
 import { SheetElementProps } from "../../types";
 
 const VARIABLE_FIELDS = ["id", "name", "value"];
@@ -12,23 +12,26 @@ const VARIABLE_FIELDS = ["id", "name", "value"];
  */
 export const SheetCheckbox = observer((props: SheetElementProps<CheckboxDescriptor>) => {
   const ref = React.createRef<HTMLInputElement>();
+  const [ element, setElement ] = React.useState<any>({});
 
-  const element = ActorController.renderVariables<CheckboxDescriptor>(
-    props.renderID,
-    props.element,
-    VARIABLE_FIELDS,
-    props.properties,
-  );
+  React.useEffect(() => {
+    ActorController.renderExpressions<CheckboxDescriptor>(
+      props.renderID,
+      props.element,
+      VARIABLE_FIELDS,
+      props.properties,
+    ).then(setElement);
+  }, []);
   const key = generateCheckboxName(element.name, element.value);
-  const checked = !!ActorController.getActorField(props.renderID, key, props.properties);
+  const checked = !!ActorController.getActor(props.renderID, key, props.properties);
 
   /**
    * Handles the onChange event in the radio buttons. Updates the ActorController values
    * @param ev The triggering onChange event
    */
   function onChange(ev: React.ChangeEvent<HTMLInputElement>) {
-    ActorController.updateActorField(props.renderID, key, props.properties, ev.target.checked);
-    ev.target.checked = !!ActorController.getActorField(props.renderID, key, props.properties);
+    ActorController.setActor(props.renderID, key, props.properties, ev.target.checked);
+    ev.target.checked = !!ActorController.getActor(props.renderID, key, props.properties);
   }
 
   // Handles the case where we have two or more elements of the same name, and one of them is changed
@@ -36,8 +39,8 @@ export const SheetCheckbox = observer((props: SheetElementProps<CheckboxDescript
   React.useEffect(() => {
     if (!ref.current) { return; }
     if (ref.current === document.activeElement) { return; }
-    ref.current.checked = !!ActorController.getActorField(props.renderID, key, props.properties);
-  }, [ActorController.getActorField(props.renderID, key, props.properties)]);
+    ref.current.checked = !!ActorController.getActor(props.renderID, key, props.properties);
+  }, [ActorController.getActor(props.renderID, key, props.properties)]);
 
   return (
     <input

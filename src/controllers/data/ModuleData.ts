@@ -1,4 +1,4 @@
-import { DataManager } from "@owl-factory/data/DataManager";
+import { DataManager } from "@owl-factory/data";
 import { Ref64 } from "@owl-factory/types";
 import { Collection } from "fauna";
 import { ModuleDocument } from "types/documents";
@@ -7,6 +7,7 @@ import { validateNewModule, validateUpdatedModule } from "utilities/validation/m
 import { RulesetData } from "./RulesetData";
 
 
+// Manages data for Module Documents
 class ModuleDataManager extends DataManager<Partial<ModuleDocument>> {
   public collection = Collection.Files;
 

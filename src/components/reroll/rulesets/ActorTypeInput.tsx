@@ -180,7 +180,9 @@ interface ActorTypeInputProps {
 export function ActorTypeInput(props: ActorTypeInputProps) {
   const [ activeType, setActiveType ] = React.useState<number | undefined>();
 
-  ActorSheetData.searchIndex("/api/actor-sheets/all");
+  React.useEffect(() => {
+    ActorSheetData.searchIndex("/api/actor-sheets/all");
+  }, []);
 
   return (
     <div>

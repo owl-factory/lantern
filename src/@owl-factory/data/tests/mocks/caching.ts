@@ -1,4 +1,4 @@
-import { clear, remove, set, setRefs } from "@owl-factory/data/caching";
+import { clear, remove, set, setRefs } from "../../controllers/functionality/caching";
 import { Ref64 } from "@owl-factory/types";
 
 (clear as any).mockImplementation((_collection: string) => { return; });

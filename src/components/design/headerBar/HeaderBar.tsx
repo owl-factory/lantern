@@ -3,9 +3,7 @@ import Link from "next/link";
 import { Container, Navbar } from "react-bootstrap";
 import styles from "./HeaderBar.module.scss";
 import dynamic from "next/dynamic";
-import { getSession } from "@owl-factory/auth/session";
 import { Auth } from "controllers/auth";
-
 
 function LoggedInNavPlaceholder() {
   return (<></>);

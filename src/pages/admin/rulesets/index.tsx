@@ -13,13 +13,13 @@ import { Card, Row, Table } from "react-bootstrap";
 import { MdLockOpen, MdLockOutline, MdPageview, MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { InitialProps } from "types/client";
 import { RulesetDocument, UserDocument } from "types/documents";
-import { getSession } from "@owl-factory/auth/session";
-import { rest } from "@owl-factory/https/rest";
+import { getSession } from "@owl-factory/auth";
+import { rest } from "@owl-factory/https";
 import { RulesetData } from "controllers/data/RulesetData";
 import { Col } from "@owl-factory/components/flex";
 import { Loading } from "@owl-factory/components/loading";
 import { getAdminRulesets } from "src/pages/api/admin/rulesets";
-import { handleAPI } from "@owl-factory/https/apiHandler";
+import { handleAPI } from "@owl-factory/https";
 import { Ref64 } from "@owl-factory/types";
 
 interface AdminRulesetsProps extends InitialProps {

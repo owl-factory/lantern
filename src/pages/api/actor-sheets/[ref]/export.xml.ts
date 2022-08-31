@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { NextApiRequest } from "next";
 
-import { HTTPHandler, HttpHandlerReturnType, createEndpoint } from "@owl-factory/https";
+import { HTTPHandler, HttpHandlerReturnType, createEndpoint } from "@owl-factory/https/backend";
 import { ActorSheetLogic } from "server/logic/ActorSheetLogic";
 
 /**

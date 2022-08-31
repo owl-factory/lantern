@@ -20,7 +20,7 @@ export type AnyDocument = (
   type.CharacterDocument |
   type.ContentDocument |
   type.ContentTypeDocument |
-  type.MessageDocument |
+  type.OldMessageDocument |
   type.ModuleDocument |
   type.RulesetDocument |
   type.SceneDocument |
