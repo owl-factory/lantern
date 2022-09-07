@@ -3,6 +3,7 @@
   "rules": {
     "semi": 1,
     "comma-dangle": [1, "always-multiline"],
-    "no-trailing-spaces": 1
+    "no-trailing-spaces": 1,
+    "react/display-name": "off"
   }
 }

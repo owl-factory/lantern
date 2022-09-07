@@ -77,7 +77,7 @@ async function getObjectMetadata(path: string): Promise<HeadObjectCommandOutput 
  * Uploads a single file into an S3 bucket using the given URL
  * @param url The limited-time URL to upload the file into an S3 bucket
  * @param file The file to upload
- * @returns 
+ * @returns
  */
 async function upload(url: string, file: File) {
   // TODO - add typing for response

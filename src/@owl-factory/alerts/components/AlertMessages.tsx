@@ -62,7 +62,7 @@ export const AlertMessages = observer(() => {
 
   React.useEffect(() => {
     setAlerts(AlertController.getTopAlerts());
-  }, [AlertController.alerts.length]);
+  }, []);
 
   alerts.forEach((alert: AlertMessage, index: number) => {
     alertElements.push(<AlertMessage key={alert.key} alert={alert} index={index}/>);
