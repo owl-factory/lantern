@@ -2,6 +2,7 @@ import { NextApiRequest } from "next";
 import { HTTPHandler, createEndpoint } from "@owl-factory/https/backend";
 import { PrismaClient } from "@prisma/client";
 import { pbkdf2, randomBytes } from "crypto";
+import { signinAs } from "nodes/user/jwt";
 
 const prisma = new PrismaClient();
 
@@ -45,8 +46,13 @@ async function signUp(this: HTTPHandler, req: NextApiRequest) {
         return;
       });
 
-      console.log(user);
-      this.returnSuccess({ user });
+      if(!user) {
+        this.returnError(401, "Something went horribly wrong, cannot find user data.");
+        return;
+      }
+
+      const jwt = signinAs(user);
+      this.returnSuccess({ jwt });
   });
 }
 

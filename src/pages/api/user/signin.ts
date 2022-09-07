@@ -2,11 +2,12 @@ import { NextApiRequest } from "next";
 import { HTTPHandler, createEndpoint } from "@owl-factory/https/backend";
 import { PrismaClient } from "@prisma/client";
 import { pbkdf2, timingSafeEqual } from "crypto";
+import { signinAs } from "nodes/user/jwt";
 
 const prisma = new PrismaClient();
 
 /**
- * Sign up for a new user account.
+ * Sign in to your user account.
  * @param this The Handler class calling this function
  * @param req The request to the server
  */
@@ -42,8 +43,13 @@ async function signIn(this: HTTPHandler, req: NextApiRequest) {
          },
     });
 
-    console.log(user);
-    this.returnSuccess({ user });
+    if(!user) {
+      this.returnError(401, "Something went horribly wrong, cannot find user data.");
+      return;
+    }
+
+    const jwt = signinAs(user);
+    this.returnSuccess({ jwt });
   });
 }
 
