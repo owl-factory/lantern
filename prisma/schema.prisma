@@ -13,8 +13,8 @@ model User {
   displayName     String? @db.VarChar(64)
   avatarSrc       String?
 
-  storageUsed     Int  @default(0)
-  maximumStorage  Int  @default(0)
+  storageUsed     Int     @default(0)
+  maximumStorage  Int     @default(0)
 
   userSecret      UserSecret?
   // TODO - subscription
@@ -24,7 +24,8 @@ model UserSecret {
   id              String  @id @default(uuid()) @db.Uuid
   username        String  @unique @db.VarChar(64) // Duplicate of the User.username
   email           String  @unique @db.VarChar(64)
-  passwordHash    String
+  hashedPassword  Bytes
+  salt            Bytes
   userID          String  @unique @db.Uuid
-  user            User? @relation(fields: [userID], references: [id])
+  user            User?   @relation(fields: [userID], references: [id])
 }
