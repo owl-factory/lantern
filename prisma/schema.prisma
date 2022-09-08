@@ -18,6 +18,13 @@ model User {
 
   userSecret      UserSecret?
   // TODO - subscription
+
+  // Createable Items
+  // These are required to be here
+  ownedRulesets   Ruleset[] @relation(name: "rulesetOwner")
+  createdRulesets Ruleset[] @relation(name: "rulesetCreator")
+  updatedRulesets Ruleset[] @relation(name: "rulesetUpdater")
+  deletedRulesets Ruleset[] @relation(name: "rulesetDeleter")
 }
 
 model UserSecret {
@@ -27,4 +34,27 @@ model UserSecret {
   passwordHash    String
   userID          String  @unique @db.Uuid
   user            User? @relation(fields: [userID], references: [id])
+}
+
+model Ruleset {
+  id              String  @id @default(uuid()) @db.Uuid
+  name            String  @db.VarChar(64)
+  alias           String? @db.VarChar(64)
+  ownedBy         String?  @db.Uuid
+  owner           User?   @relation(name: "rulesetOwner", fields: [ownedBy], references: [id])
+  isOfficial      Boolean @default(false)
+  isPublished     Boolean @default(false)
+  actorFields     Json    @default("{}")
+  rules           Json    @default("{}")
+
+  // Standard access tracking fields
+  createdAt       DateTime?
+  createdBy       String?  @db.Uuid
+  creatingUser    User?   @relation(name: "rulesetCreator", fields: [createdBy], references: [id])
+  updatedAt       DateTime?
+  updatedBy       String?  @db.Uuid
+  updatingUser    User?   @relation(name: "rulesetUpdater", fields: [updatedBy], references: [id])
+  deletedAt       DateTime?
+  deletedBy       String?  @db.Uuid
+  deletingUser    User?   @relation(name: "rulesetDeleter", fields: [deletedBy], references: [id])
 }

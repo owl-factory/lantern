@@ -1,6 +1,5 @@
 import "reflect-metadata";
 import { NextApiRequest } from "next";
-import { CampaignLogic } from "server/logic/CampaignLogic";
 import { PrismaClient } from "@prisma/client";
 import { HTTPHandler, createEndpoint } from "@owl-factory/https/backend";
 

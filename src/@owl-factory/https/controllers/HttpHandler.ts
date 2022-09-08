@@ -3,6 +3,7 @@ import { Auth } from "controllers/auth";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Context } from "types/server";
 import "src/init"; // Runs the initialize code for all backend functionality
+import { PrismaClient } from "@prisma/client";
 
 type RequestFunction = (req: NextApiRequest, res: NextApiResponse) => void;
 type PossibleMethods = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
@@ -25,11 +26,13 @@ export class HTTPHandler {
   private req: NextApiRequest;
   private res: NextApiResponse;
   public ctx: Context;
+  public prisma: PrismaClient;
 
   constructor(req: NextApiRequest, res: NextApiResponse) {
     this.req = req;
     this.res = res;
     this.ctx = { req, res };
+    this.prisma = new PrismaClient();
   }
 
   public async handle(): Promise<void> {

@@ -1,17 +1,24 @@
+import { AlertController } from "@owl-factory/alerts";
 import { Button } from "@owl-factory/components/button";
-import { Ref64 } from "@owl-factory/types";
+import { rest } from "@owl-factory/https";
+import { Ruleset } from "@prisma/client";
 import { Page } from "components/design";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "components/elements/table";
 import { RulesetData } from "controllers/data/RulesetData";
 import { observer } from "mobx-react-lite";
 import Link from "next/link";
 import React from "react";
+import { getRulesets } from "src/pages/api/dev/rulesets";
+
+interface RulesetRowProps {
+  ruleset: Ruleset;
+  deleteRuleset: (ruleset: Ruleset) => void;
+}
 
 /**
  * Renders a single row for a ruleset table
  */
-const RulesetRow = observer((props: { id: Ref64 }) => {
-  const ruleset = RulesetData.get(props.id);
+const RulesetRow = observer(({ ruleset, deleteRuleset }: RulesetRowProps) => {
   if (!ruleset) { return <></>; }
 
   return (
@@ -19,10 +26,10 @@ const RulesetRow = observer((props: { id: Ref64 }) => {
       <TableCell>{ruleset.name}</TableCell>
       <TableCell>{ruleset.alias}</TableCell>
       <TableCell>
-        <Link href={`/dev/rulesets/${ruleset.ref}/edit`}>Edit</Link>
-        <Link href={`/dev/rulesets/${ruleset.ref}/new-module`}>New Module</Link>&nbsp;
-        <Link href={`/dev/rulesets/${ruleset.ref}/new-actor-sheet`}>New Character Sheet</Link>&nbsp;
-        <a onClick={() => RulesetData.delete(ruleset.ref as string)}>Delete</a>
+        <Link href={`/dev/rulesets/${ruleset.id}/edit`}>Edit</Link>
+        <Link href={`/dev/rulesets/${ruleset.id}/new-module`}>New Module</Link>&nbsp;
+        <Link href={`/dev/rulesets/${ruleset.id}/new-actor-sheet`}>New Character Sheet</Link>&nbsp;
+        <a onClick={() => deleteRuleset(ruleset)}>Delete</a>
       </TableCell>
     </TableRow>
   );
@@ -31,16 +38,49 @@ const RulesetRow = observer((props: { id: Ref64 }) => {
 /**
  * Renders a table to list out all rulesets
  */
-const RulesetTable = observer(() => {
-  React.useEffect(() => {
-    RulesetData.searchIndex(`/api/rulesets/list`);
-  }, []);
-
-  const rulesets = RulesetData.search({ group: "data" });
+const RulesetTable = observer((props: { rulesets: any }) => {
+  const [ rulesets, setRulesets ] = React.useState(props.rulesets || []);
   const rows: JSX.Element[] = [];
 
-  for (const ref of rulesets) {
-    rows.push(<RulesetRow key={ref} id={ref}/>);
+  /**
+   * Deletes a ruleset
+   * @param ruleset The ruleset to delete
+   */
+  async function deleteRuleset(ruleset: Ruleset) {
+    try {
+      const res = await rest.delete(`/api/dev/rulesets/${ruleset.id}`, {});
+      if (!res.success) {
+        AlertController.error(`An error occured while attempting to delete ${ruleset.name}: ${res.message}`);
+        return;
+      }
+
+      await fetchRulesets();
+      AlertController.success(`${ruleset.name} was successfully deleted`);
+    } catch (e) {
+      AlertController.error(`An error occured while attempting to delete ${ruleset.name}`);
+    }
+  }
+
+  /**
+   * Fetches the rulesets
+   */
+  async function fetchRulesets() {
+    try {
+      const res = await rest.post<{rulesets: Ruleset[]}>(`/api/dev/rulesets`, {});
+      if (!res.success) {
+        AlertController.error(`An error occured while attempting to fetch the rulesets: ${res.message}`);
+        return;
+      }
+
+      setRulesets(res.data.rulesets || []);
+    } catch (e) {
+      AlertController.error("An error occured while attempting to fetch the rulesets");
+    }
+
+  }
+
+  for (const ruleset of rulesets) {
+    rows.push(<RulesetRow key={rulesets.id} ruleset={ruleset} deleteRuleset={deleteRuleset}/>);
   }
 
   return (
@@ -60,12 +100,17 @@ const RulesetTable = observer(() => {
 /**
  * Renders a development page for listing all rulesets
  */
-export default function Rulesets() {
+export default function Rulesets(props: any) {
   return (
     <Page>
       <h1>Rulesets</h1>
       <Link href="/dev"><Button>Back</Button></Link>
-      <RulesetTable/>
+      <RulesetTable rulesets={props.rulesets}/>
     </Page>
   );
+}
+
+export async function getServerSideProps() {
+  const rulesets = await getRulesets();
+  return { props: { rulesets }};
 }
