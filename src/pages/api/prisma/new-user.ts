@@ -26,7 +26,6 @@ export async function newUser(this: HTTPHandler, _req: NextApiRequest) {
       },
     },
   });
-  console.log(user);
   this.returnSuccess({ user });
 }
 
