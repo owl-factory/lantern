@@ -7,25 +7,521 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// The primary user document containing all of their core information
 model User {
   id              String  @id @default(uuid()) @db.Uuid
-  username        String  @unique @db.VarChar(64)
-  displayName     String? @db.VarChar(64)
-  avatarSrc       String?
+  username        String  @unique @db.VarChar(64) // The definitive version of the user's username
+  displayName     String? @db.VarChar(64) // The publicly displayed name of the user
+  avatarSrc       String? // The user's avatar src
 
-  storageUsed     Int     @default(0)
-  maximumStorage  Int     @default(0)
+  storageUsed     Int  @default(0) // The current amount of storage used
 
-  userSecret      UserSecret?
+  userSecret      UserSecret? // User secret information
   // TODO - subscription
+
+  createdAt       DateTime?
+  updatedAt       DateTime?
+
+  // Createable Items
+  // These are required to be here
+  ownedCampaigns   Campaign[] @relation(name: "campaignOwner")
+  createdCampaigns Campaign[] @relation(name: "campaignCreator")
+  updatedCampaigns Campaign[] @relation(name: "campaignUpdater")
+  deletedCampaigns Campaign[] @relation(name: "campaignDeleter")
+
+  ownedRulesets   Ruleset[] @relation(name: "rulesetOwner")
+  createdRulesets Ruleset[] @relation(name: "rulesetCreator")
+  updatedRulesets Ruleset[] @relation(name: "rulesetUpdater")
+  deletedRulesets Ruleset[] @relation(name: "rulesetDeleter")
+
+  ownedModules   Module[] @relation(name: "moduleOwner")
+  createdModules Module[] @relation(name: "moduleCreator")
+  updatedModules Module[] @relation(name: "moduleUpdater")
+  deletedModules Module[] @relation(name: "moduleDeleter")
+
+  createdActorType ActorType[] @relation(name: "actorTypeCreator")
+  updatedActorType ActorType[] @relation(name: "actorTypeUpdater")
+  deletedActorType ActorType[] @relation(name: "actorTypeDeleter")
+
+  ownedActors   Actor[] @relation(name: "actorOwner")
+  createdActors Actor[] @relation(name: "actorCreator")
+  updatedActors Actor[] @relation(name: "actorUpdater")
+  deletedActors Actor[] @relation(name: "actorDeleter")
+
+  ownedActorSheets   ActorSheet[] @relation(name: "actorSheetOwner")
+  createdActorSheets ActorSheet[] @relation(name: "actorSheetCreator")
+  updatedActorSheets ActorSheet[] @relation(name: "actorSheetUpdater")
+  deletedActorSheets ActorSheet[] @relation(name: "actorSheetDeleter")
+
+  createdContentType ContentType[] @relation(name: "contentTypeCreator")
+  updatedContentType ContentType[] @relation(name: "contentTypeUpdater")
+  deletedContentType ContentType[] @relation(name: "contentTypeDeleter")
+
+  ownedContents   Content[] @relation(name: "contentOwner")
+  createdContents Content[] @relation(name: "contentCreator")
+  updatedContents Content[] @relation(name: "contentUpdater")
+  deletedContents Content[] @relation(name: "contentDeleter")
+
+  ownedFiles   File[] @relation(name: "fileOwner")
+  createdFiles File[] @relation(name: "fileCreator")
+  updatedFiles File[] @relation(name: "fileUpdater")
+  deletedFiles File[] @relation(name: "fileDeleter")
+
+  // References
+  moduleAccess    ModuleAccess[]
+  contentAccess   ContentAccess[]
 }
 
+// A document containing all of the user's secret data
 model UserSecret {
   id              String  @id @default(uuid()) @db.Uuid
   username        String  @unique @db.VarChar(64) // Duplicate of the User.username
-  email           String  @unique @db.VarChar(64)
-  hashedPassword  Bytes
-  salt            Bytes
+  email           String  @unique @db.VarChar(64) // The user's primary email
+  hashedPassword  Bytes  // The hash of the user's password
+  salt            Bytes  // The user-unique salt for the password
+
+  // The user these secrets belong to
   userID          String  @unique @db.Uuid
   user            User?   @relation(fields: [userID], references: [id])
+}
+
+// A campaign holds all of the data related to how a game will be played
+model Campaign {
+  id              String  @id @default(uuid()) @db.Uuid
+  name            String  @db.VarChar(64) // The name of the campaign
+
+  // The ruleset this campaign belongs to. 
+  rulesetID       String  @db.Uuid 
+  ruleset         Ruleset @relation(fields: [rulesetID], references: [id])
+
+  // The banner displayed for the campaign
+  bannerID        String?  @db.Uuid
+  banner          File?    @relation(fields: [bannerID], references: [id])
+  bannerSrc       String?
+  // TODO - bannerConfig?
+
+  lastPlayedAt    DateTime  // The time when this campaign was last played (by two or more people online)
+  playtime        Int       // The time played in seconds
+
+  // Standard access tracking fields
+  ownedBy         String?  @db.Uuid
+  owner           User?   @relation(name: "campaignOwner", fields: [ownedBy], references: [id])
+  createdAt       DateTime?
+  createdBy       String?  @db.Uuid
+  creatingUser    User?   @relation(name: "campaignCreator", fields: [createdBy], references: [id])
+  updatedAt       DateTime?
+  updatedBy       String?  @db.Uuid
+  updatingUser    User?   @relation(name: "campaignUpdater", fields: [updatedBy], references: [id])
+  deletedAt       DateTime?
+  deletedBy       String?  @db.Uuid
+  deletingUser    User?   @relation(name: "campaignDeleter", fields: [deletedBy], references: [id])
+
+  // References
+  accessLinks     CampaignAccessLink[]
+  actors          Actor[] // The actors in this campaign
+  modules         CampaignModule[] // Modules available for search in this campaign
+  scenes          Scene[]
+}
+
+// Keeps tracks of the modules used within a campaign
+model CampaignModule {
+  // The campaign that a module is used in
+  campaignID      String  @db.Uuid  @unique
+  campaign        Campaign  @relation(fields: [campaignID], references: [id])
+
+  // The module used within a campaign
+  moduleID        String  @db.Uuid  @unique
+  module          Module  @relation(fields: [moduleID], references: [id])
+
+  // Which user is supplying this module
+  sourceUserID   String   @db.Uuid  @unique
+}
+
+// Describes who has access to a campaign and in what capacity
+model CampaignAccess {
+  userID          String  @db.Uuid @unique
+  campaignID      String  @db.Uuid @unique
+  access          String  @db.VarChar(32) @default("player")
+}
+
+// Describes invitations and links that grant access to the campaign
+model CampaignAccessLink {
+  id              String  @id @default(uuid()) @db.Uuid
+
+  // The campaign this access link grants access to
+  campaignID      String  @db.Uuid
+  campaign        Campaign  @relation(fields: [campaignID], references: [id])
+
+  linkKey         String  @db.VarChar(32) // The unique key that lets a user join this campaign
+  expiresAt       DateTime? // The time when this link expires
+
+  access          String  @db.VarChar(32) @default("player") // The level of access granted to the user joining the campaign
+  uses            Int @default(0) // The number of times this access link has been used
+  maximumUses     Int @default(0) // The maximum number of times this link may be used
+}
+
+// Rulesets serve as a foundation for games, containing content types, content, and other information that describes how
+// games should be played and what data should be used
+model Ruleset {
+  id              String  @id @default(uuid()) @db.Uuid
+  name            String  @db.VarChar(64) // The name of the ruleset, such as Dungeons & Dragons, 5e
+  alias           String? @db.VarChar(64) // The shorthand key used for official content in the URL, such as dnd-5e
+  isOfficial      Boolean @default(false) // Marks a ruleset as an official ruleset
+  isPublished     Boolean @default(false) // Marks a ruleset as published and viewable by the user, if it is offical
+  actorFields     Json    @default("{}")  // Describes what fields and types fields should be present for an actor
+  rules           Json    @default("{}")  // The custom rules that define how the game should run, such as which actor fields tie to token fields
+
+  // Standard access tracking fields
+  ownedBy         String?  @db.Uuid
+  owner           User?   @relation(name: "rulesetOwner", fields: [ownedBy], references: [id])
+  createdAt       DateTime?
+  createdBy       String?  @db.Uuid
+  creatingUser    User?   @relation(name: "rulesetCreator", fields: [createdBy], references: [id])
+  updatedAt       DateTime?
+  updatedBy       String?  @db.Uuid
+  updatingUser    User?   @relation(name: "rulesetUpdater", fields: [updatedBy], references: [id])
+  deletedAt       DateTime?
+  deletedBy       String?  @db.Uuid
+  deletingUser    User?   @relation(name: "rulesetDeleter", fields: [deletedBy], references: [id])
+
+  // Relations
+  campaigns       Campaign[] // Campaigns using this ruleset
+  modules         Module[] // Modules used by this ruleset
+  contentTypes    ContentType[] // The content types of this ruleset
+  contents        Content[] // The content for this campaign
+  actorTypes      ActorType[] // The actor types of this ruleset
+  actors          Actor[] // The actors of this ruleset
+  actorSheets     ActorSheet[] // The actor sheets that use this ruleset
+}
+
+// Modules are collections of campaigns, maps, actors, and other content that are grouped together
+// under a single umbrella. This is equivalent to a source book, like Xanathar's Guide to Everything
+model Module {
+  id              String  @id @default(uuid()) @db.Uuid
+  name            String  @db.VarChar(64) // The name of the module, such as Xanathar's Guide to Everything
+  alias           String? @db.VarChar(64) // The URL key for quick reference to this module, such as xgte
+
+  // The ruleset that this module belongs to
+  rulesetID       String  @db.Uuid
+  ruleset         Ruleset @relation(fields: [rulesetID], references: [id])
+
+  isOfficial      Boolean @default(false) // Marks this module as official 
+  isPublished     Boolean @default(false) // Marks this module as published
+  publishAccess   String  @db.VarChar(32) @default("aware") // The default access that this has when official and published
+
+  // Standard access tracking fields
+  ownedBy         String?  @db.Uuid
+  owner           User?   @relation(name: "moduleOwner", fields: [ownedBy], references: [id])
+  createdAt       DateTime?
+  createdBy       String?  @db.Uuid
+  creatingUser    User?   @relation(name: "moduleCreator", fields: [createdBy], references: [id])
+  updatedAt       DateTime?
+  updatedBy       String?  @db.Uuid
+  updatingUser    User?   @relation(name: "moduleUpdater", fields: [updatedBy], references: [id])
+  deletedAt       DateTime?
+  deletedBy       String?  @db.Uuid
+  deletingUser    User?   @relation(name: "moduleDeleter", fields: [deletedBy], references: [id])
+
+  // References
+  access          ModuleAccess[]
+  campaigns       CampaignModule[]
+  contents        Content[]
+}
+
+// Describes who has access to this module and the contents therein
+model ModuleAccess {
+  // The user who has access to this module
+  userID        String  @db.Uuid  @unique
+  user          User    @relation(fields: [userID], references: [id])
+
+  // The module the user has access to
+  moduleID      String  @db.Uuid  @unique
+  module        Module  @relation(fields: [moduleID], references: [id])
+
+  access        String  @db.VarChar(32) @default("aware") // The level of access the user has to the module and its contents
+}
+
+// Content Types describe different types of content. Where a piece of content may be "Fireball",
+// a content type is "Spell". Content types define the fields that content have, a key used for
+// searching them via the url, and which fields within a content are indexed for searching
+model ContentType {
+  id            String  @id @default(uuid()) @db.Uuid
+  name          String  @db.VarChar(64) // The name of the content type, such as "Spells"
+  alias         String? @db.VarChar(32) // The URL key of the content type, if official, such as "spells"
+  icon          String  @db.VarChar(32) // The icon used as a visual flair for the content type
+
+  // The ruleset this content belongs to
+  rulesetID     String  @db.Uuid
+  ruleset       Ruleset @relation(fields: [rulesetID], references: [id])
+
+  // Describes the fields useable by the content
+  contentFields        Json    @default("{}")
+
+  viewLayout    String  @db.Xml @default("") // The XML that describes a single card of content
+  viewStyling   String  @default("") // The CSS that describes the single card of styling
+
+  searchLayout  String  @db.Xml @default("") // The XML that describes the layout of the search bar for this content type
+  resultLayout  String  @db.Xml @default("") // The XML layout for the responses returned by the content search
+  searchStyling String  @default("") // The styling for both the search and result XML
+
+  // Standard access tracking fields
+  // TODO - do we want to include ownedBy fields here?
+  createdAt       DateTime?
+  createdBy       String?  @db.Uuid
+  creatingUser    User?   @relation(name: "contentTypeCreator", fields: [createdBy], references: [id])
+  updatedAt       DateTime?
+  updatedBy       String?  @db.Uuid
+  updatingUser    User?   @relation(name: "contentTypeUpdater", fields: [updatedBy], references: [id])
+  deletedAt       DateTime?
+  deletedBy       String?  @db.Uuid
+  deletingUser    User?   @relation(name: "contentTypeDeleter", fields: [deletedBy], references: [id])
+
+  // References
+  contents        Content[]
+}
+
+// Contents are static, unchanging blocks of data that describe something. For example, a piece of content may be Fireball or Longsword
+model Content {
+  id            String  @id @default(uuid()) @db.Uuid
+  name          String  @db.VarChar(64) // The name of the content, such as "Fireball"
+  alias         String? @db.VarChar(32) 
+
+  // The ruleset that this content belongs to
+  rulesetID     String  @db.Uuid
+  ruleset       Ruleset @relation(fields: [rulesetID], references: [id])
+
+  contentTypeID String  @db.Uuid
+  contentType   ContentType @relation(fields: [contentTypeID], references: [id])
+
+  moduleID      String? @db.Uuid
+  module        Module? @relation(fields: [moduleID], references: [id])
+
+  isPublic      Boolean @default(false)
+
+  fields        Json    @default("{}")
+
+  // Standard access tracking fields
+  ownedBy         String?  @db.Uuid
+  owner           User?    @relation(name: "contentOwner", fields: [ownedBy], references: [id])
+  createdAt       DateTime?
+  createdBy       String?  @db.Uuid
+  creatingUser    User?    @relation(name: "contentCreator", fields: [createdBy], references: [id])
+  updatedAt       DateTime?
+  updatedBy       String?  @db.Uuid
+  updatingUser    User?    @relation(name: "contentUpdater", fields: [updatedBy], references: [id])
+  deletedAt       DateTime?
+  deletedBy       String?  @db.Uuid
+  deletingUser    User?    @relation(name: "contentDeleter", fields: [deletedBy], references: [id])
+
+  // Access
+  access          ContentAccess[]
+  // The parents of the content, if any. If this is an attack or spell, it may be tied to a piece of equipment
+  parentContent   ContentRelation[]  @relation(name: "parentContent")
+  // The children content of this content, if any. If this is an Equipment or Weapon, it may have Attacks or a Spell
+  childrenContent ContentRelation[]  @relation(name: "childContent")
+
+}
+
+// Defines a relation between a parent content and any number of subcontent. For example, parent Wand of Fireballs has child Fireball
+model ContentRelation {
+  // The parent content 
+  parentID      String  @db.Uuid @unique
+  parent        Content @relation(name: "parentContent", fields: [parentID], references: [id])
+  // The child content
+  childID       String  @db.Uuid @unique
+  child         Content @relation(name: "childContent", fields: [childID], references: [id])
+}
+
+// Describes the access of a user to a single piece of content
+model ContentAccess {
+  // The user who has access to this content
+  userID        String  @db.Uuid  @unique
+  user          User    @relation(fields: [userID], references: [id])
+
+  // The content that the user has access to
+  contentID     String  @db.Uuid  @unique
+  content       Content @relation(fields: [contentID], references: [id])
+
+  access        String  @db.VarChar(32) @default("aware") // The level of access the user has
+}
+
+//Actor Types describes the different kinds of actors that may be present within a game. 
+// For D&D 5e, this can be Player Characters, NPCs, Transport, and chests. For Monster of the Week,
+// there might be a type for each Playbook
+model ActorType {
+  id            String  @id @default(uuid()) @db.Uuid
+  name          String  @db.VarChar(64) // The name of the actor type, such as Character or NPC
+  baseActorType String  @db.VarChar(32) // The base actor type for basic organization (PC, NPC, Transport, Storage, etc)
+
+  // The ruleset this actor type belongs to
+  rulesetID     String  @db.Uuid
+  ruleset       Ruleset @relation(fields: [rulesetID], references: [id])
+
+  // The default actor sheet, if any, for this actor type
+  defaultActorSheetID String? @db.Uuid
+  defaultActorSheet ActorSheet? @relation(fields: [defaultActorSheetID], references: [id])
+
+  // Standard access tracking fields
+  createdAt       DateTime?
+  createdBy       String?  @db.Uuid
+  creatingUser    User?    @relation(name: "actorTypeCreator", fields: [createdBy], references: [id])
+  updatedAt       DateTime?
+  updatedBy       String?  @db.Uuid
+  updatingUser    User?    @relation(name: "actorTypeUpdater", fields: [updatedBy], references: [id])
+  deletedAt       DateTime?
+  deletedBy       String?  @db.Uuid
+  deletingUser    User?    @relation(name: "actorTypeDeleter", fields: [deletedBy], references: [id])
+
+  // References
+  actors          Actor[] // The actors that use this actor type
+}
+
+// Actors are stateful entities that can be created and placed within the game. 
+// They can be Player Characters, NPCs, transports, familiars, and chests
+model Actor {
+  id            String  @id @default(uuid()) @db.Uuid
+  name          String  @db.VarChar(64) // The name of the actor. Links to fields.name
+
+  // The ruleset that this actor belongs to
+  rulesetID     String  @db.Uuid
+  ruleset       Ruleset @relation(fields: [rulesetID], references: [id])
+
+  // The actor type this actor is
+  actorTypeID   String  @db.Uuid
+  actorType     ActorType @relation(fields: [actorTypeID], references: [id])
+
+  // The actor sheet this actor uses to render 
+  actorSheetID  String  @db.Uuid
+  actorSheet    ActorSheet @relation(fields: [actorSheetID], references: [id])
+
+  // The campaign that this actor is a part of, if any
+  campaignID    String? @db.Uuid
+  campaign      Campaign? @relation(fields: [campaignID], references: [id])
+
+  isPublic      Boolean @default(false) // Marks this actor as publicly viewable
+  publicAccess  String  @db.VarChar(32) @default("aware") // The access of this actor when public
+
+  fields        Json  @default("{}") // The scalar fields of the actor sheet
+  content       Json  @default("{}") // An object containing arrays of content. For example, this could be inventory or weapons
+
+  // Standard access tracking fields
+  ownedBy         String?  @db.Uuid
+  owner           User?    @relation(name: "actorOwner", fields: [ownedBy], references: [id])
+  createdAt       DateTime?
+  createdBy       String?  @db.Uuid
+  creatingUser    User?    @relation(name: "actorCreator", fields: [createdBy], references: [id])
+  updatedAt       DateTime?
+  updatedBy       String?  @db.Uuid
+  updatingUser    User?    @relation(name: "actorUpdater", fields: [updatedBy], references: [id])
+  deletedAt       DateTime?
+  deletedBy       String?  @db.Uuid
+  deletingUser    User?    @relation(name: "actorDeleter", fields: [deletedBy], references: [id])
+
+  // References
+  scenes          SceneActor[]
+}
+
+// Actor Sheets describe the layout and styling of the actor
+model ActorSheet {
+  id            String  @id @default(uuid()) @db.Uuid
+  name          String  @db.VarChar(64) // The name of the actor sheet. (5e Character Sheet)
+
+  // The ruleset this actor sheet belongs to
+  rulesetID     String  @db.Uuid
+  ruleset       Ruleset @relation(fields: [rulesetID], references: [id])
+
+  // The layout and styling of the actor sheet
+  layout        String  @db.Xml
+  styling       String  
+
+  // Standard access tracking fields
+  ownedBy         String?  @db.Uuid
+  owner           User?    @relation(name: "actorSheetOwner", fields: [ownedBy], references: [id])
+  createdAt       DateTime?
+  createdBy       String?  @db.Uuid
+  creatingUser    User?    @relation(name: "actorSheetCreator", fields: [createdBy], references: [id])
+  updatedAt       DateTime?
+  updatedBy       String?  @db.Uuid
+  updatingUser    User?    @relation(name: "actorSheetUpdater", fields: [updatedBy], references: [id])
+  deletedAt       DateTime?
+  deletedBy       String?  @db.Uuid
+  deletingUser    User?    @relation(name: "actorSheetDeleter", fields: [deletedBy], references: [id])
+
+  // References
+  actorTypes    ActorType[] // The actor types where this actor sheet is used as a default value
+  actors        Actor[]     // The actors that use this actor sheet
+}
+
+// Describes a file useable in 
+model File {
+  id            String  @id @default(uuid()) @db.Uuid
+  name          String  @db.VarChar(128) // The publicly visible filename. This can be changed by the user
+  src           String  // The source URL of the file
+
+  mimetype      String  @db.VarChar(32) // The mimetype of the file. For example, image/jpeg
+  fileType      String  @db.VarChar(32) // The generic type of file. For example, image or audio
+  sizeInBytes   Int     @default(0) // The size of the file in bytes
+
+  s3Key         String  // The S3 key for accessing this file // TODO - determine length
+  s3Path        String  // The S3 path for accessing this file
+  isS3Pending   Boolean @default(true) // Marks the file as still pending upload validation. 
+
+  config        Json    @default("{}") // Any data that helps define the file, such as image height and width
+
+  // Standard access tracking fields
+  ownedBy         String?  @db.Uuid
+  owner           User?    @relation(name: "fileOwner", fields: [ownedBy], references: [id])
+  createdAt       DateTime?
+  createdBy       String?  @db.Uuid
+  creatingUser    User?    @relation(name: "fileCreator", fields: [createdBy], references: [id])
+  updatedAt       DateTime?
+  updatedBy       String?  @db.Uuid
+  updatingUser    User?    @relation(name: "fileUpdater", fields: [updatedBy], references: [id])
+  deletedAt       DateTime?
+  deletedBy       String?  @db.Uuid
+  deletingUser    User?    @relation(name: "fileDeleter", fields: [deletedBy], references: [id])
+
+  // References
+  banneredCampaigns Campaign[] // The campaigns that use this image as a banner
+  scenes            SceneFile[]
+}
+
+// Scenes describe a map or image with placeable tokens and grid
+model Scene {
+  id            String  @id @default(uuid()) @db.Uuid
+  name          String  @db.VarChar(128) // The name of the scene
+
+  // The campaign that this scene is a part of, if any
+  campaignID    String?  @db.Uuid 
+  campaign      Campaign? @relation(fields: [campaignID], references: [id])
+
+  // The configuration for data, such as layers, the contents of layers, the actors, files, etc used. 
+  // This effectively contains all information critical to rendering
+  config        Json  @default("{}")
+
+  // References
+  actors        SceneActor[]
+  files         SceneFile[]
+}
+
+// Actors used within a scene
+model SceneActor {
+  // The scene the actor is used in
+  sceneID       String  @db.Uuid @unique
+  scene         Scene @relation(fields: [sceneID], references: [id])
+
+  // The actor used in the scene
+  actorID        String  @db.Uuid @unique
+  actor          Actor @relation(fields: [actorID], references: [id])
+}
+
+// Files used within a scene
+model SceneFile {
+  // The scene a file is used in
+  sceneID       String  @db.Uuid @unique
+  scene         Scene @relation(fields: [sceneID], references: [id])
+
+  // The file a scene is used in
+  fileID        String  @db.Uuid @unique
+  file          File @relation(fields: [fileID], references: [id])
 }
