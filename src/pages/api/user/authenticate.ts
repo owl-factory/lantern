@@ -3,7 +3,7 @@ import { NextApiRequest } from "next";
 import { authenticate } from "nodes/user/jwt";
 
 /**
- * Sign up for a new user account.
+ * Test user authentication status.
  * @param this The Handler class calling this function
  * @param req The request to the server
  */
