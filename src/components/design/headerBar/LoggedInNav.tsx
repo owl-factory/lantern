@@ -1,16 +1,10 @@
 import { Auth } from "controllers/auth";
-import { CampaignData } from "controllers/data/CampaignData";
 import { observer } from "mobx-react-lite";
 import Link from "next/link";
 import React from "react";
 import { Nav, NavDropdown, Navbar } from "react-bootstrap"; // TODO - remove react-bootstrap
 import { CampaignDocument, UserDocument } from "types/documents";
 import { signOut } from "utilities/auth";
-
-
-interface LoggedInNavProps {
-  user: UserDocument;
-}
 
 /**
  * Builds a dropdown for accessing the admin portal
@@ -53,12 +47,6 @@ const UserDisplay = observer(() => {
 const RecentCampaigns = observer(() => {
   const [ campaigns, setCampaigns ] = React.useState<Partial<CampaignDocument>[]>([]);
   const campaignLinks: JSX.Element[] = [];
-
-  React.useEffect(() => {
-    const campaignRefs = CampaignData.search({ group: "my-campaigns", perPage: 3} );
-    const foundCampaigns = CampaignData.getMany(campaignRefs);
-    setCampaigns(foundCampaigns);
-  }, [CampaignData.lastTouched]);
 
   campaigns.forEach((doc: Partial<CampaignDocument>) => {
     campaignLinks.push(

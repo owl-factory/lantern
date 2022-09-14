@@ -1,6 +1,5 @@
 import "reflect-metadata";
 import { NextApiRequest } from "next";
-import { RulesetLogic } from "server/logic/RulesetLogic";
 
 import { HTTPHandler, createEndpoint } from "@owl-factory/https/backend";
 
@@ -8,8 +7,7 @@ import { HTTPHandler, createEndpoint } from "@owl-factory/https/backend";
  * Fetches a single ruleset
  */
 export async function getRulesets(req: NextApiRequest) {
-  const ruleset = await RulesetLogic.fetch(req.query.id as string);
-  return { ruleset: ruleset };
+  return { ruleset: {} };
 }
 
 /**
@@ -27,8 +25,7 @@ async function getRulesetRequest(this: HTTPHandler, req: NextApiRequest) {
  * @param req The request to the server
  */
 async function updateRuleset(this: HTTPHandler, req: NextApiRequest) {
-  const ruleset = await RulesetLogic.create(req.body);
-  this.returnSuccess({ ruleset });
+  this.returnSuccess({ ruleset: {} });
 }
 
 export default createEndpoint({

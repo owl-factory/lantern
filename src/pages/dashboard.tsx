@@ -7,7 +7,6 @@ import { Card } from "@owl-factory/components/card";
 import { AlertController } from "@owl-factory/alerts";
 import { Auth } from "controllers/auth";
 import { signOut } from "utilities/auth";
-import { CampaignData } from "controllers/data/CampaignData";
 import { observer } from "mobx-react-lite";
 
 const Dashboard = observer(() => {
@@ -39,22 +38,19 @@ const Dashboard = observer(() => {
 export default Dashboard;
 
 const RecentGames = observer(() => {
-  React.useEffect(() => { CampaignData.searchMyCampaigns(); }, []);
-
-  const refs = CampaignData.search({ group: "my-campaigns" });
 
   const campaigns: JSX.Element[] = [];
-  for (const ref of refs) {
-    const campaign = CampaignData.get(ref);
+  for (const ref of []) {
+    const campaign = undefined;
     if (!campaign) { continue; }
     let src = "";
-    if (campaign.banner && campaign.banner.src) { src = campaign.banner.src; }
+    if ((campaign as any).banner && (campaign as any).banner.src) { src = (campaign as any).banner.src; }
     campaigns.push(
-      <Col key={campaign.ref} xs={12} md={6} lg={3}>
+      <Col key={(campaign as any).ref} xs={12} md={6} lg={3}>
         <Card>
           <img src={src}/>
-          <h5>{campaign.name}</h5>
-          <Link href={`/campaigns/${campaign.ref}`}>
+          <h5>{(campaign as any).name}</h5>
+          <Link href={`/campaigns/${(campaign as any).ref}`}>
             Visit
           </Link>
         </Card>

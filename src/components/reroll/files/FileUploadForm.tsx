@@ -1,6 +1,5 @@
 import { Button } from "@owl-factory/components/button";
 import { isClient } from "@owl-factory/utilities/client";
-import { FileData } from "controllers/data/FileData";
 import { Form, Formik, FormikProps } from "formik";
 import React from "react";
 import { mimetypeToTypeMap } from "types/enums/files/mimetypes";
@@ -24,12 +23,7 @@ if (isClient) {
 }
 
 async function onSubmit(values: FormValues) {
-  // TODO - Validate
-  try {
-    await FileData.upload(values as any);
-  } catch (e: any) {
-    console.error(e);
-  }
+  return;
 }
 
 /**

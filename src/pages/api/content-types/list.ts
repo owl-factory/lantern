@@ -2,7 +2,6 @@ import "reflect-metadata";
 import { NextApiRequest } from "next";
 
 import { HTTPHandler, createEndpoint } from "@owl-factory/https/backend";
-import { ContentTypeLogic } from "server/logic/ContentTypeLogic";
 
 /**
  * Fetches the given rulesets
@@ -10,8 +9,7 @@ import { ContentTypeLogic } from "server/logic/ContentTypeLogic";
  * @param req The request to the server
  */
 async function getContentTypeList(this: HTTPHandler, req: NextApiRequest) {
-  const contentTypes = await ContentTypeLogic.searchAllContentTypes();
-  this.returnSuccess({ docs: contentTypes });
+  this.returnSuccess({ docs: [] });
 }
 
 export default createEndpoint({POST: getContentTypeList});

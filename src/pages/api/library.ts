@@ -1,6 +1,5 @@
 import "reflect-metadata";
 import { NextApiRequest } from "next";
-import { FileLogic } from "server/logic/FileLogic";
 
 import { HTTPHandler, createEndpoint } from "@owl-factory/https/backend";
 
@@ -8,8 +7,7 @@ import { HTTPHandler, createEndpoint } from "@owl-factory/https/backend";
  * Gets the information to render the current user's library page
  */
 export async function getLibraryPage(_req: NextApiRequest) {
-  const images = await FileLogic.searchMyImages({ size: 100 });
-  return { images };
+  return { images: [] };
 }
 
 /**

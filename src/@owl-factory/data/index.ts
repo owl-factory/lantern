@@ -1,1 +1,0 @@
-export { DataManager } from "./controllers/DataManager";

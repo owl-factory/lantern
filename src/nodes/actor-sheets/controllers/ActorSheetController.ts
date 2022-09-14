@@ -18,6 +18,7 @@ import { parseXML } from "../utilities/parser";
 import { StateController } from "./subcontrollers/StateController";
 import { Mediator } from "nodes/mediator";
 import { MediatorPost, MediatorRequest } from "nodes/mediator/types/mediator";
+import { ActorSheet } from "@prisma/client";
 
 
 /**
@@ -80,13 +81,13 @@ class $ActorController {
    * @param sheetID The ID of the sheet being loaded into the sheet controller
    * @param sheet The sheet document containing data to be loaded in
    */
-  public loadSheet(sheetID: string, sheet: Partial<ActorSheetDocument>) {
-    if (sheet.xml === undefined) { return; }
-    const xml = parseXML(sheet.xml);
+  public loadSheet(sheetID: string, sheet: ActorSheet) {
+    if (sheet.layout === undefined) { return; }
+    const xml = parseXML(sheet.layout);
     const variables = extractVariables(xml);
 
     this.load(DataSource.Sheet, sheetID, variables);
-    this.sheetController.load(sheetID, sheet.xml);
+    this.sheetController.load(sheetID, sheet.layout);
   }
 
   /**

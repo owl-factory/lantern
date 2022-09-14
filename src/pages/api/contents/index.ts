@@ -1,9 +1,7 @@
 import "reflect-metadata";
 import { NextApiRequest } from "next";
-import { ContentLogic } from "server/logic/ContentLogic";
 
 import { HTTPHandler, createEndpoint } from "@owl-factory/https/backend";
-import { createMany, deleteMany, fetchMany, updateMany } from "server/logic/many";
 import { requireLogin, requirePermission } from "utilities/validation/account";
 
 /**
@@ -12,8 +10,7 @@ import { requireLogin, requirePermission } from "utilities/validation/account";
  * @param req The request to the server
  */
 async function getContents(this: HTTPHandler, req: NextApiRequest) {
-  const contents = await fetchMany(ContentLogic.fetch, req.body.refs);
-  this.returnSuccess({ contents });
+  this.returnSuccess({ contents: [] });
 }
 
 
@@ -24,9 +21,7 @@ async function getContents(this: HTTPHandler, req: NextApiRequest) {
  */
  async function createContents(this: HTTPHandler, req: NextApiRequest) {
   requireLogin();
-  requirePermission("createContent");
-  const contents = await createMany(ContentLogic.create, req.body.docs);
-  this.returnSuccess({ docs: contents });
+  this.returnSuccess({ docs: [] });
 }
 
 /**
@@ -36,9 +31,7 @@ async function getContents(this: HTTPHandler, req: NextApiRequest) {
  */
  async function updateContents(this: HTTPHandler, req: NextApiRequest) {
   requireLogin();
-  requirePermission("updateContent");
-  const contents = await updateMany(ContentLogic.update, req.body.docs);
-  this.returnSuccess({ docs: contents });
+  this.returnSuccess({ docs: [] });
 }
 
 /**
@@ -48,9 +41,7 @@ async function getContents(this: HTTPHandler, req: NextApiRequest) {
  */
  async function deleteContents(this: HTTPHandler, req: NextApiRequest) {
   requireLogin();
-  requirePermission("deleteContent");
-  const contentTypes = await deleteMany(ContentLogic.delete, req.body.refs);
-  this.returnSuccess({ docs: contentTypes });
+  this.returnSuccess({ docs: [] });
 }
 
 export default createEndpoint({

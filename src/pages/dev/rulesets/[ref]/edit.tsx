@@ -1,12 +1,12 @@
 import React from "react";
 import { observer } from "mobx-react-lite";
 import { Page } from "components/design";
-import { RulesetData } from "controllers/data/RulesetData";
 import { useRouter } from "next/router";
 import { RulesetForm } from "components/reroll/rulesets/Form";
 import Link from "next/link";
 import { Button } from "@owl-factory/components/button";
 import { toJS } from "mobx";
+import { Ruleset } from "@prisma/client";
 
 /**
  * Renders a development page for editing a ruleset
@@ -15,11 +15,7 @@ const EditRuleset = observer(() => {
   const router = useRouter();
   const rulesetRef = router.query.ref as string;
 
-  // Ensures that the ruleset is fully loaded, if it isn't already
-  React.useEffect(() => {
-    RulesetData.load(rulesetRef);
-  }, [rulesetRef]);
-  const ruleset = toJS(RulesetData.get(rulesetRef));
+  const ruleset = {} as Ruleset;
 
   return (
     <Page>

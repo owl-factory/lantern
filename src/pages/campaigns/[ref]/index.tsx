@@ -8,8 +8,6 @@ import { observer } from "mobx-react-lite";
 import { InitialProps } from "types/client";
 import { AssetUploadSource } from "types/enums/files/createMethod";
 import { Ref64 } from "@owl-factory/types";
-import { CampaignData } from "controllers/data/CampaignData";
-import { UserData } from "controllers/data/UserData";
 import { getUniques } from "@owl-factory/utilities/arrays";
 
 interface BannerProps {
@@ -106,28 +104,6 @@ function CampaignView(props: CampaignViewProps): JSX.Element {
   const [ players, setPlayers ] = React.useState<Partial<UserDocument>[]>([]);
   const [ isOwner ] = React.useState(calculateIfUserIsOwner());
 
-  // Initializes the managers on page load
-  React.useEffect(() => {
-    CampaignData.set(props.campaign);
-
-    const playerIDs: string[] = [];
-    campaign.players?.forEach((player: { ref: Ref64 }) => {
-      playerIDs.push(player.ref);
-    });
-    UserData.load(playerIDs);
-  }, []);
-
-  React.useEffect(() => {
-    const playerRefs = getUniques(campaign.players, "ref");
-    setPlayers(UserData.getMany(playerRefs));
-
-  }, [UserData.lastTouched]);
-
-  // Updates the campaign each time the campaign is updated
-  React.useEffect(() => {
-    const newCampaign = CampaignData.get(props.campaign.ref);
-    if (newCampaign) { setCampaign(newCampaign); }
-  }, [CampaignData.lastTouched]);
 
   /**
    * Determines if the current player is the owner of the profile page.

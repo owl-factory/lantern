@@ -1,6 +1,4 @@
 import { Button } from "@owl-factory/components/button";
-import { isValidRef } from "@owl-factory/data/utilities/fields";
-import { ActorData } from "controllers/data/ActorData";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { Scalar } from "types";
@@ -17,7 +15,7 @@ interface ActorSheetProps {
  * Renders an actor sheet
  * @param id The ref or temporary key of a sheet to load
  */
-export const ActorSheet = observer((props: ActorSheetProps) => {
+export const ActorSheetComponent = observer((props: ActorSheetProps) => {
   const sheet = ActorController.getSheet(props.id);
   const properties: SheetProperties = {
     $prefix: props.id,
@@ -44,8 +42,7 @@ export const ActorSheet = observer((props: ActorSheetProps) => {
    */
   function save() {
     const actor= ActorController.exportActor(props.id);
-    if (!isValidRef(actor.ref)) { return; } // Don't save any test actors
-    ActorData.update(actor);
+    // TODO - do save
   }
 
   return (

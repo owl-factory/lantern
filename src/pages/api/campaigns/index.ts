@@ -1,9 +1,7 @@
 import "reflect-metadata";
 import { NextApiRequest } from "next";
-import { CampaignLogic } from "server/logic/CampaignLogic";
 
 import { HTTPHandler, createEndpoint } from "@owl-factory/https/backend";
-import { createMany, deleteMany, fetchMany, updateMany } from "server/logic/many";
 // import { init, version } from "fauna/migrations/campaigns";
 
 /**
@@ -12,8 +10,7 @@ import { createMany, deleteMany, fetchMany, updateMany } from "server/logic/many
  * @param req The request to the server
  */
  async function create(this: HTTPHandler, req: NextApiRequest) {
-  const campaigns = await createMany(CampaignLogic.create, req.body.docs);
-  this.returnSuccess({ docs: campaigns });
+  this.returnSuccess({ docs: [] });
 }
 
 /**
@@ -22,8 +19,7 @@ import { createMany, deleteMany, fetchMany, updateMany } from "server/logic/many
  * @param req The request to the server
  */
 async function read(this: HTTPHandler, req: NextApiRequest) {
-  const campaigns = await fetchMany(CampaignLogic.fetch, req.body.refs);
-  this.returnSuccess({ docs: campaigns });
+  this.returnSuccess({ docs: [] });
 }
 
 /**
@@ -32,8 +28,7 @@ async function read(this: HTTPHandler, req: NextApiRequest) {
  * @param req The request to the server
  */
  async function update(this: HTTPHandler, req: NextApiRequest) {
-  const campaigns = await updateMany(CampaignLogic.update, req.body.docs);
-  this.returnSuccess({ docs: campaigns });
+  this.returnSuccess({ docs: [] });
 }
 
 /**
@@ -42,8 +37,7 @@ async function read(this: HTTPHandler, req: NextApiRequest) {
  * @param req The request to the server
  */
  async function remove(this: HTTPHandler, req: NextApiRequest) {
-  const campaigns = await deleteMany(CampaignLogic.delete, req.body.refs);
-  this.returnSuccess({ docs: campaigns });
+  this.returnSuccess({ docs: [] });
 }
 
 export default createEndpoint({

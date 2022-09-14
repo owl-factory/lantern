@@ -5,7 +5,6 @@ import { observer } from "mobx-react-lite";
 import React from "react";
 import { MdClose } from "react-icons/md";
 import { FileDocument } from "types/documents";
-import { FileData } from "controllers/data/FileData";
 
 interface ImageDetailsModalProps {
   imageID: string;
@@ -20,15 +19,6 @@ interface ImageDetailsModalProps {
  */
 function $ImageDetailsModal({ imageID, open, handleClose }: ImageDetailsModalProps): JSX.Element | null {
   const [ image, setImage ] = React.useState<Partial<FileDocument>>({ ref: "" } as FileDocument);
-
-
-
-  // Ensures that this only runs when the imageID changes
-  React.useEffect(() => {
-    setImage(FileData.get(imageID) || {});
-  }, [ imageID, FileData.lastTouched ]);
-
-
 
   /**
    * Deletes a single image using the Image Manager and closes the modal

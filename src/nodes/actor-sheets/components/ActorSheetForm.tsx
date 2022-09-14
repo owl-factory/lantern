@@ -2,11 +2,12 @@ import { Button } from "@owl-factory/components/button";
 import { Input } from "@owl-factory/components/form";
 import { TextArea } from "@owl-factory/components/form/TextArea";
 import { Ref64 } from "@owl-factory/types";
+import { ActorSheet } from "@prisma/client";
 import { Formik, FormikProps } from "formik";
 import { observer } from "mobx-react-lite";
 import { ActorController } from "nodes/actor-sheets";
 import React from "react";
-import { ActorSheet } from "src/nodes/actor-sheets/components/ActorSheet";
+import { ActorSheetComponent } from "src/nodes/actor-sheets/components/ActorSheet";
 import { ActorSheetDocument } from "types/documents/ActorSheet";
 
 // The initial values for the form if no actor sheet is given
@@ -17,9 +18,9 @@ const INITIAL_VALUES = {
 
 interface ActorSheetFormProps {
   renderID: string;
-  actorSheet?: Partial<ActorSheetDocument>;
+  actorSheet?: ActorSheet;
   ruleset: Ref64;
-  onSubmit: (actorSheet: Partial<ActorSheetDocument>) => void;
+  onSubmit: (actorSheet: Partial<ActorSheet>) => void;
 }
 
 /**
@@ -42,7 +43,7 @@ export const ActorSheetForm = observer((props: ActorSheetFormProps) => {
 
   // Try/Catch block prevents issues within the actor sheet preventing updating of the XML
   let actorSheet;
-  try { actorSheet = <ActorSheet id={props.renderID}/>; }
+  try { actorSheet = <ActorSheetComponent id={props.renderID}/>; }
   catch (e) { actorSheet = <>{e}</>; }
 
   return (
@@ -52,12 +53,12 @@ export const ActorSheetForm = observer((props: ActorSheetFormProps) => {
         onSubmit={props.onSubmit}
       >
         {
-          (formikProps: FormikProps<Partial<ActorSheetDocument>>) => {
+          (formikProps: FormikProps<Partial<ActorSheet>>) => {
             /**
              * Refreshes the XML preview based on the contents of the XML
              */
             function refresh() {
-              ActorController.loadSheet("development-sheet", { xml: formikProps.values.xml});
+              // ActorController.loadSheet("development-sheet", { layout: formikProps.values.xml});
             }
 
             return (

@@ -1,8 +1,7 @@
 import { Button } from "@owl-factory/components/button";
+import { Module, Ruleset } from "@prisma/client";
 import { Page } from "components/design";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "components/elements/table";
-import { ModuleData } from "controllers/data/ModuleData";
-import { RulesetData } from "controllers/data/RulesetData";
 import { observer } from "mobx-react-lite";
 import Link from "next/link";
 import React from "react";
@@ -11,22 +10,19 @@ import React from "react";
  * Renders a single row for a module table
  */
 const ModuleRow = observer((props: any) => {
-  const module = ModuleData.get(props.id);
-  React.useEffect(() => {
-    if (module?.ruleset?.ref) { RulesetData.softLoad((module.ruleset)?.ref); }
-  }, [module, module?.ruleset?.ref]);
+  const module = {} as Module;
 
   if (!module) { return <></>; }
 
-  const ruleset = RulesetData.get((module.ruleset)?.ref);
+  const ruleset = {} as Ruleset;
 
   return (
     <TableRow>
       <TableCell>{module.name}</TableCell>
       <TableCell>{ruleset?.name}</TableCell>
       <TableCell>
-        <Link href={`/dev/modules/${module.ref}/edit`}>Edit</Link>&nbsp;
-        <a href="#" onClick={() => ModuleData.delete(module.ref as string)}>Delete</a>
+        <Link href={`/dev/modules/${module.id}/edit`}>Edit</Link>&nbsp;
+        {/* <a href="#" onClick={() => ModuleData.delete(module.ref as string)}>Delete</a> */}
       </TableCell>
     </TableRow>
   );
@@ -36,11 +32,7 @@ const ModuleRow = observer((props: any) => {
  * Renders a table of modules
  */
 const ModuleTable = observer(() => {
-  React.useEffect(() => {
-    ModuleData.searchIndex(`/api/modules/list`);
-  }, []);
-
-  const modules = ModuleData.search({ group: "data" });
+  const modules: Module[] = [];
   const rows: JSX.Element[] = [];
 
   for (const ref of modules) {

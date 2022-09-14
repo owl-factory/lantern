@@ -1,3 +1,3 @@
 export { ActorController } from "./controllers/ActorSheetController";
-export { ActorSheet } from "./components/ActorSheet";
+export { ActorSheetComponent as ActorSheet } from "./components/ActorSheet";
 export { ActorSheetForm } from "./components/ActorSheetForm";

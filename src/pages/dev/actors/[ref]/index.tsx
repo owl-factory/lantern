@@ -1,13 +1,10 @@
 import { Button } from "@owl-factory/components/button";
+import { Actor, ActorSheet, Ruleset } from "@prisma/client";
 import { Page } from "components/design";
-import { ActorData } from "controllers/data/ActorData";
-import { ActorSheetData } from "controllers/data/ActorSheetData";
-import { CampaignData } from "controllers/data/CampaignData";
-import { RulesetData } from "controllers/data/RulesetData";
 import { ActorSheetMediatorHandler } from "controllers/mediators/ActorSheetHandler";
 import { observer } from "mobx-react-lite";
 import { useRouter } from "next/router";
-import { ActorController, ActorSheet } from "nodes/actor-sheets";
+import { ActorSheetComponent } from "nodes/actor-sheets/components/ActorSheet";
 import { Mediator } from "nodes/mediator";
 import React from "react";
 import { Scalar } from "types";
@@ -27,38 +24,12 @@ function ActorView() {
     return () => { Mediator.reset(); };
   }, []);
 
-  React.useEffect(() => {
-    ActorData.load(ref);
-  }, [ref]);
-
-  // Ensures that the actor sheet and campaign are loaded in
-  const actor = ActorData.get(ref);
-  React.useEffect(() => {
-    if (!actor) { return; }
-    // Load in dependencies
-    RulesetData.load(actor.ruleset?.ref as string);
-    if (actor.actorSheet) { ActorSheetData.load(actor.actorSheet.ref); }
-    if (actor.campaign) { CampaignData.load(actor.campaign.ref); }
-
-    setRenderID(ActorController.newRender(
-      ref,
-      actor.ruleset?.ref as string,
-      actor.actorSheet?.ref as string,
-      ));
-    ActorController.loadActor(ref, actor);
-  }, [actor]);
-
   // Ensures that the actor sheet is loaded in to the sheet controller
-  const actorSheet = ActorSheetData.get(actor?.actorSheet?.ref);
-  React.useEffect(() => {
-    if (actorSheet && actorSheet.ref) { ActorController.loadSheet(actorSheet.ref, actorSheet); }
-  }, [actorSheet]);
+  const actor = {} as Actor;
+  const actorSheet = {} as ActorSheet;
+  const ruleset = {} as Ruleset;
 
   // Ensures that the ruleset is loaded in to the sheet controller
-  const ruleset = RulesetData.get(actor?.ruleset?.ref);
-  React.useEffect(() => {
-    if (ruleset && ruleset.ref) { ActorController.loadRuleset(ruleset.ref as string, ruleset as RulesetDocument); }
-  }, [ruleset]);
 
   if (!actor) { return <></>; }
 
@@ -68,8 +39,6 @@ function ActorView() {
    */
   function onSubmit(values: Record<string, Scalar>) {
     if (!actor) { return; }
-    actor.values = values;
-    ActorData.update(actor);
   }
 
   return (
@@ -78,7 +47,7 @@ function ActorView() {
         <h1>{actor.name}</h1>&nbsp;
         <Button onClick={() => router.push("/dev/actors")}>Back</Button>
       </div>
-      <ActorSheet id={renderID} onSubmit={onSubmit}/>
+      <ActorSheetComponent id={renderID} onSubmit={onSubmit}/>
     </Page>
   );
 }

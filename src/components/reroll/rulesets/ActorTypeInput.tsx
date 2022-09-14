@@ -1,7 +1,6 @@
 import { Button } from "@owl-factory/components/button";
 import { Input, Select } from "@owl-factory/components/form";
 import { getUniques } from "@owl-factory/utilities/arrays";
-import { ActorSheetData } from "controllers/data/ActorSheetData";
 import { Formik, FormikProps } from "formik";
 import { useRouter } from "next/router";
 import React from "react";
@@ -94,16 +93,8 @@ function ActorTypeList(props: ActorTypeProps) {
  */
 function ActorTypeSheetSelect(props: { onChange: () => void }) {
   const router = useRouter();
-  const rulesetRef = router.query.ref || "";
 
   const options: JSX.Element[] = [];
-  const actorSheetRefs = rulesetRef ? ActorSheetData.search({}) : [];
-
-  for (const actorSheetRef of actorSheetRefs) {
-    const actorSheet = ActorSheetData.get(actorSheetRef);
-    if (!actorSheet || actorSheet.ruleset?.ref !== rulesetRef) { continue; }
-    options.push(<option value={actorSheet.ref}>{actorSheet.name}</option>);
-  }
 
   return (
     <>
@@ -179,10 +170,6 @@ interface ActorTypeInputProps {
  */
 export function ActorTypeInput(props: ActorTypeInputProps) {
   const [ activeType, setActiveType ] = React.useState<number | undefined>();
-
-  React.useEffect(() => {
-    ActorSheetData.searchIndex("/api/actor-sheets/all");
-  }, []);
 
   return (
     <div>
