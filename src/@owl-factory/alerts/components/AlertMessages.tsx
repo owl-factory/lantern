@@ -1,9 +1,9 @@
 import React from "react";
 import { observer } from "mobx-react-lite";
 import styles from "../styles/AlertMessages.module.scss";
-import { Alert } from "react-bootstrap"; // TODO - remove React-Bootstrap
 import { AlertController } from "../controllers/AlertController";
 import { AlertMessage } from "../types/alertMessage";
+import { Alert } from "@chakra-ui/react";
 
 interface AlertMessageProps {
   alert: AlertMessage;
