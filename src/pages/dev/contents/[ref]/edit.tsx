@@ -3,7 +3,7 @@ import { observer } from "mobx-react-lite";
 import { Page } from "components/design";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { Button } from "@owl-factory/components/button";
+import { Button } from "@chakra-ui/react";
 import { ContentForm } from "components/reroll/contents/Form";
 import { Content } from "@prisma/client";
 

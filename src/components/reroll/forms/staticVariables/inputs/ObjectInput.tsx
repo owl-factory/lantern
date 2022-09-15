@@ -1,4 +1,4 @@
-import { Button } from "@owl-factory/components/button";
+import { Button } from "@chakra-ui/react";
 import { Input } from "@owl-factory/components/form";
 import { getUniques } from "@owl-factory/utilities/arrays";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "components/elements/table";

@@ -1,9 +1,8 @@
 import React from "react";
 import Link from "next/link";
-import { Container, Navbar } from "react-bootstrap";
-import styles from "./HeaderBar.module.scss";
 import dynamic from "next/dynamic";
 import { Auth } from "controllers/auth";
+import { Box, Flex, Spacer } from "@chakra-ui/react";
 
 function LoggedInNavPlaceholder() {
   return (<></>);
@@ -29,17 +28,17 @@ function LoggedOutNav() {
  */
 function HeaderBar(): JSX.Element {
 
-  const nav = Auth.isLoggedIn ? <LoggedInNav/> : <LoggedOutNav/>;
+  const nav = Auth.isLoggedIn || true ? <LoggedInNav/> : <LoggedOutNav/>;
 
   return (
-    <Navbar variant="dark" bg="dark" expand="lg" className={`${styles.headerBar} justify-content-between`}>
-      <Container>
+    <Box bg="orange.800" color="white" w="100%" p="15px">
+      <Flex>
         <Link href="/" passHref>
-          <Navbar.Brand>Reroll</Navbar.Brand>
+          <Box fontWeight={700}>Reroll</Box>
         </Link>
         {nav}
-      </Container>
-    </Navbar>
+      </Flex>
+    </Box>
   );
 }
 

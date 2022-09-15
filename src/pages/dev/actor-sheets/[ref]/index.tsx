@@ -1,4 +1,4 @@
-import { Button } from "@owl-factory/components/button";
+import { Button } from "@chakra-ui/react";
 import { Page } from "components/design";
 import { observer } from "mobx-react-lite";
 import Link from "next/link";

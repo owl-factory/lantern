@@ -1,8 +1,6 @@
-import { Button } from "@owl-factory/components/button";
-import { Card, CardBody, CardHeader } from "@owl-factory/components/card";
+import { Box, Modal, Tooltip, useDisclosure } from "@chakra-ui/react";
+import { Button } from "@chakra-ui/react";
 import { Input } from "@owl-factory/components/form";
-import { Modal } from "@owl-factory/components/modal";
-import { Tooltip } from "@owl-factory/components/tooltip";
 import { Formik, Form as FormikForm } from "formik";
 import React from "react";
 
@@ -17,16 +15,18 @@ interface LinkImageModalProps {
  * @param modal True if the modal should be open
  */
 export function LinkImageModal({ handleClose, modal }: LinkImageModalProps) {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   function saveLinkedImage(values: any) {
     // TODO - have linked image
     handleClose();
   }
 
   return (
-    <Modal open={modal} handleClose={handleClose}>
-      <Card>
-        <CardHeader><h3>New Image</h3></CardHeader>
-        <CardBody>
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <Box>
+        <Box><h3>New Image</h3></Box>
+        <Box>
           <Formik
             initialValues={{ src: "", name: "" }}
             onSubmit={saveLinkedImage}
@@ -48,8 +48,8 @@ export function LinkImageModal({ handleClose, modal }: LinkImageModalProps) {
               </FormikForm>
             )}
           </Formik>
-        </CardBody>
-      </Card>
+        </Box>
+      </Box>
     </Modal>
   );
 }

@@ -1,5 +1,5 @@
 
-import { Button } from "@owl-factory/components/button";
+import { Button } from "@chakra-ui/react";
 import React from "react";
 import { FileDocument } from "types/documents";
 import { ImageList, ListFormat } from "components/reroll/images";

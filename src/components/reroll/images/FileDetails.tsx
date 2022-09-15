@@ -1,7 +1,4 @@
-import { Modal, useDisclosure } from "@chakra-ui/react";
-import { Button } from "@owl-factory/components/button";
-import { Card, CardBody, CardHeader } from "@owl-factory/components/card";
-import { observer } from "mobx-react-lite";
+import { Box } from "@chakra-ui/react";
 import React from "react";
 import { MdClose } from "react-icons/md";
 import { FileDocument } from "types/documents";
@@ -21,16 +18,16 @@ export function FileDetails(): JSX.Element {
   const [ image, setImage ] = React .useState<Partial<FileDocument>>({ ref: "" } as FileDocument);
 
   return (
-    <Card>
-      <CardHeader>
+    <Box>
+      <Box>
         <b>{image.name}</b>
         <a href="#" className="clickable" style={{float: "right"}}><MdClose  /></a>
-      </CardHeader>
-      <CardBody>
+      </Box>
+      <Box>
         <img style={{maxWidth: "100%"}} height="auto" src={image.src}/><br/>
         {/* <Button onClick={deleteImage}>Delete</Button> */}
-      </CardBody>
-    </Card>
+      </Box>
+    </Box>
   );
 }
 

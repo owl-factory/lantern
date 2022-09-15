@@ -1,9 +1,7 @@
 import { Page } from "components/design";
 import Link from "next/link";
 import React from "react";
-import { Button } from "@owl-factory/components/button";
-import { Col, Row } from "@owl-factory/components/flex";
-import { Card } from "@owl-factory/components/card";
+import { Box, Button, Flex } from "@chakra-ui/react";
 import { AlertController } from "@owl-factory/alerts";
 import { Auth } from "controllers/auth";
 import { signOut } from "utilities/auth";
@@ -46,15 +44,15 @@ const RecentGames = observer(() => {
     let src = "";
     if ((campaign as any).banner && (campaign as any).banner.src) { src = (campaign as any).banner.src; }
     campaigns.push(
-      <Col key={(campaign as any).ref} xs={12} md={6} lg={3}>
-        <Card>
+      <Box key={(campaign as any).ref}>
+        <Box>
           <img src={src}/>
           <h5>{(campaign as any).name}</h5>
           <Link href={`/campaigns/${(campaign as any).ref}`}>
             Visit
           </Link>
-        </Card>
-      </Col>
+        </Box>
+      </Box>
     );
   }
 
@@ -75,9 +73,9 @@ const RecentGames = observer(() => {
         </Link>
       </h4>
       <br/>
-      <Row>
+      <Flex>
         {campaigns}
-      </Row>
+      </Flex>
     </div>
   );
 });

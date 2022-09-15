@@ -1,4 +1,4 @@
-import { Button } from "@owl-factory/components/button";
+import { Button } from "@chakra-ui/react";
 import { Ref64 } from "@owl-factory/types";
 import { Actor, ActorType, Ruleset } from "@prisma/client";
 import { Page } from "components/design";

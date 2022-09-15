@@ -1,4 +1,4 @@
-import { Button } from "@owl-factory/components/button";
+import { Button } from "@chakra-ui/react";
 import { Input } from "@owl-factory/components/form";
 import { TextArea } from "@owl-factory/components/form/TextArea";
 import { Ref64 } from "@owl-factory/types";

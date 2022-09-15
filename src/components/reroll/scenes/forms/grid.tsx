@@ -1,5 +1,5 @@
 import { GridType } from "controllers/maps/SceneController";
-import { Button } from "@owl-factory/components/button";
+import { Button } from "@chakra-ui/react";
 import { Formik, Form as FormikForm, FormikProps } from "formik";
 import React from "react";
 import { Input } from "@owl-factory/components/form";

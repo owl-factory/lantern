@@ -1,9 +1,8 @@
 import React from "react";
 import { ErrorMessage, Formik, Form as FormikForm } from "formik";
-import { Button } from "@owl-factory/components/button";
-import { Input } from "@owl-factory/components/form";
 import { signIn } from "utilities/auth";
 import { loginFormValidationSchema } from "utilities/validation/users/login";
+import { Button, Input } from "@chakra-ui/react";
 
 /** Initial form values */
 const initialValues = {
@@ -32,7 +31,7 @@ export function SignInForm(): JSX.Element {
     >
       <FormikForm>
         <label>Username or email address</label>
-        <Input label="Username" type="text" aria-label="Username or email address" name="username"/>
+        <Input type="text" aria-label="Username or email address" name="username"/>
         <ErrorMessage name="username"/>
 
         <label>Password</label>

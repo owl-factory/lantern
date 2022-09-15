@@ -3,8 +3,8 @@ import React from "react";
 import { MdBlock, MdBuild } from "react-icons/md";
 import { ContextMenuBuilder } from "utilities/design";
 import { FieldTypeEnum, fieldTypes } from "types/enums";
-import { Col, Row } from "@owl-factory/components/flex";
 import { Input, Select } from "@owl-factory/components/form";
+import { Box, Flex } from "@chakra-ui/react";
 
 // TODO
 type FieldType = any;
@@ -248,14 +248,14 @@ export function Fields(props: FieldsProps): JSX.Element {
           New
         </button>
       </h2>
-      <Row>
-        <Col xs={12} md={8}>
+      <Flex>
+        <Box >
           <FieldList/>
-        </Col>
-        <Col xs={12} md={4}>
+        </Box>
+        <Box >
           <FieldForm/>
-        </Col>
-      </Row>
+        </Box>
+      </Flex>
     </>
   );
 }

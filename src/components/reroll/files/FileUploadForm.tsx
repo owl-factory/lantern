@@ -1,4 +1,4 @@
-import { Button } from "@owl-factory/components/button";
+import { Button } from "@chakra-ui/react";
 import { isClient } from "@owl-factory/utilities/client";
 import { Form, Formik, FormikProps } from "formik";
 import React from "react";
@@ -82,7 +82,7 @@ export function FileUploadForm() {
               type="file"
               name="fileInput"
               onChange={(event) => { onChange(event, props.setFieldValue, setLoading); }}/>
-            <Button type="button" onClick={props.resetForm}>Reset</Button>
+            <Button type="button" onClick={() => props.resetForm()}>Reset</Button>
             <Button type="submit" disabled={loading}>Upload</Button>
           </div>
         </Form>

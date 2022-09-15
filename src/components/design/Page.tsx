@@ -1,6 +1,7 @@
 import React, { ReactNode } from "react";
 import ErrorPage from "next/error";
 import { AlertMessages } from "@owl-factory/alerts";
+import { Box, Container, Flex } from "@chakra-ui/react";
 
 interface PageProps {
   children: ReactNode;
@@ -32,11 +33,14 @@ export function Page(props: PageProps): JSX.Element {
   }
 
   return (
-    <div className="container mt-3">
-      { props.error ? <>{parseError(props.error)}</> : <></>}
-      {props.children}
+    <Flex>
+      {/* TODO - permanent drawers on either side */}
+      <Container maxW="container.xl" paddingTop={5}>
+        { props.error ? <>{parseError(props.error)}</> : <></>}
+        {props.children}
+      </Container>
       <AlertMessages/>
-    </div>
+    </Flex>
   );
 }
 

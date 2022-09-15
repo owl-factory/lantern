@@ -1,9 +1,8 @@
 import React from "react";
 import { ErrorMessage, Formik, Form as FormikForm } from "formik";
-import { Button } from "@owl-factory/components/button";
-import { Input } from "@owl-factory/components/form";
 import { signUp } from "utilities/auth";
 import { signUpValidationSchema } from "utilities/validation/users/signup";
+import { Button, Input } from "@chakra-ui/react";
 
 /** Initial form values */
 const initialValues = {

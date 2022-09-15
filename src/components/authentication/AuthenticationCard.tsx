@@ -1,7 +1,6 @@
 import React, { ReactNode, useState } from "react";
 import { SignInForm, SignUpForm } from "components/authentication";
-import { Card, CardBody } from "@owl-factory/components/card";
-import { Button } from "@owl-factory/components/button";
+import { Box, Button } from "@chakra-ui/react";
 
 interface AuthenticationCardProps {
   initialState?: AuthCardSection;
@@ -36,11 +35,9 @@ export function AuthenticationCard(props: AuthenticationCardProps): JSX.Element 
   }
 
   return (
-    <Card>
-      <CardBody>
-        {cardBody}
-      </CardBody>
-    </Card>
+    <Box>
+      {cardBody}
+    </Box>
   );
 }
 

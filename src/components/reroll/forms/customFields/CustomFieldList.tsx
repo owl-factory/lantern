@@ -1,5 +1,5 @@
 
-import { Button } from "@owl-factory/components/button";
+import { Button } from "@chakra-ui/react";
 import React from "react";
 import { CustomField } from "types/documents/subdocument/CustomField";
 import { generateCustomFieldKey, generateNewCustomField } from "utilities/customField/helpers";

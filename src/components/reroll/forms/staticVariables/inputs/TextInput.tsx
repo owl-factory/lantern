@@ -1,4 +1,4 @@
-import { Input } from "@owl-factory/components/form";
+import { Input } from "@chakra-ui/react";
 import React, { ChangeEvent } from "react";
 
 interface StaticVariableScalarInputProps {

@@ -1,5 +1,4 @@
-import { Button } from "@owl-factory/components/button";
-import { Input, Select } from "@owl-factory/components/form";
+import { Button, Input, Select } from "@chakra-ui/react";
 import { Formik, FormikProps } from "formik";
 import React from "react";
 import { StaticVariableFormValues } from "types/components/forms/staticVariables";

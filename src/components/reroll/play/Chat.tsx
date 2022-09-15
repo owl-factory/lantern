@@ -1,10 +1,10 @@
-import { Tooltip } from "@owl-factory/components/tooltip";
 import { Form, Formik } from "formik";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { OldMessageDocument } from "types/documents";
 import { GameServer } from "controllers/play";
 import { Input, Select } from "@owl-factory/components/form";
+import { Tooltip } from "@chakra-ui/react";
 
 interface ChatProps {
   server: GameServer;
