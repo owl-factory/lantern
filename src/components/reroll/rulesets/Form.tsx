@@ -1,38 +1,39 @@
 import { Button } from "@chakra-ui/react";
 import { Input } from "@owl-factory/components/form";
+import { ServerResponse } from "@owl-factory/https";
 import { Ruleset } from "@prisma/client";
-import { Form, Formik, FormikProps } from "formik";
-import { useRouter } from "next/router";
+import { Form, Formik, FormikHelpers, FormikProps } from "formik";
 import React from "react";
 import { CustomFieldInput } from "../forms/customFields/CustomFieldInput";
 
 // The initial values of the form
 const INITIAL_VALUES = {
-  ref: "",
   name: "",
   alias: "",
-  actorFields: {},
-  actorTypes: [],
-  staticVariables: {},
 };
+
+interface RulesetFormProps {
+  ruleset?: Ruleset;
+  onSubmit: (values: Partial<Ruleset>) => Promise<ServerResponse<{ ruleset: Ruleset }>>;
+}
 
 /**
  * Renders a form for creating or editing a ruleset
  * @param props.ruleset A pre-existing ruleset to edit
  */
-export function RulesetForm(props: { ruleset?: Ruleset }) {
-  const router = useRouter();
+export function RulesetForm(props: RulesetFormProps) {
   const initialValues = props.ruleset || INITIAL_VALUES;
-  if (!initialValues.actorFields) {
-    initialValues.actorFields = {};
-  }
+  
 
   /**
    * Submits the form values to create or update a ruleset
    * @param values The ruleset values from the form
    */
-  function onSubmit(values: Partial<Ruleset>) {
-    return;
+  async function onSubmit(values: Partial<Ruleset>, formikHelpers: FormikHelpers<Partial<Ruleset>>) {
+    const result = await props.onSubmit(values);
+    if (result.success) { return; }
+
+    formikHelpers.setErrors(result.errors);
   }
 
   return (
@@ -42,7 +43,9 @@ export function RulesetForm(props: { ruleset?: Ruleset }) {
     >
       {(formikProps: FormikProps<Partial<Ruleset>>) => (
         <Form>
+          <label>Name</label>
           <Input name="name" type="text" label="Name"/>
+          <label>Alias</label>
           <Input name="alias" type="text" label="Alias"/>
 
           {/* <ActorTypeInput
