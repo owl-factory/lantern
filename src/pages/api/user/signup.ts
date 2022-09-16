@@ -32,6 +32,7 @@ async function signUp(this: HTTPHandler, req: NextApiRequest) {
     const user = await prisma.user.create({
         data: {
           username,
+          displayName: username,
           userSecret: {
             create: {
                 username,
@@ -41,18 +42,18 @@ async function signUp(this: HTTPHandler, req: NextApiRequest) {
             },
           },
         },
-      }).catch((dbError) => {
-        this.returnError(401, dbError.message);
-        return;
-      });
+    }).catch((dbError) => {
+      this.returnError(401, dbError.message);
+      return;
+    });
 
-      if(!user) {
-        this.returnError(401, "Something went horribly wrong, cannot find user data.");
-        return;
-      }
+    if(!user) {
+      this.returnError(401, "Something went horribly wrong, cannot find user data.");
+      return;
+    }
 
-      const jwt = signinAs(user);
-      this.returnSuccess({ jwt });
+    const jwt = signinAs(user);
+    this.returnSuccess({ user, jwt });
   });
 }
 

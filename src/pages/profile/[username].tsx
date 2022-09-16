@@ -241,7 +241,7 @@ function Profile(): JSX.Element {
    */
   function calculateIfUserIsOwner() {
     if (!Auth.isLoggedIn) { return false; }
-    if (user && Auth.user?.ref === user.id) { return true; }
+    if (user && Auth.user?.id === user.id) { return true; }
     return false;
   }
 

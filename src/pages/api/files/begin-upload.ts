@@ -13,7 +13,7 @@ async function beginUpload(this: HTTPHandler, req: NextApiRequest) {
   requireLogin();
 
   // Check DB for latest information on the user's storage
-  // const user = await UserLogic.fetch(Auth.user?.ref || "");
+  // const user = await UserLogic.fetch(Auth.user?.id || "");
   // validateAccountHasSpace(user, req.body.doc.sizeInBytes);
 
   // const file = await FileLogic.createUpload(req.body.doc);

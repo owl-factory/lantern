@@ -19,7 +19,7 @@ export function parseChatMessage(values: ChatFormValues): ChatMessage {
 
   if (Auth.ref) {
     message.author = { ref: Auth.ref };
-    message.name = Auth.user?.name || "Guest";
+    message.name = Auth.user?.displayName || "Guest";
     // TODO - include imgs here
   }
   if (values.as) {

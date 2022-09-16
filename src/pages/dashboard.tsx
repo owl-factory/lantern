@@ -12,7 +12,7 @@ const Dashboard = observer(() => {
 
   // UseEffect prevents issue with hydration
   React.useEffect(() => {
-    setName(Auth.user?.name || "");
+    setName(Auth.user?.displayName || "");
   }, []);
 
   return (

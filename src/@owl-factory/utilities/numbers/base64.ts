@@ -7,6 +7,7 @@ export const rixits = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234
  * @param base64 The base64 character string to convert
  */
  export function base64ToBinary(base64: string): string {
+  if (!base64) { return ""; }
   let binary = "";
   for (const char of base64) {
     const decimal = rixits.indexOf(char);
