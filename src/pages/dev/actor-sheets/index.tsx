@@ -1,33 +1,28 @@
 import { Button } from "@chakra-ui/react";
-import { Ref64 } from "@owl-factory/types";
+import { AlertController } from "@owl-factory/alerts";
+import { rest } from "@owl-factory/https";
 import { ActorSheet, Ruleset } from "@prisma/client";
 import { Page } from "components/design";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "components/elements/table";
-import { observer } from "mobx-react-lite";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import React from "react";
+import { getActorSheets } from "src/pages/api/dev/actor-sheets";
+
+type ActorSheetWithRuleset = ActorSheet & { ruleset: Ruleset };
+
+interface ActorSheetRowProps {
+  actorSheet: ActorSheetWithRuleset;
+  deleteActorSheet: (actorSheet: ActorSheet) => void;
+}
 
 /**
  * Renders a single row for an actor sheet table
  * @param id The ID of the actor sheet to render
  */
-const ActorSheetRow = observer((props: { id: Ref64 }) => {
-  const router = useRouter();
-  const actorSheet = {} as ActorSheet;
-  if (!actorSheet) { return <></>; }
-
-  const ruleset: Ruleset = {} as Ruleset;
-
-  /**
-   * Creates a new actor, and on success redirects the user to the page
-   */
-  async function createActor() {
-    if (!actorSheet) { return; }
-    // TODO - create new actor
-    // if (!newActor) { throw "Actor could not be created"; }
-    // router.push(`/dev/actors/${newActor.ref}`);
-  }
+function ActorSheetRow(props: ActorSheetRowProps) {
+  if (!props.actorSheet) { return <></>; }
+  const actorSheet = props.actorSheet;
+  const ruleset = props.actorSheet.ruleset;
 
   return (
     <TableRow>
@@ -37,22 +32,25 @@ const ActorSheetRow = observer((props: { id: Ref64 }) => {
         <Link href={`/dev/actor-sheets/${actorSheet.id}`}>View</Link>&nbsp;
         <Link href={`/dev/actor-sheets/${actorSheet.id}/edit`}>Edit</Link>&nbsp;
         <a href={`/api/actor-sheets/${actorSheet.id}/export.xml`} download={`${actorSheet.name}.xml`}>Export</a>&nbsp;
-        <a href="#" onClick={createActor}>New Character</a>&nbsp;
-        {/* <a href="#" onClick={() => ActorSheetData.delete(actorSheet.id as string)}>Delete</a> */}
+        <a href="#" onClick={() => props.deleteActorSheet(props.actorSheet)}>Delete</a>
       </TableCell>
     </TableRow>
   );
-});
+}
+
+interface ActorSheetTableProps {
+  actorSheets: ActorSheetWithRuleset[]
+  deleteActorSheet: (actorSheet: ActorSheet) => void;
+}
 
 /**
  * Renders a table for listing out actor sheets
  */
-const ActorSheetTable = observer(() => {
+function ActorSheetTable(props: ActorSheetTableProps) {
   const rows: JSX.Element[] = [];
-  // const sheetRefs = ActorSheetData.search({});
-  // for (const sheetRef of sheetRefs) {
-  //   rows.push(<ActorSheetRow key={sheetRef} id={sheetRef}/>);
-  // }
+  for (const actorSheet of props.actorSheets) {
+    rows.push(<ActorSheetRow key={actorSheet.id} actorSheet={actorSheet} deleteActorSheet={props.deleteActorSheet}/>);
+  }
 
   return (
     <Table>
@@ -66,18 +64,51 @@ const ActorSheetTable = observer(() => {
       </TableBody>
     </Table>
   );
-});
+}
+
+interface ActorSheetListProps {
+  actorSheets: ActorSheetWithRuleset[];
+}
+
+interface DeleteServerResponse {
+  deletedActorSheet: ActorSheet;
+  actorSheets: ActorSheetWithRuleset[];
+}
 
 /**
  * Renders a page containing a list of actor sheets
  */
-export default function ActorSheetList() {
+export default function ActorSheetList(props: ActorSheetListProps) {
+  const [ actorSheets, setActorSheets ] = React.useState(props.actorSheets);
+
+  /**
+   * Deletes an actor sheet and refreshes the actor sheets
+   * @param actorSheet The actor sheet to delete
+   */
+  async function deleteActorSheet(actorSheet: ActorSheet) {
+    try {
+      const deleteResult = await rest.delete<DeleteServerResponse>(`/api/dev/actor-sheets/${actorSheet.id}`, {});
+      if (!deleteResult.success) {
+        AlertController.error(`${actorSheet.name} could not be successfully deleted. ${deleteResult.message}`);
+        return;
+      }
+      AlertController.success(`${actorSheet.name} was successfully deleted.`);
+      setActorSheets(deleteResult.data.actorSheets);
+    } catch (e) {
+      AlertController.error(`An unexpected error occured while attempting to delete ${actorSheet.name}.`);
+    }
+  }
 
   return (
     <Page>
       <h1>Actor Sheet Layouts</h1>
       <Link href="/dev"><Button>Back</Button></Link>
-      <ActorSheetTable />
+      <ActorSheetTable actorSheets={actorSheets} deleteActorSheet={deleteActorSheet}/>
     </Page>
   );
+}
+
+export async function getServerSideProps() {
+  const actorSheets = await getActorSheets();
+  return { props: { actorSheets } };
 }

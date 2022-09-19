@@ -21,7 +21,7 @@ function ViewActorSheetLoading() {
  */
 function ViewActorSheet() {
   const router = useRouter();
-  const ref = router.query.ref as string;
+  const ref = router.query.id as string;
   const renderID = ActorController.newRender("temp", ref, "temp");
 
   const actorSheet = {} as ActorSheet;

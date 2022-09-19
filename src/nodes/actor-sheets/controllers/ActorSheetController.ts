@@ -1,6 +1,5 @@
 import { action, makeObservable, observable, toJS } from "mobx";
 import { RulesetDocument } from "types/documents";
-import { ActorSheetDocument } from "types/documents/ActorSheet";
 import { PageDescriptor } from "nodes/actor-sheets/types/elements";
 import { GenericSheetElementDescriptor } from "nodes/actor-sheets/types/elements/generic";
 import { SheetController } from "./subcontrollers/SheetController";
@@ -18,7 +17,7 @@ import { parseXML } from "../utilities/parser";
 import { StateController } from "./subcontrollers/StateController";
 import { Mediator } from "nodes/mediator";
 import { MediatorPost, MediatorRequest } from "nodes/mediator/types/mediator";
-import { ActorSheet } from "@prisma/client";
+import { Actor, ActorSheet } from "@prisma/client";
 
 
 /**
@@ -37,6 +36,7 @@ class $ActorController {
       $renders: observable,
 
       newRender: action,
+      endRender: action,
     });
   }
 
@@ -44,14 +44,23 @@ class $ActorController {
    * Initializes a render by grouping together three different values so that accessing each value requires
    * only one unique value instead of three
    * @param actorID The reference to the actor used in this render. If null, a temporary actor will be used instead
-   * @param sheetID The reference to the sheet used in this render
    * @param rulesetID The reference to the ruleset used in this render. If null, empty values will be used instead
+   * @param sheetID The reference to the sheet used in this render
    */
-   public newRender(actorID: string, rulesetID: string, sheetID: string): string {
-    const id = actorID;
-    this.$renders[id] = { actorID, sheetID, rulesetID };
+   public newRender(actorID: string | null, rulesetID: string | null, sheetID: string, renderID?: string): string {
+    const id = renderID || actorID || sheetID;
+    this.$renders[id] = { actorID: actorID || "temp-actor", sheetID, rulesetID: rulesetID || "temp-ruleset" };
 
     return id;
+  }
+
+  /**
+   * Removes a render
+   * @param renderID The ID of the render to remove
+   */
+  public endRender(renderID: string) {
+    // TODO - add counting for render items for garbage collection
+    delete this.$renders[renderID];
   }
 
   /** LOAD **/
@@ -81,7 +90,7 @@ class $ActorController {
    * @param sheetID The ID of the sheet being loaded into the sheet controller
    * @param sheet The sheet document containing data to be loaded in
    */
-  public loadSheet(sheetID: string, sheet: ActorSheet) {
+  public loadSheet(sheetID: string, sheet: Partial<ActorSheet>) {
     if (sheet.layout === undefined) { return; }
     const xml = parseXML(sheet.layout);
     const variables = extractVariables(xml);
@@ -262,10 +271,11 @@ class $ActorController {
    * Gets an actor by their render ref
    * @param renderID The ref of the render to check for the actor's true ref
    */
-  public exportActor(renderID: string): Partial<ActorDocument> {
-    const actor: Partial<ActorDocument> = {};
-    actor.ref = this.$renders[renderID].actorID;
-    actor.values = this.export(DataSource.Actor, renderID) as Record<string, Scalar> | undefined;
+  public exportActor(renderID: string): Partial<Actor> {
+    const actorID = this.$renders[renderID].actorID;
+    const actor: Partial<Actor> = {};
+    actor.id = actorID;
+    actor.fields = this.export(DataSource.Actor, renderID) as Record<string, Scalar> | undefined;
     actor.content = this.export(DataSource.Content, renderID) as Record<string, ActorContent[]> | undefined;
     return actor;
   }

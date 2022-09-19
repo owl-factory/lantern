@@ -1,3 +1,4 @@
+import { Textarea } from "@chakra-ui/react";
 import { useField } from "formik";
 import React from "react";
 import style from "../styling/Input.module.scss";
@@ -16,7 +17,7 @@ export function TextArea(props: TextAreaProps) {
   const [ field ] = useField(props);
   return (
     <div>
-      <textarea
+      <Textarea
         style={{width: "100%"}}
         rows={props.rows || 4}
         {...field}
