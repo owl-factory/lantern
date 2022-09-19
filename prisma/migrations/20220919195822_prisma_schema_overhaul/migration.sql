@@ -261,20 +261,10 @@ CREATE TABLE "Scene" (
     "name" VARCHAR(128) NOT NULL,
     "campaignID" UUID,
     "config" JSONB NOT NULL DEFAULT '{}',
+    "actors" JSONB NOT NULL DEFAULT '{}',
+    "assets" JSONB NOT NULL DEFAULT '{}',
 
     CONSTRAINT "Scene_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "SceneActor" (
-    "sceneID" UUID NOT NULL,
-    "actorID" UUID NOT NULL
-);
-
--- CreateTable
-CREATE TABLE "SceneAsset" (
-    "sceneID" UUID NOT NULL,
-    "assetID" UUID NOT NULL
 );
 
 -- CreateIndex
@@ -321,18 +311,6 @@ CREATE UNIQUE INDEX "ContentAccess_userID_key" ON "ContentAccess"("userID");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "ContentAccess_contentID_key" ON "ContentAccess"("contentID");
-
--- CreateIndex
-CREATE UNIQUE INDEX "SceneActor_sceneID_key" ON "SceneActor"("sceneID");
-
--- CreateIndex
-CREATE UNIQUE INDEX "SceneActor_actorID_key" ON "SceneActor"("actorID");
-
--- CreateIndex
-CREATE UNIQUE INDEX "SceneAsset_sceneID_key" ON "SceneAsset"("sceneID");
-
--- CreateIndex
-CREATE UNIQUE INDEX "SceneAsset_assetID_key" ON "SceneAsset"("assetID");
 
 -- AddForeignKey
 ALTER TABLE "UserSecret" ADD CONSTRAINT "UserSecret_userID_fkey" FOREIGN KEY ("userID") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -510,15 +488,3 @@ ALTER TABLE "Asset" ADD CONSTRAINT "Asset_deletedBy_fkey" FOREIGN KEY ("deletedB
 
 -- AddForeignKey
 ALTER TABLE "Scene" ADD CONSTRAINT "Scene_campaignID_fkey" FOREIGN KEY ("campaignID") REFERENCES "Campaign"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "SceneActor" ADD CONSTRAINT "SceneActor_sceneID_fkey" FOREIGN KEY ("sceneID") REFERENCES "Scene"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "SceneActor" ADD CONSTRAINT "SceneActor_actorID_fkey" FOREIGN KEY ("actorID") REFERENCES "Actor"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "SceneAsset" ADD CONSTRAINT "SceneAsset_sceneID_fkey" FOREIGN KEY ("sceneID") REFERENCES "Scene"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "SceneAsset" ADD CONSTRAINT "SceneAsset_assetID_fkey" FOREIGN KEY ("assetID") REFERENCES "Asset"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

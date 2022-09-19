@@ -416,9 +416,6 @@ model Actor {
   deletedAt       DateTime?
   deletedBy       String?  @db.Uuid
   deletingUser    User?    @relation(name: "actorDeleter", fields: [deletedBy], references: [id])
-
-  // References
-  scenes          SceneActor[]
 }
 
 // Actor Sheets describe the layout and styling of the actor
@@ -483,7 +480,6 @@ model Asset {
 
   // References
   banneredCampaigns Campaign[] // The campaigns that use this image as a banner
-  scenes            SceneAsset[]
 }
 
 // Scenes describe a map or image with placeable tokens and grid
@@ -500,28 +496,9 @@ model Scene {
   config        Json  @default("{}")
 
   // References
-  actors        SceneActor[]
-  assets        SceneAsset[]
-}
-
-// Actors used within a scene
-model SceneActor {
-  // The scene the actor is used in
-  sceneID       String  @db.Uuid @unique
-  scene         Scene @relation(fields: [sceneID], references: [id])
-
-  // The actor used in the scene
-  actorID        String  @db.Uuid @unique
-  actor          Actor @relation(fields: [actorID], references: [id])
-}
-
-// Assets used within a scene
-model SceneAsset {
-  // The scene a asset is used in
-  sceneID       String  @db.Uuid @unique
-  scene         Scene @relation(fields: [sceneID], references: [id])
-
-  // The asset a scene is used in
-  assetID        String  @db.Uuid @unique
-  asset          Asset @relation(fields: [assetID], references: [id])
+  // A JSON object containing the IDs of each actor used within the scene. 
+  // Actors and assets should be loaded via the campaign object
+  actors        Json  @default("{}")
+  // A JSON object containing the IDs of each asset used within the scene
+  assets        Json  @default("{}")
 }
