@@ -1,7 +1,5 @@
 import React from "react";
 import { Page } from "components/design";
-import { NextPageContext } from "next";
-import { rest } from "@owl-factory/https";
 import { FileDocument, UserDocument } from "types/documents";
 import { Formik, Form as FormikForm } from "formik";
 import { Button } from "@owl-factory/components/button";
@@ -9,15 +7,11 @@ import { useRouter } from "next/router";
 import { ImageSelectionWrapper } from "components/reroll/images/ImageSelectionWrapper";
 import { Checkbox, Input } from "@owl-factory/components/form";
 import { observer } from "mobx-react-lite";
-import { InitialProps } from "types/client";
 import Link from "next/link";
 import { AssetUploadSource } from "types/enums/files/createMethod";
-import { FileData } from "controllers/data/FileData";
 import { UserData } from "controllers/data/UserData";
 import { arrayToList, getUniques } from "@owl-factory/utilities/arrays";
 import { Auth } from "controllers/auth";
-import { handleAPI } from "@owl-factory/https";
-import { getProfile } from "../api/profile/[username]";
 import { Loading } from "@owl-factory/components/loading";
 
 /**

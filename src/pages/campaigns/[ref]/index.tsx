@@ -2,7 +2,6 @@ import { Page } from "components/design";
 import { NextPageContext } from "next";
 import Link from "next/link";
 import React from "react";
-import { rest } from "@owl-factory/https";
 import { ImageSelectionWrapper } from "components/reroll/images/ImageSelectionWrapper";
 import { CampaignDocument, FileDocument, UserDocument } from "types/documents";
 import { observer } from "mobx-react-lite";
@@ -11,8 +10,6 @@ import { AssetUploadSource } from "types/enums/files/createMethod";
 import { Ref64 } from "@owl-factory/types";
 import { CampaignData } from "controllers/data/CampaignData";
 import { UserData } from "controllers/data/UserData";
-import { getCampaignPage } from "src/pages/api/campaigns/[ref]";
-import { handleAPI } from "@owl-factory/https";
 import { getUniques } from "@owl-factory/utilities/arrays";
 
 interface BannerProps {
@@ -154,12 +151,12 @@ function CampaignView(props: CampaignViewProps): JSX.Element {
   );
 }
 
-interface CampaignViewResponse {
-  campaign: CampaignDocument;
-}
-
-export async function getServerSideProps(ctx: any) {
-  return await handleAPI(ctx, getCampaignPage);
+export async function getServerSideProps(ctx: NextPageContext) {
+  return {
+    props: {
+      campaign: null,
+    },
+  };
 }
 
 export default observer(CampaignView);
