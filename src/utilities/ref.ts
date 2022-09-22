@@ -1,23 +1,22 @@
 import { Ref64 } from "@owl-factory/types";
 import { decode as $decode, encode as $encode, CollectionMap } from "@owl-factory/utilities/ref";
-import { Collection } from "fauna";
 
 
 // A collection of all collections used in the database and the key used to identify the
 // beginning of their encoded ref IDs
 export const collections: CollectionMap = [
   { id: "A", string: "users" },
-  { id: "B", string: Collection.Characters },
+  { id: "B", string: "characters" },
   { id: "C", string: "campaigns" },
   { id: "D", string: "images" },
   { id: "E", string: "rulesets" },
   { id: "G", string: "contents" },
   { id: "H", string: "content_types" },
   { id: "I", string: "scenes" },
-  { id: "J", string: Collection.ActorSheets },
+  { id: "J", string: "actorSheets" },
   { id: "K", string: "files" },
   { id: "L", string: "modules" },
-  { id: "M", string: Collection.Actors },
+  { id: "M", string: "actors" },
 ];
 
 /**

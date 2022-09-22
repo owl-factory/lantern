@@ -1,6 +1,5 @@
 import "reflect-metadata";
 import { NextApiRequest } from "next";
-import { CampaignLogic } from "server/logic/CampaignLogic";
 import { HTTPHandler, createEndpoint } from "@owl-factory/https/backend";
 
 /**
@@ -8,8 +7,7 @@ import { HTTPHandler, createEndpoint } from "@owl-factory/https/backend";
  * @param _req The request to the server. Unused but required for handleAPI
  */
 export async function getMyCampaigns(_req: NextApiRequest) {
-  const campaigns = await CampaignLogic.fetchMyCampaigns({ size: 100 });
-  return { docs: campaigns };
+  return { docs: [] };
 }
 
 /**

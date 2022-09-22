@@ -1,18 +1,14 @@
 import "reflect-metadata";
 import { NextApiRequest } from "next";
-import { RulesetLogic } from "server/logic/RulesetLogic";
 
 import { HTTPHandler, createEndpoint } from "@owl-factory/https/backend";
-import { createMany, deleteMany, fetchMany, updateMany } from "server/logic/many";
 import { requireLogin, requirePermission } from "utilities/validation/account";
-import { ModuleLogic } from "server/logic/ModuleLogic";
 
 /**
  * Fetches a list of rulesets from their refs
  */
 export async function getModules(req: NextApiRequest) {
-  const modules = await fetchMany(ModuleLogic.fetch, req.body.refs);
-  return { modules };
+  return { modules: [] };
 }
 
 /**
@@ -32,9 +28,7 @@ async function getModulesRequest(this: HTTPHandler, req: NextApiRequest) {
  */
 async function createModules(this: HTTPHandler, req: NextApiRequest) {
   requireLogin();
-  requirePermission("createModule");
-  const modules = await createMany(ModuleLogic.create, req.body.docs);
-  this.returnSuccess({ docs: modules });
+  this.returnSuccess({ docs: [] });
 }
 
 /**
@@ -44,9 +38,7 @@ async function createModules(this: HTTPHandler, req: NextApiRequest) {
  */
 async function updateModules(this: HTTPHandler, req: NextApiRequest) {
   requireLogin();
-  requirePermission("updateModule");
-  const modules = await updateMany(ModuleLogic.update, req.body.docs);
-  this.returnSuccess({ docs: modules });
+  this.returnSuccess({ docs: [] });
 }
 
 /**
@@ -56,9 +48,7 @@ async function updateModules(this: HTTPHandler, req: NextApiRequest) {
  */
 async function deleteModules(this: HTTPHandler, req: NextApiRequest) {
   requireLogin();
-  requirePermission("deleteModule");
-  const modules = await deleteMany(ModuleLogic.delete, req.body.refs);
-  this.returnSuccess({ docs: modules });
+  this.returnSuccess({ docs: [] });
 }
 
 export default createEndpoint({

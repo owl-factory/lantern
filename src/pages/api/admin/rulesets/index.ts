@@ -1,15 +1,13 @@
 import "reflect-metadata";
 import { NextApiRequest } from "next";
 import { HTTPHandler, createEndpoint } from "@owl-factory/https/backend";
-import { RulesetLogic } from "server/logic/RulesetLogic";
 
 /**
  * Gets a list of rulesets for the admin rulesets page
  */
 export async function getAdminRulesets(_req: NextApiRequest) {
-  const rulesets = await RulesetLogic.searchRulesetsByOfficial(true);
 
-  return { rulesets: rulesets };
+  return { rulesets: [] };
 }
 
 /**

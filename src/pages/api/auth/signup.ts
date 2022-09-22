@@ -2,7 +2,6 @@ import "reflect-metadata";
 import { NextApiRequest } from "next";
 import { normalize } from "@owl-factory/utilities/strings";
 import { HTTPHandler, createEndpoint } from "@owl-factory/https/backend";
-import { UserLogic } from "server/logic/UserLogic";
 
 
 /**
@@ -18,8 +17,7 @@ async function signUp(this: HTTPHandler, req: NextApiRequest) {
 
   req.body.username = normalize(req.body.username);
   req.body.email = normalize(req.body.email);
-  const user = await UserLogic.signUp(req.body, req.body.password);
-  this.returnSuccess({ user });
+  this.returnSuccess({ user: {} });
 }
 
 export default createEndpoint({POST: signUp});

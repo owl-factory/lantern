@@ -4,7 +4,6 @@ import { observer } from "mobx-react-lite";
 import React from "react";
 import { FileDocument } from "types/documents";
 import style from "./ImageList.module.scss";
-import { FileData } from "controllers/data/FileData";
 
 export enum ListFormat {
   Thumbnails,
@@ -69,12 +68,6 @@ function $ImageList(props: ImageListProps): JSX.Element {
 
   const imageThumbnails: JSX.Element[] = [];
   const onClick = props.onClick === undefined ? (() => {return;}) : props.onClick;
-
-  // Updates the list of images when the image manager changes
-  React.useEffect(() => {
-    const imageRefs = FileData.search({ group: "owned-images" });
-    setImages(FileData.getMany(imageRefs));
-  }, [FileData.lastTouched]);
 
   images.forEach((image: Partial<FileDocument>) => {
     if (!image) { return; }

@@ -1,6 +1,5 @@
 import "reflect-metadata";
 import { NextApiRequest } from "next";
-import { ContentLogic } from "server/logic/ContentLogic";
 
 import { HTTPHandler, createEndpoint } from "@owl-factory/https/backend";
 
@@ -8,8 +7,7 @@ import { HTTPHandler, createEndpoint } from "@owl-factory/https/backend";
  * Gets a list of the current user's contents
  */
 export async function getMyContent(_req: NextApiRequest) {
-  const contents = await ContentLogic.searchMyContent({ size: 20 });
-  return { contents: contents };
+  return { contents: [] };
 }
 
 /**

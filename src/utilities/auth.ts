@@ -3,7 +3,6 @@ import { Auth } from "controllers/auth";
 import { UserDocument } from "types/documents";
 import Router from "next/router";
 import { LogInResponse } from "@owl-factory/auth/types";
-import { UserData } from "controllers/data/UserData";
 
 /**
  * Sends a request to sign a user up to the API
@@ -17,7 +16,6 @@ import { UserData } from "controllers/data/UserData";
     return result.message;
   }
   Auth.fromAPI(result.data.user, result.data.permissions, result.data.jwt);
-  UserData.set(result.data.user);
   Router.reload();
   return "";
 }
@@ -33,7 +31,6 @@ export async function signIn(username: string, password: string): Promise<string
     return result.message;
   }
   Auth.fromAPI(result.data.user, result.data.permissions, result.data.jwt);
-  UserData.set(result.data.user);
   Router.reload();
   return "";
 }

@@ -4,8 +4,8 @@ import { Page } from "components/design";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { Button } from "@owl-factory/components/button";
-import { ModuleData } from "controllers/data/ModuleData";
 import { ModuleForm } from "components/reroll/modules/Form";
+import { Module, Ruleset } from "@prisma/client";
 
 /**
  * Renders a development page for editing a module
@@ -15,10 +15,8 @@ const EditModule = observer(() => {
   const ref = router.query.ref as string;
 
   // Ensures that the module is fully loaded, if it isn't already
-  React.useEffect(() => {
-    ModuleData.load(ref);
-  }, [ref]);
-  const module = ModuleData.get(ref);
+  const module = {} as Module;
+  const ruleset = {} as Ruleset;
 
   return (
     <Page>
@@ -26,8 +24,8 @@ const EditModule = observer(() => {
       <Link href="/dev/modules"><Button>Back</Button></Link>
       {/* Ensures that the form isn't rendered until after the document is loaded in */}
       {
-        (module && module.ruleset) ?
-        <ModuleForm module={module} rulesetRef={module.ruleset?.ref as string} /> :
+        (module && module) ?
+        <ModuleForm module={module} rulesetRef={ruleset.id as string} /> :
         undefined
       }
     </Page>

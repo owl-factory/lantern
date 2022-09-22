@@ -1,9 +1,8 @@
 import { Button } from "@owl-factory/components/button";
 import { Ref64 } from "@owl-factory/types";
+import { ContentType, Ruleset } from "@prisma/client";
 import { Page } from "components/design";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "components/elements/table";
-import { ContentTypeData } from "controllers/data/ContentTypeData";
-import { RulesetData } from "controllers/data/RulesetData";
 import { observer } from "mobx-react-lite";
 import Link from "next/link";
 import React from "react";
@@ -12,21 +11,18 @@ import React from "react";
  * Renders a single row of the content type table
  */
 const ContentTypeRow = observer((props: { id: Ref64 }) => {
-  const contentType = ContentTypeData.get(props.id);
-  React.useEffect(() => {
-    if (contentType?.ruleset?.ref) { RulesetData.softLoad((contentType.ruleset)?.ref); }
-  }, [contentType, contentType?.ruleset?.ref]);
+  const contentType = {} as ContentType;
+  const ruleset = {} as Ruleset;
   if (!contentType) { return <></>; }
 
-  const ruleset = RulesetData.get((contentType.ruleset)?.ref);
 
   return (
     <TableRow>
       <TableCell>{contentType.name}</TableCell>
-      <TableCell>{ruleset?.name || contentType.ruleset?.name}</TableCell>
+      <TableCell>{ruleset?.name}</TableCell>
       <TableCell>
-        <Link href={`/dev/content-types/${contentType.ref}/edit`}>Edit</Link>&nbsp;
-        <a href="#" onClick={() => ContentTypeData.delete(contentType.ref as string)}>Delete</a>
+        <Link href={`/dev/content-types/${contentType.id}/edit`}>Edit</Link>&nbsp;
+        {/* <a href="#" onClick={() => ContentTypeData.delete(contentType.ref as string)}>Delete</a> */}
       </TableCell>
     </TableRow>
   );
@@ -36,16 +32,9 @@ const ContentTypeRow = observer((props: { id: Ref64 }) => {
  * Renders a table for displaying a list of content types
  */
 const ContentTypeTable = observer(() => {
-  React.useEffect(() => {
-    ContentTypeData.searchIndex(`/api/content-types/list`);
-  }, []);
 
-  const contentTypes = ContentTypeData.search({ group: "data" });
+  const contentTypes: ContentType[] = [];
   const rows: JSX.Element[] = [];
-
-  for (const ref of contentTypes) {
-    rows.push(<ContentTypeRow key={ref} id={ref}/>);
-  }
 
   return (
     <Table>

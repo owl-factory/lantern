@@ -2,7 +2,6 @@ import "reflect-metadata";
 import { NextApiRequest } from "next";
 
 import { HTTPHandler, createEndpoint } from "@owl-factory/https/backend";
-import { ContentLogic } from "server/logic/ContentLogic";
 
 /**
  * Fetches the given contents
@@ -10,8 +9,7 @@ import { ContentLogic } from "server/logic/ContentLogic";
  * @param req The request to the server
  */
 async function getContentList(this: HTTPHandler, req: NextApiRequest) {
-  const contents = await ContentLogic.searchAllContents();
-  this.returnSuccess({ docs: contents });
+  this.returnSuccess({ docs: [] });
 }
 
 export default createEndpoint({POST: getContentList});

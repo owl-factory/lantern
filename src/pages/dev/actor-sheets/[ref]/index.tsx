@@ -1,11 +1,12 @@
 import { Button } from "@owl-factory/components/button";
 import { Page } from "components/design";
-import { ActorSheetData } from "controllers/data/ActorSheetData";
 import { observer } from "mobx-react-lite";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
-import { ActorController, ActorSheet } from "nodes/actor-sheets";
+import { ActorController } from "nodes/actor-sheets";
+import { ActorSheet } from "@prisma/client";
+import { ActorSheetComponent } from "nodes/actor-sheets/components/ActorSheet";
 
 /**
  * Renders a palceholder loading page for the ViewActorSheet element
@@ -23,14 +24,10 @@ function ViewActorSheet() {
   const ref = router.query.ref as string;
   const renderID = ActorController.newRender("temp", ref, "temp");
 
-  React.useEffect(() => {
-    ActorSheetData.load(ref);
-  }, [ref]);
-
-  const actorSheet = ActorSheetData.get(ref);
+  const actorSheet = {} as ActorSheet;
   React.useEffect(() => {
     if (!actorSheet) { return; }
-    ActorController.loadSheet(ref, { xml: actorSheet.xml as string });
+    ActorController.loadSheet(ref, { layout: actorSheet.layout as string } as ActorSheet);
   }, [actorSheet]);
   return (
     <Page>
@@ -39,7 +36,7 @@ function ViewActorSheet() {
         <Link href="/dev/actor-sheets"><Button>Back</Button></Link>
       </div>
       <hr/>
-      <ActorSheet id={renderID}/>
+      <ActorSheetComponent id={renderID}/>
     </Page>
   );
 }

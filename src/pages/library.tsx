@@ -6,7 +6,6 @@ import { NextPageContext } from "next";
 import { observer } from "mobx-react-lite";
 import { FileDocument } from "types/documents";
 import { InitialProps } from "types/client";
-import { FileData } from "controllers/data/FileData";
 import { handleAPI } from "@owl-factory/https";
 import { getLibraryPage } from "./api/library";
 
@@ -27,10 +26,6 @@ function Library(props: LibraryProps): JSX.Element {
     { bytes: 2500000, storageType: StorageTypeEnum.MusicTracks },
     { bytes: 10 * 1024 * 1024, storageType: StorageTypeEnum.AudioClips },
   ];
-
-  React.useEffect(() => {
-    FileData.setMany(props.images || []);
-  });
 
   return (
     <Page>

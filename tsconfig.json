@@ -38,12 +38,6 @@
       "components/*": [
         "src/components/*"
       ],
-      "fauna": [
-        "src/fauna"
-      ],
-      "fauna/*": [
-        "src/fauna/*"
-      ],
       "nodes": [
         "src/nodes"
       ],

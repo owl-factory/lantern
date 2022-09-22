@@ -1,14 +1,13 @@
 import { Button } from "@owl-factory/components/button";
 import { Page } from "components/design";
 import { ActorSheetForm } from "nodes/actor-sheets";
-import { ActorSheetData } from "controllers/data/ActorSheetData";
-import { RulesetData } from "controllers/data/RulesetData";
 import { observer } from "mobx-react-lite";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { ActorController } from "nodes/actor-sheets";
 import React from "react";
 import { ActorSheetDocument } from "types/documents/ActorSheet";
+import { ActorSheet, Ruleset } from "@prisma/client";
 
 /**
  * Renders placeholder mockup while the new actor sheet is loading
@@ -25,17 +24,11 @@ function NewActorSheet() {
   const ref = router.query.ref as string;
   const [ renderID, setRenderID ] = React.useState("");
 
-  // Ensures the ruleset is loaded
-  React.useEffect(() => {
-    RulesetData.load(ref);
-  }, [ref]);
-
-  const ruleset = RulesetData.get(ref);
+  const ruleset = {} as Ruleset;
   // Creates the render once
   React.useEffect(() => {
-    if (ruleset && ruleset.ref) {
-      ActorController.loadRuleset(ruleset.ref, ruleset);
-      setRenderID(ActorController.newRender("temp", "temp", ruleset.ref));
+    if (ruleset && ruleset.id) {
+      setRenderID(ActorController.newRender("temp", "temp", ruleset.id));
     }
   }, [ruleset]);
 
@@ -45,9 +38,8 @@ function NewActorSheet() {
    * Creates a new actor sheet
    * @param values The new actor sheet to create
    */
-  function save(values: Partial<ActorSheetDocument>) {
-    values.ruleset = { ref: ref };
-    ActorSheetData.create(values);
+  function save(values: Partial<ActorSheet>) {
+    // TODO - save!
     router.push(`/dev/actor-sheets`);
   }
 

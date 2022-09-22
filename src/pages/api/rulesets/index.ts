@@ -1,17 +1,14 @@
 import "reflect-metadata";
 import { NextApiRequest } from "next";
-import { RulesetLogic } from "server/logic/RulesetLogic";
 
 import { HTTPHandler, createEndpoint } from "@owl-factory/https/backend";
-import { createMany, deleteMany, fetchMany, updateMany } from "server/logic/many";
 import { requireLogin, requirePermission } from "utilities/validation/account";
 
 /**
  * Fetches a list of rulesets from their refs
  */
 export async function getRulesets(req: NextApiRequest) {
-  const rulesets = await fetchMany(RulesetLogic.fetch, req.body.refs);
-  return { rulesets };
+  return { rulesets: [] };
 }
 
 /**
@@ -31,9 +28,7 @@ async function getRulesetsRequest(this: HTTPHandler, req: NextApiRequest) {
  */
 async function createRulesets(this: HTTPHandler, req: NextApiRequest) {
   requireLogin();
-  requirePermission("createRuleset");
-  const rulesets = await createMany(RulesetLogic.create, req.body.docs);
-  this.returnSuccess({ docs: rulesets });
+  this.returnSuccess({ docs: [] });
 }
 
 /**
@@ -43,9 +38,7 @@ async function createRulesets(this: HTTPHandler, req: NextApiRequest) {
  */
 async function updateRulesets(this: HTTPHandler, req: NextApiRequest) {
   requireLogin();
-  requirePermission("updateRuleset");
-  const rulesets = await updateMany(RulesetLogic.update, req.body.docs);
-  this.returnSuccess({ docs: rulesets });
+  this.returnSuccess({ docs: [] });
 }
 
 /**
@@ -55,9 +48,7 @@ async function updateRulesets(this: HTTPHandler, req: NextApiRequest) {
  */
 async function deleteRulesets(this: HTTPHandler, req: NextApiRequest) {
   requireLogin();
-  requirePermission("deleteRuleset");
-  const rulesets = await deleteMany(RulesetLogic.delete, req.body.refs);
-  this.returnSuccess({ docs: rulesets });
+  this.returnSuccess({ docs: [] });
 }
 
 export default createEndpoint({

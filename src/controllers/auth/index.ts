@@ -1,8 +1,5 @@
 import { AuthController, setGlobalAuth, setGlobalPermissions, setGlobalRoles } from "@owl-factory/auth";
-import { UserData } from "controllers/data/UserData";
 import { UserDocument } from "types/documents";
-import { permissions } from "types/security/permissions";
-import { roles } from "types/security/roles";
 
 // The authetication controller for reroll
 class RerollAuthController extends AuthController<UserDocument> {
@@ -15,15 +12,8 @@ class RerollAuthController extends AuthController<UserDocument> {
    */
   public reload() {
     super.reload();
-    if (!this.user) return;
-
-    UserData.set(this.user, false);
   }
 }
-
-
-setGlobalRoles(roles);
-setGlobalPermissions(permissions);
 
 export const Auth = new RerollAuthController();
 setGlobalAuth(Auth);

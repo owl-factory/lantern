@@ -2,8 +2,6 @@ import "reflect-metadata";
 import { NextApiRequest } from "next";
 
 import { HTTPHandler, createEndpoint } from "@owl-factory/https/backend";
-import { createMany, deleteMany, fetchMany, updateMany } from "server/logic/many";
-import { ActorSheetLogic } from "server/logic/ActorSheetLogic";
 import { requireLogin } from "utilities/validation/account";
 
 /**
@@ -12,8 +10,7 @@ import { requireLogin } from "utilities/validation/account";
  * @param req The request to the server
  */
 async function getActorSheetsRequest(this: HTTPHandler, req: NextApiRequest) {
-  const actorSheets = await fetchMany(ActorSheetLogic.fetch, req.body.refs);
-  this.returnSuccess({ docs: actorSheets });
+  this.returnSuccess({ docs: [] });
 }
 
 /**
@@ -23,8 +20,7 @@ async function getActorSheetsRequest(this: HTTPHandler, req: NextApiRequest) {
  */
 async function createActorSheets(this: HTTPHandler, req: NextApiRequest) {
   requireLogin();
-  const actorSheets = await createMany(ActorSheetLogic.create, req.body.docs);
-  this.returnSuccess({ docs: actorSheets });
+  this.returnSuccess({ docs: [] });
 }
 
 /**
@@ -34,8 +30,7 @@ async function createActorSheets(this: HTTPHandler, req: NextApiRequest) {
  */
 async function updateActorSheets(this: HTTPHandler, req: NextApiRequest) {
   requireLogin();
-  const actorSheets = await updateMany(ActorSheetLogic.update, req.body.docs);
-  this.returnSuccess({ docs: actorSheets });
+  this.returnSuccess({ docs: [] });
 }
 
 /**
@@ -45,8 +40,7 @@ async function updateActorSheets(this: HTTPHandler, req: NextApiRequest) {
  */
  async function deleteActorSheets(this: HTTPHandler, req: NextApiRequest) {
   requireLogin();
-  const actorSheets = await deleteMany(ActorSheetLogic.delete, req.body.refs);
-  this.returnSuccess({ docs: actorSheets });
+  this.returnSuccess({ docs: [] });
 }
 
 

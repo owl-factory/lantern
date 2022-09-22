@@ -4,8 +4,8 @@ import { Page } from "components/design";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { Button } from "@owl-factory/components/button";
-import { ContentData } from "controllers/data/ContentData";
 import { ContentForm } from "components/reroll/contents/Form";
+import { Content } from "@prisma/client";
 
 /**
  * Renders a development page for editing a content
@@ -14,11 +14,7 @@ const EditContent = observer(() => {
   const router = useRouter();
   const ref = router.query.ref as string;
 
-  // Ensures that the content is fully loaded, if it isn't already
-  React.useEffect(() => {
-    ContentData.load(ref);
-  }, [ref]);
-  const content = ContentData.get(ref);
+  const content = {} as Content;
 
   return (
     <Page>

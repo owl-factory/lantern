@@ -1,6 +1,5 @@
 import "reflect-metadata";
 import { NextApiRequest } from "next";
-import { UserLogic } from "server/logic/UserLogic";
 
 import { HTTPHandler, createEndpoint } from "@owl-factory/https/backend";
 import { validateRef } from "utilities/validation/ref";
@@ -14,28 +13,28 @@ import { Auth } from "controllers/auth";
  * @param req The request to the servert
  */
 async function updateUserPassword(this: HTTPHandler, req: NextApiRequest) {
-  const ref = Auth.ref;
-  if (!ref) {
-    this.returnError(403, "You must be logged in to perform this action");
-    return;
-  }
+  // const ref = Auth.ref;
+  // if (!ref) {
+  //   this.returnError(403, "You must be logged in to perform this action");
+  //   return;
+  // }
 
-  try {
-    validateRef(ref);
-    validate(req.body, passwordFormValidationSchema);
-  } catch (e) {
-    this.returnError(400, e);
-    return;
-  }
+  // try {
+  //   validateRef(ref);
+  //   validate(req.body, passwordFormValidationSchema);
+  // } catch (e) {
+  //   this.returnError(400, e);
+  //   return;
+  // }
 
-  const isValidPassword = await UserLogic.identify(ref, req.body.oldPassword);
-  if (!isValidPassword) {
-    this.returnError(401, "The old password is not valid.");
-    return;
-  }
+  // const isValidPassword = await UserLogic.identify(ref, req.body.oldPassword);
+  // if (!isValidPassword) {
+  //   this.returnError(401, "The old password is not valid.");
+  //   return;
+  // }
 
-  const user = UserLogic.updatePassword(ref, req.body.newPassword);
-  this.returnSuccess({ user: user });
+  // const user = UserLogic.updatePassword(ref, req.body.newPassword);
+  this.returnSuccess({ user: {} });
 }
 
 export default createEndpoint({
