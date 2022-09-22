@@ -1,9 +1,11 @@
 
-import { Button } from "@owl-factory/components/button";
+import { Button } from "@chakra-ui/react";
 import React from "react";
 import { FileDocument } from "types/documents";
-import { ImageDetailsModal, ImageList, ListFormat } from "components/reroll/images";
-import { ImageCreationFormModal } from "./forms/ImageCreationForm";
+import { ImageList, ListFormat } from "components/reroll/images";
+import { ImageCreationForm } from "./forms/ImageCreationForm";
+import { Modal } from "@chakra-ui/modal";
+import { useDisclosure } from "@chakra-ui/react";
 
 interface ImageListProps {
   listFormat?: ListFormat;
@@ -14,29 +16,33 @@ interface ImageListProps {
  * @param listFormat The method by which the list is rendered.
  */
 export function LibraryImageList(props: ImageListProps): JSX.Element {
-  const [ modal, setModal ] = React.useState(false);
-  const [ imageDetailsModal, setImageDetailsModal ] = React.useState("");
+  const createModal = useDisclosure();
+  const detailModal = useDisclosure();
 
-  function closeModal() { setModal(false); }
-  function closeImageDetailsModal() { setImageDetailsModal(""); }
+  const [ detailFile, setDetailFile ] = React.useState<any>(undefined);
+
 
   return (
     <div style={{marginTop: "20px"}}>
       <div>
         <h2>Images</h2>
-        <Button type="button" onClick={() => setModal(true)}>+</Button>
+        <Button type="button" onClick={createModal.onOpen}>+</Button>
         <ImageList
-        onClick={(image: Partial<FileDocument>) => setImageDetailsModal(image.ref as string)}
+          onClick={(image: Partial<FileDocument>) => setDetailFile(image)}
           listFormat={props.listFormat || ListFormat.Icons}
         />
 
       </div>
-      <ImageDetailsModal
-        open={imageDetailsModal !== ""}
-        imageID={imageDetailsModal}
-        handleClose={closeImageDetailsModal}
-      />
-      <ImageCreationFormModal open={modal} handleClose={closeModal}/>
+      <Modal isOpen={detailModal.isOpen} onClose={detailModal.onClose}>
+        {/* <FileDetails
+          file={detailFile}
+          handleClose={closeImageDetailsModal}
+        /> */}
+      </Modal>
+
+      <Modal isOpen={createModal.isOpen} onClose={createModal.onClose}>
+        <ImageCreationForm onSave={createModal.onClose}/>
+      </Modal>
     </div>
   );
 }

@@ -1,6 +1,6 @@
-import { Button } from "@owl-factory/components/button";
+import { Tooltip } from "@chakra-ui/react";
+import { Button } from "@chakra-ui/react";
 import { Input } from "@owl-factory/components/form";
-import { Tooltip } from "@owl-factory/components/tooltip";
 import { Formik, Form as FormikForm } from "formik";
 import React from "react";
 import { FileDocument } from "types/documents";

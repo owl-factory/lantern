@@ -1,4 +1,3 @@
-import { Modal } from "@owl-factory/components/modal";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { FileDocument } from "types/documents";
@@ -34,16 +33,5 @@ export const ImageCreationForm = observer(({onSave}: any) => {
       onSubmit={onSubmit}
       tabs={tabs}
     />
-  );
-});
-
-/**
- * Renders the ImageCreationForm within a modal
- */
-export const ImageCreationFormModal = observer(({ open, handleClose }: any) => {
-  return (
-    <Modal open={open} handleClose={handleClose}>
-      <ImageCreationForm onSave={handleClose}/>
-    </Modal>
   );
 });

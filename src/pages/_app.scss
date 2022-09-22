@@ -11,16 +11,11 @@ $font-family-sans-serif: 'Muli', sans-serif;
 $body-bg: #fbfbf0;
 $input-bg: $body-bg;
 
-@import "~bootstrap/scss/bootstrap";
-
 .card {
-  @extend .shadow-sm;
-  @extend .bg-light;
   border-radius: 0.8em;
 }
 
 .btn {
-  @extend .shadow-sm;
   border-radius: 0.8em;
 
   a:link, a:visited, a:hover, a.active, a.focus {

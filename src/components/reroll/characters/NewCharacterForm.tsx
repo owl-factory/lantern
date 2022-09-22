@@ -1,10 +1,9 @@
 import React from "react";
 import { Form, Formik } from "formik";
-import { Input } from "@owl-factory/components/form";
-import { Button } from "@owl-factory/components/button";
 import { CharacterDocument } from "types/documents";
 import { RulesetSelect } from "../rulesets/RulesetSelect";
 import { CampaignSelect } from "../campaigns/CampaignSelect";
+import { Button, Input } from "@chakra-ui/react";
 
 interface NewCharacterFormValues {
   character: Partial<CharacterDocument>;

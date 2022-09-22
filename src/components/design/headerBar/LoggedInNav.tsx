@@ -1,9 +1,9 @@
+import { Flex, Grid, Menu, MenuButton, MenuList, Spacer } from "@chakra-ui/react";
 import { Auth } from "controllers/auth";
 import { observer } from "mobx-react-lite";
 import Link from "next/link";
 import React from "react";
-import { Nav, NavDropdown, Navbar } from "react-bootstrap"; // TODO - remove react-bootstrap
-import { CampaignDocument, UserDocument } from "types/documents";
+import { CampaignDocument } from "types/documents";
 import { signOut } from "utilities/auth";
 
 /**
@@ -16,7 +16,14 @@ import { signOut } from "utilities/auth";
 
   if (navItems.length === 0) { return <></>; }
 
-  return <NavDropdown title="Admin Portal">{navItems}</NavDropdown>;
+  return (
+    <Menu>
+      <MenuButton>Admin Portal</MenuButton>
+      <MenuList>
+        {navItems}
+      </MenuList>
+    </Menu>
+  );
 
 }
 
@@ -48,13 +55,6 @@ const RecentCampaigns = observer(() => {
   const [ campaigns, setCampaigns ] = React.useState<Partial<CampaignDocument>[]>([]);
   const campaignLinks: JSX.Element[] = [];
 
-  campaigns.forEach((doc: Partial<CampaignDocument>) => {
-    campaignLinks.push(
-      <Link key={doc.ref} href={`/play/${doc.ref}`} passHref>
-        <NavDropdown.Item>{doc.name}</NavDropdown.Item>
-      </Link>
-    );
-  });
   return (
     <>
       {campaignLinks}
@@ -68,80 +68,13 @@ const RecentCampaigns = observer(() => {
  * @returns A selection of navigation stuff for logged in navigation
  */
 function LoggedInNav() {
-  const user = Auth.user;
   return (
-    <>
-      <Navbar.Toggle aria-controls="basic-navbar-nav"/>
-      <Navbar.Collapse id="basic-navbar-nav">
-        <Nav className="me-auto">
-          <NavDropdown title={<UserDisplay/>}>
-            <RecentCampaigns/>
-            <Link href="/my-campaigns" passHref>
-              <NavDropdown.Item>My Campaigns</NavDropdown.Item>
-            </Link>
-            <NavDropdown.Divider/>
-            <Link href="/my-characters" passHref>
-              <NavDropdown.Item >My Characters</NavDropdown.Item>
-            </Link>
-            <Link href="/my-content" passHref>
-              <NavDropdown.Item>My Content</NavDropdown.Item>
-            </Link>
-            <Link href="/library" passHref>
-              <NavDropdown.Item>My Library</NavDropdown.Item>
-            </Link>
-            <NavDropdown.Divider/>
-            <Link href="/messages" passHref>
-              <NavDropdown.Item href="/messages">Messages</NavDropdown.Item>
-            </Link>
-            <Link href={`/profile/${user?.username}`} passHref>
-              <NavDropdown.Item>My Profile</NavDropdown.Item>
-            </Link>
-            <Link href="/requests" passHref>
-              <NavDropdown.Item>Requests</NavDropdown.Item>
-            </Link>
-            <Link href="/preferences" passHref>
-              <NavDropdown.Item>Preferences</NavDropdown.Item>
-            </Link>
-            <NavDropdown.Item onClick={() => signOut()}>Log Out</NavDropdown.Item>
-          </NavDropdown>
-
-          <NavDropdown title="Community" id="community-dropdown">
-            <Link href="/rulesets" passHref>
-              <NavDropdown.Item>Rulesets</NavDropdown.Item>
-            </Link>
-            <Link href="/modules" passHref>
-              <NavDropdown.Item>Modules</NavDropdown.Item>
-            </Link>
-            <Link href="/marketplace" passHref>
-              <NavDropdown.Item>Marketplace</NavDropdown.Item>
-            </Link>
-            <Link href="/game-directory" passHref>
-              <NavDropdown.Item>Game Directory</NavDropdown.Item>
-            </Link>
-          </NavDropdown>
-
-          <NavDropdown title="Tools" id="tools-dropdown">
-            <Link href="/characters-builder" passHref>
-              <NavDropdown.Item>Character Builder</NavDropdown.Item>
-            </Link>
-            <Link href="/scene-builder" passHref>
-              <NavDropdown.Item>Scene Builder</NavDropdown.Item>
-            </Link>
-          </NavDropdown>
-
-          <NavDropdown title="Reroll" id="reroll-dropdown">
-            <Link href="/about" passHref>
-              <NavDropdown.Item>About Us</NavDropdown.Item>
-            </Link>
-            <Link href="/report-a-bug" passHref>
-              <NavDropdown.Item>Report a Bug</NavDropdown.Item>
-            </Link>
-          </NavDropdown >
-
-          <ElevatedDropdown/>
-        </Nav>
-      </Navbar.Collapse>
-    </>
+    <Grid paddingLeft="25px" templateColumns='repeat(4, 1fr)' gap={6}>
+      <Link href="/profile/1" passHref>Profile</Link>
+      <Link href="/characters" passHref>Characters</Link>
+      <Link href="/campaigns" passHref>Campaigns</Link>
+      <Link href="/library" passHref>Library</Link>
+    </Grid>
   );
 }
 

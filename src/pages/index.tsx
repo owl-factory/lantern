@@ -2,8 +2,7 @@ import { Page } from "components/design";
 import { AuthenticationCard } from "components/authentication";
 import Link from "next/link";
 import React from "react";
-import { Button } from "@owl-factory/components/button";
-import { Col, Row } from "@owl-factory/components/flex";
+import { Box, Button, Flex, Grid, GridItem } from "@chakra-ui/react";
 
 /**
  * Renders the not logged in index page
@@ -21,27 +20,29 @@ function Index(): JSX.Element {
         There isn't much here yet but there will be some day soon.
       </p>
 
-      <Row>
-        <Col md={8} sm={12}>
-          <p>
-            This is some test home page content. Oh look, a button!
-          </p>
-          <Link href="/about" passHref>
-            <Button>
-              About
-            </Button>
-          </Link>
+      <Box paddingTop={10}>
+        <Grid>
+          <GridItem colSpan={8}>
+            <Box>
+              This is some test home page content. Oh look, a button! <br/>
+              <Link href="/about" passHref>
+                <Button bg="red.600" color="white">
+                  About
+                </Button>
+              </Link>
+            </Box>
 
-          <Link href="/characters" passHref>
-            <Button>
-              Characters
-            </Button>
-          </Link>
-        </Col>
-        <Col md={4} sm={12}>
-          <AuthenticationCard />
-        </Col>
-      </Row>
+            <Link href="/characters" passHref>
+              <Button bg="red.600" color="white">
+                Characters
+              </Button>
+            </Link>
+          </GridItem>
+          <GridItem colSpan={4}>
+            <AuthenticationCard />
+          </GridItem>
+        </Grid>
+      </Box>
     </Page>
   );
 }

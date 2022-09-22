@@ -1,4 +1,4 @@
-import { Tooltip } from "@owl-factory/components/tooltip";
+import { Tooltip } from "@chakra-ui/react";
 import React from "react";
 import { ChatMessage } from "../types/message";
 

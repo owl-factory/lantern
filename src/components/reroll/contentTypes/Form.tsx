@@ -1,5 +1,4 @@
-import { Button } from "@owl-factory/components/button";
-import { Input, Select } from "@owl-factory/components/form";
+import { Button, Input, Select } from "@chakra-ui/react";
 import { ContentType } from "@prisma/client";
 import { Form, Formik, FormikProps } from "formik";
 import { observer } from "mobx-react-lite";
@@ -38,8 +37,8 @@ export const ContentTypeForm = observer((props: { contentType?: ContentType }) =
     >
       {(formikProps: FormikProps<Partial<ContentType>>) => (
         <Form>
-          <Input name="name" type="text" label="Name"/>
-          <Input name="alias" type="text" label="Alias"/>
+          <Input name="name" type="text" placeholder="Name"/>
+          <Input name="alias" type="text" placeholder="Alias"/>
 
           <Select name="ruleset.ref">
             <RulesetOptions />

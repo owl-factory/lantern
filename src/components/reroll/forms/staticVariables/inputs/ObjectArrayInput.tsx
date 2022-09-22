@@ -1,4 +1,4 @@
-import { Button } from "@owl-factory/components/button";
+import { Button } from "@chakra-ui/react";
 import React from "react";
 import { StaticVariableFormValues, StaticVariableObject } from "types/components/forms/staticVariables";
 import { StaticVariableMetadata } from "types/documents/subdocument/StaticVariable";

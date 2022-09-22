@@ -3,8 +3,7 @@ Alerts are a non-intrusive means to deliver information to the user without need
 
 ## Dependencies
 - MobX-Lite. Used to easily track the state of the components
-- React-Bootstrap. **Deprecated.**. Used for the base styling of the alerts
+- Chakra-UI
 
 ## TODOs
-- [ ] Remove React-Bootstrap as a dependency
 - [ ] Add a progress meter for timeout

@@ -4,7 +4,7 @@ import { Page } from "components/design";
 import { useRouter } from "next/router";
 import { RulesetForm } from "components/reroll/rulesets/Form";
 import Link from "next/link";
-import { Button } from "@owl-factory/components/button";
+import { Button } from "@chakra-ui/react";
 import { toJS } from "mobx";
 import { Ruleset } from "@prisma/client";
 

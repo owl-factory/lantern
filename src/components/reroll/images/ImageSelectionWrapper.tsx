@@ -1,4 +1,4 @@
-import { Modal } from "@owl-factory/components/modal";
+import { Modal, useDisclosure } from "@chakra-ui/react";
 import React from "react";
 import { FileDocument } from "types/documents";
 import { AssetUploadSource } from "types/enums/files/createMethod";
@@ -20,19 +20,18 @@ interface ImageSelectionWrapperProps {
  * @param onSave The post-submit success action to run. This may be closing a modal, for example
  */
 export function ImageSelectionWrapper({ children, onSubmit, onSave }: ImageSelectionWrapperProps) {
-  const [ modal, setModal ] = React.useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
-  function closeModal() { setModal(false); }
-  function postSave(result: unknown) { if (onSave) {onSave(result);} closeModal(); }
+  function postSave(result: unknown) { if (onSave) {onSave(result);} onClose(); }
   return (
     <div>
-      <div className={`${style.profileImageWrapper}`} onClick={() => (setModal(true))}>
+      <div className={`${style.profileImageWrapper}`} onClick={onOpen}>
         <div className={`${style.profileHoverWrapper}`}>
           Change Image
         </div>
         {children}
       </div>
-      <Modal open={modal} handleClose={closeModal}>
+      <Modal isOpen={isOpen} onClose={onClose}>
         <ImageSelectionForm onSubmit={onSubmit} onSave={postSave}/>
       </Modal>
     </div>

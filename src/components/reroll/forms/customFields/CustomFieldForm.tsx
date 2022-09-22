@@ -1,6 +1,5 @@
 
-import { Button } from "@owl-factory/components/button";
-import { Input, Select } from "@owl-factory/components/form";
+import { Button, Input, Select } from "@chakra-ui/react";
 import { Formik, FormikProps } from "formik";
 import React from "react";
 import { CustomField } from "types/documents/subdocument/CustomField";
@@ -62,8 +61,8 @@ export function FieldForm(props: FieldFormProps) {
           }
           return (
             <>
-              <Input type="text" name="name" label="Label"/>
-              <Input type="text" name="key" label="Key"/>
+              <Input type="text" name="name" placeholder="Label"/>
+              <Input type="text" name="key" placeholder="Key"/>
               <label htmlFor="type">Field Type</label>
               <Select name="type" id="type">
                 <CustomFieldTypeOptions/>

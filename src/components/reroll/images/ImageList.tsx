@@ -1,9 +1,8 @@
-import { Col, Row } from "@owl-factory/components/flex";
-import { Card, CardBody } from "@owl-factory/components/card";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { FileDocument } from "types/documents";
 import style from "./ImageList.module.scss";
+import { Box, Flex } from "@chakra-ui/react";
 
 export enum ListFormat {
   Thumbnails,
@@ -22,14 +21,14 @@ interface ImageThumbnailProps {
  */
 function ImageIcon({ image, onClick }: ImageThumbnailProps) {
   return (
-    <Col xs={12}>
+    <Box>
       <div className={style.icon} onClick={() => {onClick(image);}}>
         <img style={{height: "auto", width: "auto"}} src={image.src}/>
         &nbsp;
         {image.name}
       </div>
       <hr/>
-    </Col>
+    </Box>
   );
 }
 
@@ -40,14 +39,14 @@ function ImageIcon({ image, onClick }: ImageThumbnailProps) {
  */
 function ImageThumbnail({ image, onClick }: ImageThumbnailProps) {
   return (
-    <Col xs={6} sm={4} md={3} lg={2}>
-      <Card onClick={() => {onClick(image);}}>
-        <CardBody >
+    <Box>
+      <Box onClick={() => {onClick(image);}}>
+        <Box >
           {image.name} <br/>
           <img style={{maxWidth: "100%"}} height="auto" src={image.src}/>
-        </CardBody>
-      </Card>
-    </Col>
+        </Box>
+      </Box>
+    </Box>
   );
 }
 
@@ -82,9 +81,9 @@ function $ImageList(props: ImageListProps): JSX.Element {
     }
   });
   return (
-    <Row>
+    <Flex>
       {imageThumbnails}
-    </Row>
+    </Flex>
   );
 }
 

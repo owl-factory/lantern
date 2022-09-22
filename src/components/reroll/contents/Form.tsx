@@ -1,11 +1,10 @@
-import { Button } from "@owl-factory/components/button";
+import { Button } from "@chakra-ui/react";
 import { Input, Select } from "@owl-factory/components/form";
 import { Content } from "@prisma/client";
 import { Form, Formik, FormikProps } from "formik";
 import { observer } from "mobx-react-lite";
 import { useRouter } from "next/router";
 import React from "react";
-import { ContentDocument } from "types/documents";
 import { ContentTypeOptions } from "../contentTypes/Options";
 import { RulesetOptions } from "../rulesets/Options";
 

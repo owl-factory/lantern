@@ -1,5 +1,5 @@
 import { AlertController } from "@owl-factory/alerts";
-import { Button } from "@owl-factory/components/button";
+import { Button } from "@chakra-ui/react";
 import { Input } from "@owl-factory/components/form";
 import { rest } from "@owl-factory/https";
 import { Page } from "components/design";

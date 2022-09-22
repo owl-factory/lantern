@@ -1,4 +1,4 @@
-import { Button } from "@owl-factory/components/button";
+import { Button } from "@chakra-ui/react";
 import { Page } from "components/design";
 import { ContentTypeForm } from "components/reroll/contentTypes/Form";
 import Link from "next/link";

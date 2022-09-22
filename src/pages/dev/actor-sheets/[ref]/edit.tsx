@@ -1,4 +1,4 @@
-import { Button } from "@owl-factory/components/button";
+import { Button } from "@chakra-ui/react";
 import { ActorSheet, Ruleset } from "@prisma/client";
 import { Page } from "components/design";
 import { ActorSheetMediatorHandler } from "controllers/mediators/ActorSheetHandler";
