@@ -1,34 +1,37 @@
-import { destroyCookie, getCookie, setCookie } from "@owl-factory/cookies";
+// import { destroyCookie, getCookie, setCookie } from "@owl-factory/cookies";
+import { getCtx } from "@owl-factory/next";
 import { binaryToBase64 } from "@owl-factory/utilities/numbers/base2";
 import { base64ToBinary } from "@owl-factory/utilities/numbers/base64";
+import { destroyCookie, parseCookies, setCookie } from "nookies";
 import { AuthController } from "../AuthController";
+
+const DEFAULT_MAX_AGE = 30 * 24 * 60 * 60;
 
 /**
  * Destroys all cookies used for the Auth
  */
 export function destroyCookies(this: AuthController<unknown>) {
-  destroyCookie(this.userCookieKey);
-  destroyCookie(this.permissionCookieKey);
-  destroyCookie(this.jwtCookieKey);
+  const ctx = getCtx();
+
+  destroyCookie(ctx, this.userCookieKey);
+  destroyCookie(ctx, this.jwtCookieKey);
 }
 
 /**
  * Loads the user from the cookie, if any present
  */
 export function loadFromCookie(this: AuthController<unknown>) {
-  const user = getCookie(this.userCookieKey);
-  const permissions = getCookie(this.permissionCookieKey);
-  const jwt = getCookie(this.jwtCookieKey);
+  const ctx = getCtx();
+  const cookies = parseCookies(ctx);
+  const user = cookies[this.userCookieKey];
+  const jwt = cookies[this.jwtCookieKey];
 
-  if (user === undefined) {
+  if (user === undefined || user === "undefined") {
     this.$user = undefined;
-    this.$permissions = undefined;
     this.$jwt = undefined;
     return;
   }
-
   this.$user = JSON.parse(user);
-  this.$permissions = base64ToBinary(permissions as string);
   this.$jwt = jwt;
 }
 
@@ -40,7 +43,7 @@ export function saveToCookie(this: AuthController<unknown>) {
     this.$destroyCookies();
   }
 
-  setCookie(this.userCookieKey, this.$user);
-  if (this.$permissions) { setCookie(this.permissionCookieKey, binaryToBase64(this.$permissions)); }
-  if (this.$jwt) { setCookie(this.jwtCookieKey, this.$jwt); }
+  const ctx = getCtx();
+  setCookie(ctx, this.userCookieKey, JSON.stringify(this.$user), { maxAge: DEFAULT_MAX_AGE, path: "/" });
+  setCookie(ctx, this.jwtCookieKey, this.$jwt || "", { maxAge: DEFAULT_MAX_AGE, path: "/" });
 }

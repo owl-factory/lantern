@@ -8,5 +8,5 @@ import { AnyDocument } from "types/documents";
  */
  export function isOwner(doc?: Partial<AnyDocument>): boolean {
   if (!doc || !Auth?.isLoggedIn) { return false; }
-  return (!doc.ownedBy || doc.ownedBy.ref === Auth.user?.ref);
+  return (!doc.ownedBy || doc.ownedBy.ref === Auth.user?.id);
 }

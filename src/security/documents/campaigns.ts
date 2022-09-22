@@ -15,7 +15,7 @@ export function isPlayer(doc?: AnyDocument): boolean {
 
   let success = false;
   doc.players.forEach((player: { ref: Ref64 }) => {
-    if (Auth.user?.ref === player.ref) { success = true; }
+    if (Auth.user?.id === player.ref) { success = true; }
   });
 
   return success;

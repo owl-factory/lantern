@@ -38,7 +38,7 @@ async function validateUpload(this: HTTPHandler, req: NextApiRequest) {
   // fileDoc.src = req.body.file.src;
   
   // // Check DB for latest information on the user's storage
-  // const account = await UserLogic.fetch(Auth.user?.ref || "");
+  // const account = await UserLogic.fetch(Auth.user?.id || "");
   // validateAccountHasSpace(account, fileDoc.sizeInBytes);
 
   // account.storageUsed = (account.storageUsed || 0) + fileDoc.sizeInBytes;

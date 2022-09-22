@@ -6,18 +6,15 @@ import * as user from "./functionality/user";
 
 export class AuthController<T> {
   public $user: T | undefined;
-  public $permissions: string | undefined; // All permissions a user has, role & custom permissions included
   public $jwt: string | undefined;
 
   protected userCookieKey = "session";
-  protected permissionCookieKey = "session_permissions";
   protected jwtCookieKey = "session_jwt";
 
   constructor() {
     this.reload();
     makeObservable(this, {
       $user: observable,
-      $permissions: observable,
       $jwt: observable,
       reset: action,
       fromAPI: action,
@@ -31,7 +28,6 @@ export class AuthController<T> {
   get user(): T | undefined { return this.$user; }
   get isLoggedIn() { return this.$user !== undefined; }
   get jwt() { return this.$jwt; }
-  get permissions() { return this.$permissions; }
 
   public $extractSecurity(fullUser: T) {
     return { user: fullUser, role: "default", permissions: [] };

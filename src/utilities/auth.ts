@@ -3,6 +3,7 @@ import { Auth } from "controllers/auth";
 import { UserDocument } from "types/documents";
 import Router from "next/router";
 import { LogInResponse } from "@owl-factory/auth/types";
+import { User } from "@prisma/client";
 
 /**
  * Sends a request to sign a user up to the API
@@ -11,11 +12,11 @@ import { LogInResponse } from "@owl-factory/auth/types";
  * @param password The password of the user attempting to sign up
  */
  export async function signUp(username: string, email: string, password: string): Promise<string> {
-  const result = await rest.post<LogInResponse<UserDocument>>("/api/auth/signup", { username, email, password });
+  const result = await rest.post<LogInResponse<User>>("/api/user/signup", { username, email, password });
   if (!result.success) {
     return result.message;
   }
-  Auth.fromAPI(result.data.user, result.data.permissions, result.data.jwt);
+  Auth.fromAPI(result.data.user, result.data.jwt);
   Router.reload();
   return "";
 }
@@ -26,11 +27,12 @@ import { LogInResponse } from "@owl-factory/auth/types";
  * @param password The password of the user to log in
  */
 export async function signIn(username: string, password: string): Promise<string> {
-  const result = await rest.post<LogInResponse<UserDocument>>("/api/auth/signin", { username, password });
+  const result = await rest.post<LogInResponse<User>>("/api/user/signin", { username, password });
   if (!result.success) {
     return result.message;
   }
-  Auth.fromAPI(result.data.user, result.data.permissions, result.data.jwt);
+
+  Auth.fromAPI(result.data.user, result.data.jwt);
   Router.reload();
   return "";
 }

@@ -25,7 +25,7 @@ function onSubmit(values: ChatFormValues, formik: FormikHelpers<ChatFormValues>)
  */
 export const ChatForm = observer(() => {
   const options = [
-    <option value="">{Auth.user?.name || "Guest"}</option>,
+    <option value="">{Auth.user?.displayName || "Guest"}</option>,
   ];
 
   for (const actor of ChatController.actors) {

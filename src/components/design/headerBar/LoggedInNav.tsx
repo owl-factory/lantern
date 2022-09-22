@@ -38,11 +38,11 @@ const UserDisplay = observer(() => {
   return (
     <>
       <img
-        src={user?.avatar?.src}
+        src={user?.avatarSrc || ""}
         style={{maxHeight: "32px", maxWidth: "32px", position: "absolute"}}
       />
       <div style={{width: "36px", display: "inline-flex"}}></div>
-      {user?.name || user?.username}&nbsp;
+      {user?.displayName}&nbsp;
     </>
   );
 });

@@ -49,7 +49,7 @@ async function signIn(this: HTTPHandler, req: NextApiRequest) {
     }
 
     const jwt = signinAs(user);
-    this.returnSuccess({ jwt });
+    this.returnSuccess({ user, jwt });
   });
 }
 

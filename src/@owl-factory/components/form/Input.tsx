@@ -1,5 +1,6 @@
 import { useField } from "formik";
 import React, { CSSProperties } from "react";
+import { Input as ChakraInput } from "@chakra-ui/react";
 
 interface InputProps {
   disabled?: boolean;
@@ -31,11 +32,9 @@ export function Input(props: InputProps) {
 
   if (props.onBlur !== undefined) { field.onBlur = props.onBlur; }
 
-  // Build the input here so we can return it solo or put it into a floating label
-  const input = (
-    <input
+  return (
+    <ChakraInput
       type={props.type}
-      className="form-control" // TODO - add other classes?
       disabled={props.disabled}
       id={props.id || props.name}
       placeholder={props.placeholder || " "}
@@ -43,14 +42,5 @@ export function Input(props: InputProps) {
       {...field}
 
     />
-  );
-
-  if (!props.label) { return input; }
-
-  return (
-    <div className="form-floating">
-      {input}
-      <label htmlFor={props.id || props.name}>{props.label}</label>
-    </div>
   );
 }
