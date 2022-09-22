@@ -62,10 +62,10 @@ model User {
   updatedContents Content[] @relation(name: "contentUpdater")
   deletedContents Content[] @relation(name: "contentDeleter")
 
-  ownedFiles   File[] @relation(name: "fileOwner")
-  createdFiles File[] @relation(name: "fileCreator")
-  updatedFiles File[] @relation(name: "fileUpdater")
-  deletedFiles File[] @relation(name: "fileDeleter")
+  ownedAssets   Asset[] @relation(name: "assetOwner")
+  createdAssets Asset[] @relation(name: "assetCreator")
+  updatedAssets Asset[] @relation(name: "assetUpdater")
+  deletedAssets Asset[] @relation(name: "assetDeleter")
 
   // References
   moduleAccess    ModuleAccess[]
@@ -96,7 +96,7 @@ model Campaign {
 
   // The banner displayed for the campaign
   bannerID        String?  @db.Uuid
-  banner          File?    @relation(fields: [bannerID], references: [id])
+  banner          Asset?    @relation(fields: [bannerID], references: [id])
   bannerSrc       String?
   // TODO - bannerConfig?
 
@@ -416,9 +416,6 @@ model Actor {
   deletedAt       DateTime?
   deletedBy       String?  @db.Uuid
   deletingUser    User?    @relation(name: "actorDeleter", fields: [deletedBy], references: [id])
-
-  // References
-  scenes          SceneActor[]
 }
 
 // Actor Sheets describe the layout and styling of the actor
@@ -452,38 +449,37 @@ model ActorSheet {
   actors        Actor[]     // The actors that use this actor sheet
 }
 
-// Describes a file useable in 
-model File {
+// Describes a asset useable in 
+model Asset {
   id            String  @id @default(uuid()) @db.Uuid
-  name          String  @db.VarChar(128) // The publicly visible filename. This can be changed by the user
-  src           String  // The source URL of the file
+  name          String  @db.VarChar(128) // The publicly visible assetname. This can be changed by the user
+  src           String  // The source URL of the asset
 
-  mimetype      String  @db.VarChar(32) // The mimetype of the file. For example, image/jpeg
-  fileType      String  @db.VarChar(32) // The generic type of file. For example, image or audio
-  sizeInBytes   Int     @default(0) // The size of the file in bytes
+  mimetype      String  @db.VarChar(32) // The mimetype of the asset. For example, image/jpeg
+  assetType      String  @db.VarChar(32) // The generic type of asset. For example, image or audio
+  sizeInBytes   Int     @default(0) // The size of the asset in bytes
 
-  s3Key         String  // The S3 key for accessing this file // TODO - determine length
-  s3Path        String  // The S3 path for accessing this file
-  isS3Pending   Boolean @default(true) // Marks the file as still pending upload validation. 
+  s3Key         String  // The S3 key for accessing this asset // TODO - determine length
+  s3Path        String  // The S3 path for accessing this asset
+  isS3Pending   Boolean @default(true) // Marks the asset as still pending upload validation. 
 
-  config        Json    @default("{}") // Any data that helps define the file, such as image height and width
+  config        Json    @default("{}") // Any data that helps define the asset, such as image height and width
 
   // Standard access tracking fields
   ownedBy         String?  @db.Uuid
-  owner           User?    @relation(name: "fileOwner", fields: [ownedBy], references: [id])
+  owner           User?    @relation(name: "assetOwner", fields: [ownedBy], references: [id])
   createdAt       DateTime?
   createdBy       String?  @db.Uuid
-  creatingUser    User?    @relation(name: "fileCreator", fields: [createdBy], references: [id])
+  creatingUser    User?    @relation(name: "assetCreator", fields: [createdBy], references: [id])
   updatedAt       DateTime?
   updatedBy       String?  @db.Uuid
-  updatingUser    User?    @relation(name: "fileUpdater", fields: [updatedBy], references: [id])
+  updatingUser    User?    @relation(name: "assetUpdater", fields: [updatedBy], references: [id])
   deletedAt       DateTime?
   deletedBy       String?  @db.Uuid
-  deletingUser    User?    @relation(name: "fileDeleter", fields: [deletedBy], references: [id])
+  deletingUser    User?    @relation(name: "assetDeleter", fields: [deletedBy], references: [id])
 
   // References
   banneredCampaigns Campaign[] // The campaigns that use this image as a banner
-  scenes            SceneFile[]
 }
 
 // Scenes describe a map or image with placeable tokens and grid
@@ -495,33 +491,14 @@ model Scene {
   campaignID    String?  @db.Uuid 
   campaign      Campaign? @relation(fields: [campaignID], references: [id])
 
-  // The configuration for data, such as layers, the contents of layers, the actors, files, etc used. 
+  // The configuration for data, such as layers, the contents of layers, the actors, assets, etc used. 
   // This effectively contains all information critical to rendering
   config        Json  @default("{}")
 
   // References
-  actors        SceneActor[]
-  files         SceneFile[]
-}
-
-// Actors used within a scene
-model SceneActor {
-  // The scene the actor is used in
-  sceneID       String  @db.Uuid @unique
-  scene         Scene @relation(fields: [sceneID], references: [id])
-
-  // The actor used in the scene
-  actorID        String  @db.Uuid @unique
-  actor          Actor @relation(fields: [actorID], references: [id])
-}
-
-// Files used within a scene
-model SceneFile {
-  // The scene a file is used in
-  sceneID       String  @db.Uuid @unique
-  scene         Scene @relation(fields: [sceneID], references: [id])
-
-  // The file a scene is used in
-  fileID        String  @db.Uuid @unique
-  file          File @relation(fields: [fileID], references: [id])
+  // A JSON object containing the IDs of each actor used within the scene. 
+  // Actors and assets should be loaded via the campaign object
+  actors        Json  @default("{}")
+  // A JSON object containing the IDs of each asset used within the scene
+  assets        Json  @default("{}")
 }
