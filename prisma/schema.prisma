@@ -62,12 +62,13 @@ model User {
   updatedContents Content[] @relation(name: "contentUpdater")
   deletedContents Content[] @relation(name: "contentDeleter")
 
-  ownedFiles   File[] @relation(name: "fileOwner")
-  createdFiles File[] @relation(name: "fileCreator")
-  updatedFiles File[] @relation(name: "fileUpdater")
-  deletedFiles File[] @relation(name: "fileDeleter")
+  ownedAssets   Asset[] @relation(name: "assetOwner")
+  createdAssets Asset[] @relation(name: "assetCreator")
+  updatedAssets Asset[] @relation(name: "assetUpdater")
+  deletedAssets Asset[] @relation(name: "assetDeleter")
 
   // References
+  campaignAccess  CampaignAccess[]
   moduleAccess    ModuleAccess[]
   contentAccess   ContentAccess[]
 }
@@ -96,7 +97,7 @@ model Campaign {
 
   // The banner displayed for the campaign
   bannerID        String?  @db.Uuid
-  banner          File?    @relation(fields: [bannerID], references: [id])
+  banner          Asset?    @relation(fields: [bannerID], references: [id])
   bannerSrc       String?
   // TODO - bannerConfig?
 
@@ -117,8 +118,8 @@ model Campaign {
   deletingUser    User?   @relation(name: "campaignDeleter", fields: [deletedBy], references: [id])
 
   // References
+  access          CampaignAccess[]
   accessLinks     CampaignAccessLink[]
-  actors          Actor[] // The actors in this campaign
   modules         CampaignModule[] // Modules available for search in this campaign
   scenes          Scene[]
 }
@@ -140,7 +141,9 @@ model CampaignModule {
 // Describes who has access to a campaign and in what capacity
 model CampaignAccess {
   userID          String  @db.Uuid @unique
+  user            User    @relation(fields: [userID], references: [id])
   campaignID      String  @db.Uuid @unique
+  campaign        Campaign  @relation(fields: [campaignID], references: [id])
   access          String  @db.VarChar(32) @default("player")
 }
 
@@ -394,10 +397,6 @@ model Actor {
   actorSheetID  String  @db.Uuid
   actorSheet    ActorSheet @relation(fields: [actorSheetID], references: [id])
 
-  // The campaign that this actor is a part of, if any
-  campaignID    String? @db.Uuid
-  campaign      Campaign? @relation(fields: [campaignID], references: [id])
-
   isPublic      Boolean @default(false) // Marks this actor as publicly viewable
   publicAccess  String  @db.VarChar(32) @default("aware") // The access of this actor when public
 
@@ -452,38 +451,38 @@ model ActorSheet {
   actors        Actor[]     // The actors that use this actor sheet
 }
 
-// Describes a file useable in 
-model File {
+// Describes a asset useable in 
+model Asset {
   id            String  @id @default(uuid()) @db.Uuid
-  name          String  @db.VarChar(128) // The publicly visible filename. This can be changed by the user
-  src           String  // The source URL of the file
+  name          String  @db.VarChar(128) // The publicly visible assetname. This can be changed by the user
+  src           String  // The source URL of the asset
 
-  mimetype      String  @db.VarChar(32) // The mimetype of the file. For example, image/jpeg
-  fileType      String  @db.VarChar(32) // The generic type of file. For example, image or audio
-  sizeInBytes   Int     @default(0) // The size of the file in bytes
+  mimetype      String  @db.VarChar(32) // The mimetype of the asset. For example, image/jpeg
+  assetType      String  @db.VarChar(32) // The generic type of asset. For example, image or audio
+  sizeInBytes   Int     @default(0) // The size of the asset in bytes
 
-  s3Key         String  // The S3 key for accessing this file // TODO - determine length
-  s3Path        String  // The S3 path for accessing this file
-  isS3Pending   Boolean @default(true) // Marks the file as still pending upload validation. 
+  s3Key         String  // The S3 key for accessing this asset // TODO - determine length
+  s3Path        String  // The S3 path for accessing this asset
+  isS3Pending   Boolean @default(true) // Marks the asset as still pending upload validation. 
 
-  config        Json    @default("{}") // Any data that helps define the file, such as image height and width
+  config        Json    @default("{}") // Any data that helps define the asset, such as image height and width
 
   // Standard access tracking fields
   ownedBy         String?  @db.Uuid
-  owner           User?    @relation(name: "fileOwner", fields: [ownedBy], references: [id])
+  owner           User?    @relation(name: "assetOwner", fields: [ownedBy], references: [id])
   createdAt       DateTime?
   createdBy       String?  @db.Uuid
-  creatingUser    User?    @relation(name: "fileCreator", fields: [createdBy], references: [id])
+  creatingUser    User?    @relation(name: "assetCreator", fields: [createdBy], references: [id])
   updatedAt       DateTime?
   updatedBy       String?  @db.Uuid
-  updatingUser    User?    @relation(name: "fileUpdater", fields: [updatedBy], references: [id])
+  updatingUser    User?    @relation(name: "assetUpdater", fields: [updatedBy], references: [id])
   deletedAt       DateTime?
   deletedBy       String?  @db.Uuid
-  deletingUser    User?    @relation(name: "fileDeleter", fields: [deletedBy], references: [id])
+  deletingUser    User?    @relation(name: "assetDeleter", fields: [deletedBy], references: [id])
 
   // References
   banneredCampaigns Campaign[] // The campaigns that use this image as a banner
-  scenes            SceneFile[]
+  scenes            SceneAsset[]
 }
 
 // Scenes describe a map or image with placeable tokens and grid
@@ -495,13 +494,13 @@ model Scene {
   campaignID    String?  @db.Uuid 
   campaign      Campaign? @relation(fields: [campaignID], references: [id])
 
-  // The configuration for data, such as layers, the contents of layers, the actors, files, etc used. 
+  // The configuration for data, such as layers, the contents of layers, the actors, assets, etc used. 
   // This effectively contains all information critical to rendering
   config        Json  @default("{}")
 
   // References
   actors        SceneActor[]
-  files         SceneFile[]
+  assets         SceneAsset[]
 }
 
 // Actors used within a scene
@@ -515,13 +514,13 @@ model SceneActor {
   actor          Actor @relation(fields: [actorID], references: [id])
 }
 
-// Files used within a scene
-model SceneFile {
-  // The scene a file is used in
+// Assets used within a scene
+model SceneAsset {
+  // The scene a asset is used in
   sceneID       String  @db.Uuid @unique
   scene         Scene @relation(fields: [sceneID], references: [id])
 
-  // The file a scene is used in
-  fileID        String  @db.Uuid @unique
-  file          File @relation(fields: [fileID], references: [id])
+  // The asset a scene is used in
+  assetID        String  @db.Uuid @unique
+  asset          Asset @relation(fields: [assetID], references: [id])
 }

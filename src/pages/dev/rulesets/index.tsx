@@ -2,12 +2,14 @@ import { Button } from "@chakra-ui/react";
 import { AlertController } from "@owl-factory/alerts";
 import { rest } from "@owl-factory/https";
 import { ActorSheet, Ruleset } from "@prisma/client";
+import ClientOnly from "components/ClientOnly";
 import { Page } from "components/design";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "components/elements/table";
 import { observer } from "mobx-react-lite";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
+import { useQuery, gql } from "@apollo/client";
 import { getRulesets } from "src/pages/api/dev/rulesets";
 
 interface NewActorSheetResult {
@@ -54,17 +56,28 @@ const RulesetRow = observer((props: { ruleset: Ruleset }) => {
   );
 });
 
-interface RulesetTableProps {
-  rulesets: Ruleset[];
-}
+
+const QUERY = gql`
+  query {
+    rulesets {
+      id,
+      name,
+      alias,
+    }
+  }
+`;
 
 /**
  * Renders a table to list out all rulesets
  */
-function RulesetTable(props: RulesetTableProps) {
+function RulesetTable() {
+  const { data, loading, error } = useQuery(QUERY);
   const rows: JSX.Element[] = [];
 
-  for (const ruleset of props.rulesets) {
+  if (loading) { return <>Loading</>; }
+  if (error) { console.log(error);return <>Error</>; }
+
+  for (const ruleset of data.rulesets) {
     rows.push(<RulesetRow key={ruleset.id} ruleset={ruleset}/>);
   }
 
@@ -95,12 +108,9 @@ export default function Rulesets(props: RulesetsPageProps) {
       <h1>Rulesets</h1>
       <Link href="/dev"><Button>Back</Button></Link>
       <Link href="/dev/rulesets/new"><Button>New</Button></Link>
-      <RulesetTable rulesets={props.rulesets}/>
+      <ClientOnly>
+        <RulesetTable/>
+      </ClientOnly>
     </Page>
   );
-}
-
-export async function getServerSideProps() {
-  const rulesets = await getRulesets();
-  return { props: { rulesets } };
 }
