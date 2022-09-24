@@ -20,7 +20,7 @@ async function joinCampaign(_: unknown, { campaignID, linkKey }: JoinCampaignArg
 }
 
 export const campaignAccessLinkResolvers = {
-  Query: {
+  Mutation: {
     joinCampaign,
   },
 };

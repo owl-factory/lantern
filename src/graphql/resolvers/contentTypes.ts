@@ -1,4 +1,3 @@
-import { ContentType } from "@prisma/client";
 import { getPrismaClient } from "utilities/prisma";
 
 
@@ -16,7 +15,7 @@ interface ContentTypeWhere {
 }
 
 // The input for setting data
-interface ContentTypeInput {
+interface ContentTypeCreateInput {
   name: string;
   alias: string;
   icon: string;
@@ -26,6 +25,18 @@ interface ContentTypeInput {
   searchLayout: string;
   resultLayout: string;
   searchStyling: string;
+}
+
+interface ContentTypeMutateInput {
+  name?: string;
+  alias?: string;
+  icon?: string;
+  contentFields?: any; // TODO - determine best type
+  viewLayout?: string;
+  viewStyling?: string;
+  searchLayout?: string;
+  resultLayout?: string;
+  searchStyling?: string;
 }
 
 interface GetContentTypesArguments {
@@ -40,13 +51,13 @@ interface GetContentTypeArguments {
 
 interface CreateContentTypeArguments {
   rulesetID: string;
-  contentType: ContentTypeInput;
+  contentType: ContentTypeCreateInput;
   include: ContentTypeInclude;
 }
 
 interface MutateContentTypeArguments {
   id: string;
-  contentType: ContentTypeInput;
+  contentType: ContentTypeMutateInput;
   include: ContentTypeInclude;
 }
 

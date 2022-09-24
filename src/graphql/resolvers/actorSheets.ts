@@ -1,4 +1,3 @@
-import { ActorSheet } from "@prisma/client";
 import { getPrismaClient } from "utilities/prisma";
 
 const prisma = getPrismaClient();

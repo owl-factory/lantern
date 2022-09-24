@@ -1,17 +1,19 @@
-import { Actor } from "@prisma/client";
 import { getPrismaClient } from "utilities/prisma";
 
 const prisma = getPrismaClient();
 
+// Any additional documents to include
 interface ActorInclude {
   ruleset?: boolean;
 }
 
+// The where caluse for any *many queries
 interface ActorWhere {
   id?: string;
   rulesetID?: string;
 }
 
+// The inputs to use for creating and mutating the actor
 interface ActorInput {
   name?: string | null;
   actorTypeID?: string;

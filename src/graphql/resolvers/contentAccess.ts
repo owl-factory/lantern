@@ -19,15 +19,27 @@ interface GetContentAccessesArguments {
   include: ContentAccessInclude;
 }
 
+// Describes the fields to create a new content access
+interface ContentAccessCreateInput{
+  contentID: string;
+  userID: string;
+  access: string;
+}
+
+// The fields to mutate and existing content access document
+interface ContentAccessMutateInput {
+  access: string;
+}
+
 interface CreateContentAccessArguments {
-  contentAccess: { contentID: string, userID: string, access: string };
+  contentAccess: ContentAccessCreateInput;
   include: ContentAccessInclude;
 }
 
 interface MutateContentAccessArguments {
   contentID: string;
   userID: string;
-  contentAccess: { access: string };
+  contentAccess: ContentAccessMutateInput;
   include: ContentAccessInclude;
 }
 

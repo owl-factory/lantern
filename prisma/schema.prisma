@@ -39,6 +39,8 @@ model User {
   updatedModules Module[] @relation(name: "moduleUpdater")
   deletedModules Module[] @relation(name: "moduleDeleter")
 
+  sharedCampaignModules  CampaignModule[] @relation(name: "campaignModules")
+
   createdActorType ActorType[] @relation(name: "actorTypeCreator")
   updatedActorType ActorType[] @relation(name: "actorTypeUpdater")
   deletedActorType ActorType[] @relation(name: "actorTypeDeleter")
@@ -135,7 +137,8 @@ model CampaignModule {
   module          Module  @relation(fields: [moduleID], references: [id])
 
   // Which user is supplying this module
-  sourceUserID   String   @db.Uuid  @unique
+  sourceUserID    String   @db.Uuid  @unique
+  sourceUser      User     @relation(name: "campaignModules", fields: [sourceUserID], references: [id])
 }
 
 // Describes who has access to a campaign and in what capacity
@@ -415,9 +418,6 @@ model Actor {
   deletedAt       DateTime?
   deletedBy       String?  @db.Uuid
   deletingUser    User?    @relation(name: "actorDeleter", fields: [deletedBy], references: [id])
-
-  // References
-  scenes          SceneActor[]
 }
 
 // Actor Sheets describe the layout and styling of the actor
@@ -458,7 +458,7 @@ model Asset {
   src           String  // The source URL of the asset
 
   mimetype      String  @db.VarChar(32) // The mimetype of the asset. For example, image/jpeg
-  assetType      String  @db.VarChar(32) // The generic type of asset. For example, image or audio
+  assetType     String  @db.VarChar(32) // The generic type of asset. For example, image or audio
   sizeInBytes   Int     @default(0) // The size of the asset in bytes
 
   s3Key         String  // The S3 key for accessing this asset // TODO - determine length
@@ -482,7 +482,6 @@ model Asset {
 
   // References
   banneredCampaigns Campaign[] // The campaigns that use this image as a banner
-  scenes            SceneAsset[]
 }
 
 // Scenes describe a map or image with placeable tokens and grid
@@ -497,30 +496,4 @@ model Scene {
   // The configuration for data, such as layers, the contents of layers, the actors, assets, etc used. 
   // This effectively contains all information critical to rendering
   config        Json  @default("{}")
-
-  // References
-  actors        SceneActor[]
-  assets         SceneAsset[]
-}
-
-// Actors used within a scene
-model SceneActor {
-  // The scene the actor is used in
-  sceneID       String  @db.Uuid @unique
-  scene         Scene @relation(fields: [sceneID], references: [id])
-
-  // The actor used in the scene
-  actorID        String  @db.Uuid @unique
-  actor          Actor @relation(fields: [actorID], references: [id])
-}
-
-// Assets used within a scene
-model SceneAsset {
-  // The scene a asset is used in
-  sceneID       String  @db.Uuid @unique
-  scene         Scene @relation(fields: [sceneID], references: [id])
-
-  // The asset a scene is used in
-  assetID        String  @db.Uuid @unique
-  asset          Asset @relation(fields: [assetID], references: [id])
 }

@@ -8,8 +8,8 @@ interface CampaignAccessWhere {
 }
 
 interface CampaignAccessInclude {
-  userID?: boolean;
-  campaignID?: boolean;
+  user?: boolean;
+  campaign?: boolean;
 }
 
 interface GetCampaignAccessArguments {
@@ -21,7 +21,7 @@ interface GetCampaignAccessArguments {
  * Fetches campaign access documents
  * @param where the where clause of the campaign access query
  * @param include Any additional documents to include
- * @returns 
+ * @returns A list of campaign access documents
  */
 async function getCampaignAccess(_: unknown, { where, include }: GetCampaignAccessArguments) {
   return prisma.campaignAccess.findMany({ where, include });
