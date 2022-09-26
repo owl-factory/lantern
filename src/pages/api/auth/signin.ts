@@ -2,7 +2,7 @@ import { NextApiRequest } from "next";
 import { HTTPHandler, createEndpoint } from "@owl-factory/https/backend";
 import { PrismaClient } from "@prisma/client";
 import { pbkdf2, timingSafeEqual } from "crypto";
-import { signinAs } from "nodes/user/jwt";
+import { signinAs } from "nodes/auth/jwt";
 
 const prisma = new PrismaClient();
 

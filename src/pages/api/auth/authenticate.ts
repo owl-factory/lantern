@@ -1,6 +1,6 @@
 import { HTTPHandler, createEndpoint } from "@owl-factory/https/backend";
 import { NextApiRequest } from "next";
-import { authenticate } from "nodes/user/jwt";
+import { authenticate } from "nodes/auth/jwt";
 
 /**
  * Test user authentication status.

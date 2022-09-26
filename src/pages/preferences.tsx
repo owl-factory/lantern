@@ -20,18 +20,7 @@ function ChangePasswordForm() {
     if (!Auth.isLoggedIn) { return; }
 
     try {
-      const result = await rest.patch(`/api/users/password`, values as any);
-      setError("");
-
-      if (!result.success) {
-        const message = (result.data as any).error;
-        if (typeof message === "object") { formik.setErrors(message); }
-        else { setError(message); }
-        return;
-      }
-
-      formik.resetForm();
-      AlertController.success("The password was successfully updated");
+      // TODO Update Password logic
     } catch (e) {
       setError(e as string);
     }

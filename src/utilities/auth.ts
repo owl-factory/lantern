@@ -12,7 +12,7 @@ import { User } from "@prisma/client";
  * @param password The password of the user attempting to sign up
  */
  export async function signUp(username: string, email: string, password: string): Promise<string> {
-  const result = await rest.post<LogInResponse<User>>("/api/user/signup", { username, email, password });
+  const result = await rest.post<LogInResponse<User>>("/api/auth/signup", { username, email, password });
   if (!result.success) {
     return result.message;
   }
@@ -27,7 +27,7 @@ import { User } from "@prisma/client";
  * @param password The password of the user to log in
  */
 export async function signIn(username: string, password: string): Promise<string> {
-  const result = await rest.post<LogInResponse<User>>("/api/user/signin", { username, password });
+  const result = await rest.post<LogInResponse<User>>("/api/auth/signin", { username, password });
   if (!result.success) {
     return result.message;
   }
