@@ -8,7 +8,6 @@ import { Ruleset } from "@prisma/client";
 import { rest } from "@owl-factory/https";
 import { AlertController } from "@owl-factory/alerts";
 import { NextPageContext } from "next";
-import { getRuleset } from "src/pages/api/dev/rulesets/[id]";
 
 interface EditRulesetProps {
   ruleset?: Ruleset;
@@ -52,8 +51,7 @@ function EditRuleset(props: EditRulesetProps) {
 }
 
 export async function getServerSideProps(ctx: NextPageContext) {
-  const ruleset = await getRuleset(ctx.query.id as string);
-  return { props: { ruleset } };
+  return { props: { ruleset: {} } };
 }
 
 export default EditRuleset;

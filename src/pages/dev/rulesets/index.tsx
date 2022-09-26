@@ -10,7 +10,6 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
 import { useQuery, gql } from "@apollo/client";
-import { getRulesets } from "src/pages/api/dev/rulesets";
 
 interface NewActorSheetResult {
   actorSheet: ActorSheet;

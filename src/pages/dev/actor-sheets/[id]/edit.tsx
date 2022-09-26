@@ -11,7 +11,6 @@ import { useRouter } from "next/router";
 import { ActorController, ActorSheetForm } from "nodes/actor-sheets";
 import { Mediator } from "nodes/mediator";
 import React from "react";
-import { getActorSheet } from "src/pages/api/dev/actor-sheets/[id]";
 
 interface EditActorSheet {
   actorSheet: ActorSheet;
@@ -71,9 +70,7 @@ function EditActorSheet(props: EditActorSheet) {
 }
 
 export async function getServerSideProps(ctx: NextPageContext) {
-  const { actorSheet, ruleset } = await getActorSheet(ctx.query.id as string);
-  if (actorSheet) { delete (actorSheet as any).ruleset; }
-  return { props: { actorSheet, ruleset } };
+  return { props: { actorSheet: {}, ruleset: {} } };
 }
 
 export default observer(EditActorSheet);

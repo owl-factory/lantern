@@ -6,7 +6,6 @@ import { Page } from "components/design";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "components/elements/table";
 import Link from "next/link";
 import React from "react";
-import { getActorSheets } from "src/pages/api/dev/actor-sheets";
 
 type ActorSheetWithRuleset = ActorSheet & { ruleset: Ruleset };
 
@@ -109,6 +108,5 @@ export default function ActorSheetList(props: ActorSheetListProps) {
 }
 
 export async function getServerSideProps() {
-  const actorSheets = await getActorSheets();
-  return { props: { actorSheets } };
+  return { props: { actorSheets: [] } };
 }
