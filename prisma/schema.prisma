@@ -458,11 +458,7 @@ model Asset {
   src           String  // The source URL of the asset
 
   mimetype      String  @db.VarChar(32) // The mimetype of the asset. For example, image/jpeg
-<<<<<<< HEAD
-  assetType     String  @db.VarChar(32) // The generic type of asset. For example, image or audio
-=======
   assetType      String  @db.VarChar(32) // The generic type of asset. For example, image or audio
->>>>>>> main
   sizeInBytes   Int     @default(0) // The size of the asset in bytes
 
   s3Key         String  // The S3 key for accessing this asset // TODO - determine length
@@ -500,8 +496,6 @@ model Scene {
   // The configuration for data, such as layers, the contents of layers, the actors, assets, etc used. 
   // This effectively contains all information critical to rendering
   config        Json  @default("{}")
-<<<<<<< HEAD
-=======
 
   // References
   // A JSON object containing the IDs of each actor used within the scene. 
@@ -509,5 +503,4 @@ model Scene {
   actors        Json  @default("{}")
   // A JSON object containing the IDs of each asset used within the scene
   assets        Json  @default("{}")
->>>>>>> main
 }
