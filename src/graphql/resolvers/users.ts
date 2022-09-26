@@ -2,11 +2,13 @@ import { getPrismaClient } from "utilities/prisma";
 
 const prisma = getPrismaClient();
 
+// The where clause of the user *many queries
 interface UserWhere {
   id?: string;
   username?: string;
 }
 
+// Any additional documents to include in the response
 interface UserInclude {
   moduleAccess: boolean;
   contentAccess: boolean;

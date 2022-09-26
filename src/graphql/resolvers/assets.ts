@@ -14,7 +14,6 @@ type AssetInclude = {};
 // The fields to create a new Asset
 interface AssetUploadInput {
   name: string;
-  fileType: string;
   mimetype: string;
   assetType: string;
   sizeInBytes: number;
@@ -57,7 +56,7 @@ interface MutateAssetArguments {
  * @returns A list of assets
  */
 async function getAssets(_: unknown, { where, include }: GetAssetsArguments) {
-  return prisma.file.findMany({ where, include });
+  return prisma.asset.findMany({ where, include });
 }
 
 /**
@@ -67,7 +66,7 @@ async function getAssets(_: unknown, { where, include }: GetAssetsArguments) {
  * @returns Gets a single action
  */
 async function getAsset(_: unknown, { id, include }: GetAssetArguments) {
-  return prisma.file.findUnique({
+  return prisma.asset.findUnique({
     where: { id },
     include,
   });
@@ -80,7 +79,7 @@ async function getAsset(_: unknown, { id, include }: GetAssetArguments) {
  * @returns The initial asset upload
  */
 async function uploadAsset(_: unknown, { asset, include }: UploadAssetArguments) {
-  return prisma.file.create({
+  return prisma.asset.create({
     data: {
       ...asset,
       src: "",
@@ -98,7 +97,7 @@ async function uploadAsset(_: unknown, { asset, include }: UploadAssetArguments)
  * @returns The validated asset
  */
 async function validateAsset(_: unknown, { id }: ValidateAssetArguments) {
-  return prisma.file.update({
+  return prisma.asset.update({
     data: { isS3Pending: false },
     where: { id },
   });
@@ -112,7 +111,7 @@ async function validateAsset(_: unknown, { id }: ValidateAssetArguments) {
  * @return The mutated asset
  */
 async function mutateAsset(_: unknown, { id, asset, include }: MutateAssetArguments) {
-  return prisma.file.update({
+  return prisma.asset.update({
     data: asset,
     where: { id },
     include,
@@ -122,12 +121,12 @@ async function mutateAsset(_: unknown, { id, asset, include }: MutateAssetArgume
 
 export const assetResolvers = {
   Query: {
-    files: getAssets,
-    file: getAsset,
+    assets: getAssets,
+    asset: getAsset,
   },
   Mutation: {
     uploadAsset,
     validateAsset,
-    mutateFile: mutateAsset,
+    mutateAsset,
   },
 };

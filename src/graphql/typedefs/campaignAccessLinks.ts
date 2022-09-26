@@ -24,7 +24,7 @@ export const campaignAccessLinkTypeDefs = gql`
     deletingUser: User
   }
 
-  Mutation: {
+  type Mutation: {
     joinCampaign(campaignID: String!, linkKey: String!): Campaign
   }
 `;

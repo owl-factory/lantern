@@ -1,6 +1,6 @@
 import { gql } from "apollo-server-micro";
 
-export const modulesTypeDefs = gql`
+export const moduleTypeDefs = gql`
   type Module {
     id: String
     name: String
@@ -54,11 +54,11 @@ export const modulesTypeDefs = gql`
     publishAccess: String
   }
 
-  Query {
+  type Query {
     modules(where: ModuleWhere, include: ModuleInclude): [Module]
     module(id: String!, include: ModuleInclude): Module
   }
-  Mutation {
+  type Mutation {
     createModule(module: ModuleCreateInput!, include: ModuleInclude): Module
     mutateModule(id: String!, module: ModuleMutateInput!, include: ModuleInclude): Module
   }

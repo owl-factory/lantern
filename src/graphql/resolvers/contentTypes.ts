@@ -128,7 +128,7 @@ async function mutateContentType(_: unknown, { id, contentType, include }: Mutat
   });
 }
 
-export const contentTypeResolver = {
+export const contentTypeResolvers = {
   Query: {
     contentTypes: getContentTypes,
     contentType: getContentType,

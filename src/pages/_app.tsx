@@ -5,7 +5,7 @@ import Head from "next/head";
 import "./_app.scss";
 import HeaderBar from "components/design/headerBar/HeaderBar";
 import { ChakraProvider } from "@chakra-ui/react";
-import { client } from "src/apollo-client";
+import { client } from "src/graphql/apollo-client";
 import { ApolloProvider } from "@apollo/client";
 
 

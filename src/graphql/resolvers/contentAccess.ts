@@ -92,7 +92,7 @@ async function mutateContentAccess(
   });
 }
 
-export const contentRelationResolvers = {
+export const contentAccessResolvers = {
   Query: {
     contentAccess: getContentAccesses,
   },

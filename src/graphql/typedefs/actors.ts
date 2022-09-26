@@ -41,30 +41,31 @@ export const actorTypeDefs = gql`
   # The input for creating and mutating the Actor
   input ActorInput {
     name: String
-    actorTypeID: String;
-    actorSheetID: String;
-    isPublic: Boolean;
-    publicAccess: String;
+    actorTypeID: String
+    actorSheetID: String
+    isPublic: Boolean
+    publicAccess: String
   }
 
   # Describes any additional documents
   input ActorInclude {
-    ruleset: Boolean;
+    ruleset: Boolean
+    actorType: Boolean
   }
 
   # The where clause for *many queries
   input ActorWhere {
-    id: String;
-    rulesetID: String;
+    id: String
+    rulesetID: String
   }
 
-  Query {
+  type Query {
     actors(where: ActorWhere, include: ActorInclude): [Actor]
-    actor(id: String!, include: ActorInclude)
+    actor(id: String!, include: ActorInclude): Actor
   }
 
-  Mutate {
-    createActor(actor: ActorInput!, include: ActorInclude): Actor
+  type Mutation {
+    createActor(rulesetID: String! actorTypeID: String!, include: ActorInclude): Actor
     mutateActor(id: String!, actor: ActorInput!, include: ActorInclude): Actor
   }
 `;

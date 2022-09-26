@@ -28,8 +28,8 @@ export const campaignTypeDefs = gql`
 
   # Any additional documents to include in the response
   input CampaignInclude {
-    ruleset: Boolean;
-    banner: Boolean;
+    ruleset: Boolean
+    banner: Boolean
   }
 
   # The where clause of the original documents
@@ -51,11 +51,11 @@ export const campaignTypeDefs = gql`
     bannerID: String
   }
 
-  Query {
+  type Query {
     campaigns(where: CampaignWhere, include: CampaignInclude): [Campaign]
     campaign(id: String!, include: CampaignInclude): Campaign
   }
-  Mutation {
+  type Mutation {
     createCampaign(campaign: CampaignCreateInput!, include: CampaignInclude): Campaign
     mutateCampaign(id: String!, campaign: CampaignMutateInput!, include: CampaignInclude): Campaign
   }

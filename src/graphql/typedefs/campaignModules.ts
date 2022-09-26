@@ -19,11 +19,11 @@ export const campaignModuleTypeDefs = gql`
 
   # Any additional modules to include in the response
   input CampaignModuleInclude {
-    campaign: Boolean;
-    module: Boolean;
+    campaign: Boolean
+    module: Boolean
   }
 
-  Query {
+  type Query {
     campaignModules(where: CampaignModuleWhere, include: CampaignModuleInclude): [CampaignModule]
   }
 `;

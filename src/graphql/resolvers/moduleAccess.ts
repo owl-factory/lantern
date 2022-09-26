@@ -29,7 +29,7 @@ async function getModuleAccess(_: unknown, { where, include }: GetModuleAccessAr
   return prisma.moduleAccess.findMany({ where, include });
 }
 
-export const moduleAccessResolver = {
+export const moduleAccessResolvers = {
   Query: {
     moduleAccess: getModuleAccess,
   },

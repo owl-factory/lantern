@@ -1,7 +1,5 @@
 import { ApolloError, gql, useMutation } from "@apollo/client";
 import { Button } from "@chakra-ui/react";
-import { AlertController } from "@owl-factory/alerts";
-import { rest } from "@owl-factory/https";
 import { Ruleset } from "@prisma/client";
 import { Page } from "components/design";
 import { RulesetForm } from "components/reroll/rulesets/Form";
@@ -10,7 +8,7 @@ import { useRouter } from "next/router";
 import React from "react";
 
 const CREATE_RULESET = gql`
-  mutation CreateRulesetByDev($ruleset: RulesetInput!) {
+  mutation CreateRulesetByDev($ruleset: RulesetCreateInput!) {
     createRuleset(ruleset: $ruleset) {
       name,
       alias

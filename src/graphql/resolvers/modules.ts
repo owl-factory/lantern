@@ -86,7 +86,7 @@ async function createModule(_: unknown, { module, include }: CreateModuleArgumen
   return prisma.module.create({
     data: {
       ...module as any,
-      ruleset: { connect: { id: module.rulesetID }},
+      ruleset: { connect: { id: ruleset.id }},
     },
     include,
   });

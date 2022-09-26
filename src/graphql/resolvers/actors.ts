@@ -5,6 +5,7 @@ const prisma = getPrismaClient();
 // Any additional documents to include
 interface ActorInclude {
   ruleset?: boolean;
+  actorType?: boolean;
 }
 
 // The where caluse for any *many queries
@@ -125,7 +126,7 @@ async function mutateActor(_: unknown, { id, actor, include }: MutateActorArgume
   });
 }
 
-export const ActorResolver = {
+export const actorResolvers = {
   Query: {
     actors: getActors,
     actor: getActor,

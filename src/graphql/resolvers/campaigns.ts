@@ -105,7 +105,7 @@ async function mutateCampaign(_: unknown, { id, campaign, include }: MutateCampa
 
   let banner;
   if (campaign.bannerID) {
-    banner = await prisma.file.findUnique({ where: { id: campaign.bannerID }});
+    banner = await prisma.asset.findUnique({ where: { id: campaign.bannerID }});
     if (!banner) { throw "Error"; }
   }
 
@@ -129,7 +129,7 @@ export const campaignResolvers = {
     campaigns: getCampaigns,
     campaign: getCampaign,
   },
-  Mutate: {
+  Mutation: {
     createCampaign,
     mutateCampaign,
   },

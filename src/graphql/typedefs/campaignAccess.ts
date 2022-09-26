@@ -27,7 +27,7 @@ export const campaignAccessTypeDefs = gql`
     campaign: Boolean
   }
 
-  Query {
+  type Query {
     campaignAccess(where: CampaignAccessWhere, include: CampaignAccessInclude): [CampaignAccess]
   }
 `;

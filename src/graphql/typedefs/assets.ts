@@ -33,12 +33,13 @@ export const assetTypeDefs = gql`
   }
 
   # Any additional documents to include in the response
-  input AssetInclude {}
+  input AssetInclude {
+    ownedBy: Boolean
+  }
 
   # Describes the fields used in creating an asset upload
   input AssetUploadInput {
     name: String!
-    fileType: String!
     mimetype: String!
     assetType: String!
     sizeInBytes: Int!
@@ -49,11 +50,11 @@ export const assetTypeDefs = gql`
     name: String
   }
 
-  Query {
+  type Query {
     assets(where: AssetWhere, include: AssetInclude): [Asset]
     asset(id: String!, include: AssetInclude): Asset
   }
-  Mutation {
+  type Mutation {
     uploadAsset(asset: AssetUploadInput!, include: AssetInclude): Asset
     validateAsset(id: String!): Asset
     mutateAsset(id: String!, asset: AssetMutateInput!, include: AssetInclude): Asset

@@ -13,11 +13,6 @@ export const typeDefs = gql`
     actorTypes: [ActorType]
   }
 
-  input RulesetInput {
-    name: String
-    alias: String
-  }
-
   type ActorType {
     id: String
     name: String
@@ -88,8 +83,6 @@ export const typeDefs = gql`
   }
 
   type Mutation {
-    createRuleset(ruleset: RulesetInput!): Ruleset
-
     createActorSheet(rulesetID: String!): ActorSheet
     mutateActorSheet(id: String!, actorSheet: ActorSheetInput!): ActorSheet
 

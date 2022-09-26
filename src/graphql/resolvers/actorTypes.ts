@@ -68,6 +68,7 @@ async function getActorTypes(_: unknown, { where, include }: GetActorTypesArgume
  * @returns A single actor type
  */
 async function getActorType(_: unknown, { id, include }: GetActorTypeArguments) {
+  console.log("id", id)
   return prisma.actorType.findUnique({
     where: { id },
     include,
@@ -97,6 +98,8 @@ async function createActorType(_: unknown, { actorType, include }: CreateActorTy
   return prisma.actorType.create({
     data: {
       ...actorType as any,
+      ruleset: { connect: { id: ruleset.id }},
+      defaultActorSheet: defaultActorSheet ? { connect: { id: defaultActorSheet.id }} : undefined,
     },
     include,
   });

@@ -33,7 +33,8 @@ export const actorTypeTypeDefs = gql`
 
   # Any additional documents to include in the response
   input ActorTypeInclude {
-    ruleset: Boolean;
+    ruleset: Boolean
+    actorType: Boolean
   }
 
   # Describes the fields used to create the actor type
@@ -51,11 +52,11 @@ export const actorTypeTypeDefs = gql`
     defaultActorTypeID: String
   }
 
-  Query {
+  type Query {
     actorTypes(where: ActorTypeWhere, include: ActorTypeInclude): [ActorType]
     actorType(id: String!, include: ActorTypeInclude): ActorType
   }
-  Mutation {
+  type Mutation {
     createActorType(actorType: ActorTypeCreateInput!, include: ActorTypeInclude): ActorType
     mutateActorType(id: String!, actorType: ActorTypeMutateInput!, include: ActorTypeInclude): ActorType
   }

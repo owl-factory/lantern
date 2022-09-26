@@ -22,7 +22,6 @@ async function createContentRelation(_: unknown, { parentID, childID }: CreateCo
   });
 }
 
-
 export const contentRelationResolvers = {
   Mutation: {
     createContentRelation,

@@ -31,7 +31,7 @@ async function getCampaignModules(_: unknown, { where, include }: GetCampaignMod
   });
 }
 
-export const campaignModuleResolver = {
+export const campaignModuleResolvers = {
   Query: {
     campaignModules: getCampaignModules,
   },

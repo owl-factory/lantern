@@ -17,14 +17,14 @@ interface SceneInclude {
 interface SceneCreateInput {
   name: string;
   campaignID?: string; // Required but will be deleted
-  config?: string;
+  config?: any;
 }
 
 // The fields that may be modified in a mutation of a scene
 interface SceneMutateInput {
   name?: string;
   campaignID?: string;
-  config?: string;
+  config?: any;
 }
 
 interface GetScenesArguments {

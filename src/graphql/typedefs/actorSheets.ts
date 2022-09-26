@@ -43,12 +43,12 @@ export const actorSheetTypeDefs = gql`
     ruleset: Boolean
   }
 
-  Query {
+  type Query {
     actorSheets(where: ActorSheetWhere, include: ActorSheetInclude): [ActorSheet]
     actorSheet(id: String!, include: ActorSheetInclude): ActorSheet
   }
-  Mutation {
+  type Mutation {
     createActorSheet(rulesetID: String!, include: ActorSheetInclude): ActorSheet
-    mutatedActorSheet()
+    mutateActorSheet(id: String!, actorSheet: ActorSheetInput!, include: ActorSheetInclude): ActorSheet
   }
 `;

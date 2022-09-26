@@ -8,7 +8,7 @@ export const contentRelationTypeDefs = gql`
     child: Content
   }
 
-  Mutation {
+  type Mutation {
     createContentRelation(parentID: String!, childID: String!): ContentRelation
   }
 `;

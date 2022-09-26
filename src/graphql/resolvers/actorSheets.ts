@@ -88,15 +88,14 @@ async function createActorSheet(_: unknown, { rulesetID, include }: CreateActorS
  * @returns The changed actor sheet
  */
 async function mutateActorSheet(_: unknown, { id, actorSheet }: MutateActorSheetArguments) {
+  console.log(id, actorSheet)
   return prisma.actorSheet.update({
-    data: {
-      ...actorSheet,
-    },
+    data: actorSheet,
     where: { id },
   });
 }
 
-export const actorSheetResolver = {
+export const actorSheetResolvers = {
   Query: {
     actorSheets: getActorSheets,
     actorSheet: getActorSheet,

@@ -62,11 +62,11 @@ export const contentTypeTypeDefs = gql`
     searchStyling: String
   }
 
-  Query {
+  type Query {
     contentTypes(where: ContentTypeWhere, include: ContentTypeInclude): [ContentType]
     contentType(id: String!, include: ContentTypeInclude): Content
   }
-  Mutation {
+  type Mutation {
     createContentType(
       rulesetID: String!,
       contentType: ContentTypeCreateInput!,

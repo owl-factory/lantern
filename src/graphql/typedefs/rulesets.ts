@@ -32,7 +32,9 @@ export const rulesetTypeDefs = gql`
   }
 
   # Any additional documents to include in the response
-  input RulesetInclude {}
+  input RulesetInclude {
+    id: Boolean
+  }
 
   # The where clause for the ruleset *many queries
   input RulesetWhere {
@@ -59,11 +61,11 @@ export const rulesetTypeDefs = gql`
     rules: Json
   }
 
-  Query {
+  type Query {
     rulesets(where: RulesetWhere, include: RulesetInclude): [Ruleset]
     ruleset(id: String!, include: RulesetInclude): Ruleset
   }
-  Mutation {
+  type Mutation {
     createRuleset(ruleset: RulesetCreateInput!, include: RulesetInclude): Ruleset
     mutateRuleset(id: String!, ruleset: RulesetMutateInput!, include: RulesetInclude): Ruleset
   }

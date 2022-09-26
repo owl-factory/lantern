@@ -148,7 +148,7 @@ async function mutateContent(_: unknown, { id, content, include }: MutateContent
   });
 }
 
-export const contentResolver = {
+export const contentResolvers = {
   Query: {
     contents: getContents,
     content: getContent,

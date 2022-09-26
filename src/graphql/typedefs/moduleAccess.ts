@@ -28,7 +28,7 @@ export const moduleAccessTypeDefs = gql`
     userID: String
   }
 
-  Query {
+  type Query {
     moduleAccess(where: ModuleAccessWhere, include: ModuleAccessInclude): [ModuleAccess]
   }
 `;

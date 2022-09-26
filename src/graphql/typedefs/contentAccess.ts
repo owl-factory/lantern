@@ -1,7 +1,7 @@
 import { gql } from "apollo-server-micro";
 
 export const contentAccessTypeDefs = gql`
-  enum ContentAccessValues = {
+  enum ContentAccessLevels {
     AWARE
     VIEW
     EDIT
@@ -32,18 +32,23 @@ export const contentAccessTypeDefs = gql`
   input ContentAccessCreateInput {
     contentID: String!
     userID: String!
-    access: ContentAccessValues
+    access: ContentAccessLevels
   }
 
   # Describes the fields to mutate existing content access
   input ContentAccessMutateInput {
-    access: ContentAccessValues
+    access: ContentAccessLevels
   }
 
-  Query {
+  type Query {
     contentAccess(where: ContentAccessWhere, include: ContentAccessInclude): [ContentAccess]
   }
-  Mutation {
-    createContentAccess(contentAccess: ContentAccessCreateInput, include: ContentAccessInclude)
+  type Mutation {
+    createContentAccess(contentAccess: ContentAccessCreateInput!, include: ContentAccessInclude): ContentAccess
+    mutateContentAccess(
+      id: String!,
+      contentAccess: ContentAccessMutateInput!,
+      include: ContentAccessInclude
+    ): ContentAccess
   }
 `;

@@ -8,7 +8,7 @@ export const contentTypeDefs = gql`
     rulesetID: String
     ruleset: Ruleset
     contentTypeID: String
-    contentType: contentType
+    contentType: ContentType
     moduleID: String
     module: Module
     isPublic: Boolean
@@ -44,7 +44,7 @@ export const contentTypeDefs = gql`
     alias: String
     rulesetID: String!
     contentTypeID: String!
-    moduleID: String!
+    moduleID: String
     isPublic: Boolean
   }
 
@@ -57,11 +57,11 @@ export const contentTypeDefs = gql`
     fields: Json
   }
 
-  Query {
+  type Query {
     contents(where: ContentWhere, include: ContentInclude): [Content]
     content(id: String!, include: ContentInclude): Content
   }
-  Mutation {
+  type Mutation {
     createContent(content: ContentCreateInput!, include: ContentInclude): Content
     mutateContent(id: String!, content: ContentMutateInput!, include: ContentInclude): Content
   }
