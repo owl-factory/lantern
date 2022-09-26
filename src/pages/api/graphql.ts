@@ -86,7 +86,7 @@ const apolloServer = new ApolloServer({
 
     rulesetResolvers,
 
-    // userResolvers,
+    userResolvers,
   ],
   plugins: [
     ApolloServerPluginLandingPageGraphQLPlayground(),
