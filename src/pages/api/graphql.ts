@@ -1,6 +1,5 @@
 import "reflect-metadata";
 import { ApolloServer } from "apollo-server-micro";
-import { resolvers, typeDefs } from "src/graphql";
 import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core";
 import { NextApiRequest, NextApiResponse } from "next";
 import { rulesetTypeDefs } from "src/graphql/typedefs/rulesets";
