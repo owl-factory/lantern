@@ -1,29 +1,36 @@
 import { Button } from "@chakra-ui/react";
+import { AlertController } from "@owl-factory/alerts";
+import { rest } from "@owl-factory/https";
 import { ActorSheet, Ruleset } from "@prisma/client";
 import { Page } from "components/design";
 import { ActorSheetMediatorHandler } from "controllers/mediators/ActorSheetHandler";
 import { observer } from "mobx-react-lite";
+import { NextPageContext } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { ActorController, ActorSheetForm } from "nodes/actor-sheets";
 import { Mediator } from "nodes/mediator";
 import React from "react";
-import { ActorSheetDocument } from "types/documents/ActorSheet";
+
+interface EditActorSheet {
+  actorSheet: ActorSheet;
+  ruleset: Ruleset;
+}
 
 /**
  * Renders a page for editing an already existing actor sheet's layout
  */
-function EditActorSheet() {
+function EditActorSheet(props: EditActorSheet) {
   const router = useRouter();
-  const ref = router.query.ref as string;
 
-  const [ renderID, setRenderID ] = React.useState("");
-  const actorSheet = {} as ActorSheet;
-  const ruleset = {} as Ruleset;
+  const [ renderID, setRenderID ] = React.useState(props.actorSheet.id);
+  const actorSheet = props.actorSheet;
+  const ruleset = props.ruleset;
 
   // Initializes the Mediator
   React.useEffect(() => {
     Mediator.set(ActorSheetMediatorHandler);
+    ActorController.newRender("", ruleset.id, "development-sheet");
     return () => { Mediator.reset(); };
   }, []);
 
@@ -34,12 +41,19 @@ function EditActorSheet() {
    * The function to run on form submit. Updates an existing actor sheet
    * @param values The updated actor sheet values to save
    */
-  function save(values: Partial<ActorSheet>) {
-    // if (!ruleset?.ref) { return; }
-    // values.ruleset = { ref: ruleset.ref };
-    // ActorSheetData.update(values).then(() => {
-    //   router.push(`/dev/actor-sheets`);
-    // });
+  async function save(values: Partial<ActorSheet>) {
+    try {
+      const result = await rest.patch(`/api/dev/actor-sheets/${actorSheet.id}`, { actorSheet: values });
+      if (!result.success) {
+        AlertController.error(`${values.name} could not be updated. ${result.message}`);
+        return;
+      }
+      AlertController.success(`${values.name} was successfully updated!`);
+      router.push(`/dev/actor-sheets`);
+      return;
+    } catch (e) {
+      AlertController.error(`An unexpected error occured while attempting to save ${values.name}. ${e}`);
+    }
   }
 
   return (
@@ -50,9 +64,13 @@ function EditActorSheet() {
       </div>
       <i>A {ruleset.name} actor sheet</i>
       <hr/>
-      <ActorSheetForm renderID={renderID} ruleset={ruleset.id as string} actorSheet={actorSheet} onSubmit={save}/>
+      <ActorSheetForm renderID={renderID} ruleset={ruleset} actorSheet={actorSheet} onSubmit={save}/>
     </Page>
   );
+}
+
+export async function getServerSideProps(ctx: NextPageContext) {
+  return { props: { actorSheet: {}, ruleset: {} } };
 }
 
 export default observer(EditActorSheet);
