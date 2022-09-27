@@ -38,8 +38,16 @@ export const actorTypeDefs = gql`
     deletingUser: User
   }
 
-  # The input for creating and mutating the Actor
-  input ActorInput {
+  input ActorCreateInput {
+    name: String!
+    rulesetID: String!
+    actorTypeID: String!
+    isPublic: Boolean
+    publicAccess: String
+  }
+
+  # The input for mutating the Actor
+  input ActorMutateInput {
     name: String
     actorTypeID: String
     actorSheetID: String
@@ -65,7 +73,7 @@ export const actorTypeDefs = gql`
   }
 
   type Mutation {
-    createActor(rulesetID: String! actorTypeID: String!, include: ActorInclude): Actor
-    mutateActor(id: String!, actor: ActorInput!, include: ActorInclude): Actor
+    createActor(actor: ActorCreateInput!, include: ActorInclude): Actor
+    mutateActor(id: String!, actor: ActorMutateInput!, include: ActorInclude): Actor
   }
 `;

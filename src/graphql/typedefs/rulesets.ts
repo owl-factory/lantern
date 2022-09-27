@@ -33,7 +33,7 @@ export const rulesetTypeDefs = gql`
 
   # Any additional documents to include in the response
   input RulesetInclude {
-    id: Boolean
+    actorTypes: Boolean
   }
 
   # The where clause for the ruleset *many queries

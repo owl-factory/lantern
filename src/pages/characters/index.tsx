@@ -1,5 +1,7 @@
 import { Actor } from "@prisma/client";
+import ClientOnly from "components/ClientOnly";
 import { Page } from "components/design";
+import { ActorList } from "components/pages/characters";
 import React from "react";
 
 interface CharactersPageProps {
@@ -8,16 +10,27 @@ interface CharactersPageProps {
 
 /**
  * Renders a page for displaying all of a user's characters
- * @returns 
  */
 function CharactersPage(props: CharactersPageProps) {
-  // TODO - group the characters by rulesets
+  const [activeActor, $setActiveActor] = React.useState<string | null>(null);
 
-  const [ current, setCurrent ] = React.useState<string | undefined>(undefined);
+  /**
+   * Sets the current actor
+   * @param actorID The actor to set as the current actor
+   */
+  function setActiveCharacter(actorID: string | null) {
+    if (actorID === null || actorID === activeActor) {
+      $setActiveActor(null);
+      return;
+    }
+    $setActiveActor(actorID);
+  }
 
   return (
     <Page >
-      <div style={{ float: "left", width: "200px" }}>Characters</div>
+      <div style={{ float: "left", width: "200px" }}>
+        <ClientOnly><ActorList activeActor={activeActor} setActiveActor={setActiveCharacter}/></ClientOnly>
+      </div>
       <div style={{ float: "right", width: "200px" }}>Chat</div>
       <h1>Select Character</h1>
       Character stuff

@@ -1,10 +1,19 @@
 import { gql } from "apollo-server-micro";
 
 export const actorTypeTypeDefs = gql`
+  enum BaseActorType {
+    PC,
+    NPC,
+    SHOP,
+    STORAGE,
+    TRANSPORT,
+    NONE,
+  }
+
   type ActorType {
     id: String
     name: String
-    baseActorType: String
+    baseActorType: BaseActorType
     rulesetID: String
     ruleset: Ruleset
 
@@ -40,7 +49,7 @@ export const actorTypeTypeDefs = gql`
   # Describes the fields used to create the actor type
   input ActorTypeCreateInput {
     name: String!
-    baseActorType: String!
+    baseActorType: BaseActorType!
     rulesetID: String!
     defaultActorSheetID: String!
   }
@@ -48,7 +57,7 @@ export const actorTypeTypeDefs = gql`
   # Describes the fields used to mutate an actor type
   input ActorTypeMutateInput {
     name: String
-    baseActorType: String
+    baseActorType: BaseActorType
     defaultActorTypeID: String
   }
 

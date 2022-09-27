@@ -14,8 +14,16 @@ interface ActorWhere {
   rulesetID?: string;
 }
 
+interface ActorCreateInput {
+  name: string;
+  rulesetID: string;
+  actorTypeID: string;
+  isPublic?: boolean;
+  publicAccess?: string;
+}
+
 // The inputs to use for creating and mutating the actor
-interface ActorInput {
+interface ActorMutateInput {
   name?: string | null;
   actorTypeID?: string;
   actorSheetID?: string;
@@ -36,13 +44,13 @@ interface GetActorArguments {
 }
 
 interface CreateActorArguments {
-  rulesetID: string;
-  actorTypeID: string;
+  actor: ActorCreateInput;
+  include: ActorInclude;
 }
 
 interface MutateActorArguments {
   id: string;
-  actor: ActorInput;
+  actor: ActorMutateInput;
   include: ActorInclude;
 }
 
@@ -73,19 +81,22 @@ async function getActor(_: unknown, { id, include }: GetActorArguments) {
  * @param actorTypeID The type of actor that this is
  * @returns The created actor
  */
-async function createActor(_: unknown, { rulesetID, actorTypeID }: CreateActorArguments) {
+async function createActor(_: unknown, { actor }: CreateActorArguments) {
+  console.log(actor)
   // Fetches the actor type to ensure it is valid
-  const actorType = await prisma.actorType.findUnique({ where: { id: actorTypeID }});
+  const actorType = await prisma.actorType.findUnique({ where: { id: actor.actorTypeID }});
   if (!actorType) { return undefined; }
 
-  return prisma.actor.create({
+  const newActor = await prisma.actor.create({
     data: {
       name: "Untitled Actor",
-      ruleset: { connect: { id: rulesetID }},
-      actorType: { connect: { id: actorTypeID }},
+      ruleset: { connect: { id: actor.rulesetID }},
+      actorType: { connect: { id: actor.actorTypeID }},
       actorSheet: { connect: { id: actorType.defaultActorSheetID as string }},
     },
   });
+  console.log(newActor);
+  return newActor;
 }
 
 /**
