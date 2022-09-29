@@ -17,7 +17,7 @@ import { parseXML } from "../utilities/parser";
 import { StateController } from "./subcontrollers/StateController";
 import { Mediator } from "nodes/mediator";
 import { MediatorPost, MediatorRequest } from "nodes/mediator/types/mediator";
-import { Actor, ActorSheet } from "@prisma/client";
+import { Actor, ActorSheet, Ruleset } from "@prisma/client";
 
 
 /**
@@ -70,8 +70,8 @@ class $ActorController {
    * @param actorID The ID of the actor being loaded in
    * @param actor The actor's data being loaded in
    */
-  public loadActor(actorID: string, actor: Partial<ActorDocument>) {
-   this.load(DataSource.Actor, actorID, actor.values);
+  public loadActor(actorID: string, actor: Actor) {
+   this.load(DataSource.Actor, actorID, actor.fields);
    this.load(DataSource.Content, actorID, actor.content);
   }
 
@@ -80,9 +80,9 @@ class $ActorController {
    * @param rulesetID The ID of the ruleset being loaded in
    * @param ruleset The ruleset data being loaded in
    */
-  public loadRuleset(rulesetID: string, ruleset: Partial<RulesetDocument>) {
+  public loadRuleset(rulesetID: string, ruleset: Ruleset) {
     if (!ruleset.rules) { this.load(DataSource.Ruleset, rulesetID, {}); }
-    else { this.load(DataSource.Ruleset, rulesetID, ruleset.rules.values); }
+    else { this.load(DataSource.Ruleset, rulesetID, (ruleset.rules as any).values); }
   }
 
   /**

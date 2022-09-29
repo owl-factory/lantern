@@ -1,4 +1,3 @@
-import { gql, useQuery } from "@apollo/client";
 import {
   Button,
   Modal,
@@ -10,29 +9,23 @@ import {
   ModalOverlay,
 } from "@chakra-ui/react";
 import { Actor } from "@prisma/client";
-import { FormikHelpers } from "formik";
 
 import React from "react";
-import { NewCharacterForm } from "./NewCharacterForm";
+import { NewActorForm } from "./NewActorForm";
 
-interface NewCharacterModalProps {
+interface NewActorModalProps {
   isOpen: boolean;
-  onOpen?: () => void;
   onClose: () => void;
   setActiveActor: (id: string | null) => void;
 }
 
-const CREATE_ACTOR = gql`
-  mutation CreateActor($rulesetID: String!, $actorTypeID: String!) {
-    createActor(rulesetID: $rulesetID, actorTypeID: $actorTypeID) {
-      id, name
-    }
-  }
-`;
-
-
-
-export function NewCharacterModal(props: NewCharacterModalProps) {
+/**
+ * Renders a modal containing a form to create a new character
+ * @param isOpen True if the modal is open, false otherwise
+ * @param onClose The function to close the modal
+ * @param setActiveActor The function to set the current actor
+ */
+export function NewActorModal(props: NewActorModalProps) {
 
   function onCompleted(actor: Actor) {
     props.setActiveActor(actor.id);
@@ -46,7 +39,7 @@ export function NewCharacterModal(props: NewCharacterModalProps) {
           <ModalHeader>New Character</ModalHeader>
           <ModalCloseButton/>
           <ModalBody>
-            <NewCharacterForm onCompleted={onCompleted}/>
+            <NewActorForm onCompleted={onCompleted}/>
           </ModalBody>
           <ModalFooter>
             <Button onClick={props.onClose}>Cancel</Button>

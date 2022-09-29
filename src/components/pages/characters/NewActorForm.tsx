@@ -5,21 +5,23 @@ import { Actor, ActorType, Ruleset } from "@prisma/client";
 import { Form, Formik, FormikHelpers, FormikProps } from "formik";
 import React from "react";
 
-interface NewCharacterFormProps {
+interface NewActorFormProps {
   onCompleted: (actor: Actor) => void;
 }
 
+// The typing of the form contents and submission
 interface FormValues {
   rulesetID: string;
   actorTypeID: string;
 }
 
-
+// The initial values of the form
 const INITIAL_VALUES = {
   rulesetID: "",
   actorTypeID: "",
 };
 
+// Query to get all available rulesets
 const GET_AVAILABLE_RULESETS = gql`
   query Rulesets($include: RulesetInclude) {
     rulesets(include: $include) {
@@ -30,6 +32,7 @@ const GET_AVAILABLE_RULESETS = gql`
   }
 `;
 
+// Mutation to create an actor
 const CREATE_ACTOR = gql`
   mutation CreateActor($actor: ActorCreateInput!) {
     createActor(actor: $actor) {
@@ -38,7 +41,11 @@ const CREATE_ACTOR = gql`
   }
 `;
 
-export function NewCharacterForm(props: NewCharacterFormProps) {
+/**
+ * Renders a form for creating a new character
+ * @param onCompleted The function to run on the successful completion of the submission
+ */
+export function NewActorForm(props: NewActorFormProps) {
   const rulesetQuery = useQuery(GET_AVAILABLE_RULESETS, { variables: { include: { actorTypes: true }}});
   const [ createActor ]  = useMutation(CREATE_ACTOR);
 
@@ -55,6 +62,11 @@ export function NewCharacterForm(props: NewCharacterFormProps) {
     }
   }
 
+  /**
+   * Sets the actor type options for the currently selected ruleset
+   * @param e The event triggered by changing the ruleset
+   * @param formikProps The formik props for manipulating the form
+   */
   function onRulesetChange(
     e: any,
     formikProps: FormikProps<FormValues>
@@ -79,14 +91,22 @@ export function NewCharacterForm(props: NewCharacterFormProps) {
 
     if (!ruleset) { return; }
     for (const actorType of ruleset.actorTypes) {
-      actorTypeOptions.push(<option value={actorType.id}>{actorType.name}</option>);
+      actorTypeOptions.push(<option key={actorType.id} value={actorType.id}>{actorType.name}</option>);
     }
   }
 
+  /**
+   * Handles any functionality that needs to run after the successful creation of the actor
+   * @param data The data returned by the successful actor creation
+   */
   function onCompleted(data: { createActor: Actor }) {
     props.onCompleted(data.createActor);
   }
 
+  /**
+   * Handles the case where the actor fails to create
+   * @param error The error returned by Apollo
+   */
   function onError(error: ApolloError) {
     console.error(error);
     AlertController.error(`The character could not be created`);
@@ -119,16 +139,19 @@ export function NewCharacterForm(props: NewCharacterFormProps) {
     >
       {(formikProps: FormikProps<FormValues>) => (
         <Form id="createNewCharacterForm">
+
           <label>Ruleset</label>
           <Select name="rulesetID" onChange={(values: any) => onRulesetChange(values, formikProps)}>
             <option value="">-- Select a Ruleset --</option>
             { rulesetOptions }
           </Select>
+
           <label>Character Type</label>
           <Select name="actorTypeID">
             <option value="">-- Select a Type --</option>
             { actorTypeOptions }
           </Select>
+
         </Form>
       )}
     </Formik>

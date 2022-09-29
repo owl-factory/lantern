@@ -1,18 +1,22 @@
+import { Box, Flex } from "@chakra-ui/react";
 import { Actor } from "@prisma/client";
 import ClientOnly from "components/ClientOnly";
 import { Page } from "components/design";
-import { ActorList } from "components/pages/characters";
+import { ActorList, ActorView } from "components/pages/characters";
+import { ActorSheetMediatorHandler } from "controllers/mediators/ActorSheetHandler";
+import { Mediator } from "nodes/mediator";
 import React from "react";
-
-interface CharactersPageProps {
-  actors: Actor[]
-}
 
 /**
  * Renders a page for displaying all of a user's characters
  */
-function CharactersPage(props: CharactersPageProps) {
+function CharactersPage() {
   const [activeActor, $setActiveActor] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    Mediator.set(ActorSheetMediatorHandler);
+    return () => { Mediator.reset(); };
+  }, []);
 
   /**
    * Sets the current actor
@@ -28,22 +32,17 @@ function CharactersPage(props: CharactersPageProps) {
 
   return (
     <Page >
-      <div style={{ float: "left", width: "200px" }}>
-        <ClientOnly><ActorList activeActor={activeActor} setActiveActor={setActiveCharacter}/></ClientOnly>
-      </div>
-      <div style={{ float: "right", width: "200px" }}>Chat</div>
-      <h1>Select Character</h1>
-      Character stuff
+      <Flex>
+        <Box  width="250px" marginRight="10px">
+          <ClientOnly><ActorList activeActor={activeActor} setActiveActor={setActiveCharacter}/></ClientOnly>
+        </Box>
+        <Box width="100%">
+          <ClientOnly><ActorView activeActor={activeActor}/></ClientOnly>
+        </Box>
+        <Box marginLeft="10px"width="250px">Chat</Box>
+      </Flex>
     </Page>
   );
-}
-
-export function getServerSideProps() {
-  return {
-    props: {
-      actors: [], // Should load all basic character information
-    },
-  };
 }
 
 export default CharactersPage;

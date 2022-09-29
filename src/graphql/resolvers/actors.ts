@@ -5,6 +5,7 @@ const prisma = getPrismaClient();
 // Any additional documents to include
 interface ActorInclude {
   ruleset?: boolean;
+  actorSheet?: boolean;
   actorType?: boolean;
 }
 
@@ -54,6 +55,11 @@ interface MutateActorArguments {
   include: ActorInclude;
 }
 
+interface DeleteActorArguments {
+  id: string;
+  softDelete?: boolean;
+}
+
 /**
  * Fetches a list of many actors
  * @param include Determines which documents should be joined and included when pulling
@@ -61,7 +67,7 @@ interface MutateActorArguments {
  */
 async function getActors(_: unknown, { where, include }: GetActorsArguments, extra: any) {
   return prisma.actor.findMany({
-    where,
+    where: { ...where, deletedAt: null },
     include,
   });
 }
@@ -82,7 +88,6 @@ async function getActor(_: unknown, { id, include }: GetActorArguments) {
  * @returns The created actor
  */
 async function createActor(_: unknown, { actor }: CreateActorArguments) {
-  console.log(actor)
   // Fetches the actor type to ensure it is valid
   const actorType = await prisma.actorType.findUnique({ where: { id: actor.actorTypeID }});
   if (!actorType) { return undefined; }
@@ -95,7 +100,6 @@ async function createActor(_: unknown, { actor }: CreateActorArguments) {
       actorSheet: { connect: { id: actorType.defaultActorSheetID as string }},
     },
   });
-  console.log(newActor);
   return newActor;
 }
 
@@ -125,6 +129,12 @@ async function mutateActor(_: unknown, { id, actor, include }: MutateActorArgume
   delete actor.actorSheetID;
   delete actor.actorTypeID;
 
+  // Ensures that the actor name is dependent on the actor.fields.name value
+  delete actor.name;
+  if (actor.fields && actor.fields.name) {
+    actor.name = actor.fields.name;
+  }
+
   return prisma.actor.update({
     data: {
       ...actor as any,
@@ -137,6 +147,23 @@ async function mutateActor(_: unknown, { id, actor, include }: MutateActorArgume
   });
 }
 
+/**
+ * Allows for deleting an actor
+ * @param id The ID of the actor to delete
+ * @param softDelete Soft deletes the actor by marking it as deleted
+ * @returns A boolean marking the success
+ */
+async function deleteActor(_: unknown, { id, softDelete }: DeleteActorArguments) {
+  const actor = await prisma.actor.findUnique({ where: { id } });
+  if (!actor) { return false; }
+  if (softDelete) {
+    await prisma.actor.update({ data: { deletedAt: new Date() }, where: { id } });
+    return true;
+  }
+  prisma.actor.delete({ where: { id } });
+  return true;
+}
+
 export const actorResolvers = {
   Query: {
     actors: getActors,
@@ -145,5 +172,6 @@ export const actorResolvers = {
   Mutation: {
     createActor,
     mutateActor,
+    deleteActor,
   },
 };

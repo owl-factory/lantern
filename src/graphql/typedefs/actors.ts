@@ -16,6 +16,9 @@ export const actorTypeDefs = gql`
     actorTypeID: String
     actorType: ActorType
 
+    actorSheetID: String
+    actorSheet: ActorSheet
+
     campaignID: String
     campaign: Campaign
 
@@ -51,6 +54,8 @@ export const actorTypeDefs = gql`
     name: String
     actorTypeID: String
     actorSheetID: String
+    fields: Json
+    content: Json
     isPublic: Boolean
     publicAccess: String
   }
@@ -59,6 +64,7 @@ export const actorTypeDefs = gql`
   input ActorInclude {
     ruleset: Boolean
     actorType: Boolean
+    actorSheet: Boolean
   }
 
   # The where clause for *many queries
@@ -75,5 +81,6 @@ export const actorTypeDefs = gql`
   type Mutation {
     createActor(actor: ActorCreateInput!, include: ActorInclude): Actor
     mutateActor(id: String!, actor: ActorMutateInput!, include: ActorInclude): Actor
+    deleteActor(id: String!, softDelete: Boolean): Boolean
   }
 `;
