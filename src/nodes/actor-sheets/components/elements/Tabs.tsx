@@ -1,3 +1,4 @@
+import { Box } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
 import { ActorController } from "nodes/actor-sheets/controllers/ActorSheetController";
 import { StateType } from "nodes/actor-sheets/enums/stateTypes";
@@ -27,12 +28,13 @@ interface SheetTabProps {
  * @param index The current tab's index
  */
 function SheetTab(props: SheetTabProps) {
+  let activeClass = "";
   const style: any = {};
-  if (props.activeTab === props.index) { style.backgroundColor = "lightblue"; }
+  if (props.activeTab === props.index) { activeClass = "tab-active"; }
   return (
-    <div style={style} onClick={() => props.setActiveTab(props.index)}>
+    <Box className={`tab ${activeClass}`} style={style} onClick={() => props.setActiveTab(props.index)}>
       {props.name}
-    </div>
+    </Box>
   );
 }
 

@@ -1,8 +1,8 @@
 import React from "react";
 import { BorderDescriptor } from "nodes/actor-sheets/types/elements/border";
-import style from "../../styles/Border.module.scss";
 import { SheetElementProps } from "../../types";
 import { SheetChildren } from "./Children";
+import { Box } from "@chakra-ui/react";
 
 /**
  * Renders a border around given children
@@ -10,8 +10,8 @@ import { SheetChildren } from "./Children";
  */
 export function SheetBorder(props: SheetElementProps<BorderDescriptor>) {
   return (
-    <div className={`${style.border}`}>
+    <Box className={`border `}>
       <SheetChildren {...props}/>
-    </div>
+    </Box>
   );
 }

@@ -91,3 +91,58 @@ $input-bg: $body-bg;
     border-radius: 5px;
   }
 }
+
+// The wrapper for the whole contents of the actor sheet
+.actor-sheet-wrapper {
+  .background {
+    margin: 1px;
+    background-color: lightgray;
+  }
+  .border {
+    margin-bottom: 0.5em;
+    padding: 0.25em;
+
+    border-style: solid;
+    border-width: 1px;
+    
+  }
+  .button {
+    padding: 0.25em;
+    height: auto;
+  }
+  .column {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+  }
+
+  .inline-wrapper {
+    display: block;
+  }
+
+  .inline {
+    display: flex;
+  }
+
+  .input {
+    border-bottom: 1px solid black;
+
+    &.number-input {
+      width: 2em;
+    }
+
+    &:hover,&:active {
+      outline: none;
+    }
+  }
+
+  .row {
+    display: flex;
+    margin-bottom: 5px;
+  }
+
+  .tab {
+    &.tab-active {
+      background-color: lightblue;
+    }
+  }
+}

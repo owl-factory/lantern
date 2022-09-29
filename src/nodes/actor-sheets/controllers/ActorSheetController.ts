@@ -96,7 +96,7 @@ class $ActorController {
     const variables = extractVariables(xml);
 
     this.load(DataSource.Sheet, sheetID, variables);
-    this.sheetController.load(sheetID, sheet.layout);
+    this.sheetController.load(sheetID, sheet.layout, sheet.styling as string);
   }
 
   /**

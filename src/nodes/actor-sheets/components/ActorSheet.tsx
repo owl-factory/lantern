@@ -1,5 +1,5 @@
 import { gql, useMutation } from "@apollo/client";
-import { Button } from "@chakra-ui/react";
+import { Box, Button } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { apolloClient } from "src/graphql/apollo-client";
@@ -57,10 +57,14 @@ export const ActorSheetComponent = observer((props: ActorSheetProps) => {
     saveActor({ variables: { id: props.id, actor: { fields: actor.fields, content: actor.content } }});
   }
 
+  const sheetID = ActorController.$renders[props.id]?.sheetID || "";
+
   return (
     <>
       <Button type="button" onClick={save}>Save</Button>
-      {sheetElements}
+      <Box className={`actor-sheet-wrapper actor-sheet-${sheetID}`}>
+        {sheetElements}
+      </Box>
     </>
   );
 });

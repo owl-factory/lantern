@@ -35,6 +35,7 @@ export const SheetSelect = observer((props: SheetElementProps<SelectDescriptor>)
   return (
     <select
       name={element.name}
+      className={`select`}
       defaultValue={ActorController.getActor(props.renderID, element.name, props.properties).toString()}
       onChange={onChange}
     >

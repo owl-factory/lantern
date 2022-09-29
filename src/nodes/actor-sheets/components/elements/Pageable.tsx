@@ -7,6 +7,7 @@ import { StateType } from "nodes/actor-sheets/enums/stateTypes";
 import { ActorController } from "nodes/actor-sheets/controllers/ActorSheetController";
 import { observer } from "mobx-react-lite";
 import { SheetChildren } from "./Children";
+import { Box } from "@chakra-ui/react";
 
 /**
  * Renders an image of the background
@@ -25,9 +26,9 @@ export const SheetPageable = observer((props: SheetElementProps<PageableDescript
   }
 
   return (
-    <div>
+    <Box className={`pageable`}>
       <SheetPage {...props} element={props.element.pages[activeTab]}/>
       <SheetChildren {...props} />
-    </div>
+    </Box>
   );
 });

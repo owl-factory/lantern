@@ -3,6 +3,7 @@ import React from "react";
 import { LabelDescriptor } from "nodes/actor-sheets/types/elements";
 import { ActorController } from "../../controllers/ActorSheetController";
 import { SheetElementProps } from "../../types";
+import { Box } from "@chakra-ui/react";
 
 const VARIABLE_FIELDS = ["for", "text"];
 
@@ -23,10 +24,10 @@ export const SheetLabel = observer((props: SheetElementProps<LabelDescriptor>) =
   }, []);
 
   return (
-    <div>
-      <label htmlFor={element.for}>
+    <Box>
+      <label className={`label`} htmlFor={element.for}>
         {element.text}
       </label>
-    </div>
+    </Box>
   );
 });
