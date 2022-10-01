@@ -5,6 +5,7 @@ const prisma = getPrismaClient();
 // Any additional documents to include
 interface ActorInclude {
   ruleset?: boolean;
+  actorSheet?: boolean;
   actorType?: boolean;
 }
 
@@ -14,8 +15,16 @@ interface ActorWhere {
   rulesetID?: string;
 }
 
+interface ActorCreateInput {
+  name: string;
+  rulesetID: string;
+  actorTypeID: string;
+  isPublic?: boolean;
+  publicAccess?: string;
+}
+
 // The inputs to use for creating and mutating the actor
-interface ActorInput {
+interface ActorMutateInput {
   name?: string | null;
   actorTypeID?: string;
   actorSheetID?: string;
@@ -36,14 +45,19 @@ interface GetActorArguments {
 }
 
 interface CreateActorArguments {
-  rulesetID: string;
-  actorTypeID: string;
+  actor: ActorCreateInput;
+  include: ActorInclude;
 }
 
 interface MutateActorArguments {
   id: string;
-  actor: ActorInput;
+  actor: ActorMutateInput;
   include: ActorInclude;
+}
+
+interface DeleteActorArguments {
+  id: string;
+  softDelete?: boolean;
 }
 
 /**
@@ -53,7 +67,7 @@ interface MutateActorArguments {
  */
 async function getActors(_: unknown, { where, include }: GetActorsArguments, extra: any) {
   return prisma.actor.findMany({
-    where,
+    where: { ...where, deletedAt: null },
     include,
   });
 }
@@ -73,19 +87,20 @@ async function getActor(_: unknown, { id, include }: GetActorArguments) {
  * @param actorTypeID The type of actor that this is
  * @returns The created actor
  */
-async function createActor(_: unknown, { rulesetID, actorTypeID }: CreateActorArguments) {
+async function createActor(_: unknown, { actor }: CreateActorArguments) {
   // Fetches the actor type to ensure it is valid
-  const actorType = await prisma.actorType.findUnique({ where: { id: actorTypeID }});
+  const actorType = await prisma.actorType.findUnique({ where: { id: actor.actorTypeID }});
   if (!actorType) { return undefined; }
 
-  return prisma.actor.create({
+  const newActor = await prisma.actor.create({
     data: {
       name: "Untitled Actor",
-      ruleset: { connect: { id: rulesetID }},
-      actorType: { connect: { id: actorTypeID }},
+      ruleset: { connect: { id: actor.rulesetID }},
+      actorType: { connect: { id: actor.actorTypeID }},
       actorSheet: { connect: { id: actorType.defaultActorSheetID as string }},
     },
   });
+  return newActor;
 }
 
 /**
@@ -114,6 +129,12 @@ async function mutateActor(_: unknown, { id, actor, include }: MutateActorArgume
   delete actor.actorSheetID;
   delete actor.actorTypeID;
 
+  // Ensures that the actor name is dependent on the actor.fields.name value
+  delete actor.name;
+  if (actor.fields && actor.fields.name) {
+    actor.name = actor.fields.name;
+  }
+
   return prisma.actor.update({
     data: {
       ...actor as any,
@@ -126,6 +147,23 @@ async function mutateActor(_: unknown, { id, actor, include }: MutateActorArgume
   });
 }
 
+/**
+ * Allows for deleting an actor
+ * @param id The ID of the actor to delete
+ * @param softDelete Soft deletes the actor by marking it as deleted
+ * @returns A boolean marking the success
+ */
+async function deleteActor(_: unknown, { id, softDelete }: DeleteActorArguments) {
+  const actor = await prisma.actor.findUnique({ where: { id } });
+  if (!actor) { return false; }
+  if (softDelete) {
+    await prisma.actor.update({ data: { deletedAt: new Date() }, where: { id } });
+    return true;
+  }
+  prisma.actor.delete({ where: { id } });
+  return true;
+}
+
 export const actorResolvers = {
   Query: {
     actors: getActors,
@@ -134,5 +172,6 @@ export const actorResolvers = {
   Mutation: {
     createActor,
     mutateActor,
+    deleteActor,
   },
 };

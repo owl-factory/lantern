@@ -3,7 +3,9 @@ import { getPrismaClient } from "utilities/prisma";
 const prisma = getPrismaClient();
 
 // Any additional documents to include in the response
-type RulesetInclude = {};
+type RulesetInclude = {
+  actorTypes: boolean;
+};
 
 // The where clause of the *many queries
 interface RulesetWhere {
