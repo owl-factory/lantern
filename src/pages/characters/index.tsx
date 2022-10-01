@@ -1,5 +1,4 @@
 import { Box, Flex } from "@chakra-ui/react";
-import { Actor } from "@prisma/client";
 import ClientOnly from "components/ClientOnly";
 import { Page } from "components/design";
 import { ActorList, ActorView } from "components/pages/characters";
@@ -23,7 +22,7 @@ function CharactersPage() {
    * @param actorID The actor to set as the current actor
    */
   function setActiveCharacter(actorID: string | null) {
-    if (actorID === null || actorID === activeActor) {
+    if (actorID ===   null || actorID === activeActor) {
       $setActiveActor(null);
       return;
     }

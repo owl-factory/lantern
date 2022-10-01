@@ -18,6 +18,7 @@
     "@chakra-ui/react": "^2.2.9",
     "@emotion/react": "^11.10.0",
     "@emotion/styled": "^11.10.0",
+    "@monaco-editor/react": "^4.4.6",
     "@prisma/client": "^4.3.1",
     "@types/jsonwebtoken": "^8.5.9",
     "apollo-server-micro": "^3.10.2",

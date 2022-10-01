@@ -63,8 +63,8 @@ export function ActorView(props: ActorViewProps) {
     return <>Select a character</>;
   }
 
-  if (loading || data === undefined) { <>Loading</>; }
-  if (error) { <>Error! {error}</>; }
+  if (loading || data === undefined) { return <>Loading</>; }
+  if (error) { return <>Error! {error}</>; }
 
   return <><ActorSheet id={props.activeActor}/></>;
 }
