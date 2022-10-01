@@ -10,7 +10,7 @@ import { SheetChildren } from "./Children";
  */
 export function SheetColumn(props: SheetElementProps<ColumnDescriptor>) {
   return (
-    <div className={`${style.column}`} style={{flexGrow: props.element.weight}}>
+    <div className="column" style={{flexGrow: props.element.weight}}>
       <SheetChildren {...props}/>
     </div>
   );

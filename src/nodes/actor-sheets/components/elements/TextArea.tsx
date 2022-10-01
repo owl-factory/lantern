@@ -1,6 +1,5 @@
 import React from "react";
 import { TextAreaDescriptor } from "nodes/actor-sheets/types/elements";
-import style from "../../styles/Input.module.scss";
 import { SheetElementProps } from "../../types";
 import { ActorController } from "../../controllers/ActorSheetController";
 
@@ -47,7 +46,7 @@ export function SheetTextArea(props: SheetElementProps<TextAreaDescriptor>) {
         id={element.id}
         name={element.name}
         onChange={onChange}
-        className={`${style.actorSheetInput}`}
+        className={`input textarea`}
         rows={4}
         defaultValue={ActorController.getActor(props.renderID, element.name, props.properties).toString()}
       />

@@ -9,7 +9,7 @@ import { SheetChildren } from "./Children";
  */
 export function SheetTable(props: SheetElementProps<TableDescriptor>) {
   return (
-    <table >
+    <table className={`table`}>
       <tbody>
         <SheetChildren {...props}/>
       </tbody>

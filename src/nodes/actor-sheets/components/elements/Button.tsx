@@ -5,6 +5,7 @@ import { ButtonDescriptor } from "nodes/actor-sheets/types/elements/button";
 import { ActorController } from "nodes/actor-sheets";
 import { ButtonAction } from "../../enums/buttonActions";
 import * as actions from "../../utilities/elements/button/actions";
+import { Button } from "@chakra-ui/react";
 
 const VARIABLE_FIELDS = ["text", "alert", "contentGroup", "index", "roll", "target"];
 
@@ -24,9 +25,9 @@ export const SheetButton = observer((props: SheetElementProps<ButtonDescriptor>)
   }, []);
 
   return (
-    <button onClick={() => onClick(props.element.action, props.renderID, element)}>
+    <Button className={`button`} onClick={() => onClick(props.element.action, props.renderID, element)}>
       {element.text}
-    </button>
+    </Button>
   );
 });
 

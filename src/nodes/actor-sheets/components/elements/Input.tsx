@@ -1,7 +1,6 @@
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { NumberInputDescriptor, TextInputDescriptor } from "nodes/actor-sheets/types/elements";
-import style from "../../styles/Input.module.scss";
 import { SheetElementProps } from "../../types";
 import { ActorController } from "../../controllers/ActorSheetController";
 
@@ -56,7 +55,7 @@ const SheetInput = observer((props: SheetInputProps) => {
         id={element.id}
         type={props.type}
         name={element.name}
-        className={`${style.actorSheetInput}`}
+        className={`input ${props.type}-input`}
         onChange={onChange}
         autoComplete="off"
         defaultValue={ActorController.getActor(props.renderID, element.name, props.properties).toString()}
