@@ -10,9 +10,11 @@ import { useField } from "formik";
 export function MonacoEditor(props: any) {
   const [ field ] = useField(props);
 
-  return (<Editor
-    {...props}
-    {...field}
-    onChange={(e) => field.onChange({ target: { name: field.name, value: e }})}
-  />);
+  return (
+    <Editor
+      {...props}
+      {...field}
+      onChange={(e) => field.onChange({ target: { name: field.name, value: e }})}
+    />
+  );
 }

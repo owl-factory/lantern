@@ -46,6 +46,8 @@ export default () => {
     "Math": 1,
     "NaN": 1,
     "undefined": 1,
+    "TEMPORARY": 1,
+    "PERSISTENT": 1,
 
     // TODO - Testing values below here. Remove for production
     "console": 1,

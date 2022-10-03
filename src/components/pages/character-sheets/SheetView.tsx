@@ -61,5 +61,10 @@ export function SheetView(props: SheetViewProps) {
   if (loading || data === undefined) { return <>Loading</>; }
   if (error) { return <>Error! {error}</>; }
 
-  return <><SheetForm sheet={data.actorSheet}/></>;
+  return (
+    <>
+      <SheetForm sheet={data.actorSheet}/>
+      <ActorSheet id={props.activeSheet}/>
+    </>
+  );
 }

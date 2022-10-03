@@ -2,6 +2,8 @@ import { Box, Flex } from "@chakra-ui/react";
 import ClientOnly from "components/ClientOnly";
 import { Page } from "components/design";
 import { SheetList, SheetView } from "components/pages/character-sheets";
+import { ActorSheetMediatorHandler } from "controllers/mediators/ActorSheetHandler";
+import { Mediator } from "nodes/mediator";
 import React from "react";
 
 /**
@@ -10,6 +12,16 @@ import React from "react";
 function CharacterSheetPage() {
   const [ activeSheet, $setActiveSheet ] = React.useState<string | null>(null);
 
+  // Loads the mediator to render the actor sheet properly
+  React.useEffect(() => {
+    Mediator.set(ActorSheetMediatorHandler);
+    return () => { Mediator.reset(); };
+  }, []);
+
+  /**
+   * Sets the active sheet, or unsets one if already selected
+   * @param sheetID The ID of the sheet to activate
+   */
   function setActiveSheet(sheetID: string | null) {
     if (sheetID === null || sheetID === activeSheet) {
       $setActiveSheet(null);

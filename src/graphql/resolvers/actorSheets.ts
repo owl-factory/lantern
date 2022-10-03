@@ -1,4 +1,5 @@
 import { getPrismaClient } from "utilities/prisma";
+import sass from "sass";
 
 const prisma = getPrismaClient();
 
@@ -22,7 +23,7 @@ interface ActorSheetCreateInput {
 interface ActorSheetMutateInput {
   name?: string;
   layout?: string;
-  styling?: string;
+  rawStyling?: string;
 }
 
 interface GetActorSheetsArguments {
@@ -101,9 +102,13 @@ async function createActorSheet(_: unknown, { actorSheet, include }: CreateActor
  * @returns The changed actor sheet
  */
 async function mutateActorSheet(_: unknown, { id, actorSheet }: MutateActorSheetArguments) {
-  console.log(id, actorSheet)
+  const rawStyling = `.actor-sheet-${id} { ${actorSheet.rawStyling} }`;
+  const compiled = sass.compileString(rawStyling);
   return prisma.actorSheet.update({
-    data: actorSheet,
+    data: {
+      ...actorSheet,
+      styling: compiled.css,
+    },
     where: { id },
   });
 }
