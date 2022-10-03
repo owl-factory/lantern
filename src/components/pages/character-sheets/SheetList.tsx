@@ -37,7 +37,7 @@ const GET_CHARACTER_SHEETS = gql`
 /**
  * Renders a sheet line for the sheets list
  * @param sheet The sheet to render
- * @param activeSheet The currently active actor
+ * @param activeSheet The currently active actor sheet
  * @param setActiveSheet A function to set the active sheet
  */
  function SheetLine(props: SheetLineProps) {
@@ -87,8 +87,8 @@ export function SheetList(props: SheetListProps) {
   const [deleteSheet, setDeleteSheet] = React.useState<ActorSheet | undefined>(undefined);
 
   /**
-   * Opens an alert to confirm the deletion of an actor
-   * @param sheet The actor to potentially delete
+   * Opens an alert to confirm the deletion of an actor sheet
+   * @param sheet The actor shhet to potentially delete
    */
   function openDeleteAlert(sheet: ActorSheet) {
     setDeleteSheet(sheet);
@@ -96,7 +96,7 @@ export function SheetList(props: SheetListProps) {
   }
 
   /**
-   * Closes the alert to confirm the deletion of an actor
+   * Closes the alert to confirm the deletion of an actor sheet
    */
   function closeDeleteAlert() {
     setDeleteSheet(undefined);
@@ -104,8 +104,8 @@ export function SheetList(props: SheetListProps) {
   }
 
   /**
-   * Handles any functionality required for an actor that was just deleted
-   * @param sheet The actor that was just deleted
+   * Handles any functionality required for an actor sheet that was just deleted
+   * @param sheet The actor sheet that was just deleted
    */
   function onDelete(sheet: ActorSheet) {
     if (sheet.id === props.activeSheet) { props.setActiveSheet(null); }

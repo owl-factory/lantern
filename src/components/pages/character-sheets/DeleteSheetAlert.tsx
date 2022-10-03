@@ -27,11 +27,11 @@ const DELETE_SHEET = gql`
 `;
 
 /**
- * Renders an alert that prompts the user to confirm if they want to delete the actor
+ * Renders an alert that prompts the user to confirm if they want to delete the actor sheet
  * @param isOpen True if this alert should be open
  * @param onClose A function that closes the alert
- * @param sheet The actor to potentially delete
- * @param onDelete A function to be called when the actor was successfully deleted
+ * @param sheet The actor sheet to potentially delete
+ * @param onDelete A function to be called when the actor sheet was successfully deleted
  */
 export function DeleteSheetAlert(props: DeleteActorAlertProps) {
   const [ deleteSheetMutation ] = useMutation(DELETE_SHEET);
@@ -39,7 +39,7 @@ export function DeleteSheetAlert(props: DeleteActorAlertProps) {
 
   /**
    * Handles post-deletion functionality. Ensures that everything is closed and the user is alerted to the success
-   * @param sheet The actor that was deleted
+   * @param sheet The actor sheet that was deleted
    */
   function onCompleted(sheet: ActorSheet) {
     props.onClose();
@@ -48,8 +48,8 @@ export function DeleteSheetAlert(props: DeleteActorAlertProps) {
   }
 
   /**
-   * Handles the case where the actor fails to delete
-   * @param sheet The actor that was not successfully deleted
+   * Handles the case where the actor sheet fails to delete
+   * @param sheet The actor sheet that was not successfully deleted
    */
   function onError(sheet: ActorSheet) {
     props.onClose();

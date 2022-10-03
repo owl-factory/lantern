@@ -102,18 +102,29 @@ export function SheetForm(props: SheetFormProps) {
         initialValues={initialValues}
         onSubmit={onSubmit}
       >
-        { (formikProps: FormikProps<FormValues>) => (
-          <Form>
-            <label>Name</label>
-            <Input type="text" name="name"/>
-            <label>Layout</label>
-            <MonacoEditor name="layout" height="40vh" defaultLanguage="xml"/>
-            <label>Styling</label>
-            <MonacoEditor name="rawStyling" height="40vh" defaultLanguage="scss"/>
-            <Button onClick={() => refresh(formikProps)}>Refresh</Button>
-            <Button type="submit">Submit</Button>
-          </Form>
-        )}
+        { (formikProps: FormikProps<FormValues>) => {
+          React.useEffect(() => {
+            if (!props.sheet) { return; }
+            formikProps.setValues({
+              name: props.sheet.name,
+              layout: props.sheet.layout,
+              rawStyling: props.sheet.rawStyling,
+            });
+          }, [props.sheet]);
+          return (
+            <Form>
+              <label>Name</label>
+              <Input type="text" name="name"/>
+              <label>Layout</label>
+              <MonacoEditor name="layout" height="40vh" defaultLanguage="xml"/>
+              <label>Styling</label>
+              <MonacoEditor name="rawStyling" height="40vh" defaultLanguage="scss"/>
+              <Button onClick={() => refresh(formikProps)}>Refresh</Button>
+              <Button type="submit">Submit</Button>
+            </Form>
+          )
+        }
+      }
       </Formik>
     </>
   );

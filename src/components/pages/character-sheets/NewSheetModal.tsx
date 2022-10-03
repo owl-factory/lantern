@@ -19,10 +19,10 @@ interface NewActorModalProps {
 }
 
 /**
- * Renders a modal containing a form to create a new character
+ * Renders a modal containing a form to create a new actor sheet
  * @param isOpen True if the modal is open, false otherwise
  * @param onClose The function to close the modal
- * @param setActiveActor The function to set the current actor
+ * @param setActiveSheet The function to set the current actor sheet
  */
 export function NewSheetModal(props: NewActorModalProps) {
 

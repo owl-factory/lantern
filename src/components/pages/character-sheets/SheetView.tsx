@@ -7,7 +7,7 @@ interface SheetViewProps {
   activeSheet: string | null;
 }
 
-// Gets the actor for rendering a character sheet
+// Gets the actor sheet for editing
 const GET_ACTOR_SHEET = gql`
   query GetMyCharacterSheet($id: String!) {
     actorSheet(id: $id, include: { ruleset: true }) {
@@ -25,6 +25,10 @@ const GET_ACTOR_SHEET = gql`
   }
 `;
 
+/**
+ * Renders a view for editing the current sheet
+ * @param activeSheet The active sheet ID, if any
+ */
 export function SheetView(props: SheetViewProps) {
   const [ getSheet, { data, loading, error }] = useLazyQuery(GET_ACTOR_SHEET);
 

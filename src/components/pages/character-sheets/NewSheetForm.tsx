@@ -1,8 +1,8 @@
 import { ApolloError, gql, useMutation, useQuery } from "@apollo/client";
 import { AlertController } from "@owl-factory/alerts";
 import { Input, Select } from "@owl-factory/components/form";
-import { Actor, ActorSheet, ActorType, Ruleset } from "@prisma/client";
-import { Form, Formik, FormikHelpers, FormikProps } from "formik";
+import { ActorSheet } from "@prisma/client";
+import { Form, Formik, FormikHelpers } from "formik";
 import React from "react";
 
 interface NewSheetFormProps {
@@ -59,15 +59,15 @@ export function NewSheetForm(props: NewSheetFormProps) {
   }
 
   /**
-   * Handles any functionality that needs to run after the successful creation of the actor
-   * @param data The data returned by the successful actor creation
+   * Handles any functionality that needs to run after the successful creation of the actor sheet
+   * @param data The data returned by the successful actor sheet creation
    */
   function onCompleted(data: { createActorSheet: ActorSheet }) {
     props.onCompleted(data.createActorSheet);
   }
 
   /**
-   * Handles the case where the actor fails to create
+   * Handles the case where the actor sheet fails to create
    * @param error The error returned by Apollo
    */
   function onError(error: ApolloError) {
@@ -76,8 +76,8 @@ export function NewSheetForm(props: NewSheetFormProps) {
   }
 
   /**
-   * Handles the submission, validation, and creation of a new actor
-   * @param values The ruleset and actor type to create as an actor
+   * Handles the submission, validation, and creation of a new actor sheet
+   * @param values The name and ruleset to create as an actor sheet
    * @param formik Helper functions
    */
   function onSubmit(values: FormValues, formik: FormikHelpers<FormValues>) {
