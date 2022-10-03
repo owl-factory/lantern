@@ -39,6 +39,8 @@ model User {
   updatedModules Module[] @relation(name: "moduleUpdater")
   deletedModules Module[] @relation(name: "moduleDeleter")
 
+  sharedCampaignModules  CampaignModule[] @relation(name: "campaignModules")
+
   createdActorType ActorType[] @relation(name: "actorTypeCreator")
   updatedActorType ActorType[] @relation(name: "actorTypeUpdater")
   deletedActorType ActorType[] @relation(name: "actorTypeDeleter")
@@ -68,6 +70,7 @@ model User {
   deletedAssets Asset[] @relation(name: "assetDeleter")
 
   // References
+  campaignAccess  CampaignAccess[]
   moduleAccess    ModuleAccess[]
   contentAccess   ContentAccess[]
 }
@@ -117,8 +120,8 @@ model Campaign {
   deletingUser    User?   @relation(name: "campaignDeleter", fields: [deletedBy], references: [id])
 
   // References
+  access          CampaignAccess[]
   accessLinks     CampaignAccessLink[]
-  actors          Actor[] // The actors in this campaign
   modules         CampaignModule[] // Modules available for search in this campaign
   scenes          Scene[]
 }
@@ -134,13 +137,16 @@ model CampaignModule {
   module          Module  @relation(fields: [moduleID], references: [id])
 
   // Which user is supplying this module
-  sourceUserID   String   @db.Uuid  @unique
+  sourceUserID    String   @db.Uuid  @unique
+  sourceUser      User     @relation(name: "campaignModules", fields: [sourceUserID], references: [id])
 }
 
 // Describes who has access to a campaign and in what capacity
 model CampaignAccess {
   userID          String  @db.Uuid @unique
+  user            User    @relation(fields: [userID], references: [id])
   campaignID      String  @db.Uuid @unique
+  campaign        Campaign  @relation(fields: [campaignID], references: [id])
   access          String  @db.VarChar(32) @default("player")
 }
 
@@ -393,10 +399,6 @@ model Actor {
   // The actor sheet this actor uses to render 
   actorSheetID  String  @db.Uuid
   actorSheet    ActorSheet @relation(fields: [actorSheetID], references: [id])
-
-  // The campaign that this actor is a part of, if any
-  campaignID    String? @db.Uuid
-  campaign      Campaign? @relation(fields: [campaignID], references: [id])
 
   isPublic      Boolean @default(false) // Marks this actor as publicly viewable
   publicAccess  String  @db.VarChar(32) @default("aware") // The access of this actor when public

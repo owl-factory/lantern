@@ -5,6 +5,8 @@ import Head from "next/head";
 import "./_app.scss";
 import HeaderBar from "components/design/headerBar/HeaderBar";
 import { ChakraProvider } from "@chakra-ui/react";
+import { apolloClient } from "src/graphql/apollo-client";
+import { ApolloProvider } from "@apollo/client";
 
 
 export default function MyApp({ Component , pageProps }: AppProps): JSX.Element {
@@ -15,11 +17,13 @@ export default function MyApp({ Component , pageProps }: AppProps): JSX.Element 
         {/* TODO - only for certain pages */}
         <meta name="viewport" content="width=device-width, user-scalable=no"/>
       </Head>
-      <ChakraProvider>
-        {/* TODO - move header page into the Page element */}
-        <HeaderBar />
-        <Component {...pageProps} />
-      </ChakraProvider>
+      <ApolloProvider client={apolloClient}>
+        <ChakraProvider>
+          {/* TODO - move header page into the Page element */}
+          <HeaderBar />
+          <Component {...pageProps} />
+        </ChakraProvider>
+      </ApolloProvider>
     </>
   );
 }

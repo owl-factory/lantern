@@ -46,6 +46,7 @@ export const SheetCheckbox = observer((props: SheetElementProps<CheckboxDescript
     <input
       type="checkbox"
       id={element.id}
+      className="checkbox"
       ref={ref}
       defaultChecked={checked}
       name={key}

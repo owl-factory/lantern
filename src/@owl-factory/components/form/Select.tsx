@@ -1,10 +1,11 @@
 import { useField } from "formik";
 import React, { CSSProperties } from "react";
+import { Select as ChakraSelect } from "@chakra-ui/react";
 
 interface SelectProps {
   ariaLabel?: string;
   className?: string;
-  children: React.ReactChild | React.ReactChildren | JSX.Element[];
+  children: any;
   disabled?: boolean;
   id?: string;
   label?: string;
@@ -28,30 +29,15 @@ interface SelectProps {
  * @param style Any custom styling to apply to this one element
  * @returns Returns a formik-ready select statement
  */
-export function Select(props: SelectProps) {
+export function Select(props: any) {
   // Makes Formik work right
   const [ field ] = useField(props);
-  const onBlur = props.onBlur ? props.onBlur : field.onBlur;
 
-  const select = (
-    <select
-      aria-label={props.ariaLabel}
-      className={`form-select ${props.className}`}
-      disabled={props.disabled}
-      id={props.id || props.name}
-      style={props.style}
-      {...field}
-      onBlur={onBlur}
-    >
-      {props.children}
-    </select>
-  );
-
-  if (!props.label) { return select; }
   return (
-    <div className="form-floating">
-      {select}
-      <label htmlFor={props.id || props.name}>{props.label}</label>
-    </div>
+    <ChakraSelect
+      {...field}
+      {...props}
+    />
   );
+
 }

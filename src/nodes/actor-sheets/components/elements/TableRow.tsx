@@ -9,7 +9,7 @@ import { SheetChildren } from "./Children";
  */
 export function SheetTableRow(props: SheetElementProps<TableRowDescriptor>) {
   return (
-    <tr >
+    <tr className={`table-row`}>
       <SheetChildren {...props}/>
     </tr>
   );

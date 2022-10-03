@@ -39,6 +39,7 @@ export const SheetRadioButton = observer((props: SheetElementProps<RadioDescript
       ref={ref}
       id={element.id}
       name={element.name}
+      className={`input radio-button`}
       defaultChecked={fieldValue === element.value}
       onChange={onChange}
       value={element.value}

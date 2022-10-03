@@ -9,7 +9,7 @@ import { SheetChildren } from "./Children";
  */
 export function SheetTableCell(props: SheetElementProps<TableCellDescriptor>) {
   return (
-    <td colSpan={props.element.width}>
+    <td className={`table-cell`} colSpan={props.element.width}>
       <SheetChildren {...props}/>
     </td>
   );

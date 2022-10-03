@@ -54,7 +54,8 @@ export function RulesetForm(props: RulesetFormProps) {
           /> */}
           <hr/>
 
-          <CustomFieldInput field="actorFields" onChange={formikProps.setFieldValue} values={formikProps.values}/>
+          {/* <CustomFieldInput field="actorFields" onChange={formikProps.setFieldValue} values={formikProps.values}/> 
+          */}
           {/* <StaticVariableInput
             variables={formikProps.values.rules || { metadata: {}, values: {} }}
             setVariables={(rules) => formikProps.setFieldValue("rules", rules)}

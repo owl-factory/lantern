@@ -6,11 +6,13 @@ import { ParsedTab } from "nodes/actor-sheets/types/parsedTab";
 import { parseFirstLevelElements } from "nodes/actor-sheets/utilities/parse";
 import { parseChildrenElements } from "nodes/actor-sheets/utilities/parse/children";
 import { parseXML } from "nodes/actor-sheets/utilities/parser";
+import { injectStyles } from "nodes/actor-sheets/utilities/styles";
 
 export class SheetController {
   public sheets: Record<string, PageDescriptor> = {};
   public prefabs: Record<string, Record<string, HTMLCollection>> = {};
   public tabs: Record<string, Record<string, ParsedTab[]>> = {};
+  public styles: Record<string, string> = {}
 
   constructor() {
     makeObservable(this, {
@@ -26,7 +28,7 @@ export class SheetController {
    * @param key The key of the sheet to load
    * @param xml The raw XML string
    */
-  public load(key: string, xml: string) {
+  public load(key: string, xml: string, styling: string) {
     const xmlDoc: Document = parseXML(xml);
     const sheet: Element = xmlDoc.children[0];
 
@@ -42,6 +44,9 @@ export class SheetController {
 
     this.loadSheet(key, layout);
     this.loadTabs(key, layout);
+
+    injectStyles(styling, `actor-sheet-${key}`, true);
+    console.log(`actor-sheet-${key}`);
   }
 
   /**

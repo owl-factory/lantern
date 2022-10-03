@@ -1,14 +1,12 @@
 import { Button } from "@chakra-ui/react";
 import { Input } from "@owl-factory/components/form";
 import { TextArea } from "@owl-factory/components/form/TextArea";
-import { Ref64 } from "@owl-factory/types";
-import { ActorSheet } from "@prisma/client";
+import { ActorSheet, Ruleset } from "@prisma/client";
 import { Formik, FormikProps } from "formik";
 import { observer } from "mobx-react-lite";
 import { ActorController } from "nodes/actor-sheets";
 import React from "react";
 import { ActorSheetComponent } from "src/nodes/actor-sheets/components/ActorSheet";
-import { ActorSheetDocument } from "types/documents/ActorSheet";
 
 // The initial values for the form if no actor sheet is given
 const INITIAL_VALUES = {
@@ -19,7 +17,7 @@ const INITIAL_VALUES = {
 interface ActorSheetFormProps {
   renderID: string;
   actorSheet?: ActorSheet;
-  ruleset: Ref64;
+  ruleset: Ruleset;
   onSubmit: (actorSheet: Partial<ActorSheet>) => void;
 }
 
@@ -32,12 +30,20 @@ interface ActorSheetFormProps {
  */
 export const ActorSheetForm = observer((props: ActorSheetFormProps) => {
   const initialValues = props.actorSheet ? props.actorSheet : INITIAL_VALUES;
+  const renderID = "development-sheet";
+  const sheetID = props.actorSheet?.id || "new-sheet";
+
+  // Ensures that the render is loaded and unloaded
+  React.useEffect(() => {
+    ActorController.newRender(null, props.ruleset.id, sheetID);
+    return () => ActorController.endRender(renderID);
+  }, []);
 
   // Ensures that the actor sheet XML is loaded into the preview
   React.useEffect(() => {
-    ActorController.unloadSheet("development-sheet");
+    ActorController.unloadSheet(sheetID);
     if (props.actorSheet) {
-      ActorController.loadSheet("development-sheet", props.actorSheet);
+      ActorController.loadSheet(sheetID, props.actorSheet);
     }
   }, [props.actorSheet]);
 
@@ -58,15 +64,15 @@ export const ActorSheetForm = observer((props: ActorSheetFormProps) => {
              * Refreshes the XML preview based on the contents of the XML
              */
             function refresh() {
-              // ActorController.loadSheet("development-sheet", { layout: formikProps.values.xml});
+              ActorController.loadSheet(sheetID, { layout: formikProps.values.layout });
             }
 
             return (
               <>
                 <label htmlFor="name">Name</label>
                 <Input type="text" id="name" name="name"/>
-                <label htmlFor="XML Input">XML&nbsp;</label>
-                <TextArea name="xml" rows={10}/><br/>
+                <label htmlFor="layout">Layout&nbsp;</label>
+                <TextArea name="layout" rows={10}/><br/>
                 <Button onClick={refresh}>Refresh</Button><br/><br/>
                 <Button type="submit" onClick={formikProps.submitForm}>Submit</Button>
               </>

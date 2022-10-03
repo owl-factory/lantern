@@ -1,8 +1,8 @@
 import React from "react";
 import { RowDescriptor } from "nodes/actor-sheets/types/elements";
-import style from "../../styles/Row.module.scss";
 import { SheetElementProps } from "../../types";
 import { SheetChildren } from "./Children";
+import { Box } from "@chakra-ui/react";
 
 /**
  * Renders a row element
@@ -10,8 +10,8 @@ import { SheetChildren } from "./Children";
  */
 export function SheetRow(props: SheetElementProps<RowDescriptor>) {
   return (
-    <div className={`${style.row}`} style={{}}>
+    <Box className={`row`} style={{}}>
       <SheetChildren {...props}/>
-    </div>
+    </Box>
   );
 }

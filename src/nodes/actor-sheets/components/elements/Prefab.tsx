@@ -2,6 +2,7 @@ import React from "react";
 import { PrefabDescriptor } from "nodes/actor-sheets/types/elements";
 import { SheetElementProps } from "../../types";
 import { SheetChildren } from "./Children";
+import { Box } from "@chakra-ui/react";
 
 /**
  * Renders an image of the prefab
@@ -9,8 +10,8 @@ import { SheetChildren } from "./Children";
  */
 export function SheetPrefab(props: SheetElementProps<PrefabDescriptor>) {
   return (
-    <div>
+    <Box className={`prefab`}>
       <SheetChildren {...props}/>
-    </div>
+    </Box>
   );
 }

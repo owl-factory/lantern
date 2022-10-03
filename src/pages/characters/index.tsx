@@ -1,36 +1,48 @@
+import { Box, Flex } from "@chakra-ui/react";
 import { Actor } from "@prisma/client";
+import ClientOnly from "components/ClientOnly";
 import { Page } from "components/design";
+import { ActorList, ActorView } from "components/pages/characters";
+import { ActorSheetMediatorHandler } from "controllers/mediators/ActorSheetHandler";
+import { Mediator } from "nodes/mediator";
 import React from "react";
-
-interface CharactersPageProps {
-  actors: Actor[]
-}
 
 /**
  * Renders a page for displaying all of a user's characters
- * @returns 
  */
-function CharactersPage(props: CharactersPageProps) {
-  // TODO - group the characters by rulesets
+function CharactersPage() {
+  const [activeActor, $setActiveActor] = React.useState<string | null>(null);
 
-  const [ current, setCurrent ] = React.useState<string | undefined>(undefined);
+  React.useEffect(() => {
+    Mediator.set(ActorSheetMediatorHandler);
+    return () => { Mediator.reset(); };
+  }, []);
+
+  /**
+   * Sets the current actor
+   * @param actorID The actor to set as the current actor
+   */
+  function setActiveCharacter(actorID: string | null) {
+    if (actorID === null || actorID === activeActor) {
+      $setActiveActor(null);
+      return;
+    }
+    $setActiveActor(actorID);
+  }
 
   return (
     <Page >
-      <div style={{ float: "left", width: "200px" }}>Characters</div>
-      <div style={{ float: "right", width: "200px" }}>Chat</div>
-      <h1>Select Character</h1>
-      Character stuff
+      <Flex>
+        <Box  width="250px" marginRight="10px">
+          <ClientOnly><ActorList activeActor={activeActor} setActiveActor={setActiveCharacter}/></ClientOnly>
+        </Box>
+        <Box width="100%">
+          <ClientOnly><ActorView activeActor={activeActor}/></ClientOnly>
+        </Box>
+        <Box marginLeft="10px"width="250px">Chat</Box>
+      </Flex>
     </Page>
   );
-}
-
-export function getServerSideProps() {
-  return {
-    props: {
-      actors: [], // Should load all basic character information
-    },
-  };
 }
 
 export default CharactersPage;
