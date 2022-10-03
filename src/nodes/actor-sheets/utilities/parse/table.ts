@@ -1,6 +1,7 @@
 import { SheetElementType } from "nodes/actor-sheets/enums/sheetElementType";
 import { SheetState } from "nodes/actor-sheets/types";
 import { TableDescriptor } from "nodes/actor-sheets/types/elements";
+import { splitExpressionValue } from "../expressions/parse";
 import { parseChildrenElements } from "./children";
 
 /**
@@ -11,6 +12,7 @@ import { parseChildrenElements } from "./children";
 export function parseTableElement(element: Element, state: SheetState) {
   const elementDetails: TableDescriptor = {
     $key: state.key,
+    className: splitExpressionValue(element.getAttribute("class") || ""),
     element: SheetElementType.Table,
     children: [],
   };

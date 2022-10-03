@@ -16,6 +16,7 @@ export function parseRadioElement(element: Element, state: SheetState) {
 
   const elementDetails: RadioButtonDescriptor = {
     $key: state.key,
+    className: splitExpressionValue(element.getAttribute("class") || ""),
     element: SheetElementType.Radio,
     id: splitExpressionValue(element.getAttribute("id") || "undefined"),
     name: splitExpressionValue(name),

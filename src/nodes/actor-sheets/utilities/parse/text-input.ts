@@ -16,6 +16,7 @@ export function parseTextInputElement(element: Element, state: SheetState) {
 
   const elementDetails: TextInputDescriptor = {
     $key: state.key,
+    className: splitExpressionValue(element.getAttribute("class") || ""),
     element: SheetElementType.TextInput,
     id: splitExpressionValue(element.getAttribute("id") || ""),
     name: splitExpressionValue(name),

@@ -12,7 +12,7 @@ export const SheetError = observer((props: SheetElementProps<ErrorDescriptor>) =
   return (
     <Box className={`error `}>
       <label style={{ fontWeight: "bold", color: "red" }}>
-        {props.element.error}
+        {props.element.error.toString()}
       </label>
     </Box>
   );

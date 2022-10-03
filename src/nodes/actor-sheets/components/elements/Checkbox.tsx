@@ -4,7 +4,7 @@ import { CheckboxDescriptor } from "nodes/actor-sheets/types/elements";
 import { ActorController } from "../../controllers/ActorSheetController";
 import { SheetElementProps } from "../../types";
 
-const VARIABLE_FIELDS = ["id", "name", "value"];
+const VARIABLE_FIELDS = ["className", "id", "name", "value"];
 
 /**
  * Renders a checkbox input element
@@ -46,7 +46,7 @@ export const SheetCheckbox = observer((props: SheetElementProps<CheckboxDescript
     <input
       type="checkbox"
       id={element.id}
-      className="checkbox"
+      className={`checkbox ${element.className}`}
       ref={ref}
       defaultChecked={checked}
       name={key}
