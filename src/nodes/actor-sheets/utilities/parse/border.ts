@@ -1,6 +1,7 @@
 import { SheetElementType } from "nodes/actor-sheets/enums/sheetElementType";
 import { SheetState } from "nodes/actor-sheets/types";
 import { BorderDescriptor } from "nodes/actor-sheets/types/elements";
+import { splitExpressionValue } from "../expressions/parse";
 import { parseChildrenElements } from "./children";
 
 /**
@@ -12,6 +13,7 @@ import { parseChildrenElements } from "./children";
 export function parseBorderElement(element: Element, state: SheetState) {
   const elementDetails: BorderDescriptor = {
     $key: state.key,
+    className: splitExpressionValue(element.getAttribute("class") || ""),
     element: SheetElementType.Border,
     borderStyle: element.getAttribute("borderStyle") || "solid",
     children: [],

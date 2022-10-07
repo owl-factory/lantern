@@ -9,11 +9,24 @@ import { observer } from "mobx-react-lite";
 import { SheetChildren } from "./Children";
 import { Box } from "@chakra-ui/react";
 
+const VARIABLE_FIELDS = ["className"];
+
 /**
- * Renders an image of the background
- * @param element The SheetBackground element description
+ * Renders a section that contains one or multiple pages
+ * @param element The SheetPage element description
  */
 export const SheetPageable = observer((props: SheetElementProps<PageableDescriptor>) => {
+  const [ element, setElement ] = React.useState<any>({});
+
+  React.useEffect(() => {
+    ActorController.renderExpressions<PageableDescriptor>(
+      props.renderID,
+      props.element,
+      VARIABLE_FIELDS,
+      props.properties,
+    ).then(setElement);
+  }, []);
+
   const activeTab = ActorController.getState(props.renderID, StateType.CurrentPage, props.element.id) as number || 0;
   const childElements = props.element.children || [];
 
@@ -26,7 +39,7 @@ export const SheetPageable = observer((props: SheetElementProps<PageableDescript
   }
 
   return (
-    <Box className={`pageable`}>
+    <Box className={`pageable ${element.className}`}>
       <SheetPage {...props} element={props.element.pages[activeTab]}/>
       <SheetChildren {...props} />
     </Box>

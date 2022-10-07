@@ -11,6 +11,7 @@ import { splitExpressionValue } from "../expressions/parse";
 export function parseOptionElement(element: Element, state: SheetState) {
   const elementDetails: OptionDescriptor = {
     $key: state.key,
+    className: splitExpressionValue(element.getAttribute("class") || ""),
     element: SheetElementType.Option,
     value: splitExpressionValue(element.getAttribute("value") || ""),
     text: splitExpressionValue(element.textContent || ""),

@@ -1,6 +1,7 @@
 import { SheetElementType } from "nodes/actor-sheets/enums/sheetElementType";
 import { SheetState } from "nodes/actor-sheets/types";
 import { ColumnDescriptor } from "nodes/actor-sheets/types/elements";
+import { splitExpressionValue } from "../expressions/parse";
 import { parseChildrenElements } from "./children";
 /**
  * Converts a column element into a column element descriptor
@@ -10,6 +11,7 @@ import { parseChildrenElements } from "./children";
 export function parseColumnElement(element: Element, state: SheetState) {
   const elementDetails: ColumnDescriptor = {
     $key: state.key,
+    className: splitExpressionValue(element.getAttribute("class") || ""),
     element: SheetElementType.Column,
     weight: parseInt(element.getAttribute("weight") || "1"),
     children: [],

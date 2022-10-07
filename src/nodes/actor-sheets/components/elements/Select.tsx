@@ -5,7 +5,7 @@ import { SheetElementProps } from "nodes/actor-sheets/types";
 import { SheetChildren } from "./Children";
 import { observer } from "mobx-react-lite";
 
-const VARIABLE_FIELDS = ["id", "name"];
+const VARIABLE_FIELDS = ["className", "id", "name"];
 
 /**
  * Renders a select input element
@@ -35,7 +35,7 @@ export const SheetSelect = observer((props: SheetElementProps<SelectDescriptor>)
   return (
     <select
       name={element.name}
-      className={`select`}
+      className={`select ${element.className}`}
       defaultValue={ActorController.getActor(props.renderID, element.name, props.properties).toString()}
       onChange={onChange}
     >

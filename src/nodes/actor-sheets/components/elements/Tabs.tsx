@@ -6,6 +6,8 @@ import { SheetElementProps } from "nodes/actor-sheets/types";
 import { TabsDescriptor } from "nodes/actor-sheets/types/elements";
 import React from "react";
 
+const VARIABLE_FIELDS = ["className"];
+
 /**
  * A null tab for filling in the blanks when tabs are requested, but cannot be rendered
  */
@@ -43,6 +45,17 @@ function SheetTab(props: SheetTabProps) {
  * @param element The tabs element description
  */
 export const SheetTabs = observer((props: SheetElementProps<TabsDescriptor>) => {
+  const [ element, setElement ] = React.useState<any>({});
+
+  React.useEffect(() => {
+    ActorController.renderExpressions<TabsDescriptor>(
+      props.renderID,
+      props.element,
+      VARIABLE_FIELDS,
+      props.properties,
+    ).then(setElement);
+  }, []);
+
   const tabs = ActorController.getTabs(props.renderID, props.element.for) as { name: string }[];
 
   let activeTab = ActorController.getState(props.renderID, StateType.CurrentPage, props.element.for) || 0;
@@ -77,6 +90,6 @@ export const SheetTabs = observer((props: SheetElementProps<TabsDescriptor>) => 
   }
 
   return (
-    <div>{tabElements}</div>
+    <div className={`tabs ${element.className}`}>{tabElements}</div>
   );
 });

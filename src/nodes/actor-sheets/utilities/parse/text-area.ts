@@ -16,6 +16,7 @@ export function parseTextAreaElement(element: Element, state: SheetState) {
 
   const elementDetails: TextAreaDescriptor = {
     $key: state.key,
+    className: splitExpressionValue(element.getAttribute("class") || ""),
     element: SheetElementType.TextArea,
     id: splitExpressionValue(element.getAttribute("id") || ""),
     name: splitExpressionValue(name),

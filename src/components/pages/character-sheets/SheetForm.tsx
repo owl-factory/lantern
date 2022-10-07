@@ -116,9 +116,9 @@ export function SheetForm(props: SheetFormProps) {
               <label>Name</label>
               <Input type="text" name="name"/>
               <label>Layout</label>
-              <MonacoEditor name="layout" height="40vh" defaultLanguage="xml"/>
+              <MonacoEditor name="layout" height="30vh" defaultLanguage="xml"/>
               <label>Styling</label>
-              <MonacoEditor name="rawStyling" height="40vh" defaultLanguage="scss"/>
+              <MonacoEditor name="rawStyling" height="30vh" defaultLanguage="scss"/>
               <Button onClick={() => refresh(formikProps)}>Refresh</Button>
               <Button type="submit">Submit</Button>
             </Form>

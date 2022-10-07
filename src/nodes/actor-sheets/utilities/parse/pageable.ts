@@ -1,6 +1,7 @@
 import { SheetElementType } from "nodes/actor-sheets/enums/sheetElementType";
 import { SheetState, SheetTabElementDescriptor } from "nodes/actor-sheets/types";
 import { PageableDescriptor } from "nodes/actor-sheets/types/elements";
+import { splitExpressionValue } from "../expressions/parse";
 import { parsePageElement } from "./page";
 import { parseUnknownElement } from "./unknown";
 
@@ -12,6 +13,7 @@ import { parseUnknownElement } from "./unknown";
 export function parsePageableElement(element: Element, state: SheetState) {
   const elementDetails: PageableDescriptor = {
     $key: state.key,
+    className: splitExpressionValue(element.getAttribute("class") || ""),
     element: SheetElementType.Pageable,
     id: element.getAttribute("id") || "none",
     tabs: [],

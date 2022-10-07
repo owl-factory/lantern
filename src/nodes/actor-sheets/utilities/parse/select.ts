@@ -17,6 +17,7 @@ export function parseSelectElement(element: Element, state: SheetState) {
 
   const elementDetails: SelectDescriptor = {
     $key: state.key,
+    className: splitExpressionValue(element.getAttribute("class") || ""),
     element: SheetElementType.Select,
     id: splitExpressionValue(element.getAttribute("id") || ""),
     name: splitExpressionValue(element.getAttribute("name") || ""),

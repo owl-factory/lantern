@@ -16,6 +16,7 @@ export function parseCheckboxElement(element: Element, state: SheetState) {
 
   const elementDetails: CheckboxDescriptor = {
     $key: state.key,
+    className: splitExpressionValue(element.getAttribute("class") || ""),
     element: SheetElementType.Checkbox,
     id: splitExpressionValue(element.getAttribute("id") || ""),
     name: splitExpressionValue(name),
