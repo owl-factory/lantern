@@ -49,6 +49,10 @@ export default () => {
     "TEMPORARY": 1,
     "PERSISTENT": 1,
 
+    // Chrome errors if you attempt to write over either of these properties, so put them in the whitelist
+    "TEMPORARY": 1,
+    "PERSISTENT": 1,
+
     // TODO - Testing values below here. Remove for production
     "console": 1,
   };
