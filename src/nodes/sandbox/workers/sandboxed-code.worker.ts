@@ -46,6 +46,8 @@ export default () => {
     "Math": 1,
     "NaN": 1,
     "undefined": 1,
+
+    // Chrome errors if you attempt to write over either of these properties, so put them in the whitelist
     "TEMPORARY": 1,
     "PERSISTENT": 1,
 
