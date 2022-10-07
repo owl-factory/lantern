@@ -11,6 +11,7 @@ export const actorSheetTypeDefs = gql`
 
     layout: String
     styling: String
+    rawStyling: String
 
     ownedBy: String
     owner: User
@@ -25,11 +26,17 @@ export const actorSheetTypeDefs = gql`
     deletingUser: User
   }
 
+  # The input used for creating the actor sheet
+  input ActorSheetCreateInput {
+    name: String!
+    rulesetID: String!
+  }
+
   # The input for creating and mutating the actor sheet
-  input ActorSheetInput {
+  input ActorSheetMutateInput {
     name: String
     layout: String
-    styling: String
+    rawStyling: String
   }
 
   # The where clause for *many queries
@@ -48,7 +55,8 @@ export const actorSheetTypeDefs = gql`
     actorSheet(id: String!, include: ActorSheetInclude): ActorSheet
   }
   type Mutation {
-    createActorSheet(rulesetID: String!, include: ActorSheetInclude): ActorSheet
-    mutateActorSheet(id: String!, actorSheet: ActorSheetInput!, include: ActorSheetInclude): ActorSheet
+    createActorSheet(actorSheet: ActorSheetCreateInput!, include: ActorSheetInclude): ActorSheet
+    mutateActorSheet(id: String!, actorSheet: ActorSheetMutateInput!, include: ActorSheetInclude): ActorSheet
+    deleteActorSheet(id: String!, softDelete: Boolean): Boolean
   }
 `;

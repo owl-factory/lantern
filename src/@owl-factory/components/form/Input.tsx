@@ -40,7 +40,6 @@ export function Input(props: InputProps) {
       placeholder={props.placeholder || " "}
       style={props.style}
       {...field}
-
     />
   );
 }

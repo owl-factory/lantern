@@ -1,4 +1,5 @@
 import { getPrismaClient } from "utilities/prisma";
+import sass from "sass";
 
 const prisma = getPrismaClient();
 
@@ -13,11 +14,16 @@ interface ActorSheetWhere {
   rulesetID?: string;
 }
 
+interface ActorSheetCreateInput {
+  name: string;
+  rulesetID?: string;
+}
+
 // The changeable inputs for mutations
-interface ActorSheetInput {
+interface ActorSheetMutateInput {
   name?: string;
   layout?: string;
-  styling?: string;
+  rawStyling?: string;
 }
 
 interface GetActorSheetsArguments {
@@ -31,14 +37,19 @@ interface GetActorSheetArguments {
 }
 
 interface CreateActorSheetArguments {
-  rulesetID: string;
+  actorSheet: ActorSheetCreateInput;
   include: ActorSheetInclude;
 }
 
 interface MutateActorSheetArguments {
   id: string;
-  actorSheet: ActorSheetInput;
+  actorSheet: ActorSheetMutateInput;
   include: ActorSheetInclude;
+}
+
+interface DeleteActorArguments {
+  id: string;
+  softDelete?: boolean;
 }
 
 /**
@@ -48,7 +59,7 @@ interface MutateActorSheetArguments {
  * @returns A list of actor sheets
  */
 async function getActorSheets(_: unknown, { where, include }: GetActorSheetsArguments) {
-  return prisma.actorSheet.findMany({ where, include });
+  return prisma.actorSheet.findMany({ where: { ...where, deletedAt: null }, include });
 }
 
 /**
@@ -67,16 +78,19 @@ async function getActorSheet(_: unknown, { id, include }: GetActorSheetArguments
  * @param include Any additional documents to pull with the actor sheet
  * @returns The new actor sheet
  */
-async function createActorSheet(_: unknown, { rulesetID, include }: CreateActorSheetArguments) {
-  const ruleset = await prisma.ruleset.findUnique({ where: { id: rulesetID }});
+async function createActorSheet(_: unknown, { actorSheet, include }: CreateActorSheetArguments) {
+  const ruleset = await prisma.ruleset.findUnique({ where: { id: actorSheet.rulesetID }});
   if (!ruleset) { throw "Error"; }
+
+  delete actorSheet.rulesetID;
 
   return prisma.actorSheet.create({
     data: {
-      name: "Untitled Actor Sheet",
-      ruleset: { connect: { id: rulesetID }},
+      name: actorSheet.name,
+      ruleset: { connect: { id: ruleset.id }},
       layout: "<Sheet><Layout></Layout></Sheet>",
       styling: "",
+      rawStyling: "",
     },
   });
 }
@@ -88,11 +102,32 @@ async function createActorSheet(_: unknown, { rulesetID, include }: CreateActorS
  * @returns The changed actor sheet
  */
 async function mutateActorSheet(_: unknown, { id, actorSheet }: MutateActorSheetArguments) {
-  console.log(id, actorSheet)
+  const rawStyling = `.actor-sheet-${id} { ${actorSheet.rawStyling} }`;
+  const compiled = sass.compileString(rawStyling);
   return prisma.actorSheet.update({
-    data: actorSheet,
+    data: {
+      ...actorSheet,
+      styling: compiled.css,
+    },
     where: { id },
   });
+}
+
+/**
+ * Allows for deleting an actor sheet
+ * @param id The ID of the actor sheet to delete
+ * @param softDelete Soft deletes the actor sheet by marking it as deleted
+ * @returns A boolean marking the success
+ */
+ async function deleteActorSheet(_: unknown, { id, softDelete }: DeleteActorArguments) {
+  const actorSheet = await prisma.actorSheet.findUnique({ where: { id } });
+  if (!actorSheet) { return false; }
+  if (softDelete) {
+    await prisma.actorSheet.update({ data: { deletedAt: new Date() }, where: { id } });
+    return true;
+  }
+  prisma.actorSheet.delete({ where: { id } });
+  return true;
 }
 
 export const actorSheetResolvers = {
@@ -103,5 +138,6 @@ export const actorSheetResolvers = {
   Mutation: {
     createActorSheet,
     mutateActorSheet,
+    deleteActorSheet,
   },
 };
