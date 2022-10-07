@@ -1,17 +1,15 @@
 import React from "react";
 import { Page } from "components/design";
-import { LibraryImageList, ListFormat, StorageUsage } from "components/reroll/library";
 import { StorageTypeEnum } from "types/enums/storageType";
-import { NextPageContext } from "next";
-import { observer } from "mobx-react-lite";
-import { FileDocument } from "types/documents";
-import { InitialProps } from "types/client";
-import { handleAPI } from "@owl-factory/https";
-import { getLibraryPage } from "./api/library";
+import { FileList, ListFormat, StorageUsage, UploadAssetModal } from "components/pages/library";
+import { Button, useDisclosure } from "@chakra-ui/react";
 
-interface LibraryProps extends InitialProps {
-  images: FileDocument[];
-}
+const maxAllowedStorage = 250 * 1024 * 1024;
+const usage = [
+  { bytes: 15 * 1024 * 1024, storageType: StorageTypeEnum.Images },
+  { bytes: 2500000, storageType: StorageTypeEnum.MusicTracks },
+  { bytes: 10 * 1024 * 1024, storageType: StorageTypeEnum.AudioClips },
+];
 
 /**
  * Renders the library of all user data
@@ -19,25 +17,18 @@ interface LibraryProps extends InitialProps {
  * @param message Failure message, if any.
  * @param data Contains the data.
  */
-function Library(props: LibraryProps): JSX.Element {
-  const maxAllowedStorage = 250 * 1024 * 1024;
-  const usage = [
-    { bytes: 15 * 1024 * 1024, storageType: StorageTypeEnum.Images },
-    { bytes: 2500000, storageType: StorageTypeEnum.MusicTracks },
-    { bytes: 10 * 1024 * 1024, storageType: StorageTypeEnum.AudioClips },
-  ];
+function LibraryPage(): JSX.Element {
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <Page>
       <h1>Library</h1>
+      <Button onClick={onOpen}>Add +</Button>
       <StorageUsage maxAllowedStorage={maxAllowedStorage} usage={usage}/>
-      <LibraryImageList listFormat={ListFormat.Icons}/>
+      <FileList listFormat={ListFormat.Tiles}/>
+      <UploadAssetModal isOpen={isOpen} onClose={onClose}/>
     </Page>
   );
 }
 
-export async function getServerSideProps(ctx: NextPageContext) {
-  return await handleAPI(ctx, getLibraryPage);
-}
-
-export default observer(Library);
+export default LibraryPage;

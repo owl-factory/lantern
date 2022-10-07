@@ -1,6 +1,6 @@
 import { Button } from "@chakra-ui/react";
 import { Page } from "components/design";
-import { FileUploadForm } from "components/reroll/files/FileUploadForm";
+import { AssetUploadForm } from "components/reroll/assets/AssetUploadForm";
 import Link from "next/link";
 import React from "react";
 
@@ -12,7 +12,7 @@ export default function FileUploadPage() {
     <Page>
       <h1>Upload a File</h1>
       <Link href="/dev"><Button>Back</Button></Link>
-      <FileUploadForm/>
+      <AssetUploadForm/>
     </Page>
   );
 }

@@ -43,6 +43,12 @@ export const assetTypeDefs = gql`
     mimetype: String!
     assetType: String!
     sizeInBytes: Int!
+    config: Json!
+  }
+
+  # Any additional fields required for the asset validation
+  input AssetValidateInput {
+    src: String!
   }
 
   # The fields used for mutating an asset
@@ -50,13 +56,19 @@ export const assetTypeDefs = gql`
     name: String
   }
 
+  type AssetUploadResponse {
+    asset: Asset!
+    uploadURL: String!
+  }
+
   type Query {
     assets(where: AssetWhere, include: AssetInclude): [Asset]
     asset(id: String!, include: AssetInclude): Asset
   }
+
   type Mutation {
-    uploadAsset(asset: AssetUploadInput!, include: AssetInclude): Asset
-    validateAsset(id: String!): Asset
+    uploadAsset(asset: AssetUploadInput!, include: AssetInclude): AssetUploadResponse
+    validateAsset(id: String!, asset: AssetValidateInput!): Asset
     mutateAsset(id: String!, asset: AssetMutateInput!, include: AssetInclude): Asset
   }
 `;

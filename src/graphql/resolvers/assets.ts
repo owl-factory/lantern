@@ -1,3 +1,8 @@
+import { s3 } from "@owl-factory/aws/s3";
+import { Asset, User } from "@prisma/client";
+import { Auth } from "controllers/auth";
+import { Mimetype } from "types/enums/files/mimetypes";
+import { generateS3Filepath, generateS3Key } from "utilities/files";
 import { getPrismaClient } from "utilities/prisma";
 
 const prisma = getPrismaClient();
@@ -41,6 +46,7 @@ interface UploadAssetArguments {
 
 interface ValidateAssetArguments {
   id: string;
+  asset: Partial<Asset>;
 }
 
 interface MutateAssetArguments {
@@ -79,16 +85,22 @@ async function getAsset(_: unknown, { id, include }: GetAssetArguments) {
  * @returns The initial asset upload
  */
 async function uploadAsset(_: unknown, { asset, include }: UploadAssetArguments) {
-  return prisma.asset.create({
+  // TODO - Ensure the user has space
+  const s3Key = generateS3Key();
+  const s3Path = generateS3Filepath(Auth.user as User, { s3Key, mimetype: asset.mimetype });
+
+  const newAsset = await prisma.asset.create({
     data: {
       ...asset,
       src: "",
-      s3Key: "...",
-      s3Path: "...",
+      s3Key,
+      s3Path,
       isS3Pending: true,
     },
     include,
   });
+  const uploadURL = await s3.generateUploadURL(newAsset.s3Path || "", newAsset.mimetype);
+  return { asset: newAsset, uploadURL };
 }
 
 /**
@@ -96,7 +108,25 @@ async function uploadAsset(_: unknown, { asset, include }: UploadAssetArguments)
  * @param id The ID of the asset to validate
  * @returns The validated asset
  */
-async function validateAsset(_: unknown, { id }: ValidateAssetArguments) {
+async function validateAsset(_: unknown, { id, asset }: ValidateAssetArguments) {
+  // TODO - validate login
+
+  // Validate that the asset document exists and that it
+  const existingAsset = await prisma.asset.findUnique({ where: { id } });
+  if (!existingAsset) { throw `The file validation failed. No file could be found.`; }
+  else if (existingAsset.isS3Pending === false) { return existingAsset; }
+
+  // Fetches the metadata from S3
+  const fileMetadata = await s3.getObjectMetadata(existingAsset.s3Path || "");
+  if (!fileMetadata) {
+    prisma.asset.delete({ where: { id }});
+    throw `${existingAsset.name} could not be successfully uploaded. Please try again.`;
+  }
+
+  asset.sizeInBytes = fileMetadata.ContentLength || -1;
+  asset.mimetype = fileMetadata.ContentType as Mimetype;
+
+  // Validates
   return prisma.asset.update({
     data: { isS3Pending: false },
     where: { id },
@@ -117,7 +147,6 @@ async function mutateAsset(_: unknown, { id, asset, include }: MutateAssetArgume
     include,
   });
 }
-
 
 export const assetResolvers = {
   Query: {

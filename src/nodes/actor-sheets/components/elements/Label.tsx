@@ -24,10 +24,8 @@ export const SheetLabel = observer((props: SheetElementProps<LabelDescriptor>) =
   }, []);
 
   return (
-    <Box>
-      <label className={`label ${element.className}`} htmlFor={element.for}>
-        {element.text}
-      </label>
-    </Box>
+    <label className={`label ${element.className}`} htmlFor={element.for}>
+      {element.text}
+    </label>
   );
 });

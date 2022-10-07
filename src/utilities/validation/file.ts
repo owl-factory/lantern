@@ -1,4 +1,4 @@
-import { FileDocument } from "types/documents";
+import { Asset } from "@prisma/client";
 import { Mimetype } from "types/enums/files/mimetypes";
 
 const MAXIMUM_SIZE_IN_BYTES = 5 * 1024 * 1024; // 5MB is the limit
@@ -8,7 +8,7 @@ const MAXIMUM_SIZE_IN_BYTES = 5 * 1024 * 1024; // 5MB is the limit
  * @param file The raw, uploaded file to validate
  * @throws Errors if an issue is found with the type of file being uploaded
  */
-export function validateRawFile(file: File) {
+export function validateRawFile(file: File | null) {
   if (!file) { throw "You must select a file to upload."; }
   if (!isValidMimetype(file.type)) { throw `The extension ${file.name.replace(/^.*?\./, ".")} is not allowed`}
   if (file.size > MAXIMUM_SIZE_IN_BYTES) { throw `The file ${file.name} is too large to be uploaded`; }
@@ -20,7 +20,7 @@ export function validateRawFile(file: File) {
  * @todo Implement in a validation project
  * @param doc The creating file upload document to validate
  */
-export function validateFileUploadCreationDoc(doc: Partial<FileDocument>) {
+export function validateAssetUploadCreationDoc(doc: Partial<Asset>) {
   return;
 }
 

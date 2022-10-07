@@ -1,9 +1,10 @@
 import { SelectionTabs } from "@owl-factory/components/SelectionTabs";
+import { ListFormat } from "components/pages/library";
 import React from "react";
 import { FileDocument } from "types/documents";
 import { AssetUploadSource } from "types/enums/files/createMethod";
 import { LinkImageForm, UploadImageForm } from ".";
-import { ImageList, ListFormat } from "..";
+import { ImageList } from "..";
 
 const APPROVED_TABS = [ "list", "link", "upload" ];
 
@@ -49,7 +50,7 @@ export function ImageForm({defaultTab, onSubmit, tabs}: ImageFormProps) {
     case "list":
       activeForm = (
         <ImageList
-          listFormat={ListFormat.Icons}
+          listFormat={ListFormat.Tiles}
           onClick={(image:Partial<FileDocument>) => onSubmit(image, AssetUploadSource.Select)}
         />
       );

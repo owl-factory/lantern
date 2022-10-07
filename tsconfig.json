@@ -38,6 +38,9 @@
       "components/*": [
         "src/components/*"
       ],
+      "graphql/*": [
+        "src/graphql/*"
+      ],
       "nodes": [
         "src/nodes"
       ],

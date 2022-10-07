@@ -3,11 +3,9 @@ import React from "react";
 import { FileDocument } from "types/documents";
 import style from "./ImageList.module.scss";
 import { Box, Flex } from "@chakra-ui/react";
+import { ListFormat } from "components/pages/library";
 
-export enum ListFormat {
-  Thumbnails,
-  Icons,
-}
+
 
 interface ImageThumbnailProps {
   image: Partial<FileDocument>;
@@ -51,7 +49,7 @@ function ImageThumbnail({ image, onClick }: ImageThumbnailProps) {
 }
 
 interface ImageListProps {
-  listFormat: ListFormat;
+  listFormat: any;
   onClick: (image: Partial<FileDocument>) => void;
 }
 
@@ -71,13 +69,13 @@ function $ImageList(props: ImageListProps): JSX.Element {
   images.forEach((image: Partial<FileDocument>) => {
     if (!image) { return; }
     switch(props.listFormat) {
-      case ListFormat.Thumbnails:
+      // case ListFormat.Thumbnails:
       case undefined:
         imageThumbnails.push(<ImageThumbnail key={image.ref} image={image} onClick={onClick}/>);
         break;
-      case ListFormat.Icons:
-        imageThumbnails.push(<ImageIcon key={image.ref} image={image} onClick={onClick}/>);
-        break;
+      // case ListFormat.Icons:
+      //   imageThumbnails.push(<ImageIcon key={image.ref} image={image} onClick={onClick}/>);
+      //   break;
     }
   });
   return (

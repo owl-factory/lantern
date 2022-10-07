@@ -459,7 +459,7 @@ model Asset {
   src           String  // The source URL of the asset
 
   mimetype      String  @db.VarChar(32) // The mimetype of the asset. For example, image/jpeg
-  assetType      String  @db.VarChar(32) // The generic type of asset. For example, image or audio
+  assetType     String  @db.VarChar(32) // The generic type of asset. For example, image or audio
   sizeInBytes   Int     @default(0) // The size of the asset in bytes
 
   s3Key         String  // The S3 key for accessing this asset // TODO - determine length

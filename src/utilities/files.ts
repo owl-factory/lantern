@@ -1,5 +1,5 @@
-import { FileDocument, UserDocument } from "types/documents";
-import { mimetypeToExtensionMap } from "types/enums/files/mimetypes";
+import { Asset, User } from "@prisma/client";
+import { Mimetype, mimetypeToExtensionMap } from "types/enums/files/mimetypes";
 import { v4 as uuid } from "uuid";
 
 /**
@@ -13,11 +13,13 @@ export function generateS3Key() {
 /**
  * Generates an a filepath for saving and accessing an object in S3
  * @param account The owning account
- * @param fileDoc The file document to be saved
+ * @param asset The file document to be saved
  * @returns The generated filepath to use for accessing and saving from AWS
  */
-export function generateS3Filepath(account: UserDocument, fileDoc: Partial<FileDocument>) {
-  if (!fileDoc.s3Key) { throw `The AWS S3 key is required to generate an S3 filepath`; }
-  if (!fileDoc.mimetype) { throw `The mimetype is required to generate an S3 filepath`; }
-  return `${account.ref}/${fileDoc.s3Key}/full.${(mimetypeToExtensionMap[fileDoc.mimetype])}`;
+export function generateS3Filepath(account: User, asset: Partial<Asset>) {
+  if (!asset.s3Key) { throw `The AWS S3 key is required to generate an S3 filepath`; }
+  if (!asset.mimetype) { throw `The mimetype is required to generate an S3 filepath`; }
+  const res = `${account.id}/${asset.s3Key}/full.${(mimetypeToExtensionMap[asset.mimetype as Mimetype])}`;
+  console.log(res)
+  return res;
 }

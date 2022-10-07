@@ -1,15 +1,12 @@
 import { Button } from "@chakra-ui/react";
+import { AlertController } from "@owl-factory/alerts";
 import { isClient } from "@owl-factory/utilities/client";
 import { Form, Formik, FormikProps } from "formik";
+import { uploadAsset } from "nodes/assets/utilities/submit";
 import React from "react";
 import { mimetypeToTypeMap } from "types/enums/files/mimetypes";
 import { FileType } from "types/enums/files/type";
 
-interface FormValues {
-  file: File | null;
-  fileInput: string;
-  auxData: Record<string, unknown>;
-}
 
 const INITIAL_VALUES = {
   file: null,
@@ -22,9 +19,7 @@ if (isClient) {
   img = new Image();
 }
 
-async function onSubmit(values: FormValues) {
-  return;
-}
+
 
 /**
  * Places the file into a Formik form value, as Formik doesn't normally support file uploads
@@ -60,13 +55,21 @@ function onChange(
         setLoading(false);
       };
   }
+}
 
+async function onSubmit(values: any) {
+  try {
+    const asset = await uploadAsset(values);
+    AlertController.success(`${asset.name} was successfully uploaded`);
+  } catch (e) {
+    AlertController.error(e as string);
+  }
 }
 
 /**
  * A form for uploading a file
  */
-export function FileUploadForm() {
+export function AssetUploadForm() {
   const [loading, setLoading] = React.useState(false);
 
   return (

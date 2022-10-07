@@ -62,7 +62,9 @@ export const ActorSheetComponent = observer((props: ActorSheetProps) => {
     <>
       <Button type="button" onClick={save}>Save</Button>
       <Box className={`actor-sheet-wrapper actor-sheet-${sheetID}`}>
-        {sheetElements}
+        <Box className="actor-sheet">
+          {sheetElements}
+        </Box>
       </Box>
     </>
   );
