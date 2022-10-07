@@ -1,5 +1,5 @@
 import { Button } from "@chakra-ui/react";
-import { AlertController } from "@owl-factory/alerts";
+import { Alerts } from "@owl-factory/alerts";
 import { rest } from "@owl-factory/https";
 import { ActorSheet, Ruleset } from "@prisma/client";
 import { Page } from "components/design";
@@ -45,14 +45,14 @@ function EditActorSheet(props: EditActorSheet) {
     try {
       const result = await rest.patch(`/api/dev/actor-sheets/${actorSheet.id}`, { actorSheet: values });
       if (!result.success) {
-        AlertController.error(`${values.name} could not be updated. ${result.message}`);
+        Alerts.error({ title: `${values.name} could not be updated. ${result.message}` });
         return;
       }
-      AlertController.success(`${values.name} was successfully updated!`);
+      Alerts.success({ title: `${values.name} was successfully updated!` });
       router.push(`/dev/actor-sheets`);
       return;
     } catch (e) {
-      AlertController.error(`An unexpected error occured while attempting to save ${values.name}. ${e}`);
+      Alerts.error({ title: `An unexpected error occured while attempting to save ${values.name}. ${e}` });
     }
   }
 

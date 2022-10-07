@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Button } from "@chakra-ui/react";
 import { Ruleset } from "@prisma/client";
 import { rest } from "@owl-factory/https";
-import { AlertController } from "@owl-factory/alerts";
+import { Alerts } from "@owl-factory/alerts";
 import { NextPageContext } from "next";
 
 interface EditRulesetProps {
@@ -31,12 +31,12 @@ function EditRuleset(props: EditRulesetProps) {
     );
 
     if (result.success) {
-      AlertController.success(`${result.data.ruleset.name} was updated!`);
+      Alerts.success({ title: `${result.data.ruleset.name} was updated!` });
       router.push(`/dev/rulesets/${props.ruleset?.id}`);
       return result;
     }
 
-    AlertController.error(`${values.name} could not be updated`);
+    Alerts.error({ title: `${values.name} could not be updated` });
     return result;
   }
 

@@ -8,7 +8,7 @@ import {
   AlertDialogOverlay,
   Button,
 } from "@chakra-ui/react";
-import { AlertController } from "@owl-factory/alerts";
+import { Alerts } from "@owl-factory/alerts";
 import { ActorSheet } from "@prisma/client";
 import React, { RefObject } from "react";
 
@@ -44,7 +44,7 @@ export function DeleteSheetAlert(props: DeleteActorAlertProps) {
   function onCompleted(sheet: ActorSheet) {
     props.onClose();
     props.onDelete(props.sheet as ActorSheet);
-    AlertController.success(`${sheet?.name} was successfully deleted`);
+    Alerts.success({ title: `${sheet?.name} was successfully deleted`});
   }
 
   /**
@@ -53,7 +53,7 @@ export function DeleteSheetAlert(props: DeleteActorAlertProps) {
    */
   function onError(sheet: ActorSheet) {
     props.onClose();
-    AlertController.error(`${sheet?.name} couldn't be deleted`);
+    Alerts.error({ title: `${sheet?.name} couldn't be deleted` });
   }
 
   /**

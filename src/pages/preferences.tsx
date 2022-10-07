@@ -1,4 +1,4 @@
-import { AlertController } from "@owl-factory/alerts";
+import { Alerts } from "@owl-factory/alerts";
 import { Button } from "@chakra-ui/react";
 import { Input } from "@owl-factory/components/form";
 import { rest } from "@owl-factory/https";
@@ -31,7 +31,7 @@ function ChangePasswordForm() {
       }
 
       formik.resetForm();
-      AlertController.success("The password was successfully updated");
+      Alerts.success({ title: "The password was successfully updated" });
     } catch (e) {
       setError(e as string);
     }

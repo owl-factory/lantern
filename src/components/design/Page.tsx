@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react";
 import ErrorPage from "next/error";
-import { AlertMessages } from "@owl-factory/alerts";
-import { Box, Container, Flex } from "@chakra-ui/react";
+import { Alerts } from "@owl-factory/alerts";
+import { Box, Container, Flex, useToast } from "@chakra-ui/react";
 
 interface PageProps {
   children: ReactNode;
@@ -27,6 +27,10 @@ function parseError(error: any): string {
  * These are passed automatically
  */
 export function Page(props: PageProps): JSX.Element {
+  const toast = useToast();
+  React.useEffect(() => {
+    Alerts.useToast = toast;
+  }, []);
 
   if (props.error && typeof(props.error) === "number") {
     return <ErrorPage statusCode={props.error} />;
@@ -39,7 +43,6 @@ export function Page(props: PageProps): JSX.Element {
         { props.error ? <>{parseError(props.error)}</> : <></>}
         {props.children}
       </Container>
-      <AlertMessages/>
     </Flex>
   );
 }
