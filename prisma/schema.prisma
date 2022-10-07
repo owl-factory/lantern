@@ -432,6 +432,7 @@ model ActorSheet {
   // The layout and styling of the actor sheet
   layout        String  @db.Xml
   styling       String  
+  rawStyling    String  @default("") // The styling provided by the user to be processed
 
   // Standard access tracking fields
   ownedBy         String?  @db.Uuid

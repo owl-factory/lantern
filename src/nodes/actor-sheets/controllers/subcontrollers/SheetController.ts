@@ -46,7 +46,6 @@ export class SheetController {
     this.loadTabs(key, layout);
 
     injectStyles(styling, `actor-sheet-${key}`, true);
-    console.log(`actor-sheet-${key}`);
   }
 
   /**

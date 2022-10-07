@@ -2,7 +2,6 @@ import { gql, useMutation } from "@apollo/client";
 import { Box, Button } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
 import React from "react";
-import { apolloClient } from "src/graphql/apollo-client";
 import { Scalar } from "types";
 import { ActorController } from "../controllers/ActorSheetController";
 import { SheetProperties } from "../types";
