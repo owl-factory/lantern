@@ -15,8 +15,7 @@ export enum SheetElementType {
   Page, // Indicates that the contents are part of a single page that can be tabbed between
   Row, // Indicates that the contents should be organized in a column-like format inline
   Column, // Indicates that the contents exist within a certain width
-  Background, // Places an image or svg behind the given children
-  Border, // Places a border around the children
+  Box, // A generic div element that may be one of several types
   Inline, // Indicates that the children should be rendered inline but without specific spacing
   Table, // Indicates that the children are part of a table
   TableRow, // Contains a single row of table cells
@@ -67,10 +66,8 @@ export function elementNameToPageElementType(tagName: string) {
       return SheetElementType.Row;
     case "column":
       return SheetElementType.Column;
-    case "background":
-      return SheetElementType.Background;
-    case "border":
-      return SheetElementType.Border;
+    case "box":
+      return SheetElementType.Box;
     case "inline":
       return SheetElementType.Inline;
     case "icon":

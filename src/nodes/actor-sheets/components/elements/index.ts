@@ -1,11 +1,5 @@
-export * from "./Background";
-export * from "./Border";
-export * from "./Collapse";
-export * from "./Column";
-export * from "./Inline";
-export * from "./Label";
-export * from "./Input";
-export * from "./Option";
-export * from "./Row";
-export * from "./TextArea";
-export * from "./Select";
+export * from "./inputs";
+export * from "./layout";
+export * from "./utility";
+
+export * from "./Error";

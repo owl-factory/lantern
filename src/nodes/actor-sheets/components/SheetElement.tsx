@@ -23,37 +23,37 @@ import {
   TextInputDescriptor,
 } from "nodes/actor-sheets/types/elements";
 import { GenericSheetElementDescriptor } from "nodes/actor-sheets/types/elements/generic";
+import { SheetElementType } from "../enums/sheetElementType";
+import { SheetElementProps } from "../types";
+import { ButtonDescriptor } from "../types/elements/button";
+import { ErrorDescriptor } from "../types/elements/error";
+import { LoopDescriptor } from "../types/elements/loop";
 import {
-  SheetBackground,
-  SheetBorder,
-  SheetCollapse,
+  SheetBox,
+  SheetButton,
+  SheetCheckbox,
   SheetColumn,
+  SheetError,
   SheetInline,
   SheetLabel,
+  SheetLoop,
   SheetNumberInput,
   SheetOption,
+  SheetPage,
+  SheetPageable,
+  SheetPrefab,
+  SheetRadioButton,
   SheetRow,
   SheetSelect,
+  SheetTable,
+  SheetTableCell,
+  SheetTableRow,
+  SheetTabs,
   SheetTextArea,
   SheetTextInput,
 } from "./elements";
-import { SheetCheckbox } from "./elements/Checkbox";
-import { SheetPage } from "./elements/Page";
-import { SheetPageable } from "./elements/Pageable";
-import { SheetPrefab } from "./elements/Prefab";
-import { SheetRadioButton } from "./elements/RadioButton";
-import { SheetElementProps } from "../types";
-import { SheetLoop } from "./elements/Loop";
-import { ButtonDescriptor } from "../types/elements/button";
-import { SheetButton } from "./elements/Button";
-import { SheetElementType } from "../enums/sheetElementType";
-import { LoopDescriptor } from "../types/elements/loop";
-import { SheetTable } from "./elements/Table";
-import { SheetTableCell } from "./elements/TableCell";
-import { SheetTableRow } from "./elements/TableRow";
-import { SheetTabs } from "./elements/Tabs";
-import { ErrorDescriptor } from "../types/elements/error";
-import { SheetError } from "./elements/Error";
+import { SheetCollapse } from "./elements/utility/Collapse";
+import { BoxDescriptor } from "../types/elements/box";
 
 /**
  * Determines which sheet element to render based on the descriptor element type given
@@ -73,10 +73,9 @@ export function SheetElement(props: SheetElementProps<GenericSheetElementDescrip
         return <SheetRow {...props} element={props.element as RowDescriptor}/>;
       case SheetElementType.Column:
         return <SheetColumn {...props} element={props.element as ColumnDescriptor}/>;
-      case SheetElementType.Background:
-        return <SheetBackground {...props} element={props.element as BackgroundDescriptor}/>;
-      case SheetElementType.Border:
-        return <SheetBorder {...props} element={props.element as BorderDescriptor}/>;
+      case SheetElementType.Box:
+        return <SheetBox {...props} element={props.element as BoxDescriptor}/>;
+
       case SheetElementType.Inline:
         return <SheetInline {...props} element={props.element as InlineDescriptor}/>;
       case SheetElementType.Label:
@@ -116,7 +115,8 @@ export function SheetElement(props: SheetElementProps<GenericSheetElementDescrip
         return <SheetError {...props} element={props.element as ErrorDescriptor}/>;
     }
   } catch (e) {
-    return <SheetError {...props} element={props.element as ErrorDescriptor}/>
+    return <SheetError {...props} element={props.element as ErrorDescriptor}/>;
   }
-  return <></>;
+  console.log(props.element?.element)
+  return <>:(</>;
 }

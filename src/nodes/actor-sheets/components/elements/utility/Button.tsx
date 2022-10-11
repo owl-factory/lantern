@@ -3,8 +3,8 @@ import { observer } from "mobx-react-lite";
 import { SheetElementProps } from "nodes/actor-sheets/types";
 import { ButtonDescriptor } from "nodes/actor-sheets/types/elements/button";
 import { ActorController } from "nodes/actor-sheets";
-import { ButtonAction } from "../../enums/buttonActions";
-import * as actions from "../../utilities/elements/button/actions";
+import { ButtonAction } from "../../../enums/buttonActions";
+import * as actions from "../../../utilities/elements/button/actions";
 import { Button } from "@chakra-ui/react";
 
 const VARIABLE_FIELDS = ["className", "text", "alert", "contentGroup", "index", "roll", "target"];
