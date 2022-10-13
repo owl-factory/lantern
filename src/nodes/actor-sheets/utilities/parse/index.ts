@@ -51,15 +51,22 @@ export function extractVariables(xml: Element): Record<string, Scalar> {
  * @param sheet The raw XML sheet DOM element to break out the base elements from
  * @returns A struct with the layout and prefabs elements
  */
-export function parseFirstLevelElements(sheet: Element) {
+export function parseLayoutDOM(sheet: Element) {
+  const warningTitle = "Layout Formatting Issue";
   let layout: Element | undefined;
   const prefabs: Element[] = [];
   const variables: Element[] = [];
+  const warnings: any[] = [];
   for (const child of sheet.children) {
     switch (child.tagName.toLocaleLowerCase()) {
       case "layout": // TODO - make these cases an enum or variable
         if (layout) {
-          console.warn("Multiple layouts were given for a single document. Only the first will be rendered");
+
+          warnings.push({
+            title: warningTitle,
+            // eslint-disable-next-line max-len
+            description: "Multiple Layout elements were provided for a single document. Only the first will be rendered",
+          });
           break;
         }
         layout = child;
@@ -80,11 +87,14 @@ export function parseFirstLevelElements(sheet: Element) {
         break;
 
       default:
-        console.warn(
-          `The element '${child.tagName}' is not allowed as a direct child of the Sheet component. It will be ignored`
-        );
+        warnings.push({
+          title: warningTitle,
+          // eslint-disable-next-line max-len
+          description: `The element '${child.tagName}' is not allowed as a direct child of the Sheet element. It will be ignored`,
+
+        });
         break;
     }
   }
-  return { layout, prefabs, variables };
+  return { layout, prefabs, variables, warnings };
 }

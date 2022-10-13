@@ -3,9 +3,9 @@ import { SheetElementType } from "nodes/actor-sheets/enums/sheetElementType";
 import { SheetState } from "nodes/actor-sheets/types";
 import { LayoutDescriptor, PageDescriptor } from "nodes/actor-sheets/types/elements";
 import { ParsedTab } from "nodes/actor-sheets/types/parsedTab";
-import { parseFirstLevelElements } from "nodes/actor-sheets/utilities/parse";
+import { parseLayoutDOM } from "nodes/actor-sheets/utilities/parse";
 import { parseChildrenElements } from "nodes/actor-sheets/utilities/parse/children";
-import { parseXML } from "nodes/actor-sheets/utilities/parser";
+import { xmlToDOM } from "nodes/actor-sheets/utilities/parser";
 import { injectStyles } from "nodes/actor-sheets/utilities/styles";
 
 export class SheetController {
@@ -29,14 +29,14 @@ export class SheetController {
    * @param xml The raw XML string
    */
   public load(key: string, xml: string, styling: string) {
-    const xmlDoc: Document = parseXML(xml);
+    const xmlDoc: Document = xmlToDOM(xml);
     const sheet: Element = xmlDoc.children[0];
 
     if (sheet.tagName.toLocaleLowerCase() !== "sheet") {
       throw `The root element of an actor sheet must be <Sheet>`;
     }
 
-    const { layout, prefabs } = parseFirstLevelElements(sheet);
+    const { layout, prefabs } = parseLayoutDOM(sheet);
 
     if (!layout) { throw `A 'Layout' element is required`; }
     this.prefabs[key] = {};

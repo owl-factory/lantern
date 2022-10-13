@@ -10,16 +10,29 @@
  * @returns true if styles were applied, false if styles were not applied.
  */
 export function injectStyles(css: string, uniqueId: string, overwrite = false) {
-    const current = document.getElementById(uniqueId);
-    if (!current) {
-        const style = document.createElement("style");
-        style.textContent = css;
-        style.id = uniqueId;
-        document.head.append(style);
-        return true;
-    } else if (overwrite) {
-        current.textContent = css;
-        return true;
-    }
-    return false;
+  const current = document.getElementById(uniqueId);
+  if (!current) {
+    const style = document.createElement("style");
+    style.textContent = css;
+    style.id = uniqueId;
+    document.head.append(style);
+    return true;
+  } else if (overwrite) {
+    current.textContent = css;
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Removes a style element, if any is found, from the head
+ * @param uniqueID The unique ID for the style to remove
+ */
+export function removeStyles(uniqueID: string) {
+  const styleElements = document.getElementsByTagName("style");
+  for (let i = 0; i < styleElements.length; i++) {
+    const element = styleElements.item(i);
+    if (!element) continue;
+    if (element.id === uniqueID) { element.remove(); }
+  }
 }

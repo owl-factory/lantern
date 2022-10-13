@@ -122,7 +122,7 @@ export function SheetForm(props: SheetFormProps) {
               <Button onClick={() => refresh(formikProps)}>Refresh</Button>
               <Button type="submit">Submit</Button>
             </Form>
-          )
+          );
         }
       }
       </Formik>

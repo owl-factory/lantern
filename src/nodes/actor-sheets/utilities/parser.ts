@@ -3,11 +3,12 @@ import { isServer } from "@owl-factory/utilities/client";
 let domParser: any = null;
 
 /**
- * Parses XML. Handles cases for front and back end
+ * Parses XML into a DOM tree. Handles cases for front and back end
+ * @todo Implement server-side for validation purposes
  * @param xml The raw XML to parse
  * @returns A parsed XML Document
  */
-export function parseXML(xml: string) {
+export function xmlToDOM(xml: string) {
   if (isServer) {
     throw "Server-side DOM not implemented";
   } else {

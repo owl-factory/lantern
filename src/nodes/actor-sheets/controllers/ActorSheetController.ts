@@ -13,7 +13,7 @@ import { StateType } from "../enums/stateTypes";
 import { DataController } from "./subcontrollers/DataController";
 import { DataSource } from "../enums/dataSource";
 import { extractVariables } from "../utilities/parse";
-import { parseXML } from "../utilities/parser";
+import { xmlToDOM } from "../utilities/parser";
 import { StateController } from "./subcontrollers/StateController";
 import { Mediator } from "nodes/mediator";
 import { MediatorPost, MediatorRequest } from "nodes/mediator/types/mediator";
@@ -92,7 +92,7 @@ class $ActorController {
    */
   public loadSheet(sheetID: string, sheet: Partial<ActorSheet>) {
     if (sheet.layout === undefined) { return; }
-    const xml = parseXML(sheet.layout);
+    const xml = xmlToDOM(sheet.layout);
     const variables = extractVariables(xml);
 
     this.load(DataSource.Sheet, sheetID, variables);

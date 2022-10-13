@@ -128,5 +128,5 @@ export function SheetElement(props: SheetElementProps<GenericSheetElementDescrip
   } catch (e) {
     return <SheetError {...props} element={props.element as ErrorDescriptor}/>;
   }
-  return <></>;
+  return <>:(</>;
 }
