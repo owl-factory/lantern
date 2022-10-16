@@ -1,6 +1,6 @@
 import { ApolloError, gql, useMutation } from "@apollo/client";
 import { Button } from "@chakra-ui/react";
-import { AlertController } from "@owl-factory/alerts";
+import { Alerts } from "@owl-factory/alerts";
 import { Input } from "@owl-factory/components/form";
 import { MonacoEditor } from "@owl-factory/components/form/Monaco";
 import { rest } from "@owl-factory/https";
@@ -61,7 +61,7 @@ export function SheetForm(props: SheetFormProps) {
    * @param data The data from a successful mutation
    */
   function onCompleted(data: { mutateActorSheet: ActorSheet }) {
-    AlertController.success(`${data.mutateActorSheet.name} was successfully updated`);
+    Alerts.success({ title: `${data.mutateActorSheet.name} was successfully updated` });
     ActorController.loadSheet(
       data.mutateActorSheet.id,
       { layout: data.mutateActorSheet.layout, styling: data.mutateActorSheet.styling}
@@ -74,7 +74,7 @@ export function SheetForm(props: SheetFormProps) {
    */
    function onError(error: ApolloError, name: string) {
     console.error(error);
-    AlertController.error(`${name} could not be updated`);
+    Alerts.error({ title: `${name} could not be updated` });
   }
 
   /**

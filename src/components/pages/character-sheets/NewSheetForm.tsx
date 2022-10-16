@@ -1,5 +1,5 @@
 import { ApolloError, gql, useMutation, useQuery } from "@apollo/client";
-import { AlertController } from "@owl-factory/alerts";
+import { Alerts } from "@owl-factory/alerts";
 import { Input, Select } from "@owl-factory/components/form";
 import { ActorSheet } from "@prisma/client";
 import { Form, Formik, FormikHelpers } from "formik";
@@ -72,7 +72,7 @@ export function NewSheetForm(props: NewSheetFormProps) {
    */
   function onError(error: ApolloError) {
     console.error(error);
-    AlertController.error(`The character could not be created`);
+    Alerts.error({ title: `The character could not be created` });
   }
 
   /**

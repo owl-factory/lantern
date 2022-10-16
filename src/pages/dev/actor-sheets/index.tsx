@@ -1,5 +1,5 @@
 import { Button } from "@chakra-ui/react";
-import { AlertController } from "@owl-factory/alerts";
+import { Alerts } from "@owl-factory/alerts";
 import { rest } from "@owl-factory/https";
 import { ActorSheet, Ruleset } from "@prisma/client";
 import { Page } from "components/design";
@@ -88,13 +88,13 @@ export default function ActorSheetList(props: ActorSheetListProps) {
     try {
       const deleteResult = await rest.delete<DeleteServerResponse>(`/api/dev/actor-sheets/${actorSheet.id}`, {});
       if (!deleteResult.success) {
-        AlertController.error(`${actorSheet.name} could not be successfully deleted. ${deleteResult.message}`);
+        Alerts.error({ title: `${actorSheet.name} could not be successfully deleted. ${deleteResult.message}` });
         return;
       }
-      AlertController.success(`${actorSheet.name} was successfully deleted.`);
+      Alerts.success({ title: `${actorSheet.name} was successfully deleted.` });
       setActorSheets(deleteResult.data.actorSheets);
     } catch (e) {
-      AlertController.error(`An unexpected error occured while attempting to delete ${actorSheet.name}.`);
+      Alerts.error({ title: `An unexpected error occured while attempting to delete ${actorSheet.name}.` });
     }
   }
 
