@@ -1,6 +1,6 @@
 import React from "react";
 import { PrefabDescriptor } from "nodes/actor-sheets/types/elements";
-import { SheetElementProps } from "../../types";
+import { SheetElementProps } from "../../../types";
 import { SheetChildren } from "./Children";
 import { Box } from "@chakra-ui/react";
 import { ActorController } from "nodes/actor-sheets/controllers/ActorSheetController";

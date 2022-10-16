@@ -1,8 +1,8 @@
-import { ActorController } from "../../controllers/ActorSheetController";
+import { ActorController } from "../../../controllers/ActorSheetController";
 import React from "react";
 import { SelectDescriptor } from "nodes/actor-sheets/types/elements";
 import { SheetElementProps } from "nodes/actor-sheets/types";
-import { SheetChildren } from "./Children";
+import { SheetChildren } from "../utility/Children";
 import { observer } from "mobx-react-lite";
 
 const VARIABLE_FIELDS = ["className", "id", "name"];

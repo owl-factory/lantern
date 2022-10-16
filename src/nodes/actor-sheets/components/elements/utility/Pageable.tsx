@@ -1,7 +1,7 @@
 import React from "react";
 import { PageableDescriptor } from "nodes/actor-sheets/types/elements";
-import { SheetElement } from "../SheetElement";
-import { SheetElementProps } from "../../types";
+import { SheetElement } from "../../SheetElement";
+import { SheetElementProps } from "../../../types";
 import { SheetPage } from "./Page";
 import { StateType } from "nodes/actor-sheets/enums/stateTypes";
 import { ActorController } from "nodes/actor-sheets/controllers/ActorSheetController";

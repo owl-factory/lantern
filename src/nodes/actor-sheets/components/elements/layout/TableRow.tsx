@@ -1,7 +1,7 @@
 import React from "react";
 import { TableRowDescriptor } from "nodes/actor-sheets/types/elements";
-import { SheetElementProps } from "../../types";
-import { SheetChildren } from "./Children";
+import { SheetElementProps } from "../../../types";
+import { SheetChildren } from "../utility/Children";
 import { ActorController } from "nodes/actor-sheets/controllers/ActorSheetController";
 
 const VARIABLE_FIELDS = ["className"];

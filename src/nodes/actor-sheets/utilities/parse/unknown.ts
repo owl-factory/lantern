@@ -1,7 +1,6 @@
 import { SheetElementType, elementNameToPageElementType } from "nodes/actor-sheets/enums/sheetElementType";
 import { SheetState } from "nodes/actor-sheets/types";
-import { parseBackgroundElement } from "./background";
-import { parseBorderElement } from "./border";
+import { parseBoxElement } from "./box";
 import { parseButtonElement } from "./button";
 import { parseCheckboxElement } from "./checkbox";
 import { parseCollapseElement } from "./collapse";
@@ -44,10 +43,8 @@ export function parseUnknownElement(element: Element, state: SheetState) {
         return parseRowElement(element, state);
       case SheetElementType.Column:
         return parseColumnElement(element, state);
-      case SheetElementType.Background:
-        return parseBackgroundElement(element, state);
-      case SheetElementType.Border:
-        return parseBorderElement(element, state);
+      case SheetElementType.Box:
+        return parseBoxElement(element, state);
       case SheetElementType.Inline:
         return parseInlineElement(element, state);
 

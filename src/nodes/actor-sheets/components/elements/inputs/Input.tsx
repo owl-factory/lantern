@@ -1,8 +1,8 @@
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { NumberInputDescriptor, TextInputDescriptor } from "nodes/actor-sheets/types/elements";
-import { SheetElementProps } from "../../types";
-import { ActorController } from "../../controllers/ActorSheetController";
+import { SheetElementProps } from "../../../types";
+import { ActorController } from "../../../controllers/ActorSheetController";
 
 const VARIABLE_FIELDS = ["className", "id", "name"];
 

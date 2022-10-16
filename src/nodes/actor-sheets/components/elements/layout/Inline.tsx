@@ -1,7 +1,7 @@
 import React from "react";
 import { InlineDescriptor } from "nodes/actor-sheets/types/elements";
-import { SheetElementProps } from "../../types";
-import { SheetChildren } from "./Children";
+import { SheetElementProps } from "../../../types";
+import { SheetChildren } from "../utility/Children";
 import { Box } from "@chakra-ui/react";
 import { ActorController } from "nodes/actor-sheets/controllers/ActorSheetController";
 

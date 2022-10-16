@@ -1,6 +1,6 @@
 import { SheetElementProps } from "nodes/actor-sheets/types";
 import React from "react";
-import { SheetElement } from "../SheetElement";
+import { SheetElement } from "../../SheetElement";
 
 /**
  * Renders out the children of a sheet element in a consistent way. This removes the need to loop in

@@ -1,6 +1,6 @@
 import React from "react";
-import { BorderDescriptor } from "nodes/actor-sheets/types/elements/border";
-import { SheetElementProps } from "../../types";
+import { PageDescriptor } from "nodes/actor-sheets/types/elements";
+import { SheetElementProps } from "../../../types";
 import { SheetChildren } from "./Children";
 import { Box } from "@chakra-ui/react";
 import { ActorController } from "nodes/actor-sheets/controllers/ActorSheetController";
@@ -8,14 +8,14 @@ import { ActorController } from "nodes/actor-sheets/controllers/ActorSheetContro
 const VARIABLE_FIELDS = ["className"];
 
 /**
- * Renders a border around given children
- * @param element The SheetBorder element description
+ * Renders a tabbable page
+ * @param element The SheetPage element description
  */
-export function SheetBorder(props: SheetElementProps<BorderDescriptor>) {
+export function SheetPage(props: SheetElementProps<PageDescriptor>) {
   const [ element, setElement ] = React.useState<any>({});
 
   React.useEffect(() => {
-    ActorController.renderExpressions<BorderDescriptor>(
+    ActorController.renderExpressions<PageDescriptor>(
       props.renderID,
       props.element,
       VARIABLE_FIELDS,
@@ -24,8 +24,8 @@ export function SheetBorder(props: SheetElementProps<BorderDescriptor>) {
   }, []);
 
   return (
-    <Box className={`border ${element.className}`}>
-      <SheetChildren {...props}/>
+    <Box className={`page ${element.className}`}>
+      <SheetChildren {...props} />
     </Box>
   );
 }

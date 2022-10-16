@@ -1,25 +1,23 @@
 import { SheetElementType } from "nodes/actor-sheets/enums/sheetElementType";
 import { SheetState } from "nodes/actor-sheets/types";
-import { BorderDescriptor } from "nodes/actor-sheets/types/elements";
+import { BoxDescriptor } from "nodes/actor-sheets/types/elements/box";
 import { splitExpressionValue } from "../expressions/parse";
 import { parseChildrenElements } from "./children";
 
 /**
- * Converts a border element into a border element descriptor
- * @param key The key of the w
- * @param element The border element to convert
- * @returns A border element descriptor
+ * Converts a background element into a background element descriptor
+ * @param element The background element to convert
+ * @returns A background element descriptor
  */
-export function parseBorderElement(element: Element, state: SheetState) {
-  const elementDetails: BorderDescriptor = {
+export function parseBoxElement(element: Element, state: SheetState) {
+  const elementDetails: BoxDescriptor = {
     $key: state.key,
     className: splitExpressionValue(element.getAttribute("class") || ""),
-    element: SheetElementType.Border,
-    borderStyle: element.getAttribute("borderStyle") || "solid",
+    element: SheetElementType.Box,
+    type: element.getAttribute("type") as ("border" | "background") || "box",
     children: [],
   };
 
   elementDetails.children = parseChildrenElements(element.children, state);
-
   return elementDetails;
 }
