@@ -7,7 +7,7 @@ import { ButtonAction } from "../../enums/buttonActions";
 import * as actions from "../../utilities/elements/button/actions";
 import { Button } from "@chakra-ui/react";
 
-const VARIABLE_FIELDS = ["text", "alert", "contentGroup", "index", "roll", "target"];
+const VARIABLE_FIELDS = ["className", "text", "alert", "contentGroup", "index", "roll", "target"];
 
 /**
  * Renders a button that performs an action when clicked
@@ -25,7 +25,8 @@ export const SheetButton = observer((props: SheetElementProps<ButtonDescriptor>)
   }, []);
 
   return (
-    <Button className={`button`} onClick={() => onClick(props.element.action, props.renderID, element)}>
+    <Button
+      className={`button ${element.className}`} onClick={() => onClick(props.element.action, props.renderID, element)}>
       {element.text}
     </Button>
   );

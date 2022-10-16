@@ -16,6 +16,7 @@ export function parseNumberInputElement(element: Element, state: SheetState) {
 
   const elementDetails: NumberInputDescriptor = {
     $key: state.key,
+    className: splitExpressionValue(element.getAttribute("class") || ""),
     element: SheetElementType.NumberInput,
     id: splitExpressionValue(element.getAttribute("id") || ""),
     name: splitExpressionValue(name),

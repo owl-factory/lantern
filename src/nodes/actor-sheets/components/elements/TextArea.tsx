@@ -3,7 +3,7 @@ import { TextAreaDescriptor } from "nodes/actor-sheets/types/elements";
 import { SheetElementProps } from "../../types";
 import { ActorController } from "../../controllers/ActorSheetController";
 
-const VARIABLE_FIELDS = ["id", "name"];
+const VARIABLE_FIELDS = ["className", "id", "name"];
 
 /**
  * Renders a text area input element
@@ -46,7 +46,7 @@ export function SheetTextArea(props: SheetElementProps<TextAreaDescriptor>) {
         id={element.id}
         name={element.name}
         onChange={onChange}
-        className={`input textarea`}
+        className={`input textarea ${element.className}`}
         rows={4}
         defaultValue={ActorController.getActor(props.renderID, element.name, props.properties).toString()}
       />

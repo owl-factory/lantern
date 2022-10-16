@@ -4,7 +4,7 @@ import { RadioDescriptor } from "nodes/actor-sheets/types/elements";
 import { ActorController } from "../../controllers/ActorSheetController";
 import { SheetElementProps } from "../../types";
 
-const VARIABLE_FIELDS = ["id", "name", "value"];
+const VARIABLE_FIELDS = ["className", "id", "name", "value"];
 
 /**
  * Renders a radio input element
@@ -39,7 +39,7 @@ export const SheetRadioButton = observer((props: SheetElementProps<RadioDescript
       ref={ref}
       id={element.id}
       name={element.name}
-      className={`input radio-button`}
+      className={`input radio-button ${element.className}`}
       defaultChecked={fieldValue === element.value}
       onChange={onChange}
       value={element.value}

@@ -4,7 +4,7 @@ import { NumberInputDescriptor, TextInputDescriptor } from "nodes/actor-sheets/t
 import { SheetElementProps } from "../../types";
 import { ActorController } from "../../controllers/ActorSheetController";
 
-const VARIABLE_FIELDS = ["id", "name"];
+const VARIABLE_FIELDS = ["className", "id", "name"];
 
 type IndividualSheetInputProps = SheetElementProps<NumberInputDescriptor | TextInputDescriptor>
 
@@ -55,7 +55,7 @@ const SheetInput = observer((props: SheetInputProps) => {
         id={element.id}
         type={props.type}
         name={element.name}
-        className={`input ${props.type}-input`}
+        className={`input ${props.type}-input ${element.className}`}
         onChange={onChange}
         autoComplete="off"
         defaultValue={ActorController.getActor(props.renderID, element.name, props.properties).toString()}
