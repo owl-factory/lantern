@@ -2,7 +2,7 @@ import { Alerts } from "@owl-factory/alerts";
 import { rest } from "@owl-factory/https";
 import { action, makeObservable, observable } from "mobx";
 import { parseLayoutDOM } from "nodes/actor-sheets/utilities/parse";
-import { xmlToDOM } from "nodes/actor-sheets/utilities/parser";
+import { xmlToDOM } from "@owl-factory/xml";
 import { injectStyles, removeStyles } from "nodes/actor-sheets/utilities/styles";
 
 type Views = Record<string, View>;

@@ -1,8 +1,8 @@
-import { GenericSheetElementDescriptor } from "./generic";
+import { GenericElementDescriptor } from "../../../view-renderer/types/generic";
 
 /**
  * Describes a sheet layout element
  */
-export interface LayoutDescriptor extends GenericSheetElementDescriptor {
-  children: GenericSheetElementDescriptor[];
+export interface LayoutDescriptor extends GenericElementDescriptor {
+  children: GenericElementDescriptor[];
 }
