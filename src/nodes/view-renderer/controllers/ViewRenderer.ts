@@ -6,7 +6,8 @@ import { injectStyles, removeStyles } from "nodes/actor-sheets/utilities/styles"
 import { extractFirstLevelElements } from "../utilities/parse/initial";
 import { ViewType } from "../enums/viewType";
 import { parseLayoutDOM, parsePrefabsDOM } from "../utilities/parse";
-import { ViewState } from "../types";
+import { SheetElementProps, ViewState } from "../types";
+import { GenericElementDescriptor } from "../types/elements";
 
 
 type Views = Record<string, View>;
@@ -40,6 +41,7 @@ class ViewRendererClass {
     makeObservable(this, {
       views: observable,
       import: action,
+      addWarning: action,
     });
   }
 
@@ -137,6 +139,51 @@ class ViewRendererClass {
     }
   }
 
+  public async renderExpressions<T extends GenericElementDescriptor>(props: SheetElementProps<T>, fields: string[]) {
+    const parsedVariables: Record<string, string> = {};
+
+    // const renderIDs = this.$renders[renderID];
+
+    // for (const fieldName of fields) {
+    //   if (!(fieldName in props.element)) { continue; }
+
+    //   const parsedExpression = element[fieldName as (keyof T)] as unknown as ParsedExpression;
+    //   if (!parsedExpression.hasExpression || parsedExpression.value === "") {
+    //     parsedVariables[fieldName] = parsedExpression.value;
+    //     continue;
+    //   }
+
+    //   const exprVariables = this.dataController.getExprVariables(renderIDs, parsedExpression.variables || []) as any;
+    //   properties.character = exprVariables.actor;
+    //   properties.content = exprVariables.content;
+    //   properties.ruleset = exprVariables.ruleset;
+    //   properties.sheet = exprVariables.sheet;
+
+    //   parsedVariables[fieldName] = (
+    //     await Mediator.requests(MediatorRequest.SandboxExpr, {expression: parsedExpression, properties})
+    //   ) as string;
+
+    //   delete properties.character;
+    //   delete properties.content;
+    //   delete properties.ruleset;
+    //   delete properties.sheet;
+    // }
+
+    return parsedVariables;
+  }
+
+  public async getValue<T extends GenericElementDescriptor>(props: SheetElementProps<T>, field: string) {
+    return "";
+  }
+
+  public async setValue<T extends GenericElementDescriptor>(
+    props: SheetElementProps<T>,
+    field: string,
+    value: unknown
+  ) {
+    return;
+  }
+
   /**
    * Checks that a View object exists and, if not, initializes one
    * @param id The ID of the View to ensure the initialization of
@@ -148,7 +195,6 @@ class ViewRendererClass {
       renderWarnings: [],
       activeRenders: 0,
     };
-
   }
 
   /**
