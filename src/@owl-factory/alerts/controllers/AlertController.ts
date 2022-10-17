@@ -1,7 +1,7 @@
 import { UseToastOptions } from "@chakra-ui/react";
 
 // The default time (in seconds) that an alert will live
-const DEFAULT_TTL = 5 * 1000;
+const DEFAULT_TTL = 15 * 1000;
 
 class $AlertController {
   public useToast: any;
@@ -45,6 +45,14 @@ class $AlertController {
     // IsClosable is true by default unless specified
     if (defaultOptions && defaultOptions.isClosable === undefined) { defaultOptions.isClosable = true; }
     if (defaultOptions && defaultOptions.duration === undefined) { defaultOptions.duration = DEFAULT_TTL; }
+    if (defaultOptions && defaultOptions.containerStyle === undefined) {
+      defaultOptions.containerStyle = { whiteSpace: "pre-wrap" };
+    }
+
+    // Safety check, in case something throws an error directly to description without casting to string
+    if (defaultOptions &&  typeof defaultOptions.description === "object") {
+      defaultOptions.description = JSON.stringify(defaultOptions.description);
+    }
     this.useToast(defaultOptions);
   }
 

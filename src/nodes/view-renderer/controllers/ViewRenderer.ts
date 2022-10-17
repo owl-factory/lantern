@@ -1,9 +1,13 @@
-import { Alerts } from "@owl-factory/alerts";
+import { AlertMessage, Alerts } from "@owl-factory/alerts";
 import { rest } from "@owl-factory/https";
 import { action, makeObservable, observable } from "mobx";
-import { parseLayoutDOM } from "nodes/actor-sheets/utilities/parse";
 import { xmlToDOM } from "@owl-factory/xml";
 import { injectStyles, removeStyles } from "nodes/actor-sheets/utilities/styles";
+import { extractFirstLevelElements } from "../utilities/parse/initial";
+import { ViewType } from "../enums/viewType";
+import { parseLayoutDOM, parsePrefabsDOM } from "../utilities/parse";
+import { ViewState } from "../types";
+
 
 type Views = Record<string, View>;
 type Timeout = ReturnType<typeof setTimeout>;
@@ -12,7 +16,8 @@ interface View {
   layout?: any;
   data?: any;
   prefabs?: any;
-  warnings: { title: string, description: string }[];
+  parseWarnings: AlertMessage[];
+  renderWarnings: AlertMessage[];
   activeRenders: number;
   cleanupID?: Timeout;
 }
@@ -46,29 +51,33 @@ class ViewRendererClass {
    * @param scss The pre-processed SCSS to use for styling the view
    * @param options The options to use for importing
    */
-  public async import(id: string, { xml, css, scss }: ImportValues, options?: ImportOptions): Promise<boolean> {
+  public async import(
+    id: string,
+    type: ViewType,
+    { xml, css, scss }: ImportValues,
+    options?: ImportOptions
+  ): Promise<boolean> {
+    this.ensureInitializedView(id);
+    this.views[id].parseWarnings = [];
 
     let parsedXML, parsedCSS;
     try {
-      if (xml) { parsedXML = this.parseXML(xml); }
-      if (css || scss) { parsedCSS = await this.parseCSS({ css, scss }); }
+      if (xml) { parsedXML = this.parseXML(id, xml); }
+      if (css || scss) { parsedCSS = await this.parseCSS(id, type, { css, scss }); }
     } catch (e: any) {
       if ("description" in e) { Alerts.error({ title: e.title, description: e.description }); }
-      else { Alerts.error({ description: e }); }
+      else { Alerts.error({ description: JSON.stringify(e) }); }
       return false;
     }
 
-    this.views[id].warnings = [];
     if (parsedXML) {
       this.views[id].layout = parsedXML.layout;
-      this.views[id].data = parsedXML.variables;
       this.views[id].prefabs = parsedXML.prefabs;
-      this.views[id].warnings.concat(parsedXML.warnings);
     }
 
     if (parsedCSS) {
       this.views[id].css = parsedCSS.css;
-      this.views[id].warnings.concat(parsedCSS.warnings);
+      this.views[id].parseWarnings.concat(parsedCSS.warnings);
     }
     return true;
   }
@@ -117,13 +126,26 @@ class ViewRendererClass {
   }
 
   /**
+   * Adds a warning to a View
+   * @param id The ID of the View to add a warning to
+   * @param warning The warning message to add
+   */
+  public addWarning(id: string, ...warnings: AlertMessage[]): void {
+    this.ensureInitializedView(id);
+    for (const warning of warnings) {
+      this.views[id].parseWarnings.push(warning);
+    }
+  }
+
+  /**
    * Checks that a View object exists and, if not, initializes one
    * @param id The ID of the View to ensure the initialization of
    */
   protected ensureInitializedView(id: string) {
     if (id in this.views) { return; }
     this.views[id] = {
-      warnings: [],
+      parseWarnings: [],
+      renderWarnings: [],
       activeRenders: 0,
     };
 
@@ -133,7 +155,7 @@ class ViewRendererClass {
    * Imports the XML, validates it, and parses it
    * @param xml The XML to parse
    */
-  protected parseXML(xml: string) {
+  protected parseXML(id: string, xml: string) {
     // Parses the XML into a DOM tree and catches any XML formatting error
     let parsedDOM;
     try {
@@ -144,8 +166,8 @@ class ViewRendererClass {
 
     if (parsedDOM.documentElement.nodeName === "parsererror") {
       throw {
-        title: "XML Import Error",
-        description: parsedDOM.getElementsByTagName('parsererror')[0].getElementsByTagName('div')[0].innerHTML,
+        title: "XML Parsing Error",
+        description: formatXMLError(parsedDOM.documentElement.textContent),
       };
     }
 
@@ -157,8 +179,16 @@ class ViewRendererClass {
         description: "The root element of the XML must be <Sheet>",
       };
     }
-    const { layout, prefabs, variables, warnings } = parseLayoutDOM(sheetDOM);
-    return { layout, prefabs, variables, warnings };
+
+    const firstLayer = extractFirstLevelElements(id, sheetDOM);
+    const parsedPrefabs = parsePrefabsDOM(id, firstLayer.prefabs);
+
+    const viewState: ViewState = { id, key: "", prefabs: parsedPrefabs.prefabs };
+
+    // TODO - add warning additions
+    const parsedLayout = parseLayoutDOM(firstLayer.layout, viewState);
+    this.addWarning(id, ...parsedPrefabs.warnings); // Warnings loaded here so that the layout takes priority in display
+    return { layout: parsedLayout, prefabs: {} };
   }
 
   /**
@@ -167,7 +197,7 @@ class ViewRendererClass {
    * @param scss The SCSS to validate and parse, if any
    * @returns The parsed CSS and any warnings
    */
-  protected async parseCSS({ css, scss }: { css?: string, scss?: string }) {
+  protected async parseCSS(id: string, type: ViewType, { css, scss }: { css?: string, scss?: string }) {
     const warnings: any[] = [];
 
     // Pre-made CSS takes priority over scss
@@ -179,6 +209,23 @@ class ViewRendererClass {
     if (scss) {
       let cssResult;
       try {
+        let prefix;
+        switch (type) {
+          case ViewType.ActorSheet:
+            prefix = "actor-sheet";
+            break;
+          case ViewType.ContentResult:
+            prefix = "content-result";
+            break;
+          case ViewType.ContentSearch:
+            prefix = "content-search";
+            break;
+          case ViewType.ContentSheet:
+            prefix = "content-sheet";
+            break;
+        }
+        const rawStyling = `.${prefix}-${id} { ${scss} }`;
+
         cssResult = await rest.post<{ css: string }>(`/api/sass`, { sass: scss });
       } catch (e) {
         throw { title: "CSS Formatting Error", description: e };
@@ -188,6 +235,12 @@ class ViewRendererClass {
     // This error should never be hit
     throw { title: "CSS Formatting Error", description: "No valid CSS or SCSS was provided" };
   }
+}
+
+function formatXMLError(textError: string) {
+  let err = textError.replace(/Location:.*?\n/, "Location: ");
+  err = err.replace(/(Column.*?:)/, "$1\n");
+  return err;
 }
 
 export const ViewRenderer = new ViewRendererClass();

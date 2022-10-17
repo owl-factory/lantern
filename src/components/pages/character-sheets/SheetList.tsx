@@ -113,7 +113,9 @@ export function SheetList(props: SheetListProps) {
 
   const sheets: JSX.Element[] = [];
   if (loading) { return <>Loading</>; }
-  if (error) { return <>Error! {error}</>; }
+  if (error) {
+    console.error(error)
+    return <>Error!</>; }
 
   for (const sheet of data.actorSheets) {
     sheets.push(

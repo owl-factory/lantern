@@ -27,6 +27,8 @@ interface StaticSheetProperties {
 
 // A persistent state that can traverse down the initial sheet parsing
 export interface ViewState {
+  // The ID of the View that this belongs to
+  id: string;
   // The key the use for uniquely describing an element
   key: string;
   // The prefabs defined in this View. Required for ensuring that a prefab exists on compile time

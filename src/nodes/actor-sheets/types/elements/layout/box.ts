@@ -1,5 +1,5 @@
 import { BoxType } from "nodes/actor-sheets/enums/boxTypes";
-import { GenericElementDescriptor } from "../../../../view-renderer/types/generic";
+import { GenericElementDescriptor } from "nodes/view-renderer/types/elements";
 
 /**
  * Describes a sheet box element
