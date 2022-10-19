@@ -1,11 +1,11 @@
 import React from "react";
 import { observer } from "mobx-react-lite";
-import { SheetElementProps } from "nodes/actor-sheets/types";
-import { ButtonDescriptor } from "nodes/actor-sheets/types/elements";
-import { ActorController } from "nodes/actor-sheets";
+import { SheetElementProps } from "nodes/view-renderer/types";
+import { ButtonDescriptor } from "nodes/view-renderer/types/elements";
 import { ButtonAction } from "../../../enums/buttonActions";
 import * as actions from "../../../utilities/elements/button/actions";
 import { Button } from "@chakra-ui/react";
+import { ViewRenderer } from "nodes/view-renderer";
 
 const VARIABLE_FIELDS = ["className", "text", "alert", "contentGroup", "index", "roll", "target"];
 
@@ -16,11 +16,9 @@ export const SheetButton = observer((props: SheetElementProps<ButtonDescriptor>)
   const [ element, setElement ] = React.useState<any>({});
 
   React.useEffect(() => {
-    ActorController.renderExpressions<ButtonDescriptor>(
-      props.renderID,
-      props.element,
+    ViewRenderer.renderExpressions<ButtonDescriptor>(
+      props,
       VARIABLE_FIELDS,
-      props.properties,
     ).then(setElement);
   }, []);
 

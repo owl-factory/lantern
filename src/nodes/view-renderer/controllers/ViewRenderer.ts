@@ -3,22 +3,24 @@ import { rest } from "@owl-factory/https";
 import { action, makeObservable, observable } from "mobx";
 import { xmlToDOM } from "@owl-factory/xml";
 import { injectStyles, removeStyles } from "nodes/actor-sheets/utilities/styles";
-import { extractFirstLevelElements } from "../utilities/parse/initial";
+import { extractRootElements } from "../utilities/parse/initial";
 import { ViewType } from "../enums/viewType";
 import { parseLayoutDOM, parsePrefabsDOM } from "../utilities/parse";
 import { SheetElementProps, ViewState } from "../types";
-import { GenericElementDescriptor } from "../types/elements";
+import { ElementDescriptor } from "../types/elements";
+import { TabGroups } from "../types/tabs";
 
 
 type Views = Record<string, View>;
 type Timeout = ReturnType<typeof setTimeout>;
+type Prefabs = Record<string, ElementDescriptor[]>
+
 interface View {
-  css?: string;
-  layout?: any;
-  data?: any;
-  prefabs?: any;
-  parseWarnings: AlertMessage[];
-  renderWarnings: AlertMessage[];
+  layout?: ElementDescriptor[];
+  css?: string; // The CSS used for styling this view
+  prefabs: Prefabs;
+  warnings: AlertMessage[];
+
   activeRenders: number;
   cleanupID?: Timeout;
 }
@@ -34,7 +36,7 @@ interface ImportOptions {
 }
 
 class ViewRendererClass {
-  public views: Views = {};
+  public views: Views = {}; // 
   public renders: Record<string, number> = {};
 
   constructor() {
@@ -60,7 +62,7 @@ class ViewRendererClass {
     options?: ImportOptions
   ): Promise<boolean> {
     this.ensureInitializedView(id);
-    this.views[id].parseWarnings = [];
+    this.views[id].warnings = [];
 
     let parsedXML, parsedCSS;
     try {
@@ -75,11 +77,12 @@ class ViewRendererClass {
     if (parsedXML) {
       this.views[id].layout = parsedXML.layout;
       this.views[id].prefabs = parsedXML.prefabs;
+      this.views[id].tabs = parsedXML.tabs;
     }
 
     if (parsedCSS) {
       this.views[id].css = parsedCSS.css;
-      this.views[id].parseWarnings.concat(parsedCSS.warnings);
+      this.views[id].warnings.concat(parsedCSS.warnings);
     }
     return true;
   }
@@ -135,54 +138,31 @@ class ViewRendererClass {
   public addWarning(id: string, ...warnings: AlertMessage[]): void {
     this.ensureInitializedView(id);
     for (const warning of warnings) {
-      this.views[id].parseWarnings.push(warning);
+      this.views[id].warnings.push(warning);
     }
   }
 
-  public async renderExpressions<T extends GenericElementDescriptor>(props: SheetElementProps<T>, fields: string[]) {
+  public async renderExpressions<T extends ElementDescriptor>(props: SheetElementProps<T>, fields: string[]) {
     const parsedVariables: Record<string, string> = {};
-
-    // const renderIDs = this.$renders[renderID];
-
-    // for (const fieldName of fields) {
-    //   if (!(fieldName in props.element)) { continue; }
-
-    //   const parsedExpression = element[fieldName as (keyof T)] as unknown as ParsedExpression;
-    //   if (!parsedExpression.hasExpression || parsedExpression.value === "") {
-    //     parsedVariables[fieldName] = parsedExpression.value;
-    //     continue;
-    //   }
-
-    //   const exprVariables = this.dataController.getExprVariables(renderIDs, parsedExpression.variables || []) as any;
-    //   properties.character = exprVariables.actor;
-    //   properties.content = exprVariables.content;
-    //   properties.ruleset = exprVariables.ruleset;
-    //   properties.sheet = exprVariables.sheet;
-
-    //   parsedVariables[fieldName] = (
-    //     await Mediator.requests(MediatorRequest.SandboxExpr, {expression: parsedExpression, properties})
-    //   ) as string;
-
-    //   delete properties.character;
-    //   delete properties.content;
-    //   delete properties.ruleset;
-    //   delete properties.sheet;
-    // }
 
     return parsedVariables;
   }
 
-  public async getValue<T extends GenericElementDescriptor>(props: SheetElementProps<T>, field: string) {
+  public async getValue<T extends ElementDescriptor>(props: SheetElementProps<T>, field: string) {
     return "";
   }
 
-  public async setValue<T extends GenericElementDescriptor>(
+  public async setValue<T extends ElementDescriptor>(
     props: SheetElementProps<T>,
     field: string,
     value: unknown
   ) {
     return;
   }
+
+  public getState() { return; }
+  public setState() { return; }
+
 
   /**
    * Checks that a View object exists and, if not, initializes one
@@ -191,8 +171,8 @@ class ViewRendererClass {
   protected ensureInitializedView(id: string) {
     if (id in this.views) { return; }
     this.views[id] = {
-      parseWarnings: [],
-      renderWarnings: [],
+      prefabs: {},
+      warnings: [],
       activeRenders: 0,
     };
   }
@@ -203,30 +183,10 @@ class ViewRendererClass {
    */
   protected parseXML(id: string, xml: string) {
     // Parses the XML into a DOM tree and catches any XML formatting error
-    let parsedDOM;
-    try {
-      parsedDOM = xmlToDOM(xml);
-    } catch (e) {
-      throw { title: "XML Import Error", description: e };
-    }
+    const xmlDOM = convertXMLToDOM(xml);
 
-    if (parsedDOM.documentElement.nodeName === "parsererror") {
-      throw {
-        title: "XML Parsing Error",
-        description: formatXMLError(parsedDOM.documentElement.textContent),
-      };
-    }
-
-    // Verify that the base <Sheet> element is correctly formatted
-    const sheetDOM = parsedDOM.children[0];
-    if (sheetDOM.tagName.toLocaleLowerCase() !== "sheet") {
-      throw {
-        title: "XML Formatting Error",
-        description: "The root element of the XML must be <Sheet>",
-      };
-    }
-
-    const firstLayer = extractFirstLevelElements(id, sheetDOM);
+    const firstLayer = extractRootElements(id, xmlDOM);
+    const parsedTabs = extractPageTabs(id, xmlDOM);
     const parsedPrefabs = parsePrefabsDOM(id, firstLayer.prefabs);
 
     const viewState: ViewState = { id, key: "", prefabs: parsedPrefabs.prefabs };
@@ -283,10 +243,60 @@ class ViewRendererClass {
   }
 }
 
+/**
+ * Formats a parsing error from within a malformed XML document
+ * @param textError The text to format into a readable string, removing any excess text
+ * @returns A formated string
+ */
 function formatXMLError(textError: string) {
   let err = textError.replace(/Location:.*?\n/, "Location: ");
   err = err.replace(/(Column.*?:)/, "$1\n");
   return err;
+}
+
+function convertXMLToDOM(xml: string) {
+  let parsedDOM;
+  try {
+    parsedDOM = xmlToDOM(xml);
+  } catch (e) {
+    throw { title: "XML Import Error", description: e };
+  }
+
+  if (parsedDOM.documentElement.nodeName === "parsererror") {
+    throw {
+      title: "XML Parsing Error",
+      description: formatXMLError(parsedDOM.documentElement.textContent || ""),
+    };
+  }
+
+  return parsedDOM;
+}
+
+function extractPageTabs(id: string, xmlDOM: XMLDocument): TabGroups {
+  const title =  "Invalid Pageable Element";
+  const tabGroups: TabGroups = {};
+  const pageableElements = xmlDOM.getElementsByTagName("Pageable");
+
+  for (const pageable of pageableElements) {
+    const name = (pageable.getAttribute("name") || "").trim();
+    if (name === "") {
+      ViewRenderer.addWarning(id, { title, description: "A Pageable element is missing the name attribute"});
+      continue;
+    }
+
+    if (name in tabGroups) {
+      ViewRenderer.addWarning(id, { title, description: `Two Pageable elements share the same name "${name}"`});
+      continue;
+    }
+
+    tabGroups[name] = {};
+
+    for (const page of pageable.children) {
+      if ()
+    }
+  }
+
+  return {};
 }
 
 export const ViewRenderer = new ViewRendererClass();

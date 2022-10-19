@@ -1,8 +1,8 @@
-import { GenericElementDescriptor } from "../generic";
+import { ElementDescriptor } from "../generic";
 
 /**
  * Describes a sheet inline element
  */
-export interface InlineDescriptor extends GenericElementDescriptor {
-  children: GenericElementDescriptor[];
+export interface InlineDescriptor extends ElementDescriptor {
+  children: ElementDescriptor[];
 }

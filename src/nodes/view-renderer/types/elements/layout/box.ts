@@ -1,10 +1,10 @@
 import { BoxType } from "nodes/actor-sheets/enums/boxTypes";
-import { GenericElementDescriptor } from "../generic";
+import { ElementDescriptor } from "../generic";
 
 /**
  * Describes a sheet box element
  */
-export interface BoxDescriptor extends GenericElementDescriptor {
-  children: GenericElementDescriptor[];
+export interface BoxDescriptor extends ElementDescriptor {
+  children: ElementDescriptor[];
   type?: BoxType;
 }

@@ -9,7 +9,7 @@ import {
   CollapseDescriptor,
   ColumnDescriptor,
   ErrorDescriptor,
-  GenericElementDescriptor,
+  ElementDescriptor,
   InlineDescriptor,
   LabelDescriptor,
   LoopDescriptor,
@@ -65,7 +65,7 @@ import {
  * @param element The element descriptor
  * @returns The JSX for the appropriate sheet element
  */
-export function SheetElement(props: SheetElementProps<GenericElementDescriptor>) {
+export function SheetElement(props: SheetElementProps<ElementDescriptor>) {
   try {
     switch (props.element?.elementType) {
       // Inputs

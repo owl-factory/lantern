@@ -1,8 +1,8 @@
 import React from "react";
-import { TableRowDescriptor } from "nodes/actor-sheets/types/elements";
+import { TableRowDescriptor } from "nodes/view-renderer/types/elements";
 import { SheetElementProps } from "../../../types";
 import { SheetChildren } from "../utility/Children";
-import { ActorController } from "nodes/actor-sheets/controllers/ActorSheetController";
+import { ViewRenderer } from "nodes/view-renderer";
 
 const VARIABLE_FIELDS = ["className"];
 
@@ -14,11 +14,9 @@ export function SheetTableRow(props: SheetElementProps<TableRowDescriptor>) {
   const [ element, setElement ] = React.useState<any>({});
 
   React.useEffect(() => {
-    ActorController.renderExpressions<TableRowDescriptor>(
-      props.renderID,
-      props.element,
+    ViewRenderer.renderExpressions<TableRowDescriptor>(
+      props,
       VARIABLE_FIELDS,
-      props.properties,
     ).then(setElement);
   }, []);
 

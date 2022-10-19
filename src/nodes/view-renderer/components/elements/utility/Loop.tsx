@@ -1,8 +1,7 @@
 import { toJS } from "mobx";
 import { observer } from "mobx-react-lite";
-import { ActorController } from "nodes/actor-sheets";
-import { SheetElementProps, SheetProperties } from "nodes/actor-sheets/types";
-import { LoopDescriptor } from "nodes/actor-sheets/types/elements";
+import { SheetElementProps, SheetProperties } from "nodes/view-renderer/types";
+import { LoopDescriptor } from "nodes/view-renderer/types/elements";
 import React from "react";
 import { SheetChildren } from "./Children";
 
@@ -16,14 +15,14 @@ export const SheetLoop = observer((props: SheetElementProps<LoopDescriptor>) => 
   const loopedElements = [];
   let list: (string | Record<string, string>)[] = [];
   if (props.element.listSource) {
-    const listValue = ActorController.convertVariableToData(
-      props.renderID,
-      props.element.listSource,
-      props.properties as any
-    );
-    if (typeof listValue === "string") { list = listValue.split(props.element.delimiter); }
-    else if (Array.isArray(listValue)) { list = listValue; }
-    else { list = []; }
+    // const listValue = ActorController.convertVariableToData(
+    //   props.renderID,
+    //   props.element.listSource,
+    //   props.properties as any
+    // );
+    // if (typeof listValue === "string") { list = listValue.split(props.element.delimiter); }
+    // else if (Array.isArray(listValue)) { list = listValue; }
+    // else { list = []; }
   }
   else if (props.element.list) {
     list = props.element.list;

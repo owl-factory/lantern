@@ -1,10 +1,10 @@
 import { ParsedExpression } from "../../../../../types/expressions";
-import { GenericElementDescriptor } from "../generic";
+import { ElementDescriptor } from "../generic";
 
 /**
  * Describes a sheet radio element
  */
-export interface RadioDescriptor extends GenericElementDescriptor {
+export interface RadioDescriptor extends ElementDescriptor {
   id?: ParsedExpression;
   name: ParsedExpression;
   value: ParsedExpression;

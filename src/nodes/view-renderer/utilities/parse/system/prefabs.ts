@@ -1,18 +1,18 @@
-import { GenericElementDescriptor } from "nodes/view-renderer/types/elements";
+import { ElementDescriptor } from "nodes/view-renderer/types/elements";
 import { parseChildrenDOM } from "./children";
 
 /**
  * Parses prefabs and validates them
  * @param prefabs The NewPrefab elements to examine and parse
  */
-export function parsePrefabsDOM(id: string, prefabs: Element[]) {
-  const prefabDescriptors: Record<string, GenericElementDescriptor[]> = {};
+export function parsePrefabsDOM(id: string, prefabs: HTMLCollection) {
+  const prefabDescriptors: Record<string, ElementDescriptor[]> = {};
   const warnings: any[] = [];
 
   // TODO
   // Check overlaps & build dependency list
   const dependencies: Record<string, Record<string, boolean>> = {};
-  const prefabStatePlaceholder: Record<string, GenericElementDescriptor[]> = {};
+  const prefabStatePlaceholder: Record<string, ElementDescriptor[]> = {};
   for (const prefab of prefabs) {
     // Requires the name to exist
     const prefabName = (prefab.getAttribute("name") || "");

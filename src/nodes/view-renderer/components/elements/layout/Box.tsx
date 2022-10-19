@@ -2,8 +2,8 @@ import React from "react";
 import { SheetElementProps } from "../../../types";
 import { SheetChildren } from "../utility/Children";
 import { Box } from "@chakra-ui/react";
-import { ActorController } from "nodes/actor-sheets/controllers/ActorSheetController";
-import { BoxDescriptor } from "nodes/actor-sheets/types/elements";
+import { BoxDescriptor } from "nodes/view-renderer/types/elements";
+import { ViewRenderer } from "nodes/view-renderer";
 
 const VARIABLE_FIELDS = ["className"];
 
@@ -17,11 +17,9 @@ export function SheetBox(props: SheetElementProps<BoxDescriptor>) {
   const elementType = props.element.type === "background" || props.element.type === "border" ? props.element.type : "";
 
   React.useEffect(() => {
-    ActorController.renderExpressions<BoxDescriptor>(
-      props.renderID,
-      props.element,
+    ViewRenderer.renderExpressions<BoxDescriptor>(
+      props,
       VARIABLE_FIELDS,
-      props.properties,
     ).then(setElement);
   }, []);
 

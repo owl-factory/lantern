@@ -33,18 +33,18 @@ const SheetInput = observer((props: SheetInputProps) => {
    * Updates the ActorController to have the changed values
    * @param ev The triggering onChange event
    */
-  function onChange(e: React.ChangeEvent<HTMLInputElement>) {
-    ActorController.setActor(props.renderID, element.name, props.properties, e.target.value);
-    e.target.value = ActorController.getActor(props.renderID, element.name, props.properties).toString();
+  async function onChange(e: React.ChangeEvent<HTMLInputElement>) {
+    ViewRenderer.setValue(props, element.name, e.target.value);
+    e.target.value = await ViewRenderer.getValue(props, element.name);
   }
 
   // Handles the case where we have two or more elements of the same name, and one of them is changed
   // This updates the input values so that we are consistent
-  React.useEffect(() => {
-    if (!ref.current) { return; }
-    if (ref.current === document.activeElement) { return; }
-    ref.current.value = ActorController.getActor(props.renderID, element.name, props.properties).toString();
-  }, [ActorController.getActor(props.renderID, element.name, props.properties)]);
+  // React.useEffect(() => {
+  //   if (!ref.current) { return; }
+  //   if (ref.current === document.activeElement) { return; }
+  //   ref.current.value = ActorController.getActor(props.renderID, element.name, props.properties).toString();
+  // }, [ActorController.getActor(props.renderID, element.name, props.properties)]);
 
   return (
     <div>
@@ -56,7 +56,7 @@ const SheetInput = observer((props: SheetInputProps) => {
         className={`input ${props.type}-input ${element.className}`}
         onChange={onChange}
         autoComplete="off"
-        defaultValue={ActorController.getActor(props.renderID, element.name, props.properties).toString()}
+        // defaultValue={ViewRenderer.getValue(props.renderID, element.name).toString()}
       />
     </div>
   );

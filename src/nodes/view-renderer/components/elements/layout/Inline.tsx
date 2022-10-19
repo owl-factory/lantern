@@ -1,9 +1,9 @@
 import React from "react";
-import { InlineDescriptor } from "nodes/actor-sheets/types/elements";
 import { SheetElementProps } from "../../../types";
 import { SheetChildren } from "../utility/Children";
 import { Box } from "@chakra-ui/react";
-import { ActorController } from "nodes/actor-sheets/controllers/ActorSheetController";
+import { ViewRenderer } from "nodes/view-renderer";
+import { InlineDescriptor } from "nodes/view-renderer/types/elements";
 
 const VARIABLE_FIELDS = ["className"];
 
@@ -15,11 +15,9 @@ export function SheetInline(props: SheetElementProps<InlineDescriptor>) {
   const [ element, setElement ] = React.useState<any>({});
 
   React.useEffect(() => {
-    ActorController.renderExpressions<InlineDescriptor>(
-      props.renderID,
-      props.element,
+    ViewRenderer.renderExpressions<InlineDescriptor>(
+      props,
       VARIABLE_FIELDS,
-      props.properties,
     ).then(setElement);
   }, []);
 

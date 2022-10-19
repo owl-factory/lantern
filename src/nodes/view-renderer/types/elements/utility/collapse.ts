@@ -1,11 +1,11 @@
 import { ParsedExpression } from "../../../../../types/expressions";
-import { GenericElementDescriptor } from "../generic";
+import { ElementDescriptor } from "../generic";
 
 /**
  * Describes a sheet column element
  */
-export interface CollapseDescriptor extends GenericElementDescriptor {
-  children: GenericElementDescriptor[];
+export interface CollapseDescriptor extends ElementDescriptor {
+  children: ElementDescriptor[];
   id: ParsedExpression;
   defaultState: boolean;
 }

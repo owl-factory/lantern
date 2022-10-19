@@ -1,10 +1,10 @@
 import { ParsedExpression } from "../../../../../types/expressions";
-import { GenericElementDescriptor } from "../generic";
+import { ElementDescriptor } from "../generic";
 
 /**
  * Describes a sheet label element
  */
-export interface LabelDescriptor extends GenericElementDescriptor {
+export interface LabelDescriptor extends ElementDescriptor {
   for: ParsedExpression;
   text: ParsedExpression;
 }

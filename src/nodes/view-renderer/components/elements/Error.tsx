@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { SheetElementProps } from "../../types";
-import { ErrorDescriptor } from "nodes/actor-sheets/types/elements/error";
+import { ErrorDescriptor } from "nodes/view-renderer/types/elements/error";
 import { Box } from "@chakra-ui/react";
 
 /**

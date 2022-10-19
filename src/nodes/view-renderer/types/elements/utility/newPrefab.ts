@@ -1,9 +1,9 @@
-import { GenericElementDescriptor } from "../generic";
+import { ElementDescriptor } from "../generic";
 
 /**
  * Describes a sheet NewPrefab element
  */
-export interface NewPrefabDescriptor extends GenericElementDescriptor {
+export interface NewPrefabDescriptor extends ElementDescriptor {
   name: string;
-  children: GenericElementDescriptor[];
+  children: ElementDescriptor[];
 }

@@ -1,9 +1,9 @@
-import { GenericElementDescriptor } from "../generic";
+import { ElementDescriptor } from "../generic";
 
 /**
  * Describes a sheet table cell element
  */
-export interface TableCellDescriptor extends GenericElementDescriptor {
-  children: GenericElementDescriptor[];
+export interface TableCellDescriptor extends ElementDescriptor {
+  children: ElementDescriptor[];
   width: number;
 }

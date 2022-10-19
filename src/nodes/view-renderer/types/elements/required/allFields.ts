@@ -1,6 +1,6 @@
-import { GenericElementDescriptor } from "../generic";
+import { ElementDescriptor } from "../generic";
 
 /**
  * Describes a sheet AllFields element
  */
-export type AllFieldsDescriptor = GenericElementDescriptor;
+export type AllFieldsDescriptor = ElementDescriptor;

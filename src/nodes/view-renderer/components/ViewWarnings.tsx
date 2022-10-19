@@ -20,7 +20,7 @@ export const ViewWarnings = observer((props: ViewWarningsProps) => {
       warnings = [];
       return;
     }
-    warnings = ViewRenderer.views[props.id].parseWarnings || [];
+    warnings = ViewRenderer.views[props.id].warnings || [];
   }, [props.id]);
 
   if (!props.id) { return <></>; }

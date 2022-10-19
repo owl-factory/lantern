@@ -1,9 +1,9 @@
 import { ButtonAction } from "nodes/actor-sheets/enums/buttonActions";
 import { ParsedExpression } from "../../../../../types/expressions";
-import { GenericElementDescriptor } from "../generic";
+import { ElementDescriptor } from "../generic";
 
 // A parsed description of the button element
-export interface ButtonDescriptor extends GenericElementDescriptor {
+export interface ButtonDescriptor extends ElementDescriptor {
   text: ParsedExpression; // The text content of the button
   action: ButtonAction; // The action the button will be using.
 

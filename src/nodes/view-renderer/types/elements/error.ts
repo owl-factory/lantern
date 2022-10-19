@@ -1,8 +1,8 @@
-import { GenericElementDescriptor } from "./generic";
+import { ElementDescriptor } from "./generic";
 
 /**
  * Describes an element that describes an error that happened
  */
-export interface ErrorDescriptor extends GenericElementDescriptor {
+export interface ErrorDescriptor extends ElementDescriptor {
   error: string;
 }

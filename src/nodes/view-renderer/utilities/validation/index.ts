@@ -1,4 +1,22 @@
+import { AlertMessage } from "@owl-factory/alerts";
 import { hasExpression } from "../expressions/parse";
+
+/**
+ * Validates the XML document, ensuring that there are no major issues and reporting any smaller warnings
+ * @param id The ID of the view being validated. May be removed
+ * @param xmlDOM The parsed XML as an XML Document
+ * @returns An array of warnings found while validating. These are not breaking issues,
+ * but may have a negative impact on rendering
+ */
+export function validateXMLDOM(id: string, xmlDOM: XMLDocument): AlertMessage[] {
+  const warnings: AlertMessage[] = [];
+
+
+
+  return warnings;
+}
+
+
 
 /**
  * Validates that the given string is in a valid format for accessing a variable

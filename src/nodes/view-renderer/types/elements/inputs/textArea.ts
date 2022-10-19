@@ -1,10 +1,10 @@
 import { ParsedExpression } from "../../../../../types/expressions";
-import { GenericElementDescriptor } from "../generic";
+import { ElementDescriptor } from "../generic";
 
 /**
  * Describes a sheet text area/markdown element
  */
-export interface TextAreaDescriptor extends GenericElementDescriptor {
+export interface TextAreaDescriptor extends ElementDescriptor {
   id: ParsedExpression;
   name: ParsedExpression;
 }

@@ -1,8 +1,8 @@
-import { GenericElementDescriptor } from "../generic";
+import { ElementDescriptor } from "../generic";
 
 // Describes a loop element
-export interface LoopDescriptor extends GenericElementDescriptor {
-  children: GenericElementDescriptor[];
+export interface LoopDescriptor extends ElementDescriptor {
+  children: ElementDescriptor[];
   list?: string[];
   listSource?: string;
   delimiter: string;

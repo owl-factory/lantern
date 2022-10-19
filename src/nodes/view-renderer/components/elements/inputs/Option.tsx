@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite";
+import { ViewRenderer } from "nodes/view-renderer";
+import { OptionDescriptor } from "nodes/view-renderer/types/elements";
 import React from "react";
-import { OptionDescriptor } from "nodes/actor-sheets/types/elements";
-import { ActorController } from "../../../controllers/ActorSheetController";
 import { SheetElementProps } from "../../../types";
 
 const VARIABLE_FIELDS = ["value", "text"];
@@ -14,11 +14,9 @@ export const SheetOption = observer((props: SheetElementProps<OptionDescriptor>)
   const [ element, setElement ] = React.useState<any>({});
 
   React.useEffect(() => {
-    ActorController.renderExpressions<OptionDescriptor>(
-      props.renderID,
-      props.element,
+    ViewRenderer.renderExpressions<OptionDescriptor>(
+      props,
       VARIABLE_FIELDS,
-      props.properties,
     ).then(setElement);
   }, []);
 

@@ -1,10 +1,10 @@
 import { ParsedExpression } from "../../../../../types/expressions";
-import { GenericElementDescriptor } from "../generic";
+import { ElementDescriptor } from "../generic";
 
 /**
  * Describes a sheet option element
  */
-export interface OptionDescriptor extends GenericElementDescriptor {
+export interface OptionDescriptor extends ElementDescriptor {
   value: ParsedExpression;
   text: ParsedExpression;
 }

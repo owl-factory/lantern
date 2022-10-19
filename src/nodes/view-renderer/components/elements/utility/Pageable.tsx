@@ -1,13 +1,13 @@
 import React from "react";
-import { PageableDescriptor } from "nodes/actor-sheets/types/elements";
-import { SheetElement } from "../../SheetElement";
+import { PageableDescriptor } from "nodes/view-renderer/types/elements";
 import { SheetElementProps } from "../../../types";
 import { SheetPage } from "./Page";
 import { StateType } from "nodes/actor-sheets/enums/stateTypes";
-import { ActorController } from "nodes/actor-sheets/controllers/ActorSheetController";
+import { ViewRenderer } from "nodes/view-renderer";
 import { observer } from "mobx-react-lite";
 import { SheetChildren } from "./Children";
 import { Box } from "@chakra-ui/react";
+import { SheetElement } from "../../UnknownViewElement";
 
 const VARIABLE_FIELDS = ["className"];
 
@@ -19,15 +19,14 @@ export const SheetPageable = observer((props: SheetElementProps<PageableDescript
   const [ element, setElement ] = React.useState<any>({});
 
   React.useEffect(() => {
-    ActorController.renderExpressions<PageableDescriptor>(
-      props.renderID,
-      props.element,
+    ViewRenderer.renderExpressions<PageableDescriptor>(
+      props,
       VARIABLE_FIELDS,
-      props.properties,
     ).then(setElement);
   }, []);
 
-  const activeTab = ActorController.getState(props.renderID, StateType.CurrentPage, props.element.id) as number || 0;
+  const activeTab = ViewRenderer.getState();
+  //ActorController.getState(props.renderID, StateType.CurrentPage, props.element.id) as number || 0;
   const childElements = props.element.children || [];
 
   // Renders all the children that are not part of the pageable pages themself
@@ -40,7 +39,7 @@ export const SheetPageable = observer((props: SheetElementProps<PageableDescript
 
   return (
     <Box className={`pageable ${element.className}`}>
-      <SheetPage {...props} element={props.element.pages[activeTab]}/>
+      {/* <SheetPage {...props} element={props.element.pages[activeTab]}/> */}
       <SheetChildren {...props} />
     </Box>
   );

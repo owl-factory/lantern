@@ -1,8 +1,8 @@
-import { GenericElementDescriptor } from "../generic";
+import { ElementDescriptor } from "../generic";
 
 /**
  * Describes a sheet icon element
  */
-export interface IconDescriptor extends GenericElementDescriptor {
+export interface IconDescriptor extends ElementDescriptor {
   icon: string;
 }

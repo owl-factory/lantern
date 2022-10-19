@@ -1,6 +1,6 @@
-import { GenericElementDescriptor } from "../generic";
+import { ElementDescriptor } from "../generic";
 
 /**
  * Describes a sheet token editor element
  */
-export type TokenEditorDescriptor = GenericElementDescriptor;
+export type TokenEditorDescriptor = ElementDescriptor;

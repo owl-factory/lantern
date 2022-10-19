@@ -1,7 +1,7 @@
+import { ViewRenderer } from "nodes/view-renderer";
+import { TextAreaDescriptor } from "nodes/view-renderer/types/elements";
 import React from "react";
-import { TextAreaDescriptor } from "nodes/actor-sheets/types/elements";
 import { SheetElementProps } from "../../../types";
-import { ActorController } from "../../../controllers/ActorSheetController";
 
 const VARIABLE_FIELDS = ["className", "id", "name"];
 
@@ -14,11 +14,9 @@ export function SheetTextArea(props: SheetElementProps<TextAreaDescriptor>) {
   const [ element, setElement ] = React.useState<any>({});
 
   React.useEffect(() => {
-    ActorController.renderExpressions<TextAreaDescriptor>(
-      props.renderID,
-      props.element,
+    ViewRenderer.renderExpressions<TextAreaDescriptor>(
+      props,
       VARIABLE_FIELDS,
-      props.properties,
     ).then(setElement);
   }, []);
 
@@ -27,17 +25,17 @@ export function SheetTextArea(props: SheetElementProps<TextAreaDescriptor>) {
    * @param ev The triggering onChange event
    */
   function onChange(ev: React.ChangeEvent<HTMLTextAreaElement>) {
-    ActorController.setActor(props.renderID, element.name, props.properties, ev.target.value);
-    ev.target.value = ActorController.getActor(props.renderID, element.name, props.properties).toString();
+    // ActorController.setActor(props.renderID, element.name, props.properties, ev.target.value);
+    // ev.target.value = ActorController.getActor(props.renderID, element.name, props.properties).toString();
   }
 
   // Handles the case where we have two or more elements of the same name, and one of them is changed
   // This updates the input values so that we are consistent
-  React.useEffect(() => {
-    if (!ref.current) { return; }
-    if (ref.current === document.activeElement) { return; }
-    ref.current.value = ActorController.getActor(props.renderID, element.name, props.properties).toString();
-  }, [ActorController.getActor(props.renderID, element.name, props.properties)]);
+  // React.useEffect(() => {
+  //   if (!ref.current) { return; }
+  //   if (ref.current === document.activeElement) { return; }
+  //   ref.current.value = ActorController.getActor(props.renderID, element.name, props.properties).toString();
+  // }, [ActorController.getActor(props.renderID, element.name, props.properties)]);
 
   return (
     <div>
@@ -48,7 +46,7 @@ export function SheetTextArea(props: SheetElementProps<TextAreaDescriptor>) {
         onChange={onChange}
         className={`input textarea ${element.className}`}
         rows={4}
-        defaultValue={ActorController.getActor(props.renderID, element.name, props.properties).toString()}
+        // defaultValue={ActorController.getActor(props.renderID, element.name, props.properties).toString()}
       />
     </div>
   );

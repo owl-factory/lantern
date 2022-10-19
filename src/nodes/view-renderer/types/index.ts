@@ -1,7 +1,7 @@
 import { Scalar } from "types";
-import { GenericElementDescriptor } from "./elements";
+import { ElementDescriptor } from "./elements";
 
-export interface SheetElementProps<T extends GenericElementDescriptor> {
+export interface SheetElementProps<T extends ElementDescriptor> {
   $key: string; // The key used to identify the element in a loop
   renderID: string; // The ID used for this current render
   element: T; // The element descriptor

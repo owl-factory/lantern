@@ -1,8 +1,8 @@
 import { observer } from "mobx-react-lite";
-import { ActorController } from "nodes/actor-sheets/controllers/ActorSheetController";
-import { StateType } from "nodes/actor-sheets/enums/stateTypes";
-import { SheetElementProps } from "nodes/actor-sheets/types";
-import { CollapseDescriptor } from "nodes/actor-sheets/types/elements";
+import { ViewRenderer } from "nodes/view-renderer";
+import { StateType } from "nodes/view-renderer/enums/stateTypes";
+import { SheetElementProps } from "nodes/view-renderer/types";
+import { CollapseDescriptor } from "nodes/view-renderer/types/elements";
 import React from "react";
 import { SheetChildren } from "./Children";
 
@@ -16,16 +16,14 @@ export const SheetCollapse = observer((props: SheetElementProps<CollapseDescript
   const [ element, setElement ] = React.useState<any>({});
 
   React.useEffect(() => {
-    ActorController.renderExpressions<CollapseDescriptor>(
-      props.renderID,
-      props.element,
+    ViewRenderer.renderExpressions<CollapseDescriptor>(
+      props,
       VARIABLE_FIELDS,
-      props.properties,
     ).then(setElement);
   }, []);
 
   // Renders nothing if the state is false
-  if (!ActorController.getState(props.renderID, StateType.Collapse, element.id)) { return <></>; }
+  // if (!ActorController.getState(props.renderID, StateType.Collapse, element.id)) { return <></>; }
 
   return (
     <>

@@ -1,6 +1,6 @@
-import { GenericElementDescriptor } from "../generic";
+import { ElementDescriptor } from "../generic";
 
 /**
  * Describes a sheet profile editor element
  */
-export type ProfileEditorDescriptor = GenericElementDescriptor;
+export type ProfileEditorDescriptor = ElementDescriptor;

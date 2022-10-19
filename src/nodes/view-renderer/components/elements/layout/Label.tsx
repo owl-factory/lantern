@@ -1,9 +1,9 @@
 import { observer } from "mobx-react-lite";
 import React from "react";
-import { LabelDescriptor } from "nodes/actor-sheets/types/elements";
-import { ActorController } from "../../../controllers/ActorSheetController";
 import { SheetElementProps } from "../../../types";
 import { Box } from "@chakra-ui/react";
+import { ViewRenderer } from "nodes/view-renderer";
+import { LabelDescriptor } from "nodes/view-renderer/types/elements";
 
 const VARIABLE_FIELDS = ["className", "for", "text"];
 
@@ -15,11 +15,9 @@ export const SheetLabel = observer((props: SheetElementProps<LabelDescriptor>) =
   const [ element, setElement ] = React.useState<any>({});
 
   React.useEffect(() => {
-    ActorController.renderExpressions<LabelDescriptor>(
-      props.renderID,
-      props.element,
+    ViewRenderer.renderExpressions<LabelDescriptor>(
+      props,
       VARIABLE_FIELDS,
-      props.properties,
     ).then(setElement);
   }, []);
 

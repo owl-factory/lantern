@@ -1,9 +1,9 @@
 import React from "react";
-import { PageDescriptor } from "nodes/actor-sheets/types/elements";
+import { PageDescriptor } from "nodes/view-renderer/types/elements";
 import { SheetElementProps } from "../../../types";
 import { SheetChildren } from "./Children";
 import { Box } from "@chakra-ui/react";
-import { ActorController } from "nodes/actor-sheets/controllers/ActorSheetController";
+import { ViewRenderer } from "nodes/view-renderer";
 
 const VARIABLE_FIELDS = ["className"];
 
@@ -15,11 +15,9 @@ export function SheetPage(props: SheetElementProps<PageDescriptor>) {
   const [ element, setElement ] = React.useState<any>({});
 
   React.useEffect(() => {
-    ActorController.renderExpressions<PageDescriptor>(
-      props.renderID,
-      props.element,
+    ViewRenderer.renderExpressions<PageDescriptor>(
+      props,
       VARIABLE_FIELDS,
-      props.properties,
     ).then(setElement);
   }, []);
 

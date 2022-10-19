@@ -1,9 +1,9 @@
-import { ActorController } from "../../../controllers/ActorSheetController";
 import React from "react";
-import { SelectDescriptor } from "nodes/actor-sheets/types/elements";
-import { SheetElementProps } from "nodes/actor-sheets/types";
 import { SheetChildren } from "../utility/Children";
 import { observer } from "mobx-react-lite";
+import { SheetElementProps } from "nodes/view-renderer/types";
+import { SelectDescriptor } from "nodes/view-renderer/types/elements";
+import { ViewRenderer } from "nodes/view-renderer";
 
 const VARIABLE_FIELDS = ["className", "id", "name"];
 
@@ -15,11 +15,9 @@ export const SheetSelect = observer((props: SheetElementProps<SelectDescriptor>)
   const [ element, setElement ] = React.useState<any>({});
 
   React.useEffect(() => {
-    ActorController.renderExpressions<SelectDescriptor>(
-      props.renderID,
-      props.element,
+    ViewRenderer.renderExpressions<SelectDescriptor>(
+      props,
       VARIABLE_FIELDS,
-      props.properties,
     ).then(setElement);
   }, []);
 
@@ -28,15 +26,15 @@ export const SheetSelect = observer((props: SheetElementProps<SelectDescriptor>)
    * @param ev The triggering onChange event
    */
    function onChange(ev: React.ChangeEvent<HTMLSelectElement>) {
-    ActorController.setActor(props.renderID, element.name, props.properties, ev.target.value);
-    ev.target.value = ActorController.getActor(props.renderID, element.name, props.properties).toString();
+    // ActorController.setActor(props.renderID, element.name, props.properties, ev.target.value);
+    // ev.target.value = ActorController.getActor(props.renderID, element.name, props.properties).toString();
   }
 
   return (
     <select
       name={element.name}
       className={`select ${element.className}`}
-      defaultValue={ActorController.getActor(props.renderID, element.name, props.properties).toString()}
+      // defaultValue={ActorController.getActor(props.renderID, element.name, props.properties).toString()}
       onChange={onChange}
     >
       <SheetChildren {...props}/>

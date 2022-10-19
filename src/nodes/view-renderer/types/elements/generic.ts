@@ -5,7 +5,7 @@ import { ParsedExpression } from "types/expressions";
 /**
  * Describes a generic element used to render a View
  */
- export interface GenericElementDescriptor {
+ export interface ElementDescriptor {
   // TODO - rename $key
   $key: string; // A unique string of this element for creating a standardized key
   elementType: ElementType; // The type of element that this Descriptor describes

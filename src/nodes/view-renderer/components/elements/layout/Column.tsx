@@ -1,9 +1,9 @@
 import React from "react";
-import { ColumnDescriptor } from "nodes/actor-sheets/types/elements";
 import { SheetElementProps } from "../../../types";
 import { SheetChildren } from "../utility/Children";
-import { ActorController } from "nodes/actor-sheets/controllers/ActorSheetController";
 import { Box } from "@chakra-ui/react";
+import { ColumnDescriptor } from "nodes/view-renderer/types/elements";
+import { ViewRenderer } from "nodes/view-renderer";
 
 const VARIABLE_FIELDS = ["className"];
 
@@ -16,11 +16,9 @@ export function SheetColumn(props: SheetElementProps<ColumnDescriptor>) {
   const [ element, setElement ] = React.useState<any>({});
 
   React.useEffect(() => {
-    ActorController.renderExpressions<ColumnDescriptor>(
-      props.renderID,
-      props.element,
+    ViewRenderer.renderExpressions<ColumnDescriptor>(
+      props,
       VARIABLE_FIELDS,
-      props.properties,
     ).then(setElement);
   }, []);
 

@@ -1,61 +1,96 @@
-import { ViewRenderer } from "nodes/view-renderer";
-
 
 /**
  * Parses the first level elements found within a <Sheet> element
- * @param sheet The raw XML sheet DOM element to break out the base elements from
+ * @param id The ID of the View being parsed
+ * @param xmlDOM The raw XML sheet DOM element to break out the base elements from
  * @returns A struct with the layout and prefabs elements
  */
- export function extractFirstLevelElements(id: string, sheet: Element) {
-  const warningTitle = "XML Formatting Issue";
-  let layout: Element | undefined;
-  const prefabs: Element[] = [];
-  const variables: Element[] = [];
-  const warnings: any[] = [];
+ export function extractRootElements(_id: string, xmlDOM: XMLDocument) {
+  validateRoot(xmlDOM);
 
-  for (const child of sheet.children) {
+  try {
+    const sheet: Element = xmlDOM.children[0];
+    const layout: Element = sheet.getElementsByTagName("Layout")[0];
+    const prefabs: Element | undefined = sheet.getElementsByTagName("Prefabs")[0] || undefined;
+
+    return { layout: layout.children, prefabs: prefabs ? prefabs.children : new HTMLCollection() };
+  } catch (e) {
+    // Catches any unexpected issue. Specifics should be handled in the validate root function. This is a backup
+    throw {
+      title: "XML Parsing Error",
+      description: "An unexpected error occured while parsing the XML",
+    };
+  }
+}
+
+
+/**
+ * Validates the first layers of the XML, including the <Sheet>, <Layout>, and <Prefabs>
+ * @param xmlDOM The parsed XML document
+ * @throws A {title, description} formatted error if a problem was found
+ */
+ function validateRoot(xmlDOM: XMLDocument) {
+  const errorTitle = "XML Formatting Error";
+
+  // Ensure that there is only one root element
+  if (xmlDOM.children.length > 1) {
+    throw {
+      title: errorTitle,
+      description: "There can only be one root element",
+    };
+  }
+
+  // Ensures that the root element is present and is Sheet
+  if (xmlDOM.children.length === 0 || xmlDOM.children[0].tagName !== "Sheet") {
+    throw {
+      title: errorTitle,
+      description: "The root element of the XML must be <Sheet>",
+    };
+  }
+
+  const sheetDOM = xmlDOM.children[0];
+  let layoutCount = 0;
+  let prefabCount = 0;
+  let miscCount = 0;
+
+  // Performs the counts to throw errors later to give errors a precedence
+  for (const child of sheetDOM.children) {
     switch (child.tagName) {
-      case "Layout": // TODO - make these cases an enum or variable
-        if (layout) {
-          warnings.push({
-            title: warningTitle,
-            // eslint-disable-next-line max-len
-            description: "Multiple <Layout> elements were provided for a single document. Only the first will be rendered",
-          });
-          break;
-        }
-        layout = child;
+      case "Layout":
+        layoutCount++;
         break;
-
-      case "Prefabs":
-        for (const prefabChild of child.children) {
-          if (prefabChild.tagName !== "NewPrefab") {
-            warnings.push({
-              title: "Invalid Prefab Tag",
-              description: `The tag '${prefabChild.tagName}' is not a valid child of <Prefabs>`,
-            });
-            continue;
-          }
-          prefabs.push(prefabChild);
-        }
+      case "Prefab":
+        prefabCount++;
         break;
-
       default:
-        warnings.push({
-          title: warningTitle,
-          // eslint-disable-next-line max-len
-          description: `The element '${child.tagName}' is not allowed as a direct child of the Sheet element. It will be ignored`,
-
-        });
+        miscCount++;
         break;
     }
   }
 
-  if (!layout) {
-    throw { title: warningTitle, description: "The <Layout> element is required" };
+  if (layoutCount === 0) {
+    throw {
+      title: errorTitle,
+      description: "A <Layout> element is required",
+    };
   }
-
-  ViewRenderer.addWarning(id, ...warnings);
-
-  return { layout, prefabs, variables, warnings };
+  if (layoutCount > 1) {
+    throw {
+      title: errorTitle,
+      description: "Only one <Layout> element is allowed",
+    };
+  }
+  if (prefabCount > 1) {
+    throw {
+      title: errorTitle,
+      description: "Only one <Prefabs> element is allowed",
+    };
+  }
+  if (miscCount > 0) {
+    throw {
+      title: errorTitle,
+      description: "Only <Layout> or <Prefabs> are valid children of <Sheet>",
+    };
+  }
+  return true;
 }

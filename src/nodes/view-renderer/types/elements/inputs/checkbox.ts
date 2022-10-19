@@ -1,10 +1,10 @@
 import { ParsedExpression } from "../../../../../types/expressions";
-import { GenericElementDescriptor } from "../generic";
+import { ElementDescriptor } from "../generic";
 
 /**
  * Describes a sheet checkbox element
  */
-export interface CheckboxDescriptor extends GenericElementDescriptor {
+export interface CheckboxDescriptor extends ElementDescriptor {
   id?: ParsedExpression;
   name: ParsedExpression;
   value: ParsedExpression;
