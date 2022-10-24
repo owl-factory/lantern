@@ -13,7 +13,7 @@ export function injectStyles(css: string, uniqueId: string, overwrite = false) {
   const current = document.getElementById(uniqueId);
   if (!current) {
     const style = document.createElement("style");
-    style.textContent = css;
+    style.textContent = css; // Must be text content!
     style.id = uniqueId;
     document.head.append(style);
     return true;

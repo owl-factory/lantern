@@ -4,7 +4,9 @@ import { Render, RenderSources } from "../types/render";
 import { View } from "../types/view";
 import { parseDefaultState, parseLayout, parsePrefabs, parseSCSS, parseTabs, parseXML } from "../utilities/parse";
 import { injectStyles, removeStyles } from "../utilities/styles";
-import { validateCSS, validateSCSS, validateXML } from "../utilities/validation";
+import { validateSCSS, validateXML } from "../utilities/validation";
+import type { AlertMessage } from "@owl-factory/alerts";
+import { handleError } from "./helpers/errors";
 
 type Renders = Record<string, Render>;
 type Views = Record<string, View>;
@@ -16,6 +18,9 @@ interface ImportValues {
   css?: string;
 }
 
+interface ImportOptions {
+  onError?: (error: AlertMessage) => void;
+}
 
 class ViewRendererClass {
   public views: Views = {}; // Describes the views currently loaded into the renderer
@@ -40,16 +45,22 @@ class ViewRendererClass {
    * @param viewType The type of View this is used to render. Used for determining what went wrong and limiting
    * certain fields, like inputs.
    * @param imports The values being imported into the View
+   * @param options.onError A callback function to run on the event that an error occurs
    * @returns True if the import was successful, false otherwise
    */
-  public import(viewID: string, viewType: ViewType, imports: ImportValues): boolean {
-    let xmlWarnings, cssWarnings, scssWarnings;
+  public import(viewID: string, viewType: ViewType, imports: ImportValues, options?: ImportOptions): boolean {
+    let xmlWarnings, scssWarnings;
     try {
       if (imports.xml) xmlWarnings = validateXML(viewType, imports.xml);
-      if (imports.css) cssWarnings = validateCSS(viewID, imports.css);
-      if (imports.scss) scssWarnings = validateSCSS(imports.scss);
-    } catch (e) {
-      console.error(e);
+      if (imports.scss) scssWarnings = validateSCSS(viewID, imports.scss);
+      // CSS is not validated; it should always come from the backend without any client interaction
+    } catch (e: unknown) {
+      const defaultError = {
+        title: "Unknown Validation Error",
+        description: "An unknown error occured while validating the import values",
+      };
+      handleError(e, defaultError, options?.onError);
+      return false;
     }
 
     let layout, prefabs, tabs, defaultState, css;
@@ -66,7 +77,11 @@ class ViewRendererClass {
         css = parseSCSS(viewID, imports.scss);
       }
     } catch (e) {
-      console.error("Unexpected error");
+      const defaultError = {
+        title: "Unknown Parsing Error",
+        description: "An unknown error occured while parsing the import values",
+      };
+      handleError(e, defaultError, options?.onError);
       return false;
     }
 
