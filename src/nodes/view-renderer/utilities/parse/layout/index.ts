@@ -1,4 +1,6 @@
 import { ElementDescriptor } from "nodes/view-renderer/types/elements";
+import { parseChildrenElements } from "./children";
+import { parseUnknownElement } from "./unknown";
 
 /**
  * Parses the XML DOM, extracting the <Layout> element and parsing each child element
@@ -6,6 +8,9 @@ import { ElementDescriptor } from "nodes/view-renderer/types/elements";
  * @returns An array of ElementDescriptors containing the information for rendering the View
  */
 export function parseLayout(xmlDOM: XMLDocument): ElementDescriptor<unknown>[] {
-  const elements: ElementDescriptor<unknown>[] = [];
+  // Grabs the one Layout element
+  const layout = xmlDOM.children[0].getElementsByTagName("Layout")[0];
+  const elements: ElementDescriptor<unknown>[] = parseChildrenElements(layout.children, { key: "" });
+
   return elements;
 }
