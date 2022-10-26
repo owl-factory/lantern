@@ -3,7 +3,7 @@ import { parsePageElement, parsePrefabElement } from "nodes/actor-sheets/utiliti
 import { ElementType, elementNameToPageElementType } from "nodes/view-renderer/enums/elementType";
 import { ErrorAttributes } from "nodes/view-renderer/types/attributes";
 import { ElementDescriptor } from "nodes/view-renderer/types/elements";
-import { SheetState } from "nodes/view-renderer/types/sheetState";
+import { ParseState } from "nodes/view-renderer/types/state";
 import {
   parseCheckboxElement,
   parseInputElement,
@@ -32,8 +32,13 @@ import {
   parseTabsElement,
 } from "./utility";
 
-
-export function parseUnknownElement(element: Element, state: SheetState): ElementDescriptor<unknown> {
+/**
+ * Parses an unknown element into an ElementDescriptor
+ * @param element The unknown element to parse
+ * @param state The current parsing state
+ * @returns The correctly parsed element
+ */
+export function parseUnknownElement(element: Element, state: ParseState): ElementDescriptor<unknown> {
   const pageElementType = elementNameToPageElementType(element.tagName);
   try {
     switch(pageElementType) {

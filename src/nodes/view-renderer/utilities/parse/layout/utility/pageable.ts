@@ -1,7 +1,7 @@
 import { ElementType } from "nodes/view-renderer/enums/elementType";
 import { CheckboxAttributes, PageableAttributes } from "nodes/view-renderer/types/attributes";
 import { ElementDescriptor } from "nodes/view-renderer/types/elements";
-import { SheetState } from "nodes/view-renderer/types/sheetState";
+import { ParseState } from "nodes/view-renderer/types/state";
 import { parseChildrenElements } from "../children";
 import { parseExpression } from "../expression";
 
@@ -11,8 +11,8 @@ import { parseExpression } from "../expression";
  * @param state The current state at this point in the parsing
  * @returns A page element descriptor
  */
- export function parsePageableElement(element: Element, state: SheetState) {
-  const elementDetails: ElementDescriptor<PageableAttributes> = {
+ export function parsePageableElement(element: Element, state: ParseState) {
+  const descriptor: ElementDescriptor<PageableAttributes> = {
     type: ElementType.Pageable,
     key: state.key,
     attributes: {
@@ -26,10 +26,10 @@ import { parseExpression } from "../expression";
     if (child.tagName === "Page") {
       const pageID = child.getAttribute("id") || "unknown";
       const pageDescriptors = parseChildrenElements(child.children, state);
-      elementDetails.attributes.pages[pageID] = pageDescriptors;
+      descriptor.attributes.pages[pageID] = pageDescriptors;
 
     }
   }
 
-  return elementDetails;
+  return descriptor;
 }

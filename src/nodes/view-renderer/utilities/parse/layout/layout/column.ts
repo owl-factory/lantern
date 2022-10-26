@@ -1,7 +1,7 @@
 import { ElementType } from "nodes/view-renderer/enums/elementType";
 import { ColumnAttributes } from "nodes/view-renderer/types/attributes";
 import { ElementDescriptor } from "nodes/view-renderer/types/elements";
-import { SheetState } from "nodes/view-renderer/types/sheetState";
+import { ParseState } from "nodes/view-renderer/types/state";
 import { parseChildrenElements } from "../children";
 import { parseExpression } from "../expression";
 
@@ -10,7 +10,7 @@ import { parseExpression } from "../expression";
  * @param element The column element to convert
  * @returns A column element descriptor
  */
- export function parseColumnElement(element: Element, state: SheetState) {
+ export function parseColumnElement(element: Element, state: ParseState) {
   const descriptor: ElementDescriptor<ColumnAttributes> = {
     type: ElementType.Column,
     key: state.key,

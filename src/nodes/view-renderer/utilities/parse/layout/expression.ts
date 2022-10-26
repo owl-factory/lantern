@@ -9,7 +9,7 @@ import { Expression } from "nodes/view-renderer/types/expression";
 export function parseExpression(str: string | null): Expression {
   const value = str || "";
   const expr: Expression = {
-    isExpression: doesStringContainExpression(value),
+    isExpression: isExpression(value),
     value,
   };
 
@@ -26,7 +26,7 @@ export function parseExpression(str: string | null): Expression {
  * @param str The string to search through
  * @returns True if a expression start is found, false otherwise
  */
-function doesStringContainExpression(str: string) {
+export function isExpression(str: string) {
   return str.search(/^\$\{|[^\\]\$\{/) !== -1;
 }
 

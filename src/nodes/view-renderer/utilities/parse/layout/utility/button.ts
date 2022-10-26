@@ -1,8 +1,8 @@
 import { Action } from "nodes/view-renderer/enums/actions";
 import { ElementType } from "nodes/view-renderer/enums/elementType";
-import { ButtonAttributes, CheckboxAttributes } from "nodes/view-renderer/types/attributes";
+import { ButtonAttributes } from "nodes/view-renderer/types/attributes";
 import { ElementDescriptor } from "nodes/view-renderer/types/elements";
-import { SheetState } from "nodes/view-renderer/types/sheetState";
+import { ParseState } from "nodes/view-renderer/types/state";
 import { parseExpression } from "../expression";
 
 /**
@@ -10,8 +10,8 @@ import { parseExpression } from "../expression";
  * @param element The raw XML from the button element
  * @returns A parsed button element descriptor
  */
- export function parseButtonElement(element: Element, state: SheetState) {
-  const elementDetails: ElementDescriptor<ButtonAttributes> = {
+ export function parseButtonElement(element: Element, state: ParseState) {
+  const descriptor: ElementDescriptor<ButtonAttributes> = {
     type: ElementType.Button,
     key: state.key,
     attributes: {
@@ -22,28 +22,28 @@ import { parseExpression } from "../expression";
   };
 
   // TODO - break out into own function?
-  switch (elementDetails.attributes.action.toLowerCase()) {
+  switch (descriptor.attributes.action.toLowerCase()) {
     case Action.Alert:
-      elementDetails.attributes.alert = parseExpression(element.getAttribute("alert") || "");
+      descriptor.attributes.alert = parseExpression(element.getAttribute("alert") || "");
       break;
     case Action.CreateContent:
-      elementDetails.attributes.contentGroup = parseExpression(element.getAttribute("contentGroup") || "none");
+      descriptor.attributes.contentGroup = parseExpression(element.getAttribute("contentGroup") || "none");
       break;
     case Action.DeleteContent:
-      elementDetails.attributes.contentGroup = parseExpression(element.getAttribute("contentGroup") || "none");
-      elementDetails.attributes.index = parseExpression(element.getAttribute("index") || "");
+      descriptor.attributes.contentGroup = parseExpression(element.getAttribute("contentGroup") || "none");
+      descriptor.attributes.index = parseExpression(element.getAttribute("index") || "");
       break;
     case Action.ToggleCollapse:
-      elementDetails.attributes.target =  parseExpression(element.getAttribute("target") || "");
+      descriptor.attributes.target =  parseExpression(element.getAttribute("target") || "");
       break;
 
     case Action.Roll:
       // Rolls can have variables in them prior to rolling, so they need to be processed like expressions, then rolled
-      elementDetails.attributes.roll = parseExpression(element.getAttribute("roll"));
+      descriptor.attributes.roll = parseExpression(element.getAttribute("roll"));
       break;
   }
 
-  return elementDetails;
+  return descriptor;
 }
 
 /**

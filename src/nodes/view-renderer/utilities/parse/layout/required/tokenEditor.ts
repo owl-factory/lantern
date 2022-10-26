@@ -1,7 +1,7 @@
 import { ElementType } from "nodes/view-renderer/enums/elementType";
 import { CheckboxAttributes, TokenEditorAttributes } from "nodes/view-renderer/types/attributes";
 import { ElementDescriptor } from "nodes/view-renderer/types/elements";
-import { SheetState } from "nodes/view-renderer/types/sheetState";
+import { ParseState } from "nodes/view-renderer/types/state";
 import { parseExpression } from "../expression";
 
 /**
@@ -10,7 +10,7 @@ import { parseExpression } from "../expression";
  * @param state The current state at this point in the parsing
  * @returns A TokenEditor element descriptor
  */
- export function parseTokenEditorElement(element: Element, state: SheetState) {
+ export function parseTokenEditorElement(element: Element, state: ParseState) {
   const descriptor: ElementDescriptor<TokenEditorAttributes> = {
     type: ElementType.TokenEditor,
     key: state.key,

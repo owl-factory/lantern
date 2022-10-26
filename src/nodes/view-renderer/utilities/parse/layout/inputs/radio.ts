@@ -1,7 +1,7 @@
 import { ElementType } from "nodes/view-renderer/enums/elementType";
 import { RadioAttributes } from "nodes/view-renderer/types/attributes";
 import { ElementDescriptor } from "nodes/view-renderer/types/elements";
-import { SheetState } from "nodes/view-renderer/types/sheetState";
+import { ParseState } from "nodes/view-renderer/types/state";
 import { parseExpression } from "../expression";
 
 /**
@@ -10,8 +10,8 @@ import { parseExpression } from "../expression";
  * @param state The current state at this point in the parsing
  * @returns A radio button element descriptor
  */
-export function parseRadioElement(element: Element, state: SheetState) {
-  const elementDetails: ElementDescriptor<RadioAttributes> = {
+export function parseRadioElement(element: Element, state: ParseState) {
+  const descriptor: ElementDescriptor<RadioAttributes> = {
     type: ElementType.Radio,
     key: state.key,
     attributes: {
@@ -23,5 +23,5 @@ export function parseRadioElement(element: Element, state: SheetState) {
     },
   };
 
-  return elementDetails;
+  return descriptor;
 }

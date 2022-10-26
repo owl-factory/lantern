@@ -1,8 +1,10 @@
+import { RenderState } from "./state";
+
 // Describes a Render
 export interface Render {
   viewID: string; // The ID of the view this render uses
   sources: RenderSources; // The different data sources this render may draw upon
-  state: Record<string, unknown>; // The current state of this render. This can change and should be observable
+  state: RenderState; // The current state of this render. This can change and should be observable
 }
 
 // Links the different dynamic data sources that may be used to render a View

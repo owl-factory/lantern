@@ -1,7 +1,7 @@
 import { ElementType } from "nodes/view-renderer/enums/elementType";
 import { CheckboxAttributes, TableRowAttributes } from "nodes/view-renderer/types/attributes";
 import { ElementDescriptor } from "nodes/view-renderer/types/elements";
-import { SheetState } from "nodes/view-renderer/types/sheetState";
+import { ParseState } from "nodes/view-renderer/types/state";
 import { parseChildrenElements } from "../children";
 import { parseExpression } from "../expression";
 
@@ -11,8 +11,8 @@ import { parseExpression } from "../expression";
  * @param state The current state at this point in the parsing
  * @returns A table row element descriptor
  */
- export function parseTableRowElement(element: Element, state: SheetState) {
-  const elementDetails: ElementDescriptor<TableRowAttributes> = {
+ export function parseTableRowElement(element: Element, state: ParseState) {
+  const descriptor: ElementDescriptor<TableRowAttributes> = {
     type: ElementType.TableRow,
     key: state.key,
     attributes: {
@@ -21,7 +21,7 @@ import { parseExpression } from "../expression";
     children: [],
   };
 
-  elementDetails.children = parseChildrenElements(element.children, state);
+  descriptor.children = parseChildrenElements(element.children, state);
 
-  return elementDetails;
+  return descriptor;
 }
