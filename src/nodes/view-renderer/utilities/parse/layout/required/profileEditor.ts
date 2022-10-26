@@ -1,7 +1,7 @@
 import { ElementType } from "nodes/view-renderer/enums/elementType";
 import { CheckboxAttributes, ProfileEditorAttributes } from "nodes/view-renderer/types/attributes";
 import { ElementDescriptor } from "nodes/view-renderer/types/elements";
-import { SheetState } from "nodes/view-renderer/types/sheetState";
+import { ParseState } from "nodes/view-renderer/types/state";
 import { parseExpression } from "../expression";
 
 /**
@@ -10,7 +10,7 @@ import { parseExpression } from "../expression";
  * @param state The current state at this point in the parsing
  * @returns A ProfileEditor element descriptor
  */
- export function parseProfileEditorElement(element: Element, state: SheetState) {
+ export function parseProfileEditorElement(element: Element, state: ParseState) {
   const descriptor: ElementDescriptor<ProfileEditorAttributes> = {
     type: ElementType.ProfileEditor,
     key: state.key,

@@ -1,7 +1,7 @@
 import { ElementType } from "nodes/view-renderer/enums/elementType";
 import { TextAreaAttributes } from "nodes/view-renderer/types/attributes";
 import { ElementDescriptor } from "nodes/view-renderer/types/elements";
-import { SheetState } from "nodes/view-renderer/types/sheetState";
+import { ParseState } from "nodes/view-renderer/types/state";
 import { parseExpression } from "../expression";
 
 /**
@@ -10,8 +10,8 @@ import { parseExpression } from "../expression";
  * @param state The current state at this point in the parsing
  * @returns A text area element descriptor
  */
- export function parseTextAreaElement(element: Element, state: SheetState) {
-  const elementDetails: ElementDescriptor<TextAreaAttributes> = {
+ export function parseTextAreaElement(element: Element, state: ParseState) {
+  const descriptor: ElementDescriptor<TextAreaAttributes> = {
     type: ElementType.TextArea,
     key: state.key,
     attributes: {
@@ -21,5 +21,5 @@ import { parseExpression } from "../expression";
     },
   };
 
-  return elementDetails;
+  return descriptor;
 }

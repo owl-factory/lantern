@@ -1,7 +1,7 @@
 import { ElementType } from "nodes/view-renderer/enums/elementType";
 import { LabelAttributes } from "nodes/view-renderer/types/attributes";
 import { ElementDescriptor } from "nodes/view-renderer/types/elements";
-import { SheetState } from "nodes/view-renderer/types/sheetState";
+import { ParseState } from "nodes/view-renderer/types/state";
 import { parseExpression } from "../expression";
 
 /**
@@ -10,8 +10,8 @@ import { parseExpression } from "../expression";
  * @param state The current state at this point in the parsing
  * @returns A label element descriptor
  */
-export function parseLabelElement(element: Element, state: SheetState) {
-  const elementDetails: ElementDescriptor<LabelAttributes> = {
+export function parseLabelElement(element: Element, state: ParseState) {
+  const descriptor: ElementDescriptor<LabelAttributes> = {
     type: ElementType.Label,
     key: state.key,
     attributes: {
@@ -21,5 +21,5 @@ export function parseLabelElement(element: Element, state: SheetState) {
     },
   };
 
-  return elementDetails;
+  return descriptor;
 }

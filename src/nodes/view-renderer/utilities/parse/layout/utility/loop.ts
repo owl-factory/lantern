@@ -1,7 +1,7 @@
 import { ElementType } from "nodes/view-renderer/enums/elementType";
 import { LoopAttributes } from "nodes/view-renderer/types/attributes";
 import { ElementDescriptor } from "nodes/view-renderer/types/elements";
-import { SheetState } from "nodes/view-renderer/types/sheetState";
+import { ParseState } from "nodes/view-renderer/types/state";
 import { parseChildrenElements } from "../children";
 
 /**
@@ -9,7 +9,7 @@ import { parseChildrenElements } from "../children";
  * @param key The ID of the sheet this element belongs to
  * @param element The raw XML element of the loop
  */
- export function parseLoopElement(element: Element, state: SheetState) {
+ export function parseLoopElement(element: Element, state: ParseState) {
   const list = element.getAttribute("list");
   const listSource = element.getAttribute("listSource");
   const delimiter = element.getAttribute("delimiter") || ",";

@@ -1,7 +1,7 @@
 import { ElementType } from "nodes/view-renderer/enums/elementType";
 import { InlineAttributes } from "nodes/view-renderer/types/attributes";
 import { ElementDescriptor } from "nodes/view-renderer/types/elements";
-import { SheetState } from "nodes/view-renderer/types/sheetState";
+import { ParseState } from "nodes/view-renderer/types/state";
 import { parseChildrenElements } from "../children";
 import { parseExpression } from "../expression";
 
@@ -11,8 +11,8 @@ import { parseExpression } from "../expression";
  * @param state The current state at this point in the parsing
  * @returns A inline element descriptor
  */
- export function parseInlineElement(element: Element, state: SheetState) {
-  const elementDetails: ElementDescriptor<InlineAttributes> = {
+ export function parseInlineElement(element: Element, state: ParseState) {
+  const descriptor: ElementDescriptor<InlineAttributes> = {
     type: ElementType.Inline,
     key: state.key,
     attributes: {
@@ -21,7 +21,7 @@ import { parseExpression } from "../expression";
     children: [],
   };
 
-  elementDetails.children = parseChildrenElements(element.children, state);
+  descriptor.children = parseChildrenElements(element.children, state);
 
-  return elementDetails;
+  return descriptor;
 }

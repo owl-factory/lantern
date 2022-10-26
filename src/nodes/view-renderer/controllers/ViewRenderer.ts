@@ -2,11 +2,12 @@ import { action, makeObservable, observable } from "mobx";
 import { ViewType } from "../enums/viewType";
 import { Render, RenderSources } from "../types/render";
 import { View } from "../types/view";
-import { parseDefaultState, parseLayout, parsePrefabs, parseSCSS, parseTabs, parseXML } from "../utilities/parse";
+import { parseDefaultState, parseLayout, parsePrefabs, parseSCSS, parsePageGroups, parseXML } from "../utilities/parse";
 import { injectStyles, removeStyles } from "../utilities/styles";
 import { validateSCSS, validateXML } from "../utilities/validation";
 import type { AlertMessage } from "@owl-factory/alerts";
 import { handleError } from "./helpers/errors";
+import { RenderState } from "../types/state";
 
 type Renders = Record<string, Render>;
 type Views = Record<string, View>;
@@ -48,11 +49,16 @@ class ViewRendererClass {
    * @param options.onError A callback function to run on the event that an error occurs
    * @returns True if the import was successful, false otherwise
    */
-  public import(viewID: string, viewType: ViewType, imports: ImportValues, options?: ImportOptions): boolean {
+  public async import(
+    viewID: string,
+    viewType: ViewType,
+    imports: ImportValues,
+    options?: ImportOptions,
+  ): Promise<boolean> {
     let xmlWarnings, scssWarnings;
     try {
       if (imports.xml) xmlWarnings = validateXML(viewType, imports.xml);
-      if (imports.scss) scssWarnings = validateSCSS(viewID, imports.scss);
+      if (imports.scss) scssWarnings = await validateSCSS(viewID, viewType, imports.scss);
       // CSS is not validated; it should always come from the backend without any client interaction
     } catch (e: unknown) {
       const defaultError = {
@@ -63,18 +69,21 @@ class ViewRendererClass {
       return false;
     }
 
-    let layout, prefabs, tabs, defaultState, css;
+    let layout, prefabs, pageGroups, defaultState, css;
     try {
       if (imports.xml) {
         const xmlDOM = parseXML(imports.xml);
         layout = parseLayout(xmlDOM);
         prefabs = parsePrefabs(xmlDOM);
-        tabs = parseTabs(xmlDOM);
+        pageGroups = parsePageGroups(xmlDOM);
         defaultState = parseDefaultState(xmlDOM);
       }
 
-      if (imports.scss && !imports.css) {
-        css = parseSCSS(viewID, imports.scss);
+      // Raw CSS takes priority
+      if (imports.css) {
+        css = imports.css;
+      } else if (imports.scss && !imports.css) {
+        css = await parseSCSS(viewID, viewType, imports.scss);
       }
     } catch (e) {
       const defaultError = {
@@ -84,6 +93,14 @@ class ViewRendererClass {
       handleError(e, defaultError, options?.onError);
       return false;
     }
+
+    // Load everything in if it's present & parsed
+    if (!this.views[viewID]) { this.views[viewID] = { renderCount: 0 }; }
+    if (layout) this.views[viewID].layout = layout;
+    if (prefabs) this.views[viewID].prefabs = prefabs;
+    if (pageGroups) this.views[viewID].pageGroups = pageGroups;
+    if (defaultState) this.views[viewID].defaultState = defaultState;
+    if (css) this.views[viewID].css = css;
 
     return true;
   }
@@ -137,25 +154,27 @@ class ViewRendererClass {
   /**
    * Gets a single value from a piece of state
    * @param renderID The ID of the render the state describes
+   * @param set The type of state to access
    * @param field The field name of the state to fetch
    * @returns The value of the current state
    */
-  public getState(renderID: string, field: string): unknown {
+  public getState(renderID: string, set: keyof RenderState, field: string): unknown {
     const render = this.renders[renderID];
     if (!render) { return undefined; }
-    return render.state[field];
+    return render.state[set][field];
   }
 
   /**
    * Updates the state for the given render and field
    * @param renderID The ID of the render the state describes
+   * @param set The type of state to access
    * @param field The field name of the state to set
    * @param value The new value to set within the state
    */
-  public setState(renderID: string, field: string, value: unknown): void {
+  public setState(renderID: string, set: keyof RenderState, field: string, value: string): void {
     const render = this.renders[renderID];
     if (!render) { return; }
-    render.state[field] = value;
+    render.state[set][field] = value;
   }
 }
 

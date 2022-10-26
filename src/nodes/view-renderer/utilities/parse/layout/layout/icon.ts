@@ -1,7 +1,7 @@
 import { ElementType } from "nodes/view-renderer/enums/elementType";
 import { IconAttributes } from "nodes/view-renderer/types/attributes";
 import { ElementDescriptor } from "nodes/view-renderer/types/elements";
-import { SheetState } from "nodes/view-renderer/types/sheetState";
+import { ParseState } from "nodes/view-renderer/types/state";
 import { parseExpression } from "../expression";
 
 /**
@@ -10,8 +10,8 @@ import { parseExpression } from "../expression";
  * @param state The current state at this point in the parsing
  * @returns A icon element descriptor
  */
- export function parseIconElement(element: Element, state: SheetState) {
-  const elementDetails: ElementDescriptor<IconAttributes> = {
+ export function parseIconElement(element: Element, state: ParseState) {
+  const descriptor: ElementDescriptor<IconAttributes> = {
     type: ElementType.Icon,
     key: state.key,
     attributes: {
@@ -20,5 +20,5 @@ import { parseExpression } from "../expression";
     },
   };
 
-  return elementDetails;
+  return descriptor;
 }
