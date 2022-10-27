@@ -5,4 +5,5 @@ export interface InputAttributes {
   className: Expression;
   id: Expression;
   name: Expression;
+  type?: "number" | "text";
 }
