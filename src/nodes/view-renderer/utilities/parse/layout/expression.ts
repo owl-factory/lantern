@@ -1,4 +1,5 @@
-import { Expression } from "nodes/view-renderer/types/expression";
+import { ExpressionVariableType } from "nodes/view-renderer/enums/expressionVariableType";
+import { Expression, ExpressionVariable } from "nodes/view-renderer/types/expression";
 
 /**
  * Parses a string to find any expressions and the variables used therein, determining if any extra
@@ -14,7 +15,7 @@ export function parseExpression(str: string | null): Expression {
   };
 
   if (expr.isExpression) {
-    expr.variables = determineExpressionVariables(value);
+    expr.variables = parseExpressionVariables(value);
   }
 
   return expr;
@@ -39,26 +40,100 @@ const EXPRESSION_CONTENT_REGEX = /\${(.+?)}/g;
 // eslint-disable-next-line max-len
 const VARIABLE_REGEX = /([a-z_$][a-z0-9_$]+((\.[a-z_$][a-z0-9_$]+)|(\[(([0-9]+)|(\\?['"][a-z_$][a-z0-9_$]+\\?['"]))\]))*)/gi;
 
+/**
+ * Parses a string containing an expression, breaking out each variable into a code format that
+ * will be easy to parse in the render stage
+ * @param expressionString The raw string to be evaluated as an expression
+ * @returns A breakdown of each variable used within the expression, how to call it,
+ * and what type it is, organized into an array
+ */
+function parseExpressionVariables(expressionString: string): ExpressionVariable[] {
+  const exprVariables: ExpressionVariable[] = [];
+  const variables = extractVariables(expressionString);
+  for (const variable in variables) {
+    const exprVariable = parseExpressionVariable(variable);
+    if (exprVariable) exprVariables.push(exprVariable);
+  }
+  return exprVariables;
+}
 
 /**
  * Extracts out the names of variables accessed by expressions contained within the given string
- * @param str The string containing one or more expressions to extract the variables from
+ * @param exprString The string containing one or more expressions to extract the variables from
  * @returns An array containing the possible variable names
  */
- function determineExpressionVariables(str: string) {
-  const vars: string[] = [];
+function extractVariables(exprString: string) {
+  const variables: string[] = [];
 
-  const expressionContents = str.matchAll(EXPRESSION_CONTENT_REGEX);
+  // Extracts the contents of the expressions
+  const expressionContents = exprString.matchAll(EXPRESSION_CONTENT_REGEX);
+
+  // Loops through each piece of content
   let content = expressionContents.next();
   while(!content.done) {
+
+    // Grab anything that matches a variable and add it to the list
     const expressionVars = content.value[1].matchAll(VARIABLE_REGEX);
     let variable = expressionVars.next();
     while(!variable.done) {
-      vars.push(variable.value[0]);
+      variables.push(variable.value[0]);
       variable = expressionVars.next();
     }
     content = expressionContents.next();
   }
 
-  return vars;
+  return variables;
+}
+
+/**
+ * Parses a variable string into a format that can be easily read at runtime
+ * @param variable The variable to parse into an expression variable usable by the code
+ * @returns A parsed expression variable object, describing what kind of variable this is and how
+ *  to fetch the value at runtime
+ */
+function parseExpressionVariable(variable: string): ExpressionVariable | undefined {
+  if (!variable) { return undefined; }
+
+  const exprVariable: ExpressionVariable = {
+    fullVariable: variable,
+    type: ExpressionVariableType.Custom,
+  };
+
+  // Get first portion of the variable
+  const firstAddress = variable.replace(/\..*/, "");
+
+  switch (firstAddress) {
+    // The value comes from the character sheet
+    case "character":
+      exprVariable.type = ExpressionVariableType.Actor;
+      break;
+    case "content":
+      exprVariable.type = ExpressionVariableType.Content;
+      break;
+    // The value comes from plugins, campaign, or ruleset
+    case "rules":
+      exprVariable.type = ExpressionVariableType.Ruleset;
+      break;
+    // A value defined by the sheet
+    case "sheet":
+      exprVariable.type = ExpressionVariableType.Sheet;
+      break;
+    // A custom value in the properties defined by a loop
+    default:
+      return exprVariable;
+  }
+
+  // Removes the leading address from the string
+  const remainderAddress = variable.replace(/^.+\./, "");
+
+  // Removes everything after the initial field, if any
+  const field = remainderAddress.replace(/\[.*|\..*/, "");
+  const index = remainderAddress.replace(/^.*?\[/, "").replace(/\].*$/, "");
+  const contentField = remainderAddress.replace(/(.*(\]|\.))|^.*?$/, "");
+
+  exprVariable.field = field;
+  if (index !== "" && !isNaN(parseInt(index))) { exprVariable.index = parseInt(index); }
+  if (contentField !== "") { exprVariable.contentField = contentField; }
+
+  return exprVariable;
 }
