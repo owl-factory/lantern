@@ -1,12 +1,12 @@
 import { Button } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
-import { ActiveData } from "nodes/active-data";
 import { ViewRenderer } from "nodes/view-renderer";
 import { Action } from "nodes/view-renderer/enums/actions";
-import { ButtonAttributes, CheckboxAttributes } from "nodes/view-renderer/types/attributes";
-import { RenderProps } from "nodes/view-renderer/types/renderProps";
+import { ButtonAttributes } from "nodes/view-renderer/types/attributes";
+import { RenderProperties, RenderProps } from "nodes/view-renderer/types/renderProps";
 import { fetchExpressionValues, runExpression } from "nodes/view-renderer/utilities/render/expression";
 import React from "react";
+import * as actions from "../../../utilities/render/buttons";
 
 /**
  * Renders a button for use within a View
@@ -15,7 +15,6 @@ import React from "react";
  * @param properties Any current render state
  */
  export const ViewButton = observer((props: RenderProps<ButtonAttributes>) => {
-  
   const sources = ViewRenderer.renders[props.renderID].sources;
 
   const [ className, setClassName ] = React.useState("");
@@ -33,11 +32,18 @@ import React from "react";
     runExpression(sources, props.element.attributes.text, props.properties).then((res: string) => { setText(res); });
   }, fetchExpressionValues(sources, props.element.attributes.text) as unknown[]);
 
+  function onClick() {
+    runButtonAction(
+      props.element.attributes.action,
+      props.renderID,
+      props.element.attributes,
+      props.properties,
+    );
+  }
 
   return (
-    <Button
-      className={`button ${element.className}`} onClick={() => onClick(props.element.action, props.renderID, element)}>
-      {element.text}
+    <Button className={`button ${className}`} onClick={onClick}>
+      {text}
     </Button>
   );
 });
@@ -48,30 +54,46 @@ import React from "react";
  * @param renderID The ID of the render that this button belongs to
  * @param element The variables or potential variables contained within the button element
  */
-function onClick(
+async function runButtonAction(
   action: Action,
   renderID: string,
-  element: Record<string, string>
+  attributes: ButtonAttributes,
+  properties: RenderProperties,
+
 ) {
+  const sources = ViewRenderer.renders[renderID].sources;
+  if (!sources) { return; }
+
   switch(action) {
     case Action.Alert:
-      alert(element.alert);
+      let alertMessage = "";
+      if (attributes.alert) { alertMessage = await runExpression(sources, attributes.alert, properties); }
+      alert(alertMessage);
       break;
 
     case Action.CreateContent:
-      actions.createContent(renderID, element.contentGroup);
+      if (!attributes.contentGroup) { return; } // TODO - warning
+      const createContentGroup = await runExpression(sources, attributes.contentGroup, properties);
+      actions.createContent(renderID, createContentGroup);
       break;
 
     case Action.DeleteContent:
-      actions.deleteContent(renderID, element.contentGroup, parseInt(element.index));
+      if (!attributes.contentGroup || attributes.index === undefined) { return; } // TODO - warning
+      const deleteContentGroup = await runExpression(sources, attributes.contentGroup, properties);
+      const deleteIndex = await runExpression(sources, attributes.index, properties);
+      actions.deleteContent(renderID, deleteContentGroup, parseInt(deleteIndex));
       break;
 
     case Action.ToggleCollapse:
-      actions.toggleCollapse(renderID, element.target);
+      if (!attributes.target) { return; } // TODO - warning
+      const toggleCollapseTarget = await runExpression(sources, attributes.target, properties);
+      actions.toggleCollapse(renderID, toggleCollapseTarget);
       break;
 
     case Action.Roll:
-      actions.rollAction(renderID, element.roll);
+      if (!attributes.roll) { return; } // TODO - warning
+      const roll = await runExpression(sources, attributes.roll, properties);
+      actions.rollAction(renderID, roll);
       break;
   }
 }

@@ -5,6 +5,7 @@ import { RowAttributes } from "nodes/view-renderer/types/attributes";
 import { RenderProps } from "nodes/view-renderer/types/renderProps";
 import { fetchExpressionValues, runExpression } from "nodes/view-renderer/utilities/render/expression";
 import React from "react";
+import { ViewChildren } from "../utility";
 
 /**
  * Renders a Row element for use within a View

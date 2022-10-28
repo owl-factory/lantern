@@ -4,6 +4,7 @@ import { TableRowAttributes } from "nodes/view-renderer/types/attributes";
 import { RenderProps } from "nodes/view-renderer/types/renderProps";
 import { fetchExpressionValues, runExpression } from "nodes/view-renderer/utilities/render/expression";
 import React from "react";
+import { ViewChildren } from "../utility";
 
 /**
  * Renders a checkbox for use within a View
@@ -11,7 +12,7 @@ import React from "react";
  * @param element The element descriptor that defines this element
  * @param properties Any current render state
  */
-export const SheetTableRow = observer((props: RenderProps<TableRowAttributes>) => {
+export const ViewTableRow = observer((props: RenderProps<TableRowAttributes>) => {
   const sources = ViewRenderer.renders[props.renderID].sources;
   const [ className, setClassName ] = React.useState("");
 
