@@ -25,8 +25,8 @@ export function deleteContent(renderID: string, contentGroup: string, index: num
  * @param key The ID of the collapse element to toggle the open or closed state
  */
 export function toggleCollapse(renderID: string, key: string) {
-  const currentState = ActorController.getState(renderID, StateType.Collapse, key);
-  ActorController.setState(renderID, StateType.Collapse, key, !currentState);
+  // const currentState = ActorController.getState(renderID, StateType.Collapse, key);
+  // ActorController.setState(renderID, StateType.Collapse, key, !currentState);
 }
 
 /**
@@ -35,6 +35,6 @@ export function toggleCollapse(renderID: string, key: string) {
  * @param rollStr The string to roll
  */
 export function rollAction(_renderID: string, rollStr: string) {
-  const rollResult = rollDice(rollStr);
-  Mediator.post(MediatorMessage.Roll, { roll: rollResult});
+  // const rollResult = rollDice(rollStr);
+  // Mediator.post(MediatorMessage.Roll, { roll: rollResult});
 }

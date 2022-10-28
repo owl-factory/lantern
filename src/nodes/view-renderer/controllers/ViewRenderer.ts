@@ -8,6 +8,7 @@ import { validateSCSS, validateXML } from "../utilities/validation";
 import type { AlertMessage } from "@owl-factory/alerts";
 import { handleError } from "./helpers/errors";
 import { RenderState } from "../types/state";
+import { StateType } from "../enums/stateType";
 
 type Renders = Record<string, Render>;
 type Views = Record<string, View>;
@@ -154,27 +155,31 @@ class ViewRendererClass {
   /**
    * Gets a single value from a piece of state
    * @param renderID The ID of the render the state describes
-   * @param set The type of state to access
+   * @param type The type of state to access
    * @param field The field name of the state to fetch
    * @returns The value of the current state
    */
-  public getState(renderID: string, set: keyof RenderState, field: string): unknown {
+  public getState(renderID: string, type: StateType, field: string): string | boolean | undefined {
     const render = this.renders[renderID];
     if (!render) { return undefined; }
-    return render.state[set][field];
+    return render.state[type][field];
   }
 
   /**
    * Updates the state for the given render and field
    * @param renderID The ID of the render the state describes
-   * @param set The type of state to access
+   * @param type The type of state to access
    * @param field The field name of the state to set
    * @param value The new value to set within the state
    */
-  public setState(renderID: string, set: keyof RenderState, field: string, value: string): void {
+  public setState(renderID: string, type: StateType, field: string, value: string | boolean | undefined): void {
     const render = this.renders[renderID];
     if (!render) { return; }
-    render.state[set][field] = value;
+    if (value === undefined) {
+      delete render.state[type][field];
+      return;
+    }
+    render.state[type][field] = value;
   }
 }
 
