@@ -1,5 +1,5 @@
 import { Button } from "@chakra-ui/react";
-import { AlertController } from "@owl-factory/alerts";
+import { Alerts } from "@owl-factory/alerts";
 import { rest } from "@owl-factory/https";
 import { ActorSheet, Ruleset } from "@prisma/client";
 import ClientOnly from "components/ClientOnly";
@@ -31,11 +31,14 @@ const RulesetRow = observer((props: { ruleset: Ruleset }) => {
         `/api/dev/actor-sheets`,
         { actorSheet: { rulesetID: props.ruleset.id } }
       );
-      if (!result.success) { AlertController.error(`An actor sheet could not be created. ${result.message}`); return; }
+      if (!result.success) {
+        Alerts.error({ title: `An actor sheet could not be created. ${result.message}`});
+        return;
+      }
       router.push(`/dev/actor-sheets/${result.data.actorSheet.id}`);
-      AlertController.success(`An actor sheet was created for ${props.ruleset.name}`);
+      Alerts.success({ title: `An actor sheet was created for ${props.ruleset.name}` });
     } catch (e) {
-      AlertController.error(`An unexpected error occurred while attempting to create an actor sheet: ${e}`);
+      Alerts.error({ title: `An unexpected error occurred while attempting to create an actor sheet: ${e}` });
       return;
     }
   }

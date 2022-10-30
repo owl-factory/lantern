@@ -1,4 +1,4 @@
-import { AlertController } from "@owl-factory/alerts";
+import { Alerts } from "@owl-factory/alerts";
 import { Button } from "@chakra-ui/react";
 import { Input } from "@owl-factory/components/form";
 import { rest } from "@owl-factory/https";
@@ -20,7 +20,18 @@ function ChangePasswordForm() {
     if (!Auth.isLoggedIn) { return; }
 
     try {
-      // TODO Update Password logic
+      const result = await rest.patch(`/api/users/password`, values as any);
+      setError("");
+
+      if (!result.success) {
+        const message = (result.data as any).error;
+        if (typeof message === "object") { formik.setErrors(message); }
+        else { setError(message); }
+        return;
+      }
+
+      formik.resetForm();
+      Alerts.success({ title: "The password was successfully updated" });
     } catch (e) {
       setError(e as string);
     }

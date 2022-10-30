@@ -1,45 +1,49 @@
 export enum SheetElementType {
-  // Control element types with children
-  Sheet, // Wraps the entire XML document
-  Layout, // Indicates that the contents are what should be rendered by the engine
-  Pageable, // Indicates that the contents can be paged between
-  Tabs, // An element that renders out the tabs for a given Pageable element
-  Prefabs, // Declares that the contents are pre-made prefabs
-  NewPrefab, // Declares that the contents are a prefab of a given name
+  // Input - Elements that are for editing the values of the Render subject
+  Checkbox=0, // A checkbox input element
+  NumberInput, // An input specifically for adding numbers
+  Option, // A select input option
+  Radio, // A simple radio input
+  Select, // A select input
+  TextInput, // An input specifically for adding non-formatted text
+  TextArea, // An input specifically for adding formatted text, eg markdown
 
-  // Control Element types without children
-  Prefab, // Renders pre-made formating from the NewPrefab type
-  Unknown, // A case for a page element type where the tag name is unknown. We can render this as a red block
-
-  // Styling Elements with Children
-  Page, // Indicates that the contents are part of a single page that can be tabbed between
-  Row, // Indicates that the contents should be organized in a column-like format inline
+  // Layout - Elements that have low amounts of processing and usually directly translate to HTML elements with CSS
+  Box=100, // A generic div element that may be one of several types
   Column, // Indicates that the contents exist within a certain width
-  Background, // Places an image or svg behind the given children
-  Border, // Places a border around the children
+  Icon, // An Icon selected from a list of icons
   Inline, // Indicates that the children should be rendered inline but without specific spacing
+  Label, // Applies a label to an input, or creates text
+  Row, // Indicates that the contents should be organized in a column-like format inline
   Table, // Indicates that the children are part of a table
   TableRow, // Contains a single row of table cells
   TableCell, // A single cell within a table
-  Select, // A select input
+
+  // Required - Elements that are required and have a special, non-replicable purpose
+  AllFields=200, // Renders a list of all fields used within the
+  ProfileEditor,
+  TokenEditor,
+
+  // Utility - Elements that have a large amount of processing
+  Button=300, // A button that performs an action
   Collapse, // A div that can collapse or open
+  Loop, // Repeats the children n times for a given list
+  NewPrefab, // Declares that the contents are a prefab of a given name
+  Page, // Indicates that the contents are part of a single page that can be tabbed between
+  Pageable, // Indicates that the contents can be paged between
+  Prefab, // Renders pre-made formating from the NewPrefab type
+  Tabs, // An element that renders out the tabs for a given Pageable element
 
-  // Styling Elements without children
-  Icon, // An Icon selected from a list of icons
-  Label, // Applies a label to an input, or creates text
-  Button, // A button that performs an action
-  Checkbox, // A checkbox input element
-  Radio, // A simple radio input
-  NumberInput, // An input specifically for adding numbers
-  TextInput, // An input specifically for adding non-formatted text
-  TextArea, // An input specifically for adding formatted text, eg markdown
-  Option, // A select input option
+  // System - System control elements that are used for the rendering engine and do not have an associated render
+  Layout=400, // Indicates that the contents are what should be rendered by the engine
+  Prefabs, // Declares that the contents are pre-made prefabs
+  Sheet, // Wraps the entire XML document
 
-  // Functional Elements that perform tasks but do not directly appear
-  Loop,
 
   // Non-functional components. This indicates an error somewhere in the parsing
-  Error,
+  Error=500, // Indicates that an error has occured in the rendering somewhere and was caught
+  Unknown, // A case for a page element type where the tag name is unknown. We can render this as a red block
+
 }
 
 /**
@@ -51,61 +55,72 @@ export enum SheetElementType {
  */
 export function elementNameToPageElementType(tagName: string) {
   switch(tagName.toLocaleLowerCase()) {
-    case "sheet":
-      return SheetElementType.Sheet;
-    case "pageable":
-      return SheetElementType.Pageable;
-    case "tabs":
-      return SheetElementType.Tabs;
-    case "page":
-      return SheetElementType.Page;
-    case "prefabs":
-      return SheetElementType.Prefabs;
-    case "newprefab":
-      return SheetElementType.NewPrefab;
-    case "row":
-      return SheetElementType.Row;
-    case "column":
-      return SheetElementType.Column;
-    case "background":
-      return SheetElementType.Background;
-    case "border":
-      return SheetElementType.Border;
-    case "inline":
-      return SheetElementType.Inline;
-    case "icon":
-      return SheetElementType.Icon;
-    case "label":
-      return SheetElementType.Label;
-    case "button":
-      return SheetElementType.Button;
+    // Inputs
     case "checkbox":
       return SheetElementType.Checkbox;
+    case "numberinput":
+      return SheetElementType.NumberInput;
+    case "option":
+      return SheetElementType.Option;
     case "radio":
     case "radiobutton":
       return SheetElementType.Radio;
-    case "numberinput":
-      return SheetElementType.NumberInput;
+    case "select":
+      return SheetElementType.Select;
+    case "textinput":
+      return SheetElementType.TextInput;
+    case "textarea":
+      return SheetElementType.TextArea;
+
+    // Layout
+    case "box":
+      return SheetElementType.Box;
+    case "column":
+      return SheetElementType.Column;
+    case "icon":
+      return SheetElementType.Icon;
+    case "inline":
+      return SheetElementType.Inline;
+    case "label":
+      return SheetElementType.Label;
+    case "row":
+      return SheetElementType.Row;
     case "table":
       return SheetElementType.Table;
     case "tablecell":
       return SheetElementType.TableCell;
     case "tablerow":
       return SheetElementType.TableRow;
+
+    // Required
+    case "allfields":
+      return SheetElementType.AllFields;
+    case "profileeditor":
+      return SheetElementType.ProfileEditor;
+    case "tokeneditor":
+      return SheetElementType.TokenEditor;
+
+    // Utility
+    case "button":
+      return SheetElementType.Button;
     case "collapse":
       return SheetElementType.Collapse;
-    case "textinput":
-      return SheetElementType.TextInput;
-    case "textarea":
-      return SheetElementType.TextArea;
-    case "select":
-      return SheetElementType.Select;
-    case "option":
-      return SheetElementType.Option;
     case "loop":
       return SheetElementType.Loop;
+    case "newprefab":
+      return SheetElementType.NewPrefab;
+    case "page":
+      return SheetElementType.Page;
+    case "pageable":
+      return SheetElementType.Pageable;
     case "prefab":
       return SheetElementType.Prefab;
+    case "prefabs":
+      return SheetElementType.Prefabs;
+    case "sheet":
+      return SheetElementType.Sheet;
+    case "tabs":
+      return SheetElementType.Tabs;
 
     default:
       return SheetElementType.Unknown;

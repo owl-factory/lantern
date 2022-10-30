@@ -8,7 +8,7 @@ import {
   AlertDialogOverlay,
   Button,
 } from "@chakra-ui/react";
-import { AlertController } from "@owl-factory/alerts";
+import { Alerts } from "@owl-factory/alerts";
 import { Actor } from "@prisma/client";
 import React, { RefObject } from "react";
 
@@ -44,7 +44,7 @@ export function DeleteActorAlert(props: DeleteActorAlertProps) {
   function onCompleted(actor: Actor) {
     props.onClose();
     props.onDelete(props.actor as Actor);
-    AlertController.success(`${actor?.name} was successfully deleted`);
+    Alerts.success({ title: `${actor?.name} was successfully deleted` });
   }
 
   /**
@@ -53,7 +53,7 @@ export function DeleteActorAlert(props: DeleteActorAlertProps) {
    */
   function onError(actor: Actor) {
     props.onClose();
-    AlertController.error(`${actor?.name} couldn't be deleted`);
+    Alerts.error({ title: `${actor?.name} couldn't be deleted` });
   }
 
   /**

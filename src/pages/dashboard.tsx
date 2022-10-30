@@ -2,7 +2,7 @@ import { Page } from "components/design";
 import Link from "next/link";
 import React from "react";
 import { Box, Button, Flex } from "@chakra-ui/react";
-import { AlertController } from "@owl-factory/alerts";
+import { Alerts } from "@owl-factory/alerts";
 import { Auth } from "controllers/auth";
 import { signOut } from "utilities/auth";
 import { observer } from "mobx-react-lite";
@@ -27,8 +27,12 @@ const Dashboard = observer(() => {
       <h4>My Characters</h4>
 
       <h4>Temp Profile Stuff</h4>
-      <Button onClick={() =>AlertController.success("Testing")}>Test Alerts</Button>
       <Button onClick={() => {console.log(Auth);}}>Test Auth</Button>
+      <Button
+        onClick={() => Alerts.success({ title: "Test Toast!", description:"A test toast has been posted"})}
+      >
+        Toast!
+      </Button>
     </Page>
   );
 });
