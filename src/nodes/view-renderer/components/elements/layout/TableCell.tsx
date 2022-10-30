@@ -37,7 +37,7 @@ import { ViewChildren } from "../utility";
 
   return (
     <td className={`table-cell ${className}`} colSpan={width}>
-      <ViewChildren {...props}/>
+      <ViewChildren renderID={props.renderID} elements={props.element.children || []} properties={props.properties}/>
     </td>
   );
 });

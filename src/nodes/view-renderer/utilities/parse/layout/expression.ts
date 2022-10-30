@@ -91,7 +91,7 @@ function extractVariables(exprString: string) {
  * @returns A parsed expression variable object, describing what kind of variable this is and how
  *  to fetch the value at runtime
  */
-function parseExpressionVariable(variable: string): ExpressionVariable | undefined {
+export function parseExpressionVariable(variable: string): ExpressionVariable | undefined {
   if (!variable) { return undefined; }
 
   const exprVariable: ExpressionVariable = {

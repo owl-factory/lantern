@@ -16,6 +16,7 @@ import { parseExpression } from "../expression";
     type: ElementType.Pageable,
     key: state.key,
     attributes: {
+      id: element.getAttribute("id") || "unknown",
       className: parseExpression(element.getAttribute("class") || ""),
       pages: {},
     },

@@ -27,7 +27,7 @@ export const ViewBox = observer((props: RenderProps<BoxAttributes>) => {
 
   return (
     <Box className={`box ${props.element.attributes.type} ${className}`}>
-      <ViewChildren {...props}/>
+      <ViewChildren renderID={props.renderID} elements={props.element.children || []} properties={props.properties}/>
     </Box>
   );
 });

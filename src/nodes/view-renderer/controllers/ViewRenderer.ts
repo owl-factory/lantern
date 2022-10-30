@@ -9,6 +9,8 @@ import type { AlertMessage } from "@owl-factory/alerts";
 import { handleError } from "./helpers/errors";
 import { RenderState } from "../types/state";
 import { StateType } from "../enums/stateType";
+import { PageMetadata } from "../types/pages";
+import { Scalar } from "types";
 
 type Renders = Record<string, Render>;
 type Views = Record<string, View>;
@@ -99,7 +101,7 @@ class ViewRendererClass {
     if (!this.views[viewID]) { this.views[viewID] = { renderCount: 0 }; }
     if (layout) this.views[viewID].layout = layout;
     if (prefabs) this.views[viewID].prefabs = prefabs;
-    if (pageGroups) this.views[viewID].pageGroups = pageGroups;
+    if (pageGroups) this.views[viewID].pages = pageGroups;
     if (defaultState) this.views[viewID].defaultState = defaultState;
     if (css) this.views[viewID].css = css;
 
@@ -159,10 +161,17 @@ class ViewRendererClass {
    * @param field The field name of the state to fetch
    * @returns The value of the current state
    */
-  public getState(renderID: string, type: StateType, field: string): string | boolean | undefined {
+  public getState<T extends (number | boolean)>(renderID: string, type: StateType, field: string): T {
     const render = this.renders[renderID];
-    if (!render) { return undefined; }
-    return render.state[type][field];
+    const value = render.state[type][field] || undefined;
+    switch (type) {
+      case StateType.CurrentPage:
+        if (render === undefined || value === undefined) { return 0 as T; }
+        return value as T;
+      case StateType.Collapse:
+        if (render === undefined || value === undefined) { return false as T; }
+        return value as T;
+    }
   }
 
   /**
@@ -172,14 +181,53 @@ class ViewRendererClass {
    * @param field The field name of the state to set
    * @param value The new value to set within the state
    */
-  public setState(renderID: string, type: StateType, field: string, value: string | boolean | undefined): void {
+  public setState(renderID: string, type: StateType, field: string, value: Scalar | undefined): void {
     const render = this.renders[renderID];
     if (!render) { return; }
     if (value === undefined) {
       delete render.state[type][field];
       return;
     }
-    render.state[type][field] = value;
+
+    switch (type) {
+      case StateType.Collapse:
+        if (typeof value !== "boolean") { render.state[type][field] = !!value; }
+        else { render.state[type][field] = value; }
+        break;
+
+      case StateType.CurrentPage:
+        // Set if number or if string can be parsed into a number
+        if (typeof value === "number") {
+          render.state[type][field] = value;
+          break;
+        } else if (typeof value === "string") {
+          const numValue = parseInt(value);
+          if (!isNaN(numValue)) {
+            render.state[type][field] = numValue;
+            break;
+          }
+        }
+    }
+  }
+
+  /**
+   * Fetches the page metadata used for a given render and group
+   * @param renderID The ID of the render attempting to use these pages
+   * @param group The group name of the pages the render is attempting to access
+   * @returns An array of the page details describing the metadata of each page
+   */
+  public getPages(renderID: string, group: string): PageMetadata[] {
+    // Base case: return nothing if the render ID or group are invalid
+    if (!renderID || !group) return [];
+
+    const render = ViewRenderer.renders[renderID];
+    if (!render) return [];
+
+    const view = ViewRenderer.views[render.viewID];
+    if (!view || !view.pages) return [];
+
+    const pages = view.pages[group] || [];
+    return pages;
   }
 }
 

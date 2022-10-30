@@ -28,7 +28,7 @@ export const ViewInline = observer((props: RenderProps<InlineAttributes>) => {
   return (
     <Box className={`inline-wrapper`}>
       <Box className={`inline ${className}`}>
-        <ViewChildren {...props} />
+        <ViewChildren renderID={props.renderID} elements={props.element.children || []} properties={props.properties}/>
       </Box>
     </Box>
   );

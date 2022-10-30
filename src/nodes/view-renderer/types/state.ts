@@ -12,5 +12,5 @@ export interface ParseState {
 export interface RenderState {
   // An object of the collapse elements and whether they are open or closed
   [StateType.Collapse]: Record<string, boolean>;
-  [StateType.CurrentPage]: Record<string, string>; // An object of pageGroup IDs and their active page name
+  [StateType.CurrentPage]: Record<string, number>; // An object of pageGroup IDs and their active page name
 }

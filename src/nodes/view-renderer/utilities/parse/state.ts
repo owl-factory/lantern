@@ -19,20 +19,22 @@ export function parseDefaultState(xmlDOM: XMLDocument): RenderState {
     if (pageable.tagName !== "Pageable" || !pageableID) continue;
 
     let defaultPage;
+    let i = 0;
     for (const page of pageable.children) {
       if (page.tagName !== "Page") continue;
 
       // Get the page name and select that if it's the first
       const pageName = page.getAttribute("name");
-      if (!pageName) continue;
-      if (!defaultPage) defaultPage = pageName;
+      if (pageName === undefined) continue;
+      if (!defaultPage) defaultPage = i;
 
       // Check if a page is default. If so, set it and then jump out
       const isDefault = page.getAttribute("default");
       if (isDefault) {
-        defaultPage = pageName;
+        defaultPage = i;
         break;
       }
+      i++;
     }
     if (!defaultPage) continue;
     state.pages[pageableID] = defaultPage;

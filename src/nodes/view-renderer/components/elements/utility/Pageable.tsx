@@ -1,11 +1,12 @@
 import { Box } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
 import { ViewRenderer } from "nodes/view-renderer";
-import { StateType } from "nodes/view-renderer/enums/stateType";
 import { PageableAttributes } from "nodes/view-renderer/types/attributes";
+import { ElementDescriptor } from "nodes/view-renderer/types/elements";
 import { RenderProps } from "nodes/view-renderer/types/renderProps";
 import { fetchExpressionValues, runExpression } from "nodes/view-renderer/utilities/render/expression";
 import React from "react";
+import { ViewPage } from "./Page";
 
 /**
  * Renders a Pageable element for use within a View
@@ -24,12 +25,19 @@ export const ViewPageable = observer((props: RenderProps<PageableAttributes>) =>
     });
   }, fetchExpressionValues(sources, props.element.attributes.className) as unknown[]);
 
+  const pages: JSX.Element[] = [];
 
-  const activeTab = ViewRenderer.getState(props.renderID, StateType.CurrentPage, props.element.attributes.id) as string;
+  let i = 0;
+  for (const descriptor of props.element.children || []) {
+    pages.push(
+      <ViewPage {...props} element={descriptor as ElementDescriptor<{}>} group={props.element.attributes.id} index={i}/>
+    );
+    i++;
+  }
 
   return (
     <Box className={`pageable ${className}`}>
-      {/* <ViewPage {...props} element={props.element.pages[activeTab]}/> */}
+      {pages}
     </Box>
   );
 });

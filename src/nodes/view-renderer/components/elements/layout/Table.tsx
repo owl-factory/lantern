@@ -27,7 +27,7 @@ export const ViewTable = observer((props: RenderProps<TableAttributes>) => {
   return (
     <table className={`table ${className}`}>
       <tbody>
-        <ViewChildren {...props}/>
+        <ViewChildren renderID={props.renderID} elements={props.element.children || []} properties={props.properties}/>
       </tbody>
     </table>
   );
