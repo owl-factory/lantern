@@ -1,8 +1,10 @@
+import { toJS } from "mobx";
 import { observer } from "mobx-react-lite";
 import { ActiveData } from "nodes/active-data";
 import { ViewRenderer } from "nodes/view-renderer";
+import { ExpressionVariableType } from "nodes/view-renderer/enums/expressionVariableType";
 import { CheckboxAttributes, LoopAttributes } from "nodes/view-renderer/types/attributes";
-import { RenderProps } from "nodes/view-renderer/types/renderProps";
+import { RenderProperties, RenderProps } from "nodes/view-renderer/types/renderProps";
 import { fetchExpressionValues, runExpression } from "nodes/view-renderer/utilities/render/expression";
 import React from "react";
 import { ViewChildren } from "./Children";
@@ -15,39 +17,34 @@ import { ViewChildren } from "./Children";
  */
 export const ViewLoop = observer((props: RenderProps<LoopAttributes>) => {
   const key = props.element.key; // The key used for storing the variable
-  if (key in props.properties) { return <>Error with loop. The key is already in use</>; }
 
+  const list = getList(props.renderID, props.element.attributes);
   const loopedElements = [];
-  let list: (string | Record<string, string>)[] = [];
-  if (props.element.attributes.listSource) {
-    const listValue = ActorController.convertVariableToData(
-      props.renderID,
-      props.element.listSource,
-      props.properties as any
-    );
-    if (typeof listValue === "string") { list = listValue.split(props.element.delimiter); }
-    else if (Array.isArray(listValue)) { list = listValue; }
-    else { list = []; }
-  }
-  else if (props.element.attributes.list) {
-    list = props.element.attributes.list;
-  }
 
   let i = 0;
   for (const listItem of list) {
     const prefix = `${props.properties.$prefix}-${key}_${i}`; // Updated prefix to contain a loop-specific variable
-    const properties: SheetProperties = {
+    const properties: RenderProperties = {
       ...props.properties,
       $source: { ...props.properties.$source },
       $index: {...props.properties.$index, [key]: i },
       $prefix: prefix,
       [key]: toJS(listItem),
     };
-    if (props.element.listSource) { properties.$source[key] = props.element.listSource; }
+    if (props.element.attributes.listSource) {
+      properties.$source[key] = props.element.attributes.listSource.fullVariable
+    }
 
-    if (props.element.index) { properties[props.element.index] = i; }
+    if (props.element.attributes.index) { properties[props.element.attributes.index] = i; }
 
-    loopedElements.push(<ViewChildren key={prefix} {...props} properties={properties}/>);
+    loopedElements.push(
+      <ViewChildren
+        key={prefix}
+        renderID={props.renderID}
+        elements={props.element.children || []}
+        properties={properties}
+      />
+    );
     i++;
   }
 
@@ -58,6 +55,20 @@ export const ViewLoop = observer((props: RenderProps<LoopAttributes>) => {
   );
 });
 
-function getListSource(renderID: string, listSource: string): string | Record<string, string>[] {
+function getList(renderID: string, attributes: LoopAttributes): (string | Record<string, unknown>)[] {
+  if (attributes.list) { return attributes.list; }
+  const sources = ViewRenderer.renders[renderID].sources;
 
+  switch(attributes.listSource?.type) {
+    case ExpressionVariableType.Content:
+      if (!sources.actorID || !attributes.listSource.field) return [];
+      return ActiveData.getContents(sources.actorID, attributes.listSource.field) || [];
+    case ExpressionVariableType.Ruleset:
+      //TODO
+      return [];
+    case ExpressionVariableType.Sheet:
+      //TODO
+      return [];
+  }
+  return [];
 }

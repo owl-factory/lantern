@@ -27,7 +27,7 @@ export const ViewColumn = observer((props: RenderProps<ColumnAttributes>) => {
 
   return (
     <Box className={`column ${className}`} flexGrow={props.element.attributes.weight}>
-      <ViewChildren {...props}/>
+      <ViewChildren renderID={props.renderID} elements={props.element.children || []} properties={props.properties}/>
     </Box>
   );
 });

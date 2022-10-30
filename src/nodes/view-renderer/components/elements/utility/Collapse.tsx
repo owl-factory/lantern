@@ -32,7 +32,7 @@ export const ViewCollapse = observer((props: RenderProps<CollapseAttributes>) =>
 
   return (
     <Box>
-      <ViewChildren {...props}/>
+      <ViewChildren renderID={props.renderID} elements={props.element.children || []} properties={props.properties}/>
     </Box>
   );
 });

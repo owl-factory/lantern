@@ -3,6 +3,7 @@ import { LoopAttributes } from "nodes/view-renderer/types/attributes";
 import { ElementDescriptor } from "nodes/view-renderer/types/elements";
 import { ParseState } from "nodes/view-renderer/types/state";
 import { parseChildrenElements } from "../children";
+import { parseExpressionVariable } from "../expression";
 
 /**
  * Parses a loop element
@@ -26,7 +27,7 @@ import { parseChildrenElements } from "../children";
     },
   };
 
-  if (listSource) { descriptor.attributes.listSource = listSource; }
+  if (listSource) { descriptor.attributes.listSource = parseExpressionVariable(listSource); }
   if (list) { descriptor.attributes.list = list.split(delimiter); }
 
   state.key = ""; // Reset the key so that we can append the looped keys to the base key when rendering

@@ -28,7 +28,7 @@ import { ViewChildren } from "../utility";
 
   return (
     <Box className={`row ${className}`} style={{}}>
-      <ViewChildren {...props}/>
+      <ViewChildren renderID={props.renderID} elements={props.element.children || []} properties={props.properties}/>
     </Box>
   );
 });
