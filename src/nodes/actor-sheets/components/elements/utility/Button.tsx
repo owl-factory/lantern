@@ -1,7 +1,7 @@
 import React from "react";
 import { observer } from "mobx-react-lite";
 import { SheetElementProps } from "nodes/actor-sheets/types";
-import { ButtonDescriptor } from "nodes/actor-sheets/types/elements/button";
+import { ButtonDescriptor } from "nodes/actor-sheets/types/elements";
 import { ActorController } from "nodes/actor-sheets";
 import { ButtonAction } from "../../../enums/buttonActions";
 import * as actions from "../../../utilities/elements/button/actions";

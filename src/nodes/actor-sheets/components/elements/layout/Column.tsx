@@ -1,5 +1,5 @@
 import React from "react";
-import { ColumnDescriptor } from "nodes/actor-sheets/types/elements/column";
+import { ColumnDescriptor } from "nodes/actor-sheets/types/elements";
 import { SheetElementProps } from "../../../types";
 import { SheetChildren } from "../utility/Children";
 import { ActorController } from "nodes/actor-sheets/controllers/ActorSheetController";

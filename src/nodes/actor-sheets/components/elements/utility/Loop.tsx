@@ -2,7 +2,7 @@ import { toJS } from "mobx";
 import { observer } from "mobx-react-lite";
 import { ActorController } from "nodes/actor-sheets";
 import { SheetElementProps, SheetProperties } from "nodes/actor-sheets/types";
-import { LoopDescriptor } from "nodes/actor-sheets/types/elements/loop";
+import { LoopDescriptor } from "nodes/actor-sheets/types/elements";
 import React from "react";
 import { SheetChildren } from "./Children";
 
