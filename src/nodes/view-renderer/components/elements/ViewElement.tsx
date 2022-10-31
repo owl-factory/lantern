@@ -76,5 +76,5 @@ import { ViewError } from "./ViewError";
   } catch (e) {
     return <ViewError {...props} />;
   }
-  return <>:(</>;
+  return <>{ props.element?.type}</>;
 }

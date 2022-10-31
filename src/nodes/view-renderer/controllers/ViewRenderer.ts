@@ -11,6 +11,7 @@ import { RenderState } from "../types/state";
 import { StateType } from "../enums/stateType";
 import { PageMetadata } from "../types/pages";
 import { Scalar } from "types";
+import { v4 as uuid } from "uuid";
 
 type Renders = Record<string, Render>;
 type Views = Record<string, View>;
@@ -48,7 +49,9 @@ class ViewRendererClass {
    * Generally the parent document ID should be included in some way
    * @param viewType The type of View this is used to render. Used for determining what went wrong and limiting
    * certain fields, like inputs.
-   * @param imports The values being imported into the View
+   * @param imports.xml The XML to import into the ViewRenderer
+   * @param imports.css The pre-parsed CSS to import into the ViewRenderer
+   * @param imports.scss The unparsed SCSS to import and parse
    * @param options.onError A callback function to run on the event that an error occurs
    * @returns True if the import was successful, false otherwise
    */
@@ -98,7 +101,12 @@ class ViewRendererClass {
     }
 
     // Load everything in if it's present & parsed
-    if (!this.views[viewID]) { this.views[viewID] = { renderCount: 0 }; }
+    if (!this.views[viewID]) {
+      this.views[viewID] = {
+        renderCount: 0,
+        defaultState: { [StateType.Collapse]: {}, [StateType.CurrentPage]: {} }
+      };
+    }
     if (layout) this.views[viewID].layout = layout;
     if (prefabs) this.views[viewID].prefabs = prefabs;
     if (pageGroups) this.views[viewID].pages = pageGroups;
@@ -129,7 +137,18 @@ class ViewRendererClass {
       clearTimeout(view.cleanupID);
       view.cleanupID = undefined;
     }
-    return "";
+
+    const renderID = uuid();
+    this.renders[renderID] = {
+      viewID,
+      sources,
+      state: {
+        [StateType.CurrentPage]: { ...view.defaultState.pages },
+        [StateType.Collapse]: { ...view.defaultState.collapses },
+       },
+    };
+
+    return renderID;
   }
 
   /**

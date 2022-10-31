@@ -39,7 +39,7 @@ export function validateXML(type: ViewType, xml: string): void {
       case "Layout":
         layoutCount++;
         break;
-      case "Prefab":
+      case "Prefabs":
         prefabCount++;
         break;
       default:
