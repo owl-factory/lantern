@@ -15,7 +15,7 @@ import { NewSheetForm } from "./NewSheetForm";
 interface NewActorModalProps {
   isOpen: boolean;
   onClose: () => void;
-  setActiveSheet: (id: string | null) => void;
+  setActiveSheet: (id: string | undefined) => void;
 }
 
 /**

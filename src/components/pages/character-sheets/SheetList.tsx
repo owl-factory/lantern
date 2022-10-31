@@ -7,14 +7,14 @@ import { DeleteSheetAlert } from "./DeleteSheetAlert";
 import { NewSheetModal } from "./NewSheetModal";
 
 interface SheetListProps {
-  activeSheet: string | null;
-  setActiveSheet: (sheetID: string | null) => void;
+  activeSheet: string | undefined;
+  setActiveSheet: (sheetID: string | undefined) => void;
 }
 
 interface SheetLineProps {
   sheet: ActorSheet & { ruleset: Ruleset };
-  activeSheet: string | null;
-  setActiveSheet: (sheetID: string | null) => void
+  activeSheet: string | undefined;
+  setActiveSheet: (sheetID: string | undefined) => void
   openDeleteAlert: (sheet: ActorSheet) => void;
 }
 
@@ -108,7 +108,7 @@ export function SheetList(props: SheetListProps) {
    * @param sheet The actor sheet that was just deleted
    */
   function onDelete(sheet: ActorSheet) {
-    if (sheet.id === props.activeSheet) { props.setActiveSheet(null); }
+    if (sheet.id === props.activeSheet) { props.setActiveSheet(undefined); }
   }
 
   const sheets: JSX.Element[] = [];

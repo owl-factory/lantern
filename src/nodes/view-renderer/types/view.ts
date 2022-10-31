@@ -8,7 +8,7 @@ export interface View {
   prefabs?: Record<string, ElementDescriptor<unknown>[]>; // Describes the different prefabs usable within the render
   pages?: Record<string, PageMetadata[]>; // Describes the different pages and tabs that this view uses
   css?: string; // The transpiled CSS, ready for use in the browser
-  defaultState?: RenderState;
+  defaultState: RenderState;
 
   // The metadata for managing a View
   renderCount: number; // How many times this is used in an active render

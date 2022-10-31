@@ -1,5 +1,6 @@
 import { gql, useLazyQuery } from "@apollo/client";
 import { ActorController, ActorSheet } from "nodes/actor-sheets";
+import { ViewRenderer, ViewType } from "nodes/view-renderer";
 import React from "react";
 import { SheetForm } from "./SheetForm";
 
@@ -47,14 +48,10 @@ export function SheetView(props: SheetViewProps) {
   // Loads and creates the render
   React.useEffect(() => {
     if (loading || error || !data || props.activeSheet === null) { return; }
-    ActorController.loadRuleset(data.actorSheet.ruleset.id, data.actorSheet.ruleset);
-    ActorController.loadSheet(data.actorSheet.id, data.actorSheet);
-
-    ActorController.newRender(
-      null,
-      data.actorSheet.ruleset.id,
+    ViewRenderer.import(
       data.actorSheet.id,
-      props.activeSheet
+      ViewType.ActorSheet,
+      { xml: data.actorSheet.layout, css: data.actorSheet.styling }
     );
   });
 

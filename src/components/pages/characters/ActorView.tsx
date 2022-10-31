@@ -1,5 +1,7 @@
 import { gql, useLazyQuery } from "@apollo/client";
+import { ActiveData } from "nodes/active-data";
 import { ActorController, ActorSheet } from "nodes/actor-sheets";
+import { ViewRenderer, ViewType } from "nodes/view-renderer";
 import React from "react";
 
 interface ActorViewProps {
@@ -47,15 +49,12 @@ export function ActorView(props: ActorViewProps) {
   // Loads and creates the render
   React.useEffect(() => {
     if (loading || error || !data || props.activeActor === null) { return; }
-    ActorController.loadActor(data.actor.id, data.actor);
-    ActorController.loadRuleset(data.actor.ruleset.id, data.actor.ruleset);
-    ActorController.loadSheet(data.actor.actorSheet.id, data.actor.actorSheet);
-
-    ActorController.newRender(
-      data.actor.id,
-      data.actor.ruleset.id,
+    ActiveData.refreshActor(data.actor.id);
+    ActiveData.refreshRuleset(data.actor.ruleset.id);
+    ViewRenderer.import(
       data.actor.actorSheet.id,
-      props.activeActor
+      ViewType.ActorSheet,
+      { xml: data.actor.actorSheet.layout, css: data.actor.actorSheet.styling }
     );
   });
 

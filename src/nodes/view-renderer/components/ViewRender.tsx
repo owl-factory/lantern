@@ -3,6 +3,7 @@ import { observer } from "mobx-react-lite";
 import React from "react";
 import { ViewRenderer } from "../controllers/ViewRenderer";
 import { RenderSources } from "../types/render";
+import { ViewChildren } from "./elements/utility";
 
 interface ViewRenderProps {
   viewID?: string;
@@ -23,34 +24,35 @@ function NullView() {
 export const ViewRender = observer((props: ViewRenderProps) => {
   // The ID of the render used for this view
   const [renderID, setRenderID] = React.useState("");
+  const view = ViewRenderer.views[props.viewID || ""];
+
 
   React.useEffect(() => {
-    if (!props.viewID || !props.sources) { return;}
+    if (!props.viewID || !props.sources) { return; }
 
     // If the view isn't found, set an empty render and exit
-    const view = ViewRenderer.views[props.viewID];
     if (!view) {
       setRenderID("");
       return;
     }
-
-    setRenderID(ViewRenderer.startRender(props.viewID, props.sources));
+    const newRenderID = ViewRenderer.startRender(props.viewID, props.sources);
+    setRenderID(newRenderID);
 
     // Runs after this effect ends, letting us clean up the renders
     const previousID = props.viewID;
     return () => {
       ViewRenderer.endRender(previousID);
     };
-  }, [props.viewID]);
+  }, [props.viewID, view]);
 
   // Handles the case where we can't render anything
-  if (renderID === "") {
+  if (renderID === "" || view === undefined) {
     return <NullView/>;
   }
 
   return (
     <Box className={`view-render-wrapper view-render-${renderID}`}>
-      View Render
+      <ViewChildren renderID={renderID} elements={view.layout || []} properties={ {} }/>
     </Box>
   );
 });

@@ -54,7 +54,7 @@ export enum ElementType {
  * @returns The appropriate PageElementType
  */
  export function elementNameToPageElementType(tagName: string) {
-  switch(tagName.toLocaleLowerCase()) {
+  switch(tagName) {
     // Inputs
     case "Checkbox":
       return ElementType.Checkbox;
