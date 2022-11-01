@@ -4,9 +4,10 @@ import { ElementDescriptor } from "nodes/view-renderer/types/elements";
 import { ParseState } from "nodes/view-renderer/types/state";
 import { parseChildrenElements } from "../children";
 import { parseExpression } from "../expression";
+import { parsePageElement } from "./page";
 
 /**
- * Converts a page element into a page element descriptor
+ * Converts a pageable element into a pageable element descriptor
  * @param element The page element to convert
  * @param state The current state at this point in the parsing
  * @returns A page element descriptor
@@ -24,12 +25,12 @@ import { parseExpression } from "../expression";
   };
 
   for (const child of element.children) {
-    if (child.tagName === "Page") {
-      const pageID = child.getAttribute("id") || "unknown";
-      const pageDescriptors = parseChildrenElements(child.children, state);
-      descriptor.attributes.pages[pageID] = pageDescriptors;
+    if (child.tagName !== "Page") { continue; }
+    const pageID = child.getAttribute("id") || "unknown";
+    const pageDescriptors = parseChildrenElements(child.children, state);
+    descriptor.attributes.pages[pageID] = pageDescriptors; // TODO - remove
 
-    }
+    descriptor.children?.push(parsePageElement(child, state));
   }
 
   return descriptor;

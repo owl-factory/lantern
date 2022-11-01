@@ -22,7 +22,7 @@ class $SandboxController extends PromiseWebWorker {
    * @returns The currently stored value for the attribute
    */
   public async expr(expression: ParsedExpression, properties: Record<string, unknown>) {
-    if (!expression.hasExpression) { return expression.value; }
+    if (!expression.isExpression) { return expression.value; }
     return this.post({
       action: SandboxAction.Expression,
       properties: toJS(properties),

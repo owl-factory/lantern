@@ -18,6 +18,7 @@ import { parseExpression } from "../expression";
       className: parseExpression(element.getAttribute("class")),
       id: parseExpression(element.getAttribute("id")),
       name: parseExpression(element.getAttribute("name")),
+      type: element.getAttribute("type") as ("text" | "number") || "text",
     },
   };
 
