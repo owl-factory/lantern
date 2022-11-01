@@ -107,6 +107,9 @@ class ViewRendererClass {
         defaultState: { [StateType.Collapse]: {}, [StateType.CurrentPage]: {} }
       };
     }
+
+    console.log(layout)
+    console.log(css)
     if (layout) this.views[viewID].layout = layout;
     if (prefabs) this.views[viewID].prefabs = prefabs;
     if (pageGroups) this.views[viewID].pages = pageGroups;

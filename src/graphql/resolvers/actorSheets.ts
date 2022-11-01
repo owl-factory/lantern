@@ -102,7 +102,7 @@ async function createActorSheet(_: unknown, { actorSheet, include }: CreateActor
  * @returns The changed actor sheet
  */
 async function mutateActorSheet(_: unknown, { id, actorSheet }: MutateActorSheetArguments) {
-  const rawStyling = `.actor-sheet-${id} { ${actorSheet.rawStyling} }`;
+  const rawStyling = `.view-render-${id} { ${actorSheet.rawStyling} }`;
   const compiled = sass.compileString(rawStyling);
   return prisma.actorSheet.update({
     data: {

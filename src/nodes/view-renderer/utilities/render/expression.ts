@@ -13,7 +13,6 @@ export async function runExpression(
 ): Promise<string> {
   // Skip any calculation if this isn't an expression
   if (!expr.isExpression) { return expr.value; }
-
   const exprVariables = fetchExpressionRequirements(sources, expr);
   properties.character = exprVariables.actor;
   properties.content = exprVariables.content;
@@ -21,7 +20,7 @@ export async function runExpression(
   properties.sheet = exprVariables.sheet;
 
   const res = (await Mediator.requests(MediatorRequest.SandboxExpr, {expression: expr, properties})) as string;
-
+  console.log("Res", res)
   // Remove old content to prevent leaking
   delete properties.character;
   delete properties.content;

@@ -93,7 +93,9 @@ $input-bg: $body-bg;
 }
 
 // The wrapper for the whole contents of the actor sheet
-.actor-sheet-wrapper {
+.view-render-wrapper {
+  // width: 60vw; 
+  // overflow-x: scroll;
   .background {
     margin: 1px;
     background-repeat: no-repeat;
@@ -146,5 +148,13 @@ $input-bg: $body-bg;
     &.tab-active {
       background-color: lightblue;
     }
+  }
+
+  .page-inactive {
+    display: none;
+  }
+
+  .page-active {
+    display: block;
   }
 }

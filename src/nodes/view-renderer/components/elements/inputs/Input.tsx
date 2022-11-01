@@ -15,7 +15,7 @@ import React from "react";
 export const ViewInput = observer((props: RenderProps<InputAttributes>) => {
   const ref = React.createRef<HTMLInputElement>();
   const sources = ViewRenderer.renders[props.renderID].sources;
-  const type = props.element.attributes.type || "text";
+  const type = props.element.attributes.type;
   let defaultValue;
 
   const [ className, setClassName ] = React.useState("");
