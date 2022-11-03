@@ -26,7 +26,7 @@ export function parseDefaultState(xmlDOM: XMLDocument): RenderState {
       // Get the page name and select that if it's the first
       const pageName = page.getAttribute("name");
       if (pageName === undefined) continue;
-      if (!defaultPage) defaultPage = i;
+      if (defaultPage === undefined) defaultPage = i;
 
       // Check if a page is default. If so, set it and then jump out
       const isDefault = page.getAttribute("default");

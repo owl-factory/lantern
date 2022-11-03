@@ -30,7 +30,7 @@ import { ViewChildren } from "../utility";
     runExpression(sources, props.element.attributes.width, props.properties).then((res: string) => {
       const newWidth = parseInt(res);
       if (isNaN(newWidth)) { setWidth(1); }
-      setWidth(newWidth);
+      else { setWidth(newWidth); }
     });
   }, fetchExpressionValues(sources, props.element.attributes.width) as unknown[]);
 

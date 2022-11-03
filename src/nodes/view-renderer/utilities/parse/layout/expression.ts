@@ -50,7 +50,7 @@ const VARIABLE_REGEX = /([a-z_$][a-z0-9_$]+((\.[a-z_$][a-z0-9_$]+)|(\[(([0-9]+)|
 function parseExpressionVariables(expressionString: string): ExpressionVariable[] {
   const exprVariables: ExpressionVariable[] = [];
   const variables = extractVariables(expressionString);
-  for (const variable in variables) {
+  for (const variable of variables) {
     const exprVariable = parseExpressionVariable(variable);
     if (exprVariable) exprVariables.push(exprVariable);
   }
@@ -94,6 +94,7 @@ function extractVariables(exprString: string) {
 export function parseExpressionVariable(variable: string): ExpressionVariable | undefined {
   if (!variable) { return undefined; }
 
+  console.log("variable", variable)
   const exprVariable: ExpressionVariable = {
     fullVariable: variable,
     type: ExpressionVariableType.Custom,

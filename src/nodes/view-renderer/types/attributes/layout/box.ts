@@ -1,4 +1,4 @@
-import { BoxType } from "nodes/actor-sheets/enums/boxTypes";
+import { BoxType } from "nodes/view-renderer/enums/boxType";
 import { Expression } from "../../expression";
 
 // Describes the attributes of a Box element

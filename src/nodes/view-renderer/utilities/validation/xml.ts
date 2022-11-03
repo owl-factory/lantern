@@ -1,5 +1,5 @@
-import { parseXML } from "nodes/actor-sheets/utilities/parser";
 import { ViewType } from "nodes/view-renderer/enums/viewType";
+import { parseXML } from "../parse/xml";
 
 /**
  * Validates that the given XML is both syntactically valid and valid for Reroll

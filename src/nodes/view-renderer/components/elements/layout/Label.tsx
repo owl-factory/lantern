@@ -33,7 +33,7 @@ export const ViewLabel = observer((props: RenderProps<LabelAttributes>) => {
     });
   }, fetchExpressionValues(sources, props.element.attributes.for) as unknown[]);
 
-  // Name
+  // Text
   React.useEffect(() => {
     runExpression(sources, props.element.attributes.text, props.properties).then((res: string) => { setText(res); });
   }, fetchExpressionValues(sources, props.element.attributes.text) as unknown[]);
