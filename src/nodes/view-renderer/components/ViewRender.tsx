@@ -52,7 +52,7 @@ export const ViewRender = observer((props: ViewRenderProps) => {
 
   return (
     <Box className={`view-render-wrapper view-render-${props.viewID}`}>
-      <ViewChildren renderID={renderID} elements={view.layout || []} properties={ {} }/>
+      <ViewChildren renderID={renderID} elements={view.layout || []} properties={ { $prefix: props.viewID } }/>
     </Box>
   );
 });

@@ -39,7 +39,7 @@ export const ViewInput = observer((props: RenderProps<InputAttributes>) => {
     runExpression(sources, props.element.attributes.name, props.properties).then((res: string) => { setName(res); });
   }, fetchExpressionValues(sources, props.element.attributes.name) as unknown[]);
 
-  if (sources.actorID) (ActiveData.getActor(sources.actorID, name) || "").toString();
+  if (sources.actorID) defaultValue = (ActiveData.getActor(sources.actorID, name) || "").toString();
 
   /**
    * Updates the ActorController to have the changed values

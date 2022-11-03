@@ -1,6 +1,3 @@
-import { Scalar } from "types";
-import { ActorContent } from "types/documents/Actor";
-import { StaticVariableValue } from "types/documents/subdocument/StaticVariable";
 import { SandboxWorkerMessage, SandboxWorkerRenderMessage, SandboxWorkerSetMessage } from "../types/workers";
 
 /**
@@ -132,8 +129,11 @@ export default () => {
     const keys = Object.keys($properties);
     for (const field of keys) {
       const str = `var ${field} = ${JSON.stringify($properties[field])};`;
+      console.log(field);
       eval(str);
     }
+    console.log("hi!", expr, $properties)
+
     $properties = undefined;
     return eval(`\`${expr}\``);
   }

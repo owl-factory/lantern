@@ -1,4 +1,3 @@
-import { Box } from "@chakra-ui/layout";
 import { observer } from "mobx-react-lite";
 import { ViewRenderer } from "nodes/view-renderer";
 import { StateType } from "nodes/view-renderer/enums/stateType";
@@ -23,6 +22,7 @@ export const ViewCollapse = observer((props: RenderProps<CollapseAttributes>) =>
     runExpression(sources, props.element.attributes.id, props.properties).then((res: string) => { setID(res); });
   }, fetchExpressionValues(sources, props.element.attributes.id) as unknown[]);
 
+  if (id === "") { return <></>; }
 
   let isVisible = ViewRenderer.getState(props.renderID, StateType.Collapse, id);
   if (isVisible === undefined) {
@@ -31,8 +31,8 @@ export const ViewCollapse = observer((props: RenderProps<CollapseAttributes>) =>
   }
 
   return (
-    <Box>
+    <>
       <ViewChildren renderID={props.renderID} elements={props.element.children || []} properties={props.properties}/>
-    </Box>
+    </>
   );
 });

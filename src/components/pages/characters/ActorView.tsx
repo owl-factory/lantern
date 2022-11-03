@@ -1,11 +1,11 @@
 import { gql, useLazyQuery } from "@apollo/client";
 import { ActiveData } from "nodes/active-data";
-import { ActorController, ActorSheet } from "nodes/actor-sheets";
-import { ViewRenderer, ViewType } from "nodes/view-renderer";
+import { ViewRender, ViewRenderer, ViewType } from "nodes/view-renderer";
+import { RenderSources } from "nodes/view-renderer/types/render";
 import React from "react";
 
 interface ActorViewProps {
-  activeActor: string | null;
+  activeActor: string | undefined;
 }
 
 // Gets the actor for rendering a character sheet
@@ -22,6 +22,7 @@ const GET_ACTOR = gql`
         layout,
         styling
       },
+      campaignID,
       ruleset {
         id,
         name,
@@ -31,24 +32,24 @@ const GET_ACTOR = gql`
   }
 `;
 
+/**
+ * Renders an actor sheet for the given actor
+ * @param props.activeActor The ID of the current actor to render. May be undefined
+ * @returns The ViewRender element of the given actor
+ */
 export function ActorView(props: ActorViewProps) {
   const [ getActor, { data, loading, error }] = useLazyQuery(GET_ACTOR);
 
   // Handles the changing actor, allowing the sheet to update
   React.useEffect(() => {
-    if (props.activeActor === null) { return; }
+    if (props.activeActor === undefined) { return; }
 
     getActor({ variables: { id: props.activeActor } });
-    const previousActor = props.activeActor;
-
-    return () => {
-      ActorController.endRender(previousActor);
-    };
   }, [props.activeActor]);
 
   // Loads and creates the render
   React.useEffect(() => {
-    if (loading || error || !data || props.activeActor === null) { return; }
+    if (loading || error || !data || props.activeActor === undefined) { return; }
     ActiveData.refreshActor(data.actor.id);
     ActiveData.refreshRuleset(data.actor.ruleset.id);
     ViewRenderer.import(
@@ -58,12 +59,19 @@ export function ActorView(props: ActorViewProps) {
     );
   });
 
-  if (props.activeActor === null) {
+  if (props.activeActor === undefined) {
     return <>Select a character</>;
   }
 
   if (loading || data === undefined) { return <>Loading</>; }
   if (error) { return <>Error! {error}</>; }
 
-  return <><ActorSheet id={props.activeActor}/></>;
+  const sources: RenderSources = {
+    actorID: data.actor.id,
+    campaignID: data.actor.campaignID,
+    rulesetID: data.actor.rulesetID,
+    sheetID: data.actor.actorSheet.id,
+  };
+
+  return <><ViewRender viewID={data.actor.actorSheet.id} sources={sources}/></>;
 }

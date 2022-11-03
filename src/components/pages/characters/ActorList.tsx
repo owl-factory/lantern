@@ -7,8 +7,8 @@ import { NewActorModal } from "./NewActorModal";
 import { DeleteActorAlert } from "./DeleteActorAlert";
 
 interface CharacterListProps {
-  activeActor: string | null;
-  setActiveActor: (actorID: string | null) => void;
+  activeActor: string | undefined;
+  setActiveActor: (actorID: string | undefined) => void;
 }
 
 // The different modes used for displaying the list of characters
@@ -41,8 +41,8 @@ const GET_CHARACTERS = gql`
 
 interface ActorLineProps {
   actor: Actor & { actorType: ActorType, ruleset: Ruleset };
-  activeActor: string | null;
-  setActiveActor: (actorID: string | null) => void
+  activeActor: string | undefined;
+  setActiveActor: (actorID: string | undefined) => void
   openDeleteAlert: (actor: Actor) => void;
 }
 
@@ -115,7 +115,7 @@ export function ActorList(props: CharacterListProps) {
    * @param actor The actor that was just deleted
    */
   function onDelete(actor: Actor) {
-    if (actor.id === props.activeActor) { props.setActiveActor(null); }
+    if (actor.id === props.activeActor) { props.setActiveActor(undefined); }
   }
 
   const actors: JSX.Element[] = [];
