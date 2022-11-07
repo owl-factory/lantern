@@ -2,7 +2,7 @@ import { ApolloError, gql, useMutation } from "@apollo/client";
 import { Button } from "@chakra-ui/react";
 import { Ruleset } from "@prisma/client";
 import { Page } from "components/design";
-import { RulesetForm } from "components/reroll/rulesets/Form";
+import { RulesetForm } from "components/lantern/rulesets/Form";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";

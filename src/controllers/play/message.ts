@@ -1,4 +1,4 @@
-import { DispatchEvent } from "types/reroll/play";
+import { DispatchEvent } from "types/lantern/play";
 import { OldMessageDocument } from "types/documents";
 import { GameServer } from "controllers/play";
 

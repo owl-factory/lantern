@@ -1,4 +1,4 @@
-import { StorageType } from "types/reroll/library";
+import { StorageType } from "types/lantern/library";
 
 export enum StorageTypeEnum {
   Images,

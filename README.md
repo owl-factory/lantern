@@ -1,4 +1,4 @@
-# Reroll
+# Lantern Tabletop
 A web application for playing tabletop RPGs with friends. It is currently in it's earliest stages and is not a functional product.
 
 ## Requirements
@@ -8,11 +8,7 @@ This project requires a NodeJS environment with Yarn installed and a Mongo datab
 ## Environment Variables
 Environment variables are variables placed within .env files within the root of their respective projects. 
 
-### API
- * `MONGO_CONNECTION_STRING` - the connection string for connecting to the Mongo database
-
-### App
- * `NEXT_PUBLIC_SERVER_URI` - the URI for connecting to the server
+[TODO]
 
 ## Getting Started
 Clone the project down to a local repository. From the root of the project, run `yarn` to install all dependencies. From there, running `yarn dev` from root will spin up all the services. 
@@ -35,7 +31,6 @@ The project can be tested through Jest using `yarn test`.
 * React
 * NextJS
 * TypeScript
-* MaterialUI
 
 ## Authors
 * **Lucy Awrey** - *Lead Developer* - [lucyawrey](https://github.com/lucyawrey)
