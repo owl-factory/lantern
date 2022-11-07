@@ -1,6 +1,6 @@
 import React from "react";
-import { DispatchEvent } from "types/reroll/play";
-import { Chat } from "components/reroll/play";
+import { DispatchEvent } from "types/lantern/play";
+import { Chat } from "components/lantern/play";
 
 import { GameServer } from "controllers/play";
 import { observer } from "mobx-react-lite";

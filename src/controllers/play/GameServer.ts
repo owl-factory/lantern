@@ -2,7 +2,7 @@ import { makeAutoObservable } from "mobx";
 import Peer, { DataConnection } from "peerjs";
 import { Socket } from "socket.io-client";
 import { UserDocument } from "types/documents";
-import { Dispatch, DispatchEvent, GameState, HostPriorityQueue } from "types/reroll/play";
+import { Dispatch, DispatchEvent, GameState, HostPriorityQueue } from "types/lantern/play";
 import * as connection from "controllers/play/connection";
 import * as dispatch from "controllers/play/dispatch";
 import * as host from "controllers/play/host";

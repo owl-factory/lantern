@@ -1,6 +1,6 @@
 import { Button } from "@chakra-ui/react";
 import { Page } from "components/design";
-import { FileUploadForm } from "components/reroll/files/FileUploadForm";
+import { FileUploadForm } from "components/lantern/files/FileUploadForm";
 import Link from "next/link";
 import React from "react";
 
