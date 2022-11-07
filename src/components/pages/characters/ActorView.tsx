@@ -69,7 +69,7 @@ export function ActorView(props: ActorViewProps) {
   const sources: RenderSources = {
     actorID: data.actor.id,
     campaignID: data.actor.campaignID,
-    rulesetID: data.actor.rulesetID,
+    rulesetID: data.actor.ruleset.id,
     sheetID: data.actor.actorSheet.id,
   };
 

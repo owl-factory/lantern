@@ -94,7 +94,6 @@ function extractVariables(exprString: string) {
 export function parseExpressionVariable(variable: string): ExpressionVariable | undefined {
   if (!variable) { return undefined; }
 
-  console.log("variable", variable)
   const exprVariable: ExpressionVariable = {
     fullVariable: variable,
     type: ExpressionVariableType.Custom,

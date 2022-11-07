@@ -1,8 +1,8 @@
 import { observer } from "mobx-react-lite";
-import { ActiveData } from "nodes/active-data";
 import { ViewRenderer } from "nodes/view-renderer";
 import { SelectAttributes } from "nodes/view-renderer/types/attributes";
 import { RenderProps } from "nodes/view-renderer/types/renderProps";
+import { getActorValue, setActorValue } from "nodes/view-renderer/utilities/render/actor";
 import { fetchExpressionValues, runExpression } from "nodes/view-renderer/utilities/render/expression";
 import React from "react";
 import { ViewChildren } from "../utility";
@@ -45,14 +45,15 @@ export const ViewSelect = observer((props: RenderProps<SelectAttributes>) => {
    */
    function onChange(ev: React.ChangeEvent<HTMLSelectElement>) {
     if (!sources.actorID) { return; }
-    ActiveData.setActor(sources.actorID, name, ev.target.value);
-    ev.target.value = (ActiveData.getActor(sources.actorID, name) || "").toString();
+    setActorValue(sources.actorID, name, props.properties, ev.target.value);
+    ev.target.value = (getActorValue(sources.actorID, name, props.properties) || "").toString();
   }
 
-  if (sources.actorID) { defaultValue = (ActiveData.getActor(sources.actorID, name) || "").toString(); }
+  if (sources.actorID) { defaultValue = (getActorValue(sources.actorID, name, props.properties) || "").toString(); }
 
   return (
     <select
+      id={id}
       name={name}
       className={`select ${className}`}
       defaultValue={defaultValue}

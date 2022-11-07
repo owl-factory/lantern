@@ -1,8 +1,8 @@
 import { observer } from "mobx-react-lite";
-import { ActiveData } from "nodes/active-data";
 import { ViewRenderer } from "nodes/view-renderer";
 import { RadioAttributes } from "nodes/view-renderer/types/attributes";
 import { RenderProps } from "nodes/view-renderer/types/renderProps";
+import { getActorValue, setActorValue } from "nodes/view-renderer/utilities/render/actor";
 import { fetchExpressionValues, runExpression } from "nodes/view-renderer/utilities/render/expression";
 import React from "react";
 
@@ -44,14 +44,14 @@ export const ViewRadio = observer((props: RenderProps<RadioAttributes>) => {
   }, fetchExpressionValues(sources, props.element.attributes.value) as unknown[]);
 
   let fieldValue;
-  if (sources.actorID && name) fieldValue = ActiveData.getActor(sources.actorID, name);
+  if (sources.actorID && name) fieldValue = getActorValue(sources.actorID, name, props.properties);
 
   /**
    * Handles the onChange event in the radio buttons. Updates the ActorController values
    * @param ev The triggering onChange event
    */
   function onChange(ev: React.ChangeEvent<HTMLInputElement>) {
-    ActiveData.setActor(props.renderID, name, ev.target.value);
+    setActorValue(sources.actorID, name, props.properties, ev.target.value);
     ev.target.checked = true;
   }
 

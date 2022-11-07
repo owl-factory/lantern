@@ -58,7 +58,6 @@ export const ViewLoop = observer((props: RenderProps<LoopAttributes>) => {
 function getList(renderID: string, attributes: LoopAttributes): (string | Record<string, unknown>)[] {
   if (attributes.list) { return attributes.list; }
   const sources = ViewRenderer.renders[renderID].sources;
-
   switch(attributes.listSource?.type) {
     case ExpressionVariableType.Content:
       if (!sources.actorID || !attributes.listSource.field) return [];
@@ -66,7 +65,6 @@ function getList(renderID: string, attributes: LoopAttributes): (string | Record
     case ExpressionVariableType.Ruleset:
       if (!sources.rulesetID || !attributes.listSource.field) return [];
       const rule = ActiveData.getRule(sources.rulesetID, attributes.listSource.field) as unknown[];
-      console.log("RULE", rule)
       if (!rule || !isArray(rule)) return [];
       return rule as (string | Record<string, unknown>)[];
     case ExpressionVariableType.Sheet:

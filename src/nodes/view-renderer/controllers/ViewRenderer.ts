@@ -7,11 +7,11 @@ import { injectStyles, removeStyles } from "../utilities/styles";
 import { validateSCSS, validateXML } from "../utilities/validation";
 import type { AlertMessage } from "@owl-factory/alerts";
 import { handleError } from "./helpers/errors";
-import { RenderState } from "../types/state";
 import { StateType } from "../enums/stateType";
 import { PageMetadata } from "../types/pages";
 import { Scalar } from "types";
 import { v4 as uuid } from "uuid";
+import { concatSources } from "../utilities/render/sources";
 
 type Renders = Record<string, Render>;
 type Views = Record<string, View>;
@@ -30,6 +30,9 @@ interface ImportOptions {
 class ViewRendererClass {
   public views: Views = {}; // Describes the views currently loaded into the renderer
   public renders: Renders = {}; // Describes currently active and used renders
+
+  // Has a long, slower string for checking if a render already exists
+  private existingRender: Record<string, string> = {};
 
   constructor() {
     makeObservable(this, {
@@ -139,7 +142,16 @@ class ViewRendererClass {
       view.cleanupID = undefined;
     }
 
+    // The sources are put into a standardized string to be used as a key for accessing previous renders, allowing
+    // renders to preserve their state across instances
+    const sourceString = concatSources(sources);
+    const existingRenderID = this.existingRender[sourceString];
+    if (existingRenderID) {
+      return existingRenderID;
+    }
+
     const renderID = uuid();
+    this.existingRender[sourceString] = renderID;
     this.renders[renderID] = {
       viewID,
       sources,

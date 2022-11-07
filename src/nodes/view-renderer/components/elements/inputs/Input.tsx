@@ -1,8 +1,8 @@
 import { observer } from "mobx-react-lite";
-import { ActiveData } from "nodes/active-data";
 import { ViewRenderer } from "nodes/view-renderer";
 import { InputAttributes } from "nodes/view-renderer/types/attributes";
 import { RenderProps } from "nodes/view-renderer/types/renderProps";
+import { getActorValue, setActorValue } from "nodes/view-renderer/utilities/render/actor";
 import { fetchExpressionValues, runExpression } from "nodes/view-renderer/utilities/render/expression";
 import React from "react";
 
@@ -39,7 +39,7 @@ export const ViewInput = observer((props: RenderProps<InputAttributes>) => {
     runExpression(sources, props.element.attributes.name, props.properties).then((res: string) => { setName(res); });
   }, fetchExpressionValues(sources, props.element.attributes.name) as unknown[]);
 
-  if (sources.actorID) defaultValue = (ActiveData.getActor(sources.actorID, name) || "").toString();
+  if (sources.actorID) defaultValue = (getActorValue(sources.actorID, name, props.properties) || "").toString();
 
   /**
    * Updates the ActorController to have the changed values
@@ -47,8 +47,8 @@ export const ViewInput = observer((props: RenderProps<InputAttributes>) => {
    */
   function onChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (!sources.actorID) { return; }
-    ActiveData.setActor(sources.actorID, name, e.target.value);
-    e.target.value = (ActiveData.getActor(sources.actorID, name) || "").toString();
+    setActorValue(sources.actorID, name, props.properties, e.target.value);
+    e.target.value = (getActorValue(sources.actorID, name, props.properties) || "").toString();
   }
 
   return (

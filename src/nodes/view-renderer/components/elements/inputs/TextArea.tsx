@@ -3,6 +3,7 @@ import { ActiveData } from "nodes/active-data";
 import { ViewRenderer } from "nodes/view-renderer";
 import { TextAreaAttributes } from "nodes/view-renderer/types/attributes";
 import { RenderProps } from "nodes/view-renderer/types/renderProps";
+import { getActorValue, setActorValue } from "nodes/view-renderer/utilities/render/actor";
 import { fetchExpressionValues, runExpression } from "nodes/view-renderer/utilities/render/expression";
 import React from "react";
 
@@ -20,7 +21,24 @@ export function ViewTextArea(props: RenderProps<TextAreaAttributes>) {
   const [ className, setClassName ] = React.useState("");
   const [ id, setID ] = React.useState("");
   const [ name, setName ] = React.useState("");
-  const [ value, setValue ] = React.useState("");
+
+  // Class Name
+  React.useEffect(() => {
+    runExpression(sources, props.element.attributes.className, props.properties).then((res: string) => {
+      setClassName(res);
+    });
+  }, fetchExpressionValues(sources, props.element.attributes.className) as unknown[]);
+
+  // ID
+  React.useEffect(() => {
+    runExpression(sources, props.element.attributes.id, props.properties).then((res: string) => { setID(res); });
+  }, fetchExpressionValues(sources, props.element.attributes.id) as unknown[]);
+
+  // Name
+  React.useEffect(() => {
+    runExpression(sources, props.element.attributes.name, props.properties).then((res: string) => { setName(res); });
+  }, fetchExpressionValues(sources, props.element.attributes.name) as unknown[]);
+
 
   /**
    * Updates the ActiveData to have the changed values
@@ -28,8 +46,8 @@ export function ViewTextArea(props: RenderProps<TextAreaAttributes>) {
    */
   function onChange(ev: React.ChangeEvent<HTMLTextAreaElement>) {
     if (!sources.actorID) return;
-    ActiveData.setActor(sources.actorID, name, ev.target.value);
-    ev.target.value = (ActiveData.getActor(sources.actorID, name) || "").toString();
+    setActorValue(sources.actorID, name, props.properties, ev.target.value);
+    ev.target.value = (getActorValue(sources.actorID, name, props.properties) || "").toString();
   }
 
   // Handles the case where we have two or more elements of the same name, and one of them is changed
@@ -37,10 +55,10 @@ export function ViewTextArea(props: RenderProps<TextAreaAttributes>) {
   React.useEffect(() => {
     if (!ref.current || !sources.actorID) { return; }
     if (ref.current === document.activeElement) { return; }
-    ref.current.value = (ActiveData.getActor(sources.actorID, name) || "").toString();
+    ref.current.value = (getActorValue(sources.actorID, name, props.properties) || "").toString();
   }, [ActiveData.getActor(sources.actorID || "", name)]);
 
-  if (sources.actorID) { defaultValue = (ActiveData.getActor(sources.actorID, name) || "").toString(); }
+  if (sources.actorID) { defaultValue = (getActorValue(sources.actorID, name, props.properties) || "").toString(); }
 
   return (
     <div>
