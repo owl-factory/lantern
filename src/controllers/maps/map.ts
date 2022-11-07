@@ -1,5 +1,5 @@
 import { Container } from "@pixi/display";
-import { GridFormValues } from "components/reroll/scenes/forms/grid";
+import { GridFormValues } from "components/lantern/scenes/forms/grid";
 import { action, makeObservable, observable } from "mobx";
 import { BackgroundController } from "./background";
 import { GridController } from "./grid";

@@ -1,7 +1,7 @@
 import { Swatch } from "components/design";
 import React from "react";
 import { StorageTypeEnum, storageTypes } from "types/enums/storageType";
-import { StorageType, StorageUsageItem } from "types/reroll/library";
+import { StorageType, StorageUsageItem } from "types/lantern/library";
 import { bytesToReadable } from "@owl-factory/utilities/bytes";
 import { Tooltip } from "@chakra-ui/react";
 

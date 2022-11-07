@@ -1,4 +1,4 @@
-import { Dispatch } from "types/reroll/play";
+import { Dispatch } from "types/lantern/play";
 import { GameServer } from "controllers/play";
 
 /**
