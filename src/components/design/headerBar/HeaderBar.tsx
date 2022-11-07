@@ -34,7 +34,7 @@ function HeaderBar(): JSX.Element {
     <Box bg="orange.800" color="white" w="100%" p="15px">
       <Flex>
         <Link href="/" passHref>
-          <Box fontWeight={700}>Reroll</Box>
+          <Box fontWeight={700}>Lantern</Box>
         </Link>
         {nav}
       </Flex>

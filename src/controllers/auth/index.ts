@@ -1,8 +1,8 @@
 import { AuthController, setGlobalAuth } from "@owl-factory/auth";
 import { User } from "@prisma/client";
 
-// The authetication controller for reroll
-class RerollAuthController extends AuthController<User> {
+// The authetication controller for Lantern
+class LanternAuthController extends AuthController<User> {
   constructor() { super(); }
 
   get ref(): string | undefined { return this.$user?.id; }
@@ -15,6 +15,6 @@ class RerollAuthController extends AuthController<User> {
   }
 }
 
-export const Auth = new RerollAuthController();
+export const Auth = new LanternAuthController();
 setGlobalAuth(Auth);
 

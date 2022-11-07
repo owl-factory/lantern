@@ -1,6 +1,6 @@
 import React from "react";
 import { Page } from "components/design";
-import { LibraryImageList, ListFormat, StorageUsage } from "components/reroll/library";
+import { LibraryImageList, ListFormat, StorageUsage } from "components/lantern/library";
 import { StorageTypeEnum } from "types/enums/storageType";
 import { NextPageContext } from "next";
 import { observer } from "mobx-react-lite";

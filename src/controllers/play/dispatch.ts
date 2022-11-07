@@ -1,5 +1,5 @@
 import { OldMessageDocument } from "types/documents";
-import { Dispatch, DispatchEvent, GameState, HistoricalDispatch, HostPriorityQueue } from "types/reroll/play";
+import { Dispatch, DispatchEvent, GameState, HistoricalDispatch, HostPriorityQueue } from "types/lantern/play";
 import { GameServer } from "controllers/play";
 import { rest } from "@owl-factory/https";
 

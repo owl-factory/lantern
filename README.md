@@ -2,7 +2,6 @@
 A web application for playing tabletop RPGs with friends. It is currently in an early development phase and is not a functional product.
 
 ## Requirements
-
 This project requires a NodeJS environment with Yarn installed and a PostgreSQL database server.
 
 ## Environment Variables
@@ -14,7 +13,7 @@ Below are environment the required environment variables for the project. In dev
 * `DATABASE_URL` - PostgreSQL connection string. Consumed by Prisma.
 * `SENDGRID_KEY` - Secret for connecting to SendGrid email API. Used for sending email confirmation emails, password reset emails, and more.
 * `JWT_SECRET` - Secret used for signing and verifying JWTs. Can be any secret string, but this project generally uses a randomly generated base 16 number with a 64 digit length. In production, *extremely* dangerous to have exposed.
-* SIGNUP_MODE development
+* `SIGNUP_MODE` - Set mode for user signups. Supported options are `development`, `inviteonly`, and `standard`. (Defaults to invite only.)
 
 
 ## Getting Started

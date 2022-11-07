@@ -1,7 +1,7 @@
 import React from "react";
 import { Page } from "components/design";
 import { useRouter } from "next/router";
-import { RulesetForm } from "components/reroll/rulesets/Form";
+import { RulesetForm } from "components/lantern/rulesets/Form";
 import Link from "next/link";
 import { Button } from "@chakra-ui/react";
 import { Ruleset } from "@prisma/client";
