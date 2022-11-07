@@ -14,12 +14,11 @@ export async function runExpression(
   // Skip any calculation if this isn't an expression
   if (!expr.isExpression) { return expr.value; }
   const exprVariables = fetchExpressionRequirements(sources, expr);
-  console.log("expr vars", exprVariables)
+
   properties.character = exprVariables.character || {};
   properties.content = exprVariables.content || {};
   properties.rules = exprVariables.rules || {};
   properties.sheet = exprVariables.sheet || {};
-  console.log("properties", properties)
 
   const res = (await Mediator.requests(MediatorRequest.SandboxExpr, {expression: expr, properties})) as string;
 
@@ -54,13 +53,11 @@ export function fetchExpressionValues(sources: RenderSources, expr: Expression):
 export function fetchExpressionRequirements(sources: RenderSources, expr: Expression): Record<string, unknown> {
   const requirements: Record<string, unknown> = {};
   const requiredVariables = fetchExpressionVariables(sources, expr);
-  console.log("req vars", expr, requiredVariables)
   const keys = Object.keys(requiredVariables);
   for (const key of keys) {
     const requiredVariable = requiredVariables[key];
     set(requirements, key, requiredVariable);
   }
-  console.log('requirements', requirements)
   return requirements;
 }
 
@@ -72,7 +69,6 @@ export function fetchExpressionRequirements(sources: RenderSources, expr: Expres
 function fetchExpressionVariables(sources: RenderSources, expr: Expression): Record<string, unknown> {
   if (!expr.isExpression) return {};
   const variableValues: Record<string, unknown> = {};
-  console.log(expr.variables)
   for (const variable of expr.variables || []) {
     switch (variable.type) {
       case ExpressionVariableType.Actor:

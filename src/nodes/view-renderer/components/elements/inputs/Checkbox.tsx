@@ -1,8 +1,8 @@
 import { observer } from "mobx-react-lite";
-import { ActiveData } from "nodes/active-data";
 import { ViewRenderer } from "nodes/view-renderer";
 import { CheckboxAttributes } from "nodes/view-renderer/types/attributes";
 import { RenderProps } from "nodes/view-renderer/types/renderProps";
+import { getActorValue, setActorValue } from "nodes/view-renderer/utilities/render/actor";
 import { fetchExpressionValues, runExpression } from "nodes/view-renderer/utilities/render/expression";
 import React from "react";
 
@@ -48,7 +48,7 @@ export const ViewCheckbox = observer((props: RenderProps<CheckboxAttributes>) =>
   if (!actorID) { return <></>; }
 
   const key = generateCheckboxName(name, value);
-  const checked = !!ActiveData.getActor(props.renderID, key);
+  const checked = !!getActorValue(sources.actorID, name, props.properties);
 
 
   /**
@@ -57,8 +57,8 @@ export const ViewCheckbox = observer((props: RenderProps<CheckboxAttributes>) =>
    */
   function onChange(ev: React.ChangeEvent<HTMLInputElement>) {
     if (!actorID) return;
-    ActiveData.setActor(actorID, key, ev.target.checked);
-    ev.target.checked = !!ActiveData.getActor(props.renderID, key);
+    setActorValue(sources.actorID, name, props.properties, ev.target.checked);
+    ev.target.checked = !!getActorValue(sources.actorID, name, props.properties);
   }
 
   // Handles the case where we have two or more elements of the same name, and one of them is changed
@@ -66,8 +66,8 @@ export const ViewCheckbox = observer((props: RenderProps<CheckboxAttributes>) =>
   React.useEffect(() => {
     if (!ref.current) { return; }
     if (ref.current === document.activeElement) { return; }
-    ref.current.checked = !!ActiveData.getActor(props.renderID, key);
-  }, [ActiveData.getActor(props.renderID, key)]);
+    ref.current.checked = !!getActorValue(sources.actorID, name, props.properties);
+  }, [getActorValue(sources.actorID, name, props.properties)]);
 
 
   return (

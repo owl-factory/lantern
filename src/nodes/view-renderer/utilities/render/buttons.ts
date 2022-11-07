@@ -1,3 +1,8 @@
+import { ActiveData } from "nodes/active-data";
+import { Mediator, MediatorMessage } from "nodes/mediator";
+import { rollDice } from "nodes/rolls";
+import { ViewRenderer } from "nodes/view-renderer/controllers/ViewRenderer";
+import { StateType } from "nodes/view-renderer/enums/stateType";
 
 /**
  * An action run by a click from an Actor Sheet button element.
@@ -6,7 +11,13 @@
  * @param contentGroup The type of content that is being created
  */
  export function createContent(renderID: string, contentGroup: string) {
-  // ActorController.pushContent(renderID, contentGroup, {});
+  const sources = ViewRenderer.renders[renderID].sources;
+  if (!sources.actorID) { return; } // Do nothing if this doesn't exist
+
+  // Grab any existing contents to add a new element to
+  const contents = ActiveData.getContents(sources.actorID, contentGroup) || [];
+  contents.push({});
+  ActiveData.setContents(sources.actorID, contentGroup, contents);
 }
 
 /**
@@ -16,7 +27,13 @@
  * @param index The index of the content to remove
  */
 export function deleteContent(renderID: string, contentGroup: string, index: number) {
-  // ActorController.deleteContent(renderID, contentGroup, index);
+  const sources = ViewRenderer.renders[renderID].sources;
+  if (!sources.actorID) { return; } // Do nothing if this doesn't exist
+
+  // Grab any existing contents to add a new element to
+  const contents = ActiveData.getContents(sources.actorID, contentGroup) || [];
+  contents.splice(index, 1);
+  ActiveData.setContents(sources.actorID, contentGroup, contents);
 }
 
 /**
@@ -25,8 +42,8 @@ export function deleteContent(renderID: string, contentGroup: string, index: num
  * @param key The ID of the collapse element to toggle the open or closed state
  */
 export function toggleCollapse(renderID: string, key: string) {
-  // const currentState = ActorController.getState(renderID, StateType.Collapse, key);
-  // ActorController.setState(renderID, StateType.Collapse, key, !currentState);
+  const currentState = ViewRenderer.getState(renderID, StateType.Collapse, key) || false;
+  ViewRenderer.setState(renderID, StateType.Collapse, key, !currentState);
 }
 
 /**
@@ -35,6 +52,6 @@ export function toggleCollapse(renderID: string, key: string) {
  * @param rollStr The string to roll
  */
 export function rollAction(_renderID: string, rollStr: string) {
-  // const rollResult = rollDice(rollStr);
-  // Mediator.post(MediatorMessage.Roll, { roll: rollResult});
+  const rollResult = rollDice(rollStr);
+  Mediator.post(MediatorMessage.Roll, { roll: rollResult});
 }

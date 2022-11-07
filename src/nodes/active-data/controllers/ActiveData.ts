@@ -18,7 +18,7 @@ const FETCH_ACTOR = gql`
 
 // Query to refresh the ruleset rules
 const FETCH_RULESET = gql`
-  query RefreshActor($id: String!) {
+  query RefreshRuleset($id: String!) {
     ruleset(id: $id) {
       id, rules
     }
@@ -50,6 +50,7 @@ class ActiveDataClass {
       refreshRuleset: action,
       save: action,
       setActor: action,
+      setContents: action,
       setContent: action,
       setContentField: action,
     });
@@ -125,6 +126,18 @@ class ActiveDataClass {
   }
 
   /**
+   * Sets a new array of changes for the content
+   * @param id The ID of the actor whose contents are being updated
+   * @param field The name of the content to update
+   * @param value The new array of ActorContent to set
+   */
+  public setContents(id: string, field: string, value: ActorContent[]) {
+    if (!(id in this.content)) { this.content[id] = {}; }
+    this.content[id][field] = value;
+    this.markChange();
+  }
+
+  /**
    * Sets a content entry for an actor
    * @param id The ID of the actor whose content is being updated
    * @param field The name of the content to update
@@ -191,10 +204,11 @@ class ActiveDataClass {
       query: FETCH_RULESET,
       variables: { id },
     });
+
     // Skip if no ruleset was found
     if (!ruleset.data.ruleset) { return; }
     runInAction(() => {
-      this.rules[id] = ruleset.data.ruleset.rules as Record<string, unknown>;
+      this.rules[id] = (ruleset.data.ruleset.rules as any).values as Record<string, unknown>;
     });
   }
 

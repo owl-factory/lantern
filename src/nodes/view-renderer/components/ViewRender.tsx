@@ -17,7 +17,6 @@ function NullView() {
   return (<Box className={`view-render-wrapper`}></Box>);
 }
 
-
 /**
  * Renders a View
  */
@@ -43,7 +42,7 @@ export const ViewRender = observer((props: ViewRenderProps) => {
     return () => {
       ViewRenderer.endRender(previousID);
     };
-  }, [props.viewID, view]);
+  }, [props.viewID, view, props.sources]);
 
   // Handles the case where we can't render anything
   if (renderID === "" || view === undefined) {

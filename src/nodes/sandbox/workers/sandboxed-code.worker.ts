@@ -129,10 +129,8 @@ export default () => {
     const keys = Object.keys($properties);
     for (const field of keys) {
       const str = `var ${field} = ${JSON.stringify($properties[field])};`;
-      console.log(field);
       eval(str);
     }
-    console.log("hi!", expr, $properties)
 
     $properties = undefined;
     return eval(`\`${expr}\``);
