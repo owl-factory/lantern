@@ -45,6 +45,7 @@ class ActiveDataClass {
     makeObservable(this, {
       actors: observable,
       content: observable,
+      rules: observable,
 
       refreshActor: action,
       refreshRuleset: action,
