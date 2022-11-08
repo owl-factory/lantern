@@ -36,4 +36,4 @@ The project can be tested through Jest using `yarn test`.
 
 ## Authors
 * **Lucy Awrey** - [lucyawrey](https://github.com/lucyawrey)
-* **Laura Wenning** - [hey-waffles](https://github.com/hey-waffles)
+* **Laura Wenning** - [laura-wenning](https://github.com/laura-wenning)
