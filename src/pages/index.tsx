@@ -13,10 +13,10 @@ function Index(): JSX.Element {
   return (
     <Page>
       <h3>
-        Welcome to Reroll!
+        Welcome to Lantern Tabletop!
       </h3>
       <p>
-        Reroll is a new in development web app for playing tabletop games with friends.
+        Lantern is a new in development web app for playing tabletop games with friends.
         There isn't much here yet but there will be some day soon.
       </p>
 

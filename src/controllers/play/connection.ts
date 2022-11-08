@@ -2,7 +2,7 @@ import Peer, { DataConnection } from "peerjs";
 import { io } from "socket.io-client";
 import { GameServer } from "controllers/play";
 import { UserDocument } from "types/documents";
-import { Dispatch, DispatchEvent } from "types/reroll/play";
+import { Dispatch, DispatchEvent } from "types/lantern/play";
 
 // TODO - move into a node
 // TODO - create a PeerJS connection @owl-factory

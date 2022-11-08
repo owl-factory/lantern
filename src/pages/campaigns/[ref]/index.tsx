@@ -2,7 +2,7 @@ import { Page } from "components/design";
 import { NextPageContext } from "next";
 import Link from "next/link";
 import React from "react";
-import { ImageSelectionWrapper } from "components/reroll/images/ImageSelectionWrapper";
+import { ImageSelectionWrapper } from "components/lantern/images/ImageSelectionWrapper";
 import { CampaignDocument, FileDocument, UserDocument } from "types/documents";
 import { observer } from "mobx-react-lite";
 import { InitialProps } from "types/client";

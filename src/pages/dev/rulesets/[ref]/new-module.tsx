@@ -1,6 +1,6 @@
 import { Button } from "@chakra-ui/react";
 import { Page } from "components/design";
-import { ModuleForm } from "components/reroll/modules/Form";
+import { ModuleForm } from "components/lantern/modules/Form";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";

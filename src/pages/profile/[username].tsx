@@ -4,7 +4,7 @@ import { FileDocument, UserDocument } from "types/documents";
 import { Formik, Form as FormikForm } from "formik";
 import { Button } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { ImageSelectionWrapper } from "components/reroll/images/ImageSelectionWrapper";
+import { ImageSelectionWrapper } from "components/lantern/images/ImageSelectionWrapper";
 import { Checkbox, Input } from "@owl-factory/components/form";
 import { observer } from "mobx-react-lite";
 import Link from "next/link";
