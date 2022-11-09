@@ -184,6 +184,14 @@ class ActiveDataClass {
    * @param id The ID of the actor to fetch from Apollo Client
    */
    public async refreshActor(id: string): Promise<void> {
+    if (!id) { return; }
+    else if (id[0] === "_") {
+      runInAction(() => {
+        this.actors[id] = {};
+        this.content[id] = {};
+      });
+      return;
+    }
     const actor = await apolloClient.query<{ actor: Actor }>({
       query: FETCH_ACTOR,
       variables: { id },
