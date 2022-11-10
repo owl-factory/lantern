@@ -14,6 +14,8 @@ Below are the required environment variables for the project. In development, th
 * `SENDGRID_KEY` - Secret for connecting to SendGrid email API. Used for sending email confirmation emails, password reset emails, and more.
 * `JWT_SECRET` - Secret used for signing and verifying JWTs. Can be any secret string, but this project generally uses a randomly generated base 16 number with a 64 digit length. In production, this is *extremely* dangerous to have exposed.
 * `SIGNUP_MODE` - Set mode for user signups. Supported options are: `development`, where you can signup locally without comfirming an email or using an external provider; `inviteonly`, where you cannot signup without an invitation link; and `standard`, where you can signup without an invite but need to be able to confirm your enail address or use an external provider. Defaults to invite only.
+* `DEMO_CHARACTER_SHEET_ID` - THe ID of a character sheet to use by default in the /embed/character-sheet page
+* `DEMO_CHARACTERS` - IDs of characters to load into the /embed/character-sheet page for demonstrating the system. Comma delimited.
 
 
 ## Getting Started
