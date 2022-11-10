@@ -1,14 +1,17 @@
 import { Actor, ActorSheet } from "@prisma/client";
 import { gql } from "apollo-server-micro";
 import ClientOnly from "components/ClientOnly";
+import { ActorSheetMediatorHandler } from "controllers/mediators/ActorSheetHandler";
 import { observer } from "mobx-react-lite";
 import { ActiveData } from "nodes/active-data";
+import { Mediator } from "nodes/mediator";
 import { RenderSources, ViewRender, ViewRenderer, ViewType } from "nodes/view-renderer";
 import React, { ChangeEvent } from "react";
 import { apolloClient } from "src/graphql/apollo-client";
 
 const EMPTY_ID = "_demo-actor";
 
+// Query to fetch the demo actor sheet
 const FETCH_DEMO_ACTOR_SHEET = gql`
   query DemoActorSheet($id: String!) {
     actorSheet(id: $id) {
@@ -51,10 +54,17 @@ async function fetchActors(actorIDs: string[]) {
   return await apolloClient.query({ query: fetchActorsGQL });
 }
 
+interface DemoCharacterListProps {
+  actors: Record<string, Actor>;
+  setActiveCharacter: (actorID: string) => void;
+}
+
 /**
  * Renders a list of characters for selecting one
+ * @param actors The list of actors to draw from
+ * @param setActiveCharacter A function to set the active character
  */
-function DemoCharacterList(props: any) {
+function DemoCharacterList(props: DemoCharacterListProps) {
 
   const options: JSX.Element[] = [];
   options.push(<option key="empty_option" value={EMPTY_ID}>Demo 5e Character Sheet</option>);
@@ -76,7 +86,15 @@ function DemoCharacterList(props: any) {
   );
 }
 
-function DemoCharacterSheet(props: any) {
+interface DemoCharacterSheetProps {
+  actor: Actor | undefined;
+}
+
+/**
+ * Renders an actor sheet for demonstration purposes
+ * @param actor The actor to render the actor sheet for
+ */
+const DemoCharacterSheet = observer((props: DemoCharacterSheetProps) => {
   const [actorSheet, setActorSheet] = React.useState<ActorSheet | undefined>();
 
   React.useEffect(() => {
@@ -104,26 +122,40 @@ function DemoCharacterSheet(props: any) {
   return (
     <ViewRender viewID={actorSheet.id} sources={sources}/>
   );
+});
+
+interface EmbedCharacterSheetProps {
+  actorSheetID: string | undefined;
+  actorIDs: string[];
 }
 
-function EmbedCharacterSheet(props: any) {
-  const [ actors, setActors ] = React.useState<Record<string, Actor>>({});
-  const [ activeActor, setActiveActor ] = React.useState("");
+/**
+ * Creates an embeddable endpoint for use with iframes
+ * @param actorSheetID The default actor sheet to use for an empty demo sheet
+ * @param actors Any pre-existing actors who can be used to demo the actor sheets
+ * @returns An embeddable page containing a select input and a character sheet
+ */
+function EmbedCharacterSheet(props: EmbedCharacterSheetProps) {
+  const defaultActor = {
+    id: EMPTY_ID,
+    name: "Demo 5e Character Sheet",
+    fields: {},
+    content: {},
+    actorSheetID: props.actorSheetID || "",
+  } as Actor;
+  const [ actors, setActors ] = React.useState<Record<string, Actor>>({ [EMPTY_ID]: defaultActor });
+  const [ activeActor, setActiveActor ] = React.useState(EMPTY_ID);
 
   React.useEffect(() => {
     const fetchedActors: Record<string, Actor> = {};
-    fetchedActors[EMPTY_ID] = {
-      id: EMPTY_ID,
-      name: "Demo 5e Character Sheet",
-      fields: {},
-      content: {},
-      actorSheetID: props.actorSheetID || "",
-    } as Actor;
+    fetchedActors[EMPTY_ID] = defaultActor;
+
+    Mediator.set(ActorSheetMediatorHandler);
 
     if (props.actorIDs.length === 0) {
       setActors(fetchedActors);
-      return;
-    }
+      return () => { Mediator.reset(); };
+  }
 
     fetchActors(props.actorIDs).then((res) => {
       const keys = Object.keys(res.data);
@@ -134,6 +166,7 @@ function EmbedCharacterSheet(props: any) {
       }
       setActors(fetchedActors);
     });
+    return () => { Mediator.reset(); };
   }, []);
 
   if (!props.actorSheetID) { return <>No Character Sheet has been set by the developer</>; }
@@ -144,15 +177,16 @@ function EmbedCharacterSheet(props: any) {
       <ClientOnly>
         <DemoCharacterList actors={actors} setActiveCharacter={setActiveActor}/>
       </ClientOnly>
-      <ClientOnly>
         <DemoCharacterSheet actor={actors[activeActor]}/>
-      </ClientOnly>
     </>
   );
 }
 
 export default observer(EmbedCharacterSheet);
 
+/**
+ * Grabs some environment variables for different actors and actor sheets for different environments
+ */
 export function getServerSideProps() {
   const actorIDs = (process.env.DEMO_CHARACTERS ? process.env.DEMO_CHARACTERS.split(",") : []);
   return {
