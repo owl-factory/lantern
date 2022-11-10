@@ -4,7 +4,7 @@ import { Page } from "components/design";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { Button } from "@chakra-ui/react";
-import { ContentTypeForm } from "components/reroll/contentTypes/Form";
+import { ContentTypeForm } from "components/lantern/contentTypes/Form";
 import { toJS } from "mobx";
 import { ContentType } from "@prisma/client";
 

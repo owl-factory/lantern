@@ -1,6 +1,6 @@
 import { Button } from "@chakra-ui/react";
 import { Page } from "components/design";
-import { ContentTypeForm } from "components/reroll/contentTypes/Form";
+import { ContentTypeForm } from "components/lantern/contentTypes/Form";
 import Link from "next/link";
 import React from "react";
 

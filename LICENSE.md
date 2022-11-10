@@ -1,1 +1,1 @@
-Reroll is the property of Lucy Awrey and Laura Wenning. You may use this source code for reference purposes but may not redistribute or reuse any code or assets within the project for personal or commercial use.
+Lantern Tabletop is the property of Lucy Awrey and Laura Wenning. You may use this source code for reference purposes but may not redistribute or reuse any code or assets within the project for personal or commercial use.

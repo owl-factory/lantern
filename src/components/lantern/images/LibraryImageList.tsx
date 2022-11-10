@@ -2,7 +2,7 @@
 import { Button } from "@chakra-ui/react";
 import React from "react";
 import { FileDocument } from "types/documents";
-import { ImageList, ListFormat } from "components/reroll/images";
+import { ImageList, ListFormat } from "components/lantern/images";
 import { ImageCreationForm } from "./forms/ImageCreationForm";
 import { Modal } from "@chakra-ui/modal";
 import { useDisclosure } from "@chakra-ui/react";

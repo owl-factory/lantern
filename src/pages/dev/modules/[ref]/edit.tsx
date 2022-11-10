@@ -4,7 +4,7 @@ import { Page } from "components/design";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { Button } from "@chakra-ui/react";
-import { ModuleForm } from "components/reroll/modules/Form";
+import { ModuleForm } from "components/lantern/modules/Form";
 import { Module, Ruleset } from "@prisma/client";
 
 /**
