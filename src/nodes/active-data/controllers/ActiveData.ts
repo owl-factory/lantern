@@ -229,6 +229,59 @@ class ActiveDataClass {
   }
 
   /**
+   * Fetches a single rule from a given ruleset
+   * @param id The ID of the rules to fetch
+   * @param field The rule to fetch
+   * @returns The contents of the specified rule
+   */
+  public getRule(id: string, field: string): unknown {
+    if (this.rules[id] === undefined) { return undefined; }
+    return this.rules[id][field];
+  }
+
+  /**
+   * Refreshes the actor's data from the Apollo Client
+   * @param id The ID of the actor to fetch from Apollo Client
+   */
+   public async refreshActor(id: string): Promise<void> {
+    if (!id) { return; }
+    else if (id[0] === "_") {
+      runInAction(() => {
+        this.actors[id] = {};
+        this.content[id] = {};
+      });
+      return;
+    }
+    const actor = await apolloClient.query<{ actor: Actor }>({
+      query: FETCH_ACTOR,
+      variables: { id },
+    });
+    // Skip if no actor was found
+    if (!actor.data.actor) { return; }
+    runInAction(() => {
+      this.actors[id] = this.mergeActors(id, actor.data.actor.fields as ActorFields);
+      this.content[id] = actor.data.actor.content as Record<string, ActorContent[]>;
+    });
+  }
+
+  /**
+   * Refreshes the ruleset's data from the Apollo Client
+   * @param id The ID of the ruleset to fetch from Apollo Client
+   */
+  public async refreshRuleset(id: string): Promise<void> {
+    const ruleset = await apolloClient.query<{ ruleset: Ruleset }>({
+      query: FETCH_RULESET,
+      variables: { id },
+    });
+
+    // Skip if no ruleset was found
+    if (!ruleset.data.ruleset) { return; }
+    runInAction(() => {
+      this.rules[id] = (ruleset.data.ruleset.rules as any).values as Record<string, unknown>;
+    });
+  }
+
+  /**
    * Saves and flushes all changes that have been made to the database. Builds the query for each individual actor,
    * submits them, then updates their values in the Active Data to ensure that they are completely up to date
    */

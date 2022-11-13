@@ -2,6 +2,7 @@ import React, { ReactNode } from "react";
 import ErrorPage from "next/error";
 import { Alerts } from "@owl-factory/alerts";
 import { Box, Container, Flex, useToast } from "@chakra-ui/react";
+import HeaderBar from "./headerBar/HeaderBar";
 
 interface PageProps {
   children: ReactNode;
@@ -37,13 +38,16 @@ export function Page(props: PageProps): JSX.Element {
   }
 
   return (
-    <Flex>
-      {/* TODO - permanent drawers on either side */}
-      <Container maxW="container.xl" paddingTop={5}>
-        { props.error ? <>{parseError(props.error)}</> : <></>}
-        {props.children}
-      </Container>
-    </Flex>
+    <>
+      <HeaderBar />
+      <Flex>
+        {/* TODO - permanent drawers on either side */}
+        <Container maxW="container.xl" paddingTop={5}>
+          { props.error ? <>{parseError(props.error)}</> : <></>}
+          {props.children}
+        </Container>
+      </Flex>
+    </>
   );
 }
 
