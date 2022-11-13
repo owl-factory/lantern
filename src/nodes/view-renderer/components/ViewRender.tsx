@@ -19,6 +19,8 @@ function NullView() {
 
 /**
  * Renders a View
+ * @param viewID The ID if the view to render. Required
+ * @param sources The different sources the render draws data from
  */
 export const ViewRender = observer((props: ViewRenderProps) => {
   // The ID of the render used for this view

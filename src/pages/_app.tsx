@@ -20,7 +20,6 @@ export default function MyApp({ Component , pageProps }: AppProps): JSX.Element 
       <ApolloProvider client={apolloClient}>
         <ChakraProvider>
           {/* TODO - move header page into the Page element */}
-          <HeaderBar />
           <Component {...pageProps} />
         </ChakraProvider>
       </ApolloProvider>
