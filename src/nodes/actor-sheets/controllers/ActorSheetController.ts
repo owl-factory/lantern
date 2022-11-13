@@ -363,7 +363,7 @@ class $ActorController {
       if (!(attributeName in element)) { continue; }
 
       const parsedExpression = element[attributeName as (keyof T)] as unknown as ParsedExpression;
-      if (!parsedExpression.hasExpression || parsedExpression.value === "") {
+      if (!parsedExpression.isExpression || parsedExpression.value === "") {
         parsedVariables[attributeName] = parsedExpression.value;
         continue;
       }
