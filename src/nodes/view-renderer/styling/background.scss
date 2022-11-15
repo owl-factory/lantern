@@ -1,0 +1,33 @@
+@import "./variables.scss";
+
+// Core 
+.#{$wrapper-class} .background {
+  display: block;
+}
+
+.#{$wrapper-class} .background {
+  margin: 1px;
+  background-color: lightslategray;
+}
+
+.null-background {
+  margin: 0;
+
+  background-color: inherit;
+}
+
+.#{$wrapper-class} .background {
+  // Thre styling for a background containing an image. The image is supplied by the user
+  .default-background-image {
+    @extend .null-background;
+    margin: 1px;
+    background-repeat: no-repeat;
+    background-size: contain;
+  }
+
+  .default-background-color {
+    @extend .null-background;
+    margin: 1px;
+    background-color: lightslategray;
+  }
+}
