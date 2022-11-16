@@ -92,3 +92,35 @@ $input-bg: $body-bg;
   }
 }
 
+// The wrapper for the whole contents of the actor sheet
+.view-render-wrapper {
+  // width: 60vw; 
+  // overflow-x: scroll;
+  
+  // .column {
+    
+  // }
+
+  .inline-wrapper {
+    display: block;
+  }
+
+  .inline {
+    display: flex;
+  }
+
+
+  .tab {
+    &.tab-active {
+      background-color: lightblue;
+    }
+  }
+
+  .page-inactive {
+    display: none;
+  }
+
+  .page-active {
+    display: block;
+  }
+}

@@ -1,0 +1,11 @@
+@import "./variables.scss";
+
+.#{$wrapper-class} {
+  .page-inactive {
+    display: none;
+  }
+
+  .page-active {
+    display: block;
+  }
+}

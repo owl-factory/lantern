@@ -1,0 +1,17 @@
+@import "./variables.scss";
+
+// Core
+.#{$wrapper-class} .input {
+  background-color: transparent;
+  border-bottom: 1px solid gray;
+
+
+  &.number-input {
+    width: 2em;
+  }
+
+  &:hover, &:active, &:focus-visible {
+    outline: none;
+    border-color: black;
+  }
+}

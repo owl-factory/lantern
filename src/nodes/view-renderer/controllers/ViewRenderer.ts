@@ -1,4 +1,4 @@
-import { action, makeObservable, observable } from "mobx";
+import { action, makeObservable, observable, runInAction } from "mobx";
 import { ViewType } from "../enums/viewType";
 import { Render, RenderSources } from "../types/render";
 import { View } from "../types/view";
@@ -12,6 +12,8 @@ import { PageMetadata } from "../types/pages";
 import { Scalar } from "types";
 import { v4 as uuid } from "uuid";
 import { concatSources } from "../utilities/render/sources";
+import { ElementDescriptor } from "../types/elements";
+import { RenderState } from "../types/state";
 
 type Renders = Record<string, Render>;
 type Views = Record<string, View>;
@@ -78,7 +80,11 @@ class ViewRendererClass {
       return false;
     }
 
-    let layout, prefabs, pageGroups, defaultState, css;
+    let layout: ElementDescriptor<unknown>[] | undefined;
+    let prefabs: Record<string, ElementDescriptor<unknown>[]> | undefined;
+    let pageGroups: Record<string, any> | undefined;
+    let defaultState: RenderState;
+    let css: string | undefined;
     try {
       if (imports.xml) {
         const xmlDOM = parseXML(imports.xml);
@@ -111,11 +117,13 @@ class ViewRendererClass {
       };
     }
 
-    if (layout) this.views[viewID].layout = layout;
-    if (prefabs) this.views[viewID].prefabs = prefabs;
-    if (pageGroups) this.views[viewID].pages = pageGroups;
-    if (defaultState) this.views[viewID].defaultState = defaultState;
-    if (css) this.views[viewID].css = css;
+    runInAction(() => {
+      if (layout) this.views[viewID].layout = layout;
+      if (prefabs) this.views[viewID].prefabs = prefabs;
+      if (pageGroups) this.views[viewID].pages = pageGroups;
+      if (defaultState) this.views[viewID].defaultState = defaultState;
+      if (css) this.views[viewID].css = css;
+    });
 
     return true;
   }

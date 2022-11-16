@@ -1,0 +1,11 @@
+@import "./variables.scss";
+
+.#{$wrapper-class} .inline-wrapper {
+  display: block;
+
+  .inline {
+    display: flex;
+  }
+}
+
+

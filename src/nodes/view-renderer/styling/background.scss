@@ -3,11 +3,14 @@
 // Core 
 .#{$wrapper-class} .background {
   display: block;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
+// Default styles
 .#{$wrapper-class} .background {
   margin: 1px;
-  background-color: lightslategray;
+  background-color: lightgray;
 }
 
 .null-background {
@@ -17,17 +20,17 @@
 }
 
 .#{$wrapper-class} .background {
-  // Thre styling for a background containing an image. The image is supplied by the user
-  .default-background-image {
+  // The styling for a background containing an image. The image is supplied by the user
+  &.default-background-image {
     @extend .null-background;
     margin: 1px;
     background-repeat: no-repeat;
     background-size: contain;
   }
 
-  .default-background-color {
+  &.default-background-color {
     @extend .null-background;
     margin: 1px;
-    background-color: lightslategray;
+    background-color: lightgray;
   }
 }
