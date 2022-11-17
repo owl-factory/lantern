@@ -47,10 +47,6 @@ export const ViewCheckbox = observer((props: RenderProps<CheckboxAttributes>) =>
   const actorID = ViewRenderer.renders[props.renderID].sources.actorID;
   if (!actorID) { return <></>; }
 
-  const key = generateCheckboxName(name, value);
-  const checked = !!getActorValue(sources.actorID, name, props.properties);
-
-
   /**
    * Handles the onChange event in the radio buttons. Updates the ActorController values
    * @param ev The triggering onChange event
@@ -77,7 +73,7 @@ export const ViewCheckbox = observer((props: RenderProps<CheckboxAttributes>) =>
       ref={ref}
       className={`checkbox ${className}`}
       name={name}
-      defaultChecked={checked}
+      checked={!!getActorValue(sources.actorID, name, props.properties)}
       onChange={onChange}
     />
   );

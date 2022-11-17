@@ -56,7 +56,7 @@ export const ViewSelect = observer((props: RenderProps<SelectAttributes>) => {
       id={id}
       name={name}
       className={`select ${className}`}
-      defaultValue={defaultValue}
+      value={(getActorValue(sources.actorID, name, props.properties) || "").toString()}
       onChange={onChange}
     >
       <ViewChildren renderID={props.renderID} elements={props.element.children || []} properties={props.properties}/>

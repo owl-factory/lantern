@@ -62,9 +62,8 @@ export const ViewRadio = observer((props: RenderProps<RadioAttributes>) => {
       id={id}
       name={name}
       className={`input radio-button ${className}`}
-      defaultChecked={fieldValue === value}
       onChange={onChange}
-      value={value}
+      value={getActorValue(sources.actorID, name, props.properties).toString()}
     />
   );
 });
