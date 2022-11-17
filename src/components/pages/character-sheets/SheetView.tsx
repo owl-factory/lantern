@@ -1,4 +1,5 @@
 import { gql, useLazyQuery } from "@apollo/client";
+import { Alerts } from "@owl-factory/alerts";
 import { ActorController, ActorSheet } from "nodes/actor-sheets";
 import { ViewRender, ViewRenderer, ViewType } from "nodes/view-renderer";
 import React from "react";
@@ -54,8 +55,14 @@ export function SheetView(props: SheetViewProps) {
     return <>Select a character sheet</>;
   }
 
+  // Required for posting the Alert without issue
+  React.useEffect(() => {
+    if (!error) return;
+    Alerts.error({ title: "GraphQL Error", description: "An error has occured when attempting to fetch a character."});
+  }, [error]);
+
   if (loading || data === undefined) { return <>Loading</>; }
-  if (error) { return <>Error! {error}</>; }
+  if (error) { return <></>; }
 
   return (
     <>
