@@ -81,7 +81,7 @@ function ViewTab(props: ViewTabProps) {
   for (const viewablePage of viewablePages) {
     tabElements.push(
       <ViewTab
-        key={viewablePage}
+        key={`${props.properties.$prefix}_tab-${viewablePage}`}
         index={viewablePage}
         name={pages[viewablePage].name}
         activePage={activePage}
