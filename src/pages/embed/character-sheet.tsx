@@ -1,3 +1,4 @@
+import { Alert, AlertDescription, AlertIcon } from "@chakra-ui/react";
 import { Actor } from "@prisma/client";
 import { gql } from "apollo-server-micro";
 import ClientOnly from "components/ClientOnly";
@@ -85,6 +86,7 @@ function EmbedCharacterSheet(props: EmbedCharacterSheetProps) {
   if (!props.actorIDs || props.actorIDs.length === 0) { return <></>; }
   const [actors, setActors] = React.useState<Record<string, Actor>>({});
   const [ activeActor, setActiveActor ] = React.useState(props.actorIDs[0]);
+  const [ isError, setIsError ] = React.useState(false);
 
   React.useEffect(() => {
     const fetchedActors: Record<string, Actor> = {};
@@ -108,9 +110,20 @@ function EmbedCharacterSheet(props: EmbedCharacterSheetProps) {
         fetchedActors[actor.id] = actor;
       }
       setActors(fetchedActors);
+    }).catch((err) => {
+      setIsError(true);
     });
     return () => { Mediator.reset(); };
   }, []);
+
+  if (isError) {
+    return (
+      <Alert status="error">
+        <AlertIcon/>
+        <AlertDescription>An error occured while loading character sheets.</AlertDescription>
+      </Alert>
+      );
+  }
 
   return (
     <>
