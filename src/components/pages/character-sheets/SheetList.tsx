@@ -1,6 +1,7 @@
 import { gql, useQuery } from "@apollo/client";
 import { DeleteIcon } from "@chakra-ui/icons";
 import { Box, Button, ChakraProps, useDisclosure } from "@chakra-ui/react";
+import { Alerts } from "@owl-factory/alerts";
 import { ActorSheet, Ruleset } from "@prisma/client";
 import React from "react";
 import { DeleteSheetAlert } from "./DeleteSheetAlert";
@@ -111,9 +112,18 @@ export function SheetList(props: SheetListProps) {
     if (sheet.id === props.activeSheet) { props.setActiveSheet(undefined); }
   }
 
+  // Required for posting the Alert without issue
+  React.useEffect(() => {
+    if (!error) return;
+    Alerts.error({
+      title: "GraphQL Error",
+      description: "An error has occured when attempting to fetch character sheets.",
+    });
+  }, [error]);
+
   const sheets: JSX.Element[] = [];
   if (loading) { return <>Loading</>; }
-  if (error) { return <>Error! {error}</>; }
+  if (error) { return <></>; }
 
   for (const sheet of data.actorSheets) {
     sheets.push(

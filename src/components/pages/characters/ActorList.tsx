@@ -5,6 +5,7 @@ import { Actor, ActorType, Ruleset } from "@prisma/client";
 import React from "react";
 import { NewActorModal } from "./NewActorModal";
 import { DeleteActorAlert } from "./DeleteActorAlert";
+import { Alerts } from "@owl-factory/alerts";
 
 interface CharacterListProps {
   activeActor: string | undefined;
@@ -118,9 +119,15 @@ export function ActorList(props: CharacterListProps) {
     if (actor.id === props.activeActor) { props.setActiveActor(undefined); }
   }
 
+  // Required for posting the Alert without issue
+  React.useEffect(() => {
+    if (!error) return;
+    Alerts.error({ title: "GraphQL Error", description: "An error has occured when attempting to fetch characters."});
+  }, [error]);
+
   const actors: JSX.Element[] = [];
   if (loading) { return <>Loading</>; }
-  if (error) { return <>Error! {error}</>; }
+  if (error) { return <></>; }
 
   for (const actor of data.actors) {
     actors.push(
