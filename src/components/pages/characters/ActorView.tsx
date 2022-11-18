@@ -61,15 +61,16 @@ export function ActorView(props: ActorViewProps) {
     );
   });
 
-  if (props.activeActor === undefined) {
-    return <>Select a character</>;
-  }
-
   // Required for posting the Alert without issue
   React.useEffect(() => {
     if (!error) return;
     Alerts.error({ title: "GraphQL Error", description: "An error has occured when attempting to fetch a character."});
   }, [error]);
+
+
+  if (props.activeActor === undefined) {
+    return <>Select a character</>;
+  }
 
   if (data === undefined) { return <></>; }
   else if (loading) { return <>Loading</>; }
