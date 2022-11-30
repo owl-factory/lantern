@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { Actor } from "@prisma/client";
+import { Actor, Ruleset } from "@prisma/client";
 import { action, makeObservable, observable, runInAction } from "mobx";
 import { apolloClient } from "src/graphql/apollo-client";
 import { Scalar } from "types";
@@ -16,6 +16,15 @@ const FETCH_ACTOR = gql`
   }
 `;
 
+// Query to refresh the ruleset rules
+const FETCH_RULESET = gql`
+  query RefreshRuleset($id: String!) {
+    ruleset(id: $id) {
+      id, rules
+    }
+  }
+`;
+
 // The default time to wait before automatically updating the backend
 const DEFAULT_UPDATE_TIME = 60 * 1000;
 
@@ -23,6 +32,8 @@ class ActiveDataClass {
   public actors: Record<string, ActorFields> = {};
   public content: Record<string, Record<string, ActorContent[]>> = {};
   public actorChangeList: Record<string, boolean> = {}; // Tracks any actors that we have made changes to for updating
+
+  public rules: Record<string, Record<string, unknown>> = {};
 
   // Tracks field-level changes for merging in two datasets
   public actorChanges: Record<string, ActorFields> = {};
@@ -34,10 +45,13 @@ class ActiveDataClass {
     makeObservable(this, {
       actors: observable,
       content: observable,
+      rules: observable,
 
       refreshActor: action,
+      refreshRuleset: action,
       save: action,
       setActor: action,
+      setContents: action,
       setContent: action,
       setContentField: action,
     });
@@ -70,23 +84,6 @@ class ActiveDataClass {
     if (!(id in this.actorChanges)) { this.actorChanges[id] = { }; }
     this.actorChanges[id][field] = value;
     this.markChange();
-  }
-
-  /**
-   * Refreshes the actor's data from the Apollo Client
-   * @param id The ID of the actor to fetch from Apollo Client
-   */
-  public async refreshActor(id: string): Promise<void> {
-    const actor = await apolloClient.query<{ actor: Actor }>({
-      query: FETCH_ACTOR,
-      variables: { id },
-    });
-    // Skip if no actor was found
-    if (!actor.data.actor) { return; }
-    runInAction(() => {
-      this.actors[id] = this.mergeActors(id, actor.data.actor.fields as ActorFields);
-      this.content[id] = actor.data.actor.content as Record<string, ActorContent[]>;
-    });
   }
 
   /**
@@ -130,6 +127,18 @@ class ActiveDataClass {
   }
 
   /**
+   * Sets a new array of changes for the content
+   * @param id The ID of the actor whose contents are being updated
+   * @param field The name of the content to update
+   * @param value The new array of ActorContent to set
+   */
+  public setContents(id: string, field: string, value: ActorContent[]) {
+    if (!(id in this.content)) { this.content[id] = {}; }
+    this.content[id][field] = value;
+    this.markChange();
+  }
+
+  /**
    * Sets a content entry for an actor
    * @param id The ID of the actor whose content is being updated
    * @param field The name of the content to update
@@ -157,6 +166,59 @@ class ActiveDataClass {
     this.content[id][field][index][contentField] = value;
     this.actorChangeList[id] = true;
     this.markChange();
+  }
+
+  /**
+   * Fetches a single rule from a given ruleset
+   * @param id The ID of the rules to fetch
+   * @param field The rule to fetch
+   * @returns The contents of the specified rule
+   */
+  public getRule(id: string, field: string): unknown {
+    if (this.rules[id] === undefined) { return undefined; }
+    return this.rules[id][field];
+  }
+
+  /**
+   * Refreshes the actor's data from the Apollo Client
+   * @param id The ID of the actor to fetch from Apollo Client
+   */
+   public async refreshActor(id: string): Promise<void> {
+    if (!id) { return; }
+    else if (id[0] === "_") {
+      runInAction(() => {
+        this.actors[id] = {};
+        this.content[id] = {};
+      });
+      return;
+    }
+    const actor = await apolloClient.query<{ actor: Actor }>({
+      query: FETCH_ACTOR,
+      variables: { id },
+    });
+    // Skip if no actor was found
+    if (!actor.data.actor) { return; }
+    runInAction(() => {
+      this.actors[id] = this.mergeActors(id, actor.data.actor.fields as ActorFields);
+      this.content[id] = actor.data.actor.content as Record<string, ActorContent[]>;
+    });
+  }
+
+  /**
+   * Refreshes the ruleset's data from the Apollo Client
+   * @param id The ID of the ruleset to fetch from Apollo Client
+   */
+  public async refreshRuleset(id: string): Promise<void> {
+    const ruleset = await apolloClient.query<{ ruleset: Ruleset }>({
+      query: FETCH_RULESET,
+      variables: { id },
+    });
+
+    // Skip if no ruleset was found
+    if (!ruleset.data.ruleset) { return; }
+    runInAction(() => {
+      this.rules[id] = (ruleset.data.ruleset.rules as any).values as Record<string, unknown>;
+    });
   }
 
   /**

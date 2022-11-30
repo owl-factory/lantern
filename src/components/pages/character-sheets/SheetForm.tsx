@@ -7,6 +7,7 @@ import { rest } from "@owl-factory/https";
 import { ActorSheet } from "@prisma/client";
 import { Form, Formik, FormikProps, useField } from "formik";
 import { ActorController } from "nodes/actor-sheets";
+import { ViewRenderer, ViewType } from "nodes/view-renderer";
 import React from "react";
 
 interface SheetFormProps {
@@ -50,10 +51,11 @@ export function SheetForm(props: SheetFormProps) {
    */
   async function refresh(formik: FormikProps<FormValues>) {
     if (!props.sheet) { return; }
-    const rawStyling = `.actor-sheet-${props.sheet.id} { ${formik.values.rawStyling} }`;
-
-    const cssResult = await rest.post<{ css: string }>(`/api/sass`, { sass: rawStyling });
-    ActorController.loadSheet(props.sheet.id, { layout: formik.values.layout, styling: cssResult.data.css});
+    ViewRenderer.import(
+      props.sheet.id,
+      ViewType.ActorSheet,
+      { xml: formik.values.layout, scss: formik.values.rawStyling }
+    );
   }
 
   /**
@@ -62,9 +64,10 @@ export function SheetForm(props: SheetFormProps) {
    */
   function onCompleted(data: { mutateActorSheet: ActorSheet }) {
     Alerts.success({ title: `${data.mutateActorSheet.name} was successfully updated` });
-    ActorController.loadSheet(
+    ViewRenderer.import(
       data.mutateActorSheet.id,
-      { layout: data.mutateActorSheet.layout, styling: data.mutateActorSheet.styling}
+      ViewType.ActorSheet,
+      { xml: data.mutateActorSheet.layout, css: data.mutateActorSheet.styling}
     );
   }
 
@@ -122,7 +125,7 @@ export function SheetForm(props: SheetFormProps) {
               <Button onClick={() => refresh(formikProps)}>Refresh</Button>
               <Button type="submit">Submit</Button>
             </Form>
-          )
+          );
         }
       }
       </Formik>

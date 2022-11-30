@@ -16,7 +16,7 @@ import { NewActorForm } from "./NewActorForm";
 interface NewActorModalProps {
   isOpen: boolean;
   onClose: () => void;
-  setActiveActor: (id: string | null) => void;
+  setActiveActor: (id: string | undefined) => void;
 }
 
 /**
@@ -47,5 +47,5 @@ export function NewActorModal(props: NewActorModalProps) {
           </ModalFooter>
         </ModalContent>
     </Modal>
-  )
+  );
 }

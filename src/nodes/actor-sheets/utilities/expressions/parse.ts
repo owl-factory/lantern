@@ -8,9 +8,9 @@ import { ParsedExpression } from "types/expressions";
 export function splitExpressionValue(str: string): ParsedExpression {
   const value: ParsedExpression = {
     value: str,
-    hasExpression: hasExpression(str),
+    isExpression: hasExpression(str),
   };
-  if (value.hasExpression) {
+  if (value.isExpression) {
     value.variables = determineExpressionVariables(str);
   }
 

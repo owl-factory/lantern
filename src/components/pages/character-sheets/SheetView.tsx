@@ -1,26 +1,22 @@
 import { gql, useLazyQuery } from "@apollo/client";
 import { ActorController, ActorSheet } from "nodes/actor-sheets";
+import { ViewRender, ViewRenderer, ViewType } from "nodes/view-renderer";
 import React from "react";
 import { SheetForm } from "./SheetForm";
 
 interface SheetViewProps {
-  activeSheet: string | null;
+  sheetID: string | undefined;
 }
 
 // Gets the actor sheet for editing
 const GET_ACTOR_SHEET = gql`
-  query GetMyCharacterSheet($id: String!) {
-    actorSheet(id: $id, include: { ruleset: true }) {
-      id, 
-      name,
+  query GetActorSheet($id: String!) {
+    actorSheet(id: $id) {
+      id,
       layout,
-      styling,
       rawStyling,
-      ruleset {
-        id,
-        name,
-        rules
-      }
+      styling,
+      rulesetID,
     }
   }
 `;
@@ -34,31 +30,27 @@ export function SheetView(props: SheetViewProps) {
 
   // Handles the changing actor, allowing the sheet to update
   React.useEffect(() => {
-    if (props.activeSheet === null) { return; }
+    if (props.sheetID === undefined) { return; }
 
-    getSheet({ variables: { id: props.activeSheet } });
-    const previousSheet = props.activeSheet;
+    getSheet({ variables: { id: props.sheetID } });
+    const previousSheet = props.sheetID;
 
     return () => {
       ActorController.endRender(previousSheet);
     };
-  }, [props.activeSheet]);
+  }, [props.sheetID]);
 
   // Loads and creates the render
   React.useEffect(() => {
-    if (loading || error || !data || props.activeSheet === null) { return; }
-    ActorController.loadRuleset(data.actorSheet.ruleset.id, data.actorSheet.ruleset);
-    ActorController.loadSheet(data.actorSheet.id, data.actorSheet);
-
-    ActorController.newRender(
-      null,
-      data.actorSheet.ruleset.id,
+    if (loading || error || !data || props.sheetID === undefined) { return; }
+    ViewRenderer.import(
       data.actorSheet.id,
-      props.activeSheet
+      ViewType.ActorSheet,
+      { xml: data.actorSheet.layout, css: data.actorSheet.styling }
     );
   });
 
-  if (props.activeSheet === null) {
+  if (props.sheetID === null) {
     return <>Select a character sheet</>;
   }
 
@@ -68,7 +60,7 @@ export function SheetView(props: SheetViewProps) {
   return (
     <>
       <SheetForm sheet={data.actorSheet}/>
-      <ActorSheet id={props.activeSheet}/>
+      <ViewRender viewID={props.sheetID} sources={{ actorID: "", rulesetID: data.actorSheet.rulesetID }}/>
     </>
   );
 }
