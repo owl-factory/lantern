@@ -51,11 +51,12 @@ function verifyUserJwt(token: string) {
  * @param token JWT string to be saved to an HTTP only cookie.
  */
 function setJwtCookie(token: string) {
-    if (isClient) {
-        console.warn("Setting a JWT cookie can only be done on the server!");
-    }
-    const ctx = getCtx();
-    setCookie(ctx, jwtCookieKey, token, { maxAge: expiresIn, path: "/", httpOnly: true, secure: true });
+  if (isClient) {
+    console.warn("Setting a JWT cookie can only be done on the server!");
+    return;
+  }
+  const ctx = getCtx();
+  setCookie(ctx, jwtCookieKey, token, { maxAge: expiresIn, path: "/", httpOnly: true, secure: true });
 }
 
 /**
@@ -77,9 +78,9 @@ function getJwtCookie() {
  * @returns Newly created JWT string that has already been saved to a cookie.
  */
 export function signinAs(user: User) {
-    const token = signUserJwt(user);
-    setJwtCookie(token);
-    return token;
+  const token = signUserJwt(user);
+  setJwtCookie(token);
+  return token;
 }
 
 /**

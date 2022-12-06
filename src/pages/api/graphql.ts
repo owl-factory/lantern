@@ -33,6 +33,8 @@ import { moduleResolvers } from "src/graphql/resolvers/modules";
 import { moduleAccessResolvers } from "src/graphql/resolvers/moduleAccess";
 import { contentRelationTypeDefs } from "src/graphql/typedefs/contentRelations";
 import { actorTypeResolvers } from "src/graphql/resolvers/actorTypes";
+import { authResolvers } from "src/graphql/resolvers/auth";
+import { authTypeDefs } from "src/graphql/typedefs/auth";
 global.fetch = require("cross-fetch");
 
 
@@ -44,6 +46,8 @@ const apolloServer = new ApolloServer({
     actorTypeDefs,
     actorSheetTypeDefs,
     actorTypeTypeDefs,
+
+    authTypeDefs,
 
     assetTypeDefs,
 
@@ -68,6 +72,8 @@ const apolloServer = new ApolloServer({
     actorSheetResolvers,
     actorTypeResolvers,
     actorResolvers,
+
+    authResolvers,
 
     assetResolvers,
 

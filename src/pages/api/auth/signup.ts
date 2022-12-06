@@ -30,18 +30,18 @@ async function signUp(this: HTTPHandler, req: NextApiRequest) {
     }
 
     const user = await prisma.user.create({
-        data: {
-          username,
-          displayName: username,
-          userSecret: {
-            create: {
-                username,
-                email,
-                hashedPassword,
-                salt,
-            },
+      data: {
+        username,
+        displayName: username,
+        userSecret: {
+          create: {
+              username,
+              email,
+              hashedPassword,
+              salt,
           },
         },
+      },
     }).catch((dbError) => {
       this.returnError(401, dbError.message);
       return;
