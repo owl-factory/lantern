@@ -3,6 +3,7 @@ import { HTTPHandler, createEndpoint } from "@owl-factory/https/backend";
 import { PrismaClient } from "@prisma/client";
 import { pbkdf2, timingSafeEqual } from "crypto";
 import { signinAs } from "nodes/auth/jwt";
+import { requireLogin } from "utilities/validation/account";
 
 const prisma = new PrismaClient();
 
@@ -53,4 +54,8 @@ async function signIn(this: HTTPHandler, req: NextApiRequest) {
   });
 }
 
-export default createEndpoint({POST: signIn});
+async function justGet(this: HTTPHandler, req: NextApiRequest) {
+  requireLogin();
+}
+
+export default createEndpoint({GET: justGet, POST: signIn});

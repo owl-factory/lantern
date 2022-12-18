@@ -1,10 +1,6 @@
+import { getCtx } from "@owl-factory/next";
 import { passwordSignIn, passwordSignUp } from "nodes/auth";
 import { PasswordSignUpInput } from "nodes/auth/types/password";
-
-interface PasswordSignInInput {
-  name: string;
-  password: string;
-}
 
 interface PasswordSignInArguments {
   username: string,
@@ -17,7 +13,9 @@ interface PasswordSignUpArguments {
 }
 
 async function signInWithPassword(_: unknown, { username, password }: PasswordSignInArguments) {
-  return await passwordSignIn(username, password);
+  const jwt = await passwordSignIn(username, password);
+  console.log(getCtx()?.req.cookies)
+  return jwt;
 }
 
 async function signUpWithPassword(_: unknown, { userSecret }: PasswordSignUpArguments) {

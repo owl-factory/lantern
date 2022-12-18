@@ -1,3 +1,5 @@
+import { getCtx } from "@owl-factory/next";
+import { authenticate } from "nodes/auth/jwt";
 import { getPrismaClient } from "utilities/prisma";
 
 const prisma = getPrismaClient();
@@ -66,6 +68,9 @@ interface DeleteActorArguments {
  * @returns An array of actors
  */
 async function getActors(_: unknown, { where, include }: GetActorsArguments, extra: any) {
+  console.log(getCtx().req.cookies)
+  const user = authenticate();
+  console.log(user);
   return prisma.actor.findMany({
     where: { ...where, deletedAt: null },
     include,

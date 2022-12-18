@@ -35,6 +35,8 @@ import { contentRelationTypeDefs } from "src/graphql/typedefs/contentRelations";
 import { actorTypeResolvers } from "src/graphql/resolvers/actorTypes";
 import { authResolvers } from "src/graphql/resolvers/auth";
 import { authTypeDefs } from "src/graphql/typedefs/auth";
+import { initializeNextContext } from "@owl-factory/next";
+import { Auth } from "controllers/auth";
 global.fetch = require("cross-fetch");
 
 
@@ -97,6 +99,9 @@ const apolloServer = new ApolloServer({
     ApolloServerPluginLandingPageGraphQLPlayground(),
   ],
   context: ({req, res}) => {
+    initializeNextContext({req, res});
+    Auth.fromReq(req);
+
     return {
       session: null,
       req,

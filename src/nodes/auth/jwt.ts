@@ -3,10 +3,11 @@ import { isClient } from "@owl-factory/utilities/client";
 import { User } from "@prisma/client";
 import { sign, verify } from "jsonwebtoken";
 import { parseCookies, setCookie } from "nookies";
+import { requireLogin } from "utilities/validation/account";
 
 const jwtSecret = process.env.JWT_SECRET;
 const expiresIn = 14 * 24 * 60 * 60;
-const jwtCookieKey = "jwt_reroll_app";
+const jwtCookieKey = "jwt_lantern_app";
 
 let userCache: User | undefined;
 
@@ -20,11 +21,11 @@ let userCache: User | undefined;
  * @returns a signed JWT as a string value,
  */
 function signUserJwt(user: User) {
-    if (jwtSecret) {
-        return sign(user, jwtSecret, { expiresIn });
-    } else {
-        throw("MISSING JWT SECRET.");
-    }
+  if (jwtSecret) {
+    return sign(user, jwtSecret, { expiresIn });
+  } else {
+    throw("MISSING JWT SECRET.");
+  }
 }
 
 /**
@@ -35,15 +36,15 @@ function signUserJwt(user: User) {
  * returns a user object.
  */
 function verifyUserJwt(token: string) {
-    if (jwtSecret) {
-        try {
-            return verify(token, jwtSecret, { maxAge:expiresIn });
-        } catch {
-            return null;
-        }
-    } else {
-      throw("MISSING JWT SECRET.");
+  if (jwtSecret) {
+    try {
+      return verify(token, jwtSecret, { maxAge:expiresIn });
+    } catch {
+      return null;
     }
+  } else {
+    throw("MISSING JWT SECRET.");
+  }
 }
 
 /**
@@ -57,6 +58,9 @@ function setJwtCookie(token: string) {
   }
   const ctx = getCtx();
   setCookie(ctx, jwtCookieKey, token, { maxAge: expiresIn, path: "/", httpOnly: true, secure: true });
+  console.log(ctx?.req.cookies)
+  console.log("parse", token, parseCookies(ctx));
+  requireLogin();
 }
 
 /**
@@ -64,10 +68,10 @@ function setJwtCookie(token: string) {
  * @param token JWT retrieved from cookie.
  */
 function getJwtCookie() {
-    const ctx = getCtx();
-    const cookies = parseCookies(ctx);
-    const jwt = cookies[jwtCookieKey];
-    return jwt;
+  const ctx = getCtx();
+  const cookies = parseCookies(ctx);
+  const jwt = cookies[jwtCookieKey];
+  return jwt;
 }
 
 /**
@@ -80,6 +84,7 @@ function getJwtCookie() {
 export function signinAs(user: User) {
   const token = signUserJwt(user);
   setJwtCookie(token);
+  console.log(getJwtCookie())
   return token;
 }
 
@@ -89,15 +94,15 @@ export function signinAs(user: User) {
  * returns a user object.
  */
 export function authenticate() {
-    if (isClient) {
-        console.warn("Authentication with JWT cookie can only be done on the server!");
-    }
+  if (isClient) {
+    console.warn("Authentication with JWT cookie can only be done on the server!");
+  }
 
-    const jwt = getJwtCookie();
-    const verifiedUser = verifyUserJwt(jwt);
-    if (verifiedUser) {
-        return verifiedUser as User;
-    } else {
-        return null;
-    }
+  const jwt = getJwtCookie();
+  const verifiedUser = verifyUserJwt(jwt);
+  if (verifiedUser) {
+    return verifiedUser as User;
+  } else {
+    return null;
+  }
 }
