@@ -69,6 +69,17 @@ model User {
   updatedAssets Asset[] @relation(name: "assetUpdater")
   deletedAssets Asset[] @relation(name: "assetDeleter")
 
+
+  ownedNotebooks   Notebook[] @relation(name: "notebookOwner")
+  createdNotebooks Notebook[] @relation(name: "notebookCreator")
+  updatedNotebooks Notebook[] @relation(name: "notebookUpdater")
+  deletedNotebooks Notebook[] @relation(name: "notebookDeleter")
+
+  ownedNotes   Note[] @relation(name: "noteOwner")
+  createdNotes Note[] @relation(name: "noteCreator")
+  updatedNotes Note[] @relation(name: "noteUpdater")
+  deletedNotes Note[] @relation(name: "noteDeleter")
+
   // References
   campaignAccess  CampaignAccess[]
   moduleAccess    ModuleAccess[]
@@ -505,3 +516,67 @@ model Scene {
   // A JSON object containing the IDs of each asset used within the scene
   assets        Json  @default("{}")
 }
+
+// NOTEBOOKS MODULE //
+model Notebook {
+  id            String  @id @default(uuid()) @db.Uuid
+  name          String  @db.VarChar(128) // The name of the Notebook
+  source        NotebookSource
+
+  // Standard access tracking fields
+  ownedBy         String?  @db.Uuid
+  owner           User?    @relation(name: "notebookOwner", fields: [ownedBy], references: [id])
+  createdAt       DateTime?
+  createdBy       String?  @db.Uuid
+  creatingUser    User?    @relation(name: "notebookCreator", fields: [createdBy], references: [id])
+  updatedAt       DateTime?
+  updatedBy       String?  @db.Uuid
+  updatingUser    User?    @relation(name: "notebookUpdater", fields: [updatedBy], references: [id])
+  deletedAt       DateTime?
+  deletedBy       String?  @db.Uuid
+  deletingUser    User?    @relation(name: "notebookDeleter", fields: [deletedBy], references: [id])
+
+  notes           Note[]        @relation(name: "notebookNotes")
+  notebookTags    NotebookTag[] @relation(name: "notebookTags")
+}
+
+model Note {
+  id            String  @id @default(uuid()) @db.Uuid
+  notebookID    String 
+  notebook      Notebook  @relation(name: "notebookNotes", fields: [notebookID], references: [id])
+  name          String  @db.VarChar(128) // The name of the Note
+  content       String  @db.Text
+
+  // Standard access tracking fields
+  ownedBy         String?  @db.Uuid
+  owner           User?    @relation(name: "noteOwner", fields: [ownedBy], references: [id])
+  createdAt       DateTime?
+  createdBy       String?  @db.Uuid
+  creatingUser    User?    @relation(name: "noteCreator", fields: [createdBy], references: [id])
+  updatedAt       DateTime?
+  updatedBy       String?  @db.Uuid
+  updatingUser    User?    @relation(name: "noteUpdater", fields: [updatedBy], references: [id])
+  deletedAt       DateTime?
+  deletedBy       String?  @db.Uuid
+  deletingUser    User?    @relation(name: "noteDeleter", fields: [deletedBy], references: [id])
+
+  sourceTags      NotebookTag[] @relation(name: "sourceNotebookTags")
+  referencedTags  NotebookTag[] @relation(name: "referencedNoteTags")
+}
+
+model NotebookTag {
+  id            String  @id @default(uuid()) @db.Uuid
+  notebookID    String  @db.Uuid
+  notebook      Notebook  @relation(name: "notebookTags", fields: [notebookID], references: [id])
+
+  sourceNoteID        String  @db.Uuid
+  sourceNote          Note    @relation(name: "sourceNotebookTags", fields: [sourceNoteID], references: [id])
+
+  referencedNotes     Note[]    @relation(name: "referencedNoteTags")
+}
+
+enum NotebookSource {
+  USER
+  CAMPAIGN
+}
+
