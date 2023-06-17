@@ -28,12 +28,10 @@ export const notebookTypeDefs = gql`
 
   input NotebookCreateInput {
     name: String!
-    source: NotebookSource!
   }
 
   input NotebookMutateInput {
     name: String
-    source: NotebookSource
   }
 
   input NotebookInclude {

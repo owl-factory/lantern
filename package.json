@@ -16,6 +16,7 @@
     "@aws-sdk/s3-request-presigner": "^3.50.0",
     "@chakra-ui/icons": "^2.0.10",
     "@chakra-ui/react": "^2.2.9",
+    "@editorjs/editorjs": "^2.26.5",
     "@emotion/react": "^11.10.0",
     "@emotion/styled": "^11.10.0",
     "@monaco-editor/react": "^4.4.6",

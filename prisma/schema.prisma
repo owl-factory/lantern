@@ -135,6 +135,9 @@ model Campaign {
   accessLinks     CampaignAccessLink[]
   modules         CampaignModule[] // Modules available for search in this campaign
   scenes          Scene[]
+
+  notebooks       Notebook[]
+
 }
 
 // Keeps tracks of the modules used within a campaign
@@ -522,6 +525,10 @@ model Notebook {
   id            String  @id @default(uuid()) @db.Uuid
   name          String  @db.VarChar(128) // The name of the Notebook
   source        NotebookSource
+  
+  // The campaign that created this notebook, if any
+  campaignID    String?  @db.Uuid 
+  campaign      Campaign? @relation(fields: [campaignID], references: [id])
 
   // Standard access tracking fields
   ownedBy         String?  @db.Uuid
