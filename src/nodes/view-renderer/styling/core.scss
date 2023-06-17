@@ -1,0 +1,10 @@
+@import "./variables.scss";
+
+// The wrapper for the whole contents of the actor sheet
+.#{$wrapper-class} {
+  min-height: 65em;
+  width: 768px !important;
+  overflow-x: auto;
+
+  font-size: smaller;  
+}

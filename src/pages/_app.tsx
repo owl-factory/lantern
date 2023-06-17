@@ -3,6 +3,7 @@ import React from "react";
 import { AppProps } from "next/app";
 import Head from "next/head";
 import "./_app.scss";
+import "../nodes/view-renderer/styling/view-render.scss";
 import HeaderBar from "components/design/headerBar/HeaderBar";
 import { ChakraProvider } from "@chakra-ui/react";
 import { apolloClient } from "src/graphql/apollo-client";
