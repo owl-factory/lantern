@@ -23,6 +23,10 @@ import { parseExpression } from "../expression";
     children: [],
   };
 
+  if (descriptor.attributes.type === BoxType.Background && element.getAttribute("image")) {
+    descriptor.attributes.image = parseExpression(element.getAttribute("image"));
+  }
+
   descriptor.children = parseChildrenElements(element.children, state);
   return descriptor;
 }

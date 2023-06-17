@@ -5,9 +5,14 @@ import { ActiveData } from "nodes/active-data";
 import { ViewRenderer } from "nodes/view-renderer";
 import { ExpressionVariableType } from "nodes/view-renderer/enums/expressionVariableType";
 import { LoopAttributes } from "nodes/view-renderer/types/attributes";
+import { ExpressionVariable } from "nodes/view-renderer/types/expression";
 import { RenderProperties, RenderProps } from "nodes/view-renderer/types/renderProps";
+import { parseExpressionVariable } from "nodes/view-renderer/utilities/parse/layout/expression";
+import { runExpression } from "nodes/view-renderer/utilities/render/expression";
 import React from "react";
 import { ViewChildren } from "./Children";
+
+type ListItems = (string | Record<string, unknown>)[];
 
 /**
  * Renders a checkbox for use within a View
@@ -16,9 +21,23 @@ import { ViewChildren } from "./Children";
  * @param properties Any current render state
  */
 export const ViewLoop = observer((props: RenderProps<LoopAttributes>) => {
+  const [ listSource, setListSource ] = React.useState<ExpressionVariable | undefined>();
   const key = props.element.attributes.key; // The key used for storing the variable
 
-  const list = getList(props.renderID, props.element.attributes);
+  // Determines the list source. Function is required for determining an expression, such as one
+  // provided by a loop.
+  React.useEffect(() => {
+    getListSource(
+      props.renderID,
+      props.element.attributes,
+      props.properties
+    ).then((res: ExpressionVariable | undefined) => {
+      setListSource(res);
+    });
+  }, []);
+
+  const list = getList(props.renderID, { list: props.element.attributes.list, listSource });
+
   const loopedElements = [];
 
   let i = 0;
@@ -31,8 +50,8 @@ export const ViewLoop = observer((props: RenderProps<LoopAttributes>) => {
       $prefix: prefix,
       [key]: toJS(listItem),
     };
-    if (props.element.attributes.listSource) {
-      properties.$source[key] = props.element.attributes.listSource.fullVariable;
+    if (listSource) {
+      properties.$source[key] = listSource.fullVariable;
     }
 
     if (props.element.attributes.index) { properties[props.element.attributes.index] = i; }
@@ -55,9 +74,39 @@ export const ViewLoop = observer((props: RenderProps<LoopAttributes>) => {
   );
 });
 
-function getList(renderID: string, attributes: LoopAttributes): (string | Record<string, unknown>)[] {
-  if (attributes.list) { return attributes.list; }
+/**
+ * Determines the listSource value, including running an expression if needed
+ * @param renderID The ID of the current render
+ * @param attributes The attributes of the parsed loop element
+ * @param properties The current state of the actor sheet at this time of rendering
+ * @returns The listSource that the loop uses
+ */
+async function getListSource(renderID: string, attributes: LoopAttributes, properties: RenderProperties) {
+  if (attributes.list) { return undefined; }
+
   const sources = ViewRenderer.renders[renderID].sources;
+  let listSource;
+  if (attributes.listSource) { listSource = attributes.listSource; }
+  else if (attributes.listSourceExpression) {
+    listSource = parseExpressionVariable(await runExpression(sources, attributes.listSourceExpression, properties));
+  }
+
+  return listSource;
+}
+
+/**
+ * Determines the value of a list for the given list or listSource attribute
+ * @param renderID The ID of the current render
+ * @param attributes The list and listSource element of the render
+ * @returns An array of list items
+ */
+function getList(renderID: string, attributes: Partial<LoopAttributes>): ListItems {
+  if (attributes.list) { return attributes.list; }
+
+  const sources = ViewRenderer.renders[renderID].sources;
+
+  if (!attributes.listSource) { return []; }
+
   switch(attributes.listSource?.type) {
     case ExpressionVariableType.Content:
       if (!sources.actorID || !attributes.listSource.field) return [];

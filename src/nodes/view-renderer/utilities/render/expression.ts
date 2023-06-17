@@ -36,7 +36,9 @@ export async function runExpression(
  * @param sources The sources for these values
  * @param expr The expression that uses these values
  */
-export function fetchExpressionValues(sources: RenderSources, expr: Expression): unknown[] {
+export function fetchExpressionValues(sources: RenderSources, expr: Expression | undefined): unknown[] {
+  if (!expr) return [];
+
   const expressionValues: unknown[] = [];
   if (!expr.isExpression) return expressionValues;
 
