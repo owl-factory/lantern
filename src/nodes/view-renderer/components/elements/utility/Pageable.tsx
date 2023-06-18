@@ -30,7 +30,12 @@ export const ViewPageable = observer((props: RenderProps<PageableAttributes>) =>
   let i = 0;
   for (const descriptor of props.element.children || []) {
     pages.push(
-      <ViewPage {...props} element={descriptor as ElementDescriptor<{}>} group={props.element.attributes.id} index={i}/>
+      <ViewPage
+        key={`${props.properties.$prefix}_page-${i}`}
+        {...props}
+        element={descriptor as ElementDescriptor<{}>}
+        group={props.element.attributes.id} index={i}
+      />
     );
     i++;
   }
