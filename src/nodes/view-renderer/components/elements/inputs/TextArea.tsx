@@ -69,7 +69,7 @@ export function ViewTextArea(props: RenderProps<TextAreaAttributes>) {
         onChange={onChange}
         className={`input textarea ${className}`}
         rows={4}
-        defaultValue={defaultValue}
+        defaultValue={(getActorValue(sources.actorID, name, props.properties) || "").toString()}
       />
     </div>
   );

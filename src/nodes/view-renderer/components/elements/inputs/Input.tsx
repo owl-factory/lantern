@@ -54,6 +54,7 @@ export const ViewInput = observer((props: RenderProps<InputAttributes>) => {
   return (
     <div>
       <input
+        key={`${props.properties.prefix}_input`}
         ref={ref}
         id={id}
         type={type}
@@ -61,7 +62,7 @@ export const ViewInput = observer((props: RenderProps<InputAttributes>) => {
         className={`input ${type}-input ${className}`}
         onChange={onChange}
         autoComplete="off"
-        defaultValue={defaultValue}
+        value={(getActorValue(sources.actorID, name, props.properties) || "").toString()}
       />
     </div>
   );
