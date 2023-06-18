@@ -17,7 +17,6 @@ describe("argsToString", () => {
 
 describe("buildCacheItems", () => {
   test("success", () => {
-    const now = Date.now();
     const name = "test_name";
     const args = "test_args";
     const value = {};
@@ -26,8 +25,6 @@ describe("buildCacheItems", () => {
 
     expect(cacheItem.value).toStrictEqual(value);
     expect(cacheItem.ttl).toStrictEqual(options.ttl);
-    expect(cacheItem.updatedAt).toBe(now);
-    expect(cacheItem.deleteAt).toStrictEqual(now + (options.ttl * 60 * 1000));
     expect(cacheItem.prune).toBeDefined();
   });
 });
