@@ -41,6 +41,8 @@ class ActiveDataClass {
   // Used for automatically saving the data after a small period of time
   protected changeTimeout: ReturnType<typeof setTimeout> | undefined = undefined;
 
+  protected locks: Record<string, true> = {};
+
   constructor() {
     makeObservable(this, {
       actors: observable,
@@ -79,11 +81,10 @@ class ActiveDataClass {
   public setActor(id: string, field: string, value: Scalar | null): void {
     if (!(id in this.actors)) { this.actors[id] = { }; }
     this.actors[id][field] = value;
-    this.actorChangeList[id] = true;
 
     if (!(id in this.actorChanges)) { this.actorChanges[id] = { }; }
     this.actorChanges[id][field] = value;
-    this.markChange();
+    this.markActorChange(id);
   }
 
   /**
@@ -135,7 +136,7 @@ class ActiveDataClass {
   public setContents(id: string, field: string, value: ActorContent[]) {
     if (!(id in this.content)) { this.content[id] = {}; }
     this.content[id][field] = value;
-    this.markChange();
+    this.markActorChange(id);
   }
 
   /**
@@ -149,8 +150,7 @@ class ActiveDataClass {
     if (!(id in this.content)) this.content[id] = {};
     if (!(field in this.content[id])) this.content[id][field] = [];
     this.content[id][field][index] = value;
-    this.actorChangeList[id] = true;
-    this.markChange();
+    this.markActorChange(id);
   }
 
   /**
@@ -164,8 +164,7 @@ class ActiveDataClass {
     if (!(field in this.content[id])) this.content[id][field] = [];
     if (!(index in this.content[id][field])) this.content[id][field][index] = {};
     this.content[id][field][index][contentField] = value;
-    this.actorChangeList[id] = true;
-    this.markChange();
+    this.markActorChange(id);
   }
 
   /**
@@ -222,6 +221,22 @@ class ActiveDataClass {
   }
 
   /**
+   * Locks a document, preventing writes to the database
+   * @param id The ID of a document to lock, preventing writes to the database
+   */
+  public lock(id: string) {
+    this.locks[id] = true;
+  }
+
+  /**
+   * Unlocks a document to be saved again
+   * @param id The ID of the document to unlock, allowing for writes to the database
+   */
+  public unlock(id: string) {
+    delete this.locks[id];
+  }
+
+  /**
    * Saves and flushes all changes that have been made to the database. Builds the query for each individual actor,
    * submits them, then updates their values in the Active Data to ensure that they are completely up to date
    */
@@ -240,12 +255,14 @@ class ActiveDataClass {
 
     // Build the mutations, arguments, and variables for each actor
     for (let i = 0; i < actorChangeIDs.length; i++) {
+      const id = actorChangeIDs[i];
+      if (this.locks[id] === true) { continue; }
+
       args += `$id_${i}: String!, $actor_${i}: ActorMutateInput!, `;
       mutations += `actor_${i}: mutateActor(id: $id_${i}, actor: $actor_${i}) {
         id, name, fields, content
       }
       `;
-      const id = actorChangeIDs[i];
       variables[`id_${i}`] = id;
       variables[`actor_${i}`] = { fields: this.actors[id], content: this.content[id] };
     }
@@ -287,6 +304,16 @@ class ActiveDataClass {
         continue;
       }
     }
+  }
+
+  /**
+   * Marks an actor as having changed. IDs prefixed with an underscore or locked will not be saved
+   * @param id The ID of the actor that has changewd
+   */
+  protected markActorChange(id: string) {
+    if (!id || id[0] === "_" || this.locks[id] === true) return;
+    this.actorChangeList[id] = true;
+    this.markChange();
   }
 
   /**

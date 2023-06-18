@@ -29,6 +29,7 @@ import {
   parsePageableElement,
   parseTabsElement,
 } from "./utility";
+import { parsePrefabElement } from "./utility/prefab";
 
 /**
  * Parses an unknown element into an ElementDescriptor
@@ -91,6 +92,8 @@ export function parseUnknownElement(element: Element, state: ParseState): Elemen
         return parseLoopElement(element, state);
       case ElementType.Pageable:
         return parsePageableElement(element, state);
+      case ElementType.Prefab:
+        return parsePrefabElement(element, state);
       case ElementType.Tabs:
         return parseTabsElement(element, state);
       default:

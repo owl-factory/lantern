@@ -1,0 +1,85 @@
+@import "./variables.scss";
+
+// Core
+.#{$wrapper-class} .tabs {
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+// Class Defaults
+.#{$wrapper-class} .tabs {
+  border: 0.25em;
+  border-radius: 5px;
+
+  .tab {
+    &.tab-active {
+      background-color: lightblue;
+    }
+  }
+}
+
+// Nothing class that undoes every tab style
+.null-tab {
+  border: 0;
+  border-radius: 0;
+}
+
+// Default Class Options
+.#{$wrapper-class} .tabs {
+  // A bar with a single line wrapped around it like wire
+  &.default-wrapped-bar {
+    @extend .null-tab;
+    display: flex;
+    border-bottom: 1px solid lightgray;
+
+    .tab {
+      width: 8em;
+      padding: 5px;
+
+      position: relative;
+      top: 1px;
+      text-align: center;
+
+      &.tab-active {
+        background-color: white;
+        border: 1px solid lightgray;
+        border-bottom: 0px none;
+
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+      }
+    }
+  }
+
+  // Renders the tabs as buttons
+  &.default-buttons {
+    @extend .null-tab;
+
+    display: flex;
+    width: fit-content;
+    float: right;
+    
+    .tab {
+      width: fit-content;
+      border: 1px solid black;
+      border-radius: 5px;
+
+      font-size: small;
+      padding-left: 5px;
+      padding-right: 5px;
+      background-color: lightgray;
+      font-weight: bold;
+      text-transform: uppercase;
+
+      &:hover {
+        cursor: pointer;
+      }
+
+      &.tab-active {
+        background-color: red;
+        color: white;
+      }
+    }
+  }
+}

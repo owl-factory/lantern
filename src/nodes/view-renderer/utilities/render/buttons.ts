@@ -15,7 +15,7 @@ import { StateType } from "nodes/view-renderer/enums/stateType";
   if (!sources.actorID) { return; } // Do nothing if this doesn't exist
 
   // Grab any existing contents to add a new element to
-  const contents = ActiveData.getContents(sources.actorID, contentGroup) || [];
+  const contents = [...(ActiveData.getContents(sources.actorID, contentGroup) || [])];
   contents.push({});
   ActiveData.setContents(sources.actorID, contentGroup, contents);
 }
@@ -31,7 +31,7 @@ export function deleteContent(renderID: string, contentGroup: string, index: num
   if (!sources.actorID) { return; } // Do nothing if this doesn't exist
 
   // Grab any existing contents to add a new element to
-  const contents = ActiveData.getContents(sources.actorID, contentGroup) || [];
+  const contents = [...(ActiveData.getContents(sources.actorID, contentGroup) || [])];
   contents.splice(index, 1);
   ActiveData.setContents(sources.actorID, contentGroup, contents);
 }

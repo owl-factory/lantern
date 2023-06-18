@@ -1,0 +1,13 @@
+@import "./variables.scss";
+
+// Core
+.#{$wrapper-class} .button {
+  font-size: small;
+
+  padding: 0.25em;
+  height: auto;
+
+  &:hover {
+    cursor: pointer;
+  }
+}

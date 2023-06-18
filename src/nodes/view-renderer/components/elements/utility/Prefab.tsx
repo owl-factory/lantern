@@ -1,10 +1,8 @@
 import { Box } from "@chakra-ui/react";
-import { observer } from "mobx-react-lite";
-import { ActiveData } from "nodes/active-data";
+import { toJS } from "mobx";
 import { ViewRenderer } from "nodes/view-renderer";
-import { CheckboxAttributes, PrefabAttributes } from "nodes/view-renderer/types/attributes";
+import { PrefabAttributes } from "nodes/view-renderer/types/attributes";
 import { RenderProps } from "nodes/view-renderer/types/renderProps";
-import { fetchExpressionValues, runExpression } from "nodes/view-renderer/utilities/render/expression";
 import React from "react";
 import { ViewChildren } from "./Children";
 
@@ -23,12 +21,23 @@ export function ViewPrefab(props: RenderProps<PrefabAttributes>) {
   const render = ViewRenderer.renders[props.renderID];
   const view = ViewRenderer.views[render.viewID];
   if (!render || !view || !view.prefabs) { return <NullPrefab/>; }
-  
+
   const prefab = view.prefabs[props.element.attributes.name];
+
+  const properties = {
+    ...props.properties,
+  };
+
+  // Handles the different arguments that can be added to the prefab
+  // TODO - run as expressions instead of strings
+  const keys = Object.keys(props.element.attributes.arguments);
+  for (const key of keys) {
+    properties[key] = toJS(props.element.attributes.arguments[key]);
+  }
 
   return (
     <Box className={`prefab`}>
-      <ViewChildren renderID={props.renderID} elements={prefab || []} properties={props.properties}/>
+      <ViewChildren renderID={props.renderID} elements={prefab || []} properties={properties}/>
     </Box>
   );
 }
