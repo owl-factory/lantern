@@ -1,0 +1,6 @@
+@import "./variables.scss";
+
+.#{$wrapper-class} .row {
+  display: flex;
+  margin-bottom: 5px;
+}

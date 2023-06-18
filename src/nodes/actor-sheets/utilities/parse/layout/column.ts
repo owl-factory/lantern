@@ -3,6 +3,7 @@ import { SheetState } from "nodes/actor-sheets/types";
 import { ColumnDescriptor } from "nodes/actor-sheets/types/elements";
 import { splitExpressionValue } from "../../expressions/parse";
 import { parseChildrenElements } from "../children";
+
 /**
  * Converts a column element into a column element descriptor
  * @param element The column element to convert

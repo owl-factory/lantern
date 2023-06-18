@@ -16,6 +16,7 @@ import { ViewChildren } from "../utility";
 export const ViewBox = observer((props: RenderProps<BoxAttributes>) => {
   const sources = ViewRenderer.renders[props.renderID].sources;
   const [ className, setClassName ] = React.useState("");
+  const [ image, setImage ] = React.useState<string | undefined>(undefined);
 
   // Class Name
   React.useEffect(() => {
@@ -24,9 +25,28 @@ export const ViewBox = observer((props: RenderProps<BoxAttributes>) => {
     });
   }, fetchExpressionValues(sources, props.element.attributes.className) as unknown[]);
 
+  // Image
+  React.useEffect(() => {
+    if (!props.element.attributes.image) return;
+    runExpression(sources, props.element.attributes.image, props.properties).then((res: string) => {
+      setImage(res);
+    });
+  }, fetchExpressionValues(sources, props.element.attributes.image) as unknown[]);
+
+  function buildClasses() {
+    if (image) { return "default-background-image"; }
+    return "";
+  }
+
+  function buildStyles() {
+    const style = {
+      backgroundImage: image ? `url(${image})` : undefined,
+    };
+    return style;
+  }
 
   return (
-    <Box className={`box ${props.element.attributes.type} ${className}`}>
+    <Box className={`box ${props.element.attributes.type} ${buildClasses()} ${className}`} style={buildStyles()}>
       <ViewChildren renderID={props.renderID} elements={props.element.children || []} properties={props.properties}/>
     </Box>
   );
