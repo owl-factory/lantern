@@ -1,5 +1,4 @@
 import { action, makeObservable, observable, toJS } from "mobx";
-import { RulesetDocument } from "types/documents";
 import { PageDescriptor } from "nodes/actor-sheets/types/elements";
 import { GenericSheetElementDescriptor } from "nodes/actor-sheets/types/elements/generic";
 import { SheetController } from "./subcontrollers/SheetController";
@@ -23,9 +22,9 @@ import { Actor, ActorSheet, Ruleset } from "@prisma/client";
 /**
  * Handles rendering all actor sheets and populating them with data
  */
-class $ActorController {
-  public $renders: Record<string, RenderGroup> = {};
-  public $variables: Record<string, Scalar | Scalar[]> = {};
+class ActorControllerClass {
+  public _renders: Record<string, RenderGroup> = {};
+  public _variables: Record<string, Scalar | Scalar[]> = {}; // TODO - give this a proper type for clarity
 
   protected dataController = new DataController();
   protected sheetController = new SheetController();
@@ -33,7 +32,8 @@ class $ActorController {
 
   constructor() {
     makeObservable(this, {
-      $renders: observable,
+      // TODO - see if we can not observe this, but determine changes based on computed functions
+      _renders: observable,
 
       newRender: action,
       endRender: action,
@@ -47,9 +47,9 @@ class $ActorController {
    * @param rulesetID The reference to the ruleset used in this render. If null, empty values will be used instead
    * @param sheetID The reference to the sheet used in this render
    */
-   public newRender(actorID: string | null, rulesetID: string | null, sheetID: string, renderID?: string): string {
+  public newRender(actorID: string | null, rulesetID: string | null, sheetID: string, renderID?: string): string {
     const id = renderID || actorID || sheetID;
-    this.$renders[id] = { actorID: actorID || "temp-actor", sheetID, rulesetID: rulesetID || "temp-ruleset" };
+    this._renders[id] = { actorID: actorID || "temp-actor", sheetID, rulesetID: rulesetID || "temp-ruleset" };
 
     return id;
   }
@@ -60,7 +60,7 @@ class $ActorController {
    */
   public endRender(renderID: string) {
     // TODO - add counting for render items for garbage collection
-    delete this.$renders[renderID];
+    delete this._renders[renderID];
   }
 
   /** LOAD **/
@@ -187,7 +187,7 @@ class $ActorController {
    * @param index Optional. The index of the array to draw data from
    */
   protected get(source: DataSource, renderID: string, key: string, index?: number) {
-    const renderIDs = this.$renders[renderID];
+    const renderIDs = this._renders[renderID];
     try {
       return this.dataController.get(source, renderIDs, key, index);
     } catch (e) {
@@ -250,7 +250,7 @@ class $ActorController {
    * @param index Optional. The index of the array to set data at
    */
   protected set(source: DataSource, renderID: string, value: any, key: string, index?: number) {
-    const renderIDs = this.$renders[renderID];
+    const renderIDs = this._renders[renderID];
     try {
       this.dataController.set(source, renderIDs, value, key, index);
       // Sets to the web worker on a change
@@ -272,7 +272,7 @@ class $ActorController {
    * @param renderID The ref of the render to check for the actor's true ref
    */
   public exportActor(renderID: string): Partial<Actor> {
-    const actorID = this.$renders[renderID].actorID;
+    const actorID = this._renders[renderID].actorID;
     const actor: Partial<Actor> = {};
     actor.id = actorID;
     actor.fields = this.export(DataSource.Actor, renderID) as Record<string, Scalar> | undefined;
@@ -286,7 +286,7 @@ class $ActorController {
    * @param renderID The ID of the render to export data from
    */
   protected export(source: DataSource, renderID: string) {
-    const renderIDs = this.$renders[renderID];
+    const renderIDs = this._renders[renderID];
     try {
       return this.dataController.export(source, renderIDs);
     } catch (e) {
@@ -304,7 +304,7 @@ class $ActorController {
    */
   public getSheet(ref: string): PageDescriptor {
     let sheetRef = "";
-    if (this.$renders[ref]) { sheetRef = this.$renders[ref].sheetID; }
+    if (this._renders[ref]) { sheetRef = this._renders[ref].sheetID; }
     return this.sheetController.getSheet(sheetRef);
   }
 
@@ -338,7 +338,7 @@ class $ActorController {
    */
   public getTabs(renderID: string, key: string) {
     let sheetRef = "";
-    if (this.$renders[renderID]) { sheetRef = this.$renders[renderID].sheetID; }
+    if (this._renders[renderID]) { sheetRef = this._renders[renderID].sheetID; }
     return this.sheetController.getTabs(sheetRef, key);
   }
 
@@ -357,7 +357,7 @@ class $ActorController {
   ): Promise<Record<string, string>> {
     const parsedVariables: Record<string, string> = {};
 
-    const renderIDs = this.$renders[renderID];
+    const renderIDs = this._renders[renderID];
 
     for (const attributeName of attributes) {
       if (!(attributeName in element)) { continue; }
@@ -431,5 +431,5 @@ class $ActorController {
   }
 }
 
-export const ActorController = new $ActorController();
-
+export const __testing__ = { ActorControllerClass };
+export const ActorController = new ActorControllerClass();

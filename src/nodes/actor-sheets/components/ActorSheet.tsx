@@ -56,7 +56,7 @@ export const ActorSheetComponent = observer((props: ActorSheetProps) => {
     saveActor({ variables: { id: props.id, actor: { fields: actor.fields, content: actor.content } }});
   }
 
-  const sheetID = ActorController.$renders[props.id]?.sheetID || "";
+  const sheetID = ActorController._renders[props.id]?.sheetID || "";
 
   return (
     <>
