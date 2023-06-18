@@ -3,20 +3,12 @@ import { read } from "@owl-factory/utilities/objects";
 /**
  * Converts an array of strings into a comma-delimited list. Eg "a, b, c"
  * @param arr The array to convert to a comma-delimited list
- * TODO - move to utilities/string?
+ * TODO - delete this and replace with arr.join when needed
  */
 export function arrayToList(arr?: string[]): string {
-  let list = "";
+  const list = "";
   if (arr === undefined || !Array.isArray(arr)) { return list; }
-
-  const lastIndex = arr.length - 1;
-  let i = 0;
-  for (const item of arr) {
-    list += item;
-    i++;
-    if (i !== lastIndex) { list += ", ";}
-  }
-  return list;
+  return arr.join(", ");
 }
 
 
