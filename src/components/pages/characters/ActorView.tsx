@@ -1,4 +1,5 @@
 import { gql, useLazyQuery } from "@apollo/client";
+import { Alerts } from "@owl-factory/alerts";
 import { ActiveData } from "nodes/active-data";
 import { ViewRender, ViewRenderer, ViewType } from "nodes/view-renderer";
 import { RenderSources } from "nodes/view-renderer/types/render";
@@ -23,6 +24,7 @@ const GET_ACTOR = gql`
         styling
       },
       campaignID,
+      rulesetID,
       ruleset {
         id,
         name,
@@ -59,17 +61,25 @@ export function ActorView(props: ActorViewProps) {
     );
   });
 
+  // Required for posting the Alert without issue
+  React.useEffect(() => {
+    if (!error) return;
+    Alerts.error({ title: "GraphQL Error", description: "An error has occured when attempting to fetch a character."});
+  }, [error]);
+
+
   if (props.activeActor === undefined) {
     return <>Select a character</>;
   }
 
-  if (loading || data === undefined) { return <>Loading</>; }
-  if (error) { return <>Error! {error}</>; }
+  if (data === undefined) { return <></>; }
+  else if (loading) { return <>Loading</>; }
+  else if (error) { return <></>; }
 
   const sources: RenderSources = {
     actorID: data.actor.id,
     campaignID: data.actor.campaignID,
-    rulesetID: data.actor.ruleset.id,
+    rulesetID: data.actor.rulesetID,
     sheetID: data.actor.actorSheet.id,
   };
 
