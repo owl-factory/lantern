@@ -1,5 +1,5 @@
 import { makeAutoObservable } from "mobx";
-import Peer, { DataConnection } from "peerjs";
+import Peer, { DataConnection, PeerJSOption } from "peerjs";
 import { Socket } from "socket.io-client";
 import { UserDocument } from "types/documents";
 import { Dispatch, DispatchEvent, GameState, HostPriorityQueue } from "types/lantern/play";
@@ -17,7 +17,7 @@ export class GameServer {
   protected debug = true; // True to post debug information
 
   protected peerID?: string; // This connection's peer ID
-  protected peerConfig: Peer.PeerJSOption; // The configuration for connecting to the peer.
+  protected peerConfig: PeerJSOption; // The configuration for connecting to the peer.
 
   protected socketAddress: string; // The socket connection address
 
