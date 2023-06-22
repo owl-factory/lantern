@@ -1,7 +1,7 @@
 import { cache } from "../controllers/CacheManager";
 import { Cacheable, cacheWrapper } from "../utilities/decorators";
 
-jest.mock("@owl-factory/cache/async");
+jest.mock("@owl-factory/cache/utilities/async");
 
 const ttl = 30;
 const name = "name";

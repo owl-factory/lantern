@@ -1,4 +1,3 @@
-import { Scalar } from "types";
 import { RenderGroup, SheetProperties } from ".";
 import { DataSource } from "../enums/dataSource";
 import { WorkerAction } from "../enums/workerAction";

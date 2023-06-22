@@ -1,7 +1,7 @@
 import { CacheManager } from "../controllers/CacheManager";
 import { CacheItem } from "../types";
 
-jest.mock("@owl-factory/cache/async");
+jest.mock("@owl-factory/cache/utilities/async");
 
 const name = "name";
 const args = "args";

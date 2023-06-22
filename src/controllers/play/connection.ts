@@ -21,7 +21,8 @@ export function connect(this: GameServer, campaignID: string, user: UserDocument
   this.socket.on(`connect`, () => {
     this.log(`Socket successfully connected`);
 
-    this.peer = new Peer(this.peerID, this.peerConfig);
+    // TODO - do something about the undefined case
+    this.peer = new Peer(this.peerID ?? "", this.peerConfig);
     this.peer.on(`open`, () => {
       this.log(`Peer successfully connected`);
       this.joinTable();
@@ -29,8 +30,8 @@ export function connect(this: GameServer, campaignID: string, user: UserDocument
 
     // Handles errors with the peer server and connection
     // TODO - better handling?
-    this.peer.on(`error`, (err: Record<string, unknown>) => {
-      switch(err.type) {
+    this.peer.on(`error`, (err: Error) => {
+      switch((err as Error & { type: string}).type) {
         case `browser-incompatible`:
         case `invalid-id`:
         case `invalid-key`:
@@ -67,8 +68,8 @@ export function connectToPlayer(this: GameServer, peerID: string): void {
   this.log(`Connecting to new player ${peerID}`);
   this.channels[peerID] = this.peer.connect(peerID);
 
-  this.channels[peerID].on(`data`, (data: Dispatch) => {
-    this.handleDispatch(data);
+  this.channels[peerID].on(`data`, (data: unknown) => {
+    this.handleDispatch(data as Dispatch);
   });
 
   if (this.peer.id !== this.host) { return; }
@@ -135,9 +136,9 @@ export function joinTable(this: GameServer): void {
     this.checkIfReady();
 
     // Handles receiving data through the channel
-    this.channels[channel.peer].on(`data`, (data: Dispatch) => {
+    this.channels[channel.peer].on(`data`, (data: unknown) => {
       this.log(this.channels);
-      this.handleDispatch(data);
+      this.handleDispatch(data as Dispatch);
     });
   });
 
