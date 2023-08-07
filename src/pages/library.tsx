@@ -6,7 +6,7 @@ import { NextPageContext } from "next";
 import { observer } from "mobx-react-lite";
 import { FileDocument } from "types/documents";
 import { InitialProps } from "types/client";
-import { handleAPI } from "@owl-factory/https";
+import { handleAPI } from "nodes/https";
 import { getLibraryPage } from "./api/library";
 
 interface LibraryProps extends InitialProps {

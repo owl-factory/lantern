@@ -1,4 +1,4 @@
-import { rest } from "@owl-factory/https";
+import { rest } from "nodes/https";
 import { ViewType } from "nodes/view-renderer/enums/viewType";
 
 /**

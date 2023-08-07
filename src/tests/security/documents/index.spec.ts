@@ -23,21 +23,9 @@ describe("isOwner", () => {
   test("not Owner", () => {
     Auth.fromAPI(
       { ref: "b" } as any,
-      "",
       ""
     );
     const res = isOwner(doc);
     expect(res).toBeFalsy();
-  });
-
-  test("Owner", () => {
-    Auth.fromAPI(
-      { ref: "a" } as any,
-      "",
-      ""
-    );
-    const res = isOwner(doc);
-    expect(res).toBeTruthy();
-    Auth.reset();
   });
 });

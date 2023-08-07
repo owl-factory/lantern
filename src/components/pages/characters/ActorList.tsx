@@ -5,7 +5,7 @@ import { Actor, ActorType, Ruleset } from "@prisma/client";
 import React from "react";
 import { NewActorModal } from "./NewActorModal";
 import { DeleteActorAlert } from "./DeleteActorAlert";
-import { Alerts } from "@owl-factory/alerts";
+import { Alerts } from "nodes/alerts";
 
 interface CharacterListProps {
   activeActor: string | undefined;

@@ -1,4 +1,4 @@
-import { Input } from "@owl-factory/components/form";
+import { Input } from "components/form";
 import React, { ChangeEvent } from "react";
 
 interface StaticVariableScalarInputProps {

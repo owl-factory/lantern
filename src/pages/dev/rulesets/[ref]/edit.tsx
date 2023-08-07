@@ -5,8 +5,8 @@ import { RulesetForm } from "components/lantern/rulesets/Form";
 import Link from "next/link";
 import { Button } from "@chakra-ui/react";
 import { Ruleset } from "@prisma/client";
-import { rest } from "@owl-factory/https";
-import { Alerts } from "@owl-factory/alerts";
+import { rest } from "nodes/https";
+import { Alerts } from "nodes/alerts";
 import { NextPageContext } from "next";
 
 interface EditRulesetProps {

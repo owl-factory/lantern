@@ -1,5 +1,5 @@
 import { NextApiRequest } from "next";
-import { HTTPHandler, createEndpoint } from "@owl-factory/https/backend";
+import { HTTPHandler, createEndpoint } from "nodes/https/backend";
 import { PrismaClient } from "@prisma/client";
 import { pbkdf2, randomBytes } from "crypto";
 import { signinAs } from "nodes/user/jwt";

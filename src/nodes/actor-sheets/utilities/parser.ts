@@ -1,4 +1,4 @@
-import { isServer } from "@owl-factory/utilities/client";
+import { isServer } from "utilities/client";
 
 let domParser: any = null;
 

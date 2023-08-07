@@ -5,13 +5,12 @@ import { Formik, Form as FormikForm } from "formik";
 import { Button } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { ImageSelectionWrapper } from "components/lantern/images/ImageSelectionWrapper";
-import { Checkbox, Input } from "@owl-factory/components/form";
+import { Checkbox, Input } from "components/form";
 import { observer } from "mobx-react-lite";
 import Link from "next/link";
 import { AssetUploadSource } from "types/enums/files/createMethod";
-import { arrayToList } from "@owl-factory/utilities/arrays";
 import { Auth } from "controllers/auth";
-import { Loading } from "@owl-factory/components/loading";
+import { Loading } from "components/loading";
 import { User } from "@prisma/client";
 
 /**

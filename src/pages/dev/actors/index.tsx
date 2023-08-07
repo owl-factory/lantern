@@ -1,5 +1,5 @@
 import { Button } from "@chakra-ui/react";
-import { Ref64 } from "@owl-factory/types";
+import { Ref64 } from "types";
 import { Actor, ActorType, Ruleset } from "@prisma/client";
 import { Page } from "components/design";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "components/elements/table";

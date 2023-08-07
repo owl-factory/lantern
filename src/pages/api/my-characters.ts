@@ -1,8 +1,8 @@
 import "reflect-metadata";
 import { NextApiRequest } from "next";
 
-import { HTTPHandler, createEndpoint } from "@owl-factory/https/backend";
-import { getUniques } from "@owl-factory/utilities/arrays";
+import { HTTPHandler, createEndpoint } from "nodes/https/backend";
+import { getUniques } from "utilities/arrays";
 
 /**
  * Gets a list of a user's characters

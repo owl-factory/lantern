@@ -1,4 +1,4 @@
-import { AlertMessage } from "@owl-factory/alerts";
+import { AlertMessage } from "nodes/alerts";
 
 /**
  * Ensures that an error message is packaged into the correct format before sending it off.

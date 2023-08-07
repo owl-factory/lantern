@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { NextApiRequest } from "next";
 
-import { HTTPHandler, createEndpoint } from "@owl-factory/https/backend";
+import { HTTPHandler, createEndpoint } from "nodes/https/backend";
 import { requireLogin, requirePermission } from "utilities/validation/account";
 
 /**

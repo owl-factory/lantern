@@ -1,6 +1,6 @@
 import { Button } from "@chakra-ui/react";
-import { Alerts } from "@owl-factory/alerts";
-import { rest } from "@owl-factory/https";
+import { Alerts } from "nodes/alerts";
+import { rest } from "nodes/https";
 import { ActorSheet, Ruleset } from "@prisma/client";
 import { Page } from "components/design";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "components/elements/table";

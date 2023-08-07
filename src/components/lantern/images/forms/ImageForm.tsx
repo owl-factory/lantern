@@ -1,9 +1,9 @@
-import { SelectionTabs } from "@owl-factory/components/SelectionTabs";
 import React from "react";
 import { FileDocument } from "types/documents";
 import { AssetUploadSource } from "types/enums/files/createMethod";
 import { LinkImageForm, UploadImageForm } from ".";
 import { ImageList, ListFormat } from "..";
+import { SelectionTabs } from "components/SelectionTabs";
 
 const APPROVED_TABS = [ "list", "link", "upload" ];
 

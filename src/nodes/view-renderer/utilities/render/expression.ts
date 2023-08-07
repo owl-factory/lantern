@@ -1,4 +1,4 @@
-import { set } from "@owl-factory/utilities/objects";
+import { set } from "utilities/objects";
 import { ActiveData } from "nodes/active-data";
 import { Mediator } from "nodes/mediator";
 import { MediatorRequest } from "nodes/mediator/types/mediator";

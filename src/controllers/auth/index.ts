@@ -1,4 +1,4 @@
-import { AuthController, setGlobalAuth } from "@owl-factory/auth";
+import { AuthController, setGlobalAuth } from "nodes/auth";
 import { User } from "@prisma/client";
 
 // The authetication controller for Lantern

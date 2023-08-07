@@ -1,5 +1,5 @@
 import { gql, useLazyQuery } from "@apollo/client";
-import { Alerts } from "@owl-factory/alerts";
+import { Alerts } from "nodes/alerts";
 import { ActiveData } from "nodes/active-data";
 import { ViewRender, ViewRenderer, ViewType } from "nodes/view-renderer";
 import { RenderSources } from "nodes/view-renderer/types/render";

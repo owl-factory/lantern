@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { NextApiRequest } from "next";
 
-import { HTTPHandler, HttpHandlerReturnType, createEndpoint } from "@owl-factory/https/backend";
+import { HTTPHandler, HttpHandlerReturnType, createEndpoint } from "nodes/https/backend";
 import { ActorSheet } from "@prisma/client";
 
 /**

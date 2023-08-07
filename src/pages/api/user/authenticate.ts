@@ -1,4 +1,4 @@
-import { HTTPHandler, createEndpoint } from "@owl-factory/https/backend";
+import { HTTPHandler, createEndpoint } from "nodes/https/backend";
 import { NextApiRequest } from "next";
 import { authenticate } from "nodes/user/jwt";
 

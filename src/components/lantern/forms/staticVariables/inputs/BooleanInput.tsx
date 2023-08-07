@@ -1,4 +1,4 @@
-import { RadioButton } from "@owl-factory/components/form";
+import { RadioButton } from "components/form";
 import React, { ChangeEvent } from "react";
 
 interface StaticVariableScalarInputProps {

@@ -1,4 +1,4 @@
-import { isValidRef } from "@owl-factory/data/utilities/fields";
+import { isValidRef } from "utilities/fields";
 
 /**
  * Validates the ref

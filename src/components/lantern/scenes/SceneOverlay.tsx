@@ -1,5 +1,5 @@
 import { Button } from "@chakra-ui/react";
-import { Drawer, DrawerContent } from "@owl-factory/components/drawer/Drawer";
+import { Drawer, DrawerContent } from "components/drawer/Drawer";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { MdGridOn, MdImage, MdSupervisorAccount } from "react-icons/md";

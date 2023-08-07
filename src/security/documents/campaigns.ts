@@ -1,4 +1,4 @@
-import { Ref64 } from "@owl-factory/types";
+import { Ref64 } from "types";
 import { Auth } from "controllers/auth";
 import { AnyDocument, CampaignDocument } from "types/documents";
 import { isOwner } from ".";

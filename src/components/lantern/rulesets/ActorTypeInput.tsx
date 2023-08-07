@@ -1,6 +1,6 @@
 import { Button } from "@chakra-ui/react";
-import { Input, Select } from "@owl-factory/components/form";
-import { getUniques } from "@owl-factory/utilities/arrays";
+import { Input, Select } from "components/form";
+import { getUniques } from "utilities/arrays";
 import { Formik, FormikProps } from "formik";
 import { useRouter } from "next/router";
 import React from "react";

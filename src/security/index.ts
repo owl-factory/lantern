@@ -1,4 +1,4 @@
-import { read, set } from "@owl-factory/utilities/objects";
+import { read, set } from "utilities/objects";
 import { AnyDocument } from "types/documents";
 
 /**

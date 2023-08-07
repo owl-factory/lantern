@@ -7,8 +7,8 @@ import { CampaignDocument, FileDocument, UserDocument } from "types/documents";
 import { observer } from "mobx-react-lite";
 import { InitialProps } from "types/client";
 import { AssetUploadSource } from "types/enums/files/createMethod";
-import { Ref64 } from "@owl-factory/types";
-import { getUniques } from "@owl-factory/utilities/arrays";
+import { Ref64 } from "types";
+import { getUniques } from "utilities/arrays";
 
 interface BannerProps {
   campaign: CampaignDocument;

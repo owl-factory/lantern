@@ -1,4 +1,4 @@
-import { Select } from "@owl-factory/components/form";
+import { Select } from "components/form";
 import { observer } from "mobx-react-lite";
 import React from "react";
 

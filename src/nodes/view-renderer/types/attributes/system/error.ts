@@ -1,4 +1,4 @@
-import { AlertMessage } from "@owl-factory/alerts";
+import { AlertMessage } from "nodes/alerts";
 
 export interface ErrorAttributes {
   error: any;// string | AlertMessage;

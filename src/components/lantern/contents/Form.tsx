@@ -1,5 +1,5 @@
 import { Button } from "@chakra-ui/react";
-import { Input, Select } from "@owl-factory/components/form";
+import { Input, Select } from "components/form";
 import { Content } from "@prisma/client";
 import { Form, Formik, FormikProps } from "formik";
 import { observer } from "mobx-react-lite";

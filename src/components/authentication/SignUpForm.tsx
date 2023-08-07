@@ -3,7 +3,7 @@ import { ErrorMessage, Formik, Form as FormikForm } from "formik";
 import { signUp } from "utilities/auth";
 import { signUpValidationSchema } from "utilities/validation/users/signup";
 import { Button } from "@chakra-ui/react";
-import { Input } from "@owl-factory/components/form";
+import { Input } from "components/form";
 
 /** Initial form values */
 const initialValues = {

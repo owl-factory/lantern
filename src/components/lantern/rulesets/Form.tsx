@@ -1,6 +1,6 @@
 import { Button } from "@chakra-ui/react";
-import { Input } from "@owl-factory/components/form";
-import { ServerResponse } from "@owl-factory/https";
+import { Input } from "components/form";
+import { ServerResponse } from "nodes/https";
 import { Ruleset } from "@prisma/client";
 import { Form, Formik, FormikHelpers, FormikProps } from "formik";
 import React from "react";

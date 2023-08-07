@@ -1,6 +1,6 @@
 import { ApolloError, gql, useMutation, useQuery } from "@apollo/client";
-import { Alerts } from "@owl-factory/alerts";
-import { Input, Select } from "@owl-factory/components/form";
+import { Alerts } from "nodes/alerts";
+import { Input, Select } from "components/form";
 import { ActorSheet } from "@prisma/client";
 import { Form, Formik, FormikHelpers } from "formik";
 import React from "react";

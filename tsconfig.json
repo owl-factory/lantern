@@ -23,9 +23,6 @@
     "strict": true,
     "baseUrl": ".",
     "paths": {
-      "@owl-factory/*": [
-        "src/@owl-factory/*"
-      ],
       "controllers": [
         "src/controllers"
       ],

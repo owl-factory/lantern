@@ -1,8 +1,8 @@
 import "reflect-metadata";
 import { NextApiRequest } from "next";
 
-import { createEndpoint } from "@owl-factory/https/backend";
-import { HTTPHandler } from "@owl-factory/https/backend";
+import { createEndpoint } from "nodes/https/backend";
+import { HTTPHandler } from "nodes/https/backend";
 
 /**
  * Fetches the given rulesets

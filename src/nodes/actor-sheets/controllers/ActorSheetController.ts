@@ -3,7 +3,7 @@ import { RulesetDocument } from "types/documents";
 import { PageDescriptor } from "nodes/actor-sheets/types/elements";
 import { GenericSheetElementDescriptor } from "nodes/actor-sheets/types/elements/generic";
 import { SheetController } from "./subcontrollers/SheetController";
-import { read } from "@owl-factory/utilities/objects";
+import { read } from "utilities/objects";
 import { RenderGroup, SheetProperties } from "../types";
 import { ActorContent, ActorDocument } from "types/documents/Actor";
 import { ParsedExpression } from "../../../types/expressions";

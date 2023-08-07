@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { NextApiRequest } from "next";
 
-import { HTTPHandler, createEndpoint } from "@owl-factory/https/backend";
+import { HTTPHandler, createEndpoint } from "nodes/https/backend";
 
 /**
  * Gets a list of the current user's contents

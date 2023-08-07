@@ -1,6 +1,6 @@
 import { Button } from "@chakra-ui/react";
-import { Input } from "@owl-factory/components/form";
-import { getUniques } from "@owl-factory/utilities/arrays";
+import { Input } from "components/form";
+import { getUniques } from "utilities/arrays";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "components/elements/table";
 import { Formik, FormikProps } from "formik";
 import React, { ChangeEvent } from "react";

@@ -1,5 +1,5 @@
-import { s3 } from "@owl-factory/aws/s3";
-import { HTTPHandler, createEndpoint } from "@owl-factory/https/backend";
+import { s3 } from "utilities/aws/s3";
+import { HTTPHandler, createEndpoint } from "nodes/https/backend";
 import { Auth } from "controllers/auth";
 import { NextApiRequest } from "next";
 import { requireLogin, validateAccountHasSpace } from "utilities/validation/account";
