@@ -34,7 +34,7 @@ export const SheetPageable = observer((props: SheetElementProps<PageableDescript
   const nonPageChildren: JSX.Element[] = [];
   for (const childElement of childElements) {
     nonPageChildren.push(
-      <SheetElement key={props.properties.$prefix + childElement.$key} {...props} element={childElement}/>
+      <SheetElement key={props.properties._prefix + childElement.$key} {...props} element={childElement}/>
     );
   }
 

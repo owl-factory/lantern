@@ -25,13 +25,13 @@ const MUTATE_ACTOR = gql`
  * @param id The ref or temporary key of a sheet to load
  */
 export const ActorSheetComponent = observer((props: ActorSheetProps) => {
-  const [ saveActor, { data } ] = useMutation(MUTATE_ACTOR);
+  const [ saveActor ] = useMutation(MUTATE_ACTOR);
 
   const sheet = ActorController.getSheet(props.id);
   const properties: SheetProperties = {
-    $prefix: props.id,
-    $source: {},
-    $index: {},
+    _prefix: props.id,
+    _source: {},
+    _index: {},
   };
 
   // Renders each of the children of the base sheet

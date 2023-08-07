@@ -31,15 +31,15 @@ export const SheetLoop = observer((props: SheetElementProps<LoopDescriptor>) => 
 
   let i = 0;
   for (const listItem of list) {
-    const prefix = `${props.properties.$prefix}-${key}_${i}`; // Updated prefix to contain a loop-specific variable
+    const prefix = `${props.properties._prefix}-${key}_${i}`; // Updated prefix to contain a loop-specific variable
     const properties: SheetProperties = {
       ...props.properties,
-      $source: { ...props.properties.$source },
-      $index: {...props.properties.$index, [key]: i },
-      $prefix: prefix,
+      _source: { ...props.properties._source },
+      _index: {...props.properties._index, [key]: i },
+      _prefix: prefix,
       [key]: toJS(listItem),
     };
-    if (props.element.listSource) { properties.$source[key] = props.element.listSource; }
+    if (props.element.listSource) { properties._source[key] = props.element.listSource; }
 
     if (props.element.index) { properties[props.element.index] = i; }
 

@@ -11,7 +11,7 @@ export function SheetChildren(props: SheetElementProps<any>) {
   const children: JSX.Element[] = [];
 
   for (const element of elements) {
-    const key = props.properties.$prefix + element.$key;
+    const key = props.properties._prefix + element.$key;
     children.push(
       <SheetElement
         key={key}

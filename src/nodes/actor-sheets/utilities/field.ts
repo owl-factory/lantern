@@ -8,8 +8,8 @@ import { SheetProperties } from "../types";
  */
 export function parseContentFieldArguments(field: string, properties: SheetProperties) {
   const variableKey = field.replace(/\..+$/, "");
-  const contentType = (properties.$source[variableKey] || "content.").substring(8);
-  const index = properties.$index[variableKey];
+  const contentType = (properties._source[variableKey] || "content.").substring(8);
+  const index = properties._index[variableKey];
   const name = field.replace(/^.+\./, "");
 
   return { contentType, index, name };

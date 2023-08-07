@@ -24,11 +24,11 @@ export type SheetProperties = Record<string, (Scalar | Record<string, string | u
 
 // Sheet properties that should be accessible and not overwritten by user-defined variables
 interface StaticSheetProperties {
-  $prefix: string;
+  _prefix: string;
   // The source that a variable key draws from. For example, 'item' might be sourced from 'content.items'
-  $source: Record<string, string>;
+  _source: Record<string, string>;
   // The index value for a specific variable key. Used even if an index is not specified
-  $index: Record<string, number>;
+  _index: Record<string, number>;
 }
 
 // A persistent state that can traverse down the initial sheet parsing
