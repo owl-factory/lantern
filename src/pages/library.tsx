@@ -2,12 +2,9 @@ import React from "react";
 import { Page } from "components/design";
 import { LibraryImageList, ListFormat, StorageUsage } from "components/lantern/library";
 import { StorageTypeEnum } from "types/enums/storageType";
-import { NextPageContext } from "next";
 import { observer } from "mobx-react-lite";
 import { FileDocument } from "types/documents";
 import { InitialProps } from "types/client";
-import { handleAPI } from "nodes/https";
-import { getLibraryPage } from "./api/library";
 
 interface LibraryProps extends InitialProps {
   images: FileDocument[];
@@ -34,10 +31,6 @@ function Library(props: LibraryProps): JSX.Element {
       <LibraryImageList listFormat={ListFormat.Icons}/>
     </Page>
   );
-}
-
-export async function getServerSideProps(ctx: NextPageContext) {
-  return await handleAPI(ctx, getLibraryPage);
 }
 
 export default observer(Library);

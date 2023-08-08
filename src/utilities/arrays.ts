@@ -13,7 +13,7 @@ export function getUniques(data: unknown[] | undefined, target?: string): string
   if (Object.keys(data).length === 0) { return []; }
 
   if (target === undefined) {
-    return $getUniquesFromSimpleTypes(data);
+    return $getUniquesFromSimpleTypes(data as string[]);
   }
   return $getUniquesFromObjects(data, target);
 }
