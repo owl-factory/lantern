@@ -10,10 +10,11 @@ module.exports = {
     "tsx"
   ],
   testEnvironment: "node",
-  testRegex: "\.spec\.ts$",
+  testRegex: "\.spec\.tsx?$",
   transform: {
-    "^.+\\.(tsx|ts|js)?$": "ts-jest"
+    "^.+\\.(tsx|ts|js)?$": "@swc/jest"
   },
+  collectCoverageFrom: ["src/**/*.{js,jsx,ts,tsx}"], 
   coverageDirectory: "../coverage",
   coverageReporters: [
     "json",
