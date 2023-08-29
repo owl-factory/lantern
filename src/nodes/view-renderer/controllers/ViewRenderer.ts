@@ -5,7 +5,7 @@ import { View } from "../types/view";
 import { parseDefaultState, parseLayout, parsePrefabs, parseSCSS, parsePageGroups, parseXML } from "../utilities/parse";
 import { injectStyles, removeStyles } from "../utilities/styles";
 import { validateSCSS, validateXML } from "../utilities/validation";
-import type { AlertMessage } from "@owl-factory/alerts";
+import type { AlertMessage } from "nodes/alerts";
 import { handleError } from "./helpers/errors";
 import { StateType } from "../enums/stateType";
 import { PageMetadata } from "../types/pages";

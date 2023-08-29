@@ -1,4 +1,4 @@
-import { Ref64 } from "@owl-factory/types";
+import { Ref64 } from "types";
 import { action, makeObservable, observable } from "mobx";
 import { Mediator } from "nodes/mediator";
 import { MediatorPost, MediatorRequest } from "nodes/mediator/types/mediator";

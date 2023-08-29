@@ -1,6 +1,6 @@
 import SandboxedCodeWorker from "../workers/sandboxed-code.worker";
 import { v4 as uuid } from "uuid";
-import { PromiseWebWorker } from "@owl-factory/web-worker/controllers/PromiseWebWorker";
+import { PromiseWebWorker } from "nodes/web-worker/controllers/PromiseWebWorker";
 import { SandboxAction } from "../enums/workerAction";
 import { ParsedExpression } from "types/expressions";
 import { toJS } from "mobx";

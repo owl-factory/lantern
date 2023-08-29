@@ -8,7 +8,7 @@ import {
   AlertDialogOverlay,
   Button,
 } from "@chakra-ui/react";
-import { Alerts } from "@owl-factory/alerts";
+import { Alerts } from "nodes/alerts";
 import { ActorSheet } from "@prisma/client";
 import React, { RefObject } from "react";
 

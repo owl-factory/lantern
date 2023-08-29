@@ -1,4 +1,4 @@
-import { Input, Select } from "@owl-factory/components/form";
+import { Input, Select } from "components/form";
 import { Auth } from "controllers/auth";
 import { Form, Formik, FormikHelpers } from "formik";
 import { observer } from "mobx-react-lite";

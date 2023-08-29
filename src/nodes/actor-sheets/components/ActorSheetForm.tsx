@@ -1,6 +1,6 @@
 import { Button } from "@chakra-ui/react";
-import { Input } from "@owl-factory/components/form";
-import { TextArea } from "@owl-factory/components/form/TextArea";
+import { Input } from "components/form";
+import { TextArea } from "components/form/TextArea";
 import { ActorSheet, Ruleset } from "@prisma/client";
 import { Formik, FormikProps } from "formik";
 import { observer } from "mobx-react-lite";

@@ -5,7 +5,7 @@ import { UserDocument } from "types/documents";
 import { Dispatch, DispatchEvent } from "types/lantern/play";
 
 // TODO - move into a node
-// TODO - create a PeerJS connection @owl-factory
+// TODO - create a PeerJS connection
 
 /**
  * Runs all of the actions required to connect the current player to the socket, peer, and table.

@@ -1,8 +1,8 @@
-import { getCtx } from "@owl-factory/next";
-import { isClient } from "@owl-factory/utilities/client";
+import { isClient } from "utilities/client";
 import { User } from "@prisma/client";
 import { sign, verify } from "jsonwebtoken";
 import { parseCookies, setCookie } from "nookies";
+import { getCtx } from "utilities/globals/next";
 
 const jwtSecret = process.env.JWT_SECRET;
 const expiresIn = 14 * 24 * 60 * 60;

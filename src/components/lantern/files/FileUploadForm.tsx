@@ -1,9 +1,9 @@
 import { Button } from "@chakra-ui/react";
-import { isClient } from "@owl-factory/utilities/client";
 import { Form, Formik, FormikProps } from "formik";
 import React from "react";
 import { mimetypeToTypeMap } from "types/enums/files/mimetypes";
 import { FileType } from "types/enums/files/type";
+import { isClient } from "utilities/client";
 
 interface FormValues {
   file: File | null;

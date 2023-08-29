@@ -1,4 +1,4 @@
-import { isClient } from "@owl-factory/utilities/client";
+import { isClient } from "utilities/client";
 import { PrismaClient } from "@prisma/client";
 
 

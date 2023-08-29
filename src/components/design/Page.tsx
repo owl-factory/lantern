@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
 import ErrorPage from "next/error";
-import { Alerts } from "@owl-factory/alerts";
+import { Alerts } from "nodes/alerts";
 import { Box, Container, Flex, useToast } from "@chakra-ui/react";
 import HeaderBar from "./headerBar/HeaderBar";
 

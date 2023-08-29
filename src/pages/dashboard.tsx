@@ -2,7 +2,7 @@ import { Page } from "components/design";
 import Link from "next/link";
 import React from "react";
 import { Box, Button, Flex } from "@chakra-ui/react";
-import { Alerts } from "@owl-factory/alerts";
+import { Alerts } from "nodes/alerts";
 import { Auth } from "controllers/auth";
 import { signOut } from "utilities/auth";
 import { observer } from "mobx-react-lite";

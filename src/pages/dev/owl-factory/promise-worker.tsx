@@ -1,4 +1,4 @@
-import { ExamplePromiseWorker } from "@owl-factory/web-worker/examples/ExamplePromiseWorker";
+import { ExamplePromiseWorker } from "nodes/web-worker/examples/ExamplePromiseWorker";
 import { Page } from "components/design";
 import React from "react";
 

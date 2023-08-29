@@ -1,8 +1,8 @@
-import { rest } from "@owl-factory/https";
+import { rest } from "nodes/https";
 import { Auth } from "controllers/auth";
 import { UserDocument } from "types/documents";
 import Router from "next/router";
-import { LogInResponse } from "@owl-factory/auth/types";
+import { LogInResponse } from "nodes/auth/types";
 import { User } from "@prisma/client";
 
 /**

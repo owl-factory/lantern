@@ -1,7 +1,7 @@
 import { gql, useQuery } from "@apollo/client";
 import { DeleteIcon } from "@chakra-ui/icons";
 import { Box, Button, ChakraProps, useDisclosure } from "@chakra-ui/react";
-import { Alerts } from "@owl-factory/alerts";
+import { Alerts } from "nodes/alerts";
 import { ActorSheet, Ruleset } from "@prisma/client";
 import React from "react";
 import { DeleteSheetAlert } from "./DeleteSheetAlert";

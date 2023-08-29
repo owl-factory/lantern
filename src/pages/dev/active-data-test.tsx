@@ -1,6 +1,6 @@
 import { gql, useQuery } from "@apollo/client";
 import { Button, Select } from "@chakra-ui/react";
-import { Alerts } from "@owl-factory/alerts";
+import { Alerts } from "nodes/alerts";
 import { Page } from "components/design";
 import { observer } from "mobx-react-lite";
 import { ActiveData } from "nodes/active-data";

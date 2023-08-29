@@ -1,7 +1,7 @@
-import { Alerts } from "@owl-factory/alerts";
+import { Alerts } from "nodes/alerts";
 import { Button } from "@chakra-ui/react";
-import { Input } from "@owl-factory/components/form";
-import { rest } from "@owl-factory/https";
+import { Input } from "components/form";
+import { rest } from "nodes/https";
 import { Page } from "components/design";
 import { Auth } from "controllers/auth";
 import { ErrorMessage, Form, Formik, FormikHelpers } from "formik";

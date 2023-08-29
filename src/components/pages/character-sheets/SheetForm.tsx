@@ -1,9 +1,9 @@
 import { ApolloError, gql, useMutation } from "@apollo/client";
 import { Button } from "@chakra-ui/react";
-import { Alerts } from "@owl-factory/alerts";
-import { Input } from "@owl-factory/components/form";
-import { MonacoEditor } from "@owl-factory/components/form/Monaco";
-import { rest } from "@owl-factory/https";
+import { Alerts } from "nodes/alerts";
+import { Input } from "components/form";
+import { MonacoEditor } from "components/form/Monaco";
+import { rest } from "nodes/https";
 import { ActorSheet } from "@prisma/client";
 import { Form, Formik, FormikProps, useField } from "formik";
 import { ActorController } from "nodes/actor-sheets";

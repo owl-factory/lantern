@@ -1,4 +1,4 @@
-import { read, set } from "@owl-factory/utilities/objects";
+import { read, set } from "utilities/objects";
 import { action, makeObservable, observable, toJS } from "mobx";
 import { DataSource } from "nodes/actor-sheets/enums/dataSource";
 import { RenderGroup } from "nodes/actor-sheets/types";

@@ -5,7 +5,7 @@ import { Chat } from "components/lantern/play";
 import { GameServer } from "controllers/play";
 import { observer } from "mobx-react-lite";
 import { useRouter } from "next/router";
-import { rest } from "@owl-factory/https";
+import { rest } from "nodes/https";
 
 const gameServer = new GameServer();
 gameServer.state = {

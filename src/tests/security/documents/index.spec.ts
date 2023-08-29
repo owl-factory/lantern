@@ -28,14 +28,4 @@ describe("isOwner", () => {
     const res = isOwner(doc);
     expect(res).toBeFalsy();
   });
-
-  test("Owner", () => {
-    Auth.fromAPI(
-      { ref: "a" } as any,
-      ""
-    );
-    const res = isOwner(doc);
-    // expect(res).toBeTruthy();
-    Auth.reset();
-  });
 });
