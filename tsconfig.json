@@ -23,6 +23,12 @@
     "strict": true,
     "baseUrl": ".",
     "paths": {
+      "api": [
+        "src/api"
+      ],
+      "api/*": [
+        "src/api/*"
+      ],
       "controllers": [
         "src/controllers"
       ],
