@@ -47,7 +47,7 @@ class $ActorController {
    * @param rulesetID The reference to the ruleset used in this render. If null, empty values will be used instead
    * @param sheetID The reference to the sheet used in this render
    */
-   public newRender(actorID: string | null, rulesetID: string | null, sheetID: string, renderID?: string): string {
+  public newRender(actorID: string | null, rulesetID: string | null, sheetID: string, renderID?: string): string {
     const id = renderID || actorID || sheetID;
     this.$renders[id] = { actorID: actorID || "temp-actor", sheetID, rulesetID: rulesetID || "temp-ruleset" };
 
