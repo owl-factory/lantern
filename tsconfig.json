@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "emitDecoratorMetadata": true,
-    "declaration": true,
+    "target": "esnext",
+    "moduleResolution": "node",
     "lib": [
       "dom",
       "dom.iterable",
@@ -9,18 +9,16 @@
     ],
     "allowJs": true,
     "skipLibCheck": true,
+    "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "esModuleInterop": true,
-    "experimentalDecorators": true,
-    "target": "esnext",
     "sourceMap": true,
     "module": "esnext",
-    "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "strict": true,
+    "incremental": true,
     "baseUrl": ".",
     "paths": {
       "api": [
@@ -78,7 +76,6 @@
         "src/security/*"
       ]
     },
-    "incremental": true
   },
   "exclude": [
     "node_modules",

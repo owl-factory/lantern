@@ -25,5 +25,10 @@
 *.log
 *.pem
 
-# netlify
+# hosting
 .netlify
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
