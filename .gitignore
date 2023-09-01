@@ -3,27 +3,27 @@
 !.vscode/launch.json
 
 # dependencies
-node_modules
+/node_modules
+/.pnp
+.pnp.js
 .yarn
 
-# build files
-dist
-.next
-out_functions
-out_publish
-out
-
 # testing
-coverage
+/coverage
 
 # next.js
-.next
+/.next/
+/out/
+
+# production
+/build
 
 # misc
 .DS_Store
 .env*
 *.env
 *.log
+*.pem
 
 # netlify
 .netlify
