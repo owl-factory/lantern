@@ -15,7 +15,7 @@ export class ContextMenuBuilder {
   private buttonConfig: ButtonConfig = {
     className: "d-none d-lg-inline",
     width: 2,
-  }
+  };
   private items: ContextMenuGenericItem[] = [];
 
   /**

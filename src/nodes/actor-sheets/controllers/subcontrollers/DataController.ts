@@ -245,7 +245,7 @@ export class DataController {
     // Ensures that there's a struct for storing this content data if none is present
     if (this.$content[actorID] === undefined) { this.$content[actorID] = {}; }
 
-    this.$content[actorID][key] = value;
+    this.$content[actorID][key] = value as ActorContent[];
   }
 
   /**

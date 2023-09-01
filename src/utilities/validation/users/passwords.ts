@@ -8,5 +8,5 @@ export const passwordFormValidationSchema = Yup.object().shape({
     passwordValidation
     .notOneOf([Yup.ref('oldPassword')], "New password cannot be the same as the old password"),
   newPasswordConfirmation: Yup.string()
-    .oneOf([Yup.ref('newPassword'), null], "Passwords must match"),
+    .oneOf([Yup.ref('newPassword'), undefined], "Passwords must match"),
 });
