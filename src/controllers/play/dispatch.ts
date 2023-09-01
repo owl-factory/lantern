@@ -64,7 +64,7 @@ export function handleDispatch(this: GameServer, dispatch: Dispatch): void {
     // SERVER MANAGEMENT
     // Post Host Queue
     case DispatchEvent.HostQueueItem:
-      console.log(dispatch)
+      console.log(dispatch);
       this.addToHostQueue(dispatch.content as HostPriorityQueue);
       break;
 

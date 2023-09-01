@@ -137,7 +137,7 @@ export class DataController {
   }
 
   /**
-   * Gets the variables used for a specific expression, allowing it to be faster 
+   * Gets the variables used for a specific expression, allowing it to be faster
    * @param renderIDs The IDs of the data that is being rendered
    * @param varNames The variable names that are used in an expression rendering
    */

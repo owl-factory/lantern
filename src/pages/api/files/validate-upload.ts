@@ -36,7 +36,7 @@ async function validateUpload(this: HTTPHandler, req: NextApiRequest) {
   // fileDoc.sizeInBytes = fileMetadata.ContentLength || -1;
   // fileDoc.mimetype = fileMetadata.ContentType as Mimetype;
   // fileDoc.src = req.body.file.src;
-  
+
   // // Check DB for latest information on the user's storage
   // const account = await UserLogic.fetch(Auth.user?.id || "");
   // validateAccountHasSpace(account, fileDoc.sizeInBytes);
