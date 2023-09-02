@@ -1,18 +1,18 @@
-import { DocumentNode, gql } from "@apollo/client";
 import { action, makeObservable, observable } from "mobx";
-import { apolloClient } from "src/graphql/apollo-client";
 import { Scalar } from "types";
+import { DataAPI } from ".";
 
 type FieldPath = string | (string | number)[];
 type GenericDataType = Record<string, unknown> | Scalar;
 
-export class ActiveData<StoredData extends Record<string, unknown>, RawData extends Record<string, unknown>> {
+export class DataInstance<
+  StoredData extends Record<string, unknown>,
+  RawData extends Record<string, unknown>
+> implements DataAPI {
+
   public readonly id: string;
   public data?: StoredData;
   public changes: Partial<StoredData> = {};
-
-  protected fetchQuery: DocumentNode = gql``;
-  protected updateQuery: DocumentNode = gql``;
 
   constructor(id: string) {
     this.id = id;
@@ -82,48 +82,35 @@ export class ActiveData<StoredData extends Record<string, unknown>, RawData exte
 
   /**
    * Refreshes data from the database
-   */
-  public async refresh() {
-    const data = await apolloClient.query({
-      query: this.fetchQuery,
-      variables: {
-        id: this.id,
-      },
-    });
-    this.onRefresh(data);
-    return;
-  }
-
-  /**
-   * A function to run after the refresh action has run successfully
    * @override
    */
-  public onRefresh(data: Record<string, unknown>) {
-    // OVERRIDE
+  public async refresh() {
+    throw "Not implemented";
   }
 
   /**
    * Flushes all changes to the database
+   * @override
    */
   public async flush() {
-    const data = await apolloClient.mutate({
-      mutation: this.updateQuery,
-      variables: {
-        id: this.id,
-      },
-    });
-    this.onRefresh(data.data);
+    throw "Not implemented";
   }
 
-  public async onFlush(data: Record<string, unknown>) {
-    // OVERRIDE
-  }
-
+  /**
+   * Transforms data from it's raw, retrieved form into the stored data format
+   * @param rawData The raw data to transform
+   * @returns A stored data type
+   */
   public transformFromRaw(rawData: RawData): StoredData {
     return rawData as unknown as StoredData;
   }
 
-  public transformToRaw(storedData: StoredData): RawData {
-    return storedData as unknown as RawData;
+  /**
+   * Transforms stored data into the raw format so that it can be saved
+   * @param storedData The stored data to convert into a raw data format
+   * @returns An object in raw data format
+   */
+  public transformToRaw(): RawData {
+    return this.data as unknown as RawData;
   }
 }

@@ -11,6 +11,10 @@ export class CharacterRender implements RenderAPI {
   public readonly campaignID: string;
   public readonly sheetID: string;
 
+  public readonly character: any;
+  public readonly rules: any;
+  public readonly sheet: any;
+
   constructor(args: RegisterArgs & { renderEngine: RenderEngineAPI}) {
     this.id = uuid();
     this.parent = args.renderEngine as CharacterRenderEngine;
@@ -18,6 +22,13 @@ export class CharacterRender implements RenderAPI {
     this.characterID = args.characterID;
     this.campaignID = args.campaignID;
     this.sheetID = args.sheetID;
+
+     // ASYNC
+     // ? Do we want to save these references to this Render?
+     this.character = this.parent.characterDataEngine.load(args.characterID, this.id);
+     this.rules = this.parent.rulesDataEngine.load(args.campaignID, this.id);
+     this.sheet = this.parent.sheetDataEngine.load(args.sheetID, this.id);
+     // END ASYNC
   }
 
   /**

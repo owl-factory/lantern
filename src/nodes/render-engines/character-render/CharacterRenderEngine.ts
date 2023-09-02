@@ -27,12 +27,6 @@ export class CharacterRenderEngine implements RenderEngineAPI {
   public register(args: RegisterArgs): CharacterRender {
     const characterRender = new CharacterRender({...args, renderEngine: this});
 
-    // ASYNC
-    this.characterDataEngine.load(args.characterID, characterRender.id);
-    this.rulesDataEngine.load(args.campaignID, characterRender.id);
-    this.sheetDataEngine.load(args.sheetID, characterRender.id);
-    // END ASYNC
-
     return characterRender;
   }
 }
