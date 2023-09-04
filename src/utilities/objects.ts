@@ -63,7 +63,7 @@ export function fieldInObject(obj: Record<string, unknown>, target: string): boo
 }
 
 /**
- * Gets keys of all layers of an object and returns as an array of strings. 
+ * Gets keys of all layers of an object and returns as an array of strings.
  * @param obj The object to get the keys of
  * @returns An array of strings for each key, with each layer split by periods
  */

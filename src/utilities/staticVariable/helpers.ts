@@ -1,9 +1,9 @@
 import { StaticVariableFormValues, StaticVariableObject } from "types/components/forms/staticVariables";
 import {
-  StaticVariableValue,
   StaticVariableComplexType,
   StaticVariableMetadata,
   StaticVariableScalarType,
+  StaticVariableValue,
 } from "types/documents/subdocument/StaticVariable";
 
 

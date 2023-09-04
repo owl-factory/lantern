@@ -3,7 +3,6 @@ import { CustomFieldType } from "types/enums/subdocument/CustomFieldType";
 import { getNextUntitled } from "utilities/helpers";
 import { v4 as uuid } from "uuid";
 
-
 /**
  * Generates a custom field key
  * @param fields The previously existing custom field values

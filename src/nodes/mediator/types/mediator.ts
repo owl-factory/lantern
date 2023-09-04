@@ -22,7 +22,7 @@ export enum MediatorRequest {
   SandboxExpr, // Renders an expression using the sandbox controller expression
 }
 
-// Defines the different kinds of MediatorMessages and the actions to take. 
+// Defines the different kinds of MediatorMessages and the actions to take.
 // The complicated type is similar to Record<MediatorMessage, () => unknown>, but makes each entry optional
 export type MediatorHandler = {
   [K in (MediatorPost | MediatorRequest)]?: (contents: MediatorContents) => unknown | Promise<unknown>

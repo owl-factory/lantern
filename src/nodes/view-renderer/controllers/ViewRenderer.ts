@@ -1,19 +1,19 @@
 import { action, makeObservable, observable, runInAction } from "mobx";
-import { ViewType } from "../enums/viewType";
-import { Render, RenderSources } from "../types/render";
-import { View } from "../types/view";
-import { parseDefaultState, parseLayout, parsePrefabs, parseSCSS, parsePageGroups, parseXML } from "../utilities/parse";
-import { injectStyles, removeStyles } from "../utilities/styles";
-import { validateSCSS, validateXML } from "../utilities/validation";
 import type { AlertMessage } from "nodes/alerts";
-import { handleError } from "./helpers/errors";
-import { StateType } from "../enums/stateType";
-import { PageMetadata } from "../types/pages";
 import { Scalar } from "types";
 import { v4 as uuid } from "uuid";
-import { concatSources } from "../utilities/render/sources";
+import { StateType } from "../enums/stateType";
+import { ViewType } from "../enums/viewType";
 import { ElementDescriptor } from "../types/elements";
+import { PageMetadata } from "../types/pages";
+import { Render, RenderSources } from "../types/render";
 import { RenderState } from "../types/state";
+import { View } from "../types/view";
+import { parseDefaultState, parseLayout, parsePageGroups, parsePrefabs, parseSCSS, parseXML } from "../utilities/parse";
+import { concatSources } from "../utilities/render/sources";
+import { injectStyles, removeStyles } from "../utilities/styles";
+import { validateSCSS, validateXML } from "../utilities/validation";
+import { handleError } from "./helpers/errors";
 
 type Renders = Record<string, Render>;
 type Views = Record<string, View>;
@@ -113,7 +113,7 @@ class ViewRendererClass {
     if (!this.views[viewID]) {
       this.views[viewID] = {
         renderCount: 0,
-        defaultState: { [StateType.Collapse]: {}, [StateType.CurrentPage]: {} }
+        defaultState: { [StateType.Collapse]: {}, [StateType.CurrentPage]: {} },
       };
     }
 

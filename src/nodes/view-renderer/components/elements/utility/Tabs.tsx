@@ -49,7 +49,7 @@ function ViewTab(props: ViewTabProps) {
  export const ViewTabs = observer((props: RenderProps<TabsAttributes>) => {
   const sources = ViewRenderer.renders[props.renderID].sources;
   const pages = ViewRenderer.getPages(props.renderID, props.element.attributes.for);
-  const activePage = ViewRenderer.getState<number>(props.renderID, StateType.CurrentPage, props.element.attributes.for)
+  const activePage = ViewRenderer.getState<number>(props.renderID, StateType.CurrentPage, props.element.attributes.for);
 
   const [ className, setClassName ] = React.useState("");
 

@@ -12,7 +12,7 @@ export class SheetController {
   public sheets: Record<string, PageDescriptor> = {};
   public prefabs: Record<string, Record<string, HTMLCollection>> = {};
   public tabs: Record<string, Record<string, ParsedTab[]>> = {};
-  public styles: Record<string, string> = {}
+  public styles: Record<string, string> = {};
 
   constructor() {
     makeObservable(this, {

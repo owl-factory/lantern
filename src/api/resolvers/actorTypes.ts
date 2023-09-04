@@ -68,7 +68,7 @@ async function getActorTypes(_: unknown, { where, include }: GetActorTypesArgume
  * @returns A single actor type
  */
 async function getActorType(_: unknown, { id, include }: GetActorTypeArguments) {
-  console.log("id", id)
+  console.log("id", id);
   return prisma.actorType.findUnique({
     where: { id },
     include,

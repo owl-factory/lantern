@@ -1,5 +1,8 @@
 // eslint-disable-next-line no-undef
 module.exports = {
+  overrides: [{
+    "files": [ "src/**/*.ts[x]", "src/**/*.js[x]" ],
+  }],
   root: true,
   parser: '@typescript-eslint/parser',
   plugins: [

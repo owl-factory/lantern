@@ -10,7 +10,7 @@ const MAXIMUM_SIZE_IN_BYTES = 5 * 1024 * 1024; // 5MB is the limit
  */
 export function validateRawFile(file: File) {
   if (!file) { throw "You must select a file to upload."; }
-  if (!isValidMimetype(file.type)) { throw `The extension ${file.name.replace(/^.*?\./, ".")} is not allowed`}
+  if (!isValidMimetype(file.type)) { throw `The extension ${file.name.replace(/^.*?\./, ".")} is not allowed`; }
   if (file.size > MAXIMUM_SIZE_IN_BYTES) { throw `The file ${file.name} is too large to be uploaded`; }
   return;
 }

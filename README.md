@@ -2,7 +2,7 @@
 A web application for playing tabletop RPGs with friends. It is currently in early development and is not a functional product.
 
 ## Requirements
-This project requires a NodeJS environment with Yarn installed and a PostgreSQL database server.
+This project requires a NodeJS 18+ environment, a PostgreSQL database server, and access to the package manager PNPM--which should be available after running `corepack enable`.
 
 ## Environment Variables
 Below are the required environment variables for the project. In development, they will likely be placed within a .env file at project root. Environment variables are set in various ways during production deployments.
@@ -17,22 +17,24 @@ Below are the required environment variables for the project. In development, th
 * `DEMO_CHARACTERS` - IDs of characters to load into the /embed/character-sheet page for demonstrating the system. Comma delimited.
 
 ## Getting Started
-Clone the project down to a local repository. Then, add a .env file containing required environment variables to the project root. If using a local Postgres database, start it up. Next, from the root of the project, run `yarn` to install all dependencies. From there, running `yarn dev` will start the project in development mode.
+Clone the project down to a local repository. Then, add a .env file containing required environment variables to the project root. If using a local Postgres database, start it up. Next, from the root of the project, run `pnpm install` to install all dependencies. 
+If this is your first time running in development mode, run `pnpm run prisma` to generate needed database mappings. From there, running `pnpm run dev` will start the project.
 
 ## Building
-The project can be built with `yarn build` (as long as all dependencies are installed). Run the build with `yarn start`.
+The project can be built with `pnpm run build` (as long as all dependencies are installed). Run the build with `pnpm run start`.
 
 ## Testing
-The project can be tested through Jest using `yarn test`.
+The project can be tested through Jest using `pnpm run test`.
 
 ## Built With
 * TypeScript
 * React
 * NextJS
 * ChakraUI
-* SQL 
+* PostgresSQL
 * Prisma
 * GraphQL
+* PNPM
 
 ## Authors
 * **Lucy Awrey** - [lucyawrey](https://github.com/lucyawrey)

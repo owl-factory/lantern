@@ -95,7 +95,7 @@ function makeRoll(size: number) {
 /**
  * Qualifies the results of the rolls
  * @param rolls The ordinary rolls taken
- * @param rerolls The rolls made in response to failed rolls 
+ * @param rerolls The rolls made in response to failed rolls
  * @param explodedRolls The exploded rolls made in response to rolls passing a threshold
  * @param opts The roll options used to qualify the success and failures of the rolls
  */
