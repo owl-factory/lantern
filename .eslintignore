@@ -1,8 +1,0 @@
-node_modules/
-.next/
-dist
-out_functions/
-out_publish/
-
-next.config.js
-jest.config.js
