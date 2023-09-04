@@ -17,7 +17,8 @@ Below are the required environment variables for the project. In development, th
 * `DEMO_CHARACTERS` - IDs of characters to load into the /embed/character-sheet page for demonstrating the system. Comma delimited.
 
 ## Getting Started
-Clone the project down to a local repository. Then, add a .env file containing required environment variables to the project root. If using a local Postgres database, start it up. Next, from the root of the project, run `pnpm install` to install all dependencies. From there, running `pnpm run dev` will start the project in development mode.
+Clone the project down to a local repository. Then, add a .env file containing required environment variables to the project root. If using a local Postgres database, start it up. Next, from the root of the project, run `pnpm install` to install all dependencies. 
+If this is your first time running in development mode, run `pnpm run prisma` to generate needed database mappings. From there, running `pnpm run dev` will start the project.
 
 ## Building
 The project can be built with `pnpm run build` (as long as all dependencies are installed). Run the build with `pnpm run start`.
@@ -30,9 +31,10 @@ The project can be tested through Jest using `pnpm run test`.
 * React
 * NextJS
 * ChakraUI
-* SQL 
+* PostgresSQL
 * Prisma
 * GraphQL
+* PNPM
 
 ## Authors
 * **Lucy Awrey** - [lucyawrey](https://github.com/lucyawrey)
