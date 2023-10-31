@@ -1,13 +1,16 @@
 import { Page } from "components/design";
 import { XMLRender } from "nodes/xmlrender/v1/XMLRender";
-import React, { Profiler } from "react";
+import React from "react";
 import { ElementType } from "types/enums/xml/elementType";
 import { NullXMLEngineAPI } from "types/interfaces/XMLEngineAPI";
 
 class TestXMLEngineAPI extends NullXMLEngineAPI {
   getLayout() {
     return [
-      {type: ElementType.Box},
+      {type: ElementType.Box, children: [
+        {type: ElementType.Input, children: []},
+        {type: ElementType.Input, children: []},
+      ]},
     ];
   }
 }

@@ -2,6 +2,9 @@ import { ElementType } from "types/enums/xml/elementType";
 import { XMLElementAPI } from "types/interfaces/XMLElementAPI";
 import React from "react";
 import { Box } from "../components/layout/Box";
+import { Input } from "../components/input/Input";
+import { Button } from "../components/utility/Button";
+import { Label } from "../components/layout/Label";
 
 /**
  * Renders a list of elements into JSX without adding additional React components as overhead
@@ -21,7 +24,7 @@ export function renderChildren(elements: XMLElementAPI[], key: string) {
 
     const fullKey = `${key}_${elementKey}#${elementTypeCount}`;
 
-    renderedChildren.push(<Component key={fullKey} />);
+    renderedChildren.push(<Component key={fullKey} element={element} />);
 
     elementTypeCounts.set(element.type, elementTypeCount + 1);
   }
@@ -48,11 +51,17 @@ function getElementComponent(element: XMLElementAPI): typeof Box {
 }
 
 const elementMapping: Record<number, typeof Box> = {
+  [ElementType.Input]: Input,
   [ElementType.Box]: Box,
+  [ElementType.Label]: Label,
+  [ElementType.Button]: Button,
 };
 
 const elementKeyMapping: Record<number, string> = {
+  [ElementType.Input]: "input",
   [ElementType.Box]: "box",
+  [ElementType.Label]: "label",
+  [ElementType.Button]: "button",
 };
 
 
