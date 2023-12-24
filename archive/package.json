@@ -30,7 +30,7 @@
     "cross-fetch": "^4.0.0",
     "formik": "^2.4.3",
     "framer-motion": "^10.16.3",
-    "graphql": "^16.8.0",
+    "graphql": "^16.8.1",
     "jsonwebtoken": "^9.0.2",
     "micro": "^9.4.1",
     "mobx": "^6.10.2",
