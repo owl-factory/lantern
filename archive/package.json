@@ -35,7 +35,7 @@
     "micro": "^9.4.1",
     "mobx": "^6.10.2",
     "mobx-react-lite": "^4.0.4",
-    "next": "^13.4.19",
+    "next": "^13.5.1",
     "nookies": "^2.5.2",
     "peerjs": "1.4.7",
     "pixi-viewport": "^4.38.0",
