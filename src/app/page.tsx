@@ -1,5 +1,8 @@
 import TestComp from "components/TestComponent";
 
+/**
+ * Renders the landing page.
+ */
 function Page() {
   return (
     <>
