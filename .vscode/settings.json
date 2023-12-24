@@ -1,0 +1,5 @@
+{
+  "editor.formatOnSave": true,
+  // Install the "Prettier - Code formatter" VSCode extension
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
+}
