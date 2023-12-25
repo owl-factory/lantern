@@ -1,4 +1,4 @@
-import TestComp from "components/TestComponent";
+import { TestComponent } from "components/TestComponent";
 
 /**
  * Renders the landing page.
@@ -9,7 +9,7 @@ function Page() {
       <h1 className="text-green-400 text-9xl">Hello World!</h1>
       <button className="example-btn ml-2">Test Button</button>
       <br />
-      <TestComp />
+      <TestComponent />
     </>
   );
 }
