@@ -1,0 +1,21 @@
+# node dependencies
+node_modules
+
+# next.js
+.next
+.swc
+out
+next-env.d.ts
+
+# local env files
+.env*.local
+
+# misc
+.DS_Store
+*.pem
+
+# Playwright Tests
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

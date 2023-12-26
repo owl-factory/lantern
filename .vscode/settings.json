@@ -1,0 +1,8 @@
+{
+  "files.eol": "\n",
+  "editor.tabSize": 2,
+  "editor.detectIndentation": false,
+  "editor.formatOnSave": true,
+  // Install the "Prettier - Code formatter" VSCode extension
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
+}
