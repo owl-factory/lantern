@@ -3,6 +3,7 @@ node_modules
 
 # next.js
 .next
+.swc
 out
 next-env.d.ts
 
