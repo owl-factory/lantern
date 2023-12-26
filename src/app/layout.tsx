@@ -1,6 +1,10 @@
 import "app/globals.css";
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+/**
+ * Root NextJS app layout component. All page routes will be wrapped by this component.
+ * @param children - destructured react children prop.
+ */
+function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <head>
@@ -16,3 +20,5 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     </html>
   );
 }
+
+export default RootLayout;
