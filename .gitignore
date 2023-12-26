@@ -2,3 +2,9 @@ node_modules
 
 # Next Build Folders
 .next
+
+# Playwright Tests
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
