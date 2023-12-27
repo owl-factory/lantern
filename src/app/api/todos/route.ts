@@ -19,5 +19,6 @@ export async function GET() {
 
 export async function POST(request: Request) {
   const newTodo: NewTodo = await request.json();
-  return await database.insertInto("todos").values(newTodo).returningAll().executeTakeFirstOrThrow();
+  const result = await database.insertInto("todos").values(newTodo).returningAll().executeTakeFirstOrThrow();
+  return Response.json(result);
 }
