@@ -8,6 +8,7 @@ import { StorageType } from "../types/storage";
 import { TargetType } from "../types/targetType";
 import { DynamicSheet } from "./DynamicSheet";
 import { ContextController } from "../utils/contextController";
+import { observer } from "lib/mobx";
 
 export type DynamicRenderProps = {
   id: string;
@@ -29,7 +30,7 @@ function buildContext(props: DynamicRenderProps) {
  * Creates and displays a Dynamic Render for a single entity
  * @param id - The ID of the entity to render
  */
-export function DynamicRender(props: DynamicRenderProps) {
+function _DynamicRender(props: DynamicRenderProps) {
   const context = useMemo(() => buildContext(props), [props.id]);
 
   useEffect(() => {
@@ -41,12 +42,18 @@ export function DynamicRender(props: DynamicRenderProps) {
     };
   }, [context]);
 
+  if (!context.ready) {
+    return <>Unready</>;
+  }
+
   return (
     <DynamicContext.Provider value={context}>
       <DynamicSheet />
     </DynamicContext.Provider>
   );
 }
+
+export const DynamicRender = observer(_DynamicRender);
 
 /**
  * Takes the props provided to the DynamicRender component and parses them into factory options

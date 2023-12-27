@@ -1,12 +1,13 @@
 import { MarkupController, MarkupControllerState, Prefabs, Variables } from "features/dynamicRender/types/markup";
 import { ValidationController } from "../../validation";
 import { parseMarkup } from "../parse";
+import { action, makeObservable, observable } from "lib/mobx";
 
 /**
  * A Markup Controller for accessing a markup file stored locally within this code
  */
 export class HardcodedMarkupController extends ValidationController implements MarkupController {
-  state: MarkupControllerState;
+  state = MarkupControllerState.NoOp;
   apiRoute: string;
 
   _layout: Element;
@@ -15,15 +16,35 @@ export class HardcodedMarkupController extends ValidationController implements M
 
   constructor() {
     super();
+
     this.apiRoute = "/characters/mockfinder.xml";
-    this.state = MarkupControllerState.NoOp;
+
+    try {
+      makeObservable(this, {
+        state: observable,
+        setState: action,
+        load: action,
+      });
+    } catch (why) {
+      console.error(why);
+      this.setState(MarkupControllerState.MobxError);
+      return this;
+    }
+  }
+
+  /**
+   * Updates the state within a specific action so that MobX can watch
+   * @param state - The new state
+   */
+  setState(state: MarkupControllerState) {
+    this.state = state;
   }
 
   /**
    * Loads the markup file from an endpoint, parses it, and sets the parsed components
    */
   async load() {
-    this.state = MarkupControllerState.Loading;
+    this.setState(MarkupControllerState.Loading);
 
     const markupResponse = await fetch(this.apiRoute);
     if (!markupResponse.ok) {
@@ -34,7 +55,7 @@ export class HardcodedMarkupController extends ValidationController implements M
     const markup = await markupResponse.text();
     const parsedMarkupResult = parseMarkup(markup);
     if (parsedMarkupResult.ok === false) {
-      this.state = MarkupControllerState.ParseFailed;
+      this.setState(MarkupControllerState.ParseFailed);
       console.error(parsedMarkupResult.error);
       return;
     }
@@ -45,7 +66,7 @@ export class HardcodedMarkupController extends ValidationController implements M
     this._variables = variables;
     this._prefabs = prefabs;
 
-    this.state = MarkupControllerState.Ready;
+    this.setState(MarkupControllerState.Ready);
   }
 
   get ready() {

@@ -1,13 +1,21 @@
-import { GetOptions, SetOptions, StorageController } from "features/dynamicRender/types/storage";
+import {
+  GetOptions,
+  SetOptions,
+  StorageController,
+  StorageControllerState,
+} from "features/dynamicRender/types/storage";
 import { TargetType } from "features/dynamicRender/types/targetType";
 import { Character } from "types/character";
 import { getLocalStorage, setLocalStorage } from "utils/localStorage";
 import { ValidationController } from "../../validation";
+import { action, makeObservable, observable } from "lib/mobx";
 
 /**
  * A StorageController that interfaces with the browser's LocalStorage
  */
 export class LocalStorageController extends ValidationController implements StorageController {
+  state = StorageControllerState.NoOp;
+
   characterId: string;
   targetType: TargetType;
   errors: string[];
@@ -16,10 +24,25 @@ export class LocalStorageController extends ValidationController implements Stor
 
   constructor(characterId: string, targetType: TargetType) {
     super();
+
     this.characterId = characterId;
     this.targetType = targetType;
 
     this.character = getLocalStorage(this.characterId, "object");
+    if (this.character === undefined) {
+      this.state = StorageControllerState.LocalStorageMissing;
+      return this;
+    }
+
+    try {
+      makeObservable(this, {
+        character: observable,
+        update: action,
+      });
+    } catch (why) {
+      console.error(why);
+      this.state = StorageControllerState.MobxError;
+    }
   }
 
   get ready() {

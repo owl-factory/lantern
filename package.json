@@ -24,6 +24,8 @@
     "@lucia-auth/adapter-postgresql": "^2.0.2",
     "kysely": "^0.26.3",
     "lucia": "^2.7.6",
+    "mobx": "^6.12.0",
+    "mobx-react-lite": "^4.0.5",
     "next": "^14.0.4",
     "pg": "^8.11.3",
     "react": "^18.2.0",

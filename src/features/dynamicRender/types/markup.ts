@@ -15,6 +15,7 @@ export enum MarkupControllerState {
   NoOp,
   Loading,
   Ready,
+  MobxError,
   FetchFailed,
   ParseFailed,
 }

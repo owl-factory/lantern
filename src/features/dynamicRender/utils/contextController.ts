@@ -1,3 +1,4 @@
+import { computed, makeObservable } from "lib/mobx";
 import { FactoryOptions } from "../types/factory";
 import { MarkupController } from "../types/markup";
 import { StorageController } from "../types/storage";
@@ -15,6 +16,10 @@ export class ContextController {
   storage: StorageController;
 
   constructor(options?: FactoryOptions) {
+    makeObservable(this, {
+      ready: computed,
+    });
+
     if (options === undefined) {
       this.fromNull();
       return this;
