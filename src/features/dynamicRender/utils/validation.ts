@@ -24,4 +24,8 @@ export abstract class ValidationController implements Controller {
   getErrors() {
     return [...this.errors];
   }
+
+  get ready(): boolean {
+    return false;
+  }
 }

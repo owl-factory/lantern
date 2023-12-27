@@ -4,4 +4,5 @@
 export interface Controller {
   isValid: () => boolean;
   getErrors: () => string[];
+  ready: boolean;
 }

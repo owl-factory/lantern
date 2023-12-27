@@ -48,6 +48,10 @@ export class HardcodedMarkupController extends ValidationController implements M
     this.state = MarkupControllerState.Ready;
   }
 
+  get ready() {
+    return this.state === MarkupControllerState.Ready;
+  }
+
   /**
    * Validates the current Markup Controller
    */

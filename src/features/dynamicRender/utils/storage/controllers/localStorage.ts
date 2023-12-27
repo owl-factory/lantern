@@ -22,6 +22,10 @@ export class LocalStorageController extends ValidationController implements Stor
     this.character = getLocalStorage(this.characterId, "object");
   }
 
+  get ready() {
+    return this.character !== undefined;
+  }
+
   /**
    * Validates the current controller against any errors
    */

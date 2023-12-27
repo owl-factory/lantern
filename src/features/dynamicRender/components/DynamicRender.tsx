@@ -1,29 +1,26 @@
 "use client";
 
-import { useMemo } from "react";
-import { DynamicContext, DynamicContextContents } from "../context/dynamicContext";
+import { useEffect, useMemo } from "react";
+import { DynamicContext } from "../context/dynamicContext";
 import { FactoryOptions } from "../types/factory";
 import { MarkupSource } from "../types/markup";
 import { StorageType } from "../types/storage";
 import { TargetType } from "../types/targetType";
-import { MarkupFactory } from "../utils/markup/factory";
-import { StorageFactory } from "../utils/storage/factory";
 import { DynamicSheet } from "./DynamicSheet";
+import { ContextController } from "../utils/contextController";
 
 export type DynamicRenderProps = {
   id: string;
 };
 
+/**
+ * Creates a Context Controller for use within the Dynamic Render
+ * @param props - The Dynamic Render props to convert into Factory Options
+ * @returns A Context Controller
+ */
 function buildContext(props: DynamicRenderProps) {
   const options: FactoryOptions = buildFactoryOptions(props);
-
-  const markupController = MarkupFactory.build(options);
-  const storageController = StorageFactory.build(options);
-
-  const context: DynamicContextContents = {
-    markup: markupController,
-    storage: storageController,
-  };
+  const context = new ContextController(options);
 
   return context;
 }
@@ -34,6 +31,15 @@ function buildContext(props: DynamicRenderProps) {
  */
 export function DynamicRender(props: DynamicRenderProps) {
   const context = useMemo(() => buildContext(props), [props.id]);
+
+  useEffect(() => {
+    if (context === undefined) return;
+
+    context.load();
+    return () => {
+      context.unload();
+    };
+  }, [context]);
 
   return (
     <DynamicContext.Provider value={context}>
