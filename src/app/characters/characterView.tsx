@@ -15,7 +15,7 @@ export function CharacterView(props: CharacterViewProps) {
 
   return (
     <>
-      <DynamicRender id={props.characterId} />
+      <DynamicRender key={props.characterId} id={props.characterId} />
     </>
   );
 }

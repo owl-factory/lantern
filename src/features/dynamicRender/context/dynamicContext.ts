@@ -1,8 +1,8 @@
 import { createContext } from "react";
 import { StorageController } from "../types/storage";
-import { NullStorageController } from "../utils/storage/null";
+import { NullStorageController } from "../utils/storage/controllers/null";
 import { MarkupController } from "../types/markup";
-import { NullMarkupController } from "../utils/markup/null";
+import { NullMarkupController } from "../utils/markup/controllers/null";
 
 export type DynamicContextContents = {
   markup: MarkupController;

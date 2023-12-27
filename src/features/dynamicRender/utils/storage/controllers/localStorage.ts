@@ -2,7 +2,7 @@ import { GetOptions, SetOptions, StorageController } from "features/dynamicRende
 import { TargetType } from "features/dynamicRender/types/targetType";
 import { Character } from "types/character";
 import { getLocalStorage, setLocalStorage } from "utils/localStorage";
-import { ValidationController } from "../validation";
+import { ValidationController } from "../../validation";
 
 /**
  * A StorageController that interfaces with the browser's LocalStorage

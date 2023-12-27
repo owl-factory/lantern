@@ -1,3 +1,6 @@
+"use client";
+
+import { useMemo } from "react";
 import { DynamicContext, DynamicContextContents } from "../context/dynamicContext";
 import { FactoryOptions } from "../types/factory";
 import { MarkupSource } from "../types/markup";
@@ -11,11 +14,7 @@ export type DynamicRenderProps = {
   id: string;
 };
 
-/**
- * Creates and displays a Dynamic Render for a single entity
- * @param id - The ID of the entity to render
- */
-export function DynamicRender(props: DynamicRenderProps) {
+function buildContext(props: DynamicRenderProps) {
   const options: FactoryOptions = buildFactoryOptions(props);
 
   const markupController = MarkupFactory.build(options);
@@ -25,6 +24,16 @@ export function DynamicRender(props: DynamicRenderProps) {
     markup: markupController,
     storage: storageController,
   };
+
+  return context;
+}
+
+/**
+ * Creates and displays a Dynamic Render for a single entity
+ * @param id - The ID of the entity to render
+ */
+export function DynamicRender(props: DynamicRenderProps) {
+  const context = useMemo(() => buildContext(props), [props.id]);
 
   return (
     <DynamicContext.Provider value={context}>

@@ -1,5 +1,5 @@
 import { StorageController } from "features/dynamicRender/types/storage";
-import { ValidationController } from "../validation";
+import { ValidationController } from "../../validation";
 
 /**
  * A null class that implements the StorageController in the event no other
