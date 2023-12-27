@@ -1,0 +1,465 @@
+<Sheet>
+  <Layout>
+    <Tabs for="main_page"/>
+    <Pageable id="main_page">
+      <Page name="Bio">
+       <Label>Letters:</Label>
+        <Loop key="letter" list="a|b|c" delimiter="|">
+          <Label>${letter}</Label>
+        </Loop>
+
+        <Label>A List of Greetings:</Label>
+        <Loop key="language" listSource="rules.languageTypes">
+          <Label>Language Types: ${language}</Label>
+        </Loop>
+
+       <Label>A List of Actions:</Label>
+        <Loop key="action" listSource="rules.actions">
+          <Label>Action: ${action.name}</Label>
+        </Loop>
+
+        <Label>Bio</Label>
+        <Label>Border style: ${sheet.borderStyle}</Label>
+
+        <Button action="alert" alert="Hello there!">Test</Button>
+
+        <Label>Collapse</Label>
+        <Button action="toggleCollapse" target="test_collapse">Toggle Collapse</Button>
+        <Collapse id="test_collapse">
+          <Label>Testing the collapse! Look! Words!</Label>
+        </Collapse>
+
+        <Button action="roll" roll="1d20cs20">Roll 1d20</Button>
+
+        <!-- This will render an error message and not break the sheet -->
+        <TextInput/>
+      </Page>
+      
+      <Page name="Character Sheet" access="edit">
+        <!-- Character Information -->
+        <Row>
+          <Column weight="5">
+            <Background src="/dnd-5e/title-dragon.svg">
+              <TextInput id="name1_1" name="name"/>
+              <Label for="name1_1">Character Name</Label>
+            </Background>
+          </Column>
+
+          <Column weight="7">
+            <Border borderStyle="...">
+              <Row>
+                <Column weight="1">
+                  <Row>
+                    <Column weight="9">
+                      <TextInput id="class1_1" name="class1"/>
+                    </Column>
+                    <Column weight="1">
+                      <NumberInput id="level1_1" name="level1" min="1"/>
+                    </Column>
+                  </Row>
+                  <Label for="class1_1">Class &amp; Level</Label>
+                </Column>
+
+                <Column weight="1">
+                  <TextInput id="background_1" name="background"/>
+                  <Label for="background_1">Background</Label>
+                </Column>
+
+                <Column weight="1">
+                  <TextInput id="playername_1" name="playername"/>
+                  <Label for="playername_1">Player Name</Label>
+                </Column>
+              </Row>
+
+              <Row>
+                <Column weight="1">
+                  <TextInput id="race_1" name="race"/>
+                  <Label for="race_1">Race</Label>
+                </Column>
+
+                <Column weight="1">
+                  <TextInput id="alignment_1" name="alignment"/>
+                  <Label for="alignment_1">Alignment</Label>
+                </Column>
+
+                <Column weight="1">
+                  <NumberInput id="experience_1" name="experience"/>
+                  <Label for="experience_1">Experience Points</Label>
+                </Column>
+              </Row>
+            </Border>
+          </Column>
+        </Row>
+
+        <Row>
+          <!-- Mods, skills, proficiencies -->
+          <Column weight="1">
+            <Row>
+              <Column weight="1">
+                <Loop listSource="rules.ability_scores" key="ability_score">
+                  <Label>${ability_score.label}</Label>
+                  <NumberInput name="${ability_score.mod}" /> <!-- The modifier-->
+                  <NumberInput name="${ability_score.score}" /> <!-- The total ability score -->
+                </Loop>
+              </Column>
+
+              <Column weight="2">
+                <Background src="inspiration">
+                  <Inline>
+                    <Checkbox id="inspiration_1" name="inspiration"/>
+                    <Label for="inspiration_1">Inspiration</Label>
+                  </Inline>
+                </Background>
+
+                <Background src="proficiency-bonus">
+                  <Inline>
+                    <NumberInput id="proficiency_bonus_1" name="proficiency_bonus" calculated="true" calculateMethod="calc_proficiency_bonus"/>
+                    <Label for="proficiency_bonus_1">Proficiency Bonus</Label>
+                  </Inline>
+                </Background>
+
+                <Border borderStyle="simpleBorder">
+                  <Loop listSource="rules.savingThrows" index="savingThrowIndex" key="savingThrow">
+                    <Inline>
+                      <Checkbox name="${savingThrow.proficiency}"/>
+                      <NumberInput name="${savingThrow.mod}"/>
+                      <Button action="roll" roll="1d20+${character[savingThrow.mod]}+${savingThrow.proficiency ? character.proficiency_bonus || 0 : 0}">${savingThrow.name}</Button>
+                    </Inline>
+                  </Loop>
+                  <Label>Saving Throws</Label>
+                </Border>
+
+                <Border borderStyle="simpleBorder">
+                  <Loop listSource="rules.abilities" key="ability">
+                    <Inline>
+                      <Checkbox name="${ability.proficiency}"/>
+                      <NumberInput name="${ability.mod}"/>
+                      <Label>
+                        ${ability.ability} (${ability.mod_name})
+                      </Label>
+                    </Inline>
+                  </Loop>
+                  <Label>Skills</Label>
+                </Border>
+              </Column>
+            </Row>
+
+            <Border>
+              <Inline>
+                <Label>${Math.floor((character.wisdom_ability_score - 10) / 2) + 10}</Label>
+                <Label>Passive Wisdom (Perception)</Label>
+              </Inline>
+            </Border>
+
+            <Border>
+              <Table>
+                <TableRow>
+                  <TableCell><Label>Tool</Label></TableCell>
+                  <TableCell><Label>Pro</Label></TableCell>
+                  <TableCell><Label>Attribute</Label></TableCell>
+                </TableRow>
+                <Loop listSource="content.tools" key="tool" index="toolIndex">
+                  <TableRow>
+                    <TableCell><TextInput id="tool_name_${toolIndex}" name="tool.name"/></TableCell>
+                    <TableCell><NumberInput id="tool_proficiency_${toolIndex}" name="tool.proficiency"/></TableCell>
+                    <TableCell><TextInput id="tool_attribute_${toolIndex}" name="tool.attribute"/></TableCell>
+                    <TableCell><Button action="deleteContent" index="${toolIndex}" contentGroup="tools">-</Button></TableCell>
+                  </TableRow>
+                </Loop>
+              </Table>
+              <Button action="createContent" contentGroup="tools">+</Button>
+              <Label>Tool Proficiencies &amp; Custom Skills</Label> 
+            </Border>
+
+            <Border>
+              <Table>
+                <TableRow>
+                  <TableCell><Label>Type</Label></TableCell>
+                  <TableCell><Label>Attribute</Label></TableCell>
+                  <TableCell></TableCell>
+                </TableRow>
+                <Loop listSource="content.languages" key="language" index="languageIndex">
+                  <TableRow>
+                    <TableCell>
+                      <Select name="language.type">
+                        <Loop listSource="rules.languageTypes" key="languageType">
+                          <Option value="${languageType}">${languageType}</Option>
+                        </Loop>
+                      </Select>
+                    </TableCell>
+                    <TableCell><TextInput id="language_proficiency_${languageIndex}" name="language.proficiency"/></TableCell>
+                    <TableCell><Button action="deleteContent" index="${languageIndex}" contentGroup="languages">-</Button></TableCell>
+                  </TableRow>
+                </Loop>
+              </Table>
+              <Button action="createContent" contentGroup="languages">+</Button>
+              <Label>Other Proficiencies &amp; Languages</Label> 
+            </Border>
+          </Column>
+
+          <!-- HP, Attacks, Equipment -->
+          <Column weight="1">
+            <Row>
+              <Column weight="1">
+                <Background src="ac-shield">
+                  <NumberInput id="ac_1" name="ac" calculated="optional" calculateMethod="calc_ac"/>
+                  <Label for="ac_1">Armor Class</Label>
+                </Background>
+              </Column>
+
+              <Column weight="1">
+                <Background src="simple-box">
+                  <NumberInput id="initiative_1" name="initiative" calculated="optional"/>
+                  <Label for="initiative_1" action="ac_roll_initiative">Initiative</Label>
+                </Background>
+              </Column>
+
+              <Column weight="1">
+                <Background src="simple-box">
+                  <NumberInput id="speed_1" name="speed"/>
+                  <Label for="speed_1">Speed</Label>
+                </Background>
+              </Column>
+            </Row>
+
+            <Border>
+              <Inline>
+                <Label for="max_hp_1">Hit Point Maximum</Label>
+                <NumberInput id="max_hp_1" name="max_hp" calculated="optional"/>
+              </Inline>
+              <NumberInput id="hp_1" name="hp"/>
+              <Label for="hp_1">Current Hit Points</Label>
+            </Border>
+
+            <Border>
+              <NumberInput id="temp_hp_1" name="temp_hp"/>
+              <Label for="temp_hp_1">Temporary Hit Points</Label>
+            </Border>
+
+            <Row>
+              <Column weight="1">
+                <Border borderStyle="simplebox">
+                  <Inline>
+                    <Label for="hit_dice_total_1">Total</Label>
+                    <NumberInput id="hit_dice_total_1" name="hit_dice_total" calculated="optional"/>
+                  </Inline>
+                  <NumberInput id="hit_dice_1" name="hit_dice"/>
+                  <Label for="hit_dice_1" action="ac_roll_hit_dice">Hit Dice</Label>
+                </Border>
+              </Column>
+
+              <Column weight="1">
+                <Border borderStyle="simplebox">
+                  <Inline>
+                    <Label for="death_save_successes_1">Successes</Label>
+                    <Background src="line">
+                      <Checkbox id="death_save_successes_1" name="death_save_success_1"/>
+                      <Checkbox id="death_save_successes_1" name="death_save_success_2"/>
+                      <Checkbox id="death_save_successes_1" name="death_save_success_3"/>
+                    </Background>
+                  </Inline>
+
+                  <Inline>
+                    <Label for="death_save_failures_1">Failures</Label>
+                    <Background src="line">
+                      <Checkbox id="death_save_failures_1" name="death_save_failure_1"/>
+                      <Checkbox id="death_save_failures_1" name="death_save_failure_2"/>
+                      <Checkbox id="death_save_failures_1" name="death_save_failure_3"/>
+                    </Background>
+                  </Inline>
+                  <Label>Death Saves</Label>
+                </Border>
+              </Column>
+            </Row>
+
+            <!-- Attacks -->
+            <Border borderStyle="simplebox">
+              <Table>
+                <TableRow>
+                  <TableCell><Label>Name</Label></TableCell>
+                  <TableCell><Label>Atk</Label></TableCell>
+                  <TableCell><Label>Damage/Type</Label></TableCell>
+                  <TableCell><Label>Name</Label></TableCell>
+                </TableRow>
+                <Loop listSource="content.attacks" key="attack" index="attack_index">
+                  <TableRow>
+                    <TableCell><TextInput name="attack.name"/></TableCell>
+                    <TableCell><NumberInput name="attack.attackBonus"/></TableCell>
+                    <TableCell></TableCell>
+                    <TableCell>
+                      <Inline>
+                        <Button action="deleteContent" contentGroup="attacks" index="${attack_index}">-</Button>
+                        <Icon icon="sword" action="ac_attack" argument="attack"/>
+                        <Icon icon="edit" action="ac_open" argument="attack"/>
+                      </Inline>
+                    </TableCell>
+                  </TableRow>
+                </Loop>
+              </Table>
+              <Inline>
+                <Label>Attacks</Label>
+                <Button action="createContent" contentGroup="attacks">+</Button>
+              </Inline>
+
+              <Row>
+                <Column weight="2">Name</Column>
+                <Column weight="1">Attack Bonus</Column>
+                <Column weight="2">Name</Column>
+                <Column weight="1"></Column>
+              </Row>
+              <Loop id="attacks_1" list="a|b|c" key="attack" delimiter="|">
+                <Column weight="2">
+                  <Label>${attack}</Label>
+                  <TextInput name="attack.name"/>
+                </Column>
+
+                <Column weight="1">
+                  <Inline>
+                    +
+                    <NumberInput name="attack.name"/>
+                  </Inline>
+                </Column>
+
+                <Column weight="2">...</Column>
+                <Column weight="1">
+                  <Icon icon="sword" action="ac_attack" argument="attack"/>
+                  <Icon icon="edit" action="ac_open" argument="attack"/>
+                </Column>
+              </Loop>
+              <Label>Attacks &amp; Spellcasting</Label>
+            </Border>
+
+            <Border borderStyle="simplebox">
+              <Inline>
+                <Loop id="currencies_1" name="global.currencies" key="$currency">
+                  <Prefab name="currency" label="${currency.name}" index="${currency.index}"/>
+                </Loop>
+              </Inline>
+
+              <Label>Equipment</Label>
+              <Button action="createContent" contentGroup="items">+</Button>
+              <Table>
+                <TableRow>
+                  <TableCell></TableCell>
+                  <TableCell><Label>Weight</Label></TableCell>
+                  <TableCell><Label>Name</Label></TableCell>
+                  <TableCell><Label>#</Label></TableCell>
+                  <TableCell></TableCell>
+                </TableRow>
+
+                <Loop listSource="content.items" key="item" index="index">
+                  <TableRow>
+                    <TableCell><Label>${index} </Label></TableCell>
+                    <TableCell><NumberInput id="content_weight_${index}" name="item.weight"/></TableCell>
+                    <TableCell><TextInput id="content_name_${index}" name="item.name"/></TableCell>
+                    <TableCell><NumberInput id="content_quantity_${index}" name="item.quantity"/></TableCell>
+                    <TableCell></TableCell>
+                    <TableCell>
+                      <Button action="toggleCollapse" target="item_collapse_${index}">V</Button>
+                      <Button action="deleteContent" index="${index}" contentGroup="items">-</Button>
+                    </TableCell>
+                  </TableRow>
+                  <Collapse id="item_collapse_${index}">
+                    <TableRow>
+                      <TableCell width="5">
+                        <Inline>
+                          <Checkbox id="content_equipped_${index}" name="item.equipped"/>
+                          <Label>Equipped</Label>
+                        </Inline>
+                        <Inline>
+                          <Checkbox id="content_use-as-resource_${index}" name="item.isResource"/>
+                          <Label>Use as a Resource</Label>
+                        </Inline>
+                        <Inline>
+                          <Checkbox id="content_is-attack_${index}" name="item.hasAttack"/>
+                          <Label>Has an Attack</Label>
+                        </Inline>
+                        <Label for="content_description_${index}">Description</Label>
+                        <TextArea id="content_description_${index}" name="item.description"/>
+                      </TableCell>
+                    </TableRow>
+                  </Collapse>
+                </Loop>
+              </Table>
+            </Border>
+          </Column>
+
+          <!-- Bio, Features and Traits -->
+          <Column weight="1">
+            <Border borderStyle="simpleborder">
+              <TextArea id="personality_traits_1" name="personality_traits"/>
+              <Label for="personality_traits_1">Personality Traits</Label>
+            </Border>
+
+            <Border borderStyle="simpleborder">
+              <TextArea id="ideals_1" name="ideals"/>
+              <Label for="ideals_1">Ideals</Label>
+            </Border>
+
+            <Border borderStyle="simpleborder">
+              <TextArea id="bonad_1" name="bonds"/>
+              <Label for="bonad_1">Bonds</Label>
+            </Border>
+
+            <Border borderStyle="simpleborder">
+              <TextArea id="flaws_1" name="flaws"/>
+              <Label for="flaws_1">Flaws</Label>
+            </Border>
+
+            <Border borderStyle="simpleBorder">
+              <Label>Features &amp; Traits</Label>
+            </Border>
+          </Column>
+        </Row>
+      </Page>
+
+      <Page name="Spells">
+        <Label>Spells</Label>
+        <Pageable id="testing">
+          <Page name="Test One">
+            <Label>Testing!</Label>
+            <Inline>
+              <Radio id="advantage_1" name="advantage_disadvantage" value="1">Advantage</Radio>
+              <Radio id="no_advantage_1" name="advantage_disadvantage" value="0">Normal</Radio>
+              <Radio id="disadvantage_1" name="advantage_disadvantage" value="-1">Disadvantage</Radio>
+            </Inline>
+
+            <Inline><Radio id="advantage_2" name="advantage_disadvantage" value="1"/><Label for="advantage_2">Advantage</Label></Inline>
+            <Inline><Radio id="no_advantage_2" name="advantage_disadvantage" value="0"/><Label for="no_advantage_2">Normal</Label></Inline>
+            <Inline><Radio id="disadvantage_2" name="advantage_disadvantage" value="-1"/><Label for="disadvantage_2">Disadvantage</Label></Inline>
+          </Page>
+
+          <Page name="Test Two">
+            <Label>It works!</Label>
+          </Page>
+        </Pageable>
+        <Tabs for="testing"/>
+      </Page>
+    </Pageable>
+  </Layout>
+
+  <Prefabs>
+    <NewPrefab name="ability_score" properties="label,score,mod">
+      <Background src="/ability_score.svg">
+        <Label>${properties.label}</Label>
+        <NumberInput id="${properties.mod}_${properties.uuid}" name="${properties.mod}" calculated="true"/>
+        <NumberInput id="${properties.score}_${properties.uuid}" name="${properties.score}"/>
+      </Background>
+    </NewPrefab>
+
+    <NewPrefab name="skill" properties="">
+      <Row>
+        <Column weight="1"><Checkbox name="${properties.skill.key}"/></Column>
+        <Column weight="1">
+          <NumberInput id="acrobatics_proficiency_1" name="acrobatics_proficiency" calculated="true" calculateMethod="calc_skill_proficiency"/>
+        </Column>
+        <Column weight="3"><Label for="acrobatics_proficiency_1" action="ac_roll_skill">Acrobatics (Dex)</Label></Column>
+      </Row>
+    </NewPrefab>
+  </Prefabs>
+
+  <!-- Variables are sheet-defined values for having consistent values throughout the sheet. They can be accessed with ${sheet.[variableName]} -->
+  <Variables>
+    <Variable type="string" name="borderStyle" value="default-border-style"/> 
+  </Variables>
+</Sheet>
