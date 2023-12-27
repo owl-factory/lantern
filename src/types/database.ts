@@ -1,3 +1,5 @@
+import { Insertable, Selectable, Updateable } from "kysely";
+
 export interface Database {
   todos: TodosTable;
   users: UsersTable;
@@ -26,3 +28,7 @@ export interface SessionsTable {
   active_expires: bigint;
   idle_expires: bigint;
 }
+
+export type Todo = Selectable<TodosTable>;
+export type NewTodo = Insertable<TodosTable>;
+export type TodoUpdate = Updateable<TodosTable>;
