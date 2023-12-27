@@ -1,10 +1,12 @@
 "use client";
 
 import { Character } from "types/character";
+import { getLocalStorage } from "utils/localStorage";
 
 type CharacterListProps = {
-  characters: Character[];
+  characterIds: string[];
   addCharacter: () => void;
+  deleteCharacter: (key: string) => void;
   onCharacterClick: (key: string) => void;
 };
 
@@ -15,11 +17,14 @@ type CharacterListProps = {
  * @param onCharacterClick - A function that runs when a character is clicked
  */
 export function CharacterList(props: CharacterListProps) {
-  const characterElements = props.characters.map((character: Character) => (
-    <li key={character.key} onClick={() => props.onCharacterClick(character.key)}>
-      {character.name}
-    </li>
-  ));
+  const characterElements = props.characterIds
+    .map((characterId: string) => getLocalStorage(characterId, "object"))
+    .filter((character: Character | undefined) => character !== undefined)
+    .map((character: Character) => (
+      <li key={character.id} onClick={() => props.onCharacterClick(character.id)}>
+        {character.data.name}
+      </li>
+    ));
 
   return (
     <ul>

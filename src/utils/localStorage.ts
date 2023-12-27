@@ -63,3 +63,11 @@ export function setLocalStorage<T>(key: string, value: T): boolean {
     return false;
   }
 }
+
+/**
+ * Removes the value at a given key in Local Storage.
+ * @param key - The key to remove
+ */
+export function removeLocalStorage(key: string) {
+  window.localStorage.removeItem(key);
+}

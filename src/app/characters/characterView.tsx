@@ -1,9 +1,9 @@
 "use client";
 
-import { Character } from "types/character";
+import { DynamicRender } from "features/dynamicRender";
 
 type CharacterViewProps = {
-  character?: Character;
+  characterId: string;
 };
 
 /**
@@ -11,11 +11,11 @@ type CharacterViewProps = {
  * @param character - Optional. The character to render a Dynamic View for.
  */
 export function CharacterView(props: CharacterViewProps) {
-  if (!props.character) return <></>;
+  if (!props.characterId) return <></>;
 
   return (
     <>
-      <h1>{props.character.name}</h1>
+      <DynamicRender id={props.characterId} />
     </>
   );
 }

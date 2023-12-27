@@ -1,0 +1,28 @@
+/**
+ * Defines the base Storage Controller functionality for use with dependency injection
+ */
+export interface StorageController {
+  isValid: () => boolean;
+  get: <T = unknown>(options: GetOptions | string) => T | undefined;
+  update: <T>(options: SetOptions<T>) => void;
+}
+
+/**
+ * Defines the different types of storage we can use
+ */
+export enum StorageType {
+  LocalStorage,
+}
+
+/**
+ * Options used for getting a piece of data from a StorageController
+ */
+export type GetOptions = {
+  source: "character" | "content" | "ruleset" | "sheet";
+  key: string;
+};
+
+/**
+ * Options used for setting a piece of data within a StorageController
+ */
+export type SetOptions<T> = GetOptions & { value: T };

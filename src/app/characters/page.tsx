@@ -1,31 +1,28 @@
 "use client";
 
-import { Character } from "types/character";
 import { CharacterList } from "./characterList";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocalStorage } from "hooks/useLocalStorage";
 import { uuid } from "lib/uuid";
-import { setLocalStorage } from "utils/localStorage";
+import { getLocalStorage, removeLocalStorage, setLocalStorage } from "utils/localStorage";
 import { CharacterView } from "./characterView";
+import { Character } from "types/character";
 
 const LOCAL_CHARACTERS_KEY = "characters";
 
-type StoredCharacter = {
+export type StoredCharacter = {
   name: string;
   key: string;
-};
-
-type StoredCharacterData = {
-  data: Record<string, unknown>;
-  content: Record<string, unknown>;
 };
 
 function createLocalStorageCharacterId(key: string): string {
   return `character-${key}`;
 }
 
-const DEFAULT_CHARACTER_DATA: StoredCharacterData = {
-  data: {},
+const DEFAULT_CHARACTER_DATA: Character = {
+  id: "no-id",
+  name: "No Name",
+  data: { name: "No Name" },
   content: {},
 };
 
@@ -33,27 +30,36 @@ const DEFAULT_CHARACTER_DATA: StoredCharacterData = {
  * Renders a page for creating and editing characters in LocalStorage
  */
 function CharactersPage() {
-  const { data: characters, update } = useLocalStorage<StoredCharacter[]>(LOCAL_CHARACTERS_KEY, []);
-  const [currentCharacter, setCurrentCharacter] = useState<Character | undefined>(undefined);
+  const { data: characterIds, update } = useLocalStorage<string[]>(LOCAL_CHARACTERS_KEY, []);
+  const [currentCharacterId, setCurrentCharacterId] = useState<string | undefined>(undefined);
+
+  // Removes any characterIDs that don't have associated characters
+  useEffect(() => {
+    characterIds
+      .filter((characterId: string) => getLocalStorage(characterId, "string") === undefined)
+      .forEach(deleteCharacter);
+  }, [characterIds]);
 
   /**
    * For a given key, finds the character from the list of characters and sets that as the current character.
    * @param key - The key of the character to select
    */
   function onCharacterClick(key: string) {
-    const character: Character | undefined = characters.find((character: Character) => character.key === key);
-    setCurrentCharacter(() => character);
+    const characterId: string | undefined = characterIds.find((characterId: string) => characterId === key);
+    setCurrentCharacterId(() => characterId);
   }
 
   /**
    * Adds a new Local Storage character
    */
   function addCharacter() {
-    const newCharacter: StoredCharacter = { name: "No Name", key: uuid() };
-    const updatedCharacters = [...characters, newCharacter];
+    const rawCharacterId = uuid();
+    const characterId = createLocalStorageCharacterId(rawCharacterId);
 
-    const characterId = createLocalStorageCharacterId(newCharacter.key);
-    const setSuccess = setLocalStorage(characterId, { ...DEFAULT_CHARACTER_DATA });
+    const updatedCharacters = [...characterIds, characterId];
+
+    const character: Character = { ...DEFAULT_CHARACTER_DATA, id: characterId };
+    const setSuccess = setLocalStorage(characterId, character);
     if (!setSuccess) {
       // TODO - make this logging a user-visible feature
       console.error("A new character could not be created.");
@@ -61,7 +67,17 @@ function CharactersPage() {
     }
 
     update(updatedCharacters);
-    setCurrentCharacter(newCharacter);
+    setCurrentCharacterId(characterId);
+  }
+
+  /**
+   * Deletes a character from Local Storage
+   * @param key - The key of the character to delete
+   */
+  function deleteCharacter(key: string) {
+    const updatedCharacters = characterIds.filter((currentKey: string) => key !== currentKey);
+    removeLocalStorage(key);
+    update(updatedCharacters);
   }
 
   return (
@@ -69,10 +85,15 @@ function CharactersPage() {
       <h1>Characters</h1>
       <div>
         <div>
-          <CharacterList characters={characters} addCharacter={addCharacter} onCharacterClick={onCharacterClick} />
+          <CharacterList
+            characterIds={characterIds}
+            addCharacter={addCharacter}
+            deleteCharacter={deleteCharacter}
+            onCharacterClick={onCharacterClick}
+          />
         </div>
         <div>
-          <CharacterView character={currentCharacter} />
+          <CharacterView characterId={currentCharacterId} />
         </div>
       </div>
     </>
