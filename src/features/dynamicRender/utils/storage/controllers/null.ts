@@ -14,5 +14,7 @@ export class NullStorageController extends ValidationController implements Stora
     return undefined;
   }
 
-  update() {}
+  update() {
+    return false;
+  }
 }

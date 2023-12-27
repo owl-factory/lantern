@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { DynamicContext } from "../context/dynamicContext";
 import { GetOptions, SetOptions } from "../types/storage";
 
@@ -9,17 +9,13 @@ import { GetOptions, SetOptions } from "../types/storage";
  * @returns An object containing the found value and an update function to change the value
  */
 export function useFormValue<T>(options: GetOptions, defaultValue?: T) {
-  const [value, setValue] = useState<T>(defaultValue);
-  const { storage } = useContext(DynamicContext);
-
-  useEffect(() => {
-    setValue(storage.get<T>(options) ?? defaultValue);
-  }, [options, storage, defaultValue]);
+  const context = useContext(DynamicContext);
+  const value = context.get<T>(options) ?? defaultValue;
 
   function update(value: T) {
     const setOptions: SetOptions<T> = { ...options, value };
-    storage.update(setOptions);
-    setValue(storage.get<T>(options) ?? defaultValue);
+    context.update(setOptions);
+    value = context.get<T>(options) ?? defaultValue;
   }
 
   return { value, update };

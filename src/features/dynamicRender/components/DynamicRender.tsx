@@ -43,7 +43,7 @@ function _DynamicRender(props: DynamicRenderProps) {
   }, [context]);
 
   if (!context.ready) {
-    return <>Unready</>;
+    return <>Loading!</>;
   }
 
   return (

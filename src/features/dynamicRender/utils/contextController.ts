@@ -1,7 +1,7 @@
 import { computed, makeObservable } from "lib/mobx";
 import { FactoryOptions } from "../types/factory";
 import { MarkupController } from "../types/markup";
-import { StorageController } from "../types/storage";
+import { GetOptions, SetOptions, StorageController } from "../types/storage";
 import { NullMarkupController } from "./markup/controllers/null";
 import { MarkupFactory } from "./markup/factory";
 import { NullStorageController } from "./storage/controllers/null";
@@ -55,4 +55,31 @@ export class ContextController {
    * Runs any necessary cleanup functions on component unmount
    */
   async unload() {}
+
+  /**
+   * Gets a single piece of data from the given options from the appropriate location
+   * @param options - The options describing what data to get
+   * @returns A value if found, or undefined if not
+   */
+  get<T>(options: GetOptions | string): T | undefined {
+    if (typeof options === "string") return undefined;
+    switch (options.source) {
+      case "character":
+      case "content":
+        return this.storage.get(options);
+      case "sheet":
+        return undefined;
+      default:
+        return undefined;
+    }
+  }
+
+  /**
+   * Sets a single piece of data from the given options
+   * @param options - The options describing what data to update
+   * @returns True if the update was successful; false otherwise
+   */
+  update<T>(options: SetOptions<T>): boolean {
+    return this.storage.update(options);
+  }
 }

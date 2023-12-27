@@ -1,11 +1,12 @@
 import { useFormValue } from "features/dynamicRender/hooks/useFormValue";
 import { GetOptions } from "features/dynamicRender/types/storage";
+import { observer } from "lib/mobx";
 import { ChangeEvent, useMemo } from "react";
 
 /**
  * Renders a text input for the Dynamic Render
  */
-export function TextInput() {
+function _TextInput() {
   const options: GetOptions = useMemo(() => ({ source: "character", key: "name" }), []);
   const { value, update } = useFormValue<string>(options, "");
 
@@ -20,3 +21,6 @@ export function TextInput() {
 
   return <input type="text" onChange={onChange} value={value} />;
 }
+
+/** {@inheritDoc _TextInput} */
+export const TextInput = observer(_TextInput);

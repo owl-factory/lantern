@@ -11,5 +11,10 @@ export function DynamicSheet() {
   // if (!ready) {
   //   return <>Not ready</>;
   // }
-  return <TextInput />;
+  return (
+    <>
+      <TextInput />
+      <TextInput />
+    </>
+  );
 }

@@ -5,7 +5,7 @@ import { Controller } from "./controller";
  */
 export interface StorageController extends Controller {
   get: <T = unknown>(options: GetOptions | string) => T | undefined;
-  update: <T>(options: SetOptions<T>) => void;
+  update: <T>(options: SetOptions<T>) => boolean;
 }
 
 /**
