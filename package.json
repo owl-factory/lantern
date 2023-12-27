@@ -12,8 +12,8 @@
     "test:e2e": "playwright test"
   },
   "engines": {
-    "node": ">=18",
-    "pnpm": ">=6"
+    "node": ">=20",
+    "pnpm": ">=8"
   },
   "dependencies": {
     "@apollo/client": "^3.8.8",
