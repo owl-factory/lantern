@@ -1,8 +1,9 @@
+import { Controller } from "./controller";
+
 /**
  * Defines the base Storage Controller functionality for use with dependency injection
  */
-export interface StorageController {
-  isValid: () => boolean;
+export interface StorageController extends Controller {
   get: <T = unknown>(options: GetOptions | string) => T | undefined;
   update: <T>(options: SetOptions<T>) => void;
 }
@@ -24,5 +25,6 @@ export type GetOptions = {
 
 /**
  * Options used for setting a piece of data within a StorageController
+ * @param T - The type of the value to set
  */
 export type SetOptions<T> = GetOptions & { value: T };

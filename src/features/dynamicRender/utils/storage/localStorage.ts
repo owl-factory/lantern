@@ -2,11 +2,12 @@ import { GetOptions, SetOptions, StorageController } from "features/dynamicRende
 import { TargetType } from "features/dynamicRender/types/targetType";
 import { Character } from "types/character";
 import { getLocalStorage, setLocalStorage } from "utils/localStorage";
+import { ValidationController } from "../validation";
 
 /**
  * A StorageController that interfaces with the browser's LocalStorage
  */
-export class LocalStorageController implements StorageController {
+export class LocalStorageController extends ValidationController implements StorageController {
   characterId: string;
   targetType: TargetType;
   errors: string[];
@@ -14,6 +15,7 @@ export class LocalStorageController implements StorageController {
   character?: Character;
 
   constructor(characterId: string, targetType: TargetType) {
+    super();
     this.characterId = characterId;
     this.targetType = targetType;
 
@@ -21,23 +23,12 @@ export class LocalStorageController implements StorageController {
   }
 
   /**
-   * Indicates that this controller is or is not valid to use.
-   * @returns True if valid, false otherwise
+   * Validates the current controller against any errors
    */
-  isValid() {
-    this.errors = [];
+  validate() {
     if (this.targetType !== TargetType.Character) {
       this.errors.push("Local Storage is only configured to use Characters");
     }
-    return this.errors.length === 0;
-  }
-
-  /**
-   * Returns a list of errors with the local storage.
-   * @returns An array of strings
-   */
-  getErrors() {
-    return this.errors;
   }
 
   /**

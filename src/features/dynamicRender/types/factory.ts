@@ -1,3 +1,4 @@
+import { MarkupSource } from "./markup";
 import { StorageType } from "./storage";
 import { TargetType } from "./targetType";
 
@@ -9,4 +10,5 @@ export type FactoryOptions = {
   targetId: string;
   targetType: TargetType;
   storageType: StorageType;
+  markupSource: MarkupSource;
 };

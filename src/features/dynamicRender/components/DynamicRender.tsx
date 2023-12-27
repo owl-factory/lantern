@@ -1,7 +1,9 @@
 import { DynamicContext, DynamicContextContents } from "../context/dynamicContext";
 import { FactoryOptions } from "../types/factory";
+import { MarkupSource } from "../types/markup";
 import { StorageType } from "../types/storage";
 import { TargetType } from "../types/targetType";
+import { MarkupFactory } from "../utils/markup/factory";
 import { StorageFactory } from "../utils/storage/factory";
 import { DynamicSheet } from "./DynamicSheet";
 
@@ -16,9 +18,11 @@ export type DynamicRenderProps = {
 export function DynamicRender(props: DynamicRenderProps) {
   const options: FactoryOptions = buildFactoryOptions(props);
 
+  const markupController = MarkupFactory.build(options);
   const storageController = StorageFactory.build(options);
 
   const context: DynamicContextContents = {
+    markup: markupController,
     storage: storageController,
   };
 
@@ -39,6 +43,8 @@ function buildFactoryOptions(props: DynamicRenderProps): FactoryOptions {
     targetId: props.id,
     targetType: TargetType.Character,
     storageType: StorageType.LocalStorage,
+    markupSource: MarkupSource.Hardcoded,
   };
+
   return options;
 }
