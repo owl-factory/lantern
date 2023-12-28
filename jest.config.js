@@ -1,5 +1,7 @@
-import type { Config } from "jest";
-import nextJest from "next/jest.js";
+// eslint-disable-next-line tsdoc/syntax
+/** @type {import('jest').Config} */
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const nextJest = require("next/jest");
 
 const createJestConfig = nextJest({
   // Provide the path to your Next.js app to load next.config.js and .env files in your test environment
@@ -7,7 +9,7 @@ const createJestConfig = nextJest({
 });
 
 // Add any custom config to be passed to Jest
-const config: Config = {
+const config = {
   coverageProvider: "v8",
   testEnvironment: "node",
   moduleDirectories: ["src"],
@@ -17,4 +19,4 @@ const config: Config = {
 };
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
-export default createJestConfig(config);
+module.exports = createJestConfig(config);

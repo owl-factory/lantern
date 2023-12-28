@@ -9,7 +9,8 @@
     "lint": "next lint",
     "test": "jest && playwright test",
     "test:unit": "jest",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "migrate": "tsx src/migrations/migrationScript.ts"
   },
   "engines": {
     "node": ">=20",
@@ -47,7 +48,7 @@
     "postcss": "^8.4.32",
     "prettier": "^3.1.1",
     "tailwindcss": "^3.4.0",
-    "ts-node": "^10.9.2",
+    "tsx": "^4.7.0",
     "typescript": "^5.3.3"
   }
 }
