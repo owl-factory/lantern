@@ -7,6 +7,9 @@ node_modules
 out
 next-env.d.ts
 
+# PostgreSQL Volume
+postgres
+
 # local env files
 .env*.local
 

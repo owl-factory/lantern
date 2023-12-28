@@ -9,12 +9,6 @@ services:
       POSTGRES_USER: pguser
       POSTGRES_PASSWORD: pgdevpassword
     volumes:
-      - ./db/postgresql:/var/lib/postgresql
+      - ./postgres:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - 8080:8080

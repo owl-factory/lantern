@@ -10,7 +10,7 @@
     "test": "jest && playwright test",
     "test:unit": "jest",
     "test:e2e": "playwright test",
-    "migrate": "tsx src/migrations/migrationScript.ts"
+    "migrate": "tsx --env-file=.env.development src/migrations/migrationScript.ts"
   },
   "engines": {
     "node": ">=20",
