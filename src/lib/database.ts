@@ -8,7 +8,7 @@ export const pool = new Pool({
   user: process.env.POSTGRES_USER,
   password: process.env.POSTGRES_PASSWORD,
   port: 5432,
-  ssl: process.env.NODE_ENV === "production",
+  ssl: process.env.POSTGRES_HOST !== "localhost",
   max: 20, // set pool max size to 20
   idleTimeoutMillis: 1000, // close idle clients after 1 second
   connectionTimeoutMillis: 1000, // return an error after 1 second if connection could not be established

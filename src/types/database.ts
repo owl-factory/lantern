@@ -9,6 +9,7 @@ export interface Database {
 
 export interface TodosTable {
   id: string;
+  description: string;
   done: boolean;
 }
 
