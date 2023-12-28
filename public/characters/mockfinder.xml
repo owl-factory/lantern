@@ -3,30 +3,30 @@
     <Tabs for="main_page"/>
     <Pageable id="main_page">
       <Page name="Bio">
-       <Label>Letters:</Label>
+        Letters:
         <Loop key="letter" list="a|b|c" delimiter="|">
-          <Label>${letter}</Label>
+          ${letter}
         </Loop>
 
-        <Label>A List of Greetings:</Label>
+        A List of Greetings:
         <Loop key="language" listSource="rules.languageTypes">
-          <Label>Language Types: ${language}</Label>
+          Language Types: ${language}
         </Loop>
 
-       <Label>A List of Actions:</Label>
+        A List of Actions:
         <Loop key="action" listSource="rules.actions">
-          <Label>Action: ${action.name}</Label>
+          Action: ${action.name}
         </Loop>
 
-        <Label>Bio</Label>
-        <Label>Border style: ${sheet.borderStyle}</Label>
+        Bio
+        Border style: ${sheet.borderStyle}
 
         <Button action="alert" alert="Hello there!">Test</Button>
 
-        <Label>Collapse</Label>
+        Collapse
         <Button action="toggleCollapse" target="test_collapse">Toggle Collapse</Button>
         <Collapse id="test_collapse">
-          <Label>Testing the collapse! Look! Words!</Label>
+          Testing the collapse! Look! Words!
         </Collapse>
 
         <Button action="roll" roll="1d20cs20">Roll 1d20</Button>
@@ -154,9 +154,9 @@
             <Border>
               <Table>
                 <TableRow>
-                  <TableCell><Label>Tool</Label></TableCell>
-                  <TableCell><Label>Pro</Label></TableCell>
-                  <TableCell><Label>Attribute</Label></TableCell>
+                  <TableCell>Tool</TableCell>
+                  <TableCell>Pro</TableCell>
+                  <TableCell>Attribute</TableCell>
                 </TableRow>
                 <Loop listSource="content.tools" key="tool" index="toolIndex">
                   <TableRow>

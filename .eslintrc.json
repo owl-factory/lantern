@@ -8,6 +8,7 @@
   },
   "plugins": ["@typescript-eslint", "prettier", "eslint-plugin-tsdoc"],
   "rules": {
+    "no-case-declarations": "off",
     "@typescript-eslint/no-unsafe-argument": "error",
     "prettier/prettier": "error",
     "tsdoc/syntax": "error",

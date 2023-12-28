@@ -1,8 +1,10 @@
 import { RenderComponent } from "../types/render";
 import { registerUtilities } from "../components/utility";
 import { Void } from "../components/utility/Void";
+import { registerUi } from "../components/ui";
+import { registerForm } from "../components/form";
 
-const DYNAMIC_COMPONENT_MAP = new Map<string, RenderComponent>();
+const DYNAMIC_COMPONENT_REGISTRY = new Map<string, RenderComponent>();
 
 /**
  * Registers a Render Component for use within the DynamicRender
@@ -10,7 +12,7 @@ const DYNAMIC_COMPONENT_MAP = new Map<string, RenderComponent>();
  * @param component - The component to register
  */
 export function registerComponent(nodeName: string, component: RenderComponent) {
-  DYNAMIC_COMPONENT_MAP.set(nodeName, component);
+  DYNAMIC_COMPONENT_REGISTRY.set(nodeName, component);
 }
 
 /**
@@ -20,7 +22,9 @@ export function registerComponent(nodeName: string, component: RenderComponent) 
  * @returns A Render Component function
  */
 export function getRenderComponentByName(nodeName: string): RenderComponent {
-  return DYNAMIC_COMPONENT_MAP.get(nodeName) ?? Void;
+  return DYNAMIC_COMPONENT_REGISTRY.get(nodeName) ?? Void;
 }
 
+registerForm();
+registerUi();
 registerUtilities();

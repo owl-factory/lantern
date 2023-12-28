@@ -3,9 +3,9 @@ import { GetOptions } from "features/dynamicRender/types/storage";
 import { ChangeEvent, useMemo } from "react";
 
 /**
- * Renders a text input for the Dynamic Render
+ * Renders a number input for the Dynamic Render
  */
-export function TextInput() {
+export function NumberInput() {
   const options: GetOptions = useMemo(() => ({ source: "character", key: "name" }), []);
   const { value, update } = useFormValue<string>(options, "");
 
@@ -18,5 +18,5 @@ export function TextInput() {
     update(e.target.value);
   }
 
-  return <input type="text" onChange={onChange} value={value} />;
+  return <input type="number" onChange={onChange} value={value} />;
 }

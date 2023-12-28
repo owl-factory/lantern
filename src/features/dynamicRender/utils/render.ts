@@ -40,6 +40,9 @@ function checkIfUsableNode(node: ChildNode): boolean {
   const nodeType = node.nodeType;
   switch (nodeType) {
     case node.TEXT_NODE:
+      const isOnlyWhitespace = node.textContent.trim().length === 0;
+      return !isOnlyWhitespace;
+
     case node.ELEMENT_NODE:
       return true;
   }

@@ -5,7 +5,7 @@ import { ChangeEvent, useMemo } from "react";
 /**
  * Renders a text input for the Dynamic Render
  */
-export function TextInput() {
+export function TextArea() {
   const options: GetOptions = useMemo(() => ({ source: "character", key: "name" }), []);
   const { value, update } = useFormValue<string>(options, "");
 
@@ -13,10 +13,10 @@ export function TextInput() {
    * Updates the form value on change.
    * @param e - The triggering change event
    */
-  function onChange(e: ChangeEvent<HTMLInputElement>) {
+  function onChange(e: ChangeEvent<HTMLTextAreaElement>) {
     if (!e || !e.target) return;
     update(e.target.value);
   }
 
-  return <input type="text" onChange={onChange} value={value} />;
+  return <textarea onChange={onChange} value={value} />;
 }

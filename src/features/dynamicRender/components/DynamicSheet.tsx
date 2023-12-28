@@ -14,7 +14,7 @@ export function DynamicSheet() {
   if (layout === undefined) return <></>;
 
   const parsedNodes = parseNodeChildren(layout.childNodes);
-  const children = parsedNodes.map((node: ParsedNode) => <node.Component key={node.key} {...node} />);
+  const children = parsedNodes.map((node: ParsedNode) => <node.Component key={node.key} {...node.props} />);
   return (
     <>
       {children}
