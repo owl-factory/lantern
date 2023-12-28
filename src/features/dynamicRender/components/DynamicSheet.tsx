@@ -1,18 +1,23 @@
-// import { useContext } from "react";
-// import { DynamicContext } from "../context/dynamicContext";
+import { useContext } from "react";
+import { DynamicContext } from "../context/dynamicContext";
+import { ParsedNode } from "../types/render";
+import { parseNodeChildren } from "../utils/render";
 import { TextInput } from "./form/TextInput";
 
 /**
  * Renders the Sheet portion of a DynamicRender
  */
 export function DynamicSheet() {
-  // const { ready } = useContext(DynamicContext);
+  const { markup } = useContext(DynamicContext);
 
-  // if (!ready) {
-  //   return <>Not ready</>;
-  // }
+  const layout = markup.layout;
+  if (layout === undefined) return <></>;
+
+  const parsedNodes = parseNodeChildren(layout.childNodes);
+  const children = parsedNodes.map((node: ParsedNode) => <node.Component key={node.key} {...node} />);
   return (
     <>
+      {children}
       <TextInput />
       <TextInput />
     </>

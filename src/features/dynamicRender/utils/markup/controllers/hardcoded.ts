@@ -5,6 +5,7 @@ import { action, makeObservable, observable } from "lib/mobx";
 
 /**
  * A Markup Controller for accessing a markup file stored locally within this code
+ * TODO - This should be a generic Static or Dynamic Markup controller, with its own dependency "MarkupLoadingController"
  */
 export class HardcodedMarkupController extends ValidationController implements MarkupController {
   state = MarkupControllerState.NoOp;
@@ -38,6 +39,10 @@ export class HardcodedMarkupController extends ValidationController implements M
    */
   setState(state: MarkupControllerState) {
     this.state = state;
+  }
+
+  get layout() {
+    return this._layout;
   }
 
   /**

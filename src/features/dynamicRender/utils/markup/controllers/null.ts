@@ -7,6 +7,7 @@ import { ValidationController } from "../../validation";
  */
 export class NullMarkupController extends ValidationController implements MarkupController {
   state = MarkupControllerState.NoOp;
+  layout = undefined;
 
   async load() {}
 

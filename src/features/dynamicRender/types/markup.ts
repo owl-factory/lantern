@@ -6,6 +6,7 @@ import { Controller } from "./controller";
 export interface MarkupController extends Controller {
   state: MarkupControllerState;
   load: () => Promise<void>;
+  layout: Element | undefined;
 }
 
 /**
