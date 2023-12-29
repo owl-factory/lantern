@@ -276,10 +276,10 @@
             <Border borderStyle="simplebox">
               <Table>
                 <TableRow>
-                  <TableCell><Label>Name</Label></TableCell>
-                  <TableCell><Label>Atk</Label></TableCell>
-                  <TableCell><Label>Damage/Type</Label></TableCell>
-                  <TableCell><Label>Name</Label></TableCell>
+                  <TableCell>Name</TableCell>
+                  <TableCell>Atk</TableCell>
+                  <TableCell>Damage/Type</TableCell>
+                  <TableCell>Name</TableCell>
                 </TableRow>
                 <Loop listSource="content.attacks" key="attack" index="attack_index">
                   <TableRow>

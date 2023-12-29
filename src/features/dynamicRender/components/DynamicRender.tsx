@@ -3,7 +3,7 @@
 import { useEffect, useMemo } from "react";
 import { DynamicContext } from "../context/dynamicContext";
 import { FactoryOptions } from "../types/factory";
-import { MarkupSource } from "../types/markup";
+import { MarkupServeType, MarkupSource } from "../types/markup";
 import { StorageType } from "../types/storage";
 import { TargetType } from "../types/targetType";
 import { DynamicSheet } from "./DynamicSheet";
@@ -65,6 +65,7 @@ function buildFactoryOptions(props: DynamicRenderProps): FactoryOptions {
     targetId: props.id,
     targetType: TargetType.Character,
     storageType: StorageType.LocalStorage,
+    markupServeType: MarkupServeType.Static,
     markupSource: MarkupSource.Hardcoded,
   };
 

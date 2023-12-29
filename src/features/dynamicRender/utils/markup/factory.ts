@@ -1,7 +1,7 @@
 import { FactoryOptions } from "features/dynamicRender/types/factory";
-import { MarkupController, MarkupSource } from "features/dynamicRender/types/markup";
+import { MarkupController, MarkupServeType } from "features/dynamicRender/types/markup";
 import { NullMarkupController } from "./controllers/null";
-import { HardcodedMarkupController } from "./controllers/hardcoded";
+import { StaticMarkupController } from "./controllers/static";
 
 /**
  * A factory that builds the appropriate Markup controller
@@ -13,9 +13,9 @@ export class MarkupFactory {
    * @returns A MarkupController
    */
   static build(options: FactoryOptions): MarkupController {
-    switch (options.markupSource) {
-      case MarkupSource.Hardcoded:
-        return new HardcodedMarkupController();
+    switch (options.markupServeType) {
+      case MarkupServeType.Static:
+        return new StaticMarkupController();
     }
 
     return new NullMarkupController();
