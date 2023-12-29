@@ -6,14 +6,14 @@ declare namespace Lucia {
   type DatabaseUserAttributes = {
     username: string;
     email: string;
-    display_name?: string;
-    icon_url?: string;
+    display_name: string | null;
+    icon_url: string | null;
   };
 
   type DatabaseSessionAttributes = {
     username: string;
     email: string;
-    display_name?: string;
-    icon_url?: string;
+    display_name: string | null;
+    icon_url: string | null;
   };
 }
