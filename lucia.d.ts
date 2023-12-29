@@ -4,16 +4,16 @@ declare namespace Lucia {
   type Auth = import("lib/authentication").Auth;
 
   type DatabaseUserAttributes = {
-    display_name: string;
     username: string;
     email: string;
-    icon: string;
+    display_name?: string;
+    icon_url?: string;
   };
 
   type DatabaseSessionAttributes = {
-    display_name: string;
     username: string;
     email: string;
-    icon: string;
+    display_name?: string;
+    icon_url?: string;
   };
 }

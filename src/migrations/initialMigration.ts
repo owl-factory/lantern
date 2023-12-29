@@ -2,6 +2,25 @@
 import { Kysely, sql } from "kysely";
 
 export async function up(db: Kysely<any>): Promise<void> {
+  // users table
+  await db.schema
+    .createTable("users")
+    .addColumn("id", "text", (col) => col.notNull().primaryKey())
+    .addColumn("username", "text", (col) => col.notNull())
+    .addColumn("email", "text", (col) => col.notNull())
+    .addColumn("display_name", "text")
+    .addColumn("icon_url", "text")
+    .execute();
+
+  // keys table
+  await db.schema
+    .createTable("keys")
+    .addColumn("id", "text", (col) => col.notNull().primaryKey())
+    .addColumn("user_id", "text", (col) => col.notNull().references("users.id"))
+    .addColumn("hashed_password", "text")
+    .execute();
+
+  // todos table
   await db.schema
     .createTable("todos")
     .addColumn("id", "uuid", (col) =>
@@ -11,7 +30,7 @@ export async function up(db: Kysely<any>): Promise<void> {
         .defaultTo(sql`gen_random_uuid()`)
     )
     .addColumn("description", "text")
-    .addColumn("done", "boolean", (col) => col.notNull())
+    .addColumn("done", "boolean", (col) => col.notNull().defaultTo(false))
     .execute();
 
   const todos = [

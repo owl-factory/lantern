@@ -9,7 +9,7 @@ export type Database = {
 
 export type TodosTable = {
   id: string;
-  description: string;
+  description?: string;
   done: boolean;
 };
 
@@ -28,7 +28,7 @@ export type UserUpdate = Updateable<UsersTable>;
 export type KeysTable = {
   id: string;
   user_id: string;
-  hashed_password: string | null;
+  hashed_password?: string;
 };
 
 export type Key = Selectable<KeysTable>;
