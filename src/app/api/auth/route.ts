@@ -1,26 +1,14 @@
 import { auth } from "lib/authentication";
-import { NewUser } from "types/database";
+import { NextRequest } from "next/server";
 
 /**
- * User signup endpoint function.
- * @param request - Web standard request object that contains the POST body.
- * @returns new user object.
+ * Endpoint for checking authentication status.
+ * @param request - NextJs request object that contains the POST body and auth cookies.
+ * @returns New session object.
+ * @returns Authentication status.
  */
-export async function POST(request: Request) {
-  const newUser: NewUser & { password?: string } = await request.json();
-
-  const user = await auth.createUser({
-    key: {
-      providerId: "email",
-      providerUserId: newUser.email.toLowerCase(),
-      password: newUser.password,
-    },
-    attributes: {
-      email: newUser.email,
-      username: newUser.username,
-      display_name: newUser.display_name,
-    },
-  });
-
-  return Response.json(user);
+export async function GET(request: NextRequest) {
+  const authRequest = auth.handleRequest(request);
+  const session = await authRequest.validate();
+  return Response.json({ authenticated: Boolean(session) });
 }

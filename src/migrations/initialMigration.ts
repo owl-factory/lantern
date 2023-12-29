@@ -28,10 +28,11 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("user_id", "text", (col) => col.notNull().references("user.id"))
     .addColumn("active_expires", "bigint", (col) => col.notNull())
     .addColumn("idle_expires", "bigint", (col) => col.notNull())
-    .addColumn("username", "text", (col) => col.notNull())
-    .addColumn("email", "text", (col) => col.notNull())
-    .addColumn("display_name", "text")
-    .addColumn("icon_url", "text")
+    // Todo follow up on whether session needs user fields
+    // .addColumn("username", "text", (col) => col.notNull())
+    // .addColumn("email", "text", (col) => col.notNull())
+    // .addColumn("display_name", "text")
+    // .addColumn("icon_url", "text")
     .execute();
   /* end Lucia Auth tables */
 

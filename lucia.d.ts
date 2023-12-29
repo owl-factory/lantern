@@ -10,10 +10,5 @@ declare namespace Lucia {
     icon_url?: string;
   };
 
-  type DatabaseSessionAttributes = {
-    username: string;
-    email: string;
-    display_name?: string;
-    icon_url?: string;
-  };
+  type DatabaseSessionAttributes = {};
 }
