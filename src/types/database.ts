@@ -9,7 +9,7 @@ export type Database = {
 
 export type TodoTable = {
   id: string;
-  description: string | null;
+  description?: string;
   done: boolean;
 };
 

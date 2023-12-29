@@ -3,13 +3,7 @@ import { database } from "lib/database";
 import type { NewTodo, Todo } from "types/database";
 
 /**
- * @swagger
- * /api/todo:
- *   get:
- *     description: Gets all todo list items from the database.
- *     responses:
- *       200:
- *         description: success
+ * Gets all todo list items from the database.
  * @returns array of todo list items.
  */
 export async function GET() {
