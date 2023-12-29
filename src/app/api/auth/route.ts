@@ -12,7 +12,7 @@ export async function POST(request: Request) {
   const user = await auth.createUser({
     key: {
       providerId: "email",
-      providerUserId: newUser.email,
+      providerUserId: newUser.email.toLowerCase(),
       password: newUser.password,
     },
     attributes: {
