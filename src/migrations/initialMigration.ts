@@ -4,7 +4,7 @@ import { Kysely, sql } from "kysely";
 export async function up(db: Kysely<any>): Promise<void> {
   // users table
   await db.schema
-    .createTable("users")
+    .createTable("user")
     .addColumn("id", "text", (col) => col.notNull().primaryKey())
     .addColumn("username", "text", (col) => col.notNull())
     .addColumn("email", "text", (col) => col.notNull())
@@ -14,15 +14,15 @@ export async function up(db: Kysely<any>): Promise<void> {
 
   // keys table
   await db.schema
-    .createTable("keys")
+    .createTable("key")
     .addColumn("id", "text", (col) => col.notNull().primaryKey())
-    .addColumn("user_id", "text", (col) => col.notNull().references("users.id"))
+    .addColumn("user_id", "text", (col) => col.notNull().references("user.id"))
     .addColumn("hashed_password", "text")
     .execute();
 
   // todos table
   await db.schema
-    .createTable("todos")
+    .createTable("todo")
     .addColumn("id", "uuid", (col) =>
       col
         .notNull()
@@ -43,9 +43,9 @@ export async function up(db: Kysely<any>): Promise<void> {
       done: false,
     },
   ];
-  await db.insertInto("todos").values(todos).execute();
+  await db.insertInto("todo").values(todos).execute();
 }
 
 export async function down(db: Kysely<any>): Promise<void> {
-  await db.schema.dropTable("todos").execute();
+  await db.schema.dropTable("todo").execute();
 }

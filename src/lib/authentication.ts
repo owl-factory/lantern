@@ -4,9 +4,9 @@ import { pg } from "@lucia-auth/adapter-postgresql";
 import { pool } from "lib/database";
 
 export const tableNames = {
-  user: "users",
-  session: "sessions",
-  key: "keys",
+  user: "user",
+  session: "session",
+  key: "key",
 };
 
 export const auth = lucia({

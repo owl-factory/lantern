@@ -4,7 +4,7 @@ import type { NewTodo, Todo } from "types/database";
 
 /**
  * @swagger
- * /api/todos:
+ * /api/todo:
  *   get:
  *     description: Gets all todo list items from the database.
  *     responses:
@@ -13,12 +13,12 @@ import type { NewTodo, Todo } from "types/database";
  * @returns array of todo list items.
  */
 export async function GET() {
-  const todos: Todo[] = await database.selectFrom("todos").selectAll().execute();
-  return Response.json(todos);
+  const todo: Todo[] = await database.selectFrom("todo").selectAll().execute();
+  return Response.json(todo);
 }
 
 export async function POST(request: Request) {
   const newTodo: NewTodo = await request.json();
-  const result = await database.insertInto("todos").values(newTodo).returningAll().executeTakeFirstOrThrow();
+  const result = await database.insertInto("todo").values(newTodo).returningAll().executeTakeFirstOrThrow();
   return Response.json(result);
 }

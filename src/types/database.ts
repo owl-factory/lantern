@@ -1,47 +1,47 @@
 import { Insertable, Selectable, Updateable } from "kysely";
 
 export type Database = {
-  todos: TodosTable;
-  users: UsersTable;
-  keys: KeysTable;
-  sessions: SessionsTable;
+  user: UserTable;
+  key: KeyTable;
+  session: SessionTable;
+  todo: TodoTable;
 };
 
-export type TodosTable = {
+export type TodoTable = {
   id: string;
   description?: string;
   done: boolean;
 };
 
-export type Todo = Selectable<TodosTable>;
-export type NewTodo = Insertable<TodosTable>;
-export type TodoUpdate = Updateable<TodosTable>;
+export type Todo = Selectable<TodoTable>;
+export type NewTodo = Insertable<TodoTable>;
+export type TodoUpdate = Updateable<TodoTable>;
 
-export type UsersTable = {
+export type UserTable = {
   id: string;
 } & Lucia.DatabaseUserAttributes;
 
-export type User = Selectable<UsersTable>;
-export type NewUser = Insertable<UsersTable>;
-export type UserUpdate = Updateable<UsersTable>;
+export type User = Selectable<UserTable>;
+export type NewUser = Insertable<UserTable>;
+export type UserUpdate = Updateable<UserTable>;
 
-export type KeysTable = {
+export type KeyTable = {
   id: string;
   user_id: string;
   hashed_password?: string;
 };
 
-export type Key = Selectable<KeysTable>;
-export type NewKey = Insertable<KeysTable>;
-export type KeyUpdate = Updateable<KeysTable>;
+export type Key = Selectable<KeyTable>;
+export type NewKey = Insertable<KeyTable>;
+export type KeyUpdate = Updateable<KeyTable>;
 
-export type SessionsTable = {
+export type SessionTable = {
   id: string;
   user_id: string;
   active_expires: bigint;
   idle_expires: bigint;
 } & Lucia.DatabaseSessionAttributes;
 
-export type Session = Selectable<SessionsTable>;
-export type NewSession = Insertable<SessionsTable>;
-export type SessionUpdate = Updateable<SessionsTable>;
+export type Session = Selectable<SessionTable>;
+export type NewSession = Insertable<SessionTable>;
+export type SessionUpdate = Updateable<SessionTable>;
