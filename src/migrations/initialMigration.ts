@@ -2,7 +2,8 @@
 import { Kysely, sql } from "kysely";
 
 export async function up(db: Kysely<any>): Promise<void> {
-  // users table
+  /* Lucia Auth tables */
+  // user table
   await db.schema
     .createTable("user")
     .addColumn("id", "text", (col) => col.notNull().primaryKey())
@@ -12,13 +13,27 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("icon_url", "text")
     .execute();
 
-  // keys table
+  // key table
   await db.schema
     .createTable("key")
     .addColumn("id", "text", (col) => col.notNull().primaryKey())
     .addColumn("user_id", "text", (col) => col.notNull().references("user.id"))
     .addColumn("hashed_password", "text")
     .execute();
+
+  // session table
+  await db.schema
+    .createTable("session")
+    .addColumn("id", "text", (col) => col.notNull().primaryKey())
+    .addColumn("user_id", "text", (col) => col.notNull().references("user.id"))
+    .addColumn("active_expires", "bigint", (col) => col.notNull())
+    .addColumn("idle_expires", "bigint", (col) => col.notNull())
+    .addColumn("username", "text", (col) => col.notNull())
+    .addColumn("email", "text", (col) => col.notNull())
+    .addColumn("display_name", "text")
+    .addColumn("icon_url", "text")
+    .execute();
+  /* end Lucia Auth tables */
 
   // todos table
   await db.schema
@@ -47,5 +62,8 @@ export async function up(db: Kysely<any>): Promise<void> {
 }
 
 export async function down(db: Kysely<any>): Promise<void> {
+  await db.schema.dropTable("key").execute();
+  await db.schema.dropTable("session").execute();
+  await db.schema.dropTable("user").execute();
   await db.schema.dropTable("todo").execute();
 }
