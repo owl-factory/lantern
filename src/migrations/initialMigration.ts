@@ -14,13 +14,17 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("done", "boolean", (col) => col.notNull())
     .execute();
 
-  await db.schema.createIndex("todos_id_index").on("todos").column("id").execute();
-
-  const todo = {
-    description: "kiss girls.",
-    done: false,
-  };
-  await db.insertInto("todos").values(todo).execute();
+  const todos = [
+    {
+      description: "Kiss girls",
+      done: true,
+    },
+    {
+      description: "Complete Lantern",
+      done: false,
+    },
+  ];
+  await db.insertInto("todos").values(todos).execute();
 }
 
 export async function down(db: Kysely<any>): Promise<void> {

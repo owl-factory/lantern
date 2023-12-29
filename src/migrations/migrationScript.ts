@@ -8,7 +8,7 @@ import { database } from "lib/database";
  * The purpose of this script is to run all Kysely migrations in the migrations folder.
  * It is needed because Kysely, by design, has no migration CLI.
  */
-async function migrateToLatest() {
+async function migrateToLatest(migrationArg: string) {
   const migrator = new Migrator({
     db: database,
     provider: new FileMigrationProvider({
@@ -19,7 +19,18 @@ async function migrateToLatest() {
     }),
   });
 
-  const { error, results } = await migrator.migrateToLatest();
+  let res;
+  if (!migrationArg || migrationArg.toLowerCase() === "--latest" || migrationArg.toLowerCase() === "-l") {
+    res = await migrator.migrateToLatest();
+  } else if (migrationArg === "--up" || migrationArg === "-u") {
+    res = await migrator.migrateUp();
+  } else if (migrationArg === "--down" || migrationArg === "-d") {
+    res = await migrator.migrateDown();
+  } else {
+    console.error("invalid arguments");
+    process.exit(1);
+  }
+  const { error, results } = res;
 
   results?.forEach((it) => {
     if (it.status === "Success") {
@@ -38,4 +49,6 @@ async function migrateToLatest() {
   await database.destroy();
 }
 
-migrateToLatest();
+const [, , migrationArg] = process.argv;
+
+migrateToLatest(migrationArg);
