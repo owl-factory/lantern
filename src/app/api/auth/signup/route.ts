@@ -23,6 +23,7 @@ export async function POST(request: NextRequest) {
       email: newUser.email,
       username: newUser.username,
       display_name: newUser.display_name,
+      icon_url: newUser.icon_url,
     },
   });
 

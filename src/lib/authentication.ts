@@ -13,8 +13,13 @@ export const auth = lucia({
   adapter: pg(pool, tableNames),
   env: process.env.NODE_ENV === "production" ? "PROD" : "DEV",
   middleware: nextjs_future(),
-  sessionCookie: {
-    expires: false,
+  getUserAttributes: (databaseUser) => {
+    return {
+      username: databaseUser.username,
+      email: databaseUser.email,
+      display_name: databaseUser.display_name || undefined,
+      icon_url: databaseUser.icon_url || undefined,
+    };
   },
 });
 

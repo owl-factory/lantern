@@ -8,7 +8,7 @@ import { UserUpdate } from "types/database";
  * @param options - Options object that contains needed url parameters.
  * @returns deleted user ID.
  */
-export async function DELETE(request: NextRequest) {
+export async function POST(request: NextRequest) {
   const userUpdate: UserUpdate = await request.json();
   const authRequest = auth.handleRequest(request);
   const session = await authRequest.validate();
