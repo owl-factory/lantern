@@ -1,4 +1,5 @@
 import { Controller } from "./controller";
+import { GetOptions, SetOptions } from "./query";
 
 /**
  * Defines the base Storage Controller functionality for use with dependency injection
@@ -25,17 +26,3 @@ export enum StorageControllerState {
 export enum StorageType {
   LocalStorage,
 }
-
-/**
- * Options used for getting a piece of data from a StorageController
- */
-export type GetOptions = {
-  source: "character" | "content" | "ruleset" | "sheet";
-  key: string;
-};
-
-/**
- * Options used for setting a piece of data within a StorageController
- * @param T - The type of the value to set
- */
-export type SetOptions<T> = GetOptions & { value: T };

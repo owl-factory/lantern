@@ -1,11 +1,12 @@
 import { computed, makeObservable } from "lib/mobx";
 import { FactoryOptions } from "../types/factory";
 import { MarkupController } from "../types/markup";
-import { GetOptions, SetOptions, StorageController } from "../types/storage";
+import { StorageController } from "../types/storage";
 import { NullMarkupController } from "./markup/controllers/null";
 import { MarkupFactory } from "./markup/factory";
 import { NullStorageController } from "./storage/controllers/null";
 import { StorageFactory } from "./storage/factory";
+import { GetOptions, QuerySource, SetOptions } from "../types/query";
 
 /**
  * A class used to manage the context for DynamicRender, as well as handling some
@@ -63,12 +64,14 @@ export class ContextController {
    */
   get<T>(options: GetOptions | string): T | undefined {
     if (typeof options === "string") return undefined;
+    if (options.source === QuerySource.Invalid) return undefined;
+
     switch (options.source) {
-      case "character":
-      case "content":
+      case QuerySource.Character:
+        // case "content":
         return this.storage.get(options);
-      case "sheet":
-        return undefined;
+      // case "sheet":
+      //   return undefined;
       default:
         return undefined;
     }

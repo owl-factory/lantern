@@ -1,14 +1,10 @@
-import {
-  GetOptions,
-  SetOptions,
-  StorageController,
-  StorageControllerState,
-} from "features/dynamicRender/types/storage";
+import { StorageController, StorageControllerState } from "features/dynamicRender/types/storage";
 import { TargetType } from "features/dynamicRender/types/targetType";
 import { Character } from "types/character";
 import { getLocalStorage, setLocalStorage } from "utils/localStorage";
 import { ValidationController } from "../../validation";
 import { action, makeObservable, observable } from "lib/mobx";
+import { GetOptions, QuerySource, SetOptions } from "features/dynamicRender/types/query";
 
 /**
  * A StorageController that interfaces with the browser's LocalStorage
@@ -66,10 +62,10 @@ export class LocalStorageController extends ValidationController implements Stor
   get<T>(options: GetOptions | string): T | undefined {
     if (typeof options === "string") return undefined;
     switch (options.source) {
-      case "character":
+      case QuerySource.Character:
         return this.character?.data[options.key] as T | undefined;
-      case "content":
-        return undefined;
+      // case QuerySource.Content:
+      //   return undefined;
       // const contents = this.character?.content[options.key] ?? undefined;
       // if (contents === undefined) return undefined;
     }
@@ -81,7 +77,7 @@ export class LocalStorageController extends ValidationController implements Stor
    * @returns True if the update was successful; false otherwise
    */
   update<T>(options: SetOptions<T>): boolean {
-    if (options.source !== "character") return false;
+    if (options.source !== QuerySource.Character) return false;
     if (!this.character) return false;
     this.character.data[options.key] = options.value;
     this.triggerUpdate();

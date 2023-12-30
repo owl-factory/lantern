@@ -1,4 +1,4 @@
-import { GetOptions } from "features/dynamicRender/types/storage";
+import { GetOptions } from "features/dynamicRender/types/query";
 
 /**
  * Takes a query string and converts it into options for accessing that data
