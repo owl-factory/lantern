@@ -78,6 +78,8 @@ function CharactersPage() {
     const updatedCharacters = characterIds.filter((currentKey: string) => key !== currentKey);
     removeLocalStorage(key);
     update(updatedCharacters);
+    if (currentCharacterId !== key) return;
+    setCurrentCharacterId(undefined);
   }
 
   return (

@@ -7,5 +7,6 @@ import { parseNodeChildren } from "features/dynamicRender/utils/render";
 export function Table(props: RenderComponentProps) {
   const parsedNodes = parseNodeChildren(props.node.childNodes);
   const children = parsedNodes.map((node: ParsedNode) => <node.Component key={node.key} {...node.props} />);
-  return <table>{children}</table>;
+  children;
+  return <table>{"children"}</table>;
 }

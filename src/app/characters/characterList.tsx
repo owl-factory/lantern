@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "components/ui/Button";
 import { Character } from "types/character";
 import { getLocalStorage } from "utils/localStorage";
 
@@ -21,8 +22,15 @@ export function CharacterList(props: CharacterListProps) {
     .map((characterId: string) => getLocalStorage(characterId, "object"))
     .filter((character: Character | undefined) => character !== undefined)
     .map((character: Character) => (
-      <li key={character.id} onClick={() => props.onCharacterClick(character.id)}>
-        {character.data.name}
+      <li key={character.id}>
+        <span onClick={() => props.onCharacterClick(character.id)}>{character.data.name} </span>
+        <Button
+          onClick={() =>
+            confirm(`Are you sure you want to delete ${character.data.name}?`) && props.deleteCharacter(character.id)
+          }
+        >
+          Delete
+        </Button>
       </li>
     ));
 
