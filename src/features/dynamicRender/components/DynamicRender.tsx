@@ -61,12 +61,14 @@ export const DynamicRender = observer(_DynamicRender);
  * @returns FactoryOptions for building controllers with Factories
  */
 function buildFactoryOptions(props: DynamicRenderProps): FactoryOptions {
-  const options = {
+  const options: FactoryOptions = {
     targetId: props.id,
     targetType: TargetType.Character,
     storageType: StorageType.LocalStorage,
     markupServeType: MarkupServeType.Static,
+
     markupSource: MarkupSource.Hardcoded,
+    uri: "/characters/mockfinder.xml",
   };
 
   return options;

@@ -1,8 +1,10 @@
-import { ValidationController } from "../../../validation";
-import { action, computed, observable, safeMakeObservable } from "lib/mobx";
+import { ValidationController } from "../../validation";
+import { action, observable, safeMakeObservable } from "lib/mobx";
 import { MarkupLoaderController, MarkupLoaderControllerState } from "features/dynamicRender/types/markupLoader";
 import { Err, Ok } from "utils/functional";
 import { Result } from "types/functional";
+import { FactoryOptions } from "features/dynamicRender/types/factory";
+import { MarkupSource } from "features/dynamicRender/types/markup";
 
 /**
  * A Controller for fetching markup that is stored at a static HTTP location
@@ -11,10 +13,14 @@ export class HardcodedMarkupLoaderController extends ValidationController implem
   state: MarkupLoaderControllerState = MarkupLoaderControllerState.NoOp;
   apiRoute: string;
 
-  constructor() {
+  constructor(options: FactoryOptions) {
     super();
 
-    this.apiRoute = "/characters/mockfinder.xml";
+    if (options.markupSource !== MarkupSource.Hardcoded) {
+      return this;
+    }
+
+    this.apiRoute = options.uri;
 
     const obserableResult = safeMakeObservable(this, {
       state: observable,

@@ -12,5 +12,9 @@ export type FactoryOptions = {
   storageType: StorageType;
 
   markupServeType: MarkupServeType;
-  markupSource: MarkupSource;
+} & MarkupSourceFactoryOptions;
+
+type MarkupSourceFactoryOptions = {
+  markupSource: MarkupSource.Hardcoded;
+  uri: string;
 };

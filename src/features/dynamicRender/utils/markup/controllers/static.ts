@@ -2,11 +2,12 @@ import { MarkupController, MarkupControllerState, Prefabs, Variables } from "fea
 import { action, computed, observable, safeMakeObservable } from "lib/mobx";
 import { ValidationController } from "../../validation";
 import { MarkupLoaderController } from "features/dynamicRender/types/markupLoader";
-import { NullMarkupLoaderController } from "./loaders/null";
+import { NullMarkupLoaderController } from "../../markupLoader/controllers/null";
 import { parseMarkup } from "../parse";
 import { Ok } from "utils/functional";
 import { Result } from "types/functional";
-import { HardcodedMarkupLoaderController } from "./loaders/hardcoded";
+import { FactoryOptions } from "features/dynamicRender/types/factory";
+import { MarkupLoaderFactory } from "../../markupLoader/factory";
 
 /**
  * A MarkupController in which the Markup is expected to remain static and unchanging
@@ -20,10 +21,10 @@ export class StaticMarkupController extends ValidationController implements Mark
   _variables: Variables;
   _prefabs: Prefabs;
 
-  constructor() {
+  constructor(options: FactoryOptions) {
     super();
 
-    this.loader = new HardcodedMarkupLoaderController();
+    this.loader = MarkupLoaderFactory.build(options);
 
     const obserableResult = safeMakeObservable(this, {
       ready: computed,
