@@ -6,7 +6,7 @@ export async function up(db: Kysely<any>): Promise<void> {
   // user table
   await db.schema
     .createTable("user")
-    .addColumn("id", "text", (col) => col.notNull().primaryKey())
+    .addColumn("id", "uuid", (col) => col.notNull().primaryKey())
     .addColumn("username", "text", (col) => col.notNull())
     .addColumn("email", "text", (col) => col.notNull())
     .addColumn("display_name", "text")
@@ -17,15 +17,15 @@ export async function up(db: Kysely<any>): Promise<void> {
   await db.schema
     .createTable("key")
     .addColumn("id", "text", (col) => col.notNull().primaryKey())
-    .addColumn("user_id", "text", (col) => col.notNull().references("user.id"))
+    .addColumn("user_id", "uuid", (col) => col.notNull().references("user.id"))
     .addColumn("hashed_password", "text")
     .execute();
 
   // session table
   await db.schema
     .createTable("session")
-    .addColumn("id", "text", (col) => col.notNull().primaryKey())
-    .addColumn("user_id", "text", (col) => col.notNull().references("user.id"))
+    .addColumn("id", "varchar(40)", (col) => col.notNull().primaryKey())
+    .addColumn("user_id", "uuid", (col) => col.notNull().references("user.id"))
     .addColumn("active_expires", "bigint", (col) => col.notNull())
     .addColumn("idle_expires", "bigint", (col) => col.notNull())
     // Todo follow up on whether session needs user fields

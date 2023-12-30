@@ -13,6 +13,7 @@ export async function POST(request: NextRequest) {
 
   // Create user
   const user = await auth.createUser({
+    userId: crypto.randomUUID(),
     key: {
       providerId: "email",
       providerUserId: newUser.email.toLowerCase(),
