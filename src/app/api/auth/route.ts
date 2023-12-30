@@ -9,6 +9,6 @@ import { NextRequest } from "next/server";
  */
 export async function GET(request: NextRequest) {
   const authRequest = auth.handleRequest(request);
-  const session = await authRequest.validate();
+  const session = (await authRequest.validate()) || undefined;
   return Response.json({ authenticated: Boolean(session), session });
 }

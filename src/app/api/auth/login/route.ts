@@ -8,8 +8,8 @@ import { NextRequest } from "next/server";
  * @returns new session object.
  */
 export async function POST(request: NextRequest) {
-  const credentials: { usernameOrEmail?: string; password?: string } = await request.json();
-  const providerUserId = credentials.usernameOrEmail.toLowerCase();
+  const credentials: { username?: string; password?: string } = await request.json();
+  const providerUserId = credentials.username.toLowerCase();
 
   // Check if providerUserId is a an email address.
   const providerId =
@@ -19,14 +19,19 @@ export async function POST(request: NextRequest) {
       ? "email"
       : "username";
 
-  const key = await auth.useKey(providerId, providerUserId, credentials.password);
-  await auth.deleteDeadUserSessions(key.userId);
-  const session = await auth.createSession({
-    userId: key.userId,
-    attributes: {},
-  });
-  const authRequest = auth.handleRequest(request.method, context);
-  authRequest.setSession(session);
+  try {
+    const key = await auth.useKey(providerId, providerUserId, credentials.password);
 
-  return Response.json(session);
+    await auth.deleteDeadUserSessions(key.userId);
+    const session = await auth.createSession({
+      userId: key.userId,
+      attributes: {},
+    });
+    const authRequest = auth.handleRequest(request.method, context);
+    authRequest.setSession(session);
+
+    return Response.json(session);
+  } catch (e) {
+    return Response.json(e, { status: 401 });
+  }
 }
