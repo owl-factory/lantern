@@ -3,7 +3,7 @@ import * as context from "next/headers";
 import { NextRequest } from "next/server";
 
 /**
- * User signin endpoint, generates a new session.
+ * User login endpoint, generates a new session.
  * @param request - NextJs request object that contains the POST body and auth cookies.
  * @returns new session object.
  */
@@ -29,23 +29,4 @@ export async function POST(request: NextRequest) {
   authRequest.setSession(session);
 
   return Response.json(session);
-}
-
-// TODO Make this function DELETE
-/**
- * User signout endpoint, deletes the current session.
- * @param request - NextJs request object that contains the POST body and auth cookies.
- * @returns deleted session ID.
- */
-export async function GET(request: NextRequest) {
-  const authRequest = auth.handleRequest(request);
-  const session = await authRequest.validate();
-  console.log(session);
-  if (session) {
-    await auth.deleteDeadUserSessions(session.user.userId);
-    await auth.invalidateSession(session.sessionId);
-    return Response.json({ sessionId: session.sessionId });
-  } else {
-    return Response.json("User authentication failed.", { status: 401 });
-  }
 }

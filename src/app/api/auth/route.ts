@@ -10,5 +10,5 @@ import { NextRequest } from "next/server";
 export async function GET(request: NextRequest) {
   const authRequest = auth.handleRequest(request);
   const session = await authRequest.validate();
-  return Response.json({ authenticated: Boolean(session) });
+  return Response.json({ authenticated: Boolean(session), session });
 }
