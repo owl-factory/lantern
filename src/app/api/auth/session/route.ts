@@ -46,6 +46,6 @@ export async function GET(request: NextRequest) {
     await auth.invalidateSession(session.sessionId);
     return Response.json({ sessionId: session.sessionId });
   } else {
-    return new Response("User authentication failed.", { status: 401 });
+    return Response.json("User authentication failed.", { status: 401 });
   }
 }
