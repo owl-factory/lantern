@@ -1,14 +1,18 @@
+import { textAreaAttributes } from "features/dynamicRender/data/attributes/form/textArea";
+import { useAttributes } from "features/dynamicRender/hooks/useAttributes";
 import { useFormValue } from "features/dynamicRender/hooks/useFormValue";
+import { TextAreaAttributes } from "features/dynamicRender/types/attributes/form/textArea";
 import { GetOptions } from "features/dynamicRender/types/query";
 import { RenderComponentProps } from "features/dynamicRender/types/render";
-import { buildQueryOptions } from "features/dynamicRender/utils/query";
+import { buildQueryOptionsFromAttributes } from "features/dynamicRender/utils/query";
 import { ChangeEvent, useMemo } from "react";
 
 /**
  * Renders a text input for the Dynamic Render
  */
 export function TextArea(props: RenderComponentProps) {
-  const options = useMemo<GetOptions>(() => buildQueryOptions(props.node), [props.node]);
+  const { attributes } = useAttributes<TextAreaAttributes>(props.node, textAreaAttributes);
+  const options = useMemo<GetOptions>(() => buildQueryOptionsFromAttributes(attributes), [attributes]);
   const { value, update } = useFormValue<string>(options, "");
 
   /**

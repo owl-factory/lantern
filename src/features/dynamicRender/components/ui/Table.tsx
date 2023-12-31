@@ -8,5 +8,5 @@ export function Table(props: RenderComponentProps) {
   const parsedNodes = parseNodeChildren(props.node.childNodes);
   const children = parsedNodes.map((node: ParsedNode) => <node.Component key={node.key} {...node.props} />);
   children;
-  return <table>{"children"}</table>;
+  return <table></table>;
 }

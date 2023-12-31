@@ -1,7 +1,10 @@
+import { checkboxAttributes } from "features/dynamicRender/data/attributes/form/checkbox";
+import { useAttributes } from "features/dynamicRender/hooks/useAttributes";
 import { useFormValue } from "features/dynamicRender/hooks/useFormValue";
+import { CheckboxAttributes } from "features/dynamicRender/types/attributes/form/checkbox";
 import { GetOptions, QuerySource } from "features/dynamicRender/types/query";
 import { RenderComponentProps } from "features/dynamicRender/types/render";
-import { buildQueryOptions } from "features/dynamicRender/utils/query";
+import { buildQueryOptionsFromAttributes } from "features/dynamicRender/utils/query";
 import { ChangeEvent, useMemo } from "react";
 
 /** The character(s) delimiting values within a list of checkbox values */
@@ -11,14 +14,14 @@ const CHECKED_DELIMITER = ",";
  * Renders a checkbox for the Dynamic Render
  */
 export function Checkbox(props: RenderComponentProps) {
-  const checkValue = useMemo(() => getCheckboxValue(props.node), [props.node]);
-  const options = useMemo<GetOptions>(() => buildQueryOptions(props.node), [props.node]);
+  const { attributes } = useAttributes<CheckboxAttributes>(props.node, checkboxAttributes);
+  const options = useMemo<GetOptions>(() => buildQueryOptionsFromAttributes(attributes), [attributes]);
 
   const persistState = options.source !== QuerySource.Invalid;
 
   const { value: storedValue, update } = useFormValue<string>(options, "", !persistState);
 
-  const checked = isChecked(storedValue, checkValue);
+  const checked = isChecked(storedValue, attributes.value);
 
   /**
    * Updates the form value on change.
@@ -30,29 +33,15 @@ export function Checkbox(props: RenderComponentProps) {
 
     let newStoredValue: string;
     if (checked) {
-      newStoredValue = uncheck(storedValue, checkValue);
+      newStoredValue = uncheck(storedValue, attributes.value);
     } else {
-      newStoredValue = check(storedValue, checkValue);
+      newStoredValue = check(storedValue, attributes.value);
     }
     e.target.checked = !checked;
     update(newStoredValue);
   }
 
-  return <input type="checkbox" onChange={onChange} defaultChecked={checked} value={checkValue} />;
-}
-
-/**
- * Determines the value of the checkbox. If none is present, the default is 'on'.
- * @param node - The node to extract the checkbox value from
- * @returns The value of the checkbox. Defaults to 'on'.
- */
-function getCheckboxValue(node: Node): string {
-  const defaultValue = "on";
-  if (node.nodeType !== node.ELEMENT_NODE) return defaultValue;
-  const element = node as Element;
-  const value: string | null = element.getAttribute("value");
-  if (value === null) return defaultValue;
-  return value.trim();
+  return <input type="checkbox" onChange={onChange} defaultChecked={checked} value={attributes.value} />;
 }
 
 /**
@@ -68,7 +57,6 @@ function isChecked(storedValues: string, checkValue: string) {
     .split(CHECKED_DELIMITER)
     .findIndex((value: string) => value.toLocaleLowerCase() === normalizedCheckedValue);
 
-  console.log(storedValues, checkValue, existsAtIndex);
   return existsAtIndex !== -1;
 }
 

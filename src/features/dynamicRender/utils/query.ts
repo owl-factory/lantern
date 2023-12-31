@@ -1,38 +1,18 @@
+import { CommonInputAttributes } from "../types/attributes/form/common";
 import { GetOptions, InvalidQueryOptions, QuerySource } from "../types/query";
 
 const INVALID_OPTIONS: InvalidQueryOptions = { source: QuerySource.Invalid };
 
 /**
- * Builds the GetOptions for the given node
- * TODO - this should be split into a function that gets all attributes for a given Component type, and something that parses the result of that into the GetOptions
- * @param node - The element node to extract attributes from
- * @returns A GetOptions object
+ * Builds GetOptions based on the attribues given by the InputAttributes
+ * @param attributes - The attributes to build the GetOptions from
+ * @returns A GetOptions query
  */
-export function buildQueryOptions(node: Node): GetOptions {
-  if (node.nodeType !== node.ELEMENT_NODE) {
-    return { ...INVALID_OPTIONS };
-  }
-
-  const element = node as Element;
-  const source = element.getAttribute("source") ?? "character";
-  // TODO - is valid source
-
-  switch (source) {
+export function buildQueryOptionsFromAttributes(attributes: Partial<CommonInputAttributes>): GetOptions {
+  switch (attributes.source) {
     case "character":
-      return buildCharacterGetOptions(element);
+      if (!attributes.name) return { ...INVALID_OPTIONS };
+      return { source: QuerySource.Character, key: attributes.name };
   }
   return { ...INVALID_OPTIONS };
-}
-
-/**
- * Builds the GetOptions for a character
- * @param element - The element to parse for information
- * @returns The GetOptions for a character
- */
-function buildCharacterGetOptions(element: Element): GetOptions {
-  const key = element.getAttribute("name");
-  // TODO - is query
-  // TODO - is valid name
-
-  return { source: QuerySource.Character, key };
 }
