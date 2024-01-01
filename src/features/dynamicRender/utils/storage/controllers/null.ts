@@ -1,4 +1,4 @@
-import { StorageController } from "features/dynamicRender/types/storage";
+import { StorageController } from "features/dynamicRender/types/controllers/storage";
 import { ValidationController } from "../../validation";
 
 /**
@@ -6,6 +6,7 @@ import { ValidationController } from "../../validation";
  * StorageController is defined
  */
 export class NullStorageController extends ValidationController implements StorageController {
+  async load() {}
   validate() {
     this.errors.push("No Storage Controller was created");
   }

@@ -2,6 +2,7 @@ import { Controller } from "../types/controller";
 
 export abstract class ValidationController implements Controller {
   errors: string[];
+  async load() {}
 
   /**
    * Checks if the current controller has any issues, storing them

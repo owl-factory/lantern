@@ -1,31 +1,23 @@
-import { Result } from "types/functional";
-import { Controller } from "./controller";
-
-/**
- * Defines the common functionality for the Markup Controllers
- */
-export interface MarkupController extends Controller {
-  state: MarkupControllerState;
-  load: () => Promise<Result<void, string>>;
-  layout: Element | undefined;
-}
-
 /**
  * The different states that a Markup Controller may be in
  */
 export enum MarkupControllerState {
   /** The controller is created but not initialized */
   NoOp,
-  /** The controller is initializing */
+
+  // Working
+  /** The controller has performed initial synchonous tasks */
+  Initialized,
+  /** The controller is loading data and performing asynchronous actions */
   Loading,
+  /** The controller is waiting on data to be loaded into it */
+  WaitingOnData,
   /** The controller is ready */
   Ready,
+
+  // Errors
   /** The controller has encountered an unrecoverable Mobx error */
   MobxError,
-  /** The controller failed to fetch the markup */
-  FetchFailed,
-  /** The controller failed to parse the markup */
-  ParseFailed,
 }
 
 /**
@@ -39,20 +31,6 @@ export enum MarkupServeType {
   Static,
   /** Serves markup that is expected to change. */
   Dynamic,
-}
-
-/**
- * The source that this markup will be loaded in from
- */
-export enum MarkupSource {
-  /** A no-op value */
-  Null,
-  /** Loads markup in from an HTTP route */
-  Hardcoded,
-  /** Loads markup in from the database */
-  Database,
-  /** Loads markup in from an editor */
-  Editor,
 }
 
 /**

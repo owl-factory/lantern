@@ -1,12 +1,5 @@
 import { createContext } from "react";
-import { StorageController } from "../types/storage";
-import { MarkupController } from "../types/markup";
 import { ContextController } from "../utils/contextController";
-
-export type DynamicContextContents = {
-  markup: MarkupController;
-  storage: StorageController;
-};
 
 const defaultContext = new ContextController();
 

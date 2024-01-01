@@ -1,7 +1,8 @@
 import { FactoryOptions } from "features/dynamicRender/types/factory";
-import { MarkupController, MarkupServeType } from "features/dynamicRender/types/markup";
 import { NullMarkupController } from "./controllers/null";
 import { StaticMarkupController } from "./controllers/static";
+import { MarkupController } from "./controllers/common";
+import { MarkupServeType } from "features/dynamicRender/types/controllers/markup";
 
 /**
  * A factory that builds the appropriate Markup controller

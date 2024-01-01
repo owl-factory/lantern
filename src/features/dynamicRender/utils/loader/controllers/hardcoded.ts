@@ -1,16 +1,14 @@
 import { ValidationController } from "../../validation";
 import { action, observable, safeMakeObservable } from "lib/mobx";
-import { MarkupLoaderController, MarkupLoaderControllerState } from "features/dynamicRender/types/markupLoader";
-import { Err, Ok } from "utils/functional";
-import { Result } from "types/functional";
 import { FactoryOptions } from "features/dynamicRender/types/factory";
-import { MarkupSource } from "features/dynamicRender/types/markup";
+import { LoaderController, LoaderControllerState, MarkupSource } from "features/dynamicRender/types/controllers/loader";
 
 /**
  * A Controller for fetching markup that is stored at a static HTTP location
  */
-export class HardcodedMarkupLoaderController extends ValidationController implements MarkupLoaderController {
-  state: MarkupLoaderControllerState = MarkupLoaderControllerState.NoOp;
+export class HardcodedLoaderController extends ValidationController implements LoaderController {
+  markup = "<Sheet></Sheet>";
+  state: LoaderControllerState = LoaderControllerState.NoOp;
   apiRoute: string;
 
   constructor(options: FactoryOptions) {
@@ -29,15 +27,15 @@ export class HardcodedMarkupLoaderController extends ValidationController implem
 
     if (obserableResult.ok === false) {
       console.error(obserableResult.error);
-      this.setState(MarkupLoaderControllerState.MobxError);
+      this.setState(LoaderControllerState.MobxError);
       return this;
     }
 
-    this.setState(MarkupLoaderControllerState.Ready);
+    this.setState(LoaderControllerState.Ready);
   }
 
   get ready() {
-    if (this.state === MarkupLoaderControllerState.Ready || this.state === MarkupLoaderControllerState.Fetching) {
+    if (this.state === LoaderControllerState.Ready || this.state === LoaderControllerState.Fetching) {
       return true;
     }
     return false;
@@ -47,24 +45,33 @@ export class HardcodedMarkupLoaderController extends ValidationController implem
    * Updates the state within a specific action so that MobX can watch
    * @param state - The new state
    */
-  setState(state: MarkupLoaderControllerState) {
+  setState(state: LoaderControllerState) {
     this.state = state;
   }
 
   /**
-   * Loads the markup file from an endpoint, parses it, and sets the parsed components
+   * Loads all asynchronous or synchonous data and concludes any setup
    */
-  async load(): Promise<Result<string, string>> {
+  async load(): Promise<void> {
+    await this.fetch();
+  }
+
+  /**
+   * Fetches the markup from the hardcoded location
+   */
+  async fetch(): Promise<void> {
     // TODO - abort the previous fetch if this one is still operating
-    this.setState(MarkupLoaderControllerState.Fetching);
+    this.setState(LoaderControllerState.Fetching);
     const markupResponse = await fetch(this.apiRoute);
-    this.setState(MarkupLoaderControllerState.Ready);
 
     if (!markupResponse.ok) {
-      return Err(`The markup fetch failed with code ${markupResponse.status}.`);
+      this.setState(LoaderControllerState.FetchFailed);
+      // TODO - store/log error
+      return;
     }
 
-    return Ok(await markupResponse.text());
+    this.markup = await markupResponse.text();
+    this.setState(LoaderControllerState.Ready);
   }
 
   /**
@@ -72,7 +79,7 @@ export class HardcodedMarkupLoaderController extends ValidationController implem
    */
   validate() {
     switch (this.state) {
-      case MarkupLoaderControllerState.NoOp:
+      case LoaderControllerState.NoOp:
         this.errors.push("The Markup Controller has not been initialized.");
         break;
     }

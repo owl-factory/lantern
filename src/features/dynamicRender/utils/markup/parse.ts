@@ -1,8 +1,8 @@
-import { Prefabs, Variables } from "features/dynamicRender/types/markup";
+import { Prefabs, Variables } from "features/dynamicRender/types/controllers/markup";
 import { Result } from "types/functional";
 import { Err, Ok } from "utils/functional";
 
-type MarkupComponents = {
+export type MarkupComponents = {
   layout: Element;
   variables?: Variables;
   prefabs?: Prefabs;

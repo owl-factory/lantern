@@ -3,12 +3,13 @@
 import { useEffect, useMemo } from "react";
 import { DynamicContext } from "../context/dynamicContext";
 import { FactoryOptions } from "../types/factory";
-import { MarkupServeType, MarkupSource } from "../types/markup";
-import { StorageType } from "../types/storage";
+import { MarkupServeType } from "../types/controllers/markup";
+import { StorageType } from "../types/controllers/storage";
 import { TargetType } from "../types/targetType";
 import { DynamicSheet } from "./DynamicSheet";
 import { ContextController } from "../utils/contextController";
 import { observer } from "lib/mobx";
+import { MarkupSource } from "../types/controllers/loader";
 
 export type DynamicRenderProps = {
   id: string;

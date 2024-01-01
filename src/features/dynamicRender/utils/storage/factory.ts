@@ -1,8 +1,8 @@
-import { StorageController, StorageType } from "features/dynamicRender/types/storage";
 import { TargetType } from "features/dynamicRender/types/targetType";
 import { LocalStorageController } from "./controllers/localStorage";
 import { FactoryOptions } from "features/dynamicRender/types/factory";
 import { NullStorageController } from "./controllers/null";
+import { StorageController, StorageType } from "features/dynamicRender/types/controllers/storage";
 
 /**
  * A factory that builds a StorageController appropriate to the current options

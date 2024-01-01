@@ -1,5 +1,6 @@
-import { MarkupServeType, MarkupSource } from "./markup";
-import { StorageType } from "./storage";
+import { MarkupSource } from "./controllers/loader";
+import { MarkupServeType } from "./controllers/markup";
+import { StorageType } from "./controllers/storage";
 import { TargetType } from "./targetType";
 
 /**

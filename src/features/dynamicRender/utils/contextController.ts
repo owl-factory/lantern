@@ -1,55 +1,109 @@
-import { computed, makeObservable } from "lib/mobx";
+import { action, computed, observable, safeMakeObservable } from "lib/mobx";
 import { FactoryOptions } from "../types/factory";
-import { MarkupController } from "../types/markup";
-import { StorageController } from "../types/storage";
+import { StorageController } from "../types/controllers/storage";
 import { NullMarkupController } from "./markup/controllers/null";
 import { MarkupFactory } from "./markup/factory";
 import { NullStorageController } from "./storage/controllers/null";
 import { StorageFactory } from "./storage/factory";
 import { GetOptions, QuerySource, SetOptions } from "../types/query";
+import { LoaderController } from "../types/controllers/loader";
+import { LoaderFactory } from "./loader/factory";
+import { NullLoaderController } from "./loader/controllers/null";
+import { parseMarkup } from "./markup/parse";
+import { MarkupController } from "./markup/controllers/common";
+
+enum ContextState {
+  /** Nothing has been done; the controller is uninitialized */
+  NoOp,
+
+  // Working
+  /** The controller has been initialized */
+  Initialized,
+  /** The controller is loading data, async and otherwise */
+  Loading,
+  /** The controller is ready to use and operating correctly */
+  Ready,
+
+  // Errors
+  // Recoverable
+  /** The markup failed to parse correctly */
+  ParsingError,
+
+  // Unrecoverable
+  /** MobX encountered an error while initializing */
+  MobxError,
+}
 
 /**
  * A class used to manage the context for DynamicRender, as well as handling some
  * shared functionality between the different controllers
  */
 export class ContextController {
-  markup: MarkupController;
-  storage: StorageController;
+  state: ContextState = ContextState.NoOp;
+
+  loader: LoaderController = new NullLoaderController();
+  markup: MarkupController = new NullMarkupController();
+  storage: StorageController = new NullStorageController();
 
   constructor(options?: FactoryOptions) {
-    makeObservable(this, {
-      ready: computed,
-    });
+    // Allows for a null default controller in the base render context
+    if (options === undefined) return this;
 
-    if (options === undefined) {
-      this.fromNull();
+    const mobxResult = safeMakeObservable(this, {
+      ready: computed,
+      state: observable,
+      setState: action,
+    });
+    if (mobxResult.ok === false) {
+      this.setState(ContextState.MobxError);
       return this;
     }
 
+    const loaderController = LoaderFactory.build(options);
     const markupController = MarkupFactory.build(options);
     const storageController = StorageFactory.build(options);
 
+    this.loader = loaderController;
     this.markup = markupController;
     this.storage = storageController;
+
+    this.setState(ContextState.Initialized);
   }
 
   /**
-   * Creates a null-populated context controller
+   * Sets a new state to mark this as an action for MobX
+   * @param state - The new state
    */
-  fromNull() {
-    this.markup = new NullMarkupController();
-    this.storage = new NullStorageController();
+  setState(state: ContextState) {
+    this.state = state;
   }
 
   get ready(): boolean {
-    return this.markup.ready && this.storage.ready;
+    return this.state === ContextState.Ready;
   }
 
   /**
-   * Runs any necessary setup functions on the component mount
+   * Runs any necessary setup functions on the component mount.
+   * If this controller is not in the Initialized state, nothing is done.
    */
   async load() {
-    await Promise.all([this.markup.load()]);
+    const initialized = this.state === ContextState.Initialized;
+    if (!initialized) return;
+
+    await Promise.all([this.loader.load(), this.markup.load(), this.storage.load()]);
+
+    // TODO - check that this is ready
+
+    const parseResult = parseMarkup(this.loader.markup);
+    if (parseResult.ok === false) {
+      console.error("Parsing failed...", parseResult.error);
+      this.setState(ContextState.ParsingError);
+      return;
+    }
+
+    const { layout, prefabs } = parseResult.data;
+    this.markup.setData({ layout, prefabs });
+    this.setState(ContextState.Ready);
   }
 
   /**

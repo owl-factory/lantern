@@ -1,5 +1,5 @@
-import { Controller } from "./controller";
-import { GetOptions, SetOptions } from "./query";
+import { Controller } from "../controller";
+import { GetOptions, SetOptions } from "../query";
 
 /**
  * Defines the base Storage Controller functionality for use with dependency injection

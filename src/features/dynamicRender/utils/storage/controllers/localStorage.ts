@@ -1,10 +1,10 @@
-import { StorageController, StorageControllerState } from "features/dynamicRender/types/storage";
 import { TargetType } from "features/dynamicRender/types/targetType";
 import { Character } from "types/character";
 import { getLocalStorage, setLocalStorage } from "utils/localStorage";
 import { ValidationController } from "../../validation";
 import { action, makeObservable, observable } from "lib/mobx";
 import { GetOptions, QuerySource, SetOptions } from "features/dynamicRender/types/query";
+import { StorageController, StorageControllerState } from "features/dynamicRender/types/controllers/storage";
 
 /**
  * A StorageController that interfaces with the browser's LocalStorage
