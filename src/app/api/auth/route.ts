@@ -1,5 +1,5 @@
-import { auth } from "lib/authentication";
-import { NextRequest } from "next/server";
+import { AUTH_COOKIE_NAME, auth } from "lib/authentication";
+import { type NextRequest } from "next/server";
 
 /**
  * Endpoint for checking authentication status.
@@ -8,7 +8,12 @@ import { NextRequest } from "next/server";
  * @returns Authentication status.
  */
 export async function GET(request: NextRequest) {
-  const authRequest = auth.handleRequest(request);
-  const session = (await authRequest.validate()) || undefined;
-  return Response.json({ authenticated: Boolean(session), session });
+  const authCookie = request.cookies.get(AUTH_COOKIE_NAME);
+  if (authCookie) {
+    const session = await auth.validateSession(authCookie.value);
+    if (session?.sessionId) {
+      return Response.json({ authenticated: true, session });
+    }
+  }
+  return Response.json({ authenticated: false }, { status: 401 });
 }

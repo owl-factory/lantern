@@ -1,13 +1,11 @@
 import { auth } from "lib/authentication";
-import * as context from "next/headers";
-import { NextRequest } from "next/server";
 
 /**
  * User login endpoint, generates a new session.
- * @param request - NextJs request object that contains the POST body and auth cookies.
+ * @param request - Web standard request object that contains the POST body and auth cookies.
  * @returns new session object.
  */
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   const credentials: { username?: string; password?: string } = await request.json();
   const providerUserId = credentials.username.toLowerCase();
 
@@ -27,10 +25,9 @@ export async function POST(request: NextRequest) {
       userId: key.userId,
       attributes: {},
     });
-    const authRequest = auth.handleRequest(request.method, context);
-    authRequest.setSession(session);
 
-    return Response.json(session);
+    const sessionCookie = auth.createSessionCookie(session);
+    return Response.json(session, { headers: { "Set-Cookie": sessionCookie.serialize() } });
   } catch (e) {
     return Response.json(e, { status: 401 });
   }

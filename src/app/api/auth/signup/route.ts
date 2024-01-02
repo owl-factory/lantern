@@ -1,14 +1,12 @@
 import { auth } from "lib/authentication";
-import * as context from "next/headers";
-import { NextRequest } from "next/server";
 import { NewUser } from "types/database";
 
 /**
  * User signup endpoint.
- * @param request - NextJs request object that contains the POST body and auth cookies.
+ * @param request - Web standard request object that contains the POST body and auth cookies.
  * @returns session for newly created user.
  */
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   const newUser: NewUser & { password?: string } = await request.json();
 
   // Create user
@@ -39,8 +37,7 @@ export async function POST(request: NextRequest) {
     userId: user.userId,
     attributes: {},
   });
-  const authRequest = auth.handleRequest(request.method, context);
-  authRequest.setSession(session);
 
-  return Response.json(session);
+  const sessionCookie = auth.createSessionCookie(session);
+  return Response.json(session, { headers: { "Set-Cookie": sessionCookie.serialize() } });
 }

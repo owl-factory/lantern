@@ -12,7 +12,7 @@ export async function GET() {
 
 /**
  * Creates a new todo list item in the database.
- * @param request - Web standard request object that contains the POST body.
+ * @param request - Web standard request object that contains the POST body and auth cookies.
  * @returns newly created todo item.
  */
 export async function POST(request: Request) {

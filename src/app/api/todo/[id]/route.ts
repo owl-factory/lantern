@@ -25,7 +25,7 @@ export async function GET(_request: Request, options: TodoGetOptions) {
 
 /**
  * Creates updates a todo list item.
- * @param request - Web standard request object that contains the POST body.
+ * @param request - Web standard request object that contains the POST body and auth cookies.
  * @returns newly created todo item.
  */
 export async function PATCH(request: Request, options: TodoGetOptions) {
