@@ -11,6 +11,7 @@ import { LoaderFactory } from "./loader/factory";
 import { NullLoaderController } from "./loader/controllers/null";
 import { parseMarkup } from "./markup/parse";
 import { MarkupController } from "./markup/controllers/common";
+import { StateController } from "./stateController";
 
 enum ContextState {
   /** Nothing has been done; the controller is uninitialized */
@@ -39,10 +40,11 @@ enum ContextState {
  * shared functionality between the different controllers
  */
 export class ContextController {
-  state: ContextState = ContextState.NoOp;
+  _state: ContextState = ContextState.NoOp;
 
   loader: LoaderController = new NullLoaderController();
   markup: MarkupController = new NullMarkupController();
+  state: StateController = new StateController();
   storage: StorageController = new NullStorageController();
 
   constructor(options?: FactoryOptions) {
@@ -51,7 +53,7 @@ export class ContextController {
 
     const mobxResult = safeMakeObservable(this, {
       ready: computed,
-      state: observable,
+      _state: observable,
       setState: action,
     });
     if (mobxResult.ok === false) {
@@ -75,11 +77,11 @@ export class ContextController {
    * @param state - The new state
    */
   setState(state: ContextState) {
-    this.state = state;
+    this._state = state;
   }
 
   get ready(): boolean {
-    return this.state === ContextState.Ready;
+    return this._state === ContextState.Ready;
   }
 
   /**
@@ -87,7 +89,7 @@ export class ContextController {
    * If this controller is not in the Initialized state, nothing is done.
    */
   async load() {
-    const initialized = this.state === ContextState.Initialized;
+    const initialized = this._state === ContextState.Initialized;
     if (!initialized) return;
 
     await Promise.all([this.loader.load(), this.markup.load(), this.storage.load()]);

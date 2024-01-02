@@ -24,7 +24,7 @@
         <Button action="alert" alert="Hello there!">Test</Button>
 
         Collapse
-        <Button action="toggleCollapse" target="test_collapse">Toggle Collapse</Button>
+        <Button action="collapse" target="test_collapse">Toggle Collapse</Button>
         <Collapse id="test_collapse">
           Testing the collapse! Look! Words!
         </Collapse>
@@ -355,7 +355,7 @@
                     <TableCell><NumberInput id="content_quantity_${index}" name="item.quantity"/></TableCell>
                     <TableCell></TableCell>
                     <TableCell>
-                      <Button action="toggleCollapse" target="item_collapse_${index}">V</Button>
+                      <Button action="collapse" target="item_collapse_${index}">V</Button>
                       <Button action="deleteContent" index="${index}" contentGroup="items">-</Button>
                     </TableCell>
                   </TableRow>
