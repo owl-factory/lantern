@@ -28,11 +28,6 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("user_id", "uuid", (col) => col.notNull().references("user.id"))
     .addColumn("active_expires", "bigint", (col) => col.notNull())
     .addColumn("idle_expires", "bigint", (col) => col.notNull())
-    // Todo follow up on whether session needs user fields
-    // .addColumn("username", "text", (col) => col.notNull())
-    // .addColumn("email", "text", (col) => col.notNull())
-    // .addColumn("display_name", "text")
-    // .addColumn("icon_url", "text")
     .execute();
   /* end Lucia Auth tables */
 
@@ -49,6 +44,17 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("done", "boolean", (col) => col.notNull().defaultTo(false))
     .execute();
 
+  await insertExampleData(db);
+}
+
+export async function down(db: Kysely<any>): Promise<void> {
+  await db.schema.dropTable("key").execute();
+  await db.schema.dropTable("session").execute();
+  await db.schema.dropTable("user").execute();
+  await db.schema.dropTable("todo").execute();
+}
+
+async function insertExampleData(db: Kysely<any>): Promise<void> {
   const todos = [
     {
       description: "Kiss girls",
@@ -60,11 +66,4 @@ export async function up(db: Kysely<any>): Promise<void> {
     },
   ];
   await db.insertInto("todo").values(todos).execute();
-}
-
-export async function down(db: Kysely<any>): Promise<void> {
-  await db.schema.dropTable("key").execute();
-  await db.schema.dropTable("session").execute();
-  await db.schema.dropTable("user").execute();
-  await db.schema.dropTable("todo").execute();
 }
