@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Kysely, sql } from "kysely";
-import { NewKey, NewUser } from "types/database";
 
 export async function up(db: Kysely<any>): Promise<void> {
   /* Lucia Auth tables */
@@ -68,7 +67,7 @@ async function insertExampleData(db: Kysely<any>): Promise<void> {
   await db.insertInto("user").values(user).execute();
 
   // key table
-  const keys: NewKey[] = [
+  const keys = [
     {
       id: "username:lanterndev",
       user_id: "0cde4c19-3ec3-4e30-9540-939b45f74aa6",
