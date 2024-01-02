@@ -1,10 +1,10 @@
-import { DynamicContext } from "features/dynamicRender/context/dynamicContext";
+import { StateContext } from "features/dynamicRender/context/stateContext";
 import { buttonAttributes } from "features/dynamicRender/data/attributes/ui/button";
 import { useAttributes } from "features/dynamicRender/hooks/useAttributes";
 import { ButtonAttributes } from "features/dynamicRender/types/attributes/ui/button";
 import { ParsedNode, RenderComponentProps } from "features/dynamicRender/types/render";
-import { ContextController } from "features/dynamicRender/utils/contextController";
 import { parseNodeChildren } from "features/dynamicRender/utils/render";
+import { StateController } from "features/dynamicRender/utils/stateController";
 import { useContext, useMemo } from "react";
 
 const DEFAULT_CLASSES = "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded";
@@ -14,8 +14,8 @@ const DEFAULT_CLASSES = "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2
  */
 export function Button(props: RenderComponentProps) {
   const { attributes } = useAttributes<ButtonAttributes>(props.node, buttonAttributes);
-  const context = useContext(DynamicContext);
-  const action = useMemo(() => buildAction(attributes, context), [attributes, context]);
+  const state = useContext(StateContext);
+  const action = useMemo(() => buildAction(attributes, state), [attributes, state]);
 
   const parsedNodes = parseNodeChildren(props.node.childNodes);
   const children = parsedNodes.map((node: ParsedNode) => <node.Component key={node.key} {...node.props} />);
@@ -33,12 +33,12 @@ export function Button(props: RenderComponentProps) {
  * @param context - The Dynamic Render context
  * @returns A function that runs the action when triggered
  */
-function buildAction(attributes: Partial<ButtonAttributes>, context: ContextController) {
+function buildAction(attributes: Partial<ButtonAttributes>, state: StateController) {
   const action = attributes.action?.trim().toLocaleLowerCase();
   switch (action) {
     case "collapse":
       if (attributes.target === undefined) break;
-      return () => context.state.toggleCollapse(attributes.target);
+      return () => state.toggleCollapse(attributes.target);
   }
   return () => {};
 }

@@ -11,7 +11,6 @@ import { LoaderFactory } from "./loader/factory";
 import { NullLoaderController } from "./loader/controllers/null";
 import { parseMarkup } from "./markup/parse";
 import { MarkupController } from "./markup/controllers/common";
-import { StateController } from "./stateController";
 
 enum ContextState {
   /** Nothing has been done; the controller is uninitialized */
@@ -44,7 +43,6 @@ export class ContextController {
 
   loader: LoaderController = new NullLoaderController();
   markup: MarkupController = new NullMarkupController();
-  state: StateController = new StateController();
   storage: StorageController = new NullStorageController();
 
   constructor(options?: FactoryOptions) {

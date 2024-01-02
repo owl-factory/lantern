@@ -10,6 +10,8 @@ import { DynamicSheet } from "./DynamicSheet";
 import { ContextController } from "../utils/contextController";
 import { observer } from "lib/mobx";
 import { MarkupSource } from "../types/controllers/loader";
+import { StateController } from "../utils/stateController";
+import { StateContext } from "../context/stateContext";
 
 export type DynamicRenderProps = {
   id: string;
@@ -33,6 +35,7 @@ function buildContext(props: DynamicRenderProps) {
  */
 function _DynamicRender(props: DynamicRenderProps) {
   const context = useMemo(() => buildContext(props), [props.id]);
+  const state = useMemo(() => new StateController(), [props.id]);
 
   useEffect(() => {
     if (context === undefined) return;
@@ -49,7 +52,9 @@ function _DynamicRender(props: DynamicRenderProps) {
 
   return (
     <DynamicContext.Provider value={context}>
-      <DynamicSheet />
+      <StateContext.Provider value={state}>
+        <DynamicSheet />
+      </StateContext.Provider>
     </DynamicContext.Provider>
   );
 }
