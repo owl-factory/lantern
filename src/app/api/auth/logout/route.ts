@@ -15,7 +15,10 @@ export async function POST(request: NextRequest) {
     if (session?.sessionId) {
       await auth.deleteDeadUserSessions(session.user.userId);
       await auth.invalidateSession(session.sessionId);
-      return Response.json({ sessionId: session.sessionId, loggedOut: true });
+      return Response.json(
+        { sessionId: session.sessionId, loggedOut: true },
+        { headers: { "Set-Cookie": auth.createSessionCookie(null).serialize() } }
+      );
     }
   }
   return Response.json("User authentication failed.", { status: 401 });

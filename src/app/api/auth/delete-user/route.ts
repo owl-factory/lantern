@@ -18,7 +18,10 @@ export async function POST(request: NextRequest) {
     if (session?.sessionId) {
       if (session.user.userId == userUpdate.id) {
         await auth.deleteUser(session.user.userId);
-        return Response.json({ userId: session.user.userId, deleted: true });
+        return Response.json(
+          { userId: session.user.userId, deleted: true },
+          { headers: { "Set-Cookie": auth.createSessionCookie(null).serialize() } }
+        );
       } else {
         return Response.json("ID in request body does not match current user session.", { status: 422 });
       }
