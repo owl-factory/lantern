@@ -1,13 +1,17 @@
 import { LanternLogo } from "components/LanternLogo";
 import { Metadata } from "next";
 
+/**
+ * Page metadata object, NextJs will append these values as meta tags to the <head>.
+ */
 export const metadata: Metadata = {
   title: "Lantern Tabletop | Home",
   description: "Welcome to Lantern Tabletop",
 };
 
 /**
- * Renders the landing page.
+ * "/"
+ * Site index/landing page component.
  */
 function Page() {
   return (

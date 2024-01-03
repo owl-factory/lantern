@@ -2,6 +2,7 @@ import { auth } from "lib/authentication";
 import { NewUser } from "types/database";
 
 /**
+ * /api/auth/signup:
  * User signup endpoint.
  * @param request - Web standard request object that contains the POST body and auth cookies.
  * @returns session for newly created user.
@@ -9,7 +10,7 @@ import { NewUser } from "types/database";
 export async function POST(request: Request) {
   const newUser: NewUser & { password?: string } = await request.json();
 
-  // Create user
+  // Create user and login key (email)
   const user = await auth.createUser({
     userId: crypto.randomUUID(),
     key: {
@@ -25,6 +26,7 @@ export async function POST(request: Request) {
     },
   });
 
+  // Create secondary login key (username)
   await auth.createKey({
     userId: user.userId,
     providerId: "username",
