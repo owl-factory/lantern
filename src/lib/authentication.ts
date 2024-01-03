@@ -64,7 +64,7 @@ export const AUTH_COOKIE_NAME = "lantern_auth_session";
 /* Lucia configuration */
 
 /**
- * Databasse table name object needed for Lucia to access the proper PostgreSQL tables.
+ * Database table name object needed for Lucia to access the proper PostgreSQL tables.
  */
 export const tableNames = {
   user: "user",
@@ -73,7 +73,8 @@ export const tableNames = {
 };
 
 /**
- * Configured global Lucia Auth object instance for executing authentication logic.
+ * Global configured Lucia Auth object instance for executing authentication logic.
+ * See https://lucia-auth.com/basics/configuration.
  */
 export const luciaAuth = lucia({
   adapter: pg(pool, tableNames),

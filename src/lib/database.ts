@@ -2,6 +2,10 @@ import { Pool } from "pg";
 import { Kysely, PostgresDialect } from "kysely";
 import type { Database } from "types/database";
 
+/**
+ * Global configured pg (node-postgres) pool class instance used by both Kysely and Lucia for querying the PostgreSQL database.
+ * See https://node-postgres.com/apis/pool.
+ */
 export const pool = new Pool({
   host: process.env.POSTGRES_HOST,
   database: process.env.POSTGRES_DB,
@@ -19,6 +23,10 @@ const dialect = new PostgresDialect({
   pool,
 });
 
+/**
+ * Global Kysely database query builder class instance. Configured to use the PostgreSQL dialect and types from `types/database.ts`.
+ * See https://node-postgres.com/apis/pool.
+ */
 export const database = new Kysely<Database>({
   dialect,
 });
