@@ -1,4 +1,4 @@
-import { AUTH_COOKIE_NAME, auth } from "lib/authentication";
+import { authenticateSession } from "lib/authentication";
 import { type NextRequest } from "next/server";
 
 /**
@@ -9,13 +9,9 @@ import { type NextRequest } from "next/server";
  * @returns Authentication status.
  */
 export async function GET(request: NextRequest) {
-  const authCookie = request.cookies.get(AUTH_COOKIE_NAME);
-  if (authCookie) {
-    // Session returns null on authentication failure
-    const session = await auth.validateSession(authCookie.value);
-    if (session?.sessionId) {
-      return Response.json({ authenticated: true, session });
-    }
+  const auth = await authenticateSession(request);
+  if (!auth.authenticated) {
+    return Response.json(auth, { status: 401 });
   }
-  return Response.json({ authenticated: false }, { status: 401 });
+  return Response.json(auth);
 }
