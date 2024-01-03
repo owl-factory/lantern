@@ -1,22 +1,25 @@
 import { Character } from "types/character";
 import { getLocalStorage, setLocalStorage } from "utils/localStorage";
-import { action, computed, safeMakeObservable } from "lib/mobx";
+import { action, computed, observable, safeMakeObservable } from "lib/mobx";
 import { GetOptions, QuerySource } from "features/dynamicRender/types/query";
 import { StorageControllerState } from "features/dynamicRender/types/controllers/storage";
 import { StorageController } from "./common";
+
+const NULL_CHARACTER = { data: {}, content: {} } as Character;
 
 /**
  * A StorageController that interfaces with the browser's LocalStorage
  */
 export class LocalStorageController extends StorageController {
   _characterId: string;
-  _character?: Character;
+  _character: Character = NULL_CHARACTER;
 
   constructor(characterId: string) {
     super();
     this._characterId = characterId;
 
     const mobxResult = safeMakeObservable(this, {
+      _character: observable,
       ready: computed,
       setState: action,
       update: action,
