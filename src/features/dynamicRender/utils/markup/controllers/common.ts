@@ -6,15 +6,15 @@ import { Controller } from "features/dynamicRender/types/controller";
  * Defines the common functionality for the Markup Controllers
  */
 export class MarkupController implements Controller {
+  _state: MarkupControllerState = MarkupControllerState.NoOp;
+
   _layout: Element;
   _prefabs: Prefabs;
-
-  state: MarkupControllerState = MarkupControllerState.NoOp;
 
   constructor() {}
 
   get ready() {
-    return this.state === MarkupControllerState.Ready;
+    return this._state === MarkupControllerState.Ready;
   }
 
   /** The core structure of the Dynamic Render */
@@ -39,7 +39,7 @@ export class MarkupController implements Controller {
    * Performs any async tasks, and marks the controller as waiting on data.
    */
   async load() {
-    const initialized = this.state === MarkupControllerState.Initialized;
+    const initialized = this._state === MarkupControllerState.Initialized;
     if (!initialized) return;
     this.setState(MarkupControllerState.WaitingOnData);
   }
@@ -51,7 +51,7 @@ export class MarkupController implements Controller {
    * @param data - The object containing the layout and prefabs
    */
   setData(data: MarkupComponents) {
-    const waitingOnData = this.state === MarkupControllerState.WaitingOnData;
+    const waitingOnData = this._state === MarkupControllerState.WaitingOnData;
     if (!waitingOnData && !this.ready) return;
 
     this._layout = data.layout;
@@ -64,7 +64,7 @@ export class MarkupController implements Controller {
    * @param state - The new state to set
    */
   setState(state: MarkupControllerState) {
-    this.state = state;
+    this._state = state;
   }
 
   isValid() {

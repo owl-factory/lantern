@@ -1,4 +1,4 @@
-import { action, computed, observable, safeMakeObservable } from "lib/mobx";
+import { action, computed, safeMakeObservable } from "lib/mobx";
 import { FactoryOptions } from "features/dynamicRender/types/factory";
 import { MarkupControllerState, Prefabs } from "features/dynamicRender/types/controllers/markup";
 import { MarkupController } from "./common";
@@ -8,7 +8,7 @@ import { MarkupController } from "./common";
  * throughout the lifetime of the controller
  */
 export class StaticMarkupController extends MarkupController {
-  state = MarkupControllerState.NoOp;
+  _state = MarkupControllerState.NoOp;
 
   _layout: Element;
   _prefabs: Prefabs;
@@ -19,7 +19,6 @@ export class StaticMarkupController extends MarkupController {
 
     const mobxResult = safeMakeObservable(this, {
       ready: computed,
-      state: observable,
       setState: action,
     });
 

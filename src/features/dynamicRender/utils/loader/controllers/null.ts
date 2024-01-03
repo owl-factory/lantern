@@ -6,7 +6,7 @@ import { ValidationController } from "features/dynamicRender/utils/validation";
  * no proper controller is defined.
  */
 export class NullLoaderController extends ValidationController implements LoaderController {
-  state = LoaderControllerState.NoOp;
+  _state = LoaderControllerState.NoOp;
   markup: string;
 
   async load() {}

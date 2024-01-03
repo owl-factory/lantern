@@ -1,11 +1,10 @@
-import { ParsedNode, RenderComponentProps } from "features/dynamicRender/types/render";
-import { parseNodeChildren } from "features/dynamicRender/utils/render";
+import { useChildren } from "features/dynamicRender/hooks/useChildren";
+import { RenderComponentProps } from "features/dynamicRender/types/render";
 
 /**
  * Renders a box with a background image
  */
 export function Background(props: RenderComponentProps) {
-  const parsedNodes = parseNodeChildren(props.node.childNodes);
-  const children = parsedNodes.map((node: ParsedNode) => <node.Component key={node.key} {...node.props} />);
+  const children = useChildren(props);
   return <div>{children}</div>;
 }

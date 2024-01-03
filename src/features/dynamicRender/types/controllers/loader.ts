@@ -5,7 +5,7 @@ import { Controller } from "../controller";
  * which are responsible for loading in Markup from different sources
  */
 export interface LoaderController extends Controller {
-  state: LoaderControllerState;
+  _state: LoaderControllerState;
   markup: string;
 }
 

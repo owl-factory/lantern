@@ -11,24 +11,34 @@ export function parseNodeChildren(childNodes: NodeListOf<ChildNode>) {
   const parsedNodes: ParsedNode[] = [];
 
   childNodes.forEach((node: ChildNode) => {
-    const isUsableNode = checkIfUsableNode(node);
-    if (!isUsableNode) return;
-
-    const nodeName = getNodeName(node);
-    let nodeCount = nodeTypeCount.get(nodeName) ?? 0;
-    nodeCount += 1;
-
-    const key = `${nodeName}_${nodeCount}`;
-    const Component = getRenderComponentByName(nodeName);
-
-    const parsedNode: ParsedNode = { key, Component, props: { nodeName, node } };
-
+    const parsedNode = parseNodeChild(node, nodeTypeCount);
+    if (!parsedNode) return;
     parsedNodes.push(parsedNode);
-
-    nodeTypeCount.set(nodeName, nodeCount);
   });
 
   return parsedNodes;
+}
+
+/**
+ * Parses a node child into a ParsedNode object for automated rendering
+ * @param node - The node child to parse
+ * @param nodeTypeCount - A mapping of the types of nodes encountered.
+ * @returns A ParsedNode object containing a key, Component function, and props
+ */
+function parseNodeChild(node: ChildNode, nodeTypeCount: Map<string, number>): ParsedNode {
+  const isUsableNode = checkIfUsableNode(node);
+  if (!isUsableNode) return;
+
+  const nodeName = getNodeName(node);
+  const nodeCount = (nodeTypeCount.get(nodeName) ?? 0) + 1;
+  nodeTypeCount.set(nodeName, nodeCount);
+
+  const key = `${nodeName}_${nodeCount}`;
+  const Component = getRenderComponentByName(nodeName);
+
+  const parsedNode: ParsedNode = { key, Component, props: { nodeName, node } };
+
+  return parsedNode;
 }
 
 /**
@@ -39,10 +49,10 @@ export function parseNodeChildren(childNodes: NodeListOf<ChildNode>) {
 function checkIfUsableNode(node: ChildNode): boolean {
   const nodeType = node.nodeType;
   switch (nodeType) {
-    case node.TEXT_NODE:
+    case node.TEXT_NODE: {
       const isOnlyWhitespace = node.textContent.trim().length === 0;
       return !isOnlyWhitespace;
-
+    }
     case node.ELEMENT_NODE:
       return true;
   }

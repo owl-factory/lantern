@@ -10,7 +10,7 @@ import { StorageController, StorageControllerState } from "features/dynamicRende
  * A StorageController that interfaces with the browser's LocalStorage
  */
 export class LocalStorageController extends ValidationController implements StorageController {
-  state = StorageControllerState.NoOp;
+  _state = StorageControllerState.NoOp;
 
   characterId: string;
   targetType: TargetType;
@@ -26,7 +26,7 @@ export class LocalStorageController extends ValidationController implements Stor
 
     this.character = getLocalStorage(this.characterId, "object");
     if (this.character === undefined) {
-      this.state = StorageControllerState.LocalStorageMissing;
+      this._state = StorageControllerState.LocalStorageMissing;
       return this;
     }
 
@@ -37,7 +37,7 @@ export class LocalStorageController extends ValidationController implements Stor
       });
     } catch (why) {
       console.error(why);
-      this.state = StorageControllerState.MobxError;
+      this._state = StorageControllerState.MobxError;
     }
   }
 

@@ -1,4 +1,4 @@
-/** Defines an attribute of a Dynamic Element */
+/** Defines an attribute of a Dynamic Render markup element */
 export type AttributeDefinition = {
   /** The name of the attribute */
   name: string;

@@ -1,5 +1,5 @@
 import { ValidationController } from "../../validation";
-import { action, observable, safeMakeObservable } from "lib/mobx";
+import { action, computed, safeMakeObservable } from "lib/mobx";
 import { FactoryOptions } from "features/dynamicRender/types/factory";
 import { LoaderController, LoaderControllerState, MarkupSource } from "features/dynamicRender/types/controllers/loader";
 
@@ -7,8 +7,8 @@ import { LoaderController, LoaderControllerState, MarkupSource } from "features/
  * A Controller for fetching markup that is stored at a static HTTP location
  */
 export class HardcodedLoaderController extends ValidationController implements LoaderController {
+  _state: LoaderControllerState = LoaderControllerState.NoOp;
   markup = "<Sheet></Sheet>";
-  state: LoaderControllerState = LoaderControllerState.NoOp;
   apiRoute: string;
 
   constructor(options: FactoryOptions) {
@@ -21,7 +21,7 @@ export class HardcodedLoaderController extends ValidationController implements L
     this.apiRoute = options.uri;
 
     const obserableResult = safeMakeObservable(this, {
-      state: observable,
+      ready: computed,
       setState: action,
     });
 
@@ -35,7 +35,7 @@ export class HardcodedLoaderController extends ValidationController implements L
   }
 
   get ready() {
-    if (this.state === LoaderControllerState.Ready || this.state === LoaderControllerState.Fetching) {
+    if (this._state === LoaderControllerState.Ready || this._state === LoaderControllerState.Fetching) {
       return true;
     }
     return false;
@@ -46,7 +46,7 @@ export class HardcodedLoaderController extends ValidationController implements L
    * @param state - The new state
    */
   setState(state: LoaderControllerState) {
-    this.state = state;
+    this._state = state;
   }
 
   /**
@@ -78,7 +78,7 @@ export class HardcodedLoaderController extends ValidationController implements L
    * Validates the current Markup Controller
    */
   validate() {
-    switch (this.state) {
+    switch (this._state) {
       case LoaderControllerState.NoOp:
         this.errors.push("The Markup Controller has not been initialized.");
         break;

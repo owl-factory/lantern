@@ -34,6 +34,8 @@ type TabProps = {
   state: StateController;
 };
 
+const ENFORCED_CLASSES = "cursor-pointer";
+
 /**
  * Renders out a tab for the Dynamic Render system for navigation between pages
  * @param page - An object describing a page within the state
@@ -45,7 +47,10 @@ type TabProps = {
 function Tab(props: TabProps) {
   const activeClass = props.active ? "font-bold" : "";
   return (
-    <div className={`${activeClass}`} onClick={() => props.state.setActivePage(props.groupKey, props.page.key)}>
+    <div
+      className={`${ENFORCED_CLASSES} ${activeClass}`}
+      onClick={() => props.state.setActivePage(props.groupKey, props.page.key)}
+    >
       {props.page.name}
     </div>
   );

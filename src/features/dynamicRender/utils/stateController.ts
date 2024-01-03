@@ -212,6 +212,11 @@ export class StateController {
     return this._activePages[groupKey];
   }
 
+  /**
+   * Sets an active page
+   * @param groupKey - The identifying key of the page group
+   * @param pageKey - The page key to set as the active page
+   */
   setActivePage(groupKey: string, pageKey: string) {
     if (!this.ready) return undefined;
     if (!groupKey || !pageKey) return;

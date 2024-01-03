@@ -1,4 +1,4 @@
 import { createContext } from "react";
 
-/** Context containing state for the Dynamic Render */
+/** Context containing the current Page Group */
 export const PageGroupContext = createContext<string>("");
