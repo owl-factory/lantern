@@ -7,7 +7,7 @@ import { MarkupServeType } from "../types/controllers/markup";
 import { StorageType } from "../types/controllers/storage";
 import { TargetType } from "../types/targetType";
 import { DynamicSheet } from "./DynamicSheet";
-import { ContextController } from "../utils/contextController";
+import { RenderController } from "../utils/renderController";
 import { observer } from "lib/mobx";
 import { MarkupSource } from "../types/controllers/loader";
 import { StateController } from "../utils/stateController";
@@ -24,7 +24,7 @@ export type DynamicRenderProps = {
  */
 function buildContext(props: DynamicRenderProps) {
   const options: FactoryOptions = buildFactoryOptions(props);
-  const context = new ContextController(options);
+  const context = new RenderController(options);
 
   return context;
 }

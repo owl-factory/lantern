@@ -1,6 +1,4 @@
-import { __testing__ } from "./Checkbox";
-
-const { isChecked, check, uncheck } = __testing__;
+import { isChecked, check, uncheck } from "./check";
 
 const CHECK_VALUE = "larry";
 const STORED_LIST = `bob,${CHECK_VALUE},hairbrush`;

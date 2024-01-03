@@ -37,15 +37,15 @@ export class LocalStorageController extends StorageController {
   async load() {
     this.setState(StorageControllerState.Loading);
 
-    const character = getLocalStorage(this._characterId, "object");
-    if (character === undefined) {
+    const characterResult = getLocalStorage(this._characterId, "object");
+    if (characterResult.ok === false) {
       this.setState(
         StorageControllerState.LocalStorageMissing,
         `The character with id ${this._characterId} could not be found in Local Storage`
       );
       return;
     }
-    this._character = character as Character;
+    this._character = characterResult.data as Character;
     this.setState(StorageControllerState.Ready);
   }
 

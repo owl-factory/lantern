@@ -1,8 +1,5 @@
 import { RenderComponent } from "../types/render";
-import { registerUtilities } from "../components/utility";
 import { Void } from "../components/utility/Void";
-import { registerUi } from "../components/ui";
-import { registerForm } from "../components/form";
 
 const DYNAMIC_COMPONENT_REGISTRY = new Map<string, RenderComponent>();
 
@@ -24,7 +21,3 @@ export function registerComponent(nodeName: string, component: RenderComponent) 
 export function getRenderComponentByName(nodeName: string): RenderComponent {
   return DYNAMIC_COMPONENT_REGISTRY.get(nodeName) ?? Void;
 }
-
-registerForm();
-registerUi();
-registerUtilities();

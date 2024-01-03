@@ -14,6 +14,7 @@ export class MarkupController implements Controller {
 
   constructor() {}
 
+  /** Marks this controller as ready and usable */
   get ready() {
     return this._state === MarkupControllerState.Ready;
   }

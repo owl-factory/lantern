@@ -2,6 +2,7 @@
 
 import { Button } from "components/ui/Button";
 import { Character } from "types/character";
+import { OkResult, Result } from "types/functional";
 import { getLocalStorage } from "utils/localStorage";
 
 type CharacterListProps = {
@@ -20,7 +21,8 @@ type CharacterListProps = {
 export function CharacterList(props: CharacterListProps) {
   const characterElements = props.characterIds
     .map((characterId: string) => getLocalStorage(characterId, "object"))
-    .filter((character: Character | undefined) => character !== undefined)
+    .filter((characterResult: Result<Character, string>) => characterResult.ok)
+    .map((characterResult: OkResult<Character>) => characterResult.data)
     .map((character: Character) => (
       <li key={character.id}>
         <span onClick={() => props.onCharacterClick(character.id)}>{character.data.name} </span>

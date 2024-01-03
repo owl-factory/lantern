@@ -35,10 +35,10 @@ enum ContextState {
 }
 
 /**
- * A class used to manage the context for DynamicRender, as well as handling some
+ * A class used to manage Dynamicing Rendering, as well as handling some
  * shared functionality between the different controllers
  */
-export class ContextController {
+export class RenderController {
   _state: ContextState = ContextState.NoOp;
 
   loader: LoaderController = new NullLoaderController();

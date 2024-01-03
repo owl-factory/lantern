@@ -36,7 +36,7 @@ function CharactersPage() {
   // Removes any characterIDs that don't have associated characters
   useEffect(() => {
     characterIds
-      .filter((characterId: string) => getLocalStorage(characterId, "string") === undefined)
+      .filter((characterId: string) => getLocalStorage(characterId, "string").ok === false)
       .forEach(deleteCharacter);
   }, [characterIds]);
 

@@ -1,3 +1,6 @@
+import { Result } from "types/functional";
+import { Err, Ok } from "./functional";
+
 /**
  * Gets data from a key in local storage, parses it into its expected type, and returns it.
  * If no data is found, or the data is invalid, undefined is returned instead.
@@ -5,28 +8,26 @@
  * @param expectedType - The type expected from Local Storage
  * @returns The stored data in its expected type, or undefined if not found or valid.
  */
-export function getLocalStorage<T>(key: string, expectedType: string): T | undefined {
+export function getLocalStorage<T>(key: string, expectedType: string): Result<T, string> {
   const rawLocalStorage = window.localStorage.getItem(key) ?? undefined;
-  if (rawLocalStorage === undefined) return undefined;
+  if (rawLocalStorage === undefined) return Err(`LocalStorage did not contain an entry for key ${key}`);
 
   switch (expectedType) {
     case "string":
-      return rawLocalStorage as T;
+      return Ok(rawLocalStorage as T);
     case "number":
-      return +rawLocalStorage as T;
+      return Ok(+rawLocalStorage as T);
     case "boolean":
-      return (rawLocalStorage.trim().toLowerCase() === "true") as T;
+      return Ok((rawLocalStorage.trim().toLowerCase() === "true") as T);
     case "object":
       try {
         const parsedJson = JSON.parse(rawLocalStorage);
-        return parsedJson;
+        return Ok(parsedJson);
       } catch (why: unknown) {
-        console.error("JSON object could not be parsed from LocalStorage");
-        return undefined;
+        return Err("JSON object could not be parsed from LocalStorage");
       }
     default:
-      console.warn(`Type of ${expectedType} is not supported by useLocalStorage.getLocalStorage()`);
-      return undefined;
+      return Err(`Type of ${expectedType} is not supported by useLocalStorage.getLocalStorage()`);
   }
 }
 

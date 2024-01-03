@@ -20,10 +20,13 @@ export function useLocalStorage<T>(key: string, defaultValue: T) {
    * Grabs the value from Local Storage, initializing it if not already present
    */
   useEffect(() => {
-    let storedValue = getLocalStorage<T>(key, expectedType);
-    if (storedValue === undefined) {
+    const storedValueResult = getLocalStorage<T>(key, expectedType);
+    let storedValue: T;
+    if (storedValueResult.ok) {
+      storedValue = storedValueResult.data;
+    } else {
       storedValue = defaultValue;
-      setLocalStorage(key, storedValue);
+      setLocalStorage(key, storedValueResult);
     }
 
     setData(storedValue);

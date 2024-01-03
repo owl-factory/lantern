@@ -1,5 +1,5 @@
 import { ParsedNode, RenderComponentProps } from "features/dynamicRender/types/render";
-import { parseNodeChildren } from "features/dynamicRender/utils/render";
+import { parseNodeChildren } from "features/dynamicRender/utils/node";
 
 /**
  * Loops over a list of values

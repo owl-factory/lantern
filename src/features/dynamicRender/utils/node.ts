@@ -30,6 +30,8 @@ function parseNodeChild(node: ChildNode, nodeTypeCount: Map<string, number>): Pa
   if (!isUsableNode) return;
 
   const nodeName = getNodeName(node);
+  if (!nodeName) return;
+
   const nodeCount = (nodeTypeCount.get(nodeName) ?? 0) + 1;
   nodeTypeCount.set(nodeName, nodeCount);
 
@@ -49,11 +51,11 @@ function parseNodeChild(node: ChildNode, nodeTypeCount: Map<string, number>): Pa
 function checkIfUsableNode(node: ChildNode): boolean {
   const nodeType = node.nodeType;
   switch (nodeType) {
-    case node.TEXT_NODE: {
+    case Node.TEXT_NODE: {
       const isOnlyWhitespace = node.textContent.trim().length === 0;
       return !isOnlyWhitespace;
     }
-    case node.ELEMENT_NODE:
+    case Node.ELEMENT_NODE:
       return true;
   }
   return false;
@@ -61,17 +63,18 @@ function checkIfUsableNode(node: ChildNode): boolean {
 
 /**
  * Determines the name of a node, based on the type of node it is, and the tagName (if Element)
+ * TODO - return result type instead of optional?
  * @param node - The node to determine a name for
  * @returns The tag name as a case-sensitive string
  */
-function getNodeName(node: ChildNode) {
+function getNodeName(node: ChildNode): string | undefined {
   switch (node.nodeType) {
-    case node.TEXT_NODE:
+    case Node.TEXT_NODE:
       return "text";
-    case node.ELEMENT_NODE:
-      return (node as Element).tagName ?? "missing-tag";
+    case Node.ELEMENT_NODE:
+      return (node as Element).tagName ?? undefined;
   }
-  return "unknown";
+  return undefined;
 }
 
 /**
@@ -88,3 +91,9 @@ export function getAttributeValue(node: Node, attribute: string, defaultValue = 
 
   return value.trim();
 }
+
+export const __testing__ = {
+  checkIfUsableNode,
+  getNodeName,
+  parseNodeChild,
+};

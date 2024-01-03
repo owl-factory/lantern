@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { DynamicContext } from "../context/dynamicContext";
 import { ParsedNode } from "../types/render";
-import { parseNodeChildren } from "../utils/render";
+import { parseNodeChildren } from "../utils/node";
 
 /**
  * Renders the Sheet portion of a DynamicRender
@@ -9,7 +9,7 @@ import { parseNodeChildren } from "../utils/render";
 export function DynamicSheet() {
   const { markup } = useContext(DynamicContext);
 
-  const layout = markup.layout;
+  const layout: Element = markup.layout;
   if (layout === undefined) return <></>;
 
   const parsedNodes = parseNodeChildren(layout.childNodes);

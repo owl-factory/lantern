@@ -1,8 +1,8 @@
-type OkResult<T> = {
+export type OkResult<T> = {
   ok: true;
   data: T;
 };
-type ErrResult<E = Error> = {
+export type ErrResult<E = Error> = {
   ok: false;
   error: E;
 };

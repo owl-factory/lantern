@@ -1,10 +1,10 @@
 import { createContext } from "react";
-import { ContextController } from "../utils/contextController";
+import { RenderController } from "../utils/renderController";
 
-const defaultContext = new ContextController();
+const defaultContext = new RenderController();
 
 /**
  * DynamicContext contains the various controllers used for the DynamicRender feature, including
  * storage.
  */
-export const DynamicContext = createContext<ContextController>(defaultContext);
+export const DynamicContext = createContext<RenderController>(defaultContext);
