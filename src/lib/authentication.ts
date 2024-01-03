@@ -29,11 +29,13 @@ export async function authenticateSession(request?: NextRequest): Promise<AuthRe
 
   try {
     // Session returns null on authentication failure
+    console.log("Session ID: ", sessionId);
     const session = await luciaAuth.validateSession(sessionId);
     if (session?.sessionId) {
       return { authenticated: true, session };
     }
   } catch (e) {
+    console.log(e);
     return { authenticated: false };
   }
 
@@ -79,7 +81,7 @@ export const tableNames = {
  * See https://lucia-auth.com/basics/configuration.
  */
 export const luciaAuth = lucia({
-  adapter: pg(pool, tableNames),
+  adapter: pg(pool as never, tableNames),
   env: process.env.NODE_ENV === "production" ? "PROD" : "DEV",
   getUserAttributes: (databaseUser) => {
     return {

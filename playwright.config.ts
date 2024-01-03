@@ -1,10 +1,12 @@
 import { defineConfig, devices } from "@playwright/test";
 
 /**
+ * TODO remove 'dotenv' by loading env file using native NodeJs feature
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
  */
-// require('dotenv').config();
+import { config } from "dotenv";
+config({ path: "./.env.development" });
 
 /**
  * See https://playwright.dev/docs/test-configuration.
