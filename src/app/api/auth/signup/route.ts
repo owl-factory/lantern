@@ -1,4 +1,4 @@
-import { auth } from "lib/authentication";
+import { luciaAuth } from "lib/authentication";
 import { NewUser } from "types/database";
 
 /**
@@ -11,7 +11,7 @@ export async function POST(request: Request) {
   const newUser: NewUser & { password?: string } = await request.json();
 
   // Create user and login key (email)
-  const user = await auth.createUser({
+  const user = await luciaAuth.createUser({
     userId: crypto.randomUUID(),
     key: {
       providerId: "email",
@@ -27,7 +27,7 @@ export async function POST(request: Request) {
   });
 
   // Create secondary login key (username)
-  await auth.createKey({
+  await luciaAuth.createKey({
     userId: user.userId,
     providerId: "username",
     providerUserId: newUser.username.toLowerCase(),
@@ -35,11 +35,11 @@ export async function POST(request: Request) {
   });
 
   // Create session for new user
-  const session = await auth.createSession({
+  const session = await luciaAuth.createSession({
     userId: user.userId,
     attributes: {},
   });
 
-  const sessionCookie = auth.createSessionCookie(session);
+  const sessionCookie = luciaAuth.createSessionCookie(session);
   return Response.json(session, { headers: { "Set-Cookie": sessionCookie.serialize() } });
 }

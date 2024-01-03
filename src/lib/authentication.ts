@@ -6,7 +6,7 @@ import { cookies, headers } from "next/headers";
 
 /* Lantern authentication logic */
 
-// Todo implement global Result type
+// Todo possibly implement global Result type
 /**
  * Return type for authenticateSession function.
  */
@@ -29,7 +29,7 @@ export async function authenticateSession(request?: NextRequest): Promise<AuthRe
 
   try {
     // Session returns null on authentication failure
-    const session = await auth.validateSession(sessionId);
+    const session = await luciaAuth.validateSession(sessionId);
     if (session?.sessionId) {
       return { authenticated: true, session };
     }
@@ -75,7 +75,7 @@ export const tableNames = {
 /**
  * Configured global Lucia Auth object instance for executing authentication logic.
  */
-export const auth = lucia({
+export const luciaAuth = lucia({
   adapter: pg(pool, tableNames),
   env: process.env.NODE_ENV === "production" ? "PROD" : "DEV",
   getUserAttributes: (databaseUser) => {
@@ -94,4 +94,4 @@ export const auth = lucia({
 /**
  * Type of configured global Lucia Auth object.
  */
-export type Auth = typeof auth;
+export type LuciaAuth = typeof luciaAuth;

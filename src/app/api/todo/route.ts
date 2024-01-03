@@ -1,4 +1,4 @@
-import { AUTH_COOKIE_NAME, auth } from "lib/authentication";
+import { authenticateSession } from "lib/authentication";
 import { database } from "lib/database";
 import { type NextRequest } from "next/server";
 import type { NewTodo, Todo } from "types/database";
@@ -10,16 +10,13 @@ import type { NewTodo, Todo } from "types/database";
  * @returns array of todo list items.
  */
 export async function GET(request: NextRequest) {
-  const authCookie = request.cookies.get(AUTH_COOKIE_NAME);
-  if (authCookie) {
-    // Session returns null on authentication failure
-    const session = await auth.validateSession(authCookie.value);
-    if (session?.sessionId) {
-      const todos: Todo[] = await database.selectFrom("todo").selectAll().execute();
-      return Response.json(todos);
-    }
+  const { authenticated } = await authenticateSession(request);
+  if (!authenticated) {
+    return Response.json("User authentication failed.", { status: 401 });
   }
-  return Response.json("User authentication failed.", { status: 401 });
+
+  const todos: Todo[] = await database.selectFrom("todo").selectAll().execute();
+  return Response.json(todos);
 }
 
 /**
@@ -29,15 +26,12 @@ export async function GET(request: NextRequest) {
  * @returns newly created todo item.
  */
 export async function POST(request: NextRequest) {
-  const authCookie = request.cookies.get(AUTH_COOKIE_NAME);
-  if (authCookie) {
-    // Session returns null on authentication failure
-    const session = await auth.validateSession(authCookie.value);
-    if (session?.sessionId) {
-      const newTodo: NewTodo = await request.json();
-      const todo = await database.insertInto("todo").values(newTodo).returningAll().executeTakeFirst();
-      return Response.json(todo);
-    }
+  const { authenticated } = await authenticateSession(request);
+  if (!authenticated) {
+    return Response.json("User authentication failed.", { status: 401 });
   }
-  return Response.json("User authentication failed.", { status: 401 });
+
+  const newTodo: NewTodo = await request.json();
+  const todo = await database.insertInto("todo").values(newTodo).returningAll().executeTakeFirst();
+  return Response.json(todo);
 }

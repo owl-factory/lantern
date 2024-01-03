@@ -1,4 +1,4 @@
-import { auth } from "lib/authentication";
+import { luciaAuth } from "lib/authentication";
 
 /**
  * /api/auth/login:
@@ -20,15 +20,15 @@ export async function POST(request: Request) {
 
   try {
     // key is null on authentication failure, on success it contains a userId of the correct identity.
-    const key = await auth.useKey(providerId, providerUserId, credentials.password);
+    const key = await luciaAuth.useKey(providerId, providerUserId, credentials.password);
 
-    await auth.deleteDeadUserSessions(key.userId);
-    const session = await auth.createSession({
+    await luciaAuth.deleteDeadUserSessions(key.userId);
+    const session = await luciaAuth.createSession({
       userId: key.userId,
       attributes: {},
     });
 
-    const sessionCookie = auth.createSessionCookie(session);
+    const sessionCookie = luciaAuth.createSessionCookie(session);
     return Response.json(session, { headers: { "Set-Cookie": sessionCookie.serialize() } });
   } catch (e) {
     return Response.json(e, { status: 401 });

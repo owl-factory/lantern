@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 /// <reference types="lucia" />
 declare namespace Lucia {
-  type Auth = import("lib/authentication").Auth;
+  type Auth = import("lib/authentication").LuciaAuth;
 
   type DatabaseUserAttributes = {
     username: string;

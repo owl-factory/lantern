@@ -1,4 +1,4 @@
-import { AUTH_COOKIE_NAME, auth } from "lib/authentication";
+import { luciaAuth, authenticateSession } from "lib/authentication";
 import { NextRequest } from "next/server";
 import { UserUpdate } from "types/database";
 
@@ -10,22 +10,19 @@ import { UserUpdate } from "types/database";
  * @returns deleted user ID.
  */
 export async function POST(request: NextRequest) {
-  const userUpdate: UserUpdate = await request.json();
-  const authCookie = request.cookies.get(AUTH_COOKIE_NAME);
-  if (authCookie) {
-    // Session returns null on authentication failure
-    const session = await auth.validateSession(authCookie.value);
-    if (session?.sessionId) {
-      if (session.user.userId == userUpdate.id) {
-        await auth.deleteUser(session.user.userId);
-        return Response.json(
-          { userId: session.user.userId, deleted: true },
-          { headers: { "Set-Cookie": auth.createSessionCookie(null).serialize() } }
-        );
-      } else {
-        return Response.json("ID in request body does not match current user session.", { status: 422 });
-      }
-    }
+  const { authenticated, session } = await authenticateSession(request);
+  if (!authenticated) {
+    return Response.json("User authentication failed.", { status: 401 });
   }
-  return Response.json("User authentication failed.", { status: 401 });
+
+  const userUpdate: UserUpdate = await request.json();
+  if (session.user.userId == userUpdate?.id) {
+    await luciaAuth.deleteUser(session.user.userId);
+    return Response.json(
+      { userId: session.user.userId, deleted: true },
+      { headers: { "Set-Cookie": luciaAuth.createSessionCookie(null).serialize() } }
+    );
+  } else {
+    return Response.json("ID in request body does not match current user session.", { status: 422 });
+  }
 }
