@@ -4,5 +4,5 @@
  * @returns pong.
  */
 export async function GET() {
-  return Response.json("pong");
+  return new Response("pong");
 }
