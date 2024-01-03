@@ -1,3 +1,6 @@
+// TODO fix playwright authentication issues, likely do to failed env variable import
+// (one of three final tasks before PR ready for review)
+
 import { test, expect } from "@playwright/test";
 
 // Todo ID that is created in migrations, so we can expect it to exists.
