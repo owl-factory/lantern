@@ -34,7 +34,6 @@ export async function authenticateSession(request?: NextRequest): Promise<AuthRe
       return { authenticated: true, session };
     }
   } catch (e) {
-    console.log(e.message);
     return { authenticated: false };
   }
 
