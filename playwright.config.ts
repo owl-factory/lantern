@@ -31,7 +31,7 @@ export default defineConfig({
 
     extraHTTPHeaders: {
       // Add long lived test authorization token to all requests.
-      Authorization: `token ${process.env.TEST_AUTH_TOKEN}`,
+      Authorization: `Bearer ${process.env.TEST_AUTH_TOKEN}`,
     },
   },
 

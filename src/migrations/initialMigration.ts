@@ -99,10 +99,12 @@ async function insertExampleData(db: Kysely<any>): Promise<void> {
   // todo table
   const todos = [
     {
+      id: "57cc22f8-b4d5-44cb-a473-97b69911b9a0",
       description: "Kiss girls",
       done: true,
     },
     {
+      id: "9a1b9592-ac20-4141-b18b-982b26c0bea7",
       description: "Complete Lantern",
       done: false,
     },
