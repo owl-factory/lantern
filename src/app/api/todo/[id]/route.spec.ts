@@ -3,7 +3,7 @@
 
 import { test, expect } from "@playwright/test";
 
-// Todo ID that is created in migrations, so we can expect it to exists.
+// TODO ID that is created in migrations, so we can expect it to exists.
 const ID = "57cc22f8-b4d5-44cb-a473-97b69911b9a0";
 
 test("/api/todo/[id] returns expected todo from the database", async ({ request }) => {
