@@ -10,7 +10,7 @@ export async function POST(request: Request) {
   const credentials: { username?: string; password?: string } = await request.json();
   const providerUserId = credentials.username.toLowerCase();
 
-  // Regex to check if providerUserId is a an email address.
+  // Regex to test if providerUserId is a an email address.
   const providerId =
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
       providerUserId

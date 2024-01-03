@@ -47,12 +47,15 @@ export async function authenticateSession(request?: NextRequest): Promise<AuthRe
  * @returns sessionId string used for authorizing against the database, or null if none are available.
  */
 export function getSessionId(request?: NextRequest) {
-  return (
+  const sessionId =
     request?.headers?.get("Authorization")?.replace("Bearer ", "") ||
     headers().get("Authorization")?.replace("Bearer ", "") ||
     request?.cookies?.get(AUTH_COOKIE_NAME)?.value ||
-    cookies().get(AUTH_COOKIE_NAME)?.value
-  );
+    cookies().get(AUTH_COOKIE_NAME)?.value;
+
+  // Regex to test if sessionId is in the correct format:
+  // 40 characters that can only be a-Z, A-Z or 0-9.
+  return /^[a-zA-Z0-9]{40}$/.test(sessionId) ? sessionId : null;
 }
 
 /**
