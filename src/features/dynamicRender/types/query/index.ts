@@ -21,10 +21,3 @@ export type GetOptions = InvalidQueryOptions | QueryCharacterOptions;
 export type InvalidQueryOptions = {
   source: QuerySource.Invalid;
 };
-
-/**
- * Options used for setting a piece of data within a StorageController
- * TODO - value should be a separate argument - SetOptions should not exist
- * @param T - The type of the value to set
- */
-export type SetOptions<T> = GetOptions & { value: T };

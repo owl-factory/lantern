@@ -2,7 +2,8 @@ import { TargetType } from "features/dynamicRender/types/targetType";
 import { LocalStorageController } from "./controllers/localStorage";
 import { FactoryOptions } from "features/dynamicRender/types/factory";
 import { NullStorageController } from "./controllers/null";
-import { StorageController, StorageType } from "features/dynamicRender/types/controllers/storage";
+import { StorageType } from "features/dynamicRender/types/controllers/storage";
+import { StorageController } from "./controllers/common";
 
 /**
  * A factory that builds a StorageController appropriate to the current options
@@ -30,7 +31,7 @@ export class StorageFactory {
   static buildForCharacter(options: FactoryOptions): StorageController {
     switch (options.storageType) {
       case StorageType.LocalStorage:
-        return new LocalStorageController(options.targetId, options.targetType);
+        return new LocalStorageController(options.targetId);
     }
   }
 

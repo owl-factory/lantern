@@ -7,6 +7,7 @@ import { Controller } from "features/dynamicRender/types/controller";
  */
 export class MarkupController implements Controller {
   _state: MarkupControllerState = MarkupControllerState.NoOp;
+  _error: string | undefined;
 
   _layout: Element;
   _prefabs: Prefabs;
@@ -60,11 +61,13 @@ export class MarkupController implements Controller {
   }
 
   /**
-   * Sets the state. Requried by MobX to track the set as an action
-   * @param state - The new state to set
+   * Updates the state within a specific action so that MobX can watch, as well as marking an optional error
+   * @param state - The new state
+   * @param error - Any error encountered
    */
-  setState(state: MarkupControllerState) {
+  setState(state: MarkupControllerState, error?: string) {
     this._state = state;
+    this._error = error;
   }
 
   isValid() {

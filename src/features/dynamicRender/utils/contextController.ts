@@ -1,16 +1,16 @@
 import { action, computed, observable, safeMakeObservable } from "lib/mobx";
 import { FactoryOptions } from "../types/factory";
-import { StorageController } from "../types/controllers/storage";
 import { NullMarkupController } from "./markup/controllers/null";
 import { MarkupFactory } from "./markup/factory";
 import { NullStorageController } from "./storage/controllers/null";
 import { StorageFactory } from "./storage/factory";
-import { GetOptions, QuerySource, SetOptions } from "../types/query";
-import { LoaderController } from "../types/controllers/loader";
+import { GetOptions, QuerySource } from "../types/query";
 import { LoaderFactory } from "./loader/factory";
 import { NullLoaderController } from "./loader/controllers/null";
 import { parseMarkup } from "./markup/parse";
 import { MarkupController } from "./markup/controllers/common";
+import { LoaderController } from "./loader/controllers/common";
+import { StorageController } from "./storage/controllers/common";
 
 enum ContextState {
   /** Nothing has been done; the controller is uninitialized */
@@ -136,7 +136,7 @@ export class ContextController {
    * @param options - The options describing what data to update
    * @returns True if the update was successful; false otherwise
    */
-  update<T>(options: SetOptions<T>): boolean {
-    return this.storage.update(options);
+  update<T>(options: GetOptions, value: T): boolean {
+    return this.storage.update(options, value);
   }
 }

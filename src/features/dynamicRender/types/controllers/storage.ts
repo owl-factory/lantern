@@ -1,22 +1,20 @@
-import { Controller } from "../controller";
-import { GetOptions, SetOptions } from "../query";
-
-/**
- * Defines the base Storage Controller functionality for use with dependency injection
- */
-export interface StorageController extends Controller {
-  get: <T = unknown>(options: GetOptions | string) => T | undefined;
-  update: <T>(options: SetOptions<T>) => boolean;
-}
-
 /**
  * The different valid states for a Storage Controller
  */
 export enum StorageControllerState {
+  /** No-Op. Nothing has been done to this controller */
   NoOp,
+
+  /** The Controler is loading in async data */
   Loading,
+  /** The controller is ready to use */
   Ready,
+
+  /** A MobX error has been encountered */
   MobxError,
+  /** An unknown error occured while fetching */
+  FetchFailed,
+  /** The local storage for this item is not present */
   LocalStorageMissing,
 }
 

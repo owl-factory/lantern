@@ -1,14 +1,3 @@
-import { Controller } from "../controller";
-
-/**
- * Defines the common functionality for the Markup Loader Controllers,
- * which are responsible for loading in Markup from different sources
- */
-export interface LoaderController extends Controller {
-  _state: LoaderControllerState;
-  markup: string;
-}
-
 /** The different states that a Loader Controller may be in */
 export enum LoaderControllerState {
   /** Controller is created but no actions have been done. */

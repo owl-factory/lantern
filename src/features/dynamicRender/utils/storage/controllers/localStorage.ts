@@ -1,57 +1,49 @@
-import { TargetType } from "features/dynamicRender/types/targetType";
 import { Character } from "types/character";
 import { getLocalStorage, setLocalStorage } from "utils/localStorage";
-import { ValidationController } from "../../validation";
-import { action, makeObservable, observable } from "lib/mobx";
-import { GetOptions, QuerySource, SetOptions } from "features/dynamicRender/types/query";
-import { StorageController, StorageControllerState } from "features/dynamicRender/types/controllers/storage";
+import { action, computed, safeMakeObservable } from "lib/mobx";
+import { GetOptions, QuerySource } from "features/dynamicRender/types/query";
+import { StorageControllerState } from "features/dynamicRender/types/controllers/storage";
+import { StorageController } from "./common";
 
 /**
  * A StorageController that interfaces with the browser's LocalStorage
  */
-export class LocalStorageController extends ValidationController implements StorageController {
-  _state = StorageControllerState.NoOp;
+export class LocalStorageController extends StorageController {
+  _characterId: string;
+  _character?: Character;
 
-  characterId: string;
-  targetType: TargetType;
-  errors: string[];
-
-  character?: Character;
-
-  constructor(characterId: string, targetType: TargetType) {
+  constructor(characterId: string) {
     super();
+    this._characterId = characterId;
 
-    this.characterId = characterId;
-    this.targetType = targetType;
+    const mobxResult = safeMakeObservable(this, {
+      ready: computed,
+      setState: action,
+      update: action,
+    });
 
-    this.character = getLocalStorage(this.characterId, "object");
-    if (this.character === undefined) {
-      this._state = StorageControllerState.LocalStorageMissing;
+    if (mobxResult.ok === false) {
+      this.setState(StorageControllerState.MobxError, mobxResult.error);
       return this;
     }
-
-    try {
-      makeObservable(this, {
-        character: observable,
-        update: action,
-      });
-    } catch (why) {
-      console.error(why);
-      this._state = StorageControllerState.MobxError;
-    }
-  }
-
-  get ready() {
-    return this.character !== undefined;
   }
 
   /**
-   * Validates the current controller against any errors
+   * Loads the character in from the local storage
    */
-  validate() {
-    if (this.targetType !== TargetType.Character) {
-      this.errors.push("Local Storage is only configured to use Characters");
+  async load() {
+    this.setState(StorageControllerState.Loading);
+
+    const character = getLocalStorage(this._characterId, "object");
+    if (character === undefined) {
+      this.setState(
+        StorageControllerState.LocalStorageMissing,
+        `The character with id ${this._characterId} could not be found in Local Storage`
+      );
+      return;
     }
+    this._character = character as Character;
+    this.setState(StorageControllerState.Ready);
   }
 
   /**
@@ -63,7 +55,7 @@ export class LocalStorageController extends ValidationController implements Stor
     if (typeof options === "string") return undefined;
     switch (options.source) {
       case QuerySource.Character:
-        return this.character?.data[options.key] as T | undefined;
+        return this._character?.data[options.key] as T | undefined;
       // case QuerySource.Content:
       //   return undefined;
       // const contents = this.character?.content[options.key] ?? undefined;
@@ -76,10 +68,10 @@ export class LocalStorageController extends ValidationController implements Stor
    * @param options - The options describing what data to update
    * @returns True if the update was successful; false otherwise
    */
-  update<T>(options: SetOptions<T>): boolean {
+  update<T>(options: GetOptions, value: T): boolean {
     if (options.source !== QuerySource.Character) return false;
-    if (!this.character) return false;
-    this.character.data[options.key] = options.value;
+    if (!this._character) return false;
+    this._character.data[options.key] = value;
     this.triggerUpdate();
   }
 
@@ -87,7 +79,7 @@ export class LocalStorageController extends ValidationController implements Stor
    * Triggers an update to save the data in its permanent storage location
    */
   triggerUpdate() {
-    if (!this.character) return;
-    setLocalStorage(this.characterId, this.character);
+    if (!this._character) return;
+    setLocalStorage(this._characterId, this._character);
   }
 }

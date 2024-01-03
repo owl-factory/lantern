@@ -1,14 +1,13 @@
-import { StorageController } from "features/dynamicRender/types/controllers/storage";
-import { ValidationController } from "../../validation";
+import { StorageControllerState } from "features/dynamicRender/types/controllers/storage";
+import { StorageController } from "./common";
 
 /**
  * A null class that implements the StorageController in the event no other
  * StorageController is defined
  */
-export class NullStorageController extends ValidationController implements StorageController {
-  async load() {}
-  validate() {
-    this.errors.push("No Storage Controller was created");
+export class NullStorageController extends StorageController {
+  async load() {
+    this.setState(StorageControllerState.FetchFailed, "No loading has been implemented!");
   }
 
   get() {

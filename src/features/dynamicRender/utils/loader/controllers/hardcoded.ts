@@ -1,22 +1,19 @@
-import { ValidationController } from "../../validation";
 import { action, computed, safeMakeObservable } from "lib/mobx";
 import { FactoryOptions } from "features/dynamicRender/types/factory";
-import { LoaderController, LoaderControllerState, MarkupSource } from "features/dynamicRender/types/controllers/loader";
+import { LoaderControllerState, MarkupSource } from "features/dynamicRender/types/controllers/loader";
+import { LoaderController } from "./common";
 
 /**
  * A Controller for fetching markup that is stored at a static HTTP location
  */
-export class HardcodedLoaderController extends ValidationController implements LoaderController {
+export class HardcodedLoaderController extends LoaderController {
   _state: LoaderControllerState = LoaderControllerState.NoOp;
-  markup = "<Sheet></Sheet>";
   apiRoute: string;
 
   constructor(options: FactoryOptions) {
     super();
 
-    if (options.markupSource !== MarkupSource.Hardcoded) {
-      return this;
-    }
+    if (options.markupSource !== MarkupSource.Hardcoded) return this;
 
     this.apiRoute = options.uri;
 
@@ -26,34 +23,11 @@ export class HardcodedLoaderController extends ValidationController implements L
     });
 
     if (obserableResult.ok === false) {
-      console.error(obserableResult.error);
-      this.setState(LoaderControllerState.MobxError);
+      this.setState(LoaderControllerState.MobxError, obserableResult.error);
       return this;
     }
 
     this.setState(LoaderControllerState.Ready);
-  }
-
-  get ready() {
-    if (this._state === LoaderControllerState.Ready || this._state === LoaderControllerState.Fetching) {
-      return true;
-    }
-    return false;
-  }
-
-  /**
-   * Updates the state within a specific action so that MobX can watch
-   * @param state - The new state
-   */
-  setState(state: LoaderControllerState) {
-    this._state = state;
-  }
-
-  /**
-   * Loads all asynchronous or synchonous data and concludes any setup
-   */
-  async load(): Promise<void> {
-    await this.fetch();
   }
 
   /**
@@ -65,24 +39,11 @@ export class HardcodedLoaderController extends ValidationController implements L
     const markupResponse = await fetch(this.apiRoute);
 
     if (!markupResponse.ok) {
-      this.setState(LoaderControllerState.FetchFailed);
-      // TODO - store/log error
+      this.setState(LoaderControllerState.FetchFailed, markupResponse.statusText);
       return;
     }
 
     this.markup = await markupResponse.text();
     this.setState(LoaderControllerState.Ready);
-  }
-
-  /**
-   * Validates the current Markup Controller
-   */
-  validate() {
-    switch (this._state) {
-      case LoaderControllerState.NoOp:
-        this.errors.push("The Markup Controller has not been initialized.");
-        break;
-    }
-    return;
   }
 }

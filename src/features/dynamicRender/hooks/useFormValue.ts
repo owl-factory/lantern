@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { DynamicContext } from "../context/dynamicContext";
-import { GetOptions, SetOptions } from "../types/query";
+import { GetOptions } from "../types/query";
 
 /**
  * Allows read and write access to a storage value for the given options
@@ -25,8 +25,7 @@ export function useFormValue<T>(options: GetOptions, defaultValue?: T, doNoOp = 
    * @param value - The new value to upsert into the context
    */
   function update(value: T) {
-    const setOptions: SetOptions<T> = { ...options, value };
-    context.update(setOptions);
+    context.update(options, value);
     value = context.get<T>(options) ?? defaultValue;
   }
 
