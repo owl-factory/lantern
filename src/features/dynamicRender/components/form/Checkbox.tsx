@@ -82,3 +82,9 @@ function uncheck(storedValues: string, checkValue: string): string {
     .filter((storedValue: string) => storedValue !== checkValue)
     .join(CHECKED_DELIMITER);
 }
+
+export const __testing__ = {
+  isChecked,
+  check,
+  uncheck,
+};
