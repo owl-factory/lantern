@@ -21,7 +21,10 @@ function Page() {
           <nav className="w-full px-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8" aria-label="Global">
             <div className="sm:min-w-80 flex items-center justify-between">
               <a className="inline-flex text-xl font-semibold text-white" href="#" aria-label="Brand">
-                <LanternLogo /> <span className="pl-2">Lantern Tabletop</span>
+                <LanternLogo />{" "}
+                <span data-testid="logo-text" className="pl-2">
+                  Lantern Tabletop
+                </span>
               </a>
               <div className="sm:hidden">
                 <button
