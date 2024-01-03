@@ -10,7 +10,7 @@ import { type NextRequest } from "next/server";
 export async function POST(request: NextRequest) {
   const { authenticated, session } = await authenticateSession(request);
   if (!authenticated) {
-    return Response.json("User authentication failed.", { status: 401 });
+    return new Response("User authentication failed.", { status: 401 });
   }
 
   await luciaAuth.deleteDeadUserSessions(session.user.userId);

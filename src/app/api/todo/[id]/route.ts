@@ -20,7 +20,7 @@ interface TodoGetOptions {
 export async function GET(request: NextRequest, options: TodoGetOptions) {
   const { authenticated } = await authenticateSession(request);
   if (!authenticated) {
-    return Response.json("User authentication failed.", { status: 401 });
+    return new Response("User authentication failed.", { status: 401 });
   }
 
   const todo: Todo = await database
@@ -41,12 +41,12 @@ export async function GET(request: NextRequest, options: TodoGetOptions) {
 export async function PATCH(request: NextRequest, options: TodoGetOptions) {
   const { authenticated } = await authenticateSession(request);
   if (!authenticated) {
-    return Response.json("User authentication failed.", { status: 401 });
+    return new Response("User authentication failed.", { status: 401 });
   }
 
   const todoUpdate: TodoUpdate = await request.json();
   if (todoUpdate.id && todoUpdate.id != options.params.id) {
-    return Response.json("ID in request body does not match ID in URL parameters.", { status: 422 });
+    return new Response("ID in request body does not match ID in URL parameters.", { status: 422 });
   }
 
   const result = await database

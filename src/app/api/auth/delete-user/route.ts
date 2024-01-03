@@ -12,7 +12,7 @@ import { UserUpdate } from "types/database";
 export async function POST(request: NextRequest) {
   const { authenticated, session } = await authenticateSession(request);
   if (!authenticated) {
-    return Response.json("User authentication failed.", { status: 401 });
+    return new Response("User authentication failed.", { status: 401 });
   }
 
   const userUpdate: UserUpdate = await request.json();
@@ -23,6 +23,6 @@ export async function POST(request: NextRequest) {
       { headers: { "Set-Cookie": luciaAuth.createSessionCookie(null).serialize() } }
     );
   } else {
-    return Response.json("ID in request body does not match current user session.", { status: 422 });
+    return new Response("ID in request body does not match current user session.", { status: 422 });
   }
 }

@@ -12,7 +12,7 @@ import type { NewTodo, Todo } from "types/database";
 export async function GET(request: NextRequest) {
   const { authenticated } = await authenticateSession(request);
   if (!authenticated) {
-    return Response.json("User authentication failed.", { status: 401 });
+    return new Response("User authentication failed.", { status: 401 });
   }
 
   const todos: Todo[] = await database.selectFrom("todo").selectAll().execute();
@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   const { authenticated } = await authenticateSession(request);
   if (!authenticated) {
-    return Response.json("User authentication failed.", { status: 401 });
+    return new Response("User authentication failed.", { status: 401 });
   }
 
   const newTodo: NewTodo = await request.json();
