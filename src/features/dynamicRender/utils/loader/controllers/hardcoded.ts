@@ -12,8 +12,13 @@ export class HardcodedLoaderController extends LoaderController {
 
   constructor(options: FactoryOptions) {
     super();
-
-    if (options.markupSource !== MarkupSource.Hardcoded) return this;
+    if (options.markupSource !== MarkupSource.Hardcoded) {
+      this.setState(
+        LoaderControllerState.InvalidOptions,
+        `The given markup source (${options.markupSource}) is not Hardcoded`
+      );
+      return this;
+    }
 
     this.apiRoute = options.uri;
 
@@ -27,13 +32,15 @@ export class HardcodedLoaderController extends LoaderController {
       return this;
     }
 
-    this.setState(LoaderControllerState.Ready);
+    this.setState(LoaderControllerState.Initialized);
   }
 
   /**
    * Fetches the markup from the hardcoded location
    */
   async fetch(): Promise<void> {
+    if (!this.canFetch()) return;
+
     // TODO - abort the previous fetch if this one is still operating
     this.setState(LoaderControllerState.Fetching);
     const markupResponse = await fetch(this.apiRoute);

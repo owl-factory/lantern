@@ -32,7 +32,7 @@ export class MarkupFactory {
   static build(options: FactoryOptions): MarkupController {
     switch (options.markupServeType) {
       case MarkupServeType.Static:
-        return new StaticMarkupController(options);
+        return new StaticMarkupController();
     }
 
     return new NullMarkupController();

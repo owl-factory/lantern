@@ -1,5 +1,4 @@
 import { action, computed, safeMakeObservable } from "lib/mobx";
-import { FactoryOptions } from "features/dynamicRender/types/factory";
 import { MarkupControllerState, Prefabs } from "features/dynamicRender/types/controllers/markup";
 import { MarkupController } from "./common";
 
@@ -13,8 +12,7 @@ export class StaticMarkupController extends MarkupController {
   _layout: Element;
   _prefabs: Prefabs;
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  constructor(_options: FactoryOptions) {
+  constructor() {
     super();
 
     const mobxResult = safeMakeObservable(this, {
@@ -23,8 +21,7 @@ export class StaticMarkupController extends MarkupController {
     });
 
     if (mobxResult.ok === false) {
-      console.error(mobxResult.error);
-      this.setState(MarkupControllerState.MobxError);
+      this.setState(MarkupControllerState.MobxError, mobxResult.error);
       return this;
     }
     this.setState(MarkupControllerState.Initialized);

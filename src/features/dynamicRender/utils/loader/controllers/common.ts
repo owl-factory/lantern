@@ -19,7 +19,25 @@ export abstract class LoaderController implements Controller {
    * Loads all asynchronous or synchonous data and concludes any setup
    */
   async load(): Promise<void> {
+    const initialized = this._state === LoaderControllerState.Initialized;
+    if (!initialized) return;
+
+    this.setState(LoaderControllerState.Loading);
     await this.fetch();
+  }
+
+  /**
+   * Indicates that fetching is possible for the current state of the controller
+   */
+  canFetch(): boolean {
+    switch (this._state) {
+      case LoaderControllerState.Loading:
+      case LoaderControllerState.Fetching:
+      case LoaderControllerState.Ready:
+        return true;
+      default:
+        return false;
+    }
   }
 
   /** The ready state of the controller */

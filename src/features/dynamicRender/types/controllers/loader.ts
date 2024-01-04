@@ -4,6 +4,8 @@ export enum LoaderControllerState {
   NoOp,
 
   // Working
+  /** The controller has been created, but has not attempted to load yet */
+  Initialized,
   /** The loader is in the process of initializing */
   Loading,
   /** The loader is ready to be used */
@@ -12,6 +14,8 @@ export enum LoaderControllerState {
   Fetching, // The loader is ready, but reloading the data
 
   // Errors
+  /** An invalid option was provided to the loader */
+  InvalidOptions,
   /** MobX encountered an unrecoverable error while initializing  */
   MobxError,
   /** The fetching failed for some unknown reason */
