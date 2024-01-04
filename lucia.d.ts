@@ -10,5 +10,7 @@ declare namespace Lucia {
     icon_url?: string;
   };
 
-  type DatabaseSessionAttributes = {};
+  type DatabaseSessionAttributes = {
+    api_key: boolean;
+  };
 }

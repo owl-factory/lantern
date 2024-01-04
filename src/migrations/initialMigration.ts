@@ -28,6 +28,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("user_id", "uuid", (col) => col.notNull().references("user.id"))
     .addColumn("active_expires", "bigint", (col) => col.notNull())
     .addColumn("idle_expires", "bigint", (col) => col.notNull())
+    .addColumn("api_key", "boolean", (col) => col.notNull().defaultTo(false))
     .execute();
   /* end Lucia Auth tables */
 
@@ -92,6 +93,7 @@ async function insertExampleData(db: Kysely<any>): Promise<void> {
       // Expires Tuesday January 1 2030 08:00 GMT - It's going to be funny when tests fail in 6 years
       active_expires: 1893484800000,
       idle_expires: 1893484800000,
+      api_key: true,
     };
     await db.insertInto("session").values(session).execute();
   }

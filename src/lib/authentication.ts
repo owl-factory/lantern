@@ -91,6 +91,11 @@ export const luciaAuth = lucia({
       icon_url: databaseUser.icon_url || undefined,
     };
   },
+  getSessionAttributes: (databaseSession) => {
+    return {
+      api_key: databaseSession.api_key,
+    };
+  },
   sessionCookie: {
     name: AUTH_COOKIE_NAME,
   },
