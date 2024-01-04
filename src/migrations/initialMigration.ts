@@ -1,6 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Kysely, sql } from "kysely";
 
+/**
+ * Function called by the migration script to apply 'initialMigration'.
+ * @param db - Kysely query builder instance used for executing migration coe against the db.
+ * It must be of type `any` due to the fact that this migration will still need to be run in it's
+ * current state after the typescript schema changes.
+ */
 export async function up(db: Kysely<any>): Promise<void> {
   /* Lucia Auth tables */
   // user table
@@ -48,6 +54,12 @@ export async function up(db: Kysely<any>): Promise<void> {
   await insertExampleData(db);
 }
 
+/**
+ * Function called by the migration script to undo 'initialMigration'.
+ * @param db - Kysely query builder instance used for executing migration coe against the db.
+ * It must be of type `any` due to the fact that this migration will still need to be run in it's
+ * current state after the typescript schema changes.
+ */
 export async function down(db: Kysely<any>): Promise<void> {
   await db.schema.dropTable("key").execute();
   await db.schema.dropTable("session").execute();
@@ -55,6 +67,12 @@ export async function down(db: Kysely<any>): Promise<void> {
   await db.schema.dropTable("todo").execute();
 }
 
+/**
+ * Function helper function called by {@link up | up()} to insert data.
+ * @param db - Kysely query builder instance used for executing migration coe against the db.
+ * It must be of type `any` due to the fact that this migration will still need to be run in it's
+ * current state after the typescript schema changes.
+ */
 async function insertExampleData(db: Kysely<any>): Promise<void> {
   // Create development only auth/user data
   if (process.env.NODE_ENV === "development") {
