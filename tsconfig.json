@@ -30,6 +30,6 @@
       "utils/*": ["./src/utils/*"]
     }
   },
-  "include": ["next-env.d.ts", ".next/types/**/*.ts", "**/*.ts", "**/*.tsx", "**/*.js"],
+  "include": ["next-env.d.ts", ".next/types/**/*.ts", "**/*.ts", "**/*.tsx", "**/*.js", "**/*.mjs"],
   "exclude": ["node_modules", "archive"]
 }

@@ -11,6 +11,6 @@ declare namespace Lucia {
   };
 
   type DatabaseSessionAttributes = {
-    api_key: boolean;
+    api_key?: boolean;
   };
 }
