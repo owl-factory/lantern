@@ -26,7 +26,7 @@ export function useLocalStorage<T>(key: string, defaultValue: T) {
       storedValue = storedValueResult.data;
     } else {
       storedValue = defaultValue;
-      setLocalStorage(key, storedValueResult);
+      setLocalStorage(key, defaultValue);
     }
 
     setData(storedValue);

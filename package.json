@@ -10,6 +10,7 @@
     "test": "pnpm run test:unit && pnpm run test:e2e",
     "test:unit": "jest",
     "test:e2e": "playwright test",
+    "test:e2e:ff": "pnpm run test:e2e --project=firefox",
     "migrate": "tsx --env-file=.env.development src/migrations/migrationScript.ts --latest",
     "migrate:up": "tsx --env-file=.env.development src/migrations/migrationScript.ts --up",
     "migrate:down": "tsx --env-file=.env.development src/migrations/migrationScript.ts --down"
