@@ -17,5 +17,13 @@
         "patterns": [".*"]
       }
     ]
-  }
+  },
+  "overrides": [
+    {
+      "files": ["*.js", "*.mjs"],
+      "rules": {
+        "tsdoc/syntax": "off"
+      }
+    }
+  ]
 }
