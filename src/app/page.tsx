@@ -85,8 +85,8 @@ function Page() {
           <div className="text-center py-10 px-4 sm:px-6 lg:px-8">
             <h1 className="block text-2xl font-bold text-white sm:text-4xl">Welcome to Lantern Tabletop</h1>
             <p className="mt-3 text-lg text-gray-300">
-              Lantern is a web project aiming to create a flexible, open-source alternative to online tabletop RPG
-              services such as Roll20 and D&D Beyond. Currently, it is built using Typescript, React, NextJS, and
+              Lantern is a web-based project aiming to create a flexible, open-source alternative to online virtual
+              tabletops such as Roll20 and D&D Beyond. Currently, it is built using Typescript, React, NextJS, and
               GraphQL. It is styled with TailwindCSS and backed by a PostgreSQL database via Kysely.
             </p>
             <div className="mt-5 flex flex-col justify-center items-center gap-2 sm:flex-row sm:gap-3">
