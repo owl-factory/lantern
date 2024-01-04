@@ -29,12 +29,17 @@ export class LocalStorageController extends StorageController {
       this.setState(StorageControllerState.MobxError, mobxResult.error);
       return this;
     }
+
+    this.setState(StorageControllerState.Initialized);
   }
 
   /**
    * Loads the character in from the local storage
    */
   async load() {
+    const initialized = this._state === StorageControllerState.Initialized;
+    if (!initialized) return;
+
     this.setState(StorageControllerState.Loading);
 
     const characterResult = getLocalStorage(this._characterId, "object");
