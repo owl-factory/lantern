@@ -90,8 +90,8 @@ async function insertExampleData(db: Kysely<any>): Promise<void> {
       id: process.env.TEST_AUTH_TOKEN,
       user_id: userId,
       // Expires Tuesday January 1 2030 08:00 GMT - It's going to be funny when tests fail in 6 years
-      active_expires: 1893484800,
-      idle_expires: 1893484800,
+      active_expires: 1893484800000,
+      idle_expires: 1893484800000,
     };
     await db.insertInto("session").values(session).execute();
   }
