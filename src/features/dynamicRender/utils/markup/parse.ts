@@ -52,7 +52,7 @@ export function parseMarkup(markup: string): Result<MarkupComponents, string> {
 export function findFirstElementByTag(dom: Document | Element, tagName: string) {
   let matchingElement: Element;
   dom.childNodes.forEach((childNode: ChildNode) => {
-    if (childNode.nodeType !== childNode.ELEMENT_NODE) return;
+    if (childNode.nodeType !== Node.ELEMENT_NODE) return;
 
     const childElement = childNode as Element;
     if (childElement.tagName === tagName) {

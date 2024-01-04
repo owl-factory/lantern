@@ -1,7 +1,7 @@
 import { action, observable, safeMakeObservable } from "lib/mobx";
 
 /** Defines the different states of the StateController */
-enum StateControllerState {
+export enum StateControllerState {
   /** No actions have been done on this StateController */
   NoOp,
 
@@ -186,7 +186,7 @@ export class StateController {
     if (!group) return;
 
     delete group.pages[pageKey];
-    group.order.filter((storedKey: string) => storedKey !== pageKey);
+    this._pageGroups[groupKey].order = group.order.filter((storedKey: string) => storedKey !== pageKey);
 
     const activePage = this._activePages[groupKey];
     const needNewActivePage = activePage === pageKey;

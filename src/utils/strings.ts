@@ -6,7 +6,7 @@
  */
 export function normalize(value: string, enforceCase = false): string {
   let normalized = value.trim();
-  if (enforceCase) normalized = value.toLocaleLowerCase();
+  if (enforceCase) normalized = normalized.toLocaleLowerCase();
   return normalized;
 }
 

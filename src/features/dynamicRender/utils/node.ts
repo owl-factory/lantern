@@ -25,7 +25,7 @@ export function parseNodeChildren(childNodes: NodeListOf<ChildNode>) {
  * @param nodeTypeCount - A mapping of the types of nodes encountered.
  * @returns A ParsedNode object containing a key, Component function, and props
  */
-function parseNodeChild(node: ChildNode, nodeTypeCount: Map<string, number>): ParsedNode {
+function parseNodeChild(node: ChildNode, nodeTypeCount: Map<string, number>): ParsedNode | undefined {
   const isUsableNode = checkIfUsableNode(node);
   if (!isUsableNode) return;
 
@@ -83,7 +83,7 @@ function getNodeName(node: ChildNode): string | undefined {
  * @returns The value of the checkbox. Defaults to 'on'.
  */
 export function getAttributeValue(node: Node, attribute: string, defaultValue = ""): string {
-  if (node.nodeType !== node.ELEMENT_NODE) return defaultValue;
+  if (node.nodeType !== Node.ELEMENT_NODE) return defaultValue;
 
   const element = node as Element;
   const value: string | null = element.getAttribute(attribute);

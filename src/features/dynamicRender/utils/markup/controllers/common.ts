@@ -70,9 +70,4 @@ export class MarkupController implements Controller {
     this._state = state;
     this._error = error;
   }
-
-  isValid() {
-    return true;
-  }
-  getErrors: () => string[];
 }

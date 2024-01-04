@@ -12,7 +12,7 @@ type UseAttributesResult<T> = {
  * @returns An object containing the mapped attributes
  */
 export function useAttributes<T>(node: Node, attributeDefinitions: AttributeDefinition[]): UseAttributesResult<T> {
-  if (node.nodeType !== node.ELEMENT_NODE) return { attributes: {} };
+  if (node.nodeType !== Node.ELEMENT_NODE) return { attributes: {} };
   const element = node as Element;
   const attributes: Partial<T> = {};
 

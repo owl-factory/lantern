@@ -1,18 +1,16 @@
 import { action, computed, observable, safeMakeObservable } from "lib/mobx";
 import { FactoryOptions } from "../types/factory";
 import { NullMarkupController } from "./markup/controllers/null";
-import { MarkupFactory } from "./markup/factory";
 import { NullStorageController } from "./storage/controllers/null";
-import { StorageFactory } from "./storage/factory";
 import { GetOptions, QuerySource } from "../types/query";
-import { LoaderFactory } from "./loader/factory";
 import { NullLoaderController } from "./loader/controllers/null";
 import { parseMarkup } from "./markup/parse";
 import { MarkupController } from "./markup/controllers/common";
 import { LoaderController } from "./loader/controllers/common";
 import { StorageController } from "./storage/controllers/common";
+import { LoaderFactory, MarkupFactory, StorageFactory } from "./factory";
 
-enum ContextState {
+export enum RenderControllerState {
   /** Nothing has been done; the controller is uninitialized */
   NoOp,
 
@@ -39,7 +37,8 @@ enum ContextState {
  * shared functionality between the different controllers
  */
 export class RenderController {
-  _state: ContextState = ContextState.NoOp;
+  _state: RenderControllerState = RenderControllerState.NoOp;
+  _error: string | undefined;
 
   loader: LoaderController = new NullLoaderController();
   markup: MarkupController = new NullMarkupController();
@@ -55,7 +54,7 @@ export class RenderController {
       setState: action,
     });
     if (mobxResult.ok === false) {
-      this.setState(ContextState.MobxError);
+      this.setState(RenderControllerState.MobxError);
       return this;
     }
 
@@ -67,19 +66,20 @@ export class RenderController {
     this.markup = markupController;
     this.storage = storageController;
 
-    this.setState(ContextState.Initialized);
+    this.setState(RenderControllerState.Initialized);
   }
 
   /**
    * Sets a new state to mark this as an action for MobX
    * @param state - The new state
    */
-  setState(state: ContextState) {
+  setState(state: RenderControllerState, error?: string) {
     this._state = state;
+    this._error = error;
   }
 
   get ready(): boolean {
-    return this._state === ContextState.Ready;
+    return this._state === RenderControllerState.Ready;
   }
 
   /**
@@ -87,7 +87,7 @@ export class RenderController {
    * If this controller is not in the Initialized state, nothing is done.
    */
   async load() {
-    const initialized = this._state === ContextState.Initialized;
+    const initialized = this._state === RenderControllerState.Initialized;
     if (!initialized) return;
 
     await Promise.all([this.loader.load(), this.markup.load(), this.storage.load()]);
@@ -96,14 +96,13 @@ export class RenderController {
 
     const parseResult = parseMarkup(this.loader.markup);
     if (parseResult.ok === false) {
-      console.error("Parsing failed...", parseResult.error);
-      this.setState(ContextState.ParsingError);
+      this.setState(RenderControllerState.ParsingError, `Parsing failed: ${parseResult.error}`);
       return;
     }
 
     const { layout, prefabs } = parseResult.data;
     this.markup.setData({ layout, prefabs });
-    this.setState(ContextState.Ready);
+    this.setState(RenderControllerState.Ready);
   }
 
   /**

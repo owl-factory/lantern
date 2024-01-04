@@ -1,13 +1,45 @@
 import { TargetType } from "features/dynamicRender/types/targetType";
-import { LocalStorageController } from "./controllers/localStorage";
 import { FactoryOptions } from "features/dynamicRender/types/factory";
-import { NullStorageController } from "./controllers/null";
 import { StorageType } from "features/dynamicRender/types/controllers/storage";
-import { StorageController } from "./controllers/common";
+import { StorageController } from "./storage/controllers/common";
+import { LocalStorageController } from "./storage/controllers/localStorage";
+import { NullStorageController } from "./storage/controllers/null";
+import { MarkupServeType } from "../types/controllers/markup";
+import { MarkupController } from "./markup/controllers/common";
+import { NullMarkupController } from "./markup/controllers/null";
+import { StaticMarkupController } from "./markup/controllers/static";
+import { MarkupSource } from "../types/controllers/loader";
+import { LoaderController } from "./loader/controllers/common";
+import { HardcodedLoaderController } from "./loader/controllers/hardcoded";
 
-/**
- * A factory that builds a StorageController appropriate to the current options
- */
+/** Builds a LoaderController for fetching Markup from a source */
+export class LoaderFactory {
+  static build(options: FactoryOptions): LoaderController {
+    switch (options.markupSource) {
+      case MarkupSource.Hardcoded:
+        return new HardcodedLoaderController(options);
+    }
+  }
+}
+
+/** A factory that builds the appropriate Markup controller */
+export class MarkupFactory {
+  /**
+   * Identifies and builds the appropriate Markup Controller for the given options
+   * @param options - The factory options to determine the appropriate controller to build
+   * @returns A MarkupController
+   */
+  static build(options: FactoryOptions): MarkupController {
+    switch (options.markupServeType) {
+      case MarkupServeType.Static:
+        return new StaticMarkupController(options);
+    }
+
+    return new NullMarkupController();
+  }
+}
+
+/** A factory that builds a StorageController appropriate to the current options */
 export class StorageFactory {
   /**
    * Determines and builds the appropriate StorageController for the given options

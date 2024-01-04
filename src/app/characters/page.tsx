@@ -3,7 +3,6 @@
 import { CharacterList } from "./characterList";
 import { useEffect, useState } from "react";
 import { useLocalStorage } from "hooks/useLocalStorage";
-import { uuid } from "lib/uuid";
 import { getLocalStorage, removeLocalStorage, setLocalStorage } from "utils/localStorage";
 import { CharacterView } from "./characterView";
 import { Character } from "types/character";
@@ -53,7 +52,7 @@ function CharactersPage() {
    * Adds a new Local Storage character
    */
   function addCharacter() {
-    const rawCharacterId = uuid();
+    const rawCharacterId = crypto.randomUUID();
     const characterId = createLocalStorageCharacterId(rawCharacterId);
 
     const updatedCharacters = [...characterIds, characterId];
