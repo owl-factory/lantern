@@ -10,10 +10,13 @@ test("/api/todo/[id] returns expected todo from the database", async ({ request 
   const response = await request.get(`/api/todo/${ID}`);
   expect(response.ok()).toBeTruthy();
 
-  expect(await response.json()).toContainEqual(
-    expect.objectContaining({
-      description: "Kiss girls",
-      done: true,
-    })
-  );
+  const res = await response.json();
+
+  expect(res.description).toBe("Kiss girls");
+  expect(res.done).toBe(true);
+
+  expect(res).toMatchObject({
+    description: "Kiss girls",
+    done: true,
+  });
 });
