@@ -42,7 +42,9 @@ Your first end-to-end test run requires `pnpm exec playwright install` to be run
 - GraphQL
 - PNPM
 
-# Additional documentation
+# Additional Documentation
+
+Additional markdown project documentation for this project is available in `/docs`. The project documentation is in the [Johnny Decimal System](https://johnnydecimal.com).
 
 # Exceptions
 
