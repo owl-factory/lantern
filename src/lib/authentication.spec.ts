@@ -1,10 +1,23 @@
-// TODO create authentication tests + mocks (one of three final tasks before PR ready for review)
+// TODO make these tests work!
 
 import "jest";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { authenticateSession, getSessionId } from "lib/authentication";
+import { getSessionId, authenticateSession } from "lib/authentication";
 
-test("authentication succeeds with valid Authorization header", () => {
-  // temp statement
-  expect(1 + 1).toBe(2);
+// This test should require either the DB actually running
+// (possible, since we need it for playwright anyways) or
+// The DB properly mocked
+test("authentication succeeds with valid Authorization header in mocked cookie", () => {
+  // authenticateSession().then((response) => {
+  //   expect(response.authenticated).toBe(true);
+  // });
+
+  expect(true).toBe(true);
+});
+
+test("gets correctly formatted sessionId from mocked Bearer cookie", () => {
+  const sessionId = getSessionId();
+  expect(sessionId).toMatch(/^[a-zA-Z0-9]{40}$/);
+
+  expect(true).toBe(true);
 });
