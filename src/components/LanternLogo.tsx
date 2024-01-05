@@ -1,6 +1,6 @@
 /**
- * A simple test component
- * @param name - The name of the input
+ * Component that returns a colored SVG for Lantern's current placeholder logo.
+ * Obtained from the open source, MIT Licensed icon library {@link https://iconoir.com | iconair}.
  */
 export function LanternLogo() {
   return (

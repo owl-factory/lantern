@@ -3,6 +3,7 @@ import { pg } from "@lucia-auth/adapter-postgresql";
 import { pool } from "lib/database";
 import { type NextRequest } from "next/server";
 import { cookies, headers } from "next/headers";
+import { sessionIdRegex } from "utils/regex";
 
 /* Lantern authentication logic */
 
@@ -55,9 +56,7 @@ export function getSessionId(request?: NextRequest) {
     request?.cookies?.get(AUTH_COOKIE_NAME)?.value ||
     cookies().get(AUTH_COOKIE_NAME)?.value;
 
-  // Regex to test if sessionId is in the correct format:
-  // 40 characters that can only be a-Z, A-Z or 0-9.
-  return /^[a-zA-Z0-9]{40}$/.test(sessionId) ? sessionId : null;
+  return sessionIdRegex.test(sessionId) ? sessionId : null;
 }
 
 /**

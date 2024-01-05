@@ -1,5 +1,6 @@
 import { luciaAuth } from "lib/authentication";
 import { NewUser } from "types/database";
+import { isBadPassword } from "utils/authentication";
 
 /**
  * /api/auth/signup:
@@ -9,6 +10,16 @@ import { NewUser } from "types/database";
  */
 export async function POST(request: Request) {
   const newUser: NewUser & { password?: string } = await request.json();
+
+  if (!newUser || !newUser.password || !newUser.email || !newUser.username) {
+    return new Response("Missing one or more required fields for user signup.", { status: 422 });
+  }
+  if (isBadPassword(newUser.password)) {
+    return new Response(
+      "Password does not meet requirements. Password should be between 8 and 40 characters and not be a commonly used password.",
+      { status: 422 }
+    );
+  }
 
   // Create user and login key (email)
   const user = await luciaAuth.createUser({
