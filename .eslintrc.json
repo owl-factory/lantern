@@ -10,6 +10,20 @@
   "rules": {
     "@typescript-eslint/no-unsafe-argument": "error",
     "prettier/prettier": "error",
-    "tsdoc/syntax": "error"
-  }
+    "tsdoc/syntax": "error",
+    "no-restricted-imports": [
+      "error",
+      {
+        "patterns": ["../"]
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": ["*.js", "*.mjs"],
+      "rules": {
+        "tsdoc/syntax": "off"
+      }
+    }
+  ]
 }
