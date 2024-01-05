@@ -23,7 +23,7 @@
       "context/*": ["./src/context/*"],
       "data/*": ["./src/data/*"],
       "features/*": ["./src/features/*"],
-      "hooks/*": ["./src/features/*"],
+      "hooks/*": ["./src/hooks/*"],
       "lib/*": ["./src/lib/*"],
       "services/*": ["./src/services/*"],
       "types/*": ["./src/types/*"],

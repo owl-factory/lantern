@@ -1,6 +1,6 @@
 import { MarkupControllerState, Prefabs } from "features/dynamicRender/types/controllers/markup";
-import { MarkupComponents } from "../parse";
 import { Controller } from "features/dynamicRender/types/controller";
+import { MarkupComponents } from "features/dynamicRender/utils/markup/parse";
 
 /**
  * Defines the common functionality for the Markup Controllers

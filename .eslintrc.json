@@ -20,7 +20,7 @@
   },
   "overrides": [
     {
-      "files": ["*.js", "*.mjs"],
+      "files": ["*.js", "*.mjs", "*.spec.ts"],
       "rules": {
         "tsdoc/syntax": "off"
       }

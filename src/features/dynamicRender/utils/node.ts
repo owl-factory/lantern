@@ -1,5 +1,5 @@
+import { ParsedNode } from "features/dynamicRender/types/render";
 import { getRenderComponentByName } from "./registry";
-import { ParsedNode } from "../types/render";
 
 /**
  * Parses child elements into a standardized object for easy rendering

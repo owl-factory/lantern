@@ -17,5 +17,5 @@ test("dynamic character sheet", async ({ page }) => {
   await page.getByText(/Character Sheet/i).click();
 
   // Switch to Spells
-  await page.getByText(/Bio/i).click();
+  await page.getByText("Bio", { exact: true }).click();
 });

@@ -1,5 +1,5 @@
-import { CommonInputAttributes } from "../types/attributes/form/common";
-import { GetOptions, InvalidQueryOptions, QuerySource } from "../types/query";
+import { CommonInputAttributes } from "features/dynamicRender/types/attributes/form/common";
+import { InvalidQueryOptions, QuerySource, GetOptions } from "features/dynamicRender/types/query";
 
 const INVALID_OPTIONS: InvalidQueryOptions = { source: QuerySource.Invalid };
 

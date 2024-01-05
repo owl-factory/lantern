@@ -1,7 +1,7 @@
+import { DynamicContext } from "features/dynamicRender/context/dynamicContext";
+import { ParsedNode } from "features/dynamicRender/types/render";
+import { parseNodeChildren } from "features/dynamicRender/utils/node";
 import { useContext } from "react";
-import { DynamicContext } from "../context/dynamicContext";
-import { ParsedNode } from "../types/render";
-import { parseNodeChildren } from "../utils/node";
 
 /**
  * Renders the Sheet portion of a DynamicRender

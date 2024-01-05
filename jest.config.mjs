@@ -9,7 +9,7 @@ const createJestConfig = nextJest({
 // Add any custom config to be passed to Jest
 const config = {
   coverageProvider: "v8",
-  testEnvironment: "node",
+  testEnvironment: "jsdom",
   moduleDirectories: ["src", "node_modules"],
   modulePathIgnorePatterns: ["src/app", "src/components", "archive"],
   // Add more setup options before each test is run

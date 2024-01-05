@@ -1,6 +1,6 @@
 import { MarkupControllerState } from "features/dynamicRender/types/controllers/markup";
 import { MarkupController } from "./common";
-import { MarkupComponents } from "../parse";
+import { MarkupComponents } from "features/dynamicRender/utils/markup/parse";
 
 describe("MarkupController - ready test", () => {
   let controller: MarkupController;

@@ -4,13 +4,13 @@ import { StorageType } from "features/dynamicRender/types/controllers/storage";
 import { StorageController } from "./storage/controllers/common";
 import { LocalStorageController } from "./storage/controllers/localStorage";
 import { NullStorageController } from "./storage/controllers/null";
-import { MarkupServeType } from "../types/controllers/markup";
 import { MarkupController } from "./markup/controllers/common";
 import { NullMarkupController } from "./markup/controllers/null";
 import { StaticMarkupController } from "./markup/controllers/static";
-import { MarkupSource } from "../types/controllers/loader";
 import { LoaderController } from "./loader/controllers/common";
 import { HardcodedLoaderController } from "./loader/controllers/hardcoded";
+import { MarkupSource } from "features/dynamicRender/types/controllers/loader";
+import { MarkupServeType } from "features/dynamicRender/types/controllers/markup";
 
 /** Builds a LoaderController for fetching Markup from a source */
 export class LoaderFactory {

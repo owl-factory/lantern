@@ -1,17 +1,18 @@
 "use client";
 
 import { useEffect, useMemo } from "react";
-import { DynamicContext } from "../context/dynamicContext";
-import { FactoryOptions } from "../types/factory";
-import { MarkupServeType } from "../types/controllers/markup";
-import { StorageType } from "../types/controllers/storage";
-import { TargetType } from "../types/targetType";
+
 import { DynamicSheet } from "./DynamicSheet";
-import { RenderController } from "../utils/renderController";
 import { observer } from "lib/mobx";
-import { MarkupSource } from "../types/controllers/loader";
-import { StateController } from "../utils/stateController";
-import { StateContext } from "../context/stateContext";
+import { DynamicContext } from "features/dynamicRender/context/dynamicContext";
+import { StateContext } from "features/dynamicRender/context/stateContext";
+import { MarkupSource } from "features/dynamicRender/types/controllers/loader";
+import { MarkupServeType } from "features/dynamicRender/types/controllers/markup";
+import { StorageType } from "features/dynamicRender/types/controllers/storage";
+import { FactoryOptions } from "features/dynamicRender/types/factory";
+import { TargetType } from "features/dynamicRender/types/targetType";
+import { RenderController } from "features/dynamicRender/utils/renderController";
+import { StateController } from "features/dynamicRender/utils/stateController";
 
 export type DynamicRenderProps = {
   id: string;

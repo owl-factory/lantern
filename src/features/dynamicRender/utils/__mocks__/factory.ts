@@ -1,5 +1,5 @@
-import { LoaderController } from "../loader/controllers/common";
-import { MarkupController } from "../markup/controllers/common";
+import { LoaderController } from "features/dynamicRender/utils/loader/controllers/common";
+import { MarkupController } from "features/dynamicRender/utils/markup/controllers/common";
 
 export class LoaderFactory {
   static build = jest.fn(() => new TestLoaderController());

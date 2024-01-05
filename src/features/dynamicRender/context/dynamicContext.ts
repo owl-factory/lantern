@@ -1,5 +1,5 @@
+import { RenderController } from "features/dynamicRender/utils/renderController";
 import { createContext } from "react";
-import { RenderController } from "../utils/renderController";
 
 const defaultContext = new RenderController();
 

@@ -1,4 +1,4 @@
-import { AttributeDefinition } from "../types/attributes/definition";
+import { AttributeDefinition } from "features/dynamicRender/types/attributes/definition";
 
 type UseAttributesResult<T> = {
   attributes: Partial<T>;

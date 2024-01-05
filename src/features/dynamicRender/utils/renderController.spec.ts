@@ -2,9 +2,9 @@ import { safeMakeObservable } from "lib/mobx";
 import { RenderController, RenderControllerState } from "./renderController";
 import { LoaderFactory, MarkupFactory, StorageFactory } from "./factory";
 import { Err } from "utils/functional";
-import { FactoryOptions } from "../types/factory";
 import { parseMarkup } from "./markup/parse";
-import { GetOptions, QuerySource } from "../types/query";
+import { FactoryOptions } from "features/dynamicRender/types/factory";
+import { GetOptions, QuerySource } from "features/dynamicRender/types/query";
 
 jest.mock("lib/mobx");
 jest.mock("./factory");

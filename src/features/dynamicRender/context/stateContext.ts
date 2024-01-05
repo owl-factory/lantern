@@ -1,5 +1,5 @@
+import { StateController } from "features/dynamicRender/utils/stateController";
 import { createContext } from "react";
-import { StateController } from "../utils/stateController";
 
 const defaultState = new StateController();
 

@@ -1,6 +1,6 @@
+import { DynamicContext } from "features/dynamicRender/context/dynamicContext";
+import { GetOptions } from "features/dynamicRender/types/query";
 import { useContext } from "react";
-import { DynamicContext } from "../context/dynamicContext";
-import { GetOptions } from "../types/query";
 
 /**
  * Allows read and write access to a storage value for the given options

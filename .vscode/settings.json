@@ -5,5 +5,8 @@
   "editor.formatOnSave": true,
   // Install the "Prettier - Code formatter" VSCode extension
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "jest.jestCommandLine": "pnpm run test:unit"
+  "jest.jestCommandLine": "pnpm run test:unit",
+
+  // Automatically requires absolute imports
+  "typescript.preferences.importModuleSpecifier": "non-relative"
 }

@@ -1,6 +1,6 @@
-import { CommonInputAttributes } from "../types/attributes/form/common";
-import { QuerySource } from "../types/query";
-import { QueryCharacterOptions } from "../types/query/character";
+import { CommonInputAttributes } from "features/dynamicRender/types/attributes/form/common";
+import { QuerySource } from "features/dynamicRender/types/query";
+import { QueryCharacterOptions } from "features/dynamicRender/types/query/character";
 import { buildQueryOptionsFromAttributes } from "./query";
 
 describe("buildQueryOptionsFromAttributes tests", () => {

@@ -1,5 +1,5 @@
-import { RenderComponent } from "../types/render";
-import { Void } from "../components/utility/Void";
+import { Void } from "features/dynamicRender/components/utility/Void";
+import { RenderComponent } from "features/dynamicRender/types/render";
 
 const DYNAMIC_COMPONENT_REGISTRY = new Map<string, RenderComponent>();
 

@@ -1,6 +1,6 @@
+import { RenderComponentProps, ParsedNode } from "features/dynamicRender/types/render";
+import { parseNodeChildren } from "features/dynamicRender/utils/node";
 import { useMemo } from "react";
-import { ParsedNode, RenderComponentProps } from "../types/render";
-import { parseNodeChildren } from "../utils/node";
 
 /**
  * A helper hook that streamlines the generation of children for DynamicRender components.
