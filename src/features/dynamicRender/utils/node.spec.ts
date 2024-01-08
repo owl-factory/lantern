@@ -110,6 +110,8 @@ describe("getAttributeValue", () => {
   });
 
   test("missing attribute", () => {
+    // TODO Can we change this to not be null, or should we keep the disable?
+    // eslint-disable-next-line no-restricted-syntax
     jest.mocked(getAttribute).mockImplementationOnce(() => null);
     const mockNode = { nodeType: Node.ELEMENT_NODE, getAttribute } as Element;
 

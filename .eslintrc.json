@@ -12,6 +12,10 @@
     "prettier/prettier": "error",
     "tsdoc/syntax": "error",
     "react-hooks/exhaustive-deps": "off",
+    "no-restricted-syntax": [
+      "error",
+      ":not(BinaryExpression:matches([operator='!=='], [operator='==='])) > Literal[value=null]"
+    ],
     "no-restricted-imports": [
       "error",
       {
