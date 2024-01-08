@@ -7,6 +7,9 @@ node_modules
 out
 next-env.d.ts
 
+# serwist
+public/sw.js
+
 # PostgreSQL Volume
 postgres
 

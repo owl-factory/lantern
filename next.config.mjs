@@ -2,7 +2,7 @@ import withSerwistInit from "@serwist/next";
 
 /** @type {import("@serwist/next").NextConfig} */
 const withSerwist = withSerwistInit({
-  swSrc: "app/sw.ts",
+  swSrc: "src/app/service-worker.ts",
   swDest: "public/sw.js",
 });
 

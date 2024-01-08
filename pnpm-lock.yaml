@@ -17,6 +17,12 @@ dependencies:
   '@serwist/next':
     specifier: ^8.4.0
     version: 8.4.0(next@14.0.4)(webpack@5.89.0)
+  '@serwist/precaching':
+    specifier: ^8.4.0
+    version: 8.4.0
+  '@serwist/sw':
+    specifier: ^8.4.0
+    version: 8.4.0
   kysely:
     specifier: ^0.26.3
     version: 0.26.3
@@ -1634,6 +1640,12 @@ packages:
       '@serwist/strategies': 8.4.0
     dev: false
 
+  /@serwist/navigation-preload@8.4.0:
+    resolution: {integrity: sha512-ZS+HqiHb+/q6mEc/uNyekpYQ/OhC0vEuMj5fQCV+VyJAW5gsG/Q/lj98uZ89s6IzLTQcmrZMcUhtB6kilPNvsw==}
+    dependencies:
+      '@serwist/core': 8.4.0
+    dev: false
+
   /@serwist/next@8.4.0(next@14.0.4)(webpack@5.89.0):
     resolution: {integrity: sha512-AkGauYzLmeguZJi0GhHuZjNlUoOinrlxkPndsuev0aYnKFa6Ktd2Bc7+zNjZWOcHRpmVLDa7JltHJRvDBqiyrg==}
     peerDependencies:
@@ -1657,6 +1669,12 @@ packages:
       '@serwist/strategies': 8.4.0
     dev: false
 
+  /@serwist/range-requests@8.4.0:
+    resolution: {integrity: sha512-o1ekrwYspVi534Y/xLm3U0WV+4DV4rZJY4Ls8+QYfz3voux9M4yny1lZ5c+NEaC1J2To7fkGu0iDXxY6SxXD0w==}
+    dependencies:
+      '@serwist/core': 8.4.0
+    dev: false
+
   /@serwist/routing@8.4.0:
     resolution: {integrity: sha512-CHpOzfd6L07Kdwp1MO5kVSCv3QpT3CMAe9Tht4CG5Zi3fEcnVL2jYyhGjY1HbYXU6XkWQsO2haU4ZoE+3na+gA==}
     dependencies:
@@ -1667,6 +1685,22 @@ packages:
     resolution: {integrity: sha512-8+Dd2zkyGg2bpOp0kIw5ULb7fRRYpAubLNjvTy9FU9XRV4xrxebUY9urvqNGKebvT8r4rmzKPFIt8VSHlbKuxg==}
     dependencies:
       '@serwist/core': 8.4.0
+    dev: false
+
+  /@serwist/sw@8.4.0:
+    resolution: {integrity: sha512-Ibbys+euycr4m7Rha+tP/N2SWz4nCEOJrgiKmgNBgmEdM9o1HjrJnlSDcsI7fVFoivOA01TNV44LCPFkNCEAVQ==}
+    dependencies:
+      '@serwist/background-sync': 8.4.0
+      '@serwist/broadcast-update': 8.4.0
+      '@serwist/cacheable-response': 8.4.0
+      '@serwist/core': 8.4.0
+      '@serwist/expiration': 8.4.0
+      '@serwist/google-analytics': 8.4.0
+      '@serwist/navigation-preload': 8.4.0
+      '@serwist/precaching': 8.4.0
+      '@serwist/range-requests': 8.4.0
+      '@serwist/routing': 8.4.0
+      '@serwist/strategies': 8.4.0
     dev: false
 
   /@serwist/webpack-plugin@8.4.0(webpack@5.89.0):

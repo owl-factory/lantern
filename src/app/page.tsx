@@ -5,7 +5,7 @@ import { Metadata } from "next";
  * Page metadata object, NextJs will append these values as meta tags to the <head>.
  */
 export const metadata: Metadata = {
-  title: "Lantern Tabletop | Home",
+  title: "Welcome",
   description: "Welcome to Lantern Tabletop",
 };
 
