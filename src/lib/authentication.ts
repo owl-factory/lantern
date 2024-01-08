@@ -38,7 +38,7 @@ export async function authenticateSession(request?: NextRequest): Promise<AuthRe
       return { authenticated: true, session };
     }
   } catch (e) {
-    return { authenticated: false };
+    return { authenticated: false, authenticationError: "Could not find session in the database." };
   }
 
   return { authenticated: false };
