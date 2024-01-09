@@ -11,6 +11,7 @@
     "@typescript-eslint/no-unsafe-argument": "error",
     "prettier/prettier": "error",
     "tsdoc/syntax": "error",
+    "react-hooks/exhaustive-deps": "off",
     "no-restricted-imports": [
       "error",
       {
@@ -20,7 +21,7 @@
   },
   "overrides": [
     {
-      "files": ["*.js", "*.mjs"],
+      "files": ["*.js", "*.mjs", "*.spec.ts"],
       "rules": {
         "tsdoc/syntax": "off"
       }
