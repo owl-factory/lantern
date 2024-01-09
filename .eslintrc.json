@@ -6,6 +6,7 @@
     "sourceType": "module",
     "project": ["./tsconfig.json"]
   },
+  "ignorePatterns": ["docs"],
   "plugins": ["@typescript-eslint", "prettier", "eslint-plugin-tsdoc"],
   "rules": {
     "@typescript-eslint/no-unsafe-argument": "error",
@@ -24,12 +25,6 @@
       "files": ["*.js", "*.mjs", "*.spec.ts"],
       "rules": {
         "tsdoc/syntax": "off"
-      }
-    },
-    {
-      "files": ["docs/**/*.ts"],
-      "rules": {
-        "@typescript-eslint/no-unused-vars": "off"
       }
     }
   ]

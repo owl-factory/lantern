@@ -108,15 +108,15 @@ type ActorTypeTable = {
 
 /* Actor Schema */
 const actor: ActorTable = {
-  id: "...",
+  id: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
   name: "Waals O'Caera",
   created_at: new Date("2024-01-08T04:01"),
   updated_at: new Date("2024-01-09T04:01"),
-  owner_user_id: "...",
+  owner_user_id: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
   visibility: Visibility.Public,
-  ruleset_id: "...",
+  ruleset_id: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
   is_character: true,
-  actor_type_id: "...",
+  actor_type_id: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
   is_dynamic: false,
   data: {
     name: "Waals O'Caera",
@@ -131,11 +131,11 @@ const actor: ActorTable = {
   },
   content: {
     spells0: {
-      content_type_id: "...", // Links to spells content type
+      content_type_id: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX", // Links to spells content type
       list: [
         {
-          instance_id: crypto.randomUUID(),
-          content_id: "...", // Links to the OG Firebolt content in the DB
+          instance_id: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX", // Random UUID for react key
+          content_id: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX", // Links to the OG Firebolt content in the DB
           data: {
             created_at: "2024-01-08T04:01",
             updated_at: "2024-01-09T04:01",
