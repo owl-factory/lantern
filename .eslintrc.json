@@ -25,6 +25,12 @@
       "rules": {
         "tsdoc/syntax": "off"
       }
+    },
+    {
+      "files": ["docs/**/*.ts"],
+      "rules": {
+        "@typescript-eslint/no-unused-vars": "off"
+      }
     }
   ]
 }
