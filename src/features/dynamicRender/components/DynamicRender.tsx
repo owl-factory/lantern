@@ -60,6 +60,7 @@ function _DynamicRender(props: DynamicRenderProps) {
   );
 }
 
+/** {@inheritdoc _DyanmicRender} */
 export const DynamicRender = observer(_DynamicRender);
 
 /**
