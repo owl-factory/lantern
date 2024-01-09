@@ -7,7 +7,7 @@ import { Page, StateController } from "features/dynamicRender/utils/stateControl
 import { useContext } from "react";
 
 /**
- * Renders a group of Pages that can be shown one at a time
+ * Renders a group of tabs that can be used to select the page to show
  */
 export function Tabs(props: RenderComponentProps) {
   const { attributes } = useAttributes<TabsAttributes>(props.node, tabsAttributes);

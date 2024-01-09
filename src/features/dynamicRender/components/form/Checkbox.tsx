@@ -17,11 +17,7 @@ export function Checkbox(props: RenderComponentProps) {
 
   const persistState = options.source !== QuerySource.Invalid;
 
-  const { value: storedValue, update }: { value: string; update: (value: string) => void } = useFormValue<string>(
-    options,
-    "",
-    !persistState
-  );
+  const { value: storedValue, update } = useFormValue<string>(options, "", !persistState);
 
   const checked = isChecked(storedValue, attributes.value);
 

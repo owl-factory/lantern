@@ -1,6 +1,6 @@
 # Lantern Tabletop
 
-Lantern is a web-based project aiming to create a flexible, open-source alternative to online virtual tabletops such as Roll20 and D&D Beyond. It is currently in early development.
+Lantern is a web-based project aiming to create a flexible, open source alternative to online virtual tabletops such as Roll20 and D&D Beyond. It is currently in early development.
 
 ## Requirements
 
@@ -8,7 +8,7 @@ This project requires a [NodeJS](https://nodejs.org/en) v20+ environment, a Post
 
 If you have NVM installed, it will automatically pick the correct Node version due to the `.nvmrc` file in the project root.
 
-PNPM will automatically be installed on most machines on first use via Node's corepack. Run `corepack enable` at least once to enable it. See [exceptions](#exceptions)
+PNPM will automatically be installed on most machines on first use via Node's corepack. Run `corepack enable` at least once to enable it. See [exceptions](#exceptions).
 
 ## Getting Started
 
