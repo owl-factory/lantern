@@ -8,7 +8,7 @@ out
 next-env.d.ts
 
 # serwist
-public/sw.js
+public/*.js
 
 # PostgreSQL Volume
 postgres
