@@ -83,7 +83,7 @@ async function insertExampleData(db: Kysely<any>): Promise<void> {
       username: "lanterndev",
       email: "dev@lanterntt.com",
       display_name: "Lantern Developer",
-      icon_url: "http://localhost:3000/images/cute-anime-girl-pfp.png",
+      icon_url: "http:/icons//localhost:3000/images/cute-anime-girl-pfp.png",
     };
     await db.insertInto("user").values(user).execute();
 
