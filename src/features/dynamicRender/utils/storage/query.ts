@@ -8,8 +8,7 @@ import { GetOptions } from "features/dynamicRender/types/query";
  */
 export function queryToOptions(query: string): GetOptions {
   query;
-  // Had to disable this here because I don't want linting to fail but have
-  // banned throw statements. Should we add a panic() function that throws?
+  // TODO laura needs to remove this throw statement and replace it with Result.
   // eslint-disable-next-line no-restricted-syntax
   throw "TODO";
 }
