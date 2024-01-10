@@ -1,5 +1,6 @@
 import { LanternLogo } from "components/LanternLogo";
 import { Metadata } from "next";
+import Link from "next/link";
 
 /**
  * Page metadata object, NextJs will append these values as meta tags to the <head>.
@@ -20,12 +21,12 @@ function Page() {
         <header className="mb-auto flex flex-wrap sm:justify-start sm:flex-nowrap z-50 w-full text-sm py-4">
           <nav className="w-full px-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8" aria-label="Global">
             <div className="sm:min-w-80 flex items-center justify-between">
-              <a className="inline-flex text-xl font-semibold text-white" href="#" aria-label="Brand">
+              <Link className="inline-flex text-xl font-semibold text-white" href="/" aria-label="Brand">
                 <LanternLogo />{" "}
                 <span data-testid="logo-text" className="pl-2">
                   Lantern Tabletop
                 </span>
-              </a>
+              </Link>
               <div className="sm:hidden">
                 <button
                   type="button"
@@ -63,12 +64,12 @@ function Page() {
               className="hs-collapse hidden overflow-hidden transition-all duration-300 basis-full grow sm:block"
             >
               <div className="flex flex-col gap-5 mt-5 sm:flex-row sm:items-center sm:justify-end sm:mt-0 sm:pl-5">
-                <a className="font-medium text-white" href="#" aria-current="page">
+                <Link className="font-medium text-white" href="/" aria-current="page">
                   Dashboard
-                </a>
-                <a className="font-medium text-gray-400" href="#">
+                </Link>
+                <Link className="font-medium text-gray-400" href="/api/ping">
                   API
-                </a>
+                </Link>
                 <a
                   className="font-medium text-gray-400 hover:text-gray-500"
                   href="https://github.com/owl-factory/lantern"
