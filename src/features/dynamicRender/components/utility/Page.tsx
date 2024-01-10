@@ -10,7 +10,7 @@ import { useContext, useEffect } from "react";
 import { toKey } from "utils/strings";
 
 /**
- * Renders a group of Pages that can be shown one at a time
+ * Renders a Page that can be hidden or shown based on the state
  */
 export function Page(props: RenderComponentProps) {
   const { attributes } = useAttributes<PageAttributes>(props.node, pageAttributes);

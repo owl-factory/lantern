@@ -1,7 +1,7 @@
 import { Void } from "features/dynamicRender/components/utility/Void";
 import { RenderComponent } from "features/dynamicRender/types/render";
 
-const DYNAMIC_COMPONENT_REGISTRY = new Map<string, RenderComponent>();
+const dynamicComponentRegistry = new Map<string, RenderComponent>();
 
 /**
  * Registers a Render Component for use within the DynamicRender
@@ -9,7 +9,7 @@ const DYNAMIC_COMPONENT_REGISTRY = new Map<string, RenderComponent>();
  * @param component - The component to register
  */
 export function registerComponent(nodeName: string, component: RenderComponent) {
-  DYNAMIC_COMPONENT_REGISTRY.set(nodeName, component);
+  dynamicComponentRegistry.set(nodeName, component);
 }
 
 /**
@@ -19,5 +19,5 @@ export function registerComponent(nodeName: string, component: RenderComponent) 
  * @returns A Render Component function
  */
 export function getRenderComponentByName(nodeName: string): RenderComponent {
-  return DYNAMIC_COMPONENT_REGISTRY.get(nodeName) ?? Void;
+  return dynamicComponentRegistry.get(nodeName) ?? Void;
 }

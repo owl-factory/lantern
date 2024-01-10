@@ -110,7 +110,8 @@ describe("getAttributeValue", () => {
   });
 
   test("missing attribute", () => {
-    // TODO Can we change this to not be null, or should we keep the disable?
+    // This `null` is required because we are mocking the built-in Element.getAttribute() function,
+    // which returns null when an attribute is not found.
     // eslint-disable-next-line no-restricted-syntax
     jest.mocked(getAttribute).mockImplementationOnce(() => null);
     const mockNode = { nodeType: Node.ELEMENT_NODE, getAttribute } as Element;

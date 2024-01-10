@@ -1,18 +1,13 @@
 "use client";
 
-import { CharacterList } from "./characterList";
+import { CharacterList } from "./CharacterList";
 import { useEffect, useState } from "react";
 import { useLocalStorage } from "hooks/useLocalStorage";
 import { getLocalStorage, removeLocalStorage, setLocalStorage } from "utils/localStorage";
-import { CharacterView } from "./characterView";
+import { CharacterView } from "./CharacterView";
 import { Character } from "types/character";
 
 const LOCAL_CHARACTERS_KEY = "characters";
-
-export type StoredCharacter = {
-  name: string;
-  key: string;
-};
 
 function createLocalStorageCharacterId(key: string): string {
   return `character-${key}`;
