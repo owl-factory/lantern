@@ -7,7 +7,7 @@ type UserTable = {
   updated_at: Date;
   username: string;
   email: string;
-  groups: string[]; // Used for group based action control
+  groups: Group[]; // Used for group based action control
   organization: true;
   display_name?: string;
   icon_url?: string;
@@ -146,10 +146,8 @@ enum Visibility {
 }
 
 enum Group {
-  User = "admin",
-  Private = "private",
-  Friends = "friends",
-  Purchasers = "purchasers",
+  Admin = "admin",
+  User = "user",
 }
 
 /**
