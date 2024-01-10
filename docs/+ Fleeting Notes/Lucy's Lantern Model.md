@@ -9,6 +9,10 @@ Actors can contain data not defined in their ActorType. We need tooling that can
 - Delete unused fields.
 - Create simple data migrations that can convert fieldA -> fieldB, based on either ActorType defined fields or XML defined fields.
 
+## Lucy's New Data Model
+
+Laura's new data model proposal can be found in [`lucys-lantern-model`](./lucys-lantern-model.ts).
+
 ## Lucy's Initial Model Idea
 
 ```typescript
