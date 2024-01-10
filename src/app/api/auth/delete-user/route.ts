@@ -1,4 +1,4 @@
-import { luciaAuth, authenticateSession } from "lib/authentication";
+import { luciaAuth, authenticateSession, getDeleteSessionHeaderValue } from "lib/authentication";
 import { NextRequest } from "next/server";
 import { UserUpdate } from "types/database";
 
@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
     await luciaAuth.deleteUser(session.user.userId);
     return Response.json(
       { userId: session.user.userId, deleted: true },
-      { headers: { "Set-Cookie": luciaAuth.createSessionCookie(null).serialize() } }
+      { headers: { "Set-Cookie": getDeleteSessionHeaderValue() } }
     );
   } else {
     return new Response("ID in request body does not match current user session.", { status: 422 });

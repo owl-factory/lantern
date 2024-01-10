@@ -4,6 +4,8 @@ import { pool } from "lib/database";
 import { type NextRequest } from "next/server";
 import { cookies, headers } from "next/headers";
 import { sessionIdRegex } from "utils/regex";
+import { Result } from "types/functional";
+import { Err, Ok } from "utils/functional";
 
 /* Lantern authentication logic */
 
@@ -14,6 +16,7 @@ import { sessionIdRegex } from "utils/regex";
 export type AuthResult = {
   authenticated: boolean;
   session?: Session;
+  authenticationError?: string;
 };
 
 /**
@@ -23,21 +26,19 @@ export type AuthResult = {
  * @returns object containing authentication success flag and the session object if successful.
  */
 export async function authenticateSession(request?: NextRequest): Promise<AuthResult> {
-  const sessionId = getSessionId(request);
-  if (!sessionId) {
-    return { authenticated: false };
+  const sessionIdResult = getSessionId(request);
+  if (sessionIdResult.ok === false) {
+    return { authenticated: false, authenticationError: sessionIdResult.error };
   }
 
   try {
-    // Session returns null on authentication failure
-    console.log("Session ID: ", sessionId);
-    const session = await luciaAuth.validateSession(sessionId);
+    // Session returns null on Lucia authentication failure
+    const session = await luciaAuth.validateSession(sessionIdResult.data);
     if (session?.sessionId) {
       return { authenticated: true, session };
     }
   } catch (e) {
-    console.log(e);
-    return { authenticated: false };
+    return { authenticated: false, authenticationError: "Could not find session in the database." };
   }
 
   return { authenticated: false };
@@ -49,14 +50,26 @@ export async function authenticateSession(request?: NextRequest): Promise<AuthRe
  * @param request - NextJs request object that contains the POST body and auth cookies. Optional. Falls back on 'next/headers'.
  * @returns sessionId string used for authorizing against the database, or null if none are available.
  */
-export function getSessionId(request?: NextRequest) {
+export function getSessionId(request?: NextRequest): Result<string, string> {
   const sessionId =
     request?.headers?.get("Authorization")?.replace("Bearer ", "") ||
     headers().get("Authorization")?.replace("Bearer ", "") ||
     request?.cookies?.get(AUTH_COOKIE_NAME)?.value ||
     cookies().get(AUTH_COOKIE_NAME)?.value;
 
-  return sessionIdRegex.test(sessionId) ? sessionId : null;
+  return sessionIdRegex.test(sessionId)
+    ? Ok(sessionId)
+    : Err("Could not get sessionId from Authorization header or session cookie.");
+}
+
+/**
+ * Helper function that generates the Set-Cookie header value that will
+ * clear the session cookie when returned as a response header.
+ */
+export function getDeleteSessionHeaderValue(): string {
+  // Null is required to be passed to Lucia to generate delete session cookie value.
+  // eslint-disable-next-line no-restricted-syntax
+  return luciaAuth.createSessionCookie(null).serialize();
 }
 
 /**

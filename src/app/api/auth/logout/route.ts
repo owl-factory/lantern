@@ -1,4 +1,4 @@
-import { authenticateSession, luciaAuth } from "lib/authentication";
+import { authenticateSession, getDeleteSessionHeaderValue, luciaAuth } from "lib/authentication";
 import { type NextRequest } from "next/server";
 
 /**
@@ -17,6 +17,6 @@ export async function POST(request: NextRequest) {
   await luciaAuth.invalidateSession(session.sessionId);
   return Response.json(
     { sessionId: session.sessionId, loggedOut: true },
-    { headers: { "Set-Cookie": luciaAuth.createSessionCookie(null).serialize() } }
+    { headers: { "Set-Cookie": getDeleteSessionHeaderValue() } }
   );
 }
