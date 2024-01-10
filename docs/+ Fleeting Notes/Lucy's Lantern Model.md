@@ -48,4 +48,4 @@ export type ActorTypeTable = {
 
 ## Laura's Initial Model Idea
 
-Laura's inintial model idea can be found in [Actor Shape Playground](./Actor%20Shape%20Playground.md#Laura%27s%20Initial%20Idea)
+Laura's initial model idea can be found in [Actor Shape Playground](./Actor%20Shape%20Playground.md#Laura%27s%20Initial%20Idea)
