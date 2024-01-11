@@ -6,8 +6,9 @@ import Link from "next/link";
  * Page metadata object, NextJs will append these values as meta tags to the <head>.
  */
 export const metadata: Metadata = {
-  title: "Offline Mode",
-  description: "Welcome to Lantern Tabletop",
+  title: "Offline",
+  description:
+    "Lantern is in it's limited capacity offline mode, and this page is either not downloaded or not supported.",
 };
 
 /**
@@ -86,8 +87,8 @@ function Page() {
           <div className="text-center py-10 px-4 sm:px-6 lg:px-8">
             <h1 className="block text-2xl font-bold text-white sm:text-4xl">Lantern Tabletop is Offline</h1>
             <p className="mt-5 mb-2 text-lg text-gray-300">
-              We do not currently support offline mode, so you will need to reconnect to the internet in order to use
-              Lantern.
+              Lantern currently supports offline mode in only a limited capacity, and this page is either not currently
+              downloaded or is not currently supported in offline mode.
             </p>
             <div className="mt-5 flex flex-col justify-center items-center gap-2 sm:flex-row sm:gap-3">
               <a
