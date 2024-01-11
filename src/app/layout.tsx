@@ -1,4 +1,5 @@
 import "app/globals.css";
+import { OfflineIndicator } from "components/OfflineIndicator";
 import type { Metadata, Viewport } from "next";
 
 const APP_NAME = "Lantern Tabletop";
@@ -43,7 +44,10 @@ function RootLayout({ children }: { children: React.ReactNode }) {
         <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png" />
         <link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color="#5bbad5" />
       </head>
-      <body className="h-full">{children}</body>
+      <body className="h-full">
+        {children}
+        <OfflineIndicator />
+      </body>
     </html>
   );
 }
