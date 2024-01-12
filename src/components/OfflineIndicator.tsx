@@ -2,11 +2,25 @@
 
 import { useEffect, useState } from "react";
 
+/**
+ * TODO make this a hook, properly contain fetch() into a Result function,
+ * make /api/ping not able to be cached or have a fallback page.
+ */
 export function OfflineIndicator() {
   const [isOffline, setIsOffline] = useState(false);
 
   useEffect(() => {
-    setIsOffline(!navigator.onLine);
+    console.log("Here!");
+    try {
+      fetch("/api/ping").then((response) => {
+        console.log(response);
+        if (!response.ok) {
+          setIsOffline(true);
+        }
+      });
+    } catch (e) {
+      console.log("oops");
+    }
   }, []);
 
   return isOffline ? (
