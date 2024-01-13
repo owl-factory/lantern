@@ -3,18 +3,20 @@ import type { PrecacheEntry } from "@serwist/precaching";
 import { installSerwist } from "@serwist/sw";
 
 declare const self: ServiceWorkerGlobalScopeEventMap & {
-  // Change this attribute's name to your `injectionPoint`.
+  // This should match the next.config.mjs `withSerwistInit.injectionPoint` path string.
   __SW_MANIFEST: (PrecacheEntry | string)[] | undefined;
 };
+
+console.log(self);
 
 const revision = crypto.randomUUID();
 
 installSerwist({
+  // TODO figure out cache strategy that excludes /api/ping
   precacheEntries: self.__SW_MANIFEST,
   skipWaiting: true,
   clientsClaim: true,
   navigationPreload: true,
-  // TODO figure out cache strategy that excludes /api/ping
   runtimeCaching: defaultCache,
   fallbacks: {
     entries: [
