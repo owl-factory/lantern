@@ -14,6 +14,7 @@ installSerwist({
   skipWaiting: true,
   clientsClaim: true,
   navigationPreload: true,
+  // TODO figure out cache strategy that excludes /api/ping
   runtimeCaching: defaultCache,
   fallbacks: {
     entries: [
