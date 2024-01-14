@@ -9,3 +9,9 @@ export const emailRegex =
  * 40 characters that can only be a-Z, A-Z or 0-9.
  */
 export const sessionIdRegex = /^[a-zA-Z0-9]{40}$/;
+
+/**
+ * Regular expression that matches array accessor syntax `[n]`. Examples:
+ * `[0], [3], [17]`. The integer inside the brackets is matched as group 1.
+ */
+export const arrayRegex = /\[([0-9]+)\]/;
