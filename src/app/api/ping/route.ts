@@ -1,5 +1,3 @@
-export const dynamic = "force-dynamic";
-
 /**
  * /api/ping:
  * Endpoint for pinging to check for a response from the server.
