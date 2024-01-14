@@ -7,12 +7,16 @@ declare const self: ServiceWorkerGlobalScopeEventMap & {
   __SW_MANIFEST: (PrecacheEntry | string)[] | undefined;
 };
 
-console.log(self);
+/* This overrides Serwist's default cache setting for Next API endpoints to not cache (require a network connection.)
+ * defaultCache is passed to runtimeCaching setting, an array of cache settings that decided how to handle caching for
+ * sets of URLs matched with a function or regular expression.
+ * TODO handle runtimeCaching configuration ourselves in a caching.ts file or similar.
+ */
+defaultCache[12].handler = "NetworkOnly";
 
 const revision = crypto.randomUUID();
 
 installSerwist({
-  // TODO figure out cache strategy that excludes /api/ping
   precacheEntries: self.__SW_MANIFEST,
   skipWaiting: true,
   clientsClaim: true,
