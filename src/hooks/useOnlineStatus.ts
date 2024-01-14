@@ -7,6 +7,12 @@ import { Err, Ok } from "utils/functional";
  */
 const checkStatusTime = 45 * 1000;
 
+/**
+ * React hook that periodically pings Lantern's `/api/ping` endpoint to check if we are online,
+ * then saves that value to state and returns it to the hook caller.
+ * Only used in the site-wide Environment Context provider.
+ * @returns true if site is online, false if site is offline.
+ */
 export function useOnlineStatus(): boolean {
   const [isOnline, setIsOnline] = useState(true);
 
@@ -25,6 +31,10 @@ export function useOnlineStatus(): boolean {
   return isOnline;
 }
 
+/**
+ * Function that calls the endpoint `/api/ping` and safely handles the result.
+ * @returns safely wrapped result of the fetch request to `/api/ping`.
+ */
 async function ping(): Promise<Result<undefined, string>> {
   try {
     const response = await fetch("/api/ping");

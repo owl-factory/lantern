@@ -8,10 +8,18 @@ const APP_DEFAULT_TITLE = "Welcome to Lantern Tabletop";
 const APP_TITLE_TEMPLATE = "%s - Lantern Tabletop";
 const APP_DESCRIPTION = "Lantern Tabletop is an open source online virtual tabletop for everyone.";
 
+/**
+ * NextJs special const export. These viewport fields are used by Next to automatically
+ * generate `<meta>` viewport tags.
+ */
 export const viewport: Viewport = {
   themeColor: "#18181b",
 };
 
+/**
+ * NextJs special const export. These metadata fields are used by Next to automatically
+ * generate `<meta>` tags in the site `<head\>`.
+ */
 export const metadata: Metadata = {
   applicationName: APP_NAME,
   title: {

@@ -4,8 +4,8 @@ import { EnvironmentContext } from "context/EnvironmentContext";
 import { useContext } from "react";
 
 /**
- * TODO make this a hook, properly contain fetch() into a Result function,
- * make /api/ping not able to be cached or have a fallback page.
+ * Indicator that reads the site's online status from the EnvironmentContext and displays an absolutely
+ * positioned indicator in the bottom left of the screen if the site is offline.
  */
 export function OfflineIndicator() {
   const { isOnline } = useContext(EnvironmentContext);

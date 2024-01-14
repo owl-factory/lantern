@@ -1,3 +1,9 @@
+/*
+ * This file is used to build a service worker in `public` when the site is built.
+ * The service worker uses tools from https://serwist.pages.dev/.
+ * A service worker is required to make Lantern an offline-capable Progressive Web App.
+ */
+
 import { defaultCache } from "@serwist/next/browser";
 import type { PrecacheEntry } from "@serwist/precaching";
 import { installSerwist } from "@serwist/sw";
