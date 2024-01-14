@@ -4,7 +4,8 @@ import { pageAttributes } from "features/dynamicRender/data/attributes/utility/p
 import { useAttributes } from "features/dynamicRender/hooks/useAttributes";
 import { useChildren } from "features/dynamicRender/hooks/useChildren";
 import { PageAttributes } from "features/dynamicRender/types/attributes/utilities/page";
-import { RenderComponentProps } from "features/dynamicRender/types/render";
+import { NodeType } from "features/dynamicRender/types/node";
+import { RenderComponentBundle, RenderComponentProps } from "features/dynamicRender/types/render";
 import { StateController } from "features/dynamicRender/utils/stateController";
 import { useContext, useEffect } from "react";
 import { toKey } from "utils/strings";
@@ -19,7 +20,7 @@ export function Page(props: RenderComponentProps) {
   const pageKey = toKey(attributes.name);
   useEffect(() => createPage(groupKey, pageKey, attributes.name, state), [groupKey, attributes.name, state]);
 
-  const children = useChildren(props);
+  const children = useChildren(props.childNodes);
 
   const isActive = pageKey === state.getActivePage(groupKey);
   const showClass = isActive ? "block" : "hidden";
@@ -41,3 +42,9 @@ function createPage(groupKey: string, pageKey: string, pageName: string, state: 
 
   return () => state.deletePage(groupKey, pageKey);
 }
+
+export const pageBundle: RenderComponentBundle = {
+  Component: Page,
+  nodeType: NodeType.Page,
+  attributes: pageAttributes,
+};

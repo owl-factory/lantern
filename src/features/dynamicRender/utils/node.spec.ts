@@ -1,55 +1,10 @@
-import { parseNodeChildren, getAttributeValue, __testing__ } from "./node";
+import { getAttributeValue, __testing__ } from "./node";
 
-const { parseNodeChild, checkIfUsableNode, getNodeName } = __testing__;
-
-jest.mock("./registry");
+const { checkIfUsableNode, getNodeName } = __testing__;
 
 const getAttribute: (name: string) => string = jest.fn((name: string) => name);
 
-const tagName = "Box";
 const INVALID_NODE = { nodeType: Node.COMMENT_NODE } as ChildNode;
-const ELEMENT_NODE = { nodeType: Node.ELEMENT_NODE, tagName, getAttribute } as Element;
-
-describe("parseNodeChildren tests", () => {
-  test("parses nodes successfully", () => {
-    const childNodes = [ELEMENT_NODE] as unknown as NodeListOf<ChildNode>;
-    const res = parseNodeChildren(childNodes);
-    expect(res.length).toBe(1);
-  });
-
-  test("parses nodes successfully", () => {
-    const childNodes = [INVALID_NODE] as unknown as NodeListOf<ChildNode>;
-    const res = parseNodeChildren(childNodes);
-    expect(res.length).toBe(0);
-  });
-});
-
-describe("parseNodeChild", () => {
-  let mockCount: Map<string, number>;
-
-  beforeEach(() => {
-    jest.mocked(getAttribute).mockClear();
-    mockCount = new Map<string, number>();
-  });
-
-  test("is not usable node", () => {
-    const res = parseNodeChild(INVALID_NODE, mockCount);
-    expect(res).toBeUndefined();
-  });
-
-  test("has no valid tag name", () => {
-    const mockNode = { ...ELEMENT_NODE, tagName: undefined };
-    const res = parseNodeChild(mockNode, mockCount);
-    expect(res).toBeUndefined();
-  });
-
-  test("parses correctly", () => {
-    const res = parseNodeChild(ELEMENT_NODE, mockCount);
-    expect(res).toBeDefined();
-    expect(res.key).toBe(`${tagName}_1`);
-    expect(mockCount.get(tagName)).toBe(1);
-  });
-});
 
 describe("checkIfUsableNode tests", () => {
   test("valid text node", () => {
@@ -80,7 +35,7 @@ describe("getNodeName tests", () => {
   test("is text node", () => {
     const mockNode = { nodeType: Node.TEXT_NODE } as ChildNode;
     const res = getNodeName(mockNode);
-    expect(res).toBe("text");
+    expect(res).toBe("#text");
   });
 
   test("is element", () => {

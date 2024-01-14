@@ -1,18 +1,17 @@
-import { observer } from "lib/mobx";
-import { Checkbox } from "./Checkbox";
-import { registerComponent } from "features/dynamicRender/utils/registry";
-import { NumberInput } from "./NumberInput";
-import { TextInput } from "./TextInput";
-import { Radio } from "./Radio";
-import { TextArea } from "./TextArea";
+import { checkboxBundle } from "features/dynamicRender/components/form/Checkbox";
+import { numberInputBundle } from "features/dynamicRender/components/form/NumberInput";
+import { radioBundle } from "features/dynamicRender/components/form/Radio";
+import { textAreaBundle } from "features/dynamicRender/components/form/TextArea";
+import { textInputBundle } from "features/dynamicRender/components/form/TextInput";
+import { registerBundle } from "features/dynamicRender/utils/registry";
 
 /**
  * Registers the form components
  */
 export function registerForm() {
-  registerComponent("Checkbox", observer(Checkbox));
-  registerComponent("NumberInput", observer(NumberInput));
-  registerComponent("Radio", observer(Radio));
-  registerComponent("TextArea", observer(TextArea));
-  registerComponent("TextInput", observer(TextInput));
+  registerBundle(checkboxBundle);
+  registerBundle(numberInputBundle);
+  registerBundle(radioBundle);
+  registerBundle(textAreaBundle);
+  registerBundle(textInputBundle);
 }

@@ -3,7 +3,8 @@ import { collapseAttributes } from "features/dynamicRender/data/attributes/utili
 import { useAttributes } from "features/dynamicRender/hooks/useAttributes";
 import { useChildren } from "features/dynamicRender/hooks/useChildren";
 import { CollapseAttributes } from "features/dynamicRender/types/attributes/utilities/collapse";
-import { RenderComponentProps } from "features/dynamicRender/types/render";
+import { NodeType } from "features/dynamicRender/types/node";
+import { RenderComponentBundle, RenderComponentProps } from "features/dynamicRender/types/render";
 import { useContext, useEffect } from "react";
 
 /**
@@ -16,7 +17,7 @@ export function Collapse(props: RenderComponentProps) {
   const collapseId = attributes.id;
   useEffect(() => initializeCollapse(collapseId, state), [collapseId, state]);
 
-  const children = useChildren(props);
+  const children = useChildren(props.childNodes);
 
   const show = state.getCollapse(collapseId);
   const visibleClass = show ? "block" : "hidden";
@@ -36,3 +37,9 @@ function initializeCollapse(collapseId: string, state) {
 
   return () => state.deleteCollapse(collapseId);
 }
+
+export const collapseBundle: RenderComponentBundle = {
+  Component: Collapse,
+  nodeType: NodeType.Collapse,
+  attributes: collapseAttributes,
+};

@@ -3,15 +3,15 @@ import { NodeType } from "features/dynamicRender/types/node";
 import { RenderComponentBundle, RenderComponentProps } from "features/dynamicRender/types/render";
 
 /**
- * Renders a Table Cell
+ * Renders a box div element
  */
-export function TableCell(props: RenderComponentProps) {
+export function Box(props: RenderComponentProps) {
   const children = useChildren(props.childNodes);
-  return <td>{children}</td>;
+  return <div>{children}</div>;
 }
 
-export const tableCellBundle: RenderComponentBundle = {
-  Component: TableCell,
-  nodeType: NodeType.TableCell,
+export const boxBundle: RenderComponentBundle = {
+  Component: Box,
+  nodeType: NodeType.Box,
   attributes: [],
 };

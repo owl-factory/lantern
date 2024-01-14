@@ -2,8 +2,9 @@ import { textInputAttributes } from "features/dynamicRender/data/attributes/form
 import { useAttributes } from "features/dynamicRender/hooks/useAttributes";
 import { useFormValue } from "features/dynamicRender/hooks/useFormValue";
 import { TextInputAttributes } from "features/dynamicRender/types/attributes/form/textInput";
+import { NodeType } from "features/dynamicRender/types/node";
 import { GetOptions } from "features/dynamicRender/types/query";
-import { RenderComponentProps } from "features/dynamicRender/types/render";
+import { RenderComponentBundle, RenderComponentProps } from "features/dynamicRender/types/render";
 import { buildQueryOptionsFromAttributes } from "features/dynamicRender/utils/query";
 import { ChangeEvent, useMemo } from "react";
 
@@ -26,3 +27,9 @@ export function TextInput(props: RenderComponentProps) {
 
   return <input type="text" onChange={onChange} value={value} />;
 }
+
+export const textInputBundle: RenderComponentBundle = {
+  Component: TextInput,
+  nodeType: NodeType.TextInput,
+  attributes: textInputAttributes,
+};

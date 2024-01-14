@@ -1,6 +1,7 @@
 import { MarkupControllerState, Prefabs } from "features/dynamicRender/types/controllers/markup";
 import { Controller } from "features/dynamicRender/types/controller";
-import { MarkupComponents } from "features/dynamicRender/utils/markup/parse";
+import { ParsedNode } from "features/dynamicRender/types/render";
+import { MarkupComponents } from "features/dynamicRender/utils/markup/parseSheet";
 
 /**
  * Defines the common functionality for the Markup Controllers
@@ -9,7 +10,7 @@ export class MarkupController implements Controller {
   _state: MarkupControllerState = MarkupControllerState.NoOp;
   _error: string | undefined;
 
-  _layout: Element;
+  _layout: ParsedNode[];
   _prefabs: Prefabs;
 
   constructor() {}
@@ -20,7 +21,7 @@ export class MarkupController implements Controller {
   }
 
   /** The core structure of the Dynamic Render */
-  get layout(): Element {
+  get layout(): ParsedNode[] {
     if (!this.ready) return undefined;
     return this._layout;
   }

@@ -3,7 +3,8 @@ import { buttonAttributes } from "features/dynamicRender/data/attributes/ui/butt
 import { useAttributes } from "features/dynamicRender/hooks/useAttributes";
 import { useChildren } from "features/dynamicRender/hooks/useChildren";
 import { ButtonAttributes } from "features/dynamicRender/types/attributes/ui/button";
-import { RenderComponentProps } from "features/dynamicRender/types/render";
+import { NodeType } from "features/dynamicRender/types/node";
+import { RenderComponentBundle, RenderComponentProps } from "features/dynamicRender/types/render";
 import { StateController } from "features/dynamicRender/utils/stateController";
 import { useContext, useMemo } from "react";
 import { normalize } from "utils/strings";
@@ -18,7 +19,7 @@ export function Button(props: RenderComponentProps) {
   const state = useContext(StateContext);
   const action = useMemo(() => buildAction(attributes, state), [attributes, state]);
 
-  const children = useChildren(props);
+  const children = useChildren(props.childNodes);
 
   return (
     <button className={DEFAULT_CLASSES} type="button" onClick={() => action()}>
@@ -42,3 +43,9 @@ function buildAction(attributes: Partial<ButtonAttributes>, state: StateControll
   }
   return () => {};
 }
+
+export const buttonBundle: RenderComponentBundle = {
+  Component: Button,
+  nodeType: NodeType.Button,
+  attributes: buttonAttributes,
+};
