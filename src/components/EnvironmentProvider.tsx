@@ -1,3 +1,5 @@
+"use client";
+
 import { EnvironmentContext } from "context/EnvironmentContext";
 import { useOnlineStatus } from "hooks/useOnlineStatus";
 import { isServer } from "utils/environment";
