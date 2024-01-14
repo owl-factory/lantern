@@ -1,13 +1,14 @@
 "use client";
 
-import { useOnlineStatus } from "hooks/useOnlineStatus";
+import { EnvironmentContext } from "context/EnvironmentContext";
+import { useContext } from "react";
 
 /**
  * TODO make this a hook, properly contain fetch() into a Result function,
  * make /api/ping not able to be cached or have a fallback page.
  */
 export function OfflineIndicator() {
-  const isOnline = useOnlineStatus();
+  const { isOnline } = useContext(EnvironmentContext);
 
   return isOnline ? (
     <></>

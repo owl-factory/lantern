@@ -1,4 +1,5 @@
 import "app/globals.css";
+import { EnvironmentProvider } from "components/EnvironmentProvider";
 import { OfflineIndicator } from "components/OfflineIndicator";
 import type { Metadata, Viewport } from "next";
 
@@ -45,8 +46,10 @@ function RootLayout({ children }: { children: React.ReactNode }) {
         <link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color="#5bbad5" />
       </head>
       <body className="h-full">
-        {children}
-        <OfflineIndicator />
+        <EnvironmentProvider>
+          {children}
+          <OfflineIndicator />
+        </EnvironmentProvider>
       </body>
     </html>
   );
