@@ -35,7 +35,7 @@ export function useOnlineStatus(): boolean {
  * Function that calls the endpoint `/api/ping` and safely handles the result.
  * @returns safely wrapped result of the fetch request to `/api/ping`.
  */
-async function ping(): Promise<Result<undefined, string>> {
+export async function ping(): Promise<Result<undefined, string>> {
   try {
     const response = await fetch("/api/ping");
     if (response.ok && response.status === 200) {
