@@ -1,6 +1,6 @@
 /* Tables - Lantern Model */
 
-// User and Auth
+// User and Auth Model
 type UserTable = {
   id: string;
   created_at: Date;
@@ -33,27 +33,7 @@ type SessionTable = {
   api_key?: boolean;
 };
 
-// General Lantern
-
-// TODO Document tables with PostgreSQL info. Add table "world" (or possibly "campaign" / "adventure").
-// Add table "message" or do a relay or P2P server.
-// Add table "map" / "scene" unless we can get the included in "world" or made as a type of content.
-// Add table "asset"
-
-/**
- * Need to support generic/global ContentTypes and actor types.
- * Either `is_global: boolean` or `ruleset = { id: "00000000-0000-1000-8000-000000000000", name: "Lantern Core" }`.
- */
-type RulesetTable = {
-  id: string;
-  name: string;
-  created_at: Date;
-  updated_at: Date;
-  owner_user_id: string; // ref UserTable
-  visibility: Visibility;
-  description: string; // Markdown
-};
-
+// General Model
 type DisplaySheetTable = {
   id: string;
   name: string;
@@ -69,6 +49,21 @@ type DisplaySheetTable = {
   content_type_id?: string; // ref ContentTypeTable
 };
 
+/**
+ * We need to support generic/global ContentTypes and ActorTypes for things like handouts.
+ * Implemented with ether an `is_global: boolean` on Type or a special ruleset such as
+ * `ruleset = { id: "00000000-0000-0000-0000-000000000000", name: "Lantern Core" }`.
+ */
+type RulesetTable = {
+  id: string;
+  name: string;
+  created_at: Date;
+  updated_at: Date;
+  owner_user_id: string; // ref UserTable
+  visibility: Visibility;
+  description: string; // Markdown
+};
+
 type ContentTable = {
   id: string;
   name: string;
@@ -77,9 +72,10 @@ type ContentTable = {
   owner_user_id: string; // ref UserTable
   visibility: Visibility;
   ruleset_id?: string; // ref RulesetTable
+  default_display_sheet_id: string; // ref DisplaySheetTable
   content_type_id?: string; // ref ContentTypeTable
   is_dynamic: boolean;
-  data: Data;
+  data: Data & DateData;
   actor_template?: ActorTemplate;
   has_template: boolean;
   index_1?: string; // index_1-index_9 are data names
@@ -101,15 +97,16 @@ type ActorTable = {
   owner_user_id: string; // ref UserTable
   visibility: Visibility;
   ruleset_id?: string; // ref RulesetTable
+  default_display_sheet_id: string; // ref DisplaySheetTable
   is_character: boolean;
   actor_type_id?: string; // ref ActorTypeTable
   is_dynamic: boolean;
-  data: Data;
+  data: Data & DateData;
   content?: ActorContent;
 };
 
-// Creating actors and content with all features should be possible with no content types
-
+// Note: creating actors and content with a full set of features should be possible
+// with no content types, as long as `dynamic = true` and a DisplaySheet is set.
 type ContentTypeTable = {
   id: string;
   name: string;
@@ -118,6 +115,7 @@ type ContentTypeTable = {
   owner_user_id: string; // ref UserTable
   visibility: Visibility;
   ruleset_id: string; // ref RulesetTable
+  default_display_sheet_id: string; // ref DisplaySheetTable
   data_definitions: DataDefinition[];
   has_template: boolean;
   index_definitions?: [string, string, string, string, string, string, string, string, string]; // DataDefinition.key strings (9)
@@ -131,6 +129,7 @@ type ActorTypeTable = {
   owner_user_id: string; // ref UserTable
   visibility: Visibility;
   ruleset_id: string; // ref RulesetTable
+  default_display_sheet_id: string; // ref DisplaySheetTable
   is_character: boolean;
   data_definitions: DataDefinition[];
   content_definitions: ActorContentDefinition[];
@@ -153,7 +152,9 @@ enum Group {
 /**
  * For information on Data keys and values see "Dynamic Data Keys and Values.md".
  */
-type Data = { [key: string]: string } & { name: string; created_at: string; updated_at: string };
+type Data = { [key: string]: string } & { name: string };
+
+type DateData = { created_at: string; updated_at: string };
 
 type DataDefinition = {
   key: string;
@@ -167,7 +168,7 @@ type ActorTemplate = {
   is_character: boolean;
   actor_type_id?: string; // ref ActorTypeTable
   is_dynamic: boolean;
-  data: Omit<Data, "created_at" | "updated_at">;
+  data: Data;
   content?: ActorContent;
 };
 
@@ -203,6 +204,7 @@ const actor: ActorTable = {
   owner_user_id: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
   visibility: Visibility.Public,
   ruleset_id: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
+  default_display_sheet_id: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
   is_character: true,
   actor_type_id: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
   is_dynamic: false,
@@ -225,8 +227,6 @@ const actor: ActorTable = {
           instance_id: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX", // Random UUID for react key
           content_id: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX", // Links to the OG Firebolt content in the DB
           data: {
-            created_at: "2024-01-08T04:01",
-            updated_at: "2024-01-09T04:01",
             name: "Firebolt",
             damage: "1d8",
             damageType: "Fire",
