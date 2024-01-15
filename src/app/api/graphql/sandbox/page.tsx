@@ -1,6 +1,4 @@
-"use client";
-
-import { ApolloSandbox } from "@apollo/sandbox/react";
+import { Sandbox } from "app/api/graphql/sandbox/Sandbox";
 import { Metadata } from "next";
 
 /**
@@ -16,7 +14,7 @@ export const metadata: Metadata = {
  * GraphQL Sandbox page component.
  */
 function Page() {
-  return <ApolloSandbox className="h-full" initialEndpoint="http://localhost:3000/api/graphql" />;
+  return <Sandbox />;
 }
 
 export default Page;
