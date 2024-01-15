@@ -7,12 +7,10 @@ import type { Database } from "types/database";
  * See https://node-postgres.com/apis/pool.
  */
 export const pool = new Pool({
-  host: process.env.POSTGRES_HOST,
-  database: process.env.POSTGRES_DB,
-  user: process.env.POSTGRES_USER,
-  password: process.env.POSTGRES_PASSWORD,
+  connectionString: process.env.POSTGRES_URL,
+  ssl: process.env.POSTGRES_SSL !== "false",
+  /* Default pg settings */
   port: 5432,
-  ssl: process.env.POSTGRES_HOST !== "localhost",
   max: 20, // set pool max size to 20
   idleTimeoutMillis: 1000, // close idle clients after 1 second
   connectionTimeoutMillis: 1000, // return an error after 1 second if connection could not be established
