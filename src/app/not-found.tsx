@@ -66,7 +66,10 @@ function Page() {
                 <Link className="font-medium text-white" href="/" aria-current="page">
                   Dashboard
                 </Link>
-                <Link className="font-medium text-gray-400 hover:text-gray-500" href="/api/ping">
+                <Link className="font-medium text-gray-400 hover:text-gray-500" href="/characters">
+                  Characters
+                </Link>
+                <Link className="font-medium text-gray-400 hover:text-gray-500" href="/api/graphql/sandbox">
                   API
                 </Link>
                 <a

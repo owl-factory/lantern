@@ -67,7 +67,10 @@ function Page() {
                 <Link className="font-medium text-white" href="/" aria-current="page">
                   Dashboard
                 </Link>
-                <Link className="font-medium text-gray-400 hover:text-gray-500" href="/api/ping">
+                <Link className="font-medium text-gray-400 hover:text-gray-500" href="/characters">
+                  Characters
+                </Link>
+                <Link className="font-medium text-gray-400 hover:text-gray-500" href="/api/graphql/sandbox">
                   API
                 </Link>
                 <a
@@ -93,7 +96,7 @@ function Page() {
             <div className="mt-5 flex flex-col justify-center items-center gap-2 sm:flex-row sm:gap-3">
               <a
                 className="w-full sm:w-auto inline-flex justify-center items-center gap-x-3.5 text-center border-2 border-gray-600 shadow-sm text-sm font-medium rounded-md text-gray-300 hover:text-white hover:border-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-gray-800 transition py-3 px-4"
-                href="/api/ping"
+                href="/api/graphql/sandbox"
               >
                 <svg className="w-2.5 h-2.5" width="16" height="16" viewBox="0 0 16 16" fill="none">
                   <path
@@ -101,7 +104,7 @@ function Page() {
                     stroke="currentColor"
                   />
                 </svg>
-                View API Example
+                View GraphQL API
               </a>
               <a
                 className="w-full sm:w-auto inline-flex justify-center items-center gap-x-3.5 text-center bg-amber-400 shadow-sm text-sm font-medium rounded-md hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-slate-900 transition py-3 px-4"
