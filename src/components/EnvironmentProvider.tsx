@@ -2,7 +2,7 @@
 
 import { EnvironmentContext } from "context/EnvironmentContext";
 import { useOnlineStatus } from "hooks/useOnlineStatus";
-import { isServer } from "utils/environment";
+import { isServer, baseUrl } from "utils/environment";
 
 /**
  * Component that fetches site environment values and puts them in a React Context provider
@@ -11,5 +11,5 @@ import { isServer } from "utils/environment";
  */
 export function EnvironmentProvider({ children }: { children: React.ReactNode }) {
   const isOnline = useOnlineStatus();
-  return <EnvironmentContext.Provider value={{ isOnline, isServer }}>{children}</EnvironmentContext.Provider>;
+  return <EnvironmentContext.Provider value={{ isOnline, isServer, baseUrl }}>{children}</EnvironmentContext.Provider>;
 }

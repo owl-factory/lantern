@@ -3,12 +3,13 @@ import { HardcodedLoaderController } from "./hardcoded";
 import { FactoryOptions } from "features/dynamicRender/types/factory";
 import { safeMakeObservable } from "lib/mobx";
 import { Err } from "utils/functional";
+import { baseUrl } from "utils/environment";
 
 jest.mock("lib/mobx");
 
 const FACTORY_OPTIONS = {
   markupSource: MarkupSource.Hardcoded,
-  uri: "http://localhost:3000/characters/mockfinder.xml",
+  uri: baseUrl + "/characters/mockfinder.xml",
 } as unknown as FactoryOptions;
 
 describe("HardcodedLoaderController - constructor tests", () => {

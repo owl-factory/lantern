@@ -1,10 +1,12 @@
 "use client";
 
 import { ApolloSandbox } from "@apollo/sandbox/react";
+import { baseUrl } from "utils/environment";
 
 /**
  * Apollo sandbox client wrapper component.
  */
 export function Sandbox() {
-  return <ApolloSandbox className="h-full" initialEndpoint="http://localhost:3000/api/graphql" />;
+  const endpoint = baseUrl + "/api/graphql";
+  return <ApolloSandbox className="h-full" initialEndpoint={endpoint} />;
 }
