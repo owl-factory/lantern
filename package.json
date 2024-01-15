@@ -5,7 +5,7 @@
   "scripts": {
     "build": "next build",
     "start": "next start",
-    "dev": "next dev --turbo",
+    "dev": "next dev",
     "lint": "next lint",
     "test": "pnpm run test:unit && pnpm run test:e2e",
     "test:unit": "jest",
