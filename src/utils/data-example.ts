@@ -2,12 +2,21 @@ import { Result } from "types/functional";
 import { Err, Ok } from "utils/functional";
 import { arrayRegex } from "utils/regex";
 
+// TODO convert file to `example.ts`, add tests in `example.spec.ts`.
+
 /**
  * This type will be in the main model under `types`,
  * and will be used in all tables with dynamic content.
  */
 export type Data = { [key: string]: string } & { name: string };
 
+/**
+ * Flattens an object of indeterminate depth into a Data object of depth-1 key-value pairs.
+ * @param object - A JavaScript object of indeterminate depth. Example:
+ * `{name: "Character", stats: {abilityScores: {strength: "12"}}}`.
+ * @returns a flattened JavaScript object with keys that may be paths. Example:
+ * `{name: "Character", "stats.abilityScores.strength": "12"}`.
+ */
 export function flatten(object: unknown, recursing = false): Result<Data, string> {
   // TODO make this if statement more readable or explain it well in a comment.
   if (!object || typeof object !== "object" || (!recursing && !object["name"])) {
@@ -39,6 +48,13 @@ export function flatten(object: unknown, recursing = false): Result<Data, string
   return Ok(result as Data);
 }
 
+/**
+ * Expands a flat Data object of key-value pairs some keys being JavaScript accessor paths into objects of indeterminate depth.
+ * @param data - Flat JavaScript object with keys that may be paths. Example:
+ * `{name: "Character", "stats.abilityScores.strength": "12"}`.
+ * @returns a JavaScript object that has been expanded. Example:
+ * `{name: "Character", stats: {abilityScores: {strength: "12"}}}`.
+ */
 export function expand(data: Data): object {
   const result: object = {};
   for (const key in data) {
@@ -57,6 +73,11 @@ export function expand(data: Data): object {
   return result;
 }
 
+/**
+ * Tests if a passed value is an integer, then tests if it is positive (including 0).
+ * @param input - Number or string to check. Strings are parsed to numbers before checking.
+ * @returns true if input value represents a positive integer, false otherwise.
+ */
 export function isPositiveInteger(input: string | number): boolean {
   const num = typeof input === "number" ? input : Number(input);
   return Number.isInteger(num) && num >= 0;
