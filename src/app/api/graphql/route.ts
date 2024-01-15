@@ -1,5 +1,5 @@
 import { startServerAndCreateNextHandler } from "@as-integrations/next";
-import { apolloServer } from "lib/graphql";
+import { apolloServer } from "lib/graphql/server";
 
 const handler = startServerAndCreateNextHandler(apolloServer, {});
 
