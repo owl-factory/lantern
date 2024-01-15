@@ -2,7 +2,7 @@ import { Result } from "types/functional";
 import { Err, Ok } from "utils/functional";
 import { arrayRegex } from "utils/regex";
 
-// TODO convert file to `example.ts`, add tests in `example.spec.ts`.
+// TODO convert file to `example.ts`, add tests in `example.spec.ts`. Take care of other TODO tasks.
 
 /**
  * This type will be in the main model under `types`,
@@ -59,6 +59,7 @@ export function expand(data: Data): object {
   const result: object = {};
   for (const key in data) {
     const splitKeys = key.replace(arrayRegex, ".$1").split(".");
+    // TODO make this code more readable or explain it well in a comment.
     splitKeys.reduce((object, splitKey, splitKeyIndex) => {
       return (
         object[splitKey] ||
@@ -104,6 +105,7 @@ const object = {
   },
 };
 
+// Run this as script with `pnpm exec tsx ./src/utils/data-example.ts`.
 const res = flatten(object);
 if (res.ok) {
   console.log(res.data);
