@@ -6,8 +6,8 @@ import { baseUrl } from "utils/environment";
  * Page metadata object, NextJs will append these values as meta tags to the <head>.
  */
 export const metadata: Metadata = {
-  title: "GraphQL Sandbox (Apollo)",
-  description: "Welcome Lantern's GraphQL API Sandbox, backed by Apollo.",
+  title: "GraphQL Sandbox (Yoga)",
+  description: "Welcome Lantern's GraphQL API Sandbox, backed by Yoga.",
 };
 
 /**
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
  * GraphQL Sandbox page component.
  */
 function Page() {
-  return <Sandbox endpoint={baseUrl + "/api/graphql/apollo"} />;
+  return <Sandbox endpoint={baseUrl + "/api/graphql/yoga"} />;
 }
 
 export default Page;
