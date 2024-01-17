@@ -1,6 +1,7 @@
 import { Pool } from "pg";
 import { Kysely, PostgresDialect } from "kysely";
 import type { Database } from "types/database";
+import { useSsl } from "utils/environment";
 
 /**
  * Global configured pg (node-postgres) pool class instance used by both Kysely and Lucia for querying the PostgreSQL database.
@@ -8,7 +9,7 @@ import type { Database } from "types/database";
  */
 export const pool = new Pool({
   connectionString: process.env.POSTGRES_URL,
-  ssl: process.env.POSTGRES_SSL !== "false",
+  ssl: useSsl,
   port: 5432,
   /** This setup is for serverless functions calling a postgres pool. */
   max: 20, // set pool max size to 20

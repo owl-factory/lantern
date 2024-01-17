@@ -38,6 +38,7 @@ export const luciaAuth = lucia({
   },
   sessionCookie: {
     name: AUTH_COOKIE_NAME,
+    expires: false,
   },
 });
 
