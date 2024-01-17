@@ -1,7 +1,7 @@
 import { type Session } from "lucia";
 import { type NextRequest } from "next/server";
 import { cookies, headers } from "next/headers";
-import { sessionIdRegex } from "utils/regex";
+import { bearerRegex, sessionIdRegex } from "utils/regex";
 import { Result } from "types/functional";
 import { Err, Ok } from "utils/functional";
 import { AUTH_COOKIE_NAME, luciaAuth } from "lib/authentication/lucia";
@@ -41,8 +41,8 @@ export async function authenticateSession(request?: NextRequest): Promise<Result
  */
 export function getSessionId(request?: NextRequest): Result<string, string> {
   const sessionId =
-    request?.headers?.get("Authorization")?.replace("Bearer ", "") ||
-    headers().get("Authorization")?.replace("Bearer ", "") ||
+    request?.headers?.get("Authorization")?.replace(bearerRegex, "") ||
+    headers().get("Authorization")?.replace(bearerRegex, "") ||
     request?.cookies?.get(AUTH_COOKIE_NAME)?.value ||
     cookies().get(AUTH_COOKIE_NAME)?.value;
 

@@ -1,8 +1,8 @@
 import { LanternLogo } from "components/LanternLogo";
-//import gql from "graphql-tag";
-//import { getRscApolloClient } from "lib/graphql/client";
+import { getRscUrqlClient } from "lib/graphql/client";
 import { Metadata } from "next";
 import Link from "next/link";
+import { gql } from "graphql-tag";
 
 /**
  * Page metadata object, NextJs will append these values as meta tags to the <head>.
@@ -12,23 +12,25 @@ export const metadata: Metadata = {
   description: "Welcome to an experimental testing page.",
 };
 
-// const todosQuery = gql`
-//   query Todos {
-//     todos {
-//       description
-//       done
-//       id
-//     }
-//   }
-// `;
+const todosQuery = gql`
+  query Todos {
+    todos {
+      description
+      done
+      id
+    }
+  }
+`;
 
 /**
  * "/"
  * Site index/landing page component.
  */
 async function Page() {
-  //const client = getRscApolloClient();
-  //const response = await client.query({ query: todosQuery });
+  const client = getRscUrqlClient();
+  const response = await client.query(todosQuery, {});
+
+  console.log(response.data);
   return (
     <div className="bg-zinc-900 flex h-full">
       <div className="max-w-[50rem] flex flex-col mx-auto w-full h-full">
@@ -100,12 +102,19 @@ async function Page() {
         </header>
 
         <main id="content" role="main">
-          <div className="text-center py-10 px-4 sm:px-6 lg:px-8">
-            <h1 className="block text-2xl font-bold text-white sm:text-4xl">Dev Page</h1>
+          <div className="py-10 px-4 sm:px-6 lg:px-8">
+            <h1 className="text-center block text-2xl font-bold text-white sm:text-4xl">Dev Page</h1>
             <p className="mt-3 text-lg text-gray-300">
-              Todo List:
-              <br />
-              huh
+              <h2 className="text-center text-xl mt-10">Todo List</h2>
+              <div className="mx-20 mt-3">
+                {response.data.todos.map((todo, index) => {
+                  return (
+                    <li key={`todo-${index}`}>
+                      {todo.description} - Done: {todo.done.toString()}
+                    </li>
+                  );
+                })}
+              </div>
             </p>
           </div>
         </main>

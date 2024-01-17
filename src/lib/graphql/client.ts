@@ -4,7 +4,7 @@ import { registerApolloClient } from "@apollo/experimental-nextjs-app-support/rs
 import { schema } from "lib/graphql/schema";
 
 const remoteUrl = process.env.NEXT_PUBLIC_GRAPHQL_REMOTE_URL;
-const isRemote = remoteUrl !== null && remoteUrl !== "";
+const isRemote = Boolean(remoteUrl);
 
 const link = isRemote ? new HttpLink({ uri: remoteUrl }) : new SchemaLink({ schema });
 
@@ -16,6 +16,9 @@ export const getRscApolloClient = registerApolloClient(() => {
   return new ApolloClient({
     link,
     cache: new InMemoryCache(),
+    headers: {
+      Authorization: process.env.TEST_AUTH_TOKEN,
+    },
   });
 }).getClient;
 
@@ -31,6 +34,11 @@ const makeClient = () => {
   return createClient({
     url,
     exchanges: [cacheExchange, fetchExchange],
+    fetchOptions: {
+      headers: {
+        Authorization: process.env.TEST_AUTH_TOKEN,
+      },
+    },
   });
 };
 

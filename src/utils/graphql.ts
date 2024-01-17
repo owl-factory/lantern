@@ -10,7 +10,7 @@ import { type SelectFields } from "types/graphql";
  * @returns an array of field names requested in the GraphQL query for use in Kysely `select` statements.
  */
 export function getQueryFields<T>(info: DocumentNode): SelectFields<T> {
-  return info["fieldNodes"].reduce((allNodes, currentNode) => {
+  const fields = info["fieldNodes"].reduce((allNodes, currentNode) => {
     allNodes.push(
       ...currentNode.selectionSet.selections.map((selection) => {
         return selection.name.value;
@@ -18,4 +18,5 @@ export function getQueryFields<T>(info: DocumentNode): SelectFields<T> {
     );
     return allNodes;
   }, []);
+  return fields.filter((field) => field !== "__typename");
 }
