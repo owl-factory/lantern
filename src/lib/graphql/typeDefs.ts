@@ -5,7 +5,7 @@ import gql from "graphql-tag";
  */
 export const typeDefs = gql`
   type Todo {
-    id: ID
+    id: ID!
     description: String
     done: Boolean
   }
@@ -13,5 +13,11 @@ export const typeDefs = gql`
   type Query {
     todo(id: ID): Todo
     todos: [Todo]
+  }
+
+  type Mutation {
+    createTodo(description: String, done: Boolean): Todo
+    updateTodo(id: ID!, description: String, done: Boolean): Todo
+    deleteTodo(id: ID!): ID!
   }
 `;
