@@ -4,6 +4,7 @@ import { baseUrl } from "utils/environment";
 
 /**
  * Apollo client for use in nextjs react server components.
+ * We may switch to urql. https://formidable.com/open-source/urql/docs
  */
 export const getRscGqlClient = registerApolloClient(() => {
   return new ApolloClient({
