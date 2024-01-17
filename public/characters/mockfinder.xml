@@ -105,39 +105,39 @@
 
               <Column weight="2">
                 <Box type="background" src="inspiration">
-                  <Inline>
+                  <Box type="inline">
                     <Checkbox id="inspiration_1" name="inspiration"/>
                     <Label for="inspiration_1">Inspiration</Label>
-                  </Inline>
+                  </Box>
                 </Box>
 
                 <Box type="background" src="proficiency-bonus">
-                  <Inline>
+                  <Box type="inline">
                     <NumberInput id="proficiency_bonus_1" name="proficiency_bonus" calculated="true" calculateMethod="calc_proficiency_bonus"/>
                     <Label for="proficiency_bonus_1">Proficiency Bonus</Label>
-                  </Inline>
+                  </Box>
                 </Box>
 
                 <Box type="border" borderStyle="simpleBorder">
                   <Loop listSource="rules.savingThrows" index="savingThrowIndex" key="savingThrow">
-                    <Inline>
+                    <Box type="inline">
                       <Checkbox name="${savingThrow.proficiency}"/>
                       <NumberInput name="${savingThrow.mod}"/>
                       <Button action="roll" roll="1d20+${character[savingThrow.mod]}+${savingThrow.proficiency ? character.proficiency_bonus || 0 : 0}">${savingThrow.name}</Button>
-                    </Inline>
+                    </Box>
                   </Loop>
                   <Label>Saving Throws</Label>
                 </Box>
 
                 <Box type="border" borderStyle="simpleBorder">
                   <Loop listSource="rules.abilities" key="ability">
-                    <Inline>
+                    <Box type="inline">
                       <Checkbox name="${ability.proficiency}"/>
                       <NumberInput name="${ability.mod}"/>
                       <Label>
                         ${ability.ability} (${ability.mod_name})
                       </Label>
-                    </Inline>
+                    </Box>
                   </Loop>
                   <Label>Skills</Label>
                 </Box>
@@ -145,10 +145,10 @@
             </Row>
 
             <Box type="border">
-              <Inline>
+              <Box type="inline">
                 <Label>${Math.floor((character.wisdom_ability_score - 10) / 2) + 10}</Label>
                 <Label>Passive Wisdom (Perception)</Label>
-              </Inline>
+              </Box>
             </Box>
 
             <Box type="border">
@@ -223,10 +223,10 @@
             </Row>
 
             <Box type="border">
-              <Inline>
+              <Box type="inline">
                 <Label for="max_hp_1">Hit Point Maximum</Label>
                 <NumberInput id="max_hp_1" name="max_hp" calculated="optional"/>
-              </Inline>
+              </Box>
               <NumberInput id="hp_1" name="hp"/>
               <Label for="hp_1">Current Hit Points</Label>
             </Box>
@@ -239,10 +239,10 @@
             <Row>
               <Column weight="1">
                 <Box type="border" borderStyle="simplebox">
-                  <Inline>
+                  <Box type="inline">
                     <Label for="hit_dice_total_1">Total</Label>
                     <NumberInput id="hit_dice_total_1" name="hit_dice_total" calculated="optional"/>
-                  </Inline>
+                  </Box>
                   <NumberInput id="hit_dice_1" name="hit_dice"/>
                   <Label for="hit_dice_1" action="ac_roll_hit_dice">Hit Dice</Label>
                 </Box>
@@ -250,23 +250,23 @@
 
               <Column weight="1">
                 <Box type="border" borderStyle="simplebox">
-                  <Inline>
+                  <Box type="inline">
                     <Label for="death_save_successes_1">Successes</Label>
                     <Box type="background" src="line">
                       <Checkbox id="death_save_successes_1" name="death_save_success_1"/>
                       <Checkbox id="death_save_successes_1" name="death_save_success_2"/>
                       <Checkbox id="death_save_successes_1" name="death_save_success_3"/>
                     </Box>
-                  </Inline>
+                  </Box>
 
-                  <Inline>
+                  <Box type="inline">
                     <Label for="death_save_failures_1">Failures</Label>
                     <Box type="background" src="line">
                       <Checkbox id="death_save_failures_1" name="death_save_failure_1"/>
                       <Checkbox id="death_save_failures_1" name="death_save_failure_2"/>
                       <Checkbox id="death_save_failures_1" name="death_save_failure_3"/>
                     </Box>
-                  </Inline>
+                  </Box>
                   <Label>Death Saves</Label>
                 </Box>
               </Column>
@@ -287,19 +287,19 @@
                     <TableCell><NumberInput name="attack.attackBonus"/></TableCell>
                     <TableCell></TableCell>
                     <TableCell>
-                      <Inline>
+                      <Box type="inline">
                         <Button action="deleteContent" contentGroup="attacks" index="${attack_index}">-</Button>
                         <Icon icon="sword" action="ac_attack" argument="attack"/>
                         <Icon icon="edit" action="ac_open" argument="attack"/>
-                      </Inline>
+                      </Box>
                     </TableCell>
                   </TableRow>
                 </Loop>
               </Table>
-              <Inline>
+              <Box type="inline">
                 <Label>Attacks</Label>
                 <Button action="createContent" contentGroup="attacks">+</Button>
-              </Inline>
+              </Box>
 
               <Row>
                 <Column weight="2">Name</Column>
@@ -314,10 +314,10 @@
                 </Column>
 
                 <Column weight="1">
-                  <Inline>
+                  <Box type="inline">
                     +
                     <NumberInput name="attack.name"/>
-                  </Inline>
+                  </Box>
                 </Column>
 
                 <Column weight="2">...</Column>
@@ -330,11 +330,11 @@
             </Box>
 
             <Box type="border" borderStyle="simplebox">
-              <Inline>
+              <Box type="inline">
                 <Loop id="currencies_1" name="global.currencies" key="$currency">
                   <Prefab name="currency" label="${currency.name}" index="${currency.index}"/>
                 </Loop>
-              </Inline>
+              </Box>
 
               <Label>Equipment</Label>
               <Button action="createContent" contentGroup="items">+</Button>
@@ -362,18 +362,18 @@
                   <Collapse id="item_collapse_${index}">
                     <TableRow>
                       <TableCell width="5">
-                        <Inline>
+                        <Box type="inline">
                           <Checkbox id="content_equipped_${index}" name="item.equipped"/>
                           <Label>Equipped</Label>
-                        </Inline>
-                        <Inline>
+                        </Box>
+                        <Box type="inline">
                           <Checkbox id="content_use-as-resource_${index}" name="item.isResource"/>
                           <Label>Use as a Resource</Label>
-                        </Inline>
-                        <Inline>
+                        </Box>
+                        <Box type="inline">
                           <Checkbox id="content_is-attack_${index}" name="item.hasAttack"/>
                           <Label>Has an Attack</Label>
-                        </Inline>
+                        </Box>
                         <Label for="content_description_${index}">Description</Label>
                         <TextArea id="content_description_${index}" name="item.description"/>
                       </TableCell>
@@ -418,15 +418,15 @@
         <Pageable id="testing">
           <Page name="Test One">
             <Label>Testing!</Label>
-            <Inline>
+            <Box type="inline">
               <Radio id="advantage_1" name="advantage_disadvantage" value="1">Advantage</Radio>
               <Radio id="no_advantage_1" name="advantage_disadvantage" value="0">Normal</Radio>
               <Radio id="disadvantage_1" name="advantage_disadvantage" value="-1">Disadvantage</Radio>
-            </Inline>
+            </Box>
 
-            <Inline><Radio id="advantage_2" name="advantage_disadvantage" value="1"/><Label for="advantage_2">Advantage</Label></Inline>
-            <Inline><Radio id="no_advantage_2" name="advantage_disadvantage" value="0"/><Label for="no_advantage_2">Normal</Label></Inline>
-            <Inline><Radio id="disadvantage_2" name="advantage_disadvantage" value="-1"/><Label for="disadvantage_2">Disadvantage</Label></Inline>
+            <Box type="inline"><Radio id="advantage_2" name="advantage_disadvantage" value="1"/><Label for="advantage_2">Advantage</Label></Box>
+            <Box type="inline"><Radio id="no_advantage_2" name="advantage_disadvantage" value="0"/><Label for="no_advantage_2">Normal</Label></Box>
+            <Box type="inline"><Radio id="disadvantage_2" name="advantage_disadvantage" value="-1"/><Label for="disadvantage_2">Disadvantage</Label></Box>
           </Page>
 
           <Page name="Test Two">
