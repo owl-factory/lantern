@@ -18,3 +18,20 @@ export const getRscApolloClient = registerApolloClient(() => {
     cache: new InMemoryCache(),
   });
 }).getClient;
+
+/* URQL */
+
+import { cacheExchange, createClient, fetchExchange } from "urql";
+import { registerUrql } from "@urql/next/rsc";
+import { baseUrl } from "utils/environment";
+
+const url = isRemote ? remoteUrl : baseUrl + "/api/graphql/yoga";
+
+const makeClient = () => {
+  return createClient({
+    url,
+    exchanges: [cacheExchange, fetchExchange],
+  });
+};
+
+export const getRscUrqlClient = registerUrql(makeClient).getClient;

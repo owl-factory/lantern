@@ -14,4 +14,9 @@ export const apolloServer = new ApolloServer({
 /**
  * GraphQL Yoga instance with our schema.
  */
-export const yoga = createYoga({ schema });
+export const yoga = createYoga({
+  schema,
+  graphqlEndpoint: "/api/graphql/yoga",
+  // Yoga needs to know how to create a valid Next response
+  fetchAPI: { Response },
+});

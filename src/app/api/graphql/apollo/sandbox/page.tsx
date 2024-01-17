@@ -1,4 +1,4 @@
-import { Sandbox } from "app/api/graphql/sandbox/Sandbox";
+import { Sandbox } from "app/api/graphql/apollo/sandbox/Sandbox";
 import { Metadata } from "next";
 
 /**
