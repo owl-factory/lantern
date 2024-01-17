@@ -1,4 +1,4 @@
-import { luciaAuth } from "lib/authentication";
+import { luciaAuth } from "lib/authentication/lucia";
 import { emailRegex } from "utils/regex";
 
 /**

@@ -10,9 +10,9 @@ import type { NewTodo, Todo } from "types/database";
  * @returns array of todo list items.
  */
 export async function GET(request: NextRequest) {
-  const { authenticated } = await authenticateSession(request);
-  if (!authenticated) {
-    return new Response("User authentication failed.", { status: 401 });
+  const auth = await authenticateSession(request);
+  if (auth.ok === false) {
+    return new Response(auth.error, { status: 401 });
   }
 
   const todos: Todo[] = await database.selectFrom("todo").selectAll().execute();
@@ -26,9 +26,9 @@ export async function GET(request: NextRequest) {
  * @returns newly created todo item.
  */
 export async function POST(request: NextRequest) {
-  const { authenticated } = await authenticateSession(request);
-  if (!authenticated) {
-    return new Response("User authentication failed.", { status: 401 });
+  const auth = await authenticateSession(request);
+  if (auth.ok === false) {
+    return new Response(auth.error, { status: 401 });
   }
 
   const newTodo: NewTodo = await request.json();

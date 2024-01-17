@@ -10,7 +10,7 @@ import { type NextRequest } from "next/server";
  */
 export async function GET(request: NextRequest) {
   const auth = await authenticateSession(request);
-  if (!auth.authenticated) {
+  if (auth.ok === false) {
     return Response.json(auth, { status: 401 });
   }
   return Response.json(auth);

@@ -1,4 +1,5 @@
-import { authenticateSession, getDeleteSessionHeaderValue, luciaAuth } from "lib/authentication";
+import { authenticateSession, getDeleteSessionHeaderValue } from "lib/authentication";
+import { luciaAuth } from "lib/authentication/lucia";
 import { type NextRequest } from "next/server";
 
 /**
@@ -8,10 +9,11 @@ import { type NextRequest } from "next/server";
  * @returns deleted session ID.
  */
 export async function POST(request: NextRequest) {
-  const { authenticated, session } = await authenticateSession(request);
-  if (!authenticated) {
-    return new Response("User authentication failed.", { status: 401 });
+  const auth = await authenticateSession(request);
+  if (auth.ok === false) {
+    return new Response(auth.error, { status: 401 });
   }
+  const session = auth.data;
 
   await luciaAuth.deleteDeadUserSessions(session.user.userId);
   await luciaAuth.invalidateSession(session.sessionId);

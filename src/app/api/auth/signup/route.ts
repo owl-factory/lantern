@@ -1,4 +1,4 @@
-import { luciaAuth } from "lib/authentication";
+import { luciaAuth } from "lib/authentication/lucia";
 import { NewUser } from "types/database";
 import { isBadPassword } from "utils/authentication";
 

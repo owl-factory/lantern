@@ -18,9 +18,9 @@ interface TodoGetOptions {
  * @returns single todo list item.
  */
 export async function GET(request: NextRequest, options: TodoGetOptions) {
-  const { authenticated } = await authenticateSession(request);
-  if (!authenticated) {
-    return new Response("User authentication failed.", { status: 401 });
+  const auth = await authenticateSession(request);
+  if (auth.ok === false) {
+    return new Response(auth.error, { status: 401 });
   }
 
   const todo: Todo = await database
@@ -39,9 +39,9 @@ export async function GET(request: NextRequest, options: TodoGetOptions) {
  * @returns newly created todo item.
  */
 export async function PATCH(request: NextRequest, options: TodoGetOptions) {
-  const { authenticated } = await authenticateSession(request);
-  if (!authenticated) {
-    return new Response("User authentication failed.", { status: 401 });
+  const auth = await authenticateSession(request);
+  if (auth.ok === false) {
+    return new Response(auth.error, { status: 401 });
   }
 
   const todoUpdate: TodoUpdate = await request.json();
