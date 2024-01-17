@@ -1,7 +1,5 @@
-// import { ParsedNode } from "features/dynamicRender/types/render";
-// import { getRenderComponentByName } from "./registry";
-import { BACKWARDS_COMPATIBILITY_NODE_TYPES, NODE_TYPES_WITH_CHILDREN } from "features/dynamicRender/data/node";
 import { NodeType } from "features/dynamicRender/types/node";
+import { getRenderComponentBundle } from "features/dynamicRender/utils/registry";
 
 /**
  * Checks if a node is of a type usable within the DynamicRender
@@ -27,7 +25,10 @@ export function checkIfUsableNode(node: ChildNode): boolean {
  * @returns True if the node is the sort that can have children, false if not
  */
 export function canNodeHaveChildren(nodeType: NodeType): boolean {
-  return NODE_TYPES_WITH_CHILDREN.includes(nodeType);
+  const componentDefinition = getRenderComponentBundle(nodeType);
+  if (!componentDefinition) false;
+
+  return componentDefinition.allowsChildren;
 }
 
 /**
@@ -38,11 +39,6 @@ export function canNodeHaveChildren(nodeType: NodeType): boolean {
 export function getNodeTypeFromName(nodeName: string): NodeType {
   if ((Object.values(NodeType) as string[]).includes(nodeName)) {
     return nodeName as NodeType;
-  }
-
-  const modernNodeType = BACKWARDS_COMPATIBILITY_NODE_TYPES[nodeName];
-  if (modernNodeType !== undefined) {
-    return modernNodeType;
   }
 
   return NodeType.Void;
