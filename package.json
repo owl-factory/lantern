@@ -31,6 +31,7 @@
     "@serwist/sw": "^8.4.0",
     "graphql": "^16.8.1",
     "graphql-tag": "^2.12.6",
+    "graphql-yoga": "^5.1.1",
     "kysely": "^0.26.3",
     "lucia": "^2.7.6",
     "mobx": "^6.12.0",
