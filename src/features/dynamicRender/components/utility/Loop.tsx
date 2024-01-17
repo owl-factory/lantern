@@ -1,6 +1,6 @@
 import { useChildren } from "features/dynamicRender/hooks/useChildren";
 import { NodeType } from "features/dynamicRender/types/node";
-import { RenderComponentBundle, RenderComponentProps } from "features/dynamicRender/types/render";
+import { RenderComponentDefinition, RenderComponentProps } from "features/dynamicRender/types/render";
 
 /**
  * Loops over a list of values
@@ -11,8 +11,9 @@ export function Loop(props: RenderComponentProps) {
   return <>{children}</>;
 }
 
-export const loopBundle: RenderComponentBundle = {
+export const loopBundle: RenderComponentDefinition = {
   Component: Loop,
   nodeType: NodeType.Loop,
   attributes: [],
+  allowsChildren: true,
 };

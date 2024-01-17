@@ -1,6 +1,6 @@
 import { useChildren } from "features/dynamicRender/hooks/useChildren";
 import { NodeType } from "features/dynamicRender/types/node";
-import { RenderComponentBundle, RenderComponentProps } from "features/dynamicRender/types/render";
+import { RenderComponentDefinition, RenderComponentProps } from "features/dynamicRender/types/render";
 
 /**
  * Renders a table
@@ -13,8 +13,9 @@ export function Table(props: RenderComponentProps) {
   return <table></table>;
 }
 
-export const tableBundle: RenderComponentBundle = {
+export const tableBundle: RenderComponentDefinition = {
   Component: Table,
   nodeType: NodeType.Table,
   attributes: [],
+  allowsChildren: true,
 };

@@ -3,7 +3,7 @@ import { tabsAttributes } from "features/dynamicRender/data/attributes/utility/t
 import { useAttributes } from "features/dynamicRender/hooks/useAttributes";
 import { TabsAttributes } from "features/dynamicRender/types/attributes/utilities/tabs";
 import { NodeType } from "features/dynamicRender/types/node";
-import { RenderComponentBundle, RenderComponentProps } from "features/dynamicRender/types/render";
+import { RenderComponentDefinition, RenderComponentProps } from "features/dynamicRender/types/render";
 import { Page, StateController } from "features/dynamicRender/utils/stateController";
 import { useContext } from "react";
 
@@ -57,8 +57,9 @@ function Tab(props: TabProps) {
   );
 }
 
-export const tabsBundle: RenderComponentBundle = {
+export const tabsBundle: RenderComponentDefinition = {
   Component: Tabs,
   nodeType: NodeType.Tabs,
   attributes: tabsAttributes,
+  allowsChildren: false,
 };

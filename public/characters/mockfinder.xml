@@ -39,14 +39,14 @@
         <!-- Character Information -->
         <Row>
           <Column weight="5">
-            <Background src="/dnd-5e/title-dragon.svg">
+            <Box type="background" src="/dnd-5e/title-dragon.svg">
               <TextInput id="name1_1" name="name"/>
               <Label for="name1_1">Character Name</Label>
-            </Background>
+            </Box>
           </Column>
 
           <Column weight="7">
-            <Border borderStyle="...">
+            <Box type="border" borderStyle="...">
               <Row>
                 <Column weight="1">
                   <Row>
@@ -87,7 +87,7 @@
                   <Label for="experience_1">Experience Points</Label>
                 </Column>
               </Row>
-            </Border>
+            </Box>
           </Column>
         </Row>
 
@@ -104,21 +104,21 @@
               </Column>
 
               <Column weight="2">
-                <Background src="inspiration">
+                <Box type="background" src="inspiration">
                   <Inline>
                     <Checkbox id="inspiration_1" name="inspiration"/>
                     <Label for="inspiration_1">Inspiration</Label>
                   </Inline>
-                </Background>
+                </Box>
 
-                <Background src="proficiency-bonus">
+                <Box type="background" src="proficiency-bonus">
                   <Inline>
                     <NumberInput id="proficiency_bonus_1" name="proficiency_bonus" calculated="true" calculateMethod="calc_proficiency_bonus"/>
                     <Label for="proficiency_bonus_1">Proficiency Bonus</Label>
                   </Inline>
-                </Background>
+                </Box>
 
-                <Border borderStyle="simpleBorder">
+                <Box type="border" borderStyle="simpleBorder">
                   <Loop listSource="rules.savingThrows" index="savingThrowIndex" key="savingThrow">
                     <Inline>
                       <Checkbox name="${savingThrow.proficiency}"/>
@@ -127,9 +127,9 @@
                     </Inline>
                   </Loop>
                   <Label>Saving Throws</Label>
-                </Border>
+                </Box>
 
-                <Border borderStyle="simpleBorder">
+                <Box type="border" borderStyle="simpleBorder">
                   <Loop listSource="rules.abilities" key="ability">
                     <Inline>
                       <Checkbox name="${ability.proficiency}"/>
@@ -140,18 +140,18 @@
                     </Inline>
                   </Loop>
                   <Label>Skills</Label>
-                </Border>
+                </Box>
               </Column>
             </Row>
 
-            <Border>
+            <Box type="border">
               <Inline>
                 <Label>${Math.floor((character.wisdom_ability_score - 10) / 2) + 10}</Label>
                 <Label>Passive Wisdom (Perception)</Label>
               </Inline>
-            </Border>
+            </Box>
 
-            <Border>
+            <Box type="border">
               <Table>
                 <TableRow>
                   <TableCell>Tool</TableCell>
@@ -169,9 +169,9 @@
               </Table>
               <Button action="createContent" contentGroup="tools">+</Button>
               <Label>Tool Proficiencies &amp; Custom Skills</Label> 
-            </Border>
+            </Box>
 
-            <Border>
+            <Box type="border">
               <Table>
                 <TableRow>
                   <TableCell><Label>Type</Label></TableCell>
@@ -194,86 +194,86 @@
               </Table>
               <Button action="createContent" contentGroup="languages">+</Button>
               <Label>Other Proficiencies &amp; Languages</Label> 
-            </Border>
+            </Box>
           </Column>
 
           <!-- HP, Attacks, Equipment -->
           <Column weight="1">
             <Row>
               <Column weight="1">
-                <Background src="ac-shield">
+                <Box type="background" src="ac-shield">
                   <NumberInput id="ac_1" name="ac" calculated="optional" calculateMethod="calc_ac"/>
                   <Label for="ac_1">Armor Class</Label>
-                </Background>
+                </Box>
               </Column>
 
               <Column weight="1">
-                <Background src="simple-box">
+                <Box type="background" src="simple-box">
                   <NumberInput id="initiative_1" name="initiative" calculated="optional"/>
                   <Label for="initiative_1" action="ac_roll_initiative">Initiative</Label>
-                </Background>
+                </Box>
               </Column>
 
               <Column weight="1">
-                <Background src="simple-box">
+                <Box type="background" src="simple-box">
                   <NumberInput id="speed_1" name="speed"/>
                   <Label for="speed_1">Speed</Label>
-                </Background>
+                </Box>
               </Column>
             </Row>
 
-            <Border>
+            <Box type="border">
               <Inline>
                 <Label for="max_hp_1">Hit Point Maximum</Label>
                 <NumberInput id="max_hp_1" name="max_hp" calculated="optional"/>
               </Inline>
               <NumberInput id="hp_1" name="hp"/>
               <Label for="hp_1">Current Hit Points</Label>
-            </Border>
+            </Box>
 
-            <Border>
+            <Box type="border">
               <NumberInput id="temp_hp_1" name="temp_hp"/>
               <Label for="temp_hp_1">Temporary Hit Points</Label>
-            </Border>
+            </Box>
 
             <Row>
               <Column weight="1">
-                <Border borderStyle="simplebox">
+                <Box type="border" borderStyle="simplebox">
                   <Inline>
                     <Label for="hit_dice_total_1">Total</Label>
                     <NumberInput id="hit_dice_total_1" name="hit_dice_total" calculated="optional"/>
                   </Inline>
                   <NumberInput id="hit_dice_1" name="hit_dice"/>
                   <Label for="hit_dice_1" action="ac_roll_hit_dice">Hit Dice</Label>
-                </Border>
+                </Box>
               </Column>
 
               <Column weight="1">
-                <Border borderStyle="simplebox">
+                <Box type="border" borderStyle="simplebox">
                   <Inline>
                     <Label for="death_save_successes_1">Successes</Label>
-                    <Background src="line">
+                    <Box type="background" src="line">
                       <Checkbox id="death_save_successes_1" name="death_save_success_1"/>
                       <Checkbox id="death_save_successes_1" name="death_save_success_2"/>
                       <Checkbox id="death_save_successes_1" name="death_save_success_3"/>
-                    </Background>
+                    </Box>
                   </Inline>
 
                   <Inline>
                     <Label for="death_save_failures_1">Failures</Label>
-                    <Background src="line">
+                    <Box type="background" src="line">
                       <Checkbox id="death_save_failures_1" name="death_save_failure_1"/>
                       <Checkbox id="death_save_failures_1" name="death_save_failure_2"/>
                       <Checkbox id="death_save_failures_1" name="death_save_failure_3"/>
-                    </Background>
+                    </Box>
                   </Inline>
                   <Label>Death Saves</Label>
-                </Border>
+                </Box>
               </Column>
             </Row>
 
             <!-- Attacks -->
-            <Border borderStyle="simplebox">
+            <Box type="border" borderStyle="simplebox">
               <Table>
                 <TableRow>
                   <TableCell>Name</TableCell>
@@ -327,9 +327,9 @@
                 </Column>
               </Loop>
               <Label>Attacks &amp; Spellcasting</Label>
-            </Border>
+            </Box>
 
-            <Border borderStyle="simplebox">
+            <Box type="border" borderStyle="simplebox">
               <Inline>
                 <Loop id="currencies_1" name="global.currencies" key="$currency">
                   <Prefab name="currency" label="${currency.name}" index="${currency.index}"/>
@@ -381,34 +381,34 @@
                   </Collapse>
                 </Loop>
               </Table>
-            </Border>
+            </Box>
           </Column>
 
           <!-- Bio, Features and Traits -->
           <Column weight="1">
-            <Border borderStyle="simpleborder">
+            <Box type="border" borderStyle="simpleborder">
               <TextArea id="personality_traits_1" name="personality_traits"/>
               <Label for="personality_traits_1">Personality Traits</Label>
-            </Border>
+            </Box>
 
-            <Border borderStyle="simpleborder">
+            <Box type="border" borderStyle="simpleborder">
               <TextArea id="ideals_1" name="ideals"/>
               <Label for="ideals_1">Ideals</Label>
-            </Border>
+            </Box>
 
-            <Border borderStyle="simpleborder">
+            <Box type="border" borderStyle="simpleborder">
               <TextArea id="bonad_1" name="bonds"/>
               <Label for="bonad_1">Bonds</Label>
-            </Border>
+            </Box>
 
-            <Border borderStyle="simpleborder">
+            <Box type="border" borderStyle="simpleborder">
               <TextArea id="flaws_1" name="flaws"/>
               <Label for="flaws_1">Flaws</Label>
-            </Border>
+            </Box>
 
-            <Border borderStyle="simpleBorder">
+            <Box type="border" borderStyle="simpleBorder">
               <Label>Features &amp; Traits</Label>
-            </Border>
+            </Box>
           </Column>
         </Row>
       </Page>
@@ -440,11 +440,11 @@
 
   <Prefabs>
     <NewPrefab name="ability_score" properties="label,score,mod">
-      <Background src="/ability_score.svg">
+      <Box type="background" src="/ability_score.svg">
         <Label>${properties.label}</Label>
         <NumberInput id="${properties.mod}_${properties.uuid}" name="${properties.mod}" calculated="true"/>
         <NumberInput id="${properties.score}_${properties.uuid}" name="${properties.score}"/>
-      </Background>
+      </Box>
     </NewPrefab>
 
     <NewPrefab name="skill" properties="">

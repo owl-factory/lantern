@@ -8,20 +8,20 @@ import { tableBundle } from "features/dynamicRender/components/ui/Table";
 import { tableCellBundle } from "features/dynamicRender/components/ui/TableCell";
 import { tableRowBundle } from "features/dynamicRender/components/ui/TableRow";
 import { textBundle } from "features/dynamicRender/components/ui/Text";
-import { registerBundle } from "features/dynamicRender/utils/registry";
+import { registerComponentDefinition } from "features/dynamicRender/utils/registry";
 
 /**
  * Registers the utility components
  */
 export function registerUi() {
-  registerBundle(boxBundle);
-  registerBundle(buttonBundle);
-  registerBundle(columnBundle);
-  registerBundle(iconBundle);
-  registerBundle(labelBundle);
-  registerBundle(rowBundle);
-  registerBundle(tableBundle);
-  registerBundle(tableCellBundle);
-  registerBundle(tableRowBundle);
-  registerBundle(textBundle);
+  registerComponentDefinition(boxBundle);
+  registerComponentDefinition(buttonBundle);
+  registerComponentDefinition(columnBundle);
+  registerComponentDefinition(iconBundle);
+  registerComponentDefinition(labelBundle);
+  registerComponentDefinition(rowBundle);
+  registerComponentDefinition(tableBundle);
+  registerComponentDefinition(tableCellBundle);
+  registerComponentDefinition(tableRowBundle);
+  registerComponentDefinition(textBundle);
 }

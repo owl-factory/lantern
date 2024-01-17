@@ -1,6 +1,6 @@
 import { useChildren } from "features/dynamicRender/hooks/useChildren";
 import { NodeType } from "features/dynamicRender/types/node";
-import { RenderComponentBundle, RenderComponentProps } from "features/dynamicRender/types/render";
+import { RenderComponentDefinition, RenderComponentProps } from "features/dynamicRender/types/render";
 
 /**
  * Renders a flex-box row
@@ -10,8 +10,9 @@ export function Row(props: RenderComponentProps) {
   return <div className="flex">{children}</div>;
 }
 
-export const rowBundle: RenderComponentBundle = {
+export const rowBundle: RenderComponentDefinition = {
   Component: Row,
   nodeType: NodeType.Row,
   attributes: [],
+  allowsChildren: true,
 };

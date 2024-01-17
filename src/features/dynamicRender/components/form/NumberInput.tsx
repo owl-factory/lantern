@@ -4,7 +4,7 @@ import { useFormValue } from "features/dynamicRender/hooks/useFormValue";
 import { NumberInputAttributes } from "features/dynamicRender/types/attributes/form/numberInput";
 import { NodeType } from "features/dynamicRender/types/node";
 import { GetOptions } from "features/dynamicRender/types/query";
-import { RenderComponentBundle, RenderComponentProps } from "features/dynamicRender/types/render";
+import { RenderComponentDefinition, RenderComponentProps } from "features/dynamicRender/types/render";
 import { buildQueryOptionsFromAttributes } from "features/dynamicRender/utils/query";
 import { ChangeEvent, useMemo } from "react";
 
@@ -28,8 +28,9 @@ export function NumberInput(props: RenderComponentProps) {
   return <input type="number" onChange={onChange} value={value} />;
 }
 
-export const numberInputBundle: RenderComponentBundle = {
+export const numberInputBundle: RenderComponentDefinition = {
   Component: NumberInput,
   nodeType: NodeType.NumberInput,
   attributes: numberInputAttributes,
+  allowsChildren: false,
 };

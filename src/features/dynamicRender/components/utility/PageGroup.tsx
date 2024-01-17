@@ -5,7 +5,7 @@ import { useAttributes } from "features/dynamicRender/hooks/useAttributes";
 import { useChildren } from "features/dynamicRender/hooks/useChildren";
 import { PageableAttributes } from "features/dynamicRender/types/attributes/utilities/pageable";
 import { NodeType } from "features/dynamicRender/types/node";
-import { RenderComponentBundle, RenderComponentProps } from "features/dynamicRender/types/render";
+import { RenderComponentDefinition, RenderComponentProps } from "features/dynamicRender/types/render";
 import { StateController } from "features/dynamicRender/utils/stateController";
 import { useContext, useEffect } from "react";
 
@@ -37,8 +37,10 @@ function createPageGroup(groupKey: string, state: StateController) {
   return () => state.deletePageGroup(groupKey);
 }
 
-export const pageGroupBundle: RenderComponentBundle = {
+export const pageGroupBundle: RenderComponentDefinition = {
   Component: PageGroup,
   nodeType: NodeType.PageGroup,
   attributes: pageableAttributes,
+  allowsChildren: true,
+  backwardsCompatiblityNodeTypes: [NodeType.Pageable],
 };

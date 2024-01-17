@@ -29,4 +29,10 @@ export enum NodeType {
 
   // Other
   Void = "Void",
+
+  // DEPRECATED
+  Background = "Background",
+  Border = "Border",
+  Inline = "Inline",
+  Pageable = "Pageable",
 }

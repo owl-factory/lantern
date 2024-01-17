@@ -1,10 +1,11 @@
 import { NodeType } from "features/dynamicRender/types/node";
-import { RenderComponentBundle } from "features/dynamicRender/types/render";
+import { RenderComponentDefinition } from "features/dynamicRender/types/render";
 
-const mockComponentBundle: RenderComponentBundle = {
+const mockComponentBundle: RenderComponentDefinition = {
   attributes: [],
   Component: jest.fn(),
   nodeType: NodeType.Box,
+  allowsChildren: true,
 };
 
 export const registerBundle = jest.fn();

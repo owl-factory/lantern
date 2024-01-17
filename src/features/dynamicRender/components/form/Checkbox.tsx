@@ -4,7 +4,7 @@ import { useFormValue } from "features/dynamicRender/hooks/useFormValue";
 import { CheckboxAttributes } from "features/dynamicRender/types/attributes/form/checkbox";
 import { NodeType } from "features/dynamicRender/types/node";
 import { GetOptions, QuerySource } from "features/dynamicRender/types/query";
-import { RenderComponentBundle, RenderComponentProps } from "features/dynamicRender/types/render";
+import { RenderComponentDefinition, RenderComponentProps } from "features/dynamicRender/types/render";
 import { check, isChecked, uncheck } from "features/dynamicRender/utils/check";
 import { buildQueryOptionsFromAttributes } from "features/dynamicRender/utils/query";
 import { ChangeEvent, useMemo } from "react";
@@ -43,8 +43,9 @@ export function Checkbox(props: RenderComponentProps) {
   return <input type="checkbox" onChange={onChange} defaultChecked={checked} value={attributes.value} />;
 }
 
-export const checkboxBundle: RenderComponentBundle = {
+export const checkboxBundle: RenderComponentDefinition = {
   Component: Checkbox,
   nodeType: NodeType.Checkbox,
   attributes: checkboxAttributes,
+  allowsChildren: false,
 };

@@ -3,6 +3,7 @@ import { NodeType } from "features/dynamicRender/types/node";
 /** Indicates the different Node Types that may have children */
 export const NODE_TYPES_WITH_CHILDREN = [
   NodeType.Box,
+  NodeType.Button,
   NodeType.Collapse,
   NodeType.Column,
   NodeType.Label,

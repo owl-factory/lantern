@@ -3,15 +3,15 @@ import { numberInputBundle } from "features/dynamicRender/components/form/Number
 import { radioBundle } from "features/dynamicRender/components/form/Radio";
 import { textAreaBundle } from "features/dynamicRender/components/form/TextArea";
 import { textInputBundle } from "features/dynamicRender/components/form/TextInput";
-import { registerBundle } from "features/dynamicRender/utils/registry";
+import { registerComponentDefinition } from "features/dynamicRender/utils/registry";
 
 /**
  * Registers the form components
  */
 export function registerForm() {
-  registerBundle(checkboxBundle);
-  registerBundle(numberInputBundle);
-  registerBundle(radioBundle);
-  registerBundle(textAreaBundle);
-  registerBundle(textInputBundle);
+  registerComponentDefinition(checkboxBundle);
+  registerComponentDefinition(numberInputBundle);
+  registerComponentDefinition(radioBundle);
+  registerComponentDefinition(textAreaBundle);
+  registerComponentDefinition(textInputBundle);
 }

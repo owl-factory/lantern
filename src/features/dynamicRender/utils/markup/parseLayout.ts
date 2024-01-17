@@ -80,8 +80,16 @@ function parseNodeChild(node: ChildNode, nodeTypeCount: Map<string, number>): Pa
   return parsedNode;
 }
 
+/**
+ * Parses the attributes of a node from their definitions.
+ * @param node - The node to parse the attributes of
+ * @param attributeDefinitions - The definition for the different valid attributes for this kind of node
+ * @returns The attributes of a node
+ */
 function parseAttributes(node: Node, attributeDefinitions: AttributeDefinition[]) {
   if (node.nodeType !== Node.ELEMENT_NODE) return {};
+  if (!attributeDefinitions || attributeDefinitions.length === 0) return {};
+
   const element = node as Element;
   const attributes: Record<string, string> = {};
 

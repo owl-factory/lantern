@@ -1,6 +1,6 @@
 import { useChildren } from "features/dynamicRender/hooks/useChildren";
 import { NodeType } from "features/dynamicRender/types/node";
-import { RenderComponentBundle, RenderComponentProps } from "features/dynamicRender/types/render";
+import { RenderComponentDefinition, RenderComponentProps } from "features/dynamicRender/types/render";
 
 /**
  * Renders a Table Cell
@@ -10,8 +10,9 @@ export function TableCell(props: RenderComponentProps) {
   return <td>{children}</td>;
 }
 
-export const tableCellBundle: RenderComponentBundle = {
+export const tableCellBundle: RenderComponentDefinition = {
   Component: TableCell,
   nodeType: NodeType.TableCell,
   attributes: [],
+  allowsChildren: true,
 };

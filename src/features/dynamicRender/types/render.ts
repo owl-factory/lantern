@@ -22,10 +22,13 @@ export type RenderComponentProps<T = Record<string, string>> = {
 export type RenderComponent<T> = (props: RenderComponentProps<T>) => ReactNode;
 
 /** A bundle of like attributes for a RenderComponent */
-export type RenderComponentBundle = {
+export type RenderComponentDefinition = {
   Component: RenderComponent<unknown>;
   nodeType: NodeType;
+  allowsChildren: boolean;
   attributes: AttributeDefinition[];
+  /** Deprecated Node Types that map to this component */
+  backwardsCompatiblityNodeTypes?: NodeType[];
 };
 
 /**
