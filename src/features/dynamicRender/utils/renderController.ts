@@ -10,6 +10,7 @@ import { FactoryOptions } from "features/dynamicRender/types/factory";
 import { GetOptions, QuerySource } from "features/dynamicRender/types/query";
 import { parseMarkup } from "features/dynamicRender/utils/markup/parseSheet";
 
+/** The valid states of the Render Controller */
 export enum RenderControllerState {
   /** Nothing has been done; the controller is uninitialized */
   NoOp,
