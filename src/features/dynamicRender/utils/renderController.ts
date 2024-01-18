@@ -2,14 +2,15 @@ import { action, computed, observable, safeMakeObservable } from "lib/mobx";
 import { NullMarkupController } from "./markup/controllers/null";
 import { NullStorageController } from "./storage/controllers/null";
 import { NullLoaderController } from "./loader/controllers/null";
-import { parseMarkup } from "./markup/parse";
 import { MarkupController } from "./markup/controllers/common";
 import { LoaderController } from "./loader/controllers/common";
 import { StorageController } from "./storage/controllers/common";
 import { LoaderFactory, MarkupFactory, StorageFactory } from "./factory";
 import { FactoryOptions } from "features/dynamicRender/types/factory";
 import { GetOptions, QuerySource } from "features/dynamicRender/types/query";
+import { parseMarkup } from "features/dynamicRender/utils/markup/parseSheet";
 
+/** The valid states of the Render Controller */
 export enum RenderControllerState {
   /** Nothing has been done; the controller is uninitialized */
   NoOp,

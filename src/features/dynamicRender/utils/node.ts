@@ -1,54 +1,12 @@
-import { ParsedNode } from "features/dynamicRender/types/render";
-import { getRenderComponentByName } from "./registry";
-
-/**
- * Parses child elements into a standardized object for easy rendering
- * within a child-bearing component
- * @param childNodes - The children nodes to parse
- */
-export function parseNodeChildren(childNodes: NodeListOf<ChildNode>) {
-  const nodeTypeCount = new Map<string, number>();
-  const parsedNodes: ParsedNode[] = [];
-
-  childNodes.forEach((node: ChildNode) => {
-    const parsedNode = parseNodeChild(node, nodeTypeCount);
-    if (!parsedNode) return;
-    parsedNodes.push(parsedNode);
-  });
-
-  return parsedNodes;
-}
-
-/**
- * Parses a node child into a ParsedNode object for automated rendering
- * @param node - The node child to parse
- * @param nodeTypeCount - A mapping of the types of nodes encountered.
- * @returns A ParsedNode object containing a key, Component function, and props
- */
-function parseNodeChild(node: ChildNode, nodeTypeCount: Map<string, number>): ParsedNode | undefined {
-  const isUsableNode = checkIfUsableNode(node);
-  if (!isUsableNode) return;
-
-  const nodeName = getNodeName(node);
-  if (!nodeName) return;
-
-  const nodeCount = (nodeTypeCount.get(nodeName) ?? 0) + 1;
-  nodeTypeCount.set(nodeName, nodeCount);
-
-  const key = `${nodeName}_${nodeCount}`;
-  const Component = getRenderComponentByName(nodeName);
-
-  const parsedNode: ParsedNode = { key, Component, props: { nodeName, node } };
-
-  return parsedNode;
-}
+import { NodeType } from "features/dynamicRender/types/node";
+import { getRenderComponentBundle } from "features/dynamicRender/utils/registry";
 
 /**
  * Checks if a node is of a type usable within the DynamicRender
  * @param node - The child node to check
  * @returns True if the node can be used, false otherwise
  */
-function checkIfUsableNode(node: ChildNode): boolean {
+export function checkIfUsableNode(node: ChildNode): boolean {
   const nodeType = node.nodeType;
   switch (nodeType) {
     case Node.TEXT_NODE: {
@@ -62,15 +20,40 @@ function checkIfUsableNode(node: ChildNode): boolean {
 }
 
 /**
+ * Checks if a kind of Node can have children
+ * @param nodeType - The node type to check
+ * @returns True if the node is the sort that can have children, false if not
+ */
+export function canNodeHaveChildren(nodeType: NodeType): boolean {
+  const componentDefinition = getRenderComponentBundle(nodeType);
+  if (!componentDefinition) false;
+
+  return componentDefinition.allowsChildren;
+}
+
+/**
+ * Converts a node or tag name into a NodeType
+ * @param nodeName - The name of the node or tag to convert into a NodeType
+ * @returns A NodeType. If no matching type is found, returns NodeType.Void
+ */
+export function getNodeTypeFromName(nodeName: string): NodeType {
+  if ((Object.values(NodeType) as string[]).includes(nodeName)) {
+    return nodeName as NodeType;
+  }
+
+  return NodeType.Void;
+}
+
+/**
  * Determines the name of a node, based on the type of node it is, and the tagName (if Element)
  * TODO - return result type instead of optional?
  * @param node - The node to determine a name for
  * @returns The tag name as a case-sensitive string
  */
-function getNodeName(node: ChildNode): string | undefined {
+export function getNodeName(node: ChildNode): string | undefined {
   switch (node.nodeType) {
     case Node.TEXT_NODE:
-      return "text";
+      return NodeType.Text.toString();
     case Node.ELEMENT_NODE:
       return (node as Element).tagName ?? undefined;
   }
@@ -95,5 +78,4 @@ export function getAttributeValue(node: Node, attribute: string, defaultValue = 
 export const __testing__ = {
   checkIfUsableNode,
   getNodeName,
-  parseNodeChild,
 };

@@ -1,5 +1,4 @@
-import { RenderComponentProps, ParsedNode } from "features/dynamicRender/types/render";
-import { parseNodeChildren } from "features/dynamicRender/utils/node";
+import { ParsedNode } from "features/dynamicRender/types/render";
 import { useMemo } from "react";
 
 /**
@@ -9,18 +8,12 @@ import { useMemo } from "react";
  * @param props - The common props of a render component
  * @returns An array of JSX.Elements
  */
-export function useChildren(props: RenderComponentProps): JSX.Element[] {
-  const children = useMemo(() => getChildren(props.node.childNodes), [props.node.childNodes]);
+export function useChildren(nodes: ParsedNode[]): JSX.Element[] {
+  const children = useMemo(() => nodesToComponents(nodes), [nodes]);
   return children;
 }
 
-/**
- * A helper function for converting a node list into useable JSX.Elements for the Dynamic Render
- * @param childNodes - A list of nodes to convert into JSX.Elements
- * @returns An array of JSX.Elements
- */
-export function getChildren(childNodes: NodeListOf<ChildNode>) {
-  const parsedNodes = parseNodeChildren(childNodes);
-  const children = parsedNodes.map((node: ParsedNode) => <node.Component key={node.key} {...node.props} />);
-  return children;
+function nodesToComponents(nodes: ParsedNode[]): JSX.Element[] {
+  if (!nodes || nodes.length === 0) return [];
+  return nodes.map((node: ParsedNode) => <node.Component key={node.key} {...node.props} />);
 }

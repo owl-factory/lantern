@@ -1,32 +1,27 @@
-import { observer } from "lib/mobx";
-import { registerComponent } from "features/dynamicRender/utils/registry";
-import { Text } from "./Text";
-import { Background } from "./Background";
-import { Border } from "./Border";
-import { Label } from "./Label";
-import { Inline } from "./Inline";
-import { Column } from "./Column";
-import { Row } from "./Row";
-import { Button } from "./Button";
-import { Icon } from "./Icon";
-import { Table } from "./Table";
-import { TableCell } from "./TableCell";
-import { TableRow } from "./TableRow";
+import { boxBundle } from "features/dynamicRender/components/ui/Box";
+import { buttonBundle } from "features/dynamicRender/components/ui/Button";
+import { columnBundle } from "features/dynamicRender/components/ui/Column";
+import { iconBundle } from "features/dynamicRender/components/ui/Icon";
+import { labelBundle } from "features/dynamicRender/components/ui/Label";
+import { rowBundle } from "features/dynamicRender/components/ui/Row";
+import { tableBundle } from "features/dynamicRender/components/ui/Table";
+import { tableCellBundle } from "features/dynamicRender/components/ui/TableCell";
+import { tableRowBundle } from "features/dynamicRender/components/ui/TableRow";
+import { textBundle } from "features/dynamicRender/components/ui/Text";
+import { registerComponentDefinition } from "features/dynamicRender/utils/registry";
 
 /**
  * Registers the utility components
  */
 export function registerUi() {
-  registerComponent("Background", observer(Background));
-  registerComponent("Border", observer(Border));
-  registerComponent("Button", observer(Button));
-  registerComponent("Column", observer(Column));
-  registerComponent("Icon", observer(Icon));
-  registerComponent("Inline", observer(Inline));
-  registerComponent("Label", observer(Label));
-  registerComponent("Row", observer(Row));
-  registerComponent("Table", observer(Table));
-  registerComponent("TableCell", observer(TableCell));
-  registerComponent("TableRow", observer(TableRow));
-  registerComponent("text", observer(Text));
+  registerComponentDefinition(boxBundle);
+  registerComponentDefinition(buttonBundle);
+  registerComponentDefinition(columnBundle);
+  registerComponentDefinition(iconBundle);
+  registerComponentDefinition(labelBundle);
+  registerComponentDefinition(rowBundle);
+  registerComponentDefinition(tableBundle);
+  registerComponentDefinition(tableCellBundle);
+  registerComponentDefinition(tableRowBundle);
+  registerComponentDefinition(textBundle);
 }
