@@ -1,14 +1,10 @@
 import { cacheExchange, createClient, fetchExchange } from "urql";
 import { registerUrql } from "@urql/next/rsc";
-import { baseUrl } from "utils/environment";
-
-const remoteUrl = process.env.NEXT_PUBLIC_GRAPHQL_REMOTE_URL;
-const isRemote = Boolean(remoteUrl);
-const graphUrl = isRemote ? remoteUrl : baseUrl + "/api/graphql";
+import { absoluteGraphqlEndpoint } from "utils/environment";
 
 const makeClient = () => {
   return createClient({
-    url: graphUrl,
+    url: absoluteGraphqlEndpoint,
     exchanges: [cacheExchange, fetchExchange],
     fetchOptions: {
       headers: {

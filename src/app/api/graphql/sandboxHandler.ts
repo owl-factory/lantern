@@ -1,6 +1,4 @@
-import { baseUrl } from "utils/environment";
-
-const graphqlEndpoint = baseUrl + "/api/graphql";
+import { absoluteGraphqlEndpoint } from "utils/environment";
 
 const staticHtml = `
   <!doctype html>
@@ -28,7 +26,7 @@ const staticHtml = `
       <script>
         new window.EmbeddedSandbox({
           target: "#embedded-sandbox",
-          initialEndpoint: "${graphqlEndpoint}",
+          initialEndpoint: "${absoluteGraphqlEndpoint}",
           hideCookieToggle: false,
           endpointIsEditable: false,
           initialState: {
