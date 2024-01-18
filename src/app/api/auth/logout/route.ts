@@ -1,4 +1,4 @@
-import { authenticateSession, getDeleteSessionHeaderValue } from "lib/authentication";
+import { authenticateSession, deleteSessionIdCookie } from "lib/authentication";
 import { luciaAuth } from "lib/authentication/lucia";
 
 /**
@@ -15,8 +15,6 @@ export async function POST() {
 
   await luciaAuth.deleteDeadUserSessions(session.user.userId);
   await luciaAuth.invalidateSession(session.sessionId);
-  return Response.json(
-    { sessionId: session.sessionId, loggedOut: true },
-    { headers: { "Set-Cookie": getDeleteSessionHeaderValue() } }
-  );
+  deleteSessionIdCookie();
+  return Response.json({ sessionId: session.sessionId, loggedOut: true });
 }

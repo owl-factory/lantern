@@ -1,3 +1,4 @@
+import { setSessionIdCookie } from "lib/authentication";
 import { luciaAuth } from "lib/authentication/lucia";
 import { emailRegex } from "utils/regex";
 
@@ -24,8 +25,8 @@ export async function POST(request: Request) {
       attributes: {},
     });
 
-    const sessionCookie = luciaAuth.createSessionCookie(session);
-    return Response.json(session, { headers: { "Set-Cookie": sessionCookie.serialize() } });
+    setSessionIdCookie(session.sessionId);
+    return Response.json(session);
   } catch (e) {
     return Response.json(e, { status: 401 });
   }

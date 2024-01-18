@@ -1,3 +1,4 @@
+import { setSessionIdCookie } from "lib/authentication";
 import { luciaAuth } from "lib/authentication/lucia";
 import { NewUser } from "types/database";
 import { isBadPassword } from "utils/authentication";
@@ -51,6 +52,6 @@ export async function POST(request: Request) {
     attributes: {},
   });
 
-  const sessionCookie = luciaAuth.createSessionCookie(session);
-  return Response.json(session, { headers: { "Set-Cookie": sessionCookie.serialize() } });
+  setSessionIdCookie(session.sessionId);
+  return Response.json(session);
 }

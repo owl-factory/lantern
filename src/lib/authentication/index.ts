@@ -64,13 +64,3 @@ export function setSessionIdCookie(sessionId: string) {
 export function deleteSessionIdCookie() {
   cookies()?.delete(AUTH_COOKIE_NAME);
 }
-
-/**
- * Helper function that generates the Set-Cookie header value that will
- * clear the session cookie when returned as a response header.
- */
-export function getDeleteSessionHeaderValue(): string {
-  // Null is required to be passed to Lucia to generate delete session cookie value.
-  // eslint-disable-next-line no-restricted-syntax
-  return luciaAuth.createSessionCookie(null).serialize();
-}
