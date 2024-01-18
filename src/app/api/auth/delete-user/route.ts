@@ -11,7 +11,7 @@ import { UserUpdate } from "types/database";
  * @returns deleted user ID.
  */
 export async function POST(request: NextRequest) {
-  const auth = await authenticateSession(request);
+  const auth = await authenticateSession();
   if (auth.ok === false) {
     return new Response(auth.error, { status: 401 });
   }

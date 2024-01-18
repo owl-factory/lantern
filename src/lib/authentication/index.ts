@@ -1,20 +1,19 @@
 import { type Session } from "lucia";
-import { type NextRequest } from "next/server";
 import { cookies, headers } from "next/headers";
 import { bearerRegex, sessionIdRegex } from "utils/regex";
 import { Result } from "types/functional";
 import { Err, Ok } from "utils/functional";
 import { AUTH_COOKIE_NAME, luciaAuth } from "lib/authentication/lucia";
+import { useSsl } from "utils/environment";
 export { AUTH_COOKIE_NAME } from "lib/authentication/lucia";
 
 /**
  * Main authentication function. Obtains a session id from getSessionId (cookie or header) and checks it's
  * validity against the sessions in the database using the Lucia library, then performs error handling.
- * @param request - NextJs request object that contains the POST body and auth cookies. Optional. Falls back on 'next/headers'.
  * @returns object containing authentication success flag and the session object if successful.
  */
-export async function authenticateSession(request?: NextRequest): Promise<Result<Session, string>> {
-  const sessionIdResult = getSessionId(request);
+export async function authenticateSession(): Promise<Result<Session, string>> {
+  const sessionIdResult = getSessionId();
   if (sessionIdResult.ok === false) {
     return sessionIdResult;
   }
@@ -36,19 +35,34 @@ export async function authenticateSession(request?: NextRequest): Promise<Result
 /**
  * Gets a sessionId string from either an Authorization header or the cookie 'lantern_auth_session'.
  * Authorization header is prioritized and the cookie will be ignored if the header is available.
- * @param request - NextJs request object that contains the POST body and auth cookies. Optional. Falls back on 'next/headers'.
+ * Uses NextJs functions. We should move to the standard {@link https://developer.mozilla.org/en-US/docs/Web/API/CookieStore | CookieStore} at some point if possible.
  * @returns sessionId string used for authorizing against the database, or null if none are available.
  */
-export function getSessionId(request?: NextRequest): Result<string, string> {
+export function getSessionId(): Result<string, string> {
   const sessionId =
-    request?.headers?.get("Authorization")?.replace(bearerRegex, "") ||
-    headers().get("Authorization")?.replace(bearerRegex, "") ||
-    request?.cookies?.get(AUTH_COOKIE_NAME)?.value ||
-    cookies().get(AUTH_COOKIE_NAME)?.value;
+    headers()?.get("Authorization")?.replace(bearerRegex, "") || cookies()?.get(AUTH_COOKIE_NAME)?.value;
 
   return sessionIdRegex.test(sessionId)
     ? Ok(sessionId)
     : Err("User authentication failed. Could not retrieve Session ID from authorization header or session cookie.");
+}
+
+/**
+ * Sets a the cookie 'lantern_auth_session' with a Session ID value.
+ * Uses a NextJs function. We should move to the standard {@link https://developer.mozilla.org/en-US/docs/Web/API/CookieStore | CookieStore} at some point if possible.
+ * @param sessionId - Session ID string to be saved.
+ */
+export function setSessionIdCookie(sessionId: string) {
+  cookies()?.set(AUTH_COOKIE_NAME, sessionId, { sameSite: "lax", httpOnly: true, path: "/", secure: useSsl });
+}
+
+/**
+ * Deletes the cookie 'lantern_auth_session'.
+ * Uses a NextJs function. We should move to the standard {@link https://developer.mozilla.org/en-US/docs/Web/API/CookieStore | CookieStore} at some point if possible.
+ * @param sessionId - Session ID string to be saved.
+ */
+export function deleteSessionIdCookie() {
+  cookies()?.delete(AUTH_COOKIE_NAME);
 }
 
 /**

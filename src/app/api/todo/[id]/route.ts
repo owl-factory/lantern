@@ -17,8 +17,8 @@ interface TodoGetOptions {
  * @param options - Options object that contains needed url parameters.
  * @returns single todo list item.
  */
-export async function GET(request: NextRequest, options: TodoGetOptions) {
-  const auth = await authenticateSession(request);
+export async function GET(_request: NextRequest, options: TodoGetOptions) {
+  const auth = await authenticateSession();
   if (auth.ok === false) {
     return new Response(auth.error, { status: 401 });
   }
@@ -39,7 +39,7 @@ export async function GET(request: NextRequest, options: TodoGetOptions) {
  * @returns newly created todo item.
  */
 export async function PATCH(request: NextRequest, options: TodoGetOptions) {
-  const auth = await authenticateSession(request);
+  const auth = await authenticateSession();
   if (auth.ok === false) {
     return new Response(auth.error, { status: 401 });
   }

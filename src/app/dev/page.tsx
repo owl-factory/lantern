@@ -31,7 +31,6 @@ async function Page() {
   const client = getServerClient();
   const response = await client.query(todosQuery, {});
 
-  console.log(response.data);
   return (
     <div className="bg-zinc-900 flex h-full">
       <div className="max-w-[50rem] flex flex-col mx-auto w-full h-full">

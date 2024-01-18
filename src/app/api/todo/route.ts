@@ -1,6 +1,6 @@
 import { authenticateSession } from "lib/authentication";
 import { database } from "lib/database";
-import { type NextRequest } from "next/server";
+import { NextRequest } from "next/server";
 import type { NewTodo, Todo } from "types/database";
 
 /**
@@ -9,8 +9,8 @@ import type { NewTodo, Todo } from "types/database";
  * @param request - NextJs request object that contains the POST body and auth cookies.
  * @returns array of todo list items.
  */
-export async function GET(request: NextRequest) {
-  const auth = await authenticateSession(request);
+export async function GET() {
+  const auth = await authenticateSession();
   if (auth.ok === false) {
     return new Response(auth.error, { status: 401 });
   }
@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
  * @returns newly created todo item.
  */
 export async function POST(request: NextRequest) {
-  const auth = await authenticateSession(request);
+  const auth = await authenticateSession();
   if (auth.ok === false) {
     return new Response(auth.error, { status: 401 });
   }
