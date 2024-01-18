@@ -1,5 +1,7 @@
+import { Attribute } from "features/dynamicRender/types/attributes";
 import { AttributeDefinition } from "features/dynamicRender/types/attributes/definition";
 import { ParsedNode } from "features/dynamicRender/types/render";
+import { containsExpression } from "features/dynamicRender/utils/expression";
 import {
   canNodeHaveChildren,
   checkIfUsableNode,
@@ -105,6 +107,15 @@ function parseAttributes(node: Node, attributeDefinitions: AttributeDefinition[]
     attributes[name] = value;
   });
   return attributes;
+}
+
+function textToAttribute(text: string): Attribute {
+  if (!containsExpression(text)) {
+    return {
+      isExpression: false,
+      value: text,
+    };
+  }
 }
 
 export const __testing__ = {
