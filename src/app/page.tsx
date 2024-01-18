@@ -1,7 +1,8 @@
 import { LanternLogo } from "components/LanternLogo";
 import { Metadata } from "next";
-import Link from "next/link";
+import { Link } from "components/ui/Link";
 import { absoluteGraphqlEndpoint } from "utils/environment";
+import { Button } from "components/ui/Button";
 
 /**
  * Page metadata object, NextJs will append these values as meta tags to the <head>.
@@ -29,8 +30,7 @@ function Page() {
                 </span>
               </Link>
               <div className="sm:hidden">
-                <button
-                  type="button"
+                <Button
                   className="hs-collapse-toggle p-2 inline-flex justify-center items-center gap-2 rounded-md border border-gray-700 hover:border-gray-600 font-medium text-gray-300 hover:text-white shadow-sm align-middle focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-blue-600 transition-all text-sm"
                   data-hs-collapse="#navbar-collapse-with-animation"
                   aria-controls="navbar-collapse-with-animation"
@@ -57,7 +57,7 @@ function Page() {
                   >
                     <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
                   </svg>
-                </button>
+                </Button>
               </div>
             </div>
             <div
@@ -74,13 +74,12 @@ function Page() {
                 <Link className="font-medium text-gray-400 hover:text-gray-500" href={absoluteGraphqlEndpoint}>
                   API
                 </Link>
-                <a
+                <Link
                   className="font-medium text-gray-400 hover:text-gray-500"
                   href="https://github.com/owl-factory/lantern"
-                  target="_blank"
                 >
                   GitHub
-                </a>
+                </Link>
               </div>
             </div>
           </nav>
@@ -95,7 +94,7 @@ function Page() {
               GraphQL. It is styled with TailwindCSS and backed by a PostgreSQL database via Kysely.
             </p>
             <div className="mt-5 flex flex-col justify-center items-center gap-2 sm:flex-row sm:gap-3">
-              <a
+              <Link
                 className="w-full sm:w-auto inline-flex justify-center items-center gap-x-3.5 text-center border-2 border-gray-600 shadow-sm text-sm font-medium rounded-md text-gray-300 hover:text-white hover:border-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-gray-800 transition py-3 px-4"
                 href={absoluteGraphqlEndpoint}
               >
@@ -106,8 +105,8 @@ function Page() {
                   />
                 </svg>
                 View GraphQL API
-              </a>
-              <a
+              </Link>
+              <Link
                 className="w-full sm:w-auto inline-flex justify-center items-center gap-x-3.5 text-center bg-amber-400 shadow-sm text-sm font-medium rounded-md hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-slate-900 transition py-3 px-4"
                 href="https://github.com/owl-factory/lantern"
                 target="_blank"
@@ -123,7 +122,7 @@ function Page() {
                   <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z" />
                 </svg>
                 View code on GitHub.
-              </a>
+              </Link>
             </div>
           </div>
         </main>
@@ -132,21 +131,21 @@ function Page() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <p className="text-sm text-gray-400">
               Created by{" "}
-              <a
+              <Link
                 className="text-white decoration-2 underline underline-offset-2 font-medium hover:text-gray-200 hover:decoration-gray-400"
                 href="https://lucyawrey.com"
                 target="_blank"
               >
                 Lucy Awrey
-              </a>{" "}
+              </Link>{" "}
               and{" "}
-              <a
+              <Link
                 className="text-white decoration-2 underline underline-offset-2 font-medium hover:text-gray-200 hover:decoration-gray-400"
                 href="https://laurawenning.com"
                 target="_blank"
               >
                 Laura Wenning
-              </a>
+              </Link>
             </p>
           </div>
         </footer>

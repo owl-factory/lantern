@@ -1,3 +1,5 @@
+import { baseUrl } from "utils/environment";
+
 /**
  * Normalizes a string into a standard format for better matching
  * @param value - The string to normalize
@@ -24,4 +26,14 @@ export function toKey(value: string, enforceCase = true): string {
   key = key.replaceAll(anySpaceLikeCharacterRegex, "_");
 
   return key;
+}
+
+export function isExternalUrl(url: string): boolean {
+  if (url.startsWith("/")) {
+    return false;
+  }
+  if (url.includes("/api")) {
+    return true;
+  }
+  return new URL(url).origin !== baseUrl;
 }

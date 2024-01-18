@@ -1,11 +1,16 @@
-import { ButtonHTMLAttributes, DetailedHTMLProps } from "react";
+import { ForwardedRef, forwardRef } from "react";
 
-type ButtonProps = DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>;
+type ButtonProps = JSX.IntrinsicElements["button"];
+
+const DEFAULT_CLASSES = "bg-red-500";
 
 /**
- * Renders out an HTML <button> properly styled for Lantern
- * @param props - Any attributes ordinarily included with an HTML <button> element
+ * Renders an HTML <button> tag properly styled for Lantern.
+ * @param props - Set of attributes ordinarily included with an HTML <button> element.
+ * @param ref - React reference to forward used for DOM interactions.
  */
-export function Button(props: ButtonProps) {
-  return <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" {...props} />;
-}
+export const Button = forwardRef(function Button(props: ButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
+  const className = `${DEFAULT_CLASSES} ${props.className || ""}`;
+
+  return <button type="button" {...props} className={className} ref={ref} />;
+});
