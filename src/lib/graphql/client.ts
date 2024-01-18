@@ -1,38 +1,14 @@
-import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
-import { SchemaLink } from "@apollo/client/link/schema";
-import { registerApolloClient } from "@apollo/experimental-nextjs-app-support/rsc";
-import { schema } from "lib/graphql/schema";
-
-const remoteUrl = process.env.NEXT_PUBLIC_GRAPHQL_REMOTE_URL;
-const isRemote = Boolean(remoteUrl);
-
-const link = isRemote ? new HttpLink({ uri: remoteUrl }) : new SchemaLink({ schema });
-
-/**
- * Apollo client for use in nextjs react server components.
- * We may switch to urql. https://formidable.com/open-source/urql/docs
- */
-export const getRscApolloClient = registerApolloClient(() => {
-  return new ApolloClient({
-    link,
-    cache: new InMemoryCache(),
-    headers: {
-      Authorization: process.env.TEST_AUTH_TOKEN,
-    },
-  });
-}).getClient;
-
-/* URQL */
-
 import { cacheExchange, createClient, fetchExchange } from "urql";
 import { registerUrql } from "@urql/next/rsc";
 import { baseUrl } from "utils/environment";
 
-const url = isRemote ? remoteUrl : baseUrl + "/api/graphql/yoga";
+const remoteUrl = process.env.NEXT_PUBLIC_GRAPHQL_REMOTE_URL;
+const isRemote = Boolean(remoteUrl);
+const graphUrl = isRemote ? remoteUrl : baseUrl + "/api/graphql";
 
 const makeClient = () => {
   return createClient({
-    url,
+    url: graphUrl,
     exchanges: [cacheExchange, fetchExchange],
     fetchOptions: {
       headers: {
@@ -42,4 +18,7 @@ const makeClient = () => {
   });
 };
 
-export const getRscUrqlClient = registerUrql(makeClient).getClient;
+/**
+ * urql client getter for use in NextJs React Server Components.
+ */
+export const getServerClient = registerUrql(makeClient).getClient;

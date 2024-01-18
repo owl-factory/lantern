@@ -1,5 +1,5 @@
 import { LanternLogo } from "components/LanternLogo";
-import { getRscUrqlClient } from "lib/graphql/client";
+import { getServerClient } from "lib/graphql/client";
 import { Metadata } from "next";
 import Link from "next/link";
 import { gql } from "graphql-tag";
@@ -27,7 +27,7 @@ const todosQuery = gql`
  * Site index/landing page component.
  */
 async function Page() {
-  const client = getRscUrqlClient();
+  const client = getServerClient();
   const response = await client.query(todosQuery, {});
 
   console.log(response.data);
@@ -86,7 +86,7 @@ async function Page() {
                 <Link className="font-medium text-gray-400 hover:text-gray-500" href="/characters">
                   Characters
                 </Link>
-                <Link className="font-medium text-gray-400 hover:text-gray-500" href="/api/graphql/sandbox">
+                <Link className="font-medium text-gray-400 hover:text-gray-500" href="/api/graphql">
                   API
                 </Link>
                 <a

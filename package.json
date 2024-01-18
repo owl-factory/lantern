@@ -21,10 +21,6 @@
     "pnpm": ">=8"
   },
   "dependencies": {
-    "@apollo/client": "^3.8.8",
-    "@apollo/experimental-nextjs-app-support": "^0.6.0",
-    "@apollo/server": "^4.9.5",
-    "@as-integrations/next": "^3.0.0",
     "@lucia-auth/adapter-postgresql": "^2.0.2",
     "@serwist/next": "^8.4.0",
     "@serwist/precaching": "^8.4.0",

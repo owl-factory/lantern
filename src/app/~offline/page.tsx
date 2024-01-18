@@ -71,7 +71,7 @@ function Page() {
                 <Link className="font-medium text-gray-400 hover:text-gray-500" href="/characters">
                   Characters
                 </Link>
-                <Link className="font-medium text-gray-400 hover:text-gray-500" href="/api/graphql/sandbox">
+                <Link className="font-medium text-gray-400 hover:text-gray-500" href="/api/graphql">
                   API
                 </Link>
                 <a
