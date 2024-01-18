@@ -9,7 +9,6 @@ import { MarkupController } from "./common";
 export class StaticMarkupController extends MarkupController {
   _state = MarkupControllerState.NoOp;
 
-  _layout: Element;
   _prefabs: Prefabs;
 
   constructor() {

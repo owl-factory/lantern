@@ -1,9 +1,11 @@
 import { Prefabs, Variables } from "features/dynamicRender/types/controllers/markup";
+import { ParsedNode } from "features/dynamicRender/types/render";
+import { parseLayoutMarkup } from "features/dynamicRender/utils/markup/parseLayout";
 import { Result } from "types/functional";
 import { Err, Ok } from "utils/functional";
 
 export type MarkupComponents = {
-  layout: Element;
+  layout: ParsedNode[];
   variables?: Variables;
   prefabs?: Prefabs;
 };
@@ -14,6 +16,8 @@ export type MarkupComponents = {
  * @returns A result with an Ok object containing the layout element, a variables object, and a prefabs object
  */
 export function parseMarkup(markup: string): Result<MarkupComponents, string> {
+  if (!markup) return Err("XML Parsing Error: empty XML string provided");
+
   const parser = new DOMParser();
   let markupDom: Document;
   try {
@@ -28,14 +32,16 @@ export function parseMarkup(markup: string): Result<MarkupComponents, string> {
   const layoutElement = findFirstElementByTag(sheetElement, "Layout");
   if (layoutElement === undefined) return Err("No Layout element found within the Sheet element");
 
-  const variablesElement = findFirstElementByTag(sheetElement, "Variables");
-  const prefabsElement = findFirstElementByTag(sheetElement, "Prefabs");
+  const layout = parseLayoutMarkup(layoutElement);
 
+  const variablesElement = findFirstElementByTag(sheetElement, "Variables");
   const variables = parseVariables(variablesElement);
+
+  const prefabsElement = findFirstElementByTag(sheetElement, "Prefabs");
   const prefabs = parsePrefabs(prefabsElement);
 
   const markupComponents: MarkupComponents = {
-    layout: layoutElement,
+    layout,
     variables,
     prefabs,
   };
