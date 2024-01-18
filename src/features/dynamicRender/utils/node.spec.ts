@@ -1,5 +1,7 @@
 import { getAttributeValue, __testing__ } from "./node";
 
+jest.mock("lib/mobx");
+
 const { checkIfUsableNode, getNodeName } = __testing__;
 
 const getAttribute: (name: string) => string = jest.fn((name: string) => name);
