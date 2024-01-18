@@ -23,6 +23,12 @@ const todosQuery = gql`
   }
 `;
 
+const loginMutation = gql`
+  mutation Mutation($username: String, $password: String, $setCookie: Boolean) {
+    login(username: $username, password: $password, setCookie: $setCookie)
+  }
+`;
+
 /**
  * "/"
  * Site index/landing page component.
@@ -30,6 +36,16 @@ const todosQuery = gql`
 async function Page() {
   const client = getServerClient();
   const response = await client.query(todosQuery, {});
+
+  async function login(formData: FormData) {
+    "use server";
+    const auth = await client.mutation(loginMutation, {
+      username: formData.get("username"),
+      password: formData.get("password"),
+      setCookie: true,
+    });
+    console.log(auth.data);
+  }
 
   return (
     <div className="bg-zinc-900 flex h-full">
@@ -105,15 +121,26 @@ async function Page() {
           <div className="py-10 px-4 sm:px-6 lg:px-8">
             <h1 className="text-center block text-2xl font-bold text-white sm:text-4xl">Dev Page</h1>
             <p className="mt-3 text-lg text-gray-300">
-              <h2 className="text-center text-xl mt-10">Todo List</h2>
+              <h2 className="text-center text-2xl mt-10">Todo List</h2>
               <div className="mx-20 mt-3">
-                {response.data.todos.map((todo, index) => {
-                  return (
-                    <li key={`todo-${index}`}>
-                      {todo.description} - Done: {todo.done.toString()}
-                    </li>
-                  );
-                })}
+                {response?.data?.todos ? (
+                  response.data.todos.map((todo, index) => {
+                    return (
+                      <li key={`todo-${index}`}>
+                        {todo.description} - Done: {todo.done.toString()}
+                      </li>
+                    );
+                  })
+                ) : (
+                  <>
+                    <h3 className="text-center mt-6 text-red-800">Not Logged In</h3>
+                    <form action={login}>
+                      <input type="text" name="username" className="text-black" />
+                      <input type="password" name="password" className="text-black" />
+                      <button type="submit">Login</button>
+                    </form>
+                  </>
+                )}
               </div>
             </p>
           </div>

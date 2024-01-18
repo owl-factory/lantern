@@ -11,11 +11,6 @@ const makeClient = () => {
   return createClient({
     url: absoluteGraphqlEndpoint,
     exchanges: [cacheExchange, fetchExchange],
-    fetchOptions: {
-      headers: {
-        Authorization: process.env.TEST_AUTH_TOKEN,
-      },
-    },
   });
 };
 
