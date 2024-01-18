@@ -1,8 +1,8 @@
-import type { DocumentNode } from "@apollo/client";
 import { authenticateSession } from "lib/authentication";
 import { luciaAuth } from "lib/authentication/lucia";
 import { database } from "lib/database";
 import type { TodoUpdate, Todo, NewTodo } from "types/database";
+import { type TypedDocumentNode } from "urql";
 import { getQueryFields } from "utils/graphql";
 import { emailRegex } from "utils/regex";
 
@@ -30,7 +30,7 @@ async function login(_obj, args: { username: string; password: string; setCookie
 }
 
 /* Todo Resolvers */
-async function todo(_obj, args: { id: string }, _context, info: DocumentNode) {
+async function todo(_obj, args: { id: string }, _context, info: TypedDocumentNode) {
   const auth = await authenticateSession();
   if (auth.ok === false) {
     console.log(auth.error);
@@ -40,7 +40,7 @@ async function todo(_obj, args: { id: string }, _context, info: DocumentNode) {
   return database.selectFrom("todo").where("id", "=", args.id).select(queryFields).executeTakeFirst();
 }
 
-async function todos(_obj, _args, _context, info: DocumentNode) {
+async function todos(_obj, _args, _context, info: TypedDocumentNode) {
   const auth = await authenticateSession();
   if (auth.ok === false) {
     console.log(auth.error);
@@ -50,7 +50,7 @@ async function todos(_obj, _args, _context, info: DocumentNode) {
   return database.selectFrom("todo").select(queryFields).execute();
 }
 
-async function createTodo(_obj, args: NewTodo, _context, info: DocumentNode) {
+async function createTodo(_obj, args: NewTodo, _context, info: TypedDocumentNode) {
   const auth = await authenticateSession();
   if (auth.ok === false) {
     console.log(auth.error);
@@ -60,7 +60,7 @@ async function createTodo(_obj, args: NewTodo, _context, info: DocumentNode) {
   return await database.insertInto("todo").values(args).returning(queryFields).executeTakeFirst();
 }
 
-async function updateTodo(_obj, args: TodoUpdate, _context, info: DocumentNode) {
+async function updateTodo(_obj, args: TodoUpdate, _context, info: TypedDocumentNode) {
   const auth = await authenticateSession();
   if (auth.ok === false) {
     console.log(auth.error);

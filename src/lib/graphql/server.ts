@@ -10,4 +10,5 @@ export const yoga = createYoga({
   graphqlEndpoint,
   // Yoga needs to know how to create a valid Next response
   fetchAPI: { Response },
+  graphiql: false,
 });

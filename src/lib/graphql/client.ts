@@ -1,6 +1,11 @@
 import { cacheExchange, createClient, fetchExchange } from "urql";
 import { registerUrql } from "@urql/next/rsc";
 import { absoluteGraphqlEndpoint } from "utils/environment";
+////import { executeExchange } from "@urql/exchange-execute";
+////import { schema } from "lib/graphql/schema";
+
+////const serverExchange = graphqlIsRemote ? fetchExchange : executeExchange({ schema });
+////const srrExchange = isServer ? serverExchange : fetchExchange;
 
 const makeClient = () => {
   return createClient({

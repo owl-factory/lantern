@@ -1,5 +1,5 @@
-import { type DocumentNode } from "@apollo/client";
 import { type SelectFields } from "types/graphql";
+import { type TypedDocumentNode } from "urql";
 
 /**
  * Utility function that obtains a list of field names requested in a Graphql query.
@@ -9,7 +9,7 @@ import { type SelectFields } from "types/graphql";
  * The document node is essentially a tokenized version of the GraphQL query string.
  * @returns an array of field names requested in the GraphQL query for use in Kysely `select` statements.
  */
-export function getQueryFields<T>(info: DocumentNode): SelectFields<T> {
+export function getQueryFields<T>(info: TypedDocumentNode): SelectFields<T> {
   const fields = info["fieldNodes"].reduce((allNodes, currentNode) => {
     allNodes.push(
       ...currentNode.selectionSet.selections.map((selection) => {
