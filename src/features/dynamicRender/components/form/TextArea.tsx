@@ -2,8 +2,9 @@ import { textAreaAttributes } from "features/dynamicRender/data/attributes/form/
 import { useAttributes } from "features/dynamicRender/hooks/useAttributes";
 import { useFormValue } from "features/dynamicRender/hooks/useFormValue";
 import { TextAreaAttributes } from "features/dynamicRender/types/attributes/form/textArea";
+import { NodeType } from "features/dynamicRender/types/node";
 import { GetOptions } from "features/dynamicRender/types/query";
-import { RenderComponentProps } from "features/dynamicRender/types/render";
+import { RenderComponentDefinition, RenderComponentProps } from "features/dynamicRender/types/render";
 import { buildQueryOptionsFromAttributes } from "features/dynamicRender/utils/query";
 import { ChangeEvent, useMemo } from "react";
 
@@ -26,3 +27,10 @@ export function TextArea(props: RenderComponentProps) {
 
   return <textarea onChange={onChange} value={value} />;
 }
+
+export const textAreaBundle: RenderComponentDefinition = {
+  Component: TextArea,
+  nodeType: NodeType.TextArea,
+  attributes: textAreaAttributes,
+  allowsChildren: false,
+};

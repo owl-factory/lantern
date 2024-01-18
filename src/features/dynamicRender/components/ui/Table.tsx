@@ -1,5 +1,6 @@
 import { useChildren } from "features/dynamicRender/hooks/useChildren";
-import { RenderComponentProps } from "features/dynamicRender/types/render";
+import { NodeType } from "features/dynamicRender/types/node";
+import { RenderComponentDefinition, RenderComponentProps } from "features/dynamicRender/types/render";
 
 /**
  * Renders a table
@@ -7,7 +8,14 @@ import { RenderComponentProps } from "features/dynamicRender/types/render";
  * are likely to cause DOM warnings/errors
  */
 export function Table(props: RenderComponentProps) {
-  const children = useChildren(props);
+  const children = useChildren(props.childNodes);
   children;
   return <table></table>;
 }
+
+export const tableBundle: RenderComponentDefinition = {
+  Component: Table,
+  nodeType: NodeType.Table,
+  attributes: [],
+  allowsChildren: true,
+};
