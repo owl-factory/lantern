@@ -6,7 +6,7 @@ import Link from "next/link";
  * Page metadata object, NextJs will append these values as meta tags to the <head>.
  */
 export const metadata: Metadata = {
-  title: "Welcome",
+  title: "Welcome - Lantern Tabletop",
   description: "Welcome to Lantern Tabletop",
 };
 
