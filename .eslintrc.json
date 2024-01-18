@@ -11,7 +11,13 @@
     "@typescript-eslint/no-unsafe-argument": "error",
     "prettier/prettier": "error",
     "tsdoc/syntax": "error",
+    "no-constant-condition": "off",
     "react-hooks/exhaustive-deps": "off",
+    "no-restricted-syntax": [
+      "error",
+      ":not(BinaryExpression:matches([operator='!=='], [operator='==='])) > Literal[value=null]",
+      "ThrowStatement"
+    ],
     "no-restricted-imports": [
       "error",
       {

@@ -8,5 +8,7 @@ import { GetOptions } from "features/dynamicRender/types/query";
  */
 export function queryToOptions(query: string): GetOptions {
   query;
+  // TODO laura needs to remove this throw statement and replace it with Result.
+  // eslint-disable-next-line no-restricted-syntax
   throw "TODO";
 }

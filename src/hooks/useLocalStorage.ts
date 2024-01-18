@@ -33,7 +33,6 @@ export function useLocalStorage<T>(key: string, defaultValue: T) {
 
     // Need to disable because it flags defaultValue, which could trigger if a scalar type, but causes infinite re-calls
     // if it is an object that is defined within the component this hook is called within.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key, expectedType]);
 
   /**
