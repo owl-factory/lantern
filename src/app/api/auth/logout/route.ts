@@ -9,7 +9,7 @@ import { type NextRequest } from "next/server";
  */
 export async function POST(request: NextRequest) {
   const { authenticated, session } = await authenticateSession(request);
-  if (!authenticated) {
+  if (!authenticated || !session) {
     return new Response("User authentication failed.", { status: 401 });
   }
 
