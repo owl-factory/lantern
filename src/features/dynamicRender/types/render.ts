@@ -1,4 +1,3 @@
-import { Attribute } from "features/dynamicRender/types/attributes";
 import { AttributeDefinition } from "features/dynamicRender/types/attributes/definition";
 import { NodeType } from "features/dynamicRender/types/node";
 import { ReactNode } from "react";
@@ -30,9 +29,6 @@ export type RenderComponentDefinition = {
   attributes: AttributeDefinition[];
   /** Deprecated Node Types that map to this component */
   backwardsCompatiblityNodeTypes?: NodeType[];
-
-  /** Any extra functionality to run for this specific type of component */
-  customParsing?: (node: Node, attributes: Record<string, Attribute>) => void;
 };
 
 /**
