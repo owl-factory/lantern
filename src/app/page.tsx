@@ -19,9 +19,16 @@ function Page() {
     <div className="bg-zinc-900 flex h-full">
       <div className="max-w-[50rem] flex flex-col mx-auto w-full h-full">
         <header className="mb-auto flex flex-wrap sm:justify-start sm:flex-nowrap z-50 w-full text-sm py-4">
-          <nav className="w-full px-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8" aria-label="Global">
+          <nav
+            className="w-full px-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8"
+            aria-label="Global"
+          >
             <div className="sm:min-w-80 flex items-center justify-between">
-              <Link className="inline-flex text-xl font-semibold text-white" href="/" aria-label="Brand">
+              <Link
+                className="inline-flex text-xl font-semibold text-white"
+                href="/"
+                aria-label="Brand"
+              >
                 <LanternLogo />{" "}
                 <span data-testid="logo-text" className="pl-2">
                   Lantern Tabletop
@@ -84,11 +91,14 @@ function Page() {
 
         <main id="content" role="main">
           <div className="text-center py-10 px-4 sm:px-6 lg:px-8">
-            <h1 className="block text-2xl font-bold text-white sm:text-4xl">Welcome to Lantern Tabletop</h1>
+            <h1 className="block text-2xl font-bold text-white sm:text-4xl">
+              Welcome to Lantern Tabletop
+            </h1>
             <p className="mt-3 text-lg text-gray-300">
-              Lantern is a web-based project aiming to create a flexible, open-source alternative to online virtual
-              tabletops such as Roll20 and D&D Beyond. Currently, it is built using Typescript, React, NextJS, and
-              GraphQL. It is styled with TailwindCSS and backed by a PostgreSQL database via Kysely.
+              Lantern is a web-based project aiming to create a flexible, open-source alternative to
+              online virtual tabletops such as Roll20 and D&D Beyond. Currently, it is built using
+              Typescript, React, NextJS, and GraphQL. It is styled with TailwindCSS and backed by a
+              PostgreSQL database via Kysely.
             </p>
             <div className="mt-5 flex flex-col justify-center items-center gap-2 sm:flex-row sm:gap-3">
               <a

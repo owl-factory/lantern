@@ -10,7 +10,8 @@ import { Err, Ok } from "./functional";
  */
 export function getLocalStorage<T>(key: string, expectedType: string): Result<T, string> {
   const rawLocalStorage = window.localStorage.getItem(key) ?? undefined;
-  if (rawLocalStorage === undefined) return Err(`LocalStorage did not contain an entry for key ${key}`);
+  if (rawLocalStorage === undefined)
+    return Err(`LocalStorage did not contain an entry for key ${key}`);
 
   switch (expectedType) {
     case "string":

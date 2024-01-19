@@ -4,7 +4,10 @@ import { useFormValue } from "features/dynamicRender/hooks/useFormValue";
 import { RadioAttributes } from "features/dynamicRender/types/attributes/form/radio";
 import { NodeType } from "features/dynamicRender/types/node";
 import { GetOptions } from "features/dynamicRender/types/query";
-import { RenderComponentDefinition, RenderComponentProps } from "features/dynamicRender/types/render";
+import {
+  RenderComponentDefinition,
+  RenderComponentProps,
+} from "features/dynamicRender/types/render";
 import { buildQueryOptionsFromAttributes } from "features/dynamicRender/utils/query";
 import { ChangeEvent, useMemo } from "react";
 
@@ -13,7 +16,10 @@ import { ChangeEvent, useMemo } from "react";
  */
 export function Radio(props: RenderComponentProps) {
   const { attributes } = useAttributes<RadioAttributes>(props.node, radioAttributes);
-  const options = useMemo<GetOptions>(() => buildQueryOptionsFromAttributes(attributes), [attributes]);
+  const options = useMemo<GetOptions>(
+    () => buildQueryOptionsFromAttributes(attributes),
+    [attributes]
+  );
   const { value: storedValue, update } = useFormValue<string>(options, "");
 
   /**
@@ -25,7 +31,14 @@ export function Radio(props: RenderComponentProps) {
     update(e.target.value);
   }
 
-  return <input type="radio" onChange={onChange} checked={attributes.value === storedValue} value={attributes.value} />;
+  return (
+    <input
+      type="radio"
+      onChange={onChange}
+      checked={attributes.value === storedValue}
+      value={attributes.value}
+    />
+  );
 }
 
 export const radioBundle: RenderComponentDefinition = {

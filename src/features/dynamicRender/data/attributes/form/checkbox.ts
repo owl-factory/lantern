@@ -2,4 +2,7 @@ import { AttributeDefinition } from "features/dynamicRender/types/attributes/def
 import { commonInputAttributes } from "./common";
 
 /** The attributes used by checkbox inputs */
-export const checkboxAttributes: AttributeDefinition[] = [...commonInputAttributes, { name: "value", default: "on" }];
+export const checkboxAttributes: AttributeDefinition[] = [
+  ...commonInputAttributes,
+  { name: "value", default: "on" },
+];

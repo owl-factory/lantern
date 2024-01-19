@@ -5,7 +5,10 @@ import { useAttributes } from "features/dynamicRender/hooks/useAttributes";
 import { useChildren } from "features/dynamicRender/hooks/useChildren";
 import { PageAttributes } from "features/dynamicRender/types/attributes/utilities/page";
 import { NodeType } from "features/dynamicRender/types/node";
-import { RenderComponentDefinition, RenderComponentProps } from "features/dynamicRender/types/render";
+import {
+  RenderComponentDefinition,
+  RenderComponentProps,
+} from "features/dynamicRender/types/render";
 import { StateController } from "features/dynamicRender/utils/stateController";
 import { useContext, useEffect } from "react";
 import { toKey } from "utils/strings";
@@ -18,7 +21,10 @@ export function Page(props: RenderComponentProps) {
   const state = useContext(StateContext);
   const groupKey = useContext(PageGroupContext);
   const pageKey = toKey(attributes.name);
-  useEffect(() => createPage(groupKey, pageKey, attributes.name, state), [groupKey, attributes.name, state]);
+  useEffect(
+    () => createPage(groupKey, pageKey, attributes.name, state),
+    [groupKey, attributes.name, state]
+  );
 
   const children = useChildren(props.childNodes);
 

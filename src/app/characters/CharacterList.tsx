@@ -28,7 +28,8 @@ export function CharacterList(props: CharacterListProps) {
         <span onClick={() => props.onCharacterClick(character.id)}>{character.data.name} </span>
         <Button
           onClick={() =>
-            confirm(`Are you sure you want to delete ${character.data.name}?`) && props.deleteCharacter(character.id)
+            confirm(`Are you sure you want to delete ${character.data.name}?`) &&
+            props.deleteCharacter(character.id)
           }
         >
           Delete

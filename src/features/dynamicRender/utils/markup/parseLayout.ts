@@ -48,7 +48,10 @@ function parseNodeChildren(childNodes: NodeListOf<ChildNode>): ParsedNode[] {
  * @param nodeTypeCount - A mapping of the types of nodes encountered. The object value is updated
  * @returns A ParsedNode object containing a key, Component function, and props
  */
-function parseNodeChild(node: ChildNode, nodeTypeCount: Map<string, number>): ParsedNode | undefined {
+function parseNodeChild(
+  node: ChildNode,
+  nodeTypeCount: Map<string, number>
+): ParsedNode | undefined {
   const isUsableNode = checkIfUsableNode(node);
   if (!isUsableNode) return;
 

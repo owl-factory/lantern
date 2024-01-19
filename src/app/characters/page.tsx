@@ -39,7 +39,9 @@ function CharactersPage() {
    * @param key - The key of the character to select
    */
   function onCharacterClick(key: string) {
-    const characterId: string | undefined = characterIds.find((characterId: string) => characterId === key);
+    const characterId: string | undefined = characterIds.find(
+      (characterId: string) => characterId === key
+    );
     setCurrentCharacterId(() => characterId);
   }
 
@@ -60,6 +62,7 @@ function CharactersPage() {
       return;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     update(updatedCharacters);
     setCurrentCharacterId(characterId);
   }

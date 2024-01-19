@@ -18,7 +18,9 @@ describe("buildQueryOptionsFromAttributes tests", () => {
   });
 
   test("invalid source", () => {
-    const invalidAttributes = { source: "nothing correct" } as unknown as Partial<CommonInputAttributes>;
+    const invalidAttributes = {
+      source: "nothing correct",
+    } as unknown as Partial<CommonInputAttributes>;
     const res = buildQueryOptionsFromAttributes(invalidAttributes);
     expect(res.source).toBe(QuerySource.Invalid);
   });

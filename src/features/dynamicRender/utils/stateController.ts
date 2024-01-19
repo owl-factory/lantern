@@ -186,7 +186,9 @@ export class StateController {
     if (!group) return;
 
     delete group.pages[pageKey];
-    this._pageGroups[groupKey].order = group.order.filter((storedKey: string) => storedKey !== pageKey);
+    this._pageGroups[groupKey].order = group.order.filter(
+      (storedKey: string) => storedKey !== pageKey
+    );
 
     const activePage = this._activePages[groupKey];
     const needNewActivePage = activePage === pageKey;
@@ -254,7 +256,9 @@ export class StateController {
     const group = this._pageGroups[groupKey];
     if (!group) return [];
 
-    const pages = group.order.map((pageKey: string) => group.pages[pageKey]).filter((page: Page) => page !== undefined);
+    const pages = group.order
+      .map((pageKey: string) => group.pages[pageKey])
+      .filter((page: Page) => page !== undefined);
     return pages;
   }
 }

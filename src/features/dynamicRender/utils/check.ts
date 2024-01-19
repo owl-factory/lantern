@@ -33,7 +33,11 @@ export function check(storedValues: string, checkedValue: string, delimiter = CH
  * @param checkValue - The check value to remove from the stored values
  * @returns A string containing a delimited list of values
  */
-export function uncheck(storedValues: string, checkValue: string, delimiter = CHECKED_DELIMITER): string {
+export function uncheck(
+  storedValues: string,
+  checkValue: string,
+  delimiter = CHECKED_DELIMITER
+): string {
   return storedValues
     .split(delimiter)
     .filter((storedValue: string) => storedValue !== checkValue)

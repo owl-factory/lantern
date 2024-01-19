@@ -42,7 +42,10 @@ export abstract class LoaderController implements Controller {
 
   /** The ready state of the controller */
   get ready() {
-    if (this._state === LoaderControllerState.Ready || this._state === LoaderControllerState.Fetching) {
+    if (
+      this._state === LoaderControllerState.Ready ||
+      this._state === LoaderControllerState.Fetching
+    ) {
       return true;
     }
     return false;
