@@ -8,6 +8,9 @@ type AnchorProps = React.AnchorHTMLAttributes<HTMLAnchorElement>;
 type LinkVariants = VariantProps<typeof link>;
 type LinkProps = AnchorProps & NextLinkProps & LinkVariants & ButtonVariants & { type?: "button" };
 
+/**
+ * `tailwind-variants` object definition for the {@link Button} component.
+ */
 export const link = tv({
   base: "",
   variants: {

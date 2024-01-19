@@ -4,6 +4,9 @@ import { tv, type VariantProps } from "tailwind-variants";
 export type ButtonVariants = VariantProps<typeof button>;
 type ButtonProps = JSX.IntrinsicElements["button"] & ButtonVariants;
 
+/**
+ * `tailwind-variants` object definition for the {@link Button} component.
+ */
 export const button = tv({
   base: "",
   variants: {
