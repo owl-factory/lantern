@@ -57,7 +57,7 @@ export function getSessionId(request?: NextRequest): Result<string, string> {
     request?.cookies?.get(AUTH_COOKIE_NAME)?.value ||
     cookies().get(AUTH_COOKIE_NAME)?.value;
 
-  return sessionIdRegex.test(sessionId)
+  return sessionId && sessionIdRegex.test(sessionId)
     ? Ok(sessionId)
     : Err("Could not get sessionId from Authorization header or session cookie.");
 }
