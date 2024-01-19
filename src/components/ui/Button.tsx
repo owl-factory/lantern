@@ -1,8 +1,22 @@
-import { ForwardedRef, forwardRef } from "react";
+import { type ForwardedRef, forwardRef } from "react";
+import { tv, type VariantProps } from "tailwind-variants";
 
-type ButtonProps = JSX.IntrinsicElements["button"];
+export type ButtonVariants = VariantProps<typeof button>;
+type ButtonProps = JSX.IntrinsicElements["button"] & ButtonVariants;
 
-const DEFAULT_CLASSES = "bg-red-500";
+export const button = tv({
+  base: "",
+  variants: {
+    color: {
+      primary: "bg-amber-400",
+      secondary: "text-gray-300 border-2 border-gray-600",
+      none: "none",
+    },
+  },
+  defaultVariants: {
+    color: "primary",
+  },
+});
 
 /**
  * Renders an HTML <button> tag properly styled for Lantern.
@@ -10,7 +24,7 @@ const DEFAULT_CLASSES = "bg-red-500";
  * @param ref - React reference to forward used for DOM interactions.
  */
 export const Button = forwardRef(function Button(props: ButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
-  const className = `${DEFAULT_CLASSES} ${props.className || ""}`;
+  const className = button({ color: props.color, className: props.className });
 
   return <button type="button" {...props} className={className} ref={ref} />;
 });

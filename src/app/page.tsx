@@ -23,7 +23,7 @@ function Page() {
         <header className="mb-auto flex flex-wrap sm:justify-start sm:flex-nowrap z-50 w-full text-sm py-4">
           <nav className="w-full px-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8" aria-label="Global">
             <div className="sm:min-w-80 flex items-center justify-between">
-              <Link className="inline-flex text-xl font-semibold text-white" href="/" aria-label="Brand">
+              <Link variant="plain" className="inline-flex text-xl" href="/" aria-label="Brand">
                 <LanternLogo />{" "}
                 <span data-testid="logo-text" className="pl-2">
                   Lantern Tabletop
@@ -31,6 +31,7 @@ function Page() {
               </Link>
               <div className="sm:hidden">
                 <Button
+                  color="none"
                   className="hs-collapse-toggle p-2 inline-flex justify-center items-center gap-2 rounded-md border border-gray-700 hover:border-gray-600 font-medium text-gray-300 hover:text-white shadow-sm align-middle focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-blue-600 transition-all text-sm"
                   data-hs-collapse="#navbar-collapse-with-animation"
                   aria-controls="navbar-collapse-with-animation"
@@ -65,19 +66,16 @@ function Page() {
               className="hs-collapse hidden overflow-hidden transition-all duration-300 basis-full grow sm:block"
             >
               <div className="flex flex-col gap-5 mt-5 sm:flex-row sm:items-center sm:justify-end sm:mt-0 sm:pl-5">
-                <Link className="font-medium text-white" href="/" aria-current="page">
+                <Link variant="plain" href="/" aria-current="page">
                   Dashboard
                 </Link>
-                <Link className="font-medium text-gray-400 hover:text-gray-500" href="/characters">
+                <Link variant="plain" inactive={true} href="/characters">
                   Characters
                 </Link>
-                <Link className="font-medium text-gray-400 hover:text-gray-500" href={absoluteGraphqlEndpoint}>
+                <Link variant="plain" inactive={true} href={absoluteGraphqlEndpoint}>
                   API
                 </Link>
-                <Link
-                  className="font-medium text-gray-400 hover:text-gray-500"
-                  href="https://github.com/owl-factory/lantern"
-                >
+                <Link variant="plain" inactive={true} href="https://github.com/owl-factory/lantern">
                   GitHub
                 </Link>
               </div>
@@ -95,7 +93,9 @@ function Page() {
             </p>
             <div className="mt-5 flex flex-col justify-center items-center gap-2 sm:flex-row sm:gap-3">
               <Link
-                className="w-full sm:w-auto inline-flex justify-center items-center gap-x-3.5 text-center border-2 border-gray-600 shadow-sm text-sm font-medium rounded-md text-gray-300 hover:text-white hover:border-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-gray-800 transition py-3 px-4"
+                type="button"
+                color="secondary"
+                className="w-full sm:w-auto inline-flex justify-center items-center gap-x-3.5 text-center shadow-sm text-sm font-medium rounded-md hover:text-white hover:border-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-gray-800 transition py-3 px-4"
                 href={absoluteGraphqlEndpoint}
               >
                 <svg className="w-2.5 h-2.5" width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -107,7 +107,8 @@ function Page() {
                 View GraphQL API
               </Link>
               <Link
-                className="w-full sm:w-auto inline-flex justify-center items-center gap-x-3.5 text-center bg-amber-400 shadow-sm text-sm font-medium rounded-md hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-slate-900 transition py-3 px-4"
+                type="button"
+                className="w-full sm:w-auto inline-flex justify-center items-center gap-x-3.5 text-center shadow-sm text-sm font-medium rounded-md hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-slate-900 transition py-3 px-4"
                 href="https://github.com/owl-factory/lantern"
                 target="_blank"
               >
@@ -130,22 +131,8 @@ function Page() {
         <footer className="mt-auto text-center py-5">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <p className="text-sm text-gray-400">
-              Created by{" "}
-              <Link
-                className="text-white decoration-2 underline underline-offset-2 font-medium hover:text-gray-200 hover:decoration-gray-400"
-                href="https://lucyawrey.com"
-                target="_blank"
-              >
-                Lucy Awrey
-              </Link>{" "}
-              and{" "}
-              <Link
-                className="text-white decoration-2 underline underline-offset-2 font-medium hover:text-gray-200 hover:decoration-gray-400"
-                href="https://laurawenning.com"
-                target="_blank"
-              >
-                Laura Wenning
-              </Link>
+              Created by <Link href="https://lucyawrey.com">Lucy Awrey</Link> and{" "}
+              <Link href="https://laurawenning.com">Laura Wenning</Link>
             </p>
           </div>
         </footer>
