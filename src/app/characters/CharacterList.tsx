@@ -2,7 +2,6 @@
 
 import { Button } from "components/ui/Button";
 import { Character } from "types/character";
-import { Result } from "types/functional";
 import { getLocalStorage } from "utils/localStorage";
 
 type CharacterListProps = {
@@ -19,9 +18,9 @@ type CharacterListProps = {
  * @param onCharacterClick - A function that runs when a character is clicked
  */
 export function CharacterList(props: CharacterListProps) {
-  const characterElements = []
-    .map((characterId: string) => getLocalStorage<Character>(characterId, "object"))
-    .filterMap<Character>((characterResult: Result<Character>) => characterResult.unwrap())
+  const characterResults = props.characterIds
+    .map((characterId: string) => getLocalStorage<Character>(characterId, "object").unwrap())
+    .filter((result): result is Character => result !== undefined)
     .map((character: Character) => (
       <CharacterListItem
         key={character.id}
@@ -34,7 +33,7 @@ export function CharacterList(props: CharacterListProps) {
   return (
     <ul>
       <li onClick={props.addCharacter}>+ Add Character</li>
-      {characterElements}
+      {characterResults}
     </ul>
   );
 }
