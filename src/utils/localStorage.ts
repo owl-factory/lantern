@@ -1,5 +1,4 @@
-import { Result } from "types/functional";
-import { Err, Ok } from "./functional";
+import { Err, Ok } from "./results";
 
 /**
  * Gets data from a key in local storage, parses it into its expected type, and returns it.

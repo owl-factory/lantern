@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { Result } from "types/functional";
-import { Err, Ok, UnknownErr } from "utils/functional";
+import { Err, Ok, UnknownErr } from "utils/results";
 
 /**
  * Time, in milliseconds, between online status checks.

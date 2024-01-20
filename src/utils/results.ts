@@ -1,5 +1,3 @@
-import { Result } from "types/functional";
-
 /**
  * Packages the data inside a successful result object.
  * @param data - The data to return successfully

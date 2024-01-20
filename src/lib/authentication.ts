@@ -4,8 +4,7 @@ import { pool } from "lib/database";
 import { type NextRequest } from "next/server";
 import { cookies, headers } from "next/headers";
 import { sessionIdRegex } from "utils/regex";
-import { Result } from "types/functional";
-import { Err, Ok } from "utils/functional";
+import { Err, Ok } from "utils/results";
 
 /* Lantern authentication logic */
 

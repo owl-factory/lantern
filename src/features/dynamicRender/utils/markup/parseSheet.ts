@@ -1,8 +1,7 @@
 import { Prefabs, Variables } from "features/dynamicRender/types/controllers/markup";
 import { ParsedNode } from "features/dynamicRender/types/render";
 import { parseLayoutMarkup } from "features/dynamicRender/utils/markup/parseLayout";
-import { Result } from "types/functional";
-import { Err, Ok, UnknownStrErr } from "utils/functional";
+import { Err, Ok, UnknownStrErr } from "utils/results";
 
 export type MarkupComponents = {
   layout: ParsedNode[];

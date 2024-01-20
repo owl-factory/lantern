@@ -1,6 +1,5 @@
 import { AnnotationsMap, CreateObservableOptions, makeObservable } from "mobx";
-import { Result } from "types/functional";
-import { Ok, UnknownStrErr } from "utils/functional";
+import { Ok, UnknownStrErr } from "utils/results";
 
 export { action, computed, observable } from "mobx";
 export { observer } from "mobx-react-lite";
