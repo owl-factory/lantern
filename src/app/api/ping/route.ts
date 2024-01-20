@@ -4,6 +4,5 @@
  * @returns pong.
  */
 export async function GET() {
-  ["test", "this", "array", "print"].test();
   return new Response("pong");
 }
