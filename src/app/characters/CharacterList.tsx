@@ -38,6 +38,12 @@ export function CharacterList(props: CharacterListProps) {
   );
 }
 
+/**
+ * Renders a single character
+ * @param character - The character to render
+ * @param onCharacterClick - The action to run when the character is clicked
+ * @param deleteCharacter - The action to run when deleting a character
+ */
 function CharacterListItem(props: {
   character: Character;
   onCharacterClick: (key: string) => void;

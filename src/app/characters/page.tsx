@@ -66,7 +66,6 @@ function CharactersPage() {
       return;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     update(updatedCharacters);
     setCurrentCharacterId(characterId);
   }
