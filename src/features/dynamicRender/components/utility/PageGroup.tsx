@@ -33,7 +33,7 @@ export function PageGroup(props: RenderComponentProps) {
  * @param state - The current StateController
  * @returns A function to delete the PageGroup on unload
  */
-function createPageGroup(groupKey: string, state: StateController) {
+function createPageGroup(groupKey: string | undefined, state: StateController) {
   if (!groupKey) return;
   state.createPageGroup(groupKey);
 

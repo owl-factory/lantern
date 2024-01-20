@@ -8,7 +8,7 @@ import {
  * Renders a group of Pages that can be shown one at a time
  */
 export function Text(props: RenderComponentProps) {
-  return <>{props.node.textContent.trim()}</>;
+  return <>{props.node.textContent?.trim()}</>;
 }
 
 export const textBundle: RenderComponentDefinition = {

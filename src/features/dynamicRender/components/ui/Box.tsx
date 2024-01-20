@@ -11,7 +11,7 @@ import {
  * Renders a box div element
  */
 export function Box(props: RenderComponentProps<BoxAttributes>) {
-  const children = useChildren(props.childNodes);
+  const children = useChildren(props.childNodes ?? []);
   let displayClass = "block";
   if (props.attributes.type?.toLowerCase() === "inline") displayClass = "inline";
 

@@ -51,6 +51,7 @@ describe("parseNodeChild", () => {
   test("parses correctly", () => {
     const res = parseNodeChild(ELEMENT_NODE, mockCount);
     expect(res).toBeDefined();
+    if (!res) return;
     expect(res.key).toBe(`${TAG_NAME}_1`);
     expect(mockCount.get(TAG_NAME)).toBe(1);
   });

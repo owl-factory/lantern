@@ -6,7 +6,13 @@ import { Result } from "types/functional";
  * @returns A successful result object containing the data
  */
 export function Ok<T>(data: T): Result<T, never> {
-  return { ok: true, data };
+  return {
+    ok: true,
+    data,
+    unwrap: function () {
+      return this.data;
+    },
+  };
 }
 
 /**
@@ -15,7 +21,7 @@ export function Ok<T>(data: T): Result<T, never> {
  * @returns An unsuccessful result object containing the error
  */
 export function Err<E = Error>(error: E): Result<never, E> {
-  return { ok: false, error };
+  return { ok: false, error, unwrap: () => undefined };
 }
 
 /**
@@ -37,6 +43,7 @@ export function UnknownErr(error: unknown): Result<never, Error> {
 /**
  * Helper function that wraps an `unknown` error in Lantern's functional `Result` type safely.
  * Needed because catch statements always return `unknown` types in strict mode.
+ * TODO - change this to ErrUnknown? Err* should lead to remain visually consistent with Err()
  * @param error - The `unknown` error object that is likely an instance of `Error` or a string.
  * @returns Err variant of the `Result` type, wrapping an extracted string.
  */

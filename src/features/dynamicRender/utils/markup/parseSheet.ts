@@ -2,7 +2,7 @@ import { Prefabs, Variables } from "features/dynamicRender/types/controllers/mar
 import { ParsedNode } from "features/dynamicRender/types/render";
 import { parseLayoutMarkup } from "features/dynamicRender/utils/markup/parseLayout";
 import { Result } from "types/functional";
-import { Err, Ok } from "utils/functional";
+import { Err, Ok, UnknownStrErr } from "utils/functional";
 
 export type MarkupComponents = {
   layout: ParsedNode[];
@@ -23,7 +23,7 @@ export function parseMarkup(markup: string): Result<MarkupComponents, string> {
   try {
     markupDom = parser.parseFromString(markup, "application/xml");
   } catch (why) {
-    return Err(why);
+    return UnknownStrErr(why);
   }
 
   const sheetElement = findFirstElementByTag(markupDom, "Sheet");
@@ -55,8 +55,12 @@ export function parseMarkup(markup: string): Result<MarkupComponents, string> {
  * @param tagName - The name of the tag to find. Case-sensitive.
  * @returns The element, if found. Undefined otherwise.
  */
-export function findFirstElementByTag(dom: Document | Element, tagName: string) {
-  let matchingElement: Element;
+export function findFirstElementByTag(
+  dom: Document | Element,
+  tagName: string
+): Element | undefined {
+  let matchingElement: Element | undefined = undefined;
+
   dom.childNodes.forEach((childNode: ChildNode) => {
     if (childNode.nodeType !== Node.ELEMENT_NODE) return;
 
@@ -65,6 +69,7 @@ export function findFirstElementByTag(dom: Document | Element, tagName: string) 
       matchingElement = childElement;
     }
   });
+
   return matchingElement;
 }
 

@@ -7,8 +7,13 @@ const CHECKED_DELIMITER = ",";
  * @param checkValue - The value of the checkbox
  * @returns True if the checkbox value is in the stored values, false otherwise
  */
-export function isChecked(storedValues: string, checkValue: string, delimiter = CHECKED_DELIMITER) {
+export function isChecked(
+  storedValues: string,
+  checkValue: string | undefined,
+  delimiter = CHECKED_DELIMITER
+) {
   if (!storedValues) return false;
+  if (!checkValue) return false;
   const normalizedCheckedValue = checkValue.toLocaleLowerCase().trim();
   const existsAtIndex = storedValues
     .split(delimiter)
@@ -20,11 +25,12 @@ export function isChecked(storedValues: string, checkValue: string, delimiter = 
 /**
  * Appends an instance of checkValue to storedValues, checking it.
  * @param storedValues - The stored values to append the check value to
- * @param checkedValue - The check value to add to the list of checked values
+ * @param checkValue - The check value to add to the list of checked values
  * @returns A string containing a delimited list of values
  */
-export function check(storedValues: string, checkedValue: string, delimiter = CHECKED_DELIMITER) {
-  return storedValues.split(delimiter).concat(checkedValue).join(CHECKED_DELIMITER);
+export function check(storedValues: string, checkValue: string, delimiter = CHECKED_DELIMITER) {
+  if (!checkValue) return storedValues;
+  return storedValues.split(delimiter).concat(checkValue).join(CHECKED_DELIMITER);
 }
 
 /**
@@ -38,6 +44,8 @@ export function uncheck(
   checkValue: string,
   delimiter = CHECKED_DELIMITER
 ): string {
+  if (!checkValue) return storedValues;
+
   return storedValues
     .split(delimiter)
     .filter((storedValue: string) => storedValue !== checkValue)

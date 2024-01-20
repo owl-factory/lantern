@@ -40,9 +40,11 @@ export function Button(props: RenderComponentProps) {
 function buildAction(attributes: Partial<ButtonAttributes>, state: StateController) {
   const action = normalize(attributes.action ?? "", true);
   switch (action) {
-    case "collapse":
-      if (attributes.target === undefined) break;
-      return () => state.toggleCollapse(attributes.target);
+    case "collapse": {
+      const target = attributes.target;
+      if (target === undefined) break;
+      return () => state.toggleCollapse(target);
+    }
   }
   return () => {};
 }

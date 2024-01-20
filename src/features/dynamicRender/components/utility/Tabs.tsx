@@ -17,18 +17,19 @@ export function Tabs(props: RenderComponentProps) {
   const { attributes } = useAttributes<TabsAttributes>(props.node, tabsAttributes);
   const state = useContext(StateContext);
 
-  if (!attributes.for) {
+  const forGroup = attributes.for;
+  if (forGroup === undefined) {
     return <></>;
   }
 
-  const activeTab = state.getActivePage(attributes.for);
+  const activeTab = state.getActivePage(forGroup);
   const tabs = state
-    .getPages(attributes.for)
+    .getPages(forGroup)
     .map((page: Page) => (
       <Tab
         key={page.key}
         page={page}
-        groupKey={attributes.for}
+        groupKey={forGroup}
         active={page.key === activeTab}
         state={state}
       />

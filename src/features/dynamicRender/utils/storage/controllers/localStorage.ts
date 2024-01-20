@@ -81,6 +81,7 @@ export class LocalStorageController extends StorageController {
     if (!this._character) return false;
     this._character.data[options.key] = value;
     this.triggerUpdate();
+    return true;
   }
 
   /**

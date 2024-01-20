@@ -40,7 +40,7 @@ export function getLocalStorage<T>(key: string, expectedType: string): Result<T,
  */
 export function setLocalStorage<T>(key: string, value: T): boolean {
   const expectedType = typeof value;
-  let formatedValue: string;
+  let formatedValue: string = "";
 
   switch (expectedType) {
     case "string":

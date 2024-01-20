@@ -2,6 +2,11 @@ import { DynamicContext } from "features/dynamicRender/context/dynamicContext";
 import { GetOptions } from "features/dynamicRender/types/query";
 import { useContext } from "react";
 
+type UseFormValue = {
+  value: string | undefined;
+  update: (newValue: string) => void;
+};
+
 /**
  * Allows read and write access to a storage value for the given options
  * @param options - The GetOptions used to fetch a value from the Storage Controller
@@ -10,7 +15,11 @@ import { useContext } from "react";
  *  but the number of hooks cannot change.
  * @returns An object containing the found value and an update function to change the value
  */
-export function useFormValue<T>(options: GetOptions, defaultValue?: T, doNoOp = false) {
+export function useFormValue(
+  options: GetOptions,
+  defaultValue: string = "",
+  doNoOp = false
+): UseFormValue {
   const context = useContext(DynamicContext);
 
   // Allows us to skip doing operations, while avoiding issues from inconsistent numbers of hooks
@@ -18,16 +27,17 @@ export function useFormValue<T>(options: GetOptions, defaultValue?: T, doNoOp = 
     return { value: undefined, update: () => {} };
   }
 
-  const value = context.get<T>(options) ?? defaultValue;
+  let value = context.get<string>(options) ?? defaultValue;
 
   /**
    * Upserts a value into the context
-   * @param value - The new value to upsert into the context
+   * @param newValue - The new value to upsert into the context
    */
-  function update(value: T) {
-    context.update(options, value);
-    value = context.get<T>(options) ?? defaultValue;
+  function update(newValue: string) {
+    context.update(options, newValue);
+    value = context.get<string>(options) ?? defaultValue;
   }
 
+  // TODO - Add a 'isValid' flag for if this can actually be read or set
   return { value, update };
 }

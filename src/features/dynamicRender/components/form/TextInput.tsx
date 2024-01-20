@@ -20,7 +20,7 @@ export function TextInput(props: RenderComponentProps) {
     () => buildQueryOptionsFromAttributes(attributes),
     [attributes]
   );
-  const { value, update } = useFormValue<string>(options, "");
+  const { value, update } = useFormValue(options, "");
 
   /**
    * Updates the form value on change.

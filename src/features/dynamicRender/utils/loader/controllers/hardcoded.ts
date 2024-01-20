@@ -11,7 +11,7 @@ import { LoaderController } from "./common";
  */
 export class HardcodedLoaderController extends LoaderController {
   _state: LoaderControllerState = LoaderControllerState.NoOp;
-  apiRoute: string;
+  apiRoute: string = "";
 
   constructor(options: FactoryOptions) {
     super();

@@ -69,7 +69,7 @@ function parseNodeChild(
   const attributes = parseAttributes(node, bundle.attributes);
 
   const hasChildren = canNodeHaveChildren(nodeType);
-  let children: ParsedNode[];
+  let children: ParsedNode[] | undefined = undefined;
   if (hasChildren) {
     children = parseNodeChildren(node.childNodes);
   }
@@ -100,6 +100,8 @@ function parseAttributes(node: Node, attributeDefinitions: AttributeDefinition[]
     const name = definition.name;
     const defaultValue = definition.default ?? undefined;
     const value = element.getAttribute(name) ?? defaultValue;
+
+    if (value === undefined) return;
     attributes[name] = value;
   });
   return attributes;

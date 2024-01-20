@@ -20,11 +20,12 @@ export function Page(props: RenderComponentProps) {
   const { attributes } = useAttributes<PageAttributes>(props.node, pageAttributes);
   const state = useContext(StateContext);
   const groupKey = useContext(PageGroupContext);
-  const pageKey = toKey(attributes.name);
-  useEffect(
-    () => createPage(groupKey, pageKey, attributes.name, state),
-    [groupKey, attributes.name, state]
-  );
+  const pageName = attributes.name;
+  const pageKey = toKey(pageName ?? "");
+  useEffect(() => {
+    if (!pageName) return;
+    createPage(groupKey, pageKey, pageName, state);
+  }, [groupKey, attributes.name, state]);
 
   const children = useChildren(props.childNodes);
 

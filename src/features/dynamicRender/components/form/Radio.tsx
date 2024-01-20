@@ -20,7 +20,7 @@ export function Radio(props: RenderComponentProps) {
     () => buildQueryOptionsFromAttributes(attributes),
     [attributes]
   );
-  const { value: storedValue, update } = useFormValue<string>(options, "");
+  const { value: storedValue, update } = useFormValue(options, "");
 
   /**
    * Updates the form value on change.
