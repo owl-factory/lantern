@@ -10,6 +10,10 @@ import { emailRegex } from "utils/regex";
  */
 export async function POST(request: Request) {
   const credentials: { username?: string; password?: string } = await request.json();
+  if (!credentials.password || !credentials.username) {
+    return new Response("Missing one or more required fields for login.", { status: 422 });
+  }
+
   const providerUserId = credentials.username.toLowerCase();
 
   // Set Lucia providerId based on whether the userId is an email or not.

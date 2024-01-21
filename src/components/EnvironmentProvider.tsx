@@ -11,5 +11,9 @@ import { isServer, baseUrl } from "utils/environment";
  */
 export function EnvironmentProvider({ children }: { children: React.ReactNode }) {
   const isOnline = useOnlineStatus();
-  return <EnvironmentContext.Provider value={{ isOnline, isServer, baseUrl }}>{children}</EnvironmentContext.Provider>;
+  return (
+    <EnvironmentContext.Provider value={{ isOnline, isServer, baseUrl }}>
+      {children}
+    </EnvironmentContext.Provider>
+  );
 }

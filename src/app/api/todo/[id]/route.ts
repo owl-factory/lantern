@@ -23,7 +23,7 @@ export async function GET(_request: NextRequest, options: TodoGetOptions) {
     return new Response(auth.error, { status: 401 });
   }
 
-  const todo: Todo = await database
+  const todo: Todo | undefined = await database
     .selectFrom("todo")
     .where("id", "=", options.params.id)
     .selectAll()

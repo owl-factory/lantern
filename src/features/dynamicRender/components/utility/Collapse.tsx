@@ -4,7 +4,11 @@ import { useAttributes } from "features/dynamicRender/hooks/useAttributes";
 import { useChildren } from "features/dynamicRender/hooks/useChildren";
 import { CollapseAttributes } from "features/dynamicRender/types/attributes/utilities/collapse";
 import { NodeType } from "features/dynamicRender/types/node";
-import { RenderComponentDefinition, RenderComponentProps } from "features/dynamicRender/types/render";
+import {
+  RenderComponentDefinition,
+  RenderComponentProps,
+} from "features/dynamicRender/types/render";
+import { StateController } from "features/dynamicRender/utils/stateController";
 import { useContext, useEffect } from "react";
 
 /**
@@ -19,7 +23,7 @@ export function Collapse(props: RenderComponentProps) {
 
   const children = useChildren(props.childNodes);
 
-  const show = state.getCollapse(collapseId);
+  const show = collapseId !== undefined ? state.getCollapse(collapseId) : false;
   const visibleClass = show ? "block" : "hidden";
 
   return <div className={`${visibleClass}`}>{children}</div>;
@@ -31,7 +35,7 @@ export function Collapse(props: RenderComponentProps) {
  * @param state - The state controller
  * @returns A function that cleans up the collapse on unmount
  */
-function initializeCollapse(collapseId: string, state) {
+function initializeCollapse(collapseId: string | undefined, state: StateController) {
   if (collapseId === undefined) return;
   state.createCollapse(collapseId, true);
 

@@ -1,4 +1,3 @@
-import { Attribute } from "features/dynamicRender/types/attributes";
 import { AttributeDefinition } from "features/dynamicRender/types/attributes/definition";
 import { NodeType } from "features/dynamicRender/types/node";
 import { ReactNode } from "react";
@@ -20,29 +19,28 @@ export type RenderComponentProps<T = Record<string, string>> = {
 };
 
 /** The common shared between all Render Components */
-export type RenderComponent<T> = (props: RenderComponentProps<T>) => ReactNode;
+export type RenderComponent<T = Record<string, string>> = (
+  props: RenderComponentProps<T>
+) => ReactNode;
 
 /** A bundle of like attributes for a RenderComponent */
 export type RenderComponentDefinition = {
-  Component: RenderComponent<unknown>;
+  Component: RenderComponent;
   nodeType: NodeType;
   allowsChildren: boolean;
   attributes: AttributeDefinition[];
   /** Deprecated Node Types that map to this component */
   backwardsCompatiblityNodeTypes?: NodeType[];
-
-  /** Any extra functionality to run for this specific type of component */
-  customParsing?: (node: Node, attributes: Record<string, Attribute>) => void;
 };
 
 /**
  * A node parsed into an object for easier rendering
  */
-export type ParsedNode = {
+export type ParsedNode<T = Record<string, string>> = {
   /** The unique component key for React */
   key: string;
   /** The component function to render this specific node */
-  Component: RenderComponent<unknown>;
+  Component: RenderComponent<T>;
   /** Any arguments that should be available within the rendered component */
   props: RenderComponentProps;
 };

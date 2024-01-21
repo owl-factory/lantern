@@ -17,7 +17,9 @@ test("isBadPassword function returns true if provided password is 'password'.", 
 });
 
 test("isBadPassword function returns true if provided password is too long.", () => {
-  const result = isBadPassword("hjkljlij878^&^7878976asdjhgkjkhGTYHjkhjkhauyhukahsjhdjkahsdkjhaksu");
+  const result = isBadPassword(
+    "hjkljlij878^&^7878976asdjhgkjkhGTYHjkhjkhauyhukahsjhdjkahsdkjhaksu"
+  );
   expect(result).toBe(true);
 });
 

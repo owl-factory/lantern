@@ -1,7 +1,7 @@
 import { StorageControllerState } from "features/dynamicRender/types/controllers/storage";
 import { LocalStorageController } from "./localStorage";
 import { safeMakeObservable } from "lib/mobx";
-import { Err } from "utils/functional";
+import { Err } from "utils/results";
 import { getLocalStorage } from "utils/localStorage";
 import { Character } from "types/character";
 import { QuerySource } from "features/dynamicRender/types/query";

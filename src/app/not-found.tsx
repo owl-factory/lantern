@@ -19,9 +19,16 @@ function Page() {
     <div className="bg-zinc-900 flex h-full">
       <div className="max-w-[50rem] flex flex-col mx-auto w-full h-full">
         <header className="mb-auto flex flex-wrap sm:justify-start sm:flex-nowrap z-50 w-full text-sm py-4">
-          <nav className="w-full px-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8" aria-label="Global">
+          <nav
+            className="w-full px-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8"
+            aria-label="Global"
+          >
             <div className="sm:min-w-80 flex items-center justify-between">
-              <Link className="inline-flex text-xl font-semibold text-white" href="/" aria-label="Brand">
+              <Link
+                className="inline-flex text-xl font-semibold text-white"
+                href="/"
+                aria-label="Brand"
+              >
                 <LanternLogo />{" "}
                 <span data-testid="logo-text" className="pl-2">
                   Lantern Tabletop

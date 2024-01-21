@@ -5,7 +5,10 @@ import { useAttributes } from "features/dynamicRender/hooks/useAttributes";
 import { useChildren } from "features/dynamicRender/hooks/useChildren";
 import { PageableAttributes } from "features/dynamicRender/types/attributes/utilities/pageable";
 import { NodeType } from "features/dynamicRender/types/node";
-import { RenderComponentDefinition, RenderComponentProps } from "features/dynamicRender/types/render";
+import {
+  RenderComponentDefinition,
+  RenderComponentProps,
+} from "features/dynamicRender/types/render";
 import { StateController } from "features/dynamicRender/utils/stateController";
 import { useContext, useEffect } from "react";
 
@@ -30,7 +33,7 @@ export function PageGroup(props: RenderComponentProps) {
  * @param state - The current StateController
  * @returns A function to delete the PageGroup on unload
  */
-function createPageGroup(groupKey: string, state: StateController) {
+function createPageGroup(groupKey: string | undefined, state: StateController) {
   if (!groupKey) return;
   state.createPageGroup(groupKey);
 

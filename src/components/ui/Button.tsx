@@ -26,7 +26,10 @@ export const button = tv({
  * @param props - Set of attributes ordinarily included with an HTML <button> element.
  * @param ref - React reference to forward used for DOM interactions.
  */
-export const Button = forwardRef(function Button(props: ButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
+export const Button = forwardRef(function Button(
+  props: ButtonProps,
+  ref: ForwardedRef<HTMLButtonElement>
+) {
   const className = button({ color: props.color, className: props.className });
 
   return <button type="button" {...props} className={className} ref={ref} />;

@@ -4,7 +4,10 @@ import { useAttributes } from "features/dynamicRender/hooks/useAttributes";
 import { useChildren } from "features/dynamicRender/hooks/useChildren";
 import { ButtonAttributes } from "features/dynamicRender/types/attributes/ui/button";
 import { NodeType } from "features/dynamicRender/types/node";
-import { RenderComponentDefinition, RenderComponentProps } from "features/dynamicRender/types/render";
+import {
+  RenderComponentDefinition,
+  RenderComponentProps,
+} from "features/dynamicRender/types/render";
 import { StateController } from "features/dynamicRender/utils/stateController";
 import { useContext, useMemo } from "react";
 import { normalize } from "utils/strings";
@@ -37,9 +40,11 @@ export function Button(props: RenderComponentProps) {
 function buildAction(attributes: Partial<ButtonAttributes>, state: StateController) {
   const action = normalize(attributes.action ?? "", true);
   switch (action) {
-    case "collapse":
-      if (attributes.target === undefined) break;
-      return () => state.toggleCollapse(attributes.target);
+    case "collapse": {
+      const target = attributes.target;
+      if (target === undefined) break;
+      return () => state.toggleCollapse(target);
+    }
   }
   return () => {};
 }

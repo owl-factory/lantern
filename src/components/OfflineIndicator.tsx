@@ -13,6 +13,8 @@ export function OfflineIndicator() {
   return isOnline ? (
     <></>
   ) : (
-    <div className="absolute bottom-0 left-0 text-gray-300 m-2 p-4 rounded-md bg-slate-600">Offline Mode</div>
+    <div className="absolute bottom-0 left-0 text-gray-300 m-2 p-4 rounded-md bg-slate-600">
+      Offline Mode
+    </div>
   );
 }

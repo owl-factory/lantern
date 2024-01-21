@@ -1,9 +1,12 @@
-import { LoaderControllerState, MarkupSource } from "features/dynamicRender/types/controllers/loader";
+import {
+  LoaderControllerState,
+  MarkupSource,
+} from "features/dynamicRender/types/controllers/loader";
 import { HardcodedLoaderController } from "./hardcoded";
 import { FactoryOptions } from "features/dynamicRender/types/factory";
 import { safeMakeObservable } from "lib/mobx";
-import { Err } from "utils/functional";
 import { baseUrl } from "utils/environment";
+import { Err } from "utils/results";
 
 jest.mock("lib/mobx");
 

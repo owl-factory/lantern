@@ -10,8 +10,8 @@ export class MarkupController implements Controller {
   _state: MarkupControllerState = MarkupControllerState.NoOp;
   _error: string | undefined;
 
-  _layout: ParsedNode[];
-  _prefabs: Prefabs;
+  _layout: ParsedNode[] = [];
+  _prefabs: Prefabs = {};
 
   constructor() {}
 
@@ -22,7 +22,7 @@ export class MarkupController implements Controller {
 
   /** The core structure of the Dynamic Render */
   get layout(): ParsedNode[] {
-    if (!this.ready) return undefined;
+    if (!this.ready) return [];
     return this._layout;
   }
 
@@ -58,7 +58,7 @@ export class MarkupController implements Controller {
     if (!waitingOnData && !this.ready) return;
 
     this._layout = data.layout;
-    this._prefabs = data.prefabs;
+    this._prefabs = data.prefabs ?? {};
     this.setState(MarkupControllerState.Ready);
   }
 

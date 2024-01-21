@@ -4,5 +4,7 @@
  * @returns true if password should be rejected, false if it should be accepted.
  */
 export function isBadPassword(password: string): boolean {
-  return password.length < 8 || password.length > 40 || password === "password" || password === "1234";
+  return (
+    password.length < 8 || password.length > 40 || password === "password" || password === "1234"
+  );
 }
