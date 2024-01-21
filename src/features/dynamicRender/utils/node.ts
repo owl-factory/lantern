@@ -10,6 +10,7 @@ export function checkIfUsableNode(node: ChildNode): boolean {
   const nodeType = node.nodeType;
   switch (nodeType) {
     case Node.TEXT_NODE: {
+      if (node.textContent === null) return false;
       const isOnlyWhitespace = node.textContent.trim().length === 0;
       return !isOnlyWhitespace;
     }

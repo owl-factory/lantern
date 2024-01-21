@@ -48,7 +48,10 @@ function parseNodeChildren(childNodes: NodeListOf<ChildNode>): ParsedNode[] {
  * @param nodeTypeCount - A mapping of the types of nodes encountered. The object value is updated
  * @returns A ParsedNode object containing a key, Component function, and props
  */
-function parseNodeChild(node: ChildNode, nodeTypeCount: Map<string, number>): ParsedNode | undefined {
+function parseNodeChild(
+  node: ChildNode,
+  nodeTypeCount: Map<string, number>
+): ParsedNode | undefined {
   const isUsableNode = checkIfUsableNode(node);
   if (!isUsableNode) return;
 
@@ -66,7 +69,7 @@ function parseNodeChild(node: ChildNode, nodeTypeCount: Map<string, number>): Pa
   const attributes = parseAttributes(node, bundle.attributes);
 
   const hasChildren = canNodeHaveChildren(nodeType);
-  let children: ParsedNode[];
+  let children: ParsedNode[] | undefined = undefined;
   if (hasChildren) {
     children = parseNodeChildren(node.childNodes);
   }
@@ -97,6 +100,8 @@ function parseAttributes(node: Node, attributeDefinitions: AttributeDefinition[]
     const name = definition.name;
     const defaultValue = definition.default ?? undefined;
     const value = element.getAttribute(name) ?? defaultValue;
+
+    if (value === undefined) return;
     attributes[name] = value;
   });
   return attributes;

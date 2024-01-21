@@ -1,5 +1,4 @@
-import { Result } from "types/functional";
-import { Err, Ok } from "./functional";
+import { Err, Ok } from "./results";
 
 /**
  * Gets data from a key in local storage, parses it into its expected type, and returns it.
@@ -10,7 +9,8 @@ import { Err, Ok } from "./functional";
  */
 export function getLocalStorage<T>(key: string, expectedType: string): Result<T, string> {
   const rawLocalStorage = window.localStorage.getItem(key) ?? undefined;
-  if (rawLocalStorage === undefined) return Err(`LocalStorage did not contain an entry for key ${key}`);
+  if (rawLocalStorage === undefined)
+    return Err(`LocalStorage did not contain an entry for key ${key}`);
 
   switch (expectedType) {
     case "string":
@@ -39,7 +39,7 @@ export function getLocalStorage<T>(key: string, expectedType: string): Result<T,
  */
 export function setLocalStorage<T>(key: string, value: T): boolean {
   const expectedType = typeof value;
-  let formatedValue: string;
+  let formatedValue: string = "";
 
   switch (expectedType) {
     case "string":

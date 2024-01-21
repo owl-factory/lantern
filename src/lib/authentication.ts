@@ -4,8 +4,7 @@ import { pool } from "lib/database";
 import { type NextRequest } from "next/server";
 import { cookies, headers } from "next/headers";
 import { sessionIdRegex } from "utils/regex";
-import { Result } from "types/functional";
-import { Err, Ok } from "utils/functional";
+import { Err, Ok } from "utils/results";
 
 /* Lantern authentication logic */
 
@@ -57,7 +56,7 @@ export function getSessionId(request?: NextRequest): Result<string, string> {
     request?.cookies?.get(AUTH_COOKIE_NAME)?.value ||
     cookies().get(AUTH_COOKIE_NAME)?.value;
 
-  return sessionIdRegex.test(sessionId)
+  return sessionId && sessionIdRegex.test(sessionId)
     ? Ok(sessionId)
     : Err("Could not get sessionId from Authorization header or session cookie.");
 }

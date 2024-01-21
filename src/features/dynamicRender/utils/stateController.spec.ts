@@ -1,5 +1,5 @@
 import { safeMakeObservable } from "lib/mobx";
-import { Err } from "utils/functional";
+import { Err } from "utils/results";
 import { StateController, StateControllerState } from "./stateController";
 
 jest.mock("lib/mobx");

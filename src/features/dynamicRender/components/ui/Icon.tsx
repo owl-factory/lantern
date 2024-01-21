@@ -1,5 +1,8 @@
 import { NodeType } from "features/dynamicRender/types/node";
-import { RenderComponentDefinition, RenderComponentProps } from "features/dynamicRender/types/render";
+import {
+  RenderComponentDefinition,
+  RenderComponentProps,
+} from "features/dynamicRender/types/render";
 
 /**
  * Renders a box with a background image

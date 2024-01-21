@@ -186,7 +186,9 @@ export class StateController {
     if (!group) return;
 
     delete group.pages[pageKey];
-    this._pageGroups[groupKey].order = group.order.filter((storedKey: string) => storedKey !== pageKey);
+    this._pageGroups[groupKey].order = group.order.filter(
+      (storedKey: string) => storedKey !== pageKey
+    );
 
     const activePage = this._activePages[groupKey];
     const needNewActivePage = activePage === pageKey;
@@ -230,19 +232,6 @@ export class StateController {
   }
 
   /**
-   * Gets information about a given page
-   * @param groupKey - The identifying key of the page group
-   * @param pageKey - The identifying key of the page to get information from
-   */
-  getPage(groupKey: string, pageKey: string): Page {
-    if (!this.ready) return undefined;
-    if (!groupKey || !pageKey) return undefined;
-    const group = this._pageGroups[groupKey];
-    if (!group) return undefined;
-    return group[pageKey];
-  }
-
-  /**
    * Gets an ordered list of pages
    * @param groupKey - The identifying key of the page group
    * @returns An array of ordered pages
@@ -254,7 +243,9 @@ export class StateController {
     const group = this._pageGroups[groupKey];
     if (!group) return [];
 
-    const pages = group.order.map((pageKey: string) => group.pages[pageKey]).filter((page: Page) => page !== undefined);
+    const pages = group.order
+      .map((pageKey: string) => group.pages[pageKey])
+      .filter((page: Page) => page !== undefined);
     return pages;
   }
 }

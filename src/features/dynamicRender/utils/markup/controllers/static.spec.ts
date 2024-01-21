@@ -1,7 +1,7 @@
 import { MarkupControllerState } from "features/dynamicRender/types/controllers/markup";
 import { StaticMarkupController } from "./static";
 import { safeMakeObservable } from "lib/mobx";
-import { Err } from "utils/functional";
+import { Err } from "utils/results";
 
 jest.mock("lib/mobx");
 

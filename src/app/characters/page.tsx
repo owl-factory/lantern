@@ -29,6 +29,7 @@ function CharactersPage() {
 
   // Removes any characterIDs that don't have associated characters
   useEffect(() => {
+    if (!characterIds) return;
     characterIds
       .filter((characterId: string) => getLocalStorage(characterId, "string").ok === false)
       .forEach(deleteCharacter);
@@ -39,7 +40,10 @@ function CharactersPage() {
    * @param key - The key of the character to select
    */
   function onCharacterClick(key: string) {
-    const characterId: string | undefined = characterIds.find((characterId: string) => characterId === key);
+    if (!characterIds) return;
+    const characterId: string | undefined = characterIds.find(
+      (characterId: string) => characterId === key
+    );
     setCurrentCharacterId(() => characterId);
   }
 
@@ -47,6 +51,8 @@ function CharactersPage() {
    * Adds a new Local Storage character
    */
   function addCharacter() {
+    if (!characterIds) return;
+
     const rawCharacterId = crypto.randomUUID();
     const characterId = createLocalStorageCharacterId(rawCharacterId);
 
@@ -69,9 +75,12 @@ function CharactersPage() {
    * @param key - The key of the character to delete
    */
   function deleteCharacter(key: string) {
+    if (!characterIds) return;
+
     const updatedCharacters = characterIds.filter((currentKey: string) => key !== currentKey);
     removeLocalStorage(key);
     update(updatedCharacters);
+
     if (currentCharacterId !== key) return;
     setCurrentCharacterId(undefined);
   }
@@ -82,14 +91,14 @@ function CharactersPage() {
       <div>
         <div>
           <CharacterList
-            characterIds={characterIds}
+            characterIds={characterIds ?? []}
             addCharacter={addCharacter}
             deleteCharacter={deleteCharacter}
             onCharacterClick={onCharacterClick}
           />
         </div>
         <div>
-          <CharacterView characterId={currentCharacterId} />
+          {currentCharacterId !== undefined && <CharacterView characterId={currentCharacterId} />}
         </div>
       </div>
     </>

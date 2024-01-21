@@ -1,6 +1,5 @@
 import "jest";
 import { ping } from "hooks/useOnlineStatus";
-import { OkResult } from "types/functional";
 
 global.fetch = jest.fn(() =>
   Promise.resolve({

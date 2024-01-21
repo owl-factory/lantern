@@ -3,7 +3,10 @@ import { tabsAttributes } from "features/dynamicRender/data/attributes/utility/t
 import { useAttributes } from "features/dynamicRender/hooks/useAttributes";
 import { TabsAttributes } from "features/dynamicRender/types/attributes/utilities/tabs";
 import { NodeType } from "features/dynamicRender/types/node";
-import { RenderComponentDefinition, RenderComponentProps } from "features/dynamicRender/types/render";
+import {
+  RenderComponentDefinition,
+  RenderComponentProps,
+} from "features/dynamicRender/types/render";
 import { Page, StateController } from "features/dynamicRender/utils/stateController";
 import { useContext } from "react";
 
@@ -14,15 +17,22 @@ export function Tabs(props: RenderComponentProps) {
   const { attributes } = useAttributes<TabsAttributes>(props.node, tabsAttributes);
   const state = useContext(StateContext);
 
-  if (!attributes.for) {
+  const forGroup = attributes.for;
+  if (forGroup === undefined) {
     return <></>;
   }
 
-  const activeTab = state.getActivePage(attributes.for);
+  const activeTab = state.getActivePage(forGroup);
   const tabs = state
-    .getPages(attributes.for)
+    .getPages(forGroup)
     .map((page: Page) => (
-      <Tab key={page.key} page={page} groupKey={attributes.for} active={page.key === activeTab} state={state} />
+      <Tab
+        key={page.key}
+        page={page}
+        groupKey={forGroup}
+        active={page.key === activeTab}
+        state={state}
+      />
     ));
 
   return <div>{tabs}</div>;

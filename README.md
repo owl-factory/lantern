@@ -26,7 +26,7 @@ The project can be built with `pnpm run build` (as long as all dependencies are 
 
 ## Testing
 
-The project can be end-to-end tested with `pnpm run test:e2e` (database needs to be running and migrated), unit tested with `pnpm run test:e2e`, or tested with a full suite using `pnpm run test`.
+The project can be end-to-end tested with `pnpm run test:e2e` (database needs to be running and migrated), unit tested with `pnpm run test:e2e`, or tested with a full suite using `pnpm run test`. You can type check all typescript files without running a full build with `pnpm run typecheck`.
 
 Your first end-to-end test run requires `pnpm exec playwright install` to be run first to install dependencies (headless web browsers).
 
