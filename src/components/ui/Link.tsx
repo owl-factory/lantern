@@ -35,16 +35,28 @@ export const link = tv({
  * @param props - `next/link` props, which also includes all HTML <a> tag attributes.
  * @param ref - React reference to forward used for DOM interactions.
  */
-export const Link = forwardRef(function Link(props: LinkProps, ref: ForwardedRef<HTMLAnchorElement>) {
+export const Link = forwardRef(function Link(
+  props: LinkProps,
+  ref: ForwardedRef<HTMLAnchorElement>
+) {
   let className;
   if (props?.type === "button") {
     className = button({ color: props.color, className: props.className });
   } else {
-    className = link({ variant: props.variant, inactive: props.inactive, className: props.className });
+    className = link({
+      variant: props.variant,
+      inactive: props.inactive,
+      className: props.className,
+    });
   }
 
   if (props.href && typeof props.href === "string" && isExternalUrl(props.href)) {
-    const modProps = { replace: undefined, scroll: undefined, prefetch: undefined, ...props } as AnchorProps;
+    const modProps = {
+      replace: undefined,
+      scroll: undefined,
+      prefetch: undefined,
+      ...props,
+    } as AnchorProps;
     return <a target="_blank" rel="nonoopener" {...modProps} className={className} ref={ref} />;
   }
 

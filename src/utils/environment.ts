@@ -22,7 +22,7 @@ export const graphqlEndpoint = "/api/graphql";
 /**
  * GraphQL remote url. Null if GraphQL URL is local.
  */
-export const graphqlRemoteUrl = process.env.NEXT_PUBLIC_GRAPHQL_REMOTE_URL;
+export const graphqlRemoteUrl = process.env.NEXT_PUBLIC_GRAPHQL_REMOTE_URL || "";
 
 /**
  * True if GraphQL remote url is non null.
@@ -33,4 +33,6 @@ export const graphqlIsRemote = Boolean(graphqlRemoteUrl);
  * Absolute URL where the GraphQL endpoint is hosted. Will either be the local
  * site's base path followed by the relative GraphQL endpoint URL or a remote URL.
  */
-export const absoluteGraphqlEndpoint = graphqlIsRemote ? graphqlRemoteUrl : baseUrl + graphqlEndpoint;
+export const absoluteGraphqlEndpoint = graphqlIsRemote
+  ? graphqlRemoteUrl
+  : baseUrl + graphqlEndpoint;

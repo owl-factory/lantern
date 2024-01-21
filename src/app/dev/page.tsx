@@ -4,6 +4,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { gql } from "graphql-tag";
 import { absoluteGraphqlEndpoint } from "utils/environment";
+import { Todo } from "types/database";
 
 /**
  * Page metadata object, NextJs will append these values as meta tags to the <head>.
@@ -51,9 +52,16 @@ async function Page() {
     <div className="bg-zinc-900 flex h-full">
       <div className="max-w-[50rem] flex flex-col mx-auto w-full h-full">
         <header className="mb-auto flex flex-wrap sm:justify-start sm:flex-nowrap z-50 w-full text-sm py-4">
-          <nav className="w-full px-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8" aria-label="Global">
+          <nav
+            className="w-full px-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8"
+            aria-label="Global"
+          >
             <div className="sm:min-w-80 flex items-center justify-between">
-              <Link className="inline-flex text-xl font-semibold text-white" href="/" aria-label="Brand">
+              <Link
+                className="inline-flex text-xl font-semibold text-white"
+                href="/"
+                aria-label="Brand"
+              >
                 <LanternLogo />{" "}
                 <span data-testid="logo-text" className="pl-2">
                   Lantern Tabletop
@@ -102,7 +110,10 @@ async function Page() {
                 <Link className="font-medium text-gray-400 hover:text-gray-500" href="/characters">
                   Characters
                 </Link>
-                <Link className="font-medium text-gray-400 hover:text-gray-500" href={absoluteGraphqlEndpoint}>
+                <Link
+                  className="font-medium text-gray-400 hover:text-gray-500"
+                  href={absoluteGraphqlEndpoint}
+                >
                   API
                 </Link>
                 <a
@@ -119,12 +130,14 @@ async function Page() {
 
         <main id="content" role="main">
           <div className="py-10 px-4 sm:px-6 lg:px-8">
-            <h1 className="text-center block text-2xl font-bold text-white sm:text-4xl">Dev Page</h1>
+            <h1 className="text-center block text-2xl font-bold text-white sm:text-4xl">
+              Dev Page
+            </h1>
             <p className="mt-3 text-lg text-gray-300">
               <h2 className="text-center text-2xl mt-10">Todo List</h2>
               <div className="mx-20 mt-3">
                 {response?.data?.todos ? (
-                  response.data.todos.map((todo, index) => {
+                  response.data.todos.map((todo: Todo, index: number) => {
                     return (
                       <li key={`todo-${index}`}>
                         {todo.description} - Done: {todo.done.toString()}

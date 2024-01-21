@@ -1,5 +1,10 @@
-import { type SelectFields } from "types/graphql";
+import { SelectExpression } from "kysely";
+import { Database } from "types/database";
 import { type TypedDocumentNode } from "urql";
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type QueryInfo = TypedDocumentNode & { fieldNodes: any[] };
+export type SelectFields<T extends keyof Database> = SelectExpression<Database, T>[];
 
 /**
  * Utility function that obtains a list of field names requested in a Graphql query.
@@ -9,14 +14,14 @@ import { type TypedDocumentNode } from "urql";
  * The document node is essentially a tokenized version of the GraphQL query string.
  * @returns an array of field names requested in the GraphQL query for use in Kysely `select` statements.
  */
-export function getQueryFields<T>(info: TypedDocumentNode): SelectFields<T> {
-  const fields = info["fieldNodes"].reduce((allNodes, currentNode) => {
+export function getQueryFields<T extends keyof Database>(info: QueryInfo): SelectFields<T> {
+  const fields = info.fieldNodes.reduce((allNodes: string[], currentNode) => {
     allNodes.push(
-      ...currentNode.selectionSet.selections.map((selection) => {
+      ...currentNode.selectionSet.selections.map((selection: { name: { value: string } }) => {
         return selection.name.value;
       })
     );
     return allNodes;
   }, []);
-  return fields.filter((field) => field !== "__typename");
+  return fields.filter((field: string) => field !== "__typename") as SelectFields<T>;
 }

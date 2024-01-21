@@ -1,5 +1,10 @@
 {
-  "extends": ["next/core-web-vitals", "eslint:recommended", "plugin:@typescript-eslint/recommended", "prettier"],
+  "extends": [
+    "next/core-web-vitals",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier"
+  ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaVersion": "latest",
@@ -8,7 +13,8 @@
   },
   "plugins": ["@typescript-eslint", "prettier", "eslint-plugin-tsdoc"],
   "rules": {
-    "@typescript-eslint/no-unsafe-argument": "error",
+    // TODO discuss removing this rule
+    ////"@typescript-eslint/no-unsafe-argument": "error",
     "prettier/prettier": "error",
     "tsdoc/syntax": "error",
     "no-constant-condition": "off",

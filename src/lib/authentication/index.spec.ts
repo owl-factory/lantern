@@ -1,8 +1,9 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 // TODO make these tests work!
 
 import "jest";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { getSessionId, authenticateSession } from "lib/authentication";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { sessionIdRegex } from "utils/regex";
 
 // This test should require either the DB actually running

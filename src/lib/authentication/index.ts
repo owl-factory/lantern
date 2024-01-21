@@ -1,8 +1,7 @@
 import { type Session } from "lucia";
 import { cookies, headers } from "next/headers";
 import { bearerRegex, sessionIdRegex } from "utils/regex";
-import { Result } from "types/functional";
-import { Err, Ok } from "utils/functional";
+import { Err, Ok } from "utils/results";
 import { AUTH_COOKIE_NAME, luciaAuth } from "lib/authentication/lucia";
 import { useSsl } from "utils/environment";
 export { AUTH_COOKIE_NAME } from "lib/authentication/lucia";
@@ -26,7 +25,9 @@ export async function authenticateSession(): Promise<Result<Session, string>> {
       return Ok(session);
     }
   } catch (_e) {
-    return Err("User authentication failed. Session is invalid (expired or could not be found in the database).");
+    return Err(
+      "User authentication failed. Session is invalid (expired or could not be found in the database)."
+    );
   }
 
   return Err("User authentication failed. Unknown reason.");
@@ -40,11 +41,14 @@ export async function authenticateSession(): Promise<Result<Session, string>> {
  */
 export function getSessionId(): Result<string, string> {
   const sessionId =
-    headers()?.get("Authorization")?.replace(bearerRegex, "") || cookies()?.get(AUTH_COOKIE_NAME)?.value;
+    headers()?.get("Authorization")?.replace(bearerRegex, "") ||
+    cookies()?.get(AUTH_COOKIE_NAME)?.value;
 
-  return sessionIdRegex.test(sessionId)
+  return sessionId && sessionIdRegex.test(sessionId)
     ? Ok(sessionId)
-    : Err("User authentication failed. Could not retrieve Session ID from authorization header or session cookie.");
+    : Err(
+        "User authentication failed. Could not retrieve Session ID from authorization header or session cookie."
+      );
 }
 
 /**
@@ -53,7 +57,12 @@ export function getSessionId(): Result<string, string> {
  * @param sessionId - Session ID string to be saved.
  */
 export function setSessionIdCookie(sessionId: string) {
-  cookies()?.set(AUTH_COOKIE_NAME, sessionId, { sameSite: "lax", httpOnly: true, path: "/", secure: useSsl });
+  cookies()?.set(AUTH_COOKIE_NAME, sessionId, {
+    sameSite: "lax",
+    httpOnly: true,
+    path: "/",
+    secure: useSsl,
+  });
 }
 
 /**

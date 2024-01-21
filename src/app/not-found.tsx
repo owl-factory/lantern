@@ -77,7 +77,10 @@ function Page() {
                 <Link className="font-medium text-gray-400 hover:text-gray-500" href="/characters">
                   Characters
                 </Link>
-                <Link className="font-medium text-gray-400 hover:text-gray-500" href={absoluteGraphqlEndpoint}>
+                <Link
+                  className="font-medium text-gray-400 hover:text-gray-500"
+                  href={absoluteGraphqlEndpoint}
+                >
                   API
                 </Link>
                 <a

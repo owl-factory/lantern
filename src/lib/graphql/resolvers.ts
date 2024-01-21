@@ -2,13 +2,12 @@ import { type YogaInitialContext as Context } from "graphql-yoga";
 import { authenticateSession, setSessionIdCookie } from "lib/authentication";
 import { luciaAuth } from "lib/authentication/lucia";
 import { database } from "lib/database";
-import type { TodoUpdate, Todo, NewTodo } from "types/database";
-import { type TypedDocumentNode as QueryInfo } from "urql";
-import { getQueryFields } from "utils/graphql";
+import type { TodoUpdate, NewTodo } from "types/database";
+import { QueryInfo, getQueryFields } from "utils/graphql";
 import { emailRegex } from "utils/regex";
 
 /* Authentication Resolvers */
-async function login(_, args: { username: string; password: string; setCookie: boolean }) {
+async function login(_: never, args: { username: string; password: string; setCookie: boolean }) {
   const providerUserId = args.username.toLowerCase();
 
   // Set Lucia providerId based on whether the userId is an email or not.
@@ -31,58 +30,65 @@ async function login(_, args: { username: string; password: string; setCookie: b
 }
 
 /* Todo Resolvers */
-async function todo(_, args: { id: string }, _context: Context, info: QueryInfo) {
+async function todo(_: never, args: { id: string }, _context: Context, info: QueryInfo) {
   const auth = await authenticateSession();
   if (auth.ok === false) {
     console.log(auth.error);
     return auth.error; // Apollo server expects us to return `null` and then `throw` and error here, and that sucks!
   }
-  const queryFields = getQueryFields<Todo>(info);
-  return database.selectFrom("todo").where("id", "=", args.id).select(queryFields).executeTakeFirst();
+  const queryFields = getQueryFields<"todo">(info);
+  return database
+    .selectFrom("todo")
+    .where("id", "=", args.id)
+    .select(queryFields)
+    .executeTakeFirst();
 }
 
-async function todos(_, _args, _context: Context, info: QueryInfo) {
+async function todos(_: never, _args: never, _context: Context, info: QueryInfo) {
   const auth = await authenticateSession();
   if (auth.ok === false) {
     console.log(auth.error);
     return auth.error; // Apollo server expects us to return `null` and then `throw` and error here, and that sucks!
   }
-  const queryFields = getQueryFields<Todo>(info);
+  const queryFields = getQueryFields<"todo">(info);
   return database.selectFrom("todo").select(queryFields).execute();
 }
 
-async function createTodo(_, args: NewTodo, _context: Context, info: QueryInfo) {
+async function createTodo(_: never, args: NewTodo, _context: Context, info: QueryInfo) {
   const auth = await authenticateSession();
   if (auth.ok === false) {
     console.log(auth.error);
     return auth.error; // Apollo server expects us to return `null` and then `throw` and error here, and that sucks!
   }
-  const queryFields = getQueryFields<Todo>(info);
+  const queryFields = getQueryFields<"todo">(info);
   return await database.insertInto("todo").values(args).returning(queryFields).executeTakeFirst();
 }
 
-async function updateTodo(_, args: TodoUpdate, _context: Context, info: QueryInfo) {
+async function updateTodo(_: never, args: TodoUpdate, _context: Context, info: QueryInfo) {
   const auth = await authenticateSession();
   if (auth.ok === false) {
     console.log(auth.error);
     return auth.error; // Apollo server expects us to return `null` and then `throw` and error here, and that sucks!
   }
-  const queryFields = getQueryFields<Todo>(info);
+  const queryFields = getQueryFields<"todo">(info);
   return await database
     .updateTable("todo")
-    .where("id", "=", args.id)
+    .where("id", "=", args.id as string)
     .set(args)
     .returning(queryFields)
     .executeTakeFirst();
 }
 
-async function deleteTodo(_, args: { id: string }) {
+async function deleteTodo(_: never, args: { id: string }) {
   const auth = await authenticateSession();
   if (auth.ok === false) {
     console.log(auth.error);
     return auth.error; // Apollo server expects us to return `null` and then `throw` and error here, and that sucks!
   }
-  return (await database.deleteFrom("todo").where("id", "=", args.id).returning("id").executeTakeFirst()).id;
+  return (
+    (await database.deleteFrom("todo").where("id", "=", args.id).returning("id").executeTakeFirst())
+      ?.id || "Nothing to delete."
+  );
 }
 
 /**

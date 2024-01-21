@@ -42,5 +42,8 @@ const staticHtml = `
  * Handler that returns plain HTML for the embeded Apollo Sandbox.
  */
 export async function sandboxHandler() {
-  return new Response(staticHtml, { status: 200, headers: { "Content-Type": "text/html; charset=utf-8" } });
+  return new Response(staticHtml, {
+    status: 200,
+    headers: { "Content-Type": "text/html; charset=utf-8" },
+  });
 }
