@@ -1,6 +1,5 @@
-import { Result } from "types/functional";
-import { Err, Ok } from "utils/functional";
 import { arrayRegex } from "utils/regex";
+import { Err, Ok } from "utils/results";
 
 // TODO convert file to `example.ts`, add tests in `example.spec.ts`. Take care of other TODO tasks.
 
@@ -8,7 +7,7 @@ import { arrayRegex } from "utils/regex";
  * This type will be in the main model under `types`,
  * and will be used in all tables with dynamic content.
  */
-export type Data = { [key: string]: string } & { name: string };
+export type Data = { [key: string]: string }; // & { name: string };
 
 /**
  * Flattens an object of indeterminate depth into a Data object of depth-1 key-value pairs.
@@ -19,14 +18,14 @@ export type Data = { [key: string]: string } & { name: string };
  */
 export function flatten(object: unknown, recursing = false): Result<Data, string> {
   // TODO make this if statement more readable or explain it well in a comment.
-  if (!object || typeof object !== "object" || (!recursing && !object["name"])) {
+  if (!object || typeof object !== "object" || (!recursing && !("name" in object))) {
     return Err("Failed to convert JavaScript object into Lantern data format.");
   }
 
-  const result = {};
+  const result: Data = {};
 
   for (const key in object) {
-    const value = object[key];
+    const value = object[key as keyof typeof object];
     // We call this function recursively to check if value is an object, and process it if so.
     const temp = flatten(value, true);
     if (temp.ok) {
@@ -59,8 +58,9 @@ export function expand(data: Data): object {
   const result: object = {};
   for (const key in data) {
     const splitKeys = key.replace(arrayRegex, ".$1").split(".");
-    // TODO make this code more readable or explain it well in a comment.
-    splitKeys.reduce((object, splitKey, splitKeyIndex) => {
+    // TODO make this code more readable or explain it well in a comment. Figure out how to make this work without `any`.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    splitKeys.reduce((object: any, splitKey, splitKeyIndex) => {
       return (
         object[splitKey] ||
         (object[splitKey] = !isPositiveInteger(splitKeys[splitKeyIndex + 1])
@@ -85,7 +85,7 @@ export function isPositiveInteger(input: string | number): boolean {
 }
 
 // TODO delete test object and script
-const object = {
+const objExample = {
   name: "Laura Wenning",
   pronouns: "she/her",
   stats: {
@@ -106,7 +106,7 @@ const object = {
 };
 
 // Run this as script with `pnpm exec tsx ./src/utils/data-example.ts`.
-const res = flatten(object);
+const res = flatten(objExample);
 if (res.ok) {
   console.log(res.data);
   const expanded = expand(res.data);
