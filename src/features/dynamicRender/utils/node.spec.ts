@@ -4,7 +4,7 @@ jest.mock("lib/mobx");
 
 const { checkIfUsableNode, getNodeName } = __testing__;
 
-const getAttribute: (name: string) => string = jest.fn((name: string) => name);
+const getAttribute: (name: string) => string | null = jest.fn((name: string) => name);
 
 const INVALID_NODE = { nodeType: Node.COMMENT_NODE } as ChildNode;
 

@@ -11,17 +11,21 @@ type UseAttributesResult<T> = {
  * @param attributeDefinitions - The attribute mapping for the given node
  * @returns An object containing the mapped attributes
  */
-export function useAttributes<T>(node: Node, attributeDefinitions: AttributeDefinition[]): UseAttributesResult<T> {
+export function useAttributes<T>(
+  node: Node,
+  attributeDefinitions: AttributeDefinition[]
+): UseAttributesResult<T> {
   if (node.nodeType !== Node.ELEMENT_NODE) return { attributes: {} };
   const element = node as Element;
-  const attributes: Partial<T> = {};
+  const attributes: Record<string, string | undefined> = {};
 
   attributeDefinitions.forEach((definition: AttributeDefinition) => {
     const name = definition.name;
     const defaultValue = definition.default ?? undefined;
     const value = element.getAttribute(name) ?? defaultValue;
+    if (value === undefined) return;
     attributes[name] = value;
   });
 
-  return { attributes };
+  return { attributes: attributes as T };
 }

@@ -2,4 +2,7 @@ import { AttributeDefinition } from "features/dynamicRender/types/attributes/def
 import { commonInputAttributes } from "./common";
 
 /** The attributes used by radio inputs */
-export const radioAttributes: AttributeDefinition[] = [...commonInputAttributes, { name: "value", required: true }];
+export const radioAttributes: AttributeDefinition[] = [
+  ...commonInputAttributes,
+  { name: "value", required: true },
+];

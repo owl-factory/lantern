@@ -2,7 +2,6 @@
 
 import { Button } from "components/ui/Button";
 import { Character } from "types/character";
-import { OkResult, Result } from "types/functional";
 import { getLocalStorage } from "utils/localStorage";
 
 type CharacterListProps = {
@@ -19,27 +18,49 @@ type CharacterListProps = {
  * @param onCharacterClick - A function that runs when a character is clicked
  */
 export function CharacterList(props: CharacterListProps) {
-  const characterElements = props.characterIds
-    .map((characterId: string) => getLocalStorage(characterId, "object"))
-    .filter((characterResult: Result<Character, string>) => characterResult.ok)
-    .map((characterResult: OkResult<Character>) => characterResult.data)
+  const characterResults = props.characterIds
+    .map((characterId: string) => getLocalStorage<Character>(characterId, "object").unwrap())
+    .filter((result): result is Character => result !== undefined)
     .map((character: Character) => (
-      <li key={character.id}>
-        <span onClick={() => props.onCharacterClick(character.id)}>{character.data.name} </span>
-        <Button
-          onClick={() =>
-            confirm(`Are you sure you want to delete ${character.data.name}?`) && props.deleteCharacter(character.id)
-          }
-        >
-          Delete
-        </Button>
-      </li>
+      <CharacterListItem
+        key={character.id}
+        character={character}
+        onCharacterClick={props.onCharacterClick}
+        deleteCharacter={props.deleteCharacter}
+      />
     ));
 
   return (
     <ul>
       <li onClick={props.addCharacter}>+ Add Character</li>
-      {characterElements}
+      {characterResults}
     </ul>
+  );
+}
+
+/**
+ * Renders a single character
+ * @param character - The character to render
+ * @param onCharacterClick - The action to run when the character is clicked
+ * @param deleteCharacter - The action to run when deleting a character
+ */
+function CharacterListItem(props: {
+  character: Character;
+  onCharacterClick: (key: string) => void;
+  deleteCharacter: (key: string) => void;
+}) {
+  const { character } = props;
+  return (
+    <li>
+      <span onClick={() => props.onCharacterClick(character.id)}>{character.data.name} </span>
+      <Button
+        onClick={() =>
+          confirm(`Are you sure you want to delete ${character.data.name}?`) &&
+          props.deleteCharacter(character.id)
+        }
+      >
+        Delete
+      </Button>
+    </li>
   );
 }

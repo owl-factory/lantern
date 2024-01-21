@@ -1,4 +1,4 @@
-import { Ok } from "utils/functional";
+import { Ok } from "utils/results";
 
 export const action = {};
 export const computed = {};

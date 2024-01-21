@@ -4,7 +4,10 @@ import { useFormValue } from "features/dynamicRender/hooks/useFormValue";
 import { NumberInputAttributes } from "features/dynamicRender/types/attributes/form/numberInput";
 import { NodeType } from "features/dynamicRender/types/node";
 import { GetOptions } from "features/dynamicRender/types/query";
-import { RenderComponentDefinition, RenderComponentProps } from "features/dynamicRender/types/render";
+import {
+  RenderComponentDefinition,
+  RenderComponentProps,
+} from "features/dynamicRender/types/render";
 import { buildQueryOptionsFromAttributes } from "features/dynamicRender/utils/query";
 import { ChangeEvent, useMemo } from "react";
 
@@ -13,8 +16,11 @@ import { ChangeEvent, useMemo } from "react";
  */
 export function NumberInput(props: RenderComponentProps) {
   const { attributes } = useAttributes<NumberInputAttributes>(props.node, numberInputAttributes);
-  const options = useMemo<GetOptions>(() => buildQueryOptionsFromAttributes(attributes), [attributes]);
-  const { value, update } = useFormValue<string>(options, "");
+  const options = useMemo<GetOptions>(
+    () => buildQueryOptionsFromAttributes(attributes),
+    [attributes]
+  );
+  const { value, update } = useFormValue(options, "");
 
   /**
    * Updates the form value on change.

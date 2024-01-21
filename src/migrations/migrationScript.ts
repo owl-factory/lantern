@@ -20,7 +20,11 @@ async function migrateToLatest(migrationArg: string) {
   });
 
   let res;
-  if (!migrationArg || migrationArg.toLowerCase() === "--latest" || migrationArg.toLowerCase() === "-l") {
+  if (
+    !migrationArg ||
+    migrationArg.toLowerCase() === "--latest" ||
+    migrationArg.toLowerCase() === "-l"
+  ) {
     res = await migrator.migrateToLatest();
   } else if (migrationArg === "--up" || migrationArg === "-u") {
     res = await migrator.migrateUp();

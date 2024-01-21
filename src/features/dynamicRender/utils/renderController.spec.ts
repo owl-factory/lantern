@@ -1,7 +1,7 @@
 import { safeMakeObservable } from "lib/mobx";
 import { RenderController, RenderControllerState } from "./renderController";
 import { LoaderFactory, MarkupFactory, StorageFactory } from "./factory";
-import { Err } from "utils/functional";
+import { Err } from "utils/results";
 import { FactoryOptions } from "features/dynamicRender/types/factory";
 import { GetOptions, QuerySource } from "features/dynamicRender/types/query";
 import { parseMarkup } from "features/dynamicRender/utils/markup/parseSheet";

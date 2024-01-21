@@ -1,6 +1,9 @@
 import { action, computed, safeMakeObservable } from "lib/mobx";
 import { FactoryOptions } from "features/dynamicRender/types/factory";
-import { LoaderControllerState, MarkupSource } from "features/dynamicRender/types/controllers/loader";
+import {
+  LoaderControllerState,
+  MarkupSource,
+} from "features/dynamicRender/types/controllers/loader";
 import { LoaderController } from "./common";
 
 /**
@@ -8,7 +11,7 @@ import { LoaderController } from "./common";
  */
 export class HardcodedLoaderController extends LoaderController {
   _state: LoaderControllerState = LoaderControllerState.NoOp;
-  apiRoute: string;
+  apiRoute: string = "";
 
   constructor(options: FactoryOptions) {
     super();

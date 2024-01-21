@@ -1,4 +1,3 @@
-import { OkResult } from "types/functional";
 import { getLocalStorage, setLocalStorage } from "./localStorage";
 
 describe("getLocalStorage tests", () => {

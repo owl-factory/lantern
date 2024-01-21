@@ -1,4 +1,4 @@
-import { Err, Ok } from "utils/functional";
+import { Err, Ok } from "utils/results";
 
 export const getLocalStorage = jest.fn((key: string, type: string) => {
   switch (type) {

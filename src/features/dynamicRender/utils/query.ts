@@ -8,7 +8,9 @@ const INVALID_OPTIONS: InvalidQueryOptions = { source: QuerySource.Invalid };
  * @param attributes - The attributes to build the GetOptions from
  * @returns A GetOptions query
  */
-export function buildQueryOptionsFromAttributes(attributes: Partial<CommonInputAttributes>): GetOptions {
+export function buildQueryOptionsFromAttributes(
+  attributes: Partial<CommonInputAttributes>
+): GetOptions {
   switch (attributes.source) {
     case "character":
       if (!attributes.name) return { ...INVALID_OPTIONS };
