@@ -25,15 +25,16 @@ export function Err<E = Error>(error: E): Result<never, E> {
 /**
  * Helper function that wraps an `unknown` error in Lantern's functional `Result` type safely.
  * Needed because catch statements always return `unknown` types in strict mode.
+ * Error is converted into a `String`.
  * @param error - The `unknown` error object that is likely an instance of `Error` or a string.
- * @returns Err variant of the `Result` type, wrapping a standard Error class instance.
+ * @returns Err variant of the `Result` type, wrapping an extracted string.
  */
-export function UnknownErr(error: unknown): Result<never, Error> {
-  let errorOut = Error("Something went wrong.");
+export function ErrUnknown(error: unknown): Result<never, string> {
+  let errorOut = "Something went wrong.";
   if (error instanceof Error) {
-    errorOut = error;
+    errorOut = error.message;
   } else if (typeof error === "string") {
-    errorOut = Error(error);
+    errorOut = error;
   }
   return Err(errorOut);
 }
@@ -41,16 +42,16 @@ export function UnknownErr(error: unknown): Result<never, Error> {
 /**
  * Helper function that wraps an `unknown` error in Lantern's functional `Result` type safely.
  * Needed because catch statements always return `unknown` types in strict mode.
- * TODO - change this to ErrUnknown? Err* should lead to remain visually consistent with Err()
+ * Error is converted into an `Error`.
  * @param error - The `unknown` error object that is likely an instance of `Error` or a string.
- * @returns Err variant of the `Result` type, wrapping an extracted string.
+ * @returns Err variant of the `Result` type, wrapping a standard Error class instance.
  */
-export function UnknownStrErr(error: unknown): Result<never, string> {
-  let errorOut = "Something went wrong.";
+export function ErrUnknownObject(error: unknown): Result<never, Error> {
+  let errorOut = Error("Something went wrong.");
   if (error instanceof Error) {
-    errorOut = error.message;
-  } else if (typeof error === "string") {
     errorOut = error;
+  } else if (typeof error === "string") {
+    errorOut = Error(error);
   }
   return Err(errorOut);
 }

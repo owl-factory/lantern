@@ -1,5 +1,5 @@
 import { AnnotationsMap, CreateObservableOptions, makeObservable } from "mobx";
-import { Ok, UnknownStrErr } from "utils/results";
+import { Ok, ErrUnknown } from "utils/results";
 
 export { action, computed, observable } from "mobx";
 export { observer } from "mobx-react-lite";
@@ -26,6 +26,6 @@ export function safeMakeObservable<T extends object, AdditionalKeys extends Prop
     const result = makeObservable(target, annotations, options);
     return Ok(result);
   } catch (why) {
-    return UnknownStrErr(why);
+    return ErrUnknown(why);
   }
 }

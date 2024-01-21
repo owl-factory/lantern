@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Err, Ok, UnknownErr } from "utils/results";
+import { Err, Ok, ErrUnknown } from "utils/results";
 
 /**
  * Time, in milliseconds, between online status checks.
@@ -34,15 +34,15 @@ export function useOnlineStatus(): boolean {
  * Function that calls the endpoint `/api/ping` and safely handles the result.
  * @returns safely wrapped result of the fetch request to `/api/ping`.
  */
-export async function ping(): Promise<Result<undefined, Error>> {
+export async function ping(): Promise<Result<undefined>> {
   try {
     const response = await fetch("/api/ping");
     if (response.ok && response.status === 200) {
       return Ok(undefined);
     } else {
-      return Err(Error(`Server error ${response.status}: ${response.statusText}.`));
+      return Err(`Server error ${response.status}: ${response.statusText}.`);
     }
   } catch (error) {
-    return UnknownErr(error);
+    return ErrUnknown(error);
   }
 }

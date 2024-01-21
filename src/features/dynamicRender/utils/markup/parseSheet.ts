@@ -1,7 +1,7 @@
 import { Prefabs, Variables } from "features/dynamicRender/types/controllers/markup";
 import { ParsedNode } from "features/dynamicRender/types/render";
 import { parseLayoutMarkup } from "features/dynamicRender/utils/markup/parseLayout";
-import { Err, Ok, UnknownStrErr } from "utils/results";
+import { Err, Ok, ErrUnknown } from "utils/results";
 
 export type MarkupComponents = {
   layout: ParsedNode[];
@@ -22,7 +22,7 @@ export function parseMarkup(markup: string): Result<MarkupComponents, string> {
   try {
     markupDom = parser.parseFromString(markup, "application/xml");
   } catch (why) {
-    return UnknownStrErr(why);
+    return ErrUnknown(why);
   }
 
   const sheetElement = findFirstElementByTag(markupDom, "Sheet");
