@@ -3,7 +3,7 @@ import { getServerClient } from "lib/graphql/client";
 import { Metadata } from "next";
 import Link from "next/link";
 import { gql } from "graphql-tag";
-import { absoluteGraphqlEndpoint } from "utils/environment";
+import { absoluteGraphqlUrl } from "utils/environment";
 import { Todo } from "types/database";
 
 /**
@@ -112,7 +112,7 @@ async function Page() {
                 </Link>
                 <Link
                   className="font-medium text-gray-400 hover:text-gray-500"
-                  href={absoluteGraphqlEndpoint}
+                  href={absoluteGraphqlUrl}
                 >
                   API
                 </Link>

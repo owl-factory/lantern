@@ -15,24 +15,22 @@ export const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
 export const useSsl = process.env.USE_SSL !== "false";
 
 /**
- * Relative path where GraphQL endpoint will be hosted.
- */
-export const graphqlEndpoint = "/api/graphql";
-
-/**
  * GraphQL remote url. Null if GraphQL URL is local.
  */
-export const graphqlRemoteUrl = process.env.NEXT_PUBLIC_GRAPHQL_REMOTE_URL || "";
+export const remoteApiUrl = process.env.NEXT_PUBLIC_REMOTE_API_URL || "";
 
 /**
  * True if GraphQL remote url is non null.
  */
-export const graphqlIsRemote = Boolean(graphqlRemoteUrl);
+export const apiIsRemote = remoteApiUrl !== "";
+
+/**
+ * Relative path where GraphQL endpoint will be hosted.
+ */
+export const graphqlUrl = "/api/graphql";
 
 /**
  * Absolute URL where the GraphQL endpoint is hosted. Will either be the local
  * site's base path followed by the relative GraphQL endpoint URL or a remote URL.
  */
-export const absoluteGraphqlEndpoint = graphqlIsRemote
-  ? graphqlRemoteUrl
-  : baseUrl + graphqlEndpoint;
+export const absoluteGraphqlUrl = !apiIsRemote ? baseUrl + graphqlUrl : remoteApiUrl + graphqlUrl;

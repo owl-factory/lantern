@@ -1,6 +1,6 @@
 import { cacheExchange, createClient, fetchExchange } from "urql";
 import { registerUrql } from "@urql/next/rsc";
-import { absoluteGraphqlEndpoint } from "utils/environment";
+import { absoluteGraphqlUrl } from "utils/environment";
 ////import { executeExchange } from "@urql/exchange-execute";
 ////import { schema } from "lib/graphql/schema";
 
@@ -9,7 +9,7 @@ import { absoluteGraphqlEndpoint } from "utils/environment";
 
 const makeClient = () => {
   return createClient({
-    url: absoluteGraphqlEndpoint,
+    url: absoluteGraphqlUrl,
     exchanges: [cacheExchange, fetchExchange],
   });
 };

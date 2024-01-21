@@ -1,4 +1,4 @@
-import { absoluteGraphqlEndpoint } from "utils/environment";
+import { absoluteGraphqlUrl } from "utils/environment";
 
 const staticHtml = `
   <!doctype html>
@@ -26,7 +26,7 @@ const staticHtml = `
       <script>
         new window.EmbeddedSandbox({
           target: "#embedded-sandbox",
-          initialEndpoint: "${absoluteGraphqlEndpoint}",
+          initialEndpoint: "${absoluteGraphqlUrl}",
           hideCookieToggle: false,
           endpointIsEditable: false,
           initialState: {

@@ -1,7 +1,7 @@
 import { LanternLogo } from "components/LanternLogo";
 import { Metadata } from "next";
 import { Link } from "components/ui/Link";
-import { absoluteGraphqlEndpoint } from "utils/environment";
+import { absoluteGraphqlUrl } from "utils/environment";
 import { Button } from "components/ui/Button";
 
 /**
@@ -75,7 +75,7 @@ function Page() {
                 <Link variant="plain" inactive={true} href="/characters">
                   Characters
                 </Link>
-                <Link variant="plain" inactive={true} href={absoluteGraphqlEndpoint}>
+                <Link variant="plain" inactive={true} href={absoluteGraphqlUrl}>
                   API
                 </Link>
                 <Link variant="plain" inactive={true} href="https://github.com/owl-factory/lantern">
@@ -102,7 +102,7 @@ function Page() {
                 type="button"
                 color="secondary"
                 className="w-full sm:w-auto inline-flex justify-center items-center gap-x-3.5 text-center shadow-sm text-sm font-medium rounded-md hover:text-white hover:border-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-gray-800 transition py-3 px-4"
-                href={absoluteGraphqlEndpoint}
+                href={absoluteGraphqlUrl}
               >
                 <svg className="w-2.5 h-2.5" width="16" height="16" viewBox="0 0 16 16" fill="none">
                   <path

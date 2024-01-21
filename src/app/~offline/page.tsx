@@ -1,7 +1,7 @@
 import { LanternLogo } from "components/LanternLogo";
 import { Metadata } from "next";
 import Link from "next/link";
-import { absoluteGraphqlEndpoint } from "utils/environment";
+import { absoluteGraphqlUrl } from "utils/environment";
 
 /**
  * Page metadata object, NextJs will append these values as meta tags to the <head>.
@@ -81,7 +81,7 @@ function Page() {
                 </Link>
                 <Link
                   className="font-medium text-gray-400 hover:text-gray-500"
-                  href={absoluteGraphqlEndpoint}
+                  href={absoluteGraphqlUrl}
                 >
                   API
                 </Link>
