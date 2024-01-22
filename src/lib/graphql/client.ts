@@ -1,20 +1,17 @@
 import { cacheExchange, createClient, fetchExchange } from "urql";
 import { registerUrql } from "@urql/next/rsc";
-import { absoluteGraphqlUrl } from "utils/environment";
-////import { executeExchange } from "@urql/exchange-execute";
-////import { schema } from "lib/graphql/schema";
+import { absoluteGraphqlUrl, apiIsRemote } from "utils/environment";
+import { executeExchange } from "@urql/exchange-execute";
+import { schema } from "lib/graphql/schema";
 
-////const serverExchange = graphqlIsRemote ? fetchExchange : executeExchange({ schema });
-////const srrExchange = isServer ? serverExchange : fetchExchange;
-
-const makeClient = () => {
-  return createClient({
-    url: absoluteGraphqlUrl,
-    exchanges: [cacheExchange, fetchExchange],
-  });
-};
+const serverFetchExchange = !apiIsRemote ? executeExchange({ schema }) : fetchExchange;
 
 /**
- * urql client getter for use in NextJs React Server Components.
+ * urql client getter for use only server side (such as NextJs React Server Components).
  */
-export const getServerClient = registerUrql(makeClient).getClient;
+export const getServerClient = registerUrql(() => {
+  return createClient({
+    url: absoluteGraphqlUrl,
+    exchanges: [cacheExchange, serverFetchExchange],
+  });
+}).getClient;
