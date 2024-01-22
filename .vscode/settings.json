@@ -3,10 +3,15 @@
   "editor.tabSize": 2,
   "editor.detectIndentation": false,
   "editor.formatOnSave": true,
+  "editor.quickSuggestions": {
+    "strings": "on"
+  },
   // Install the "Prettier - Code formatter" VSCode extension
   "editor.defaultFormatter": "esbenp.prettier-vscode",
+  // Run jest test from extension.
   "jest.jestCommandLine": "pnpm run test:unit",
-
   // Automatically requires absolute imports
-  "typescript.preferences.importModuleSpecifier": "non-relative"
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  // Cache graphql schema in graphql language features extension
+  "vscode-graphql.cacheSchemaFileForLookup": true
 }

@@ -42,7 +42,7 @@ export const todosQuery = gql`
  * "/"
  * Site index/landing page component.
  */
-export default async function Page() {
+async function Page() {
   const client = getServerClient();
   const res = await client.query(todosQuery, {});
   const list = res?.data?.todos?.map((todo: Todo, index: number) => {
@@ -215,3 +215,5 @@ export default async function Page() {
     </div>
   );
 }
+
+export default Page;
