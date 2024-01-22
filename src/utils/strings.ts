@@ -29,11 +29,15 @@ export function toKey(value: string, enforceCase = true): string {
 }
 
 export function isExternalUrl(url: string): boolean {
-  if (url.startsWith("/")) {
+  if (url.startsWith("/") || url.startsWith("#")) {
     return false;
   }
   if (url.includes("/api")) {
     return true;
   }
-  return new URL(url).origin !== baseUrl;
+  try {
+    return new URL(url).origin !== baseUrl;
+  } catch (_e) {
+    return false;
+  }
 }

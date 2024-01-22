@@ -39,5 +39,5 @@
     "**/*.js",
     "**/*.mjs"
   ],
-  "exclude": ["node_modules", "archive", ".next"]
+  "exclude": ["node_modules", "archive", ".next", "public"]
 }

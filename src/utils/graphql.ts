@@ -18,7 +18,6 @@ export type SelectFields<T extends keyof Database> = SelectExpression<Database, 
  * @returns an array of field names requested in the GraphQL query for use in Kysely `select` statements.
  */
 export function getQueryFields<T extends keyof Database>(info: QueryInfo): SelectFields<T> {
-  console.log(info.fieldNodes);
   const fields = info.fieldNodes.reduce((allNodes: string[], currentNode) => {
     allNodes.push(
       ...currentNode.selectionSet.selections.map((selection) => {

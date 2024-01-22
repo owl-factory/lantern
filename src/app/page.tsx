@@ -18,7 +18,7 @@ export const metadata: Metadata = {
  */
 function Page() {
   return (
-    <div className="bg-zinc-900 flex h-full">
+    <div className="flex h-full">
       <div className="max-w-[50rem] flex flex-col mx-auto w-full h-full">
         <header className="mb-auto flex flex-wrap sm:justify-start sm:flex-nowrap z-50 w-full text-sm py-4">
           <nav
@@ -77,6 +77,9 @@ function Page() {
                 </Link>
                 <Link variant="plain" inactive={true} href={absoluteGraphqlUrl}>
                   API
+                </Link>
+                <Link variant="plain" inactive={true} href="/login">
+                  Login
                 </Link>
                 <Link variant="plain" inactive={true} href="https://github.com/owl-factory/lantern">
                   GitHub

@@ -49,16 +49,17 @@ export const Link = forwardRef(function Link(
       className: props.className,
     });
   }
+  const modProps = { ...props, className };
+  delete modProps.inactive;
+  delete modProps.variant;
 
   if (props.href && typeof props.href === "string" && isExternalUrl(props.href)) {
-    const modProps = {
-      replace: undefined,
-      scroll: undefined,
-      prefetch: undefined,
-      ...props,
-    } as AnchorProps;
-    return <a target="_blank" rel="nonoopener" {...modProps} className={className} ref={ref} />;
+    delete modProps.replace;
+    delete modProps.scroll;
+    delete modProps.prefetch;
+
+    return <a target="_blank" rel="nonoopener" {...modProps} ref={ref} />;
   }
 
-  return <NextLink {...props} className={className} />;
+  return <NextLink {...modProps} />;
 });
