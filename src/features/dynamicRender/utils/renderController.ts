@@ -9,6 +9,8 @@ import { LoaderFactory, MarkupFactory, StorageFactory } from "./factory";
 import { FactoryOptions } from "features/dynamicRender/types/factory";
 import { GetOptions, QuerySource } from "features/dynamicRender/types/query";
 import { parseMarkup } from "features/dynamicRender/utils/markup/parseSheet";
+import { ExpressionController } from "features/dynamicRender/utils/expression/controllers/common";
+import { NullExpressionController } from "features/dynamicRender/utils/expression/controllers/null";
 
 /** The valid states of the Render Controller */
 export enum RenderControllerState {
@@ -41,6 +43,7 @@ export class RenderController {
   _state: RenderControllerState = RenderControllerState.NoOp;
   _error: string | undefined;
 
+  expression: ExpressionController = new NullExpressionController();
   loader: LoaderController = new NullLoaderController();
   markup: MarkupController = new NullMarkupController();
   storage: StorageController = new NullStorageController();

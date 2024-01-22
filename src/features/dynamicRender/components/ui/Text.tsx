@@ -11,7 +11,7 @@ import { useContext } from "react";
 function useAttribute(attribute: Attribute) {
   const context = useContext(DynamicContext);
   if (attribute.isExpression === false) return attribute.value;
-
+  context;
   return "";
 }
 

@@ -3,10 +3,12 @@ import { AttributeDefinition } from "features/dynamicRender/types/attributes/def
 import { NodeType } from "features/dynamicRender/types/node";
 import { ReactNode } from "react";
 
+type UnknownAttributes = Record<string, Attribute | undefined>;
+
 /**
  * The common props used within the Render Components
  */
-export type RenderComponentProps<T = Record<string, string>> = {
+export type RenderComponentProps<T = UnknownAttributes> = {
   /** The name of the node for debugging reasons */
   nodeName: string;
   /** The type of node this is expected to be */
@@ -20,9 +22,7 @@ export type RenderComponentProps<T = Record<string, string>> = {
 };
 
 /** The common shared between all Render Components */
-export type RenderComponent<T = Record<string, string>> = (
-  props: RenderComponentProps<T>
-) => ReactNode;
+export type RenderComponent<T = UnknownAttributes> = (props: RenderComponentProps<T>) => ReactNode;
 
 /** A bundle of like attributes for a RenderComponent */
 export type RenderComponentDefinition = {
@@ -34,7 +34,7 @@ export type RenderComponentDefinition = {
   backwardsCompatiblityNodeTypes?: NodeType[];
 
   /** Any extra functionality to run for this specific type of component */
-  customParsing?: (node: Node, attributes: Record<string, Attribute>) => void;
+  customParsing?: (node: Node, attributes: UnknownAttributes) => void;
 };
 
 /**
