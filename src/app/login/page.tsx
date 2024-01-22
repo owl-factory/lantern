@@ -6,6 +6,7 @@ import { Button } from "components/ui/Button";
 import gql from "graphql-tag";
 import { getServerClient } from "lib/graphql/client";
 import { Todo } from "types/database";
+import { PasswordField } from "app/login/PasswordField";
 
 /**
  * Page metadata object, NextJs will append these values as meta tags to the <head>.
@@ -163,45 +164,10 @@ export default async function Page() {
                           className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                           placeholder="name@website.com"
                           required
+                          spellCheck={false}
                         />
                       </div>
-                      <div>
-                        <label
-                          htmlFor="password"
-                          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                        >
-                          Password
-                        </label>
-                        <input
-                          type="password"
-                          name="password"
-                          id="password"
-                          placeholder="••••••••"
-                          className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                          required
-                        />
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-start">
-                          <div className="flex items-center h-5">
-                            <input
-                              id="remember"
-                              aria-describedby="remember"
-                              type="checkbox"
-                              className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
-                              required
-                            />
-                          </div>
-                          <div className="ml-3 text-sm">
-                            <label htmlFor="remember" className="text-gray-500 dark:text-gray-300">
-                              Remember me
-                            </label>
-                          </div>
-                        </div>
-                        <Link href="#" className="text-sm">
-                          Forgot password?
-                        </Link>
-                      </div>
+                      <PasswordField />
                       <Button
                         type="submit"
                         className="w-full hover:text-blue-600 text-white focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"

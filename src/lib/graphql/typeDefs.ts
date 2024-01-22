@@ -11,7 +11,7 @@ export const typeDefs = gql`
   }
 
   type Query {
-    todo(id: ID): Todo
+    todo(id: ID!): Todo
     todos: [Todo]
   }
 
