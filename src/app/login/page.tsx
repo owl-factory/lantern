@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import { Link } from "components/ui/Link";
 import { absoluteGraphqlUrl } from "utils/environment";
 import { Button } from "components/ui/Button";
-import { gql } from "urql";
+import gql from "graphql-tag";
 import { getServerClient } from "lib/graphql/client";
 import { Todo } from "types/database";
 
@@ -18,6 +18,12 @@ export const metadata: Metadata = {
 const loginMutation = gql`
   mutation Mutation($username: String, $password: String) {
     login(username: $username, password: $password, setCookie: true)
+  }
+`;
+
+const logoutMutation = gql`
+  mutation Mutation {
+    logout(deleteCookie: true)
   }
 `;
 
@@ -38,7 +44,7 @@ export const todosQuery = gql`
 export default async function Page() {
   const client = getServerClient();
   const res = await client.query(todosQuery, {});
-  const jsx = res?.data?.todos?.map((todo: Todo, index: number) => {
+  const list = res?.data?.todos?.map((todo: Todo, index: number) => {
     return (
       <li key={`todo-${index}`}>
         {todo.description} - Done: {todo.done.toString()}
@@ -49,11 +55,16 @@ export default async function Page() {
   async function submitLogin(formData: FormData) {
     "use server";
     const client = getServerClient();
-    const res = await client.mutation(loginMutation, {
+    await client.mutation(loginMutation, {
       username: formData.get("username"),
       password: formData.get("password"),
     });
-    console.log(res?.data);
+  }
+
+  async function submitLogout() {
+    "use server";
+    const client = getServerClient();
+    await client.mutation(logoutMutation, {});
   }
 
   return (
@@ -129,7 +140,7 @@ export default async function Page() {
         </header>
 
         <main id="content" role="main">
-          {!jsx ? (
+          {!list ? (
             <section id="login-card">
               <div className="flex flex-col items-center justify-center px-6 mx-auto">
                 <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
@@ -213,9 +224,15 @@ export default async function Page() {
               </div>
             </section>
           ) : (
-            <section id="gql-test" className="mt-3 text-lg text-gray-300 px-14 pt-2">
+            <section
+              id="gql-test"
+              className="mt-3 text-lg text-gray-300 px-14 pt-2 flex flex-col items-center"
+            >
               <h2 className="text-2xl text-white text-center pt-5">Todo List</h2>
-              {jsx}
+              <ul className="items-start mt-4 mb-16">{list}</ul>
+              <form action={submitLogout}>
+                <Button type="submit">Logout</Button>
+              </form>
             </section>
           )}
         </main>

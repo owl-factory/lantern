@@ -17,6 +17,7 @@ export const typeDefs = gql`
 
   type Mutation {
     login(username: String, password: String, setCookie: Boolean): String!
+    logout(deleteCookie: Boolean): String!
     createTodo(description: String, done: Boolean): Todo
     updateTodo(id: ID!, description: String, done: Boolean): Todo
     deleteTodo(id: ID!): ID!

@@ -1,5 +1,7 @@
+// this allows `throw`ing for Apollo error handling.
+/* eslint-disable no-restricted-syntax */
 import { type YogaInitialContext as Context } from "graphql-yoga";
-import { authenticateSession, setSessionIdCookie } from "lib/authentication";
+import { authenticateSession, deleteSessionIdCookie, setSessionIdCookie } from "lib/authentication";
 import { luciaAuth } from "lib/authentication/lucia";
 import { database } from "lib/database";
 import type { TodoUpdate, NewTodo } from "types/database";
@@ -29,12 +31,27 @@ async function login(_: never, args: { username: string; password: string; setCo
   return session.sessionId;
 }
 
+async function logout(_: never, args: { deleteCookie: boolean }) {
+  const auth = await authenticateSession();
+  if (auth.ok === false) {
+    return new Response(auth.error, { status: 401 });
+  }
+  const session = auth.data;
+
+  await luciaAuth.deleteDeadUserSessions(session.user.userId);
+  await luciaAuth.invalidateSession(session.sessionId);
+  if (args.deleteCookie) {
+    deleteSessionIdCookie();
+  }
+
+  return session.sessionId;
+}
+
 /* Todo Resolvers */
 async function todo(_: never, args: { id: string }, _context: Context, info: QueryInfo) {
   const auth = await authenticateSession();
   if (auth.ok === false) {
-    console.log(auth.error);
-    return auth.error; // Apollo server expects us to return `null` and then `throw` and error here, and that sucks!
+    throw new Error(auth.error); // Apollo server expects us to `throw` an error here, and that sucks!
   }
   const queryFields = getQueryFields<"todo">(info);
   return database
@@ -47,8 +64,7 @@ async function todo(_: never, args: { id: string }, _context: Context, info: Que
 async function todos(_: never, _args: never, _context: Context, info: QueryInfo) {
   const auth = await authenticateSession();
   if (auth.ok === false) {
-    console.log(auth.error);
-    return auth.error; // Apollo server expects us to return `null` and then `throw` and error here, and that sucks!
+    throw new Error(auth.error); // Apollo server expects us to `throw` an error here, and that sucks!
   }
   const queryFields = getQueryFields<"todo">(info);
   return database.selectFrom("todo").select(queryFields).execute();
@@ -57,8 +73,7 @@ async function todos(_: never, _args: never, _context: Context, info: QueryInfo)
 async function createTodo(_: never, args: NewTodo, _context: Context, info: QueryInfo) {
   const auth = await authenticateSession();
   if (auth.ok === false) {
-    console.log(auth.error);
-    return auth.error; // Apollo server expects us to return `null` and then `throw` and error here, and that sucks!
+    throw new Error(auth.error); // Apollo server expects us to `throw` an error here, and that sucks!
   }
   const queryFields = getQueryFields<"todo">(info);
   return await database.insertInto("todo").values(args).returning(queryFields).executeTakeFirst();
@@ -67,8 +82,7 @@ async function createTodo(_: never, args: NewTodo, _context: Context, info: Quer
 async function updateTodo(_: never, args: TodoUpdate, _context: Context, info: QueryInfo) {
   const auth = await authenticateSession();
   if (auth.ok === false) {
-    console.log(auth.error);
-    return auth.error; // Apollo server expects us to return `null` and then `throw` and error here, and that sucks!
+    throw new Error(auth.error); // Apollo server expects us to `throw` an error here, and that sucks!
   }
   const queryFields = getQueryFields<"todo">(info);
   return await database
@@ -82,13 +96,16 @@ async function updateTodo(_: never, args: TodoUpdate, _context: Context, info: Q
 async function deleteTodo(_: never, args: { id: string }) {
   const auth = await authenticateSession();
   if (auth.ok === false) {
-    console.log(auth.error);
-    return auth.error; // Apollo server expects us to return `null` and then `throw` and error here, and that sucks!
+    throw new Error(auth.error); // Apollo server expects us to `throw` an error here, and that sucks!
   }
-  return (
-    (await database.deleteFrom("todo").where("id", "=", args.id).returning("id").executeTakeFirst())
-      ?.id || "Nothing to delete."
-  );
+  const deletedId = (
+    await database.deleteFrom("todo").where("id", "=", args.id).returning("id").executeTakeFirst()
+  )?.id;
+  if (deletedId !== undefined) {
+    return deletedId;
+  } else {
+    throw new Error(`Item with ID '${deletedId}' not found in database.`);
+  }
 }
 
 /**
@@ -101,6 +118,7 @@ export const resolvers = {
   },
   Mutation: {
     login,
+    logout,
     createTodo,
     updateTodo,
     deleteTodo,
