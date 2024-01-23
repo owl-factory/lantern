@@ -32,7 +32,8 @@ export const link = tv({
 /**
  * Renders an HTML <a> tag properly styled for Lantern. Uses `next/link` for local URLs, providing client side navigation.
  * External links have `target="_blank"` and `rel="nonoopener"` applied to them by default, but this can be overridden.
- * @param props - `next/link` props, which also includes all HTML <a> tag attributes.
+ * @param props - `next/link` props, which also includes all HTML <a> tag attributes. Style props `variant` and `inactive` are also provided.
+ * if prop `type="button"` is provided this component will instead use the style props from the <Button> UI component.
  * @param ref - React reference to forward used for DOM interactions.
  */
 export const Link = forwardRef(function Link(

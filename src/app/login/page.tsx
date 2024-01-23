@@ -39,8 +39,8 @@ export const todosQuery = gql`
 `;
 
 /**
- * "/"
- * Site index/landing page component.
+ * /login:
+ * Site login page component. This login page is experimental and will be replaced eventually.
  */
 async function Page() {
   const client = getServerClient();

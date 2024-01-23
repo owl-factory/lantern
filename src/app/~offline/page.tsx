@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 };
 
 /**
- * "/~offline"
+ * /~offline:
  * Page component used for a fallback for any non-cached route when offline.
  */
 function Page() {

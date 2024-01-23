@@ -24,7 +24,8 @@ export const button = tv({
 
 /**
  * Renders an HTML <button> tag properly styled for Lantern.
- * @param props - Set of attributes ordinarily included with an HTML <button> element.
+ * @param props - Set of attributes ordinarily included with an HTML <button> element, as well as the
+ * additional property `color` which is used to decide on the default style of the component.
  * @param ref - React reference to forward used for DOM interactions.
  */
 export const Button = forwardRef(function Button(

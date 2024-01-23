@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 };
 
 /**
- * "/"
+ * /:
  * Site index/landing page component.
  */
 function Page() {
