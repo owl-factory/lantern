@@ -1,8 +1,9 @@
 "use client";
 
-import { useMemo } from "react";
+import { useContext, useMemo } from "react";
 import { UrqlProvider } from "@urql/next";
 import { getReactClient } from "lib/graphql/reactClient";
+import { EnvironmentContext } from "context/EnvironmentContext";
 
 interface GraphqlProviderProps {
   children: React.ReactNode;
@@ -14,8 +15,9 @@ interface GraphqlProviderProps {
  * This hook supports SSR and React Suspense.
  */
 export function GraphqlProvider(props: GraphqlProviderProps) {
+  const { authToken } = useContext(EnvironmentContext);
   const [client, ssr] = useMemo(() => {
-    return getReactClient(props.authToken);
+    return getReactClient(authToken);
   }, []);
 
   return (

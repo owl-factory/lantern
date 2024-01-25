@@ -7,6 +7,8 @@ import gql from "graphql-tag";
 import { getServerClient } from "lib/graphql/serverClient";
 import { Todo } from "types/database";
 import { PasswordField } from "app/login/PasswordField";
+import { getSessionId } from "lib/authentication";
+import { ReactNode } from "react";
 
 /**
  * Page metadata object, NextJs will append these values as meta tags to the <head>.
@@ -43,15 +45,18 @@ const todosQuery = gql`
  * Site login page component. This login page is experimental and will be replaced eventually.
  */
 async function Page() {
-  const client = getServerClient();
-  const res = await client.query(todosQuery, {});
-  const list = res?.data?.todos?.map((todo: Todo, index: number) => {
-    return (
-      <li key={`todo-${index}`}>
-        {todo.description} - Done: {todo.done.toString()}
-      </li>
-    );
-  });
+  let list: ReactNode | undefined = undefined;
+  if (getSessionId().ok) {
+    const client = getServerClient();
+    const res = await client.query(todosQuery, {});
+    list = res?.data?.todos?.map((todo: Todo, index: number) => {
+      return (
+        <li key={`todo-${index}`}>
+          {todo.description} - Done: {todo.done.toString()}
+        </li>
+      );
+    });
+  }
 
   async function submitLogin(formData: FormData) {
     "use server";
