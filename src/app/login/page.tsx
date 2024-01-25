@@ -7,6 +7,7 @@ import gql from "graphql-tag";
 import { getServerClient } from "lib/graphql/serverClient";
 import { PasswordField } from "app/login/PasswordField";
 import { getSessionId } from "lib/authentication";
+import Image from "next/image";
 
 /**
  * Page metadata object, NextJs will append these values as meta tags to the <head>.
@@ -34,6 +35,7 @@ const sessionQuery = gql`
       user {
         username
         displayName
+        iconUrl
       }
     }
   }
@@ -44,11 +46,14 @@ const sessionQuery = gql`
  * Site login page component. This login page is experimental and will be replaced eventually.
  */
 async function Page() {
-  let user: { username: string; displayName: string } | undefined;
+  let user: { username: string; displayName: string; iconUrl: string } | undefined;
   if (getSessionId().ok) {
     const client = getServerClient();
     const res = await client.query(sessionQuery, {});
     user = res?.data?.session?.user;
+    if (user?.iconUrl) {
+      user.iconUrl = user.iconUrl.replace("https://lanterntt.com", "");
+    }
   }
 
   async function submitLogin(formData: FormData) {
@@ -193,7 +198,14 @@ async function Page() {
               className="mt-3 text-lg text-gray-300 flex flex-col items-center"
             >
               <h2 className="text-2xl text-white text-center pb-12">
-                Welcome, {user.displayName || user.username}!
+                Welcome, {user.displayName || user.username}!<span className="p-2"> </span>
+                <Image
+                  className="inline-block h-[3.875rem] w-[3.875rem] rounded-full"
+                  src={user.iconUrl}
+                  width={402}
+                  height={402}
+                  alt={`${user.username}'s profile picture.`}
+                />
               </h2>
               <form action={submitLogout}>
                 <Button type="submit">Logout</Button>
