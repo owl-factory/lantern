@@ -1,38 +1,8 @@
-import { executeExchange } from "@urql/exchange-execute";
 import gql from "graphql-tag";
-import { createSchema } from "graphql-yoga";
-import { cacheExchange, createClient } from "urql";
-import { absoluteGraphqlUrl } from "utils/environment";
-import { QueryInfo, getQueryFields } from "utils/graphql";
+import { getQueryFields } from "utils/graphql";
+import { getServerClient } from "lib/graphql/client";
 
-const schema = createSchema({
-  typeDefs: gql`
-    type Test {
-      id: ID
-      name: String
-      description: String
-      isCool: Boolean
-      testQueryInfoJson: String
-    }
-
-    type Query {
-      test: Test
-    }
-  `,
-  resolvers: {
-    Query: {
-      test: (_: never, _args: never, _context: never, info: QueryInfo) => {
-        return {
-          id: "ee448828-447e-47c4-bf23-366b61dad134",
-          name: "Cool Test Object",
-          description: "This test object, it's very cool!",
-          isCool: true,
-          testQueryInfoJson: JSON.stringify(info),
-        };
-      },
-    },
-  },
-});
+jest.mock("lib/graphql/client");
 
 const query = gql`
   query Test {
@@ -45,12 +15,8 @@ const query = gql`
   }
 `;
 
-const client = createClient({
-  url: absoluteGraphqlUrl,
-  exchanges: [cacheExchange, executeExchange({ schema })],
-});
-
 test("getQueryFields() returns array of fields requested in a GraphQL query DocumentNode, and not '__typename'.", async () => {
+  const client = getServerClient();
   const res = await client.query(query, {});
   const json = res?.data?.test?.testQueryInfoJson;
   expect(json).toBeTruthy();
