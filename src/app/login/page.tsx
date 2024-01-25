@@ -4,9 +4,10 @@ import { Link } from "components/ui/Link";
 import { absoluteGraphqlUrl } from "utils/environment";
 import { Button } from "components/ui/Button";
 import gql from "graphql-tag";
-import { getServerClient } from "lib/graphql/client";
+import { getServerClient } from "lib/graphql/serverClient";
 import { Todo } from "types/database";
 import { PasswordField } from "app/login/PasswordField";
+import { ClientQueryTest } from "app/login/ClientQueryTest";
 
 /**
  * Page metadata object, NextJs will append these values as meta tags to the <head>.
@@ -28,7 +29,7 @@ const logoutMutation = gql`
   }
 `;
 
-export const todosQuery = gql`
+const todosQuery = gql`
   query Todos {
     todos {
       description
@@ -191,16 +192,20 @@ async function Page() {
             </section>
           ) : (
             <section
-              id="gql-test"
+              id="gql-test-rsc"
               className="mt-3 text-lg text-gray-300 px-14 pt-2 flex flex-col items-center"
             >
-              <h2 className="text-2xl text-white text-center pt-5">Todo List</h2>
+              <h2 className="text-2xl text-white text-center pt-5">
+                Todo List - React Server Component
+              </h2>
               <ul className="items-start mt-4 mb-16">{list}</ul>
               <form action={submitLogout}>
                 <Button type="submit">Logout</Button>
               </form>
             </section>
           )}
+          <br />
+          <ClientQueryTest />
         </main>
 
         <footer className="mt-auto text-center py-5">

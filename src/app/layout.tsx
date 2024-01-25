@@ -1,6 +1,8 @@
 import "app/globals.css";
 import { EnvironmentProvider } from "components/EnvironmentProvider";
+import { GraphqlProvider } from "components/GraphqlProvider";
 import { OfflineIndicator } from "components/OfflineIndicator";
+import { getSessionId } from "lib/authentication";
 import type { Metadata, Viewport } from "next";
 
 const APP_NAME = "Lantern Tabletop";
@@ -55,7 +57,7 @@ function RootLayout({ children }: { children: React.ReactNode }) {
       </head>
       <body className="h-full bg-zinc-900 text-white">
         <EnvironmentProvider>
-          {children}
+          <GraphqlProvider authToken={getSessionId().unwrap()}>{children}</GraphqlProvider>
           <OfflineIndicator />
         </EnvironmentProvider>
       </body>

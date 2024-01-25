@@ -7,7 +7,8 @@ import { schema } from "lib/graphql/schema";
 const serverFetchExchange = !apiIsRemote ? executeExchange({ schema }) : fetchExchange;
 
 /**
- * urql client getter for use only server side (such as NextJs React Server Components).
+ * urql client getter for server side use only, such as in an RSC (React Server Component), or a NextJs Server Action.
+ * @returns urql server-only Client instance configured for Lantern.
  */
 export const getServerClient = registerUrql(() => {
   return createClient({
