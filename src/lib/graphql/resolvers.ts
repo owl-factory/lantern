@@ -1,4 +1,3 @@
-// this allows `throw`ing for Apollo error handling.
 /* eslint-disable no-restricted-syntax */
 import { type YogaInitialContext as Context } from "graphql-yoga";
 import { authenticateSession, deleteSessionIdCookie, setSessionIdCookie } from "lib/authentication";
@@ -18,6 +17,10 @@ async function login(_: never, args: { username: string; password: string; setCo
   // key is null on authentication failure, on success it contains a userId of the correct identity.
   const key = await luciaAuth.useKey(providerId, providerUserId, args.password);
 
+  if (key === null || key === undefined) {
+    return "Username or password is incorrect";
+  }
+
   await luciaAuth.deleteDeadUserSessions(key.userId);
   const session = await luciaAuth.createSession({
     userId: key.userId,
@@ -34,7 +37,7 @@ async function login(_: never, args: { username: string; password: string; setCo
 async function logout(_: never, args: { deleteCookie: boolean }) {
   const auth = await authenticateSession();
   if (auth.ok === false) {
-    return new Response(auth.error, { status: 401 });
+    return auth.error;
   }
   const session = auth.data;
 
@@ -51,7 +54,7 @@ async function logout(_: never, args: { deleteCookie: boolean }) {
 async function todo(_: never, args: { id: string }, _context: Context, info: QueryInfo) {
   const auth = await authenticateSession();
   if (auth.ok === false) {
-    throw new Error(auth.error); // Apollo server expects us to `throw` an error here, and that sucks!
+    return auth.error; // Apollo server expects us to `throw` an error here, and that sucks!
   }
   const queryFields = getQueryFields<"todo">(info);
   return database
@@ -64,7 +67,7 @@ async function todo(_: never, args: { id: string }, _context: Context, info: Que
 async function todos(_: never, _args: never, _context: Context, info: QueryInfo) {
   const auth = await authenticateSession();
   if (auth.ok === false) {
-    throw new Error(auth.error); // Apollo server expects us to `throw` an error here, and that sucks!
+    return auth.error; // Apollo server expects us to `throw` an error here, and that sucks!
   }
   const queryFields = getQueryFields<"todo">(info);
   return database.selectFrom("todo").select(queryFields).execute();
@@ -73,7 +76,7 @@ async function todos(_: never, _args: never, _context: Context, info: QueryInfo)
 async function createTodo(_: never, args: NewTodo, _context: Context, info: QueryInfo) {
   const auth = await authenticateSession();
   if (auth.ok === false) {
-    throw new Error(auth.error); // Apollo server expects us to `throw` an error here, and that sucks!
+    return auth.error; // Apollo server expects us to `throw` an error here, and that sucks!
   }
   const queryFields = getQueryFields<"todo">(info);
   return await database.insertInto("todo").values(args).returning(queryFields).executeTakeFirst();
@@ -82,7 +85,7 @@ async function createTodo(_: never, args: NewTodo, _context: Context, info: Quer
 async function updateTodo(_: never, args: TodoUpdate, _context: Context, info: QueryInfo) {
   const auth = await authenticateSession();
   if (auth.ok === false) {
-    throw new Error(auth.error); // Apollo server expects us to `throw` an error here, and that sucks!
+    return auth.error; // Apollo server expects us to `throw` an error here, and that sucks!
   }
   const queryFields = getQueryFields<"todo">(info);
   return await database
@@ -96,7 +99,7 @@ async function updateTodo(_: never, args: TodoUpdate, _context: Context, info: Q
 async function deleteTodo(_: never, args: { id: string }) {
   const auth = await authenticateSession();
   if (auth.ok === false) {
-    throw new Error(auth.error); // Apollo server expects us to `throw` an error here, and that sucks!
+    return auth.error; // Apollo server expects us to `throw` an error here, and that sucks!
   }
   const deletedId = (
     await database.deleteFrom("todo").where("id", "=", args.id).returning("id").executeTakeFirst()
@@ -104,7 +107,7 @@ async function deleteTodo(_: never, args: { id: string }) {
   if (deletedId !== undefined) {
     return deletedId;
   } else {
-    throw new Error(`Item with ID '${deletedId}' not found in database.`);
+    return `Item with ID '${deletedId}' not found in database.`;
   }
 }
 

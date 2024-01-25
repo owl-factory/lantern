@@ -13,7 +13,7 @@ const todosQuery = gql`
   }
 `;
 
-export function ClientQueryTest() {
+export function SsrQueryTest() {
   const [res] = useQuery({ query: todosQuery });
   const list = res?.data?.todos?.map((todo: Todo, index: number) => {
     return (

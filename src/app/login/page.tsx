@@ -7,7 +7,6 @@ import gql from "graphql-tag";
 import { getServerClient } from "lib/graphql/serverClient";
 import { Todo } from "types/database";
 import { PasswordField } from "app/login/PasswordField";
-import { ClientQueryTest } from "app/login/ClientQueryTest";
 
 /**
  * Page metadata object, NextJs will append these values as meta tags to the <head>.
@@ -205,7 +204,9 @@ async function Page() {
             </section>
           )}
           <br />
-          <ClientQueryTest />
+          <div className="text-center mt-4">
+            <Link href="/login/ssr-test">Todo list Server Side rendered query test page.</Link>
+          </div>
         </main>
 
         <footer className="mt-auto text-center py-5">
