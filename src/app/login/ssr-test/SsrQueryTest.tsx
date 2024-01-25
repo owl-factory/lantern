@@ -15,9 +15,9 @@ const todosQuery = gql`
 
 export function SsrQueryTest() {
   const [res] = useQuery({ query: todosQuery });
-  const list = res?.data?.todos?.map((todo: Todo, index: number) => {
+  const list = res?.data?.todos?.map((todo: Todo) => {
     return (
-      <li key={`todo-${index}`}>
+      <li key={todo.id}>
         {todo.description} - Done: {todo.done.toString()}
       </li>
     );

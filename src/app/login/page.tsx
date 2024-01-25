@@ -49,9 +49,9 @@ async function Page() {
   if (getSessionId().ok) {
     const client = getServerClient();
     const res = await client.query(todosQuery, {});
-    list = res?.data?.todos?.map((todo: Todo, index: number) => {
+    list = res?.data?.todos?.map((todo: Todo) => {
       return (
-        <li key={`todo-${index}`}>
+        <li key={todo.id}>
           {todo.description} - Done: {todo.done.toString()}
         </li>
       );
