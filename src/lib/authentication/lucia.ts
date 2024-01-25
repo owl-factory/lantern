@@ -33,7 +33,7 @@ export const luciaAuth = lucia({
   },
   getSessionAttributes: (databaseSession) => {
     return {
-      api_key: databaseSession.api_key,
+      is_api_key: databaseSession.is_api_key,
     };
   },
   sessionCookie: {

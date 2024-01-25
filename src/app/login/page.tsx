@@ -5,10 +5,8 @@ import { absoluteGraphqlUrl } from "utils/environment";
 import { Button } from "components/ui/Button";
 import gql from "graphql-tag";
 import { getServerClient } from "lib/graphql/serverClient";
-import { Todo } from "types/database";
 import { PasswordField } from "app/login/PasswordField";
 import { getSessionId } from "lib/authentication";
-import { ReactNode } from "react";
 
 /**
  * Page metadata object, NextJs will append these values as meta tags to the <head>.
@@ -30,12 +28,13 @@ const logoutMutation = gql`
   }
 `;
 
-const todosQuery = gql`
-  query Todos {
-    todos {
-      description
-      done
-      id
+const sessionQuery = gql`
+  query Session {
+    session {
+      user {
+        username
+        displayName
+      }
     }
   }
 `;
@@ -45,17 +44,11 @@ const todosQuery = gql`
  * Site login page component. This login page is experimental and will be replaced eventually.
  */
 async function Page() {
-  let list: ReactNode | undefined = undefined;
+  let user: { username: string; displayName: string } | undefined;
   if (getSessionId().ok) {
     const client = getServerClient();
-    const res = await client.query(todosQuery, {});
-    list = res?.data?.todos?.map((todo: Todo) => {
-      return (
-        <li key={todo.id}>
-          {todo.description} - Done: {todo.done.toString()}
-        </li>
-      );
-    });
+    const res = await client.query(sessionQuery, {});
+    user = res?.data?.session?.user;
   }
 
   async function submitLogin(formData: FormData) {
@@ -146,7 +139,7 @@ async function Page() {
         </header>
 
         <main id="content" role="main">
-          {!list ? (
+          {!user ? (
             <section id="login-card">
               <div className="flex flex-col items-center justify-center px-6 mx-auto">
                 <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
@@ -196,13 +189,12 @@ async function Page() {
             </section>
           ) : (
             <section
-              id="gql-test-rsc"
-              className="mt-3 text-lg text-gray-300 px-14 pt-2 flex flex-col items-center"
+              id="welcome!"
+              className="mt-3 text-lg text-gray-300 flex flex-col items-center"
             >
-              <h2 className="text-2xl text-white text-center pt-5">
-                Todo List - React Server Component
+              <h2 className="text-2xl text-white text-center pb-12">
+                Welcome, {user.displayName || user.username}!
               </h2>
-              <ul className="items-start mt-4 mb-16">{list}</ul>
               <form action={submitLogout}>
                 <Button type="submit">Logout</Button>
               </form>
@@ -210,7 +202,9 @@ async function Page() {
           )}
           <br />
           <div className="text-center mt-4">
-            <Link href="/login/ssr-test">Todo list Server Side rendered query test page.</Link>
+            <Link href="/login/ssr-test">
+              Todo list Server Side rendered test page, with Suspense.
+            </Link>
           </div>
         </main>
 
