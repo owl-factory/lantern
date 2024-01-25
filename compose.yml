@@ -9,6 +9,9 @@ services:
       POSTGRES_USER: pguser
       POSTGRES_PASSWORD: pgdevpassword
     volumes:
-      - ./postgres:/var/lib/postgresql/data
+      - lantern-postgres:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+
+volumes:
+  lantern-postgres:
