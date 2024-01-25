@@ -1,8 +1,8 @@
 import gql from "graphql-tag";
 import { getQueryFields } from "utils/graphql";
-import { getServerClient } from "lib/graphql/client";
+import { getServerClient } from "lib/graphql/serverClient";
 
-jest.mock("lib/graphql/client");
+jest.mock("lib/graphql/serverClient");
 
 const query = gql`
   query Test {
