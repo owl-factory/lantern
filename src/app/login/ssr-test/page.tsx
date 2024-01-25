@@ -22,9 +22,9 @@ function Page() {
           id="gql-todo-test"
           className="mt-3 text-lg text-gray-300 px-14 pt-2 flex flex-col items-center"
         >
-          <h2 className="text-2xl text-white text-center py-5">Todo List - Server Side Rendered</h2>
-          <SsrQueryTest />
-          <h2 className="text-2xl text-white text-center py-5">Todo List - Suspense</h2>
+          <h2 className="text-2xl text-white text-center py-5">
+            Todo List - Server Side Rendered with Suspense
+          </h2>
           <Suspense fallback={<Loading />}>
             <SsrQueryTest />
           </Suspense>
