@@ -18,9 +18,17 @@ function Page() {
   return (
     <div className="flex h-full">
       <div className="max-w-[50rem] flex flex-col mx-auto">
-        <Suspense fallback={<Loading />}>
+        <section
+          id="gql-todo-test"
+          className="mt-3 text-lg text-gray-300 px-14 pt-2 flex flex-col items-center"
+        >
+          <h2 className="text-2xl text-white text-center py-5">Todo List - Server Side Rendered</h2>
           <SsrQueryTest />
-        </Suspense>
+          <h2 className="text-2xl text-white text-center py-5">Todo List - Suspense</h2>
+          <Suspense fallback={<Loading />}>
+            <SsrQueryTest />
+          </Suspense>
+        </section>
       </div>
     </div>
   );
