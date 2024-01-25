@@ -1,4 +1,4 @@
-import { gql } from "graphql-tag";
+import gql from "graphql-tag";
 import { createSchema } from "graphql-yoga";
 import { resolvers } from "lib/graphql/resolvers";
 

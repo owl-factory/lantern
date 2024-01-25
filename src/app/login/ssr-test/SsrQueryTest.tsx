@@ -1,7 +1,8 @@
 "use client";
 
+import gql from "graphql-tag";
 import { Todo } from "types/database";
-import { gql, useQuery } from "urql";
+import { useQuery } from "urql";
 
 const todosQuery = gql`
   query Todos {
