@@ -55,7 +55,7 @@ function RootLayout({ children }: { children: React.ReactNode }) {
         <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png" />
         <link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color="#5bbad5" />
       </head>
-      <body className="h-full bg-zinc-900 text-white">
+      <body className="h-full bg-backdrop text-white">
         <EnvironmentProvider authToken={getSessionId().unwrap()}>
           <GraphqlProvider>{children}</GraphqlProvider>
           <OfflineIndicator />
