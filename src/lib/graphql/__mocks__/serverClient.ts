@@ -1,9 +1,9 @@
 import { cacheExchange, createClient } from "urql";
 import { absoluteGraphqlUrl } from "utils/environment";
 import { executeExchange } from "@urql/exchange-execute";
-import { QueryInfo } from "utils/graphql";
 import gql from "graphql-tag";
 import { createSchema } from "graphql-yoga";
+import { GraphQLResolveInfo } from "graphql";
 
 const schema = createSchema({
   typeDefs: gql`
@@ -21,7 +21,7 @@ const schema = createSchema({
   `,
   resolvers: {
     Query: {
-      test: (_: never, _args: never, _context: never, info: QueryInfo) => {
+      test: (_: never, _args: never, _context: never, info: GraphQLResolveInfo) => {
         return {
           id: "ee448828-447e-47c4-bf23-366b61dad134",
           name: "Cool Test Object",

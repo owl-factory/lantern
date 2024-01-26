@@ -1,5 +1,5 @@
 import { createSchema, createYoga } from "graphql-yoga";
-import { resolvers } from "lib/graphql/resolvers";
+import { resolvers } from "services/graphql/resolvers";
 import { graphqlUrl } from "utils/environment";
 
 const typeDefs = process.env.GRAPHQL_TYPEDEFS || "";

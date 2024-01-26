@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 };
 
 const loginMutation = gql`
-  mutation Mutation($username: String, $password: String) {
+  mutation Mutation($username: String!, $password: String!) {
     login(username: $username, password: $password, setCookie: true)
   }
 `;

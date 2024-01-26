@@ -3,18 +3,20 @@
   "version": "0.5.0",
   "private": true,
   "scripts": {
-    "build": "next build",
+    "build": "pnpm run generate && next build && pnpm run migrate:prod",
     "start": "next start",
-    "dev": "next dev",
+    "dev": "pnpm run generate && pnpm run migrate && next dev",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "test": "pnpm run test:unit && pnpm run test:e2e",
     "test:unit": "jest",
     "test:e2e": "playwright test",
     "test:e2e:ff": "pnpm run test:e2e --project=firefox",
+    "migrate:prod": "tsx src/migrations/migrationScript.ts --latest",
     "migrate": "tsx --env-file=.env.development src/migrations/migrationScript.ts --latest",
     "migrate:up": "tsx --env-file=.env.development src/migrations/migrationScript.ts --up",
-    "migrate:down": "tsx --env-file=.env.development src/migrations/migrationScript.ts --down"
+    "migrate:down": "tsx --env-file=.env.development src/migrations/migrationScript.ts --down",
+    "generate": "graphql-codegen"
   },
   "engines": {
     "node": ">=20",
@@ -43,6 +45,9 @@
     "urql": "^4.0.6"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "^5.0.0",
+    "@graphql-codegen/typescript": "^4.0.1",
+    "@graphql-codegen/typescript-resolvers": "^4.0.1",
     "@playwright/test": "^1.40.1",
     "@types/jest": "^29.5.11",
     "@types/node": "20.10.5",

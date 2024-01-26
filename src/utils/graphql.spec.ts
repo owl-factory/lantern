@@ -1,10 +1,10 @@
-import gql from "graphql-tag";
 import { getQueryFields } from "utils/graphql";
 import { getServerClient } from "lib/graphql/serverClient";
 
 jest.mock("lib/graphql/serverClient");
 
-const query = gql`
+/** This needs to be a plain string to avoid breaking the GraphQL typecheck extension. */
+const query = `
   query Test {
     test {
       id

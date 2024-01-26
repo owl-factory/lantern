@@ -1,7 +1,9 @@
-type Todo {
+type User {
   id: ID!
-  description: String
-  done: Boolean!
+  username: String!
+  email: String!
+  displayName: String
+  iconUrl: String
 }
 
 type Session {
@@ -12,22 +14,20 @@ type Session {
   isApiKey: Boolean!
 }
 
-type User {
+type Todo {
   id: ID!
-  username: String!
-  email: String!
-  displayName: String
-  iconUrl: String
+  description: String
+  done: Boolean!
 }
 
 type Query {
+  session: Session!
   todo(id: ID!): Todo!
   todos: [Todo!]!
-  session: Session!
 }
 
 type Mutation {
-  login(username: String, password: String, setCookie: Boolean): String!
+  login(username: String!, password: String!, setCookie: Boolean): String!
   logout(deleteCookie: Boolean): String!
   createTodo(description: String, done: Boolean): Todo
   updateTodo(id: ID!, description: String, done: Boolean): Todo
