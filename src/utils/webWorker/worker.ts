@@ -1,8 +1,10 @@
+type Global = Window & typeof globalThis & { __proto__: Record<string, unknown> };
+
 /**
  * Creates a web worker that is sandbox for executing arbitrary Javascript code
  */
 export const sandboxedWorker = () => {
-  const global = self;
+  const global: Global = self as Global;
 
   // WHITELISTING BOILERPLATE //
   const wl = {
@@ -56,6 +58,8 @@ export const sandboxedWorker = () => {
 
     Object.defineProperty(global, prop, {
       get: function () {
+        // Disabling this as the security exception should immediately blow up
+        // eslint-disable-next-line no-restricted-syntax
         throw `Security Exception: cannot access ${prop}`;
       },
       configurable: false,
@@ -64,14 +68,16 @@ export const sandboxedWorker = () => {
 
   // Loops through all of the property names for the global object. For anything that is not whitelisted,
   //  redefine to throw an error instead
-  Object.getOwnPropertyNames((global as any).__proto__).forEach(function (prop) {
+  Object.getOwnPropertyNames(global.__proto__).forEach(function (prop) {
     // If the whitelist has this property, do nothing
     if (Object.prototype.hasOwnProperty.call(wl, prop)) {
       return;
     }
 
-    Object.defineProperty((global as any).__proto__, prop, {
+    Object.defineProperty(global.__proto__, prop, {
       get: function () {
+        // Disabling this as the security exception should immediately blow up
+        // eslint-disable-next-line no-restricted-syntax
         throw `Security Exception: cannot access ${prop}`;
       },
       configurable: false,
@@ -95,9 +101,11 @@ export const sandboxedWorker = () => {
    * @param old - The old join function
    * @returns The value of the old function if no limits are exceeded
    */
-  function monkeypatchArrayJoin(parent: any, old: (separator: string | undefined) => string) {
+  function monkeypatchArrayJoin(parent: unknown, old: (separator: string | undefined) => string) {
     return function (joinArg: string | undefined) {
-      if (parent.length > 500 || (joinArg && joinArg.length > 500)) {
+      if ((parent as never[]).length > 500 || (joinArg && joinArg.length > 500)) {
+        // Disabling this as the security exception should immediately blow up
+        // eslint-disable-next-line no-restricted-syntax
         throw "Exception: too many items";
       }
       return old.apply(parent, [joinArg]);
@@ -106,7 +114,89 @@ export const sandboxedWorker = () => {
 
   // END WHITELISTING BOILERPLATE //
 
-  self.onmessage = (message) => {
-    postMessage("success");
+  self.onmessage = (messageEvent: MessageEvent<WorkerMessage<never, unknown>>) => {
+    const message = messageEvent.data;
+    const id = message.id;
+    let result: WorkerResult<unknown>;
+    try {
+      result = { id, ok: true, data: undefined } as OkWorkerResult<unknown>;
+    } catch (unknownWhy: unknown) {
+      let why = "An unknown error occured. The thrown error was not either a string or Error.";
+      if (typeof unknownWhy === "string") why = unknownWhy;
+      else if (unknownWhy instanceof Error) why = unknownWhy.message;
+
+      result = {
+        id,
+        ok: false,
+        error: why,
+      } as ErrWorkerResult;
+    }
+    postMessage(result);
   };
 };
+
+export type WorkerMessage<T, U = string> = {
+  id: string;
+  type: U;
+  data: T;
+};
+
+export type WorkerResult<U> = OkWorkerResult<U> | ErrWorkerResult;
+
+export type OkWorkerResult<U> = {
+  id: string;
+  ok: true;
+  data: U;
+};
+
+export type ErrWorkerResult = {
+  id: string;
+  ok: false;
+  error: string;
+};
+
+type WorkerOnMessageCallback<T, U, V = string> = (message: WorkerMessage<T, V>) => WorkerResult<U>;
+
+const coreFunctionality = () => {
+  "initFn";
+  const _init = () => {
+    if ("init" in self && typeof self.init === "function") {
+      self.init();
+    }
+  };
+
+  self.onmessage = (message) => {
+    console.log("From the worker!");
+    postMessage({ id: message.data.id, ok: true, data: "res" });
+  };
+  _init();
+};
+
+const testInit = () => {
+  console.log("WHATS UP");
+};
+
+export function createSandboxedWorker(): string {
+  const initCode = "self.init = " + testInit.toString();
+  let coreCode = coreFunctionality.toString();
+  coreCode = coreCode.replace('"initFn";', initCode);
+  console.log(coreCode);
+  return coreCode;
+}
+
+export const test2 = () => {
+  self.onmessage = (message) => {
+    console.log("awsdasd");
+    postMessage({ id: message.data.id, ok: true, data: "Howdy y'all!" });
+  };
+};
+
+// export function createSandboxedWorker<T, U, V = string>(
+//   _onMessage: WorkerOnMessageCallback<T, U, V>
+// ): () => void {
+//   return () => {
+//     self.onmessage = () => {
+//       postMessage("Howdy y'all!");
+//     };
+//   };
+// }

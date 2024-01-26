@@ -1,4 +1,5 @@
 import { isServer } from "utils/environment";
+import { createSandboxedWorker } from "utils/webWorker/worker";
 
 type Milliseconds = number;
 
@@ -6,7 +7,7 @@ type Milliseconds = number;
  * Either a function to use as a script, or points to
  * a compiled script to fetch and use
  */
-type WorkerScript = () => void | string;
+type WorkerScript = (() => void) | string;
 
 type WorkerResult<U> = OkWorkerResult<U> | ErrWorkerResult;
 
@@ -28,6 +29,7 @@ type PromiseReference<T, U> = {
   promise: Promise<U>;
   resolve: (value: U) => void;
   reject: (error: string) => void;
+  timeout: NodeJS.Timeout;
 };
 
 export class WebWorker<T, U> {
@@ -94,8 +96,8 @@ export class WebWorker<T, U> {
         );
         return;
       case "function": {
-        const code = this._workerScript.toString();
-        const blob = new Blob([`(${code})`]);
+        const code = createSandboxedWorker();
+        const blob = new Blob([`(${code})()`]);
         url = URL.createObjectURL(blob);
         break;
       }
@@ -111,12 +113,16 @@ export class WebWorker<T, U> {
     let worker: Worker;
     try {
       worker = new Worker(url);
+      this._setState(WebWorkerState.Ready);
     } catch (why: unknown) {
       this._setState(WebWorkerState.FailedToCreate, `The web worker failed to create: ${why}`);
       return;
     }
 
     this._worker = worker;
+    this._worker.onmessage = (event: MessageEvent<WorkerResult<U>>) => this._onMessage(event);
+    this._worker.onerror = (err) => console.log("err", err);
+    this._worker.onmessageerror = (err) => console.log("Message err", err);
   }
 
   /**
@@ -137,7 +143,7 @@ export class WebWorker<T, U> {
       promiseReference.reject = reject;
 
       if (this._timeout <= 0) return;
-      setTimeout(() => {
+      promiseReference.timeout = setTimeout(() => {
         delete this._promises[id];
         reject(`Timeout reached (${this._timeout}ms).`);
       }, this._timeout);
@@ -168,12 +174,13 @@ export class WebWorker<T, U> {
    * Resolves or rejects the stored promise
    * @param message - The response from the web worker
    */
-  _onMessage(message: WorkerResult<U>) {
+  _onMessage(messageEvent: MessageEvent<WorkerResult<U>>) {
+    const message = messageEvent.data;
     const promise = this._promises[message.id];
     delete this._promises[message.id];
 
     if (!promise) return;
-
+    clearTimeout(promise.timeout);
     if (message.ok === false) {
       promise.reject(message.error);
       return;
