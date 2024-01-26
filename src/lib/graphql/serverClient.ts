@@ -2,7 +2,7 @@ import { cacheExchange, createClient, fetchExchange } from "urql";
 import { registerUrql } from "@urql/next/rsc";
 import { absoluteGraphqlUrl, apiIsRemote } from "utils/environment";
 import { executeExchange } from "@urql/exchange-execute";
-import { schema } from "lib/graphql/schema";
+import { schema } from "lib/graphql/server";
 
 const serverFetchExchange = !apiIsRemote ? executeExchange({ schema }) : fetchExchange;
 

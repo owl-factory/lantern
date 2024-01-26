@@ -27,7 +27,8 @@
       "lib/*": ["./src/lib/*"],
       "services/*": ["./src/services/*"],
       "types/*": ["./src/types/*"],
-      "utils/*": ["./src/utils/*"]
+      "utils/*": ["./src/utils/*"],
+      "generated/*": ["./generated/*"]
     }
   },
   "include": [

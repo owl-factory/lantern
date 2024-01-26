@@ -1,4 +1,5 @@
 import withSerwistInit from "@serwist/next";
+import { readFileSync } from "fs";
 
 const withSerwist = withSerwistInit({
   cacheOnFrontEndNav: true,
@@ -9,6 +10,12 @@ const withSerwist = withSerwistInit({
 });
 
 /** @type {import("next").NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+  env: {
+    GRAPHQL_TYPEDEFS: readFileSync("./src/lib/graphql/schema.graphql", {
+      encoding: "utf8",
+    }),
+  },
+};
 
 export default withSerwist(nextConfig);

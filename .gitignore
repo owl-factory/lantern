@@ -10,8 +10,8 @@ next-env.d.ts
 # serwist
 public/*.js
 
-# PostgreSQL Volume
-postgres
+# Generated code (GraphQL types)
+generated
 
 # local env files
 .env*.local
