@@ -1,10 +1,10 @@
 "use client";
 
-import gql from "graphql-tag";
+import { graphql } from "generated/client";
 import { Todo } from "types/database";
 import { useQuery } from "urql";
 
-const todosQuery = gql`
+const todosQuery = graphql(`
   query Todos {
     todos {
       description
@@ -12,11 +12,11 @@ const todosQuery = gql`
       id
     }
   }
-`;
+`);
 
 export function SsrQueryTest() {
-  const [res] = useQuery({ query: todosQuery });
-  const todos = res?.data?.todos as Todo[] | undefined;
+  const [{ data }] = useQuery({ query: todosQuery });
+  const todos = data?.todos as Todo[] | undefined;
 
   return todos ? (
     <ul className="items-start mt-4 mb-16">

@@ -3,11 +3,12 @@ import { Metadata } from "next";
 import { Link } from "components/ui/Link";
 import { absoluteGraphqlUrl } from "utils/environment";
 import { Button } from "components/ui/Button";
-import gql from "graphql-tag";
 import { getServerClient } from "lib/graphql/serverClient";
 import { PasswordField } from "app/login/PasswordField";
 import { getSessionId } from "lib/authentication";
 import Image from "next/image";
+import { graphql } from "generated/client";
+import { SessionQuery } from "generated/client/graphql";
 
 /**
  * Page metadata object, NextJs will append these values as meta tags to the <head>.
@@ -17,19 +18,19 @@ export const metadata: Metadata = {
   description: "Welcome to Lantern Tabletop's Login Page",
 };
 
-const loginMutation = gql`
-  mutation Mutation($username: String!, $password: String!) {
+const loginMutation = graphql(`
+  mutation Login($username: String!, $password: String!) {
     login(username: $username, password: $password, setCookie: true)
   }
-`;
+`);
 
-const logoutMutation = gql`
-  mutation Mutation {
+const logoutMutation = graphql(`
+  mutation Logout {
     logout(deleteCookie: true)
   }
-`;
+`);
 
-const sessionQuery = gql`
+const sessionQuery = graphql(`
   query Session {
     session {
       user {
@@ -39,20 +40,21 @@ const sessionQuery = gql`
       }
     }
   }
-`;
+`);
 
 /**
  * /login:
  * Site login page component. This login page is experimental and will be replaced eventually.
  */
 async function Page() {
-  let user: { username: string; displayName: string; iconUrl: string } | undefined;
+  let user: SessionQuery["session"]["user"] | undefined;
+  let iconUrl = "";
   if (getSessionId().ok) {
     const client = getServerClient();
-    const res = await client.query(sessionQuery, {});
-    user = res?.data?.session?.user;
+    const { data } = await client.query(sessionQuery, {});
+    user = data?.session?.user;
     if (user?.iconUrl) {
-      user.iconUrl = user.iconUrl.replace("https://lanterntt.com", "");
+      iconUrl = user.iconUrl.replace("https://lanterntt.com", "");
     }
   }
 
@@ -60,8 +62,8 @@ async function Page() {
     "use server";
     const client = getServerClient();
     await client.mutation(loginMutation, {
-      username: formData.get("username"),
-      password: formData.get("password"),
+      username: formData.get("username")?.toString() || "",
+      password: formData.get("password")?.toString() || "",
     });
   }
 
@@ -201,7 +203,7 @@ async function Page() {
                 Welcome, {user.displayName || user.username}!<span className="p-2"> </span>
                 <Image
                   className="inline-block h-[3.875rem] w-[3.875rem] rounded-full"
-                  src={user.iconUrl}
+                  src={iconUrl}
                   width={402}
                   height={402}
                   alt={`${user.username}'s profile picture.`}
