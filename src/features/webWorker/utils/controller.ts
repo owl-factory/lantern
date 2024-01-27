@@ -1,7 +1,8 @@
+import { PromiseReference } from "features/webWorker/types/promises";
+import { WorkerMessage, WorkerResult } from "features/webWorker/types/worker";
+import { createSandboxedWorker } from "features/webWorker/utils/scripts/worker";
+import { Milliseconds } from "types/time";
 import { isServer } from "utils/environment";
-import { createSandboxedWorker } from "utils/webWorker/worker";
-
-type Milliseconds = number;
 
 /**
  * Either a function to use as a script, or points to
@@ -9,30 +10,13 @@ type Milliseconds = number;
  */
 type WorkerScript = (() => void) | string;
 
-type WorkerResult<U> = OkWorkerResult<U> | ErrWorkerResult;
-
-type OkWorkerResult<U> = {
-  id: string;
-  ok: true;
-  data: U;
-};
-
-type ErrWorkerResult = {
-  id: string;
-  ok: false;
-  error: string;
-};
-
-type PromiseReference<T, U> = {
-  id: string;
-  data: T;
-  promise: Promise<U>;
-  resolve: (value: U) => void;
-  reject: (error: string) => void;
-  timeout: NodeJS.Timeout;
-};
-
-export class WebWorker<T, U> {
+/**
+ * A controller that creates a web worker and maintains calls to and from it
+ * @typeParam T - The data posted to the web worker
+ * @typeParam U - The data received from the web worker
+ * @typeParam V - A key used to identify the action to take
+ */
+export class WebWorker<T, U, V = string> {
   _state: WebWorkerState = WebWorkerState.NoOp;
   _error?: string;
 
@@ -130,15 +114,16 @@ export class WebWorker<T, U> {
    * @param data - The data to pass to the Web Worker
    * @returns A promise that will resolve when the web worker returns
    */
-  async post(type: string, data: T): Promise<U> {
+  async post(type: V, data: T): Promise<U> {
     if (!this.ready) {
       return new Promise((_, reject) => reject(`Web worker is not ready. ${this._error}`));
     }
     const id = crypto.randomUUID();
-    const message = { id, type, data };
+    const message: WorkerMessage<T, V> = { id, type, data };
+    this._worker.postMessage(message);
+
     const promiseReference: Partial<PromiseReference<T, U>> = { id, data };
     const promise = new Promise((resolve: (value: U) => void, reject: (reason: string) => void) => {
-      this._worker.postMessage(message);
       promiseReference.resolve = resolve;
       promiseReference.reject = reject;
 
@@ -189,12 +174,19 @@ export class WebWorker<T, U> {
   }
 }
 
+/** The valid states the Web Worker controller can be in */
 enum WebWorkerState {
+  /** No operation has been performed on the controller */
   NoOp,
+  /** The controller is ready to be used */
   Ready,
 
+  /** The controller has been created on the server and could not create a web worker */
   OnServer,
+  /** Some functionality is not implemented */
   NotImplemented,
+  /** The controller failed to create a worker */
   FailedToCreate,
+  /** The provided script is not valid */
   InvalidScript,
 }
