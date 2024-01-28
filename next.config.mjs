@@ -12,7 +12,7 @@ const withSerwist = withSerwistInit({
 /** @type {import("next").NextConfig} */
 const nextConfig = {
   env: {
-    GRAPHQL_TYPEDEFS: readFileSync("./src/lib/graphql/schema.graphql", {
+    GRAPHQL_TYPEDEFS: readFileSync("./src/services/graphql/schema.graphql", {
       encoding: "utf8",
     }),
   },
