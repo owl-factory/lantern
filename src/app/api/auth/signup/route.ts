@@ -33,8 +33,8 @@ export async function POST(request: Request) {
     attributes: {
       email: newUser.email,
       username: newUser.username,
-      display_name: newUser.display_name,
-      icon_url: newUser.icon_url,
+      displayName: newUser.displayName,
+      iconUrl: newUser.iconUrl,
     },
   });
 

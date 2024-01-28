@@ -13,18 +13,18 @@ export const queries: QueryResolvers = {
     if (auth.ok === false) {
       throw auth.error; // GraphQL expects us to `throw` an error here, and that sucks!
     }
-    const { sessionId, user, is_api_key, activePeriodExpiresAt, idlePeriodExpiresAt } = auth.data;
+    const { sessionId, user, isApiKey, activePeriodExpiresAt, idlePeriodExpiresAt } = auth.data;
     const session: Session = {
       id: sessionId,
-      isApiKey: is_api_key || false,
+      isApiKey: isApiKey,
       activeExpires: activePeriodExpiresAt.toISOString(),
       idleExpires: idlePeriodExpiresAt.toISOString(),
       user: {
         id: user.userId,
         username: user.username,
         email: user.email,
-        displayName: user.display_name,
-        iconUrl: user.icon_url,
+        displayName: user.displayName,
+        iconUrl: user.iconUrl,
       },
     };
 

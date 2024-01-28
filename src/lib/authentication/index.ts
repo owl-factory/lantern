@@ -24,6 +24,9 @@ export async function authenticateSession(): Promise<Result<Session>> {
   try {
     // Session returns null on Lucia authentication failure
     const session = await luciaAuth.validateSession(sessionIdResult.data);
+    if (session.fresh) {
+      setSessionIdCookie(session.sessionId);
+    }
     // Be careful when touching this logic, as it determined if someone is authenticated or not.
     if (session !== null && session !== undefined && session.sessionId) {
       return Ok(session);
@@ -73,6 +76,7 @@ export function setSessionIdCookie(sessionId: string): Result {
     httpOnly: true,
     path: "/",
     secure: useSsl,
+    expires: new Date(Date.now() + 12096e5),
   });
   return Ok();
 }

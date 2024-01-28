@@ -31,7 +31,11 @@ export type TodoUpdate = Updateable<TodoTable>;
  */
 export type UserTable = {
   id: string;
-} & Lucia.DatabaseUserAttributes;
+  username: string;
+  email: string;
+  displayName?: string; // display_name
+  iconUrl?: string; // icon_url
+};
 
 export type User = Selectable<UserTable>;
 export type NewUser = Insertable<UserTable>;
@@ -43,8 +47,8 @@ export type UserUpdate = Updateable<UserTable>;
  */
 export type KeyTable = {
   id: string;
-  user_id: string;
-  hashed_password: string | null;
+  userId: string; // user_id
+  hashedPassword: string | null; //hashed_password
 };
 
 export type Key = Selectable<KeyTable>;
@@ -57,10 +61,11 @@ export type KeyUpdate = Updateable<KeyTable>;
  */
 export type SessionTable = {
   id: string;
-  user_id: string;
-  active_expires: bigint;
-  idle_expires: bigint;
-} & Lucia.DatabaseSessionAttributes;
+  userId: string;
+  activeExpires: bigint; // active_expires
+  idleExpires: bigint; // idle_expires
+  isApiKey?: boolean; // is_api_key
+};
 
 export type Session = Selectable<SessionTable>;
 export type NewSession = Insertable<SessionTable>;

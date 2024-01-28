@@ -1,5 +1,5 @@
 import { pool } from "lib/database";
-import { lucia } from "lucia";
+import { SessionSchema, UserSchema, lucia } from "lucia";
 import { pg } from "@lucia-auth/adapter-postgresql";
 
 /**
@@ -23,17 +23,19 @@ export const tableNames = {
 export const luciaAuth = lucia({
   adapter: pg(pool as never, tableNames),
   env: process.env.NODE_ENV === "production" ? "PROD" : "DEV",
-  getUserAttributes: (databaseUser) => {
+  getUserAttributes: (user) => {
+    const dbUser = user as UserSchema & { display_name: string; icon_url: string };
     return {
-      username: databaseUser.username,
-      email: databaseUser.email,
-      display_name: databaseUser.display_name || undefined,
-      icon_url: databaseUser.icon_url || undefined,
+      username: dbUser.username,
+      email: dbUser.email,
+      displayName: dbUser.display_name || undefined,
+      iconUrl: dbUser.icon_url || undefined,
     };
   },
-  getSessionAttributes: (databaseSession) => {
+  getSessionAttributes: (session) => {
+    const dbSession = session as SessionSchema & { is_api_key: boolean };
     return {
-      is_api_key: databaseSession.is_api_key,
+      isApiKey: dbSession.is_api_key || false,
     };
   },
   sessionCookie: {
