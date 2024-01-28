@@ -3,7 +3,7 @@ import { cookies, headers } from "next/headers";
 import { bearerRegex, sessionIdRegex } from "utils/regex";
 import { Err, Ok } from "utils/results";
 import { AUTH_COOKIE_NAME, luciaAuth } from "lib/authentication/lucia";
-import { useSsl } from "utils/environment";
+import { isServer, useSsl } from "utils/environment";
 export { AUTH_COOKIE_NAME } from "lib/authentication/lucia";
 
 /**
@@ -11,7 +11,11 @@ export { AUTH_COOKIE_NAME } from "lib/authentication/lucia";
  * validity against the sessions in the database using the Lucia library, then performs error handling.
  * @returns object containing authentication success flag and the session object if successful.
  */
-export async function authenticateSession(): Promise<Result<Session, string>> {
+export async function authenticateSession(): Promise<Result<Session>> {
+  if (!isServer) {
+    return Err("Session can only be authenticated on the server.");
+  }
+
   const sessionIdResult = getSessionId();
   if (sessionIdResult.ok === false) {
     return sessionIdResult;
@@ -39,7 +43,11 @@ export async function authenticateSession(): Promise<Result<Session, string>> {
  * Uses NextJs functions. We should move to the standard {@link https://developer.mozilla.org/en-US/docs/Web/API/CookieStore | CookieStore} at some point if possible.
  * @returns sessionId string used for authorizing against the database, or null if none are available.
  */
-export function getSessionId(): Result<string, string> {
+export function getSessionId(): Result<string> {
+  if (!isServer) {
+    return Err("Session ID can can only be ready from headers or cookies on the server.");
+  }
+
   const sessionId =
     headers()?.get("Authorization")?.replace(bearerRegex, "") ||
     cookies()?.get(AUTH_COOKIE_NAME)?.value;
@@ -56,13 +64,17 @@ export function getSessionId(): Result<string, string> {
  * Uses a NextJs function. We should move to the standard {@link https://developer.mozilla.org/en-US/docs/Web/API/CookieStore | CookieStore} at some point if possible.
  * @param sessionId - Session ID string to be saved.
  */
-export function setSessionIdCookie(sessionId: string) {
+export function setSessionIdCookie(sessionId: string): Result {
+  if (!isServer) {
+    return Err("Cookies can only be set on the server.");
+  }
   cookies()?.set(AUTH_COOKIE_NAME, sessionId, {
     sameSite: "lax",
     httpOnly: true,
     path: "/",
     secure: useSsl,
   });
+  return Ok();
 }
 
 /**
@@ -70,6 +82,10 @@ export function setSessionIdCookie(sessionId: string) {
  * Uses a NextJs function. We should move to the standard {@link https://developer.mozilla.org/en-US/docs/Web/API/CookieStore | CookieStore} at some point if possible.
  * @param sessionId - Session ID string to be saved.
  */
-export function deleteSessionIdCookie() {
+export function deleteSessionIdCookie(): Result {
+  if (!isServer) {
+    return Err("Cookies can only be read on the server.");
+  }
   cookies()?.delete(AUTH_COOKIE_NAME);
+  return Ok();
 }

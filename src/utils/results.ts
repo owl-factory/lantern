@@ -3,10 +3,10 @@
  * @param data - The data to return successfully
  * @returns A successful result object containing the data
  */
-export function Ok<T>(data: T): Result<T, never> {
+export function Ok<T>(data?: T): Result<T, never> {
   return {
     ok: true,
-    data,
+    data: data as T,
     unwrap: function () {
       return this.data;
     },
