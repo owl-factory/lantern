@@ -1,31 +1,27 @@
 import { PromiseReference } from "features/webWorker/types/promises";
-import { WorkerMessage, WorkerResult } from "features/webWorker/types/worker";
-import { createSandboxedWorker } from "features/webWorker/utils/scripts/worker";
+import { WorkerMessage, WorkerResult, WorkerScript } from "features/webWorker/types/worker";
+import { buildWorkerPromise } from "features/webWorker/utils/promises";
+import { scriptToUrl } from "features/webWorker/utils/script";
+import { newSafeWorker } from "features/webWorker/utils/worker";
 import { Milliseconds } from "types/time";
 import { isServer } from "utils/environment";
 
 /**
- * Either a function to use as a script, or points to
- * a compiled script to fetch and use
- */
-type WorkerScript = (() => void) | string;
-
-/**
  * A controller that creates a web worker and maintains calls to and from it
- * @typeParam T - The data posted to the web worker
- * @typeParam U - The data received from the web worker
- * @typeParam V - A key used to identify the action to take
+ * @typeParam T - A key used to identify the action to take within the web worker
+ * @typeParam U - The data posted to the web worker
+ * @typeParam V - The data received from the web worker
  */
-export class WebWorker<T, U, V = string> {
+export class WebWorker<T, U, V> {
   _state: WebWorkerState = WebWorkerState.NoOp;
   _error?: string;
 
-  _promises: Record<string, PromiseReference<T, U>> = {};
+  _promises: Record<string, PromiseReference<U, V>> = {};
   _timeout: Milliseconds;
-  _workerScript: WorkerScript;
+  _workerScript: WorkerScript<T, U, V> | string;
   _worker!: Worker;
 
-  constructor(workerScript: WorkerScript, timeout: Milliseconds) {
+  constructor(workerScript: WorkerScript<T, U, V>, timeout: Milliseconds) {
     this._workerScript = workerScript;
     this._timeout = timeout;
 
@@ -62,48 +58,27 @@ export class WebWorker<T, U, V = string> {
    */
   _loadWorker() {
     if (isServer) {
+      this._setState(WebWorkerState.OnServer, workerError[WebWorkerState.OnServer]);
+      return;
+    }
+
+    const urlResult = scriptToUrl(this._workerScript);
+    if (urlResult.ok === false) {
+      this._setState(WebWorkerState.InvalidScript, urlResult.error);
+      return;
+    }
+
+    const url = urlResult.data;
+    const workerResult = newSafeWorker(url);
+    if (workerResult.ok === false) {
       this._setState(
-        WebWorkerState.OnServer,
-        "Could not load the web worker due to being on the server"
+        WebWorkerState.FailedToCreate,
+        `The web worker failed to create: ${workerResult.error}`
       );
       return;
     }
 
-    // TODO - move this into a helper function
-    const typeOfScript = typeof this._workerScript;
-    let url: string;
-    switch (typeOfScript) {
-      case "string":
-        this._setState(
-          WebWorkerState.NotImplemented,
-          "Loading a web worker via a script string is not implemented"
-        );
-        return;
-      case "function": {
-        const code = createSandboxedWorker();
-        const blob = new Blob([`(${code})()`]);
-        url = URL.createObjectURL(blob);
-        break;
-      }
-
-      default:
-        this._setState(
-          WebWorkerState.InvalidScript,
-          "The provided script was not a URL or a function"
-        );
-        return;
-    }
-
-    let worker: Worker;
-    try {
-      worker = new Worker(url);
-      this._setState(WebWorkerState.Ready);
-    } catch (why: unknown) {
-      this._setState(WebWorkerState.FailedToCreate, `The web worker failed to create: ${why}`);
-      return;
-    }
-
-    this._worker = worker;
+    this._worker = workerResult.data;
     this._worker.onmessage = (event: MessageEvent<WorkerResult<U>>) => this._onMessage(event);
     this._worker.onerror = (err) => console.log("err", err);
     this._worker.onmessageerror = (err) => console.log("Message err", err);
@@ -114,29 +89,31 @@ export class WebWorker<T, U, V = string> {
    * @param data - The data to pass to the Web Worker
    * @returns A promise that will resolve when the web worker returns
    */
-  async post(type: V, data: T): Promise<U> {
+  async post(type: T, data: U): Promise<V> {
     if (!this.ready) {
       return new Promise((_, reject) => reject(`Web worker is not ready. ${this._error}`));
     }
-    const id = crypto.randomUUID();
-    const message: WorkerMessage<T, V> = { id, type, data };
+
+    const promise = buildWorkerPromise<U, V>(this._timeout, (id: string) =>
+      this._rejectOnTimeout(id)
+    );
+
+    const message: WorkerMessage<T, U> = { id: promise.id, type, data };
     this._worker.postMessage(message);
+    this._promises[promise.id] = promise;
 
-    const promiseReference: Partial<PromiseReference<T, U>> = { id, data };
-    const promise = new Promise((resolve: (value: U) => void, reject: (reason: string) => void) => {
-      promiseReference.resolve = resolve;
-      promiseReference.reject = reject;
+    return promise.promise;
+  }
 
-      if (this._timeout <= 0) return;
-      promiseReference.timeout = setTimeout(() => {
-        delete this._promises[id];
-        reject(`Timeout reached (${this._timeout}ms).`);
-      }, this._timeout);
-    });
-    promiseReference.promise = promise;
-
-    this._promises[id] = promiseReference as PromiseReference<T, U>;
-    return promise;
+  /**
+   * The functionality to run when a promise rejects due to a timeout
+   * @param id - The ID of the promise to reject
+   */
+  _rejectOnTimeout(id: string) {
+    const promise = this._promises[id];
+    if (!promise) return;
+    delete this._promises[id];
+    promise.reject(`Timeout reached (${this._timeout}ms).`);
   }
 
   /**
@@ -166,6 +143,7 @@ export class WebWorker<T, U, V = string> {
 
     if (!promise) return;
     clearTimeout(promise.timeout);
+
     if (message.ok === false) {
       promise.reject(message.error);
       return;
@@ -190,3 +168,10 @@ enum WebWorkerState {
   /** The provided script is not valid */
   InvalidScript,
 }
+
+/** Contains errors or functions to build an error */
+const workerError = {
+  [WebWorkerState.OnServer]: "Could not load the web worker due to being on the server",
+  [WebWorkerState.NotImplemented]: "Loading a web worker via a script string is not implemented",
+  [WebWorkerState.InvalidScript]: "The provided script was not a URL or a function",
+};

@@ -1,13 +1,13 @@
 "use client";
 
 import { Button } from "components/ui/Button";
+import { WebWorker } from "features/webWorker";
+import { test2 } from "features/webWorker/utils/scripts/worker";
 import { useEffect } from "react";
 import { isServer } from "utils/environment";
-import { WebWorker } from "utils/webWorker/controller";
-import { test2 } from "utils/webWorker/worker";
 
 export function WorkerPage() {
-  const worker = new WebWorker(test2, 5000);
+  const worker = new WebWorker<void, undefined, string>(test2, 5000);
 
   useEffect(() => {
     if (isServer) return undefined;

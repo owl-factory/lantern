@@ -1,4 +1,9 @@
-import { WorkerMessage } from "features/webWorker/types/worker";
+import {
+  ErrWorkerResult,
+  OkWorkerResult,
+  WorkerMessage,
+  WorkerResult,
+} from "features/webWorker/types/worker";
 
 const coreFunctionality = () => {
   "initFn";
