@@ -39,7 +39,6 @@ describe("isExternalUrl tests", () => {
       isExternalUrl("/api/ping"),
       isExternalUrl("/api/todo/7ba4227c-0e04-4438-a5a9-5a595e6cb1c7"),
     ];
-    console.log(urlTests);
     for (const item of urlTests) {
       expect(item).toBe(true);
     }
@@ -51,7 +50,6 @@ describe("isExternalUrl tests", () => {
       isExternalUrl("https://en.wikipedia.org/wiki/Unit_testing"),
       isExternalUrl("https://github.com/owl-factory/lantern"),
     ];
-    console.log(urlTests);
     for (const item of urlTests) {
       expect(item).toBe(true);
     }
@@ -68,7 +66,6 @@ describe("isExternalUrl tests", () => {
       isExternalUrl("/login"),
       isExternalUrl("/profile"),
     ];
-    console.log(urlTests);
     for (const item of urlTests) {
       expect(item).toBe(false);
     }

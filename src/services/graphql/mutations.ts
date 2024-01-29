@@ -4,6 +4,7 @@ import { authenticateSession, deleteSessionIdCookie, setSessionIdCookie } from "
 import { luciaAuth } from "lib/authentication/lucia";
 import { database } from "lib/database";
 import { NewTodo } from "types/database";
+import { isBadPassword } from "utils/authentication";
 import { getQueryFields } from "utils/graphql";
 import { emailRegex } from "utils/regex";
 
@@ -12,6 +13,54 @@ import { emailRegex } from "utils/regex";
  * Joined with query resolvers to make the full resolver map.
  */
 export const mutations: MutationResolvers = {
+  /**
+   * Takes user signup information, create a new user in the database and then optionally log them in immediately.
+   * @param args - Sign up form fields.
+   * @param info - GraphQL query info object that contains the list of requested fields to be returned.
+   * @returns void or the `id` of a session for the newly created user.
+   */
+  signup: async (_, args) => {
+    if (isBadPassword(args.password)) {
+      throw "Password does not meet requirements. Password should be between 8 and 40 characters and not be a commonly used password.";
+    }
+
+    // Create user and login key (email)
+    const user = await luciaAuth.createUser({
+      userId: crypto.randomUUID(),
+      key: {
+        providerId: "email",
+        providerUserId: args.email.toLowerCase(),
+        password: args.password,
+      },
+      attributes: {
+        email: args.email,
+        username: args.username,
+        displayName: args.displayName || undefined,
+      },
+    });
+
+    // Create secondary login key (username)
+    await luciaAuth.createKey({
+      userId: user.userId,
+      providerId: "username",
+      providerUserId: args.username.toLowerCase(),
+      password: args.password,
+    });
+
+    if (args.logIn) {
+      // Create session for new user
+      const session = await luciaAuth.createSession({
+        userId: user.userId,
+        attributes: {},
+      });
+      if (args.setCookie) {
+        setSessionIdCookie(session.sessionId);
+      }
+      return session.sessionId;
+    }
+    return "Session not created for new user.";
+  },
+
   /**
    * Authenticate a user with their credentials and create a session for them, which will always be returned by the resolver but may
    * also be save to a cookie if the `setCookie` argument is `true`.

@@ -27,6 +27,14 @@ type Query {
 }
 
 type Mutation {
+  signup(
+    email: String!
+    username: String!
+    password: String!
+    displayName: String
+    logIn: Boolean
+    setCookie: Boolean
+  ): String
   login(username: String!, password: String!, setCookie: Boolean): String!
   logout(deleteCookie: Boolean): String!
   createTodo(description: String, done: Boolean): Todo
