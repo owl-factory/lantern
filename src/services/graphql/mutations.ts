@@ -8,9 +8,17 @@ import { getQueryFields } from "utils/graphql";
 import { emailRegex } from "utils/regex";
 
 /**
- * Resolver map of all mutations resolvers.
+ * GraphQL resolver map of all mutation resolvers. Used for GraphQL request that needs to write data.
+ * Joined with query resolvers to make the full resolver map.
  */
 export const mutations: MutationResolvers = {
+  /**
+   * Authenticate a user with their credentials and create a session for them, which will always be returned by the resolver but may
+   * also be save to a cookie if the `setCookie` argument is `true`.
+   * @param args - Argument object containing `username: string` (username or email of the account to log in to), `password: string`,
+   * and `setCookie: boolean` fields.
+   * @returns ID of the session generated for a newly logged in user.
+   */
   login: async (_, args) => {
     const providerUserId = args.username.toLowerCase();
     // Set Lucia providerId based on whether the userId is an email or not.
@@ -36,6 +44,11 @@ export const mutations: MutationResolvers = {
     return session.sessionId;
   },
 
+  /**
+   * Authenticate a user session and then log out (delete) that session. Will also try to delete the associated cookie if `deleteCookie` argument is `true`.
+   * @param args - Argument object containing just `deleteCookie: boolean`.
+   * @returns ID of the session that was just logged out.
+   */
   logout: async (_, args) => {
     const auth = await authenticateSession();
     if (auth.ok === false) {
@@ -52,6 +65,12 @@ export const mutations: MutationResolvers = {
     return session.sessionId;
   },
 
+  /**
+   * If user is authenticated, creates a new Todo item in the database.
+   * @param args - Fields that make up a Todo database object, with some optional fields potentially not included.
+   * @param info - GraphQL query info object that contains the list of requested fields to be returned.
+   * @returns newly created Todo object filtered to requested fields.
+   */
   createTodo: async (_, args, _context, info) => {
     const auth = await authenticateSession();
     if (auth.ok === false) {
@@ -66,6 +85,12 @@ export const mutations: MutationResolvers = {
     return newTodo as Promise<Todo>;
   },
 
+  /**
+   * If user is authenticated, updates a Todo item in the database.
+   * @param args - Fields that make up a Todo database object, with some optional fields potentially not included, but `id` is strictly required.
+   * @param info - GraphQL query info object that contains the list of requested fields to be returned.
+   * @returns updated Todo object filtered to requested fields.
+   */
   updateTodo: async (_, args, _context, info) => {
     const auth = await authenticateSession();
     if (auth.ok === false) {
@@ -82,6 +107,12 @@ export const mutations: MutationResolvers = {
     return updatedTodo as Todo;
   },
 
+  /**
+   * If user is authenticated, deletes a Todo item in the database.
+   * @param args - Argument object containing only the `id` of the Todo to be deleted.
+   * @param info - GraphQL query info object that contains the list of requested fields to be returned.
+   * @returns `id` of the deleted Todo.
+   */
   deleteTodo: async (_, args) => {
     const auth = await authenticateSession();
     if (auth.ok === false) {

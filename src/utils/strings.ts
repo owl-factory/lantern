@@ -28,6 +28,12 @@ export function toKey(value: string, enforceCase = true): string {
   return key;
 }
 
+/**
+ * Utility function that checks if a URL string is an external URL or not. Local API endpoints are still considered external,
+ * as we do not want them to be prefetched.
+ * @param url - Internal or external URL to check.
+ * @returns true if URL is external or an API route, false otherwise.
+ */
 export function isExternalUrl(url: string): boolean {
   if (url.includes("/api")) {
     return true;

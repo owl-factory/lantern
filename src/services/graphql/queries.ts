@@ -5,9 +5,14 @@ import { database } from "lib/database";
 import { getQueryFields } from "utils/graphql";
 
 /**
- * Resolver map of all query resolvers.
+ * GraphQL resolver map of all query resolvers. Used for GraphQL request that needs to read data.
+ * Joined with mutation resolvers to make the full resolver map.
  */
 export const queries: QueryResolvers = {
+  /**
+   * Authenticates current user session and returns the session.
+   * @returns current user session object.
+   */
   session: async () => {
     const auth = await authenticateSession();
     if (auth.ok === false) {
@@ -31,6 +36,12 @@ export const queries: QueryResolvers = {
     return session;
   },
 
+  /**
+   *  If user is authenticated, get a single Todo item from the database.
+   * @param args - Argument object containing only the `id` of the Todo to be retrieved.
+   * @param info - GraphQL query info object that contains the list of requested fields to be returned.
+   * @returns requested Todo item.
+   */
   todo: async (_, args, _context, info) => {
     const auth = await authenticateSession();
     if (auth.ok === false) {
@@ -45,6 +56,11 @@ export const queries: QueryResolvers = {
     return todo as Promise<Todo>;
   },
 
+  /**
+   * If user is authenticated, gets a list of all Todo items from the database.
+   * @param info - GraphQL query info object that contains the list of requested fields to be returned.
+   * @returns list of all database Todo items.
+   */
   todos: async (_, _args, _context, info) => {
     const auth = await authenticateSession();
     if (auth.ok === false) {
