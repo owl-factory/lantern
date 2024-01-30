@@ -3,6 +3,7 @@ import type { MutationResolvers, Todo } from "generated/resolvers-types";
 import { authenticateSession, deleteSessionIdCookie, setSessionIdCookie } from "lib/authentication";
 import { luciaAuth } from "lib/authentication/lucia";
 import { database } from "lib/database";
+import { User } from "lucia";
 import { NewTodo } from "types/database";
 import { isBadPassword } from "utils/authentication";
 import { getQueryFields } from "utils/graphql";
@@ -112,6 +113,39 @@ export const mutations: MutationResolvers = {
     }
 
     return session.sessionId;
+  },
+
+  /**
+   * If authenticates, deletes a user.
+   * @param args - A the `id` and `username` fields of the user to delete. They must match, and both are required to make user deletion require more intention.
+   * @param info - GraphQL query info object that contains the list of requested fields to be returned.
+   * @returns `id` of the deleted user.
+   */
+  deleteUser: async (_, args) => {
+    const auth = await authenticateSession();
+    if (auth.ok === false) {
+      return auth.error;
+    }
+    const session = auth.data;
+    let userToDelete: User;
+    if (args.id === session.user.userId) {
+      userToDelete = session.user;
+    } else if (false) {
+      // TODO handle allowing Admins to delete any user by fetching them and setting userToDelete
+    } else {
+      throw "You do not have permission to delete this user.";
+    }
+    if (args.username !== userToDelete.username) {
+      throw "Provided username does not match the username of the user found with provided id.";
+    }
+
+    await luciaAuth.deleteUser(session.user.userId);
+
+    if (args.deleteCookie && session.user.userId == userToDelete.userId) {
+      deleteSessionIdCookie();
+    }
+
+    return userToDelete.userId;
   },
 
   /**
