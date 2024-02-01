@@ -17,6 +17,9 @@ export type Database = {
  */
 export type TodoTable = {
   id: string;
+  created_at: Date;
+  updated_at: Date;
+  owner_user_id: string;
   description?: string;
   done: boolean;
 };
