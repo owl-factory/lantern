@@ -1,6 +1,8 @@
 type Self = Window & typeof globalThis & { __proto__: unknown };
 
 export const sandboxInitialization = () => {
+  const global = self;
+
   // WHITELISTING BOILERPLATE //
   const wl = {
     self: 1,
@@ -42,6 +44,9 @@ export const sandboxInitialization = () => {
     // Chrome errors if you attempt to write over either of these properties, so put them in the whitelist
     TEMPORARY: 1,
     PERSISTENT: 1,
+
+    // Our custom functions within the sandbox
+    handleMessage: 1,
 
     // TODO - Testing values below here. Remove for production
     console: 1,
@@ -113,3 +118,7 @@ export const sandboxInitialization = () => {
 
   // END WHITELISTING BOILERPLATE //
 };
+
+export const sandboxEnvironment = `
+  self.init = ${sandboxInitialization.toString()}
+`;

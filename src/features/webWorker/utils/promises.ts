@@ -1,17 +1,23 @@
 import { PromiseReference, Reject, Resolve } from "features/webWorker/types/promises";
 import { Milliseconds } from "types/time";
 
-export function buildWorkerPromise<T, U>(
+/**
+ * Builds a worker promise, generating a reference to be stored
+ * @param timeoutAfter - The time in milliseconds to attempt this promise before aborting it
+ * @param onTimeout - The function to run when a timeout occurs
+ * @returns A reference to the promise to be stored within the Worker Controller
+ */
+export function buildWorkerPromise<T, U, V>(
   timeoutAfter: Milliseconds,
   onTimeout: (id: string) => void
-): PromiseReference<T, U> {
+): PromiseReference<T, U, V> {
   const id = crypto.randomUUID();
 
-  const promiseReference: Partial<PromiseReference<T, U>> = {
+  const promiseReference: Partial<PromiseReference<T, U, V>> = {
     id,
   };
 
-  const promise = new Promise((resolve: Resolve<U>, reject: Reject) => {
+  const promise = new Promise((resolve: Resolve<V>, reject: Reject) => {
     promiseReference.resolve = resolve;
     promiseReference.reject = reject;
 
@@ -23,5 +29,5 @@ export function buildWorkerPromise<T, U>(
 
   promiseReference.promise = promise;
 
-  return promiseReference as PromiseReference<T, U>;
+  return promiseReference as PromiseReference<T, U, V>;
 }

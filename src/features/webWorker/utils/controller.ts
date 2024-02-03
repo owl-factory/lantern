@@ -1,8 +1,8 @@
 import { PromiseReference } from "features/webWorker/types/promises";
-import { WorkerMessage, WorkerResult, WorkerScript } from "features/webWorker/types/worker";
+import { WorkerResult } from "features/webWorker/types/result";
+import { WorkerEnvironment, WorkerMessage, WorkerScript } from "features/webWorker/types/worker";
 import { buildWorkerPromise } from "features/webWorker/utils/promises";
-import { scriptToUrl } from "features/webWorker/utils/script";
-import { newSafeWorker } from "features/webWorker/utils/worker";
+import { buildWorker } from "features/webWorker/utils/worker";
 import { Milliseconds } from "types/time";
 import { isServer } from "utils/environment";
 
@@ -13,15 +13,29 @@ import { isServer } from "utils/environment";
  * @typeParam V - The data received from the web worker
  */
 export class WebWorker<T, U, V> {
+  /** The state of this controller */
   _state: WebWorkerState = WebWorkerState.NoOp;
+  /** The error message associated with the state, if any */
   _error?: string;
 
-  _promises: Record<string, PromiseReference<U, V>> = {};
+  /** The record of promises currently pending */
+  _promises: Record<string, PromiseReference<T, U, V>> = {};
+  /** The duration of time that should pass before a promise times out */
   _timeout: Milliseconds;
-  _workerScript: WorkerScript<T, U, V> | string;
+
+  /** The specific environment we are loading into the worker */
+  _environment: WorkerEnvironment;
+  /** The script that will be injected into a web worker. */
+  _workerScript: WorkerScript<T, U, V>;
+  /** The web worker created containing the given worker script */
   _worker!: Worker;
 
-  constructor(workerScript: WorkerScript<T, U, V>, timeout: Milliseconds) {
+  constructor(
+    workerEnvironment: WorkerEnvironment,
+    workerScript: WorkerScript<T, U, V>,
+    timeout: Milliseconds
+  ) {
+    this._environment = workerEnvironment;
     this._workerScript = workerScript;
     this._timeout = timeout;
 
@@ -62,26 +76,17 @@ export class WebWorker<T, U, V> {
       return;
     }
 
-    const urlResult = scriptToUrl(this._workerScript);
-    if (urlResult.ok === false) {
-      this._setState(WebWorkerState.InvalidScript, urlResult.error);
-      return;
-    }
-
-    const url = urlResult.data;
-    const workerResult = newSafeWorker(url);
+    const workerResult = buildWorker(this._environment, this._workerScript);
     if (workerResult.ok === false) {
-      this._setState(
-        WebWorkerState.FailedToCreate,
-        `The web worker failed to create: ${workerResult.error}`
-      );
+      this._setState(workerResult.error.state, workerResult.error.error);
       return;
     }
 
     this._worker = workerResult.data;
-    this._worker.onmessage = (event: MessageEvent<WorkerResult<U>>) => this._onMessage(event);
+    this._worker.onmessage = (event: MessageEvent<WorkerResult<V>>) => this._onMessage(event);
     this._worker.onerror = (err) => console.log("err", err);
     this._worker.onmessageerror = (err) => console.log("Message err", err);
+    this._setState(WebWorkerState.Ready);
   }
 
   /**
@@ -91,10 +96,12 @@ export class WebWorker<T, U, V> {
    */
   async post(type: T, data: U): Promise<V> {
     if (!this.ready) {
-      return new Promise((_, reject) => reject(`Web worker is not ready. ${this._error}`));
+      return new Promise((_, reject) =>
+        reject(`Web worker is not ready. Error ${this._state}: ${this._error}`)
+      );
     }
 
-    const promise = buildWorkerPromise<U, V>(this._timeout, (id: string) =>
+    const promise = buildWorkerPromise<T, U, V>(this._timeout, (id: string) =>
       this._rejectOnTimeout(id)
     );
 
@@ -136,7 +143,7 @@ export class WebWorker<T, U, V> {
    * Resolves or rejects the stored promise
    * @param message - The response from the web worker
    */
-  _onMessage(messageEvent: MessageEvent<WorkerResult<U>>) {
+  _onMessage(messageEvent: MessageEvent<WorkerResult<V>>) {
     const message = messageEvent.data;
     const promise = this._promises[message.id];
     delete this._promises[message.id];
@@ -153,7 +160,7 @@ export class WebWorker<T, U, V> {
 }
 
 /** The valid states the Web Worker controller can be in */
-enum WebWorkerState {
+export enum WebWorkerState {
   /** No operation has been performed on the controller */
   NoOp,
   /** The controller is ready to be used */

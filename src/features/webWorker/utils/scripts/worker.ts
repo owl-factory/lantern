@@ -1,70 +1,73 @@
-import {
-  ErrWorkerResult,
-  OkWorkerResult,
-  WorkerMessage,
-  WorkerResult,
-} from "features/webWorker/types/worker";
+import { WorkerResult } from "features/webWorker/types/result";
+import { WorkerMessage } from "features/webWorker/types/worker";
 
-const coreFunctionality = () => {
-  "initFn";
-  const _init = () => {
-    if ("init" in self && typeof self.init === "function") {
-      self.init();
-    }
-  };
+/** An extended version of the type for "self" */
+type Self = Window & typeof globalThis & CustomSelfFunctions;
 
-  self.onmessage = (message) => {
-    console.log("From the worker!");
-    postMessage({ id: message.data.id, ok: true, data: "res" });
-  };
-  _init();
+/** The custom functions added to the "self" variable */
+type CustomSelfFunctions<T = unknown, U = unknown, V = unknown> = {
+  init: () => void;
+  handleMessage: (message: WorkerMessage<T, U>) => V;
 };
 
-const testInit = () => {
-  console.log("WHATS UP");
-};
+/** The foundation for all worker scripts */
+const workerFoundation = () => {
+  // Injections are at the top so that the below code will overwrite any shadowed functions
+  "%injectTarget%";
 
-export function createSandboxedWorker(): string {
-  const initCode = "self.init = " + testInit.toString();
-  let coreCode = coreFunctionality.toString();
-  coreCode = coreCode.replace('"initFn";', initCode);
-  console.log(coreCode);
-  return coreCode;
-}
-
-export const test2 = () => {
-  self.onmessage = (message) => {
-    console.log("awsdasd");
-    postMessage({ id: message.data.id, ok: true, data: "Howdy y'all!" });
-  };
-};
-
-// export function createSandboxedWorker<T, U, V = string>(
-//   _onMessage: WorkerOnMessageCallback<T, U, V>
-// ): () => void {
-//   return () => {
-//     self.onmessage = () => {
-//       postMessage("Howdy y'all!");
-//     };
-//   };
-// }
-
-self.onmessage = (messageEvent: MessageEvent<WorkerMessage<never, unknown>>) => {
-  const message = messageEvent.data;
-  const id = message.id;
-  let result: WorkerResult<unknown>;
-  try {
-    result = { id, ok: true, data: undefined } as OkWorkerResult<unknown>;
-  } catch (unknownWhy: unknown) {
-    let why = "An unknown error occured. The thrown error was not either a string or Error.";
-    if (typeof unknownWhy === "string") why = unknownWhy;
-    else if (unknownWhy instanceof Error) why = unknownWhy.message;
-
-    result = {
-      id,
-      ok: false,
-      error: why,
-    } as ErrWorkerResult;
+  /**
+   * Initializes the web worker. If an invalid script is provided or absent,
+   * the worker will be locked and must be recreated
+   */
+  function $initializeWebWorker() {
+    if (!$validateInit()) return;
+    if (!$validateHandleMessage()) return;
+    (self as Self).init();
   }
-  postMessage(result);
+
+  /**
+   * Validates that the init function is present. If not valid, locks the worker
+   * @returns True for valid init, false otherwise
+   */
+  function $validateInit(): boolean {
+    if ("init" in self && typeof self.init === "function") return true;
+    self.onmessage = <T, U>(message: MessageEvent<WorkerMessage<T, U>>) => {
+      postMessage({
+        id: message.data.id,
+        ok: false,
+        error: "No initalization function was provided. This worker is locked and must be re-made.",
+      });
+    };
+    return false;
+  }
+
+  /**
+   * Validates that the handleMessage function is present. If not valid, locks the worker
+   * @returns True for valid handleMessage, false otherwise
+   */
+  function $validateHandleMessage(): boolean {
+    if ("handleMessage" in self && typeof self.handleMessage === "function") return true;
+    self.onmessage = <T, U>(message: MessageEvent<WorkerMessage<T, U>>) => {
+      postMessage({
+        id: message.data.id,
+        ok: false,
+        error: "No handleMessage function was provided. This worker is locked and must be re-made.",
+      });
+    };
+    return false;
+  }
+
+  /**
+   * Runs at an onMessage event.
+   * @param message - The Message Event containing a Worker Message
+   */
+  self.onmessage = async <T, U, V>(message: MessageEvent<WorkerMessage<T, U>>) => {
+    const result = (self as Self).handleMessage(message.data) as WorkerResult<V>;
+    postMessage(result);
+  };
+  $initializeWebWorker();
 };
+
+export function getWorkerFoundation() {
+  return workerFoundation.toString();
+}

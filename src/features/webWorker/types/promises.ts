@@ -1,6 +1,8 @@
-export type PromiseReference<U, V> = {
+export type PromiseReference<T, U, V> = {
   /** The unique ID of this promise */
   id: string;
+  /** The action to be performed on the worker */
+  type: T;
   /** The data sent in the initial request to the server */
   data: U;
   /** The reference to the promise to resolve */
