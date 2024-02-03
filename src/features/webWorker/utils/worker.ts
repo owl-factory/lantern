@@ -1,8 +1,8 @@
-import { WorkerScript, WorkerEnvironment } from "features/webWorker/types/worker";
+import { WORKER_ENVIRONMENTS } from "features/webWorker/data/environments";
+import { WorkerEnvironment } from "features/webWorker/types/environments";
+import { WorkerScript } from "features/webWorker/types/worker";
 import { WebWorkerState } from "features/webWorker/utils/controller";
-import { scriptToUrl } from "features/webWorker/utils/script";
-import { getWorkerFoundation } from "features/webWorker/utils/scripts/worker";
-import { sandboxEnvironment } from "features/webWorker/utils/workerEnvironments/sandbox";
+import { workerFoundation } from "features/webWorker/utils/environments/foundation";
 import { Err, ErrUnknown, Ok } from "utils/results";
 
 type BuildWorkerError = {
@@ -26,33 +26,13 @@ export function buildWorker<T, U, V>(
   }
 
   const fullWorkerScript = fullWorkerScriptResult.data;
-  const urlResult = scriptToUrl(fullWorkerScript);
-  if (urlResult.ok === false) {
-    return Err({ state: WebWorkerState.InvalidScript, error: urlResult.error });
-  }
-
-  const url = urlResult.data;
+  const url = scriptToUrl(fullWorkerScript);
   const workerResult = newSafeWorker(url);
   if (workerResult.ok === false) {
     return Err({ state: WebWorkerState.FailedToCreate, error: workerResult.error });
   }
 
   return workerResult;
-}
-
-/**
- * Safely creates a new web worker, catching any errors and safely
- *  packing them into results
- * @param url - The URL pointing to the script for the web worker
- * @returns A Result wrapping a Web Worker
- */
-function newSafeWorker(url: string): Result<Worker> {
-  try {
-    const worker = new Worker(url);
-    return Ok(worker);
-  } catch (why) {
-    return ErrUnknown(why);
-  }
 }
 
 /**
@@ -70,9 +50,7 @@ function buildWorkerScript<T, U, V>(
 
   const handleMessage = handleMessageToString(handleMessageScript);
   const combinedScripts = combineScripts(handleMessage, environment);
-
-  let workerScript = getWorkerFoundation();
-  workerScript = injectWorkerFunction(workerScript, combinedScripts);
+  const workerScript = injectWorkerFunction(workerFoundation, combinedScripts);
   return Ok(workerScript);
 }
 
@@ -104,4 +82,28 @@ function injectWorkerFunction(workerScript: string, combinedScripts: string) {
   return workerScript.replace(`"%injectTarget%";`, combinedScripts);
 }
 
-const WORKER_ENVIRONMENTS = new Map([[WorkerEnvironment.Sandbox, sandboxEnvironment]]);
+/**
+ * Takes a function as a string and converts it into a URL.
+ * @param workerScript - The worker script to convert into a URL. Must be a stringified function
+ * @returns A result containing a script URL
+ */
+function scriptToUrl(workerScript: string): string {
+  const blob = new Blob([`(${workerScript})()`]);
+  const url = URL.createObjectURL(blob);
+  return url;
+}
+
+/**
+ * Safely creates a new web worker, catching any errors and safely
+ *  packing them into results
+ * @param url - The URL pointing to the script for the web worker
+ * @returns A Result wrapping a Web Worker
+ */
+function newSafeWorker(url: string): Result<Worker> {
+  try {
+    const worker = new Worker(url);
+    return Ok(worker);
+  } catch (why) {
+    return ErrUnknown(why);
+  }
+}

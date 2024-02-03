@@ -1,3 +1,2 @@
-export * from "./types/result";
-export { WorkerEnvironment } from "./types/worker";
+export { WorkerEnvironment } from "./types/environments";
 export { WebWorker } from "./utils/controller";

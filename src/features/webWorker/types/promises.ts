@@ -1,3 +1,4 @@
+/** Contains all data for a promise made for a web worker */
 export type PromiseReference<T, U, V> = {
   /** The unique ID of this promise */
   id: string;

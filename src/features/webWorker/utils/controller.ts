@@ -1,6 +1,7 @@
+import { WorkerEnvironment } from "features/webWorker/types/environments";
 import { PromiseReference } from "features/webWorker/types/promises";
 import { WorkerResult } from "features/webWorker/types/result";
-import { WorkerEnvironment, WorkerMessage, WorkerScript } from "features/webWorker/types/worker";
+import { WorkerMessage, WorkerScript } from "features/webWorker/types/worker";
 import { buildWorkerPromise } from "features/webWorker/utils/promises";
 import { buildWorker } from "features/webWorker/utils/worker";
 import { Milliseconds } from "types/time";
@@ -43,13 +44,34 @@ export class WebWorker<T, U, V> {
   }
 
   /**
-   * Sets a new state and optional error message
-   * @param state - The new state
-   * @param error - The error message to accompany the state, if any
+   * Attempts to recreate the web worker, if it was attempted to be made on a server
    */
-  _setState(state: WebWorkerState, error?: string) {
-    this._state = state;
-    this._error = error;
+  attemptReload() {
+    if (this._state !== WebWorkerState.OnServer) return;
+    this._loadWorker();
+  }
+
+  /**
+   * Posts a message to the web worker
+   * @param data - The data to pass to the Web Worker
+   * @returns A promise that will resolve when the web worker returns
+   */
+  async post(type: T, data: U): Promise<V> {
+    if (!this.ready) {
+      return new Promise((_, reject) =>
+        reject(`Web worker is not ready. Error ${this._state}: ${this._error}`)
+      );
+    }
+
+    const promise = buildWorkerPromise<T, U, V>(type, this._timeout, (id: string) =>
+      this._rejectOnTimeout(id)
+    );
+
+    const message: WorkerMessage<T, U> = { id: promise.id, type, data };
+    this._worker.postMessage(message);
+    this._promises[promise.id] = promise;
+
+    return promise.promise;
   }
 
   /**
@@ -60,11 +82,13 @@ export class WebWorker<T, U, V> {
   }
 
   /**
-   * Attempts to recreate the web worker, if it was attempted to be made on a server
+   * Sets a new state and optional error message
+   * @param state - The new state
+   * @param error - The error message to accompany the state, if any
    */
-  attemptReload() {
-    if (this._state !== WebWorkerState.OnServer) return;
-    this._loadWorker();
+  _setState(state: WebWorkerState, error?: string) {
+    this._state = state;
+    this._error = error;
   }
 
   /**
@@ -90,29 +114,6 @@ export class WebWorker<T, U, V> {
   }
 
   /**
-   * Posts a message to the web worker
-   * @param data - The data to pass to the Web Worker
-   * @returns A promise that will resolve when the web worker returns
-   */
-  async post(type: T, data: U): Promise<V> {
-    if (!this.ready) {
-      return new Promise((_, reject) =>
-        reject(`Web worker is not ready. Error ${this._state}: ${this._error}`)
-      );
-    }
-
-    const promise = buildWorkerPromise<T, U, V>(this._timeout, (id: string) =>
-      this._rejectOnTimeout(id)
-    );
-
-    const message: WorkerMessage<T, U> = { id: promise.id, type, data };
-    this._worker.postMessage(message);
-    this._promises[promise.id] = promise;
-
-    return promise.promise;
-  }
-
-  /**
    * The functionality to run when a promise rejects due to a timeout
    * @param id - The ID of the promise to reject
    */
@@ -122,22 +123,6 @@ export class WebWorker<T, U, V> {
     delete this._promises[id];
     promise.reject(`Timeout reached (${this._timeout}ms).`);
   }
-
-  /**
-   * We have two options:
-   * 1. We keep a list of active promises, and resolve or reject for a given key
-   * 2. Keys are initialized and their values stored, with Mobx tracking the values
-   * Pros/cons of 1:
-   *  - Small data footprint
-   *  - Requires async/await or .then()
-   *  - No values stored, so they must be recalculated for each instance of a thing
-   * Pros/cons of 2:
-   *  - Larger data footprint
-   *  - No requirement of async/await
-   *  - Values stored means we can limit refetching if the data hasn't changed
-   *  - Values stored means we can share results across the same keys
-   * Decision is to use 1. We can implement #2 on top of #1, but not vice versa
-   */
 
   /**
    * Resolves or rejects the stored promise

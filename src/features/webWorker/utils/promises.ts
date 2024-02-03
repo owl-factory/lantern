@@ -8,6 +8,7 @@ import { Milliseconds } from "types/time";
  * @returns A reference to the promise to be stored within the Worker Controller
  */
 export function buildWorkerPromise<T, U, V>(
+  type: T,
   timeoutAfter: Milliseconds,
   onTimeout: (id: string) => void
 ): PromiseReference<T, U, V> {
@@ -15,6 +16,7 @@ export function buildWorkerPromise<T, U, V>(
 
   const promiseReference: Partial<PromiseReference<T, U, V>> = {
     id,
+    type,
   };
 
   const promise = new Promise((resolve: Resolve<V>, reject: Reject) => {

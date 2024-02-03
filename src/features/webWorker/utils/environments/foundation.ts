@@ -10,7 +10,7 @@ type CustomSelfFunctions<T = unknown, U = unknown, V = unknown> = {
 };
 
 /** The foundation for all worker scripts */
-const workerFoundation = () => {
+const workerFoundationScript = () => {
   // Injections are at the top so that the below code will overwrite any shadowed functions
   "%injectTarget%";
 
@@ -72,6 +72,5 @@ const workerFoundation = () => {
   $initializeWebWorker();
 };
 
-export function getWorkerFoundation() {
-  return workerFoundation.toString();
-}
+/** The stringified foundation for all Web Workers */
+export const workerFoundation = workerFoundationScript.toString();
