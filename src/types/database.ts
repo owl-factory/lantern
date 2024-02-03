@@ -17,9 +17,9 @@ export type Database = {
  */
 export type TodoTable = {
   id: string;
-  created_at: Date;
-  updated_at: Date;
-  owner_user_id: string;
+  createdAt: Date; // created_at
+  updatedAt: Date; // updated_at
+  ownerUserId: string; // owner_user_id
   description?: string;
   done: boolean;
 };
@@ -36,6 +36,9 @@ export type UserTable = {
   id: string;
   username: string;
   email: string;
+  createdAt: Date; // created_at
+  updatedAt: Date; // updated_at
+  groups: Group[];
   displayName?: string; // display_name
   iconUrl?: string; // icon_url
 };
@@ -52,6 +55,8 @@ export type KeyTable = {
   id: string;
   userId: string; // user_id
   hashedPassword: string | null; //hashed_password
+  createdAt: Date; // created_at
+  updatedAt: Date; // updated_at
 };
 
 export type Key = Selectable<KeyTable>;
@@ -64,12 +69,19 @@ export type KeyUpdate = Updateable<KeyTable>;
  */
 export type SessionTable = {
   id: string;
-  userId: string;
+  userId: string; // user_id
   activeExpires: bigint; // active_expires
   idleExpires: bigint; // idle_expires
+  createdAt: Date; // created_at
+  updatedAt: Date; // updated_at
   isApiKey?: boolean; // is_api_key
 };
 
 export type Session = Selectable<SessionTable>;
 export type NewSession = Insertable<SessionTable>;
 export type SessionUpdate = Updateable<SessionTable>;
+
+enum Group {
+  Admin = "admin",
+  User = "user",
+}
