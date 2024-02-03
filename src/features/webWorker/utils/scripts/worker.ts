@@ -1,4 +1,3 @@
-import { WorkerResult } from "features/webWorker/types/result";
 import { WorkerMessage } from "features/webWorker/types/worker";
 
 /** An extended version of the type for "self" */
@@ -7,7 +6,7 @@ type Self = Window & typeof globalThis & CustomSelfFunctions;
 /** The custom functions added to the "self" variable */
 type CustomSelfFunctions<T = unknown, U = unknown, V = unknown> = {
   init: () => void;
-  handleMessage: (message: WorkerMessage<T, U>) => V;
+  handleMessage: (type: T, data: U) => V;
 };
 
 /** The foundation for all worker scripts */
@@ -62,8 +61,13 @@ const workerFoundation = () => {
    * @param message - The Message Event containing a Worker Message
    */
   self.onmessage = async <T, U, V>(message: MessageEvent<WorkerMessage<T, U>>) => {
-    const result = (self as Self).handleMessage(message.data) as WorkerResult<V>;
-    postMessage(result);
+    try {
+      const data = (self as Self).handleMessage(message.data.type, message.data.data) as V;
+      postMessage({ id: message.data.id, ok: true, data });
+    } catch (why: unknown) {
+      const error = why instanceof Error ? why.message : (why as string);
+      postMessage({ id: message.data.id, ok: false, error });
+    }
   };
   $initializeWebWorker();
 };

@@ -1,12 +1,10 @@
-import { WorkerResult } from "features/webWorker/types/result";
-
 /**
  * The custom function that contains all functionality for a web worker
  * @typeParam T - The different possible actions the script can take
  * @typeParam U - The data sent to the worker
  * @typeParam V - The data received from the worker
  */
-export type WorkerScript<T, U, V> = (message: WorkerMessage<T, U>) => WorkerResult<V>;
+export type WorkerScript<T, U, V> = (type: T, data: U) => V;
 
 /** A standard message object to a worker */
 export type WorkerMessage<T, U> = {

@@ -155,6 +155,7 @@ export class WebWorker<T, U, V> {
       promise.reject(message.error);
       return;
     }
+
     promise.resolve(message.data);
   }
 }
