@@ -5,7 +5,7 @@ import { WebWorkerState } from "features/webWorker/utils/controller";
 import { workerFoundation } from "features/webWorker/utils/environments/foundation";
 import { Err, ErrUnknown, Ok } from "utils/results";
 
-type BuildWorkerError = {
+export type BuildWorkerError = {
   state: WebWorkerState;
   error: string;
 };
@@ -107,3 +107,12 @@ function newSafeWorker(url: string): Result<Worker> {
     return ErrUnknown(why);
   }
 }
+
+export const __testing__ = {
+  buildWorkerScript,
+  combineScripts,
+  handleMessageToString,
+  injectWorkerFunction,
+  newSafeWorker,
+  scriptToUrl,
+};

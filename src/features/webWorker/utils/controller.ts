@@ -47,7 +47,7 @@ export class WebWorker<T, U, V> {
    * Attempts to recreate the web worker, if it was attempted to be made on a server
    */
   attemptReload() {
-    if (this._state !== WebWorkerState.OnServer) return;
+    if (this._state !== WebWorkerState.CreatedOnServer) return;
     this._loadWorker();
   }
 
@@ -96,7 +96,7 @@ export class WebWorker<T, U, V> {
    */
   _loadWorker() {
     if (isServer) {
-      this._setState(WebWorkerState.OnServer, workerError[WebWorkerState.OnServer]);
+      this._setState(WebWorkerState.CreatedOnServer, workerError[WebWorkerState.CreatedOnServer]);
       return;
     }
 
@@ -153,7 +153,7 @@ export enum WebWorkerState {
   Ready,
 
   /** The controller has been created on the server and could not create a web worker */
-  OnServer,
+  CreatedOnServer,
   /** Some functionality is not implemented */
   NotImplemented,
   /** The controller failed to create a worker */
@@ -164,7 +164,7 @@ export enum WebWorkerState {
 
 /** Contains errors or functions to build an error */
 const workerError = {
-  [WebWorkerState.OnServer]: "Could not load the web worker due to being on the server",
+  [WebWorkerState.CreatedOnServer]: "Could not load the web worker due to being on the server",
   [WebWorkerState.NotImplemented]: "Loading a web worker via a script string is not implemented",
   [WebWorkerState.InvalidScript]: "The provided script was not a URL or a function",
 };
