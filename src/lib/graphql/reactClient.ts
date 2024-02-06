@@ -1,8 +1,6 @@
 import { Client, SSRExchange, cacheExchange, createClient, fetchExchange, ssrExchange } from "urql";
 import { absoluteGraphqlUrl } from "utils/environment";
 
-//const reactFetchExchange = isServer ? serverFetchExchange : fetchExchange;
-
 /**
  * urql client getter for use in the React component tree (mostly through query hooks). This works on the client and in NextJs SSR, with hydration.
  * @returns tuple of urql server-side-rendering data exchange and a urql Client instance configured for Lantern that is intended for use in react query hooks.

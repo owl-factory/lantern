@@ -24,20 +24,19 @@ export async function authenticateSession(): Promise<Result<Session>> {
   try {
     // Session returns null on Lucia authentication failure
     const session = await luciaAuth.validateSession(sessionIdResult.data);
+    // Be careful when touching this logic, as it determines if someone is authenticated or not.
+    if (session === null || session === undefined || !session.sessionId) {
+      return Err("User authentication failed. Unknown reason.");
+    }
     if (session.fresh) {
       setSessionIdCookie(session.sessionId);
     }
-    // Be careful when touching this logic, as it determined if someone is authenticated or not.
-    if (session !== null && session !== undefined && session.sessionId) {
-      return Ok(session);
-    }
+    return Ok(session);
   } catch (_e) {
     return Err(
       "User authentication failed. Session is invalid (expired or could not be found in the database)."
     );
   }
-
-  return Err("User authentication failed. Unknown reason.");
 }
 
 /**

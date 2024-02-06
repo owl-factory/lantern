@@ -57,7 +57,7 @@ async function migrateToLatest(migrationArg: string) {
 
   await database.destroy();
 
-  if (results?.length == 0) {
+  if (results?.length === 0) {
     console.log("No migrations ran because the database is already up to date.");
   }
 }

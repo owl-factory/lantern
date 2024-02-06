@@ -48,29 +48,10 @@ const sessionQuery = graphql(`
  */
 async function Page() {
   let user: SessionQuery["session"]["user"] | undefined;
-  let iconUrl = "";
   if (getSessionId().ok) {
     const client = getServerClient();
     const { data } = await client.query(sessionQuery, {});
     user = data?.session?.user;
-    if (user?.iconUrl) {
-      iconUrl = user.iconUrl.replace("https://lanterntt.com", "");
-    }
-  }
-
-  async function submitLogin(formData: FormData) {
-    "use server";
-    const client = getServerClient();
-    await client.mutation(loginMutation, {
-      username: formData.get("username")?.toString() || "",
-      password: formData.get("password")?.toString() || "",
-    });
-  }
-
-  async function submitLogout() {
-    "use server";
-    const client = getServerClient();
-    await client.mutation(logoutMutation, {});
   }
 
   return (
@@ -146,74 +127,7 @@ async function Page() {
         </header>
 
         <main id="content" role="main">
-          {!user ? (
-            <section id="login-card">
-              <div className="flex flex-col items-center justify-center px-6 mx-auto">
-                <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
-                  <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-                    <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-                      Sign in to your account
-                    </h1>
-                    <form className="space-y-4 md:space-y-6" action={submitLogin}>
-                      <div>
-                        <label
-                          htmlFor="username"
-                          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                        >
-                          Your email or username
-                        </label>
-                        <input
-                          type="text"
-                          name="username"
-                          id="username"
-                          className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                          placeholder="name@website.com"
-                          required
-                          spellCheck={false}
-                        />
-                      </div>
-                      <PasswordField />
-                      <Button
-                        type="submit"
-                        className="w-full hover:text-blue-600 text-white focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                      >
-                        Sign in
-                      </Button>
-                      <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-                        Don’t have an account yet?{" "}
-                        <Link
-                          href="#"
-                          variant="none"
-                          className="font-medium text-primary-600 hover:underline dark:text-primary-500"
-                        >
-                          Sign up
-                        </Link>
-                      </p>
-                    </form>
-                  </div>
-                </div>
-              </div>
-            </section>
-          ) : (
-            <section
-              id="welcome!"
-              className="mt-3 text-lg text-gray-300 flex flex-col items-center"
-            >
-              <h2 className="text-2xl text-white text-center pb-12">
-                Welcome, {user.displayName || user.username}!<span className="p-2"> </span>
-                <Image
-                  className="inline-block h-[3.875rem] w-[3.875rem] rounded-full"
-                  src={iconUrl}
-                  width={402}
-                  height={402}
-                  alt={`${user.username}'s profile picture.`}
-                />
-              </h2>
-              <form action={submitLogout}>
-                <Button type="submit">Logout</Button>
-              </form>
-            </section>
-          )}
+          {user ? <LoggedInSection user={user} /> : <LoggedOutSection />}
           <br />
           <div className="text-center mt-4">
             <Link href="/login/ssr-test">
@@ -232,6 +146,107 @@ async function Page() {
         </footer>
       </div>
     </div>
+  );
+}
+
+function LoggedOutSection() {
+  /**
+   * NextJs server action that is called using a standard HTTP form submit.
+   * This action runs a GraphQL mutation to log in the current user.
+   * @param formData - standard Form Data object that should contain a username and password.
+   */
+  async function submitLogin(formData: FormData) {
+    "use server";
+    const client = getServerClient();
+    await client.mutation(loginMutation, {
+      username: formData.get("username")?.toString() || "",
+      password: formData.get("password")?.toString() || "",
+    });
+  }
+
+  return (
+    <section id="login-card">
+      <div className="flex flex-col items-center justify-center px-6 mx-auto">
+        <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+          <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
+            <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+              Sign in to your account
+            </h1>
+            <form className="space-y-4 md:space-y-6" action={submitLogin}>
+              <div>
+                <label
+                  htmlFor="username"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Your email or username
+                </label>
+                <input
+                  type="text"
+                  name="username"
+                  id="username"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  placeholder="name@website.com"
+                  required
+                  spellCheck={false}
+                />
+              </div>
+              <PasswordField />
+              <Button
+                type="submit"
+                className="w-full hover:text-blue-600 text-white focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+              >
+                Sign in
+              </Button>
+              <p className="text-sm font-light text-gray-500 dark:text-gray-400">
+                Don’t have an account yet?{" "}
+                <Link
+                  href="#"
+                  variant="none"
+                  className="font-medium text-primary-600 hover:underline dark:text-primary-500"
+                >
+                  Sign up
+                </Link>
+              </p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function LoggedInSection({ user }: { user: SessionQuery["session"]["user"] }) {
+  let iconUrl = "";
+  if (user?.iconUrl) {
+    iconUrl = user.iconUrl.replace("https://lanterntt.com", "");
+  }
+
+  /**
+   * NextJs server action that is called using a standard HTTP form submit.
+   * This action runs a GraphQL mutation to log out the current user.
+   */
+  async function submitLogout() {
+    "use server";
+    const client = getServerClient();
+    await client.mutation(logoutMutation, {});
+  }
+
+  return (
+    <section id="welcome!" className="mt-3 text-lg text-gray-300 flex flex-col items-center">
+      <h2 className="text-2xl text-white text-center pb-12">
+        Welcome, {user.displayName || user.username}!<span className="p-2"> </span>
+        <Image
+          className="inline-block h-[3.875rem] w-[3.875rem] rounded-full"
+          src={iconUrl}
+          width={402}
+          height={402}
+          alt={`${user.username}'s profile picture.`}
+        />
+      </h2>
+      <form action={submitLogout}>
+        <Button type="submit">Logout</Button>
+      </form>
+    </section>
   );
 }
 

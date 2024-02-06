@@ -1,3 +1,6 @@
+/**
+ * Loading spinner component for use in {@link https://react.dev/reference/react/Suspense |React Suspense}.
+ */
 export default function Loading() {
   return (
     <div className="flex flex-auto flex-col justify-center items-center p-4 h-full">

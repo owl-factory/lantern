@@ -141,7 +141,7 @@ export const mutations: MutationResolvers = {
 
     await luciaAuth.deleteUser(session.user.userId);
 
-    if (args.deleteCookie && session.user.userId == userToDelete.userId) {
+    if (args.deleteCookie && session.user.userId === userToDelete.userId) {
       deleteSessionIdCookie();
     }
 
