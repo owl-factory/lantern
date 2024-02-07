@@ -37,6 +37,12 @@
       "rules": {
         "tsdoc/syntax": "off"
       }
+    },
+    {
+      "files": ["src/migrations/*"],
+      "rules": {
+        "@typescript-eslint/no-explicit-any": "off"
+      }
     }
   ]
 }

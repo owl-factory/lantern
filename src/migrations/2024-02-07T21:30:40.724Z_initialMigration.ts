@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Kysely, sql } from "kysely";
 import "utils/kyselyExtensions";
 
@@ -33,7 +32,6 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addBaseColumns(false)
     .addColumn("userId", "uuid", (col) => col.notNull().references("user.id"))
     .addColumn("hashedPassword", "text")
-    .addColumn("blah", "text", (col) => col.notNull().defaultTo("AHHHHHHHHHH!"))
     .execute();
 
   // session table
