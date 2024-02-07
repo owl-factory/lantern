@@ -9,8 +9,8 @@ import { database } from "lib/database";
  * It is needed because Kysely, by design, has no migration CLI.
  */
 async function migrateToLatest(migrationArg: string) {
-  if (!process.env.POSTGRES_URL) {
-    console.log("POSTGRES_URL environment variable is not defined, skipping migrations.");
+  if (!process.env.DATABASE_URL) {
+    console.log("DATABASE_URL environment variable is not defined, skipping migrations.");
     process.exit(0);
   }
 

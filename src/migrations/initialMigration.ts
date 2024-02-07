@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Kysely, sql } from "kysely";
+import "utils/kyselyExtensions";
 
 /**
  * Function called by the migration script to apply 'initialMigration'.
@@ -15,11 +16,9 @@ export async function up(db: Kysely<any>): Promise<void> {
   // user table
   await db.schema
     .createTable("user")
-    .addColumn("id", "uuid", (col) => col.notNull().primaryKey())
+    .addBaseColumns()
     .addColumn("username", "text", (col) => col.notNull())
     .addColumn("email", "text", (col) => col.notNull())
-    .addColumn("createdAt", "timestamp", (col) => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
-    .addColumn("updatedAt", "timestamp", (col) => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
     .addColumn("groups", sql`public.group[]`, (col) =>
       col.defaultTo(sql`ARRAY['user']::public.group[]`)
     )
@@ -31,21 +30,20 @@ export async function up(db: Kysely<any>): Promise<void> {
   await db.schema
     .createTable("key")
     .addColumn("id", "text", (col) => col.notNull().primaryKey())
+    .addBaseColumns(false)
     .addColumn("userId", "uuid", (col) => col.notNull().references("user.id"))
     .addColumn("hashedPassword", "text")
-    .addColumn("createdAt", "timestamp", (col) => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
-    .addColumn("updatedAt", "timestamp", (col) => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
+    .addColumn("blah", "text", (col) => col.notNull().defaultTo("AHHHHHHHHHH!"))
     .execute();
 
   // session table
   await db.schema
     .createTable("session")
     .addColumn("id", "varchar(40)", (col) => col.notNull().primaryKey())
+    .addBaseColumns(false)
     .addColumn("userId", "uuid", (col) => col.notNull().references("user.id"))
     .addColumn("activeExpires", "bigint", (col) => col.notNull())
     .addColumn("idleExpires", "bigint", (col) => col.notNull())
-    .addColumn("createdAt", "timestamp", (col) => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
-    .addColumn("updatedAt", "timestamp", (col) => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
     .addColumn("isApiKey", "boolean", (col) => col.notNull().defaultTo(false))
     .execute();
   /* end Lucia Auth tables */
@@ -53,14 +51,7 @@ export async function up(db: Kysely<any>): Promise<void> {
   // todos table
   await db.schema
     .createTable("todo")
-    .addColumn("id", "uuid", (col) =>
-      col
-        .notNull()
-        .primaryKey()
-        .defaultTo(sql`gen_random_uuid()`)
-    )
-    .addColumn("createdAt", "timestamp", (col) => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
-    .addColumn("updatedAt", "timestamp", (col) => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
+    .addBaseColumns()
     .addColumn("ownerUserId", "uuid", (col) => col.notNull().references("user.id"))
     .addColumn("description", "text")
     .addColumn("done", "boolean", (col) => col.notNull().defaultTo(false))

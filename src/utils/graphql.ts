@@ -1,8 +1,6 @@
 import { FieldNode, GraphQLResolveInfo } from "graphql";
-import { SelectExpression } from "kysely";
-import { Database } from "types/database";
-
-export type SelectFields<T extends keyof Database> = SelectExpression<Database, T>[];
+import { DB } from "types/database";
+import { SelectFields } from "types/graphql";
 
 /**
  * Utility function that obtains a list of field names requested in a Graphql query.
@@ -12,9 +10,7 @@ export type SelectFields<T extends keyof Database> = SelectExpression<Database, 
  * The document node is essentially a tokenized version of the GraphQL query string.
  * @returns an array of field names requested in the GraphQL query for use in Kysely `select` statements.
  */
-export function getQueryFields<T extends keyof Database>(
-  info: GraphQLResolveInfo
-): SelectFields<T> {
+export function getQueryFields<T extends keyof DB>(info: GraphQLResolveInfo): SelectFields<T> {
   const fields = info.fieldNodes.reduce((allNodes: string[], currentNode) => {
     if (currentNode.selectionSet === undefined) {
       return [];

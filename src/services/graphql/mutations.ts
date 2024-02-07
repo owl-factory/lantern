@@ -1,5 +1,5 @@
 /* eslint-disable no-restricted-syntax */
-import type { MutationResolvers, Todo } from "generated/resolvers-types";
+import type { MutationResolvers, Todo } from "types/graphql";
 import { authenticateSession, deleteSessionIdCookie, setSessionIdCookie } from "lib/authentication";
 import { luciaAuth } from "lib/authentication/lucia";
 import { database } from "lib/database";

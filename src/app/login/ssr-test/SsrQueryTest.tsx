@@ -1,7 +1,7 @@
 "use client";
 
-import { graphql } from "generated/client";
-import { Todo } from "types/database";
+import { graphql } from "types/graphql";
+import { SelectTodo } from "types/database";
 import { useQuery } from "urql";
 
 const todosQuery = graphql(`
@@ -16,7 +16,7 @@ const todosQuery = graphql(`
 
 export function SsrQueryTest() {
   const [{ data }] = useQuery({ query: todosQuery });
-  const todos = data?.todos as Todo[] | undefined;
+  const todos = data?.todos as SelectTodo[] | undefined;
 
   return todos ? (
     <ul className="items-start mt-4 mb-16">
@@ -29,7 +29,7 @@ export function SsrQueryTest() {
   );
 }
 
-function ListItem({ todo }: { todo: Todo }) {
+function ListItem({ todo }: { todo: SelectTodo }) {
   return (
     <li>
       {todo.description} - Done: {todo.done.toString()}

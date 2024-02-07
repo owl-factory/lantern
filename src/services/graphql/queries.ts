@@ -1,5 +1,5 @@
 /* eslint-disable no-restricted-syntax */
-import type { QueryResolvers, Session, Todo } from "generated/resolvers-types";
+import type { QueryResolvers, Session, Todo } from "types/graphql";
 import { authenticateSession } from "lib/authentication";
 import { database } from "lib/database";
 import { getQueryFields } from "utils/graphql";

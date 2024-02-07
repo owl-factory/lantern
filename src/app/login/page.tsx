@@ -7,8 +7,8 @@ import { getServerClient } from "lib/graphql/serverClient";
 import { PasswordField } from "app/login/PasswordField";
 import { getSessionId } from "lib/authentication";
 import Image from "next/image";
-import { graphql } from "generated/client";
-import { SessionQuery } from "generated/client/graphql";
+import { graphql } from "types/graphql";
+import { SessionQuery } from "types/graphql/client";
 
 /**
  * Page metadata object, NextJs will append these values as meta tags to the <head>.

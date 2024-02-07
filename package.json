@@ -3,9 +3,9 @@
   "version": "0.5.0",
   "private": true,
   "scripts": {
-    "build": "pnpm run generate && next build && pnpm run migrate:prod",
+    "build": "pnpm run migrate:prod && pnpm run generate && next build",
     "start": "next start",
-    "dev": "pnpm run generate && pnpm run migrate && next dev",
+    "dev": "pnpm run migrate && pnpm run generate && next dev",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "test": "pnpm run test:unit && pnpm run test:e2e",
@@ -16,7 +16,7 @@
     "migrate": "tsx --env-file=.env.development src/migrations/migrationScript.ts --latest",
     "migrate:up": "tsx --env-file=.env.development src/migrations/migrationScript.ts --up",
     "migrate:down": "tsx --env-file=.env.development src/migrations/migrationScript.ts --down",
-    "generate": "graphql-codegen"
+    "generate": "kysely-codegen --out-file ./generated/database-types.ts --camel-case --env-file=.env.development && graphql-codegen"
   },
   "engines": {
     "node": ">=20",
@@ -33,6 +33,7 @@
     "graphql-tag": "^2.12.6",
     "graphql-yoga": "^5.1.1",
     "kysely": "^0.26.3",
+    "kysely-codegen": "^0.11.0",
     "lucia": "^2.7.6",
     "mobx": "^6.12.0",
     "mobx-react-lite": "^4.0.5",
@@ -46,9 +47,9 @@
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^5.0.0",
+    "@graphql-codegen/client-preset": "^4.1.0",
     "@graphql-codegen/typescript": "^4.0.1",
     "@graphql-codegen/typescript-resolvers": "^4.0.1",
-    "@graphql-codegen/client-preset": "^4.1.0",
     "@graphql-typed-document-node/core": "^3.2.0",
     "@playwright/test": "^1.40.1",
     "@types/jest": "^29.5.11",
