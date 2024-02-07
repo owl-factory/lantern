@@ -75,6 +75,7 @@ export function setSessionIdCookie(sessionId: string): Result {
     httpOnly: true,
     path: "/",
     secure: useSsl,
+    //This creates a date with an exact expiry 2 weeks from now.
     expires: new Date(Date.now() + 12096e5),
   });
   return Ok();
