@@ -28,7 +28,7 @@
     "@serwist/precaching": "^8.4.1",
     "@serwist/sw": "^8.4.1",
     "@urql/exchange-execute": "^2.2.2",
-    "@urql/next": "^1.1.0",
+    "@urql/next": "^1.1.1",
     "graphql": "^16.8.1",
     "graphql-tag": "^2.12.6",
     "graphql-yoga": "^5.1.1",
