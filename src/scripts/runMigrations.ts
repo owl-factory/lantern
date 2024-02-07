@@ -8,7 +8,7 @@ import { database } from "lib/database";
  * The purpose of this script is to run all Kysely migrations in the migrations folder.
  * It is needed because Kysely, by design, has no migration CLI.
  */
-async function migrateToLatest(migrationArg: string) {
+async function runMigrations(migrationArg: string) {
   if (!process.env.DATABASE_URL) {
     console.log("DATABASE_URL environment variable is not defined, skipping migrations.");
     process.exit(0);
@@ -20,7 +20,7 @@ async function migrateToLatest(migrationArg: string) {
       fs,
       path,
       // This needs to be an absolute path.
-      migrationFolder: __dirname,
+      migrationFolder: path.join(__dirname, "../migrations"),
     }),
   });
 
@@ -64,4 +64,4 @@ async function migrateToLatest(migrationArg: string) {
 
 const [, , migrationArg] = process.argv;
 
-migrateToLatest(migrationArg);
+runMigrations(migrationArg);

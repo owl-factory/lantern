@@ -12,10 +12,10 @@
     "test:unit": "jest",
     "test:e2e": "playwright test",
     "test:e2e:ff": "pnpm run test:e2e --project=firefox",
-    "migrate:prod": "tsx src/migrations/migrationScript.ts --latest",
-    "migrate": "tsx --env-file=.env.development src/migrations/migrationScript.ts --latest",
-    "migrate:up": "tsx --env-file=.env.development src/migrations/migrationScript.ts --up",
-    "migrate:down": "tsx --env-file=.env.development src/migrations/migrationScript.ts --down",
+    "migrate:prod": "tsx src/scripts/runMigrations.ts --latest",
+    "migrate": "tsx --env-file=.env.development src/scripts/runMigrations.ts --latest",
+    "migrate:up": "tsx --env-file=.env.development src/scripts/runMigrations.ts --up",
+    "migrate:down": "tsx --env-file=.env.development src/scripts/runMigrations.ts --down",
     "generate": "kysely-codegen --out-file ./generated/database-types.ts --camel-case --env-file=.env.development && graphql-codegen"
   },
   "engines": {
