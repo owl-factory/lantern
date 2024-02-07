@@ -1,3 +1,5 @@
+import { baseUrl } from "utils/environment";
+
 /**
  * Normalizes a string into a standard format for better matching
  * @param value - The string to normalize
@@ -24,4 +26,24 @@ export function toKey(value: string, enforceCase = true): string {
   key = key.replaceAll(anySpaceLikeCharacterRegex, "_");
 
   return key;
+}
+
+/**
+ * Utility function that checks if a URL string is an external URL or not. Local API endpoints are still considered external,
+ * as we do not want them to be prefetched.
+ * @param url - Internal or external URL to check.
+ * @returns true if URL is external or an API route, false otherwise.
+ */
+export function isExternalUrl(url: string): boolean {
+  if (url.includes("/api")) {
+    return true;
+  }
+  if (url.startsWith("/") || url.startsWith("#")) {
+    return false;
+  }
+  try {
+    return new URL(url).origin !== baseUrl;
+  } catch (_e) {
+    return false;
+  }
 }

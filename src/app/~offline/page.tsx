@@ -1,6 +1,7 @@
 import { LanternLogo } from "components/LanternLogo";
 import { Metadata } from "next";
-import Link from "next/link";
+import { Link } from "components/ui/Link";
+import { absoluteGraphqlUrl } from "utils/environment";
 
 /**
  * Page metadata object, NextJs will append these values as meta tags to the <head>.
@@ -12,12 +13,12 @@ export const metadata: Metadata = {
 };
 
 /**
- * "/~offline"
+ * /~offline:
  * Page component used for a fallback for any non-cached route when offline.
  */
 function Page() {
   return (
-    <div className="bg-zinc-900 flex h-full">
+    <div className="flex h-full">
       <div className="max-w-[50rem] flex flex-col mx-auto w-full h-full">
         <header className="mb-auto flex flex-wrap sm:justify-start sm:flex-nowrap z-50 w-full text-sm py-4">
           <nav
@@ -25,11 +26,7 @@ function Page() {
             aria-label="Global"
           >
             <div className="sm:min-w-80 flex items-center justify-between">
-              <Link
-                className="inline-flex text-xl font-semibold text-white"
-                href="/"
-                aria-label="Brand"
-              >
+              <Link variant="plain" className="inline-flex text-xl" href="/" aria-label="Brand">
                 <LanternLogo />{" "}
                 <span data-testid="logo-text" className="pl-2">
                   Lantern Tabletop
@@ -72,19 +69,21 @@ function Page() {
               className="hs-collapse hidden overflow-hidden transition-all duration-300 basis-full grow sm:block"
             >
               <div className="flex flex-col gap-5 mt-5 sm:flex-row sm:items-center sm:justify-end sm:mt-0 sm:pl-5">
-                <Link className="font-medium text-white" href="/" aria-current="page">
+                <Link variant="plain" inactive={true} href="/">
                   Dashboard
                 </Link>
-                <Link className="font-medium text-gray-400" href="/api/ping">
+                <Link variant="plain" inactive={true} href="/characters">
+                  Characters
+                </Link>
+                <Link variant="plain" inactive={true} href={absoluteGraphqlUrl}>
                   API
                 </Link>
-                <a
-                  className="font-medium text-gray-400 hover:text-gray-500"
-                  href="https://github.com/owl-factory/lantern"
-                  target="_blank"
-                >
+                <Link variant="plain" inactive={true} href="/login">
+                  Login
+                </Link>
+                <Link variant="plain" inactive={true} href="https://github.com/owl-factory/lantern">
                   GitHub
-                </a>
+                </Link>
               </div>
             </div>
           </nav>
@@ -101,7 +100,7 @@ function Page() {
             </p>
             <div className="mt-5 flex flex-col justify-center items-center gap-2 sm:flex-row sm:gap-3">
               <a
-                className="w-full sm:w-auto inline-flex justify-center items-center gap-x-3.5 text-center bg-amber-400 shadow-sm text-sm font-medium rounded-md hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-slate-900 transition py-3 px-4"
+                className="w-full sm:w-auto inline-flex justify-center items-center gap-x-3.5 text-center bg-primary shadow-sm text-sm font-medium rounded-md hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-slate-900 transition py-3 px-4"
                 href="https://github.com/owl-factory/lantern"
                 target="_blank"
               >

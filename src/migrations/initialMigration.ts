@@ -8,6 +8,9 @@ import { Kysely, sql } from "kysely";
  * current state after the typescript schema changes.
  */
 export async function up(db: Kysely<any>): Promise<void> {
+  /* Enums */
+  await db.schema.createType("group").asEnum(["admin", "user"]).execute();
+
   /* Lucia Auth tables */
   // user table
   await db.schema
@@ -15,26 +18,35 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("id", "uuid", (col) => col.notNull().primaryKey())
     .addColumn("username", "text", (col) => col.notNull())
     .addColumn("email", "text", (col) => col.notNull())
-    .addColumn("display_name", "text")
-    .addColumn("icon_url", "text")
+    .addColumn("createdAt", "timestamp", (col) => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
+    .addColumn("updatedAt", "timestamp", (col) => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
+    .addColumn("groups", sql`public.group[]`, (col) =>
+      col.defaultTo(sql`ARRAY['user']::public.group[]`)
+    )
+    .addColumn("displayName", "text")
+    .addColumn("iconUrl", "text")
     .execute();
 
   // key table
   await db.schema
     .createTable("key")
     .addColumn("id", "text", (col) => col.notNull().primaryKey())
-    .addColumn("user_id", "uuid", (col) => col.notNull().references("user.id"))
-    .addColumn("hashed_password", "text")
+    .addColumn("userId", "uuid", (col) => col.notNull().references("user.id"))
+    .addColumn("hashedPassword", "text")
+    .addColumn("createdAt", "timestamp", (col) => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
+    .addColumn("updatedAt", "timestamp", (col) => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
     .execute();
 
   // session table
   await db.schema
     .createTable("session")
     .addColumn("id", "varchar(40)", (col) => col.notNull().primaryKey())
-    .addColumn("user_id", "uuid", (col) => col.notNull().references("user.id"))
-    .addColumn("active_expires", "bigint", (col) => col.notNull())
-    .addColumn("idle_expires", "bigint", (col) => col.notNull())
-    .addColumn("api_key", "boolean", (col) => col.notNull().defaultTo(false))
+    .addColumn("userId", "uuid", (col) => col.notNull().references("user.id"))
+    .addColumn("activeExpires", "bigint", (col) => col.notNull())
+    .addColumn("idleExpires", "bigint", (col) => col.notNull())
+    .addColumn("createdAt", "timestamp", (col) => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
+    .addColumn("updatedAt", "timestamp", (col) => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
+    .addColumn("isApiKey", "boolean", (col) => col.notNull().defaultTo(false))
     .execute();
   /* end Lucia Auth tables */
 
@@ -47,6 +59,9 @@ export async function up(db: Kysely<any>): Promise<void> {
         .primaryKey()
         .defaultTo(sql`gen_random_uuid()`)
     )
+    .addColumn("createdAt", "timestamp", (col) => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
+    .addColumn("updatedAt", "timestamp", (col) => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
+    .addColumn("ownerUserId", "uuid", (col) => col.notNull().references("user.id"))
     .addColumn("description", "text")
     .addColumn("done", "boolean", (col) => col.notNull().defaultTo(false))
     .execute();
@@ -63,8 +78,10 @@ export async function up(db: Kysely<any>): Promise<void> {
 export async function down(db: Kysely<any>): Promise<void> {
   await db.schema.dropTable("key").execute();
   await db.schema.dropTable("session").execute();
-  await db.schema.dropTable("user").execute();
   await db.schema.dropTable("todo").execute();
+  await db.schema.dropTable("user").execute();
+
+  await db.schema.dropType("group").execute();
 }
 
 /**
@@ -82,8 +99,8 @@ async function insertExampleData(db: Kysely<any>): Promise<void> {
       id: userId,
       username: "lanterndev",
       email: "dev@lanterntt.com",
-      display_name: "Lantern Developer",
-      icon_url: "http://localhost:3000/images/cute-anime-girl-pfp.png",
+      displayName: "Lantern Developer",
+      iconUrl: "https://lanterntt.com/images/cute-anime-girl-pfp.png",
     };
     await db.insertInto("user").values(user).execute();
 
@@ -91,14 +108,14 @@ async function insertExampleData(db: Kysely<any>): Promise<void> {
     const keys = [
       {
         id: "username:lanterndev",
-        user_id: userId,
-        hashed_password:
+        userId: userId,
+        hashedPassword:
           "s2:qqk4kyzx4m4cdoei:6600f0ecdb9006cf009c457aa08160b82739827b1f567bb5c6d08525442eb1716461d2d96b79e71428a556fd05635649b436928df92ae97d59889e295b65e58d",
       },
       {
         id: "email:dev@lanterntt.com",
-        user_id: userId,
-        hashed_password:
+        userId: userId,
+        hashedPassword:
           "s2:xxsitlyvxxdy1tq3:05ad00259571361edadc01a5699b095b805368fbcafc283ea4631ba9adcbe4d6ec2fb9ebda3614631b1d533fcd94998832fdc2cf08f08a37a409e8a5abfbaebf",
       },
     ];
@@ -107,11 +124,11 @@ async function insertExampleData(db: Kysely<any>): Promise<void> {
     // session table - create long lived session for use as testing session
     const session = {
       id: process.env.TEST_AUTH_TOKEN,
-      user_id: userId,
+      userId: userId,
       // Expires Tuesday January 1 2030 08:00 GMT - It's going to be funny when tests fail in 6 years
-      active_expires: 1893484800000,
-      idle_expires: 1893484800000,
-      api_key: true,
+      activeExpires: 1893484800000,
+      idleExpires: 1893484800000,
+      isApiKey: true,
     };
     await db.insertInto("session").values(session).execute();
   }
@@ -120,11 +137,13 @@ async function insertExampleData(db: Kysely<any>): Promise<void> {
   const todos = [
     {
       id: "57cc22f8-b4d5-44cb-a473-97b69911b9a0",
+      ownerUserId: "0cde4c19-3ec3-4e30-9540-939b45f74aa6",
       description: "Kiss girls",
       done: true,
     },
     {
       id: "9a1b9592-ac20-4141-b18b-982b26c0bea7",
+      ownerUserId: "0cde4c19-3ec3-4e30-9540-939b45f74aa6",
       description: "Complete Lantern",
       done: false,
     },

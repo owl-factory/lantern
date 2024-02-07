@@ -9,3 +9,8 @@ export const emailRegex =
  * 40 characters that can only be a-Z, A-Z or 0-9.
  */
 export const sessionIdRegex = /^[a-zA-Z0-9]{40}$/;
+
+/**
+ * Regex for testing for a bearer keyword to remove from authorization headers.
+ */
+export const bearerRegex = /Bearer\s+/i;

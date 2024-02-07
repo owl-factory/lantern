@@ -1,15 +1,15 @@
 /// <reference types="lucia" />
 declare namespace Lucia {
-  type Auth = import("lib/authentication").LuciaAuth;
+  type Auth = import("lib/authentication/lucia").LuciaAuth;
 
   type DatabaseUserAttributes = {
     username: string;
     email: string;
-    display_name?: string;
-    icon_url?: string;
+    displayName?: string; // display_name
+    iconUrl?: string; // icon_url
   };
 
   type DatabaseSessionAttributes = {
-    api_key?: boolean;
+    isApiKey?: boolean; // is_api_key
   };
 }

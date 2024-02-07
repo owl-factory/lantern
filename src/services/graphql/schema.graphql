@@ -1,0 +1,44 @@
+type User {
+  id: ID!
+  username: String!
+  email: String!
+  displayName: String
+  iconUrl: String
+}
+
+type Session {
+  id: ID!
+  user: User!
+  activeExpires: String!
+  idleExpires: String!
+  isApiKey: Boolean!
+}
+
+type Todo {
+  id: ID!
+  description: String
+  done: Boolean!
+}
+
+type Query {
+  session: Session!
+  todo(id: ID!): Todo!
+  todos: [Todo!]!
+}
+
+type Mutation {
+  signup(
+    email: String!
+    username: String!
+    password: String!
+    displayName: String
+    logIn: Boolean
+    setCookie: Boolean
+  ): String
+  login(username: String!, password: String!, setCookie: Boolean): String!
+  logout(deleteCookie: Boolean): String!
+  deleteUser(id: ID!, username: String!, deleteCookie: Boolean): String!
+  createTodo(description: String, done: Boolean): Todo
+  updateTodo(id: ID!, description: String, done: Boolean): Todo
+  deleteTodo(id: ID!): ID!
+}
