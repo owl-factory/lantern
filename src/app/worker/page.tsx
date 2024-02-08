@@ -5,6 +5,9 @@ import { WebWorker, WorkerEnvironment } from "features/webWorker";
 import { useEffect } from "react";
 import { isServer } from "utils/environment";
 
+/**
+ * Temporary page for testing the Web Worker functionality
+ */
 export function WorkerPage() {
   const worker = new WebWorker<string, undefined, string>(
     WorkerEnvironment.Sandbox,

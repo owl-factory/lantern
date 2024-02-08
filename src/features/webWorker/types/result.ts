@@ -8,7 +8,7 @@ export type OkWorkerResult<V> = {
   data: V;
 };
 
-/** A statnded fail result from a web worker */
+/** A standard fail result from a web worker */
 export type ErrWorkerResult = {
   id: string;
   ok: false;

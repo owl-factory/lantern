@@ -5,6 +5,10 @@ import { WebWorkerState } from "features/webWorker/utils/controller";
 import { workerFoundation } from "features/webWorker/utils/environments/foundation";
 import { Err, ErrUnknown, Ok } from "utils/results";
 
+/**
+ * A specific error for buildWorker() that describes the error and
+ * the appropriate WebWorker controller state for it
+ */
 export type BuildWorkerError = {
   state: WebWorkerState;
   error: string;

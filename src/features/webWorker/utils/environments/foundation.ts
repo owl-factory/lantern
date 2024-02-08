@@ -18,9 +18,9 @@ const workerFoundationScript = () => {
    * Initializes the web worker. If an invalid script is provided or absent,
    * the worker will be locked and must be recreated
    */
-  function $initializeWebWorker() {
-    if (!$validateInit()) return;
-    if (!$validateHandleMessage()) return;
+  function _initializeWebWorker() {
+    if (!_validateInit()) return;
+    if (!_validateHandleMessage()) return;
     (self as Self).init();
   }
 
@@ -28,7 +28,7 @@ const workerFoundationScript = () => {
    * Validates that the init function is present. If not valid, locks the worker
    * @returns True for valid init, false otherwise
    */
-  function $validateInit(): boolean {
+  function _validateInit(): boolean {
     if ("init" in self && typeof self.init === "function") return true;
     self.onmessage = <T, U>(message: MessageEvent<WorkerMessage<T, U>>) => {
       postMessage({
@@ -44,7 +44,7 @@ const workerFoundationScript = () => {
    * Validates that the handleMessage function is present. If not valid, locks the worker
    * @returns True for valid handleMessage, false otherwise
    */
-  function $validateHandleMessage(): boolean {
+  function _validateHandleMessage(): boolean {
     if ("handleMessage" in self && typeof self.handleMessage === "function") return true;
     self.onmessage = <T, U>(message: MessageEvent<WorkerMessage<T, U>>) => {
       postMessage({
@@ -69,7 +69,7 @@ const workerFoundationScript = () => {
       postMessage({ id: message.data.id, ok: false, error });
     }
   };
-  $initializeWebWorker();
+  _initializeWebWorker();
 };
 
 /** The stringified foundation for all Web Workers */

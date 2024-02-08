@@ -1,5 +1,6 @@
 type Self = Window & typeof globalThis & { __proto__: unknown };
 
+/** The initialization code for making a web worker into a sandboxed environment */
 export const sandboxInitialization = () => {
   const global = self;
 
