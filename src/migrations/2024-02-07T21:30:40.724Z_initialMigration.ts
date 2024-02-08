@@ -8,10 +8,12 @@ import "utils/kyselyExtensions";
  * current state after the typescript schema changes.
  */
 export async function up(db: Kysely<any>): Promise<void> {
-  /* Enums */
+  /* Enum Definitions */
   await db.schema.createType("group").asEnum(["admin", "user"]).execute();
+  await db.schema.createType("visibility").asEnum(["public", "private", "friends"]).execute();
+  /* End Enum Definitions */
 
-  /* Lucia Auth tables */
+  /* Authentication Tables */
   // user table
   await db.schema
     .createTable("user")
@@ -19,8 +21,9 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("username", "text", (col) => col.notNull())
     .addColumn("email", "text", (col) => col.notNull())
     .addColumn("groups", sql`public.group[]`, (col) =>
-      col.defaultTo(sql`ARRAY['user']::public.group[]`)
+      col.notNull().defaultTo(sql`ARRAY['user']::public.group[]`)
     )
+    .addColumn("isOrganization", "boolean", (col) => col.notNull().defaultTo(false))
     .addColumn("displayName", "text")
     .addColumn("iconUrl", "text")
     .execute();
@@ -44,9 +47,25 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("idleExpires", "bigint", (col) => col.notNull())
     .addColumn("isApiKey", "boolean", (col) => col.notNull().defaultTo(false))
     .execute();
-  /* end Lucia Auth tables */
+  /* End Authentication Tables */
 
-  // todos table
+  /* Primary Tables */
+  // content table
+  const CONTENT_INDEXES = 9;
+  const contentTableBuilder = db.schema
+    .createTable("content")
+    .addBaseColumns()
+    .addColumn("name", "text", (col) => col.notNull())
+    .addColumn("ownerUserId", "uuid", (col) => col.notNull().references("user.id"))
+    .addColumn("visibility", sql`visibility`, (col) => col.notNull().defaultTo("private"))
+    .addColumn("isDynamic", "boolean", (col) => col.notNull())
+    .addColumn("data", "jsonb");
+  for (let i = 1; i <= CONTENT_INDEXES; i++) {
+    contentTableBuilder.addColumn("index" + i, "text");
+  }
+  contentTableBuilder.execute();
+
+  // TODO get rid of this table and associated resolvers and frontend
   await db.schema
     .createTable("todo")
     .addBaseColumns()
@@ -54,6 +73,10 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("description", "text")
     .addColumn("done", "boolean", (col) => col.notNull().defaultTo(false))
     .execute();
+  /* End Primary Tables */
+
+  /* Relationship Tables */
+  /* End Relationship Tables */
 
   await insertExampleData(db);
 }
@@ -68,8 +91,10 @@ export async function down(db: Kysely<any>): Promise<void> {
   await db.schema.dropTable("key").execute();
   await db.schema.dropTable("session").execute();
   await db.schema.dropTable("todo").execute();
+  await db.schema.dropTable("content").execute();
   await db.schema.dropTable("user").execute();
 
+  await db.schema.dropType("visibility").execute();
   await db.schema.dropType("group").execute();
 }
 
