@@ -1,5 +1,13 @@
 import nextJest from "next/jest.js";
 
+/**
+ * TODO remove 'dotenv' by loading env file using native NodeJs feature
+ * Read environment variables from file.
+ * https://github.com/motdotla/dotenv
+ */
+import { config as env } from "dotenv";
+env({ path: "./.env.development" });
+
 const createJestConfig = nextJest({
   // Provide the path to your Next.js app to load next.config.js and .env files in your test environment
   dir: "./",

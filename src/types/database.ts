@@ -17,6 +17,9 @@ export type Database = {
  */
 export type TodoTable = {
   id: string;
+  createdAt: Date; // created_at
+  updatedAt: Date; // updated_at
+  ownerUserId: string; // owner_user_id
   description?: string;
   done: boolean;
 };
@@ -31,7 +34,14 @@ export type TodoUpdate = Updateable<TodoTable>;
  */
 export type UserTable = {
   id: string;
-} & Lucia.DatabaseUserAttributes;
+  username: string;
+  email: string;
+  createdAt: Date; // created_at
+  updatedAt: Date; // updated_at
+  groups: Group[];
+  displayName?: string; // display_name
+  iconUrl?: string; // icon_url
+};
 
 export type User = Selectable<UserTable>;
 export type NewUser = Insertable<UserTable>;
@@ -43,8 +53,10 @@ export type UserUpdate = Updateable<UserTable>;
  */
 export type KeyTable = {
   id: string;
-  user_id: string;
-  hashed_password: string | null;
+  userId: string; // user_id
+  hashedPassword: string | null; //hashed_password
+  createdAt: Date; // created_at
+  updatedAt: Date; // updated_at
 };
 
 export type Key = Selectable<KeyTable>;
@@ -57,11 +69,19 @@ export type KeyUpdate = Updateable<KeyTable>;
  */
 export type SessionTable = {
   id: string;
-  user_id: string;
-  active_expires: bigint;
-  idle_expires: bigint;
-} & Lucia.DatabaseSessionAttributes;
+  userId: string; // user_id
+  activeExpires: bigint; // active_expires
+  idleExpires: bigint; // idle_expires
+  createdAt: Date; // created_at
+  updatedAt: Date; // updated_at
+  isApiKey?: boolean; // is_api_key
+};
 
 export type Session = Selectable<SessionTable>;
 export type NewSession = Insertable<SessionTable>;
 export type SessionUpdate = Updateable<SessionTable>;
+
+enum Group {
+  Admin = "admin",
+  User = "user",
+}
