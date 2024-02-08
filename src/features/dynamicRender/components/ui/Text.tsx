@@ -9,6 +9,8 @@ import { useState } from "react";
  * Renders a group of Pages that can be shown one at a time
  */
 export function Text(props: RenderComponentProps) {
+  const textContent = useExpression()
+
   return <>{props.node.textContent?.trim()}</>;
 }
 
@@ -21,4 +23,11 @@ export const textBundle: RenderComponentDefinition = {
 
 function useExpression(defaultValue = "") {
   const [value, setValue] = useState(defaultValue);
+
+  return value;
 }
+
+type TextAttributes = {
+  text: 
+}
+
