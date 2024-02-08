@@ -11,6 +11,7 @@
     "sourceType": "module",
     "project": ["./tsconfig.json"]
   },
+  "ignorePatterns": ["docs"],
   "plugins": ["@typescript-eslint", "prettier", "eslint-plugin-tsdoc"],
   "ignorePatterns": ["generated"],
   "rules": {
