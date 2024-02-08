@@ -1,3 +1,4 @@
+import "tests/globalUrlMock";
 import { WorkerEnvironment } from "features/webWorker/types/environments";
 import { BuildWorkerError, __testing__, buildWorker } from "./worker";
 import { WorkerScript } from "features/webWorker/types/worker";

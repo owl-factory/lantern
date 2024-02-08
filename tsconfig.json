@@ -28,6 +28,7 @@
       "services/*": ["./src/services/*"],
       "types/*": ["./src/types/*"],
       "utils/*": ["./src/utils/*"],
+      "tests/*": ["./src/tests/*"],
       "generated/*": ["./generated/*"]
     }
   },
