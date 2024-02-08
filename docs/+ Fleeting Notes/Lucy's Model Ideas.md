@@ -11,7 +11,7 @@ Actors can contain data not defined in their ActorType. We need tooling that can
 
 ## Lucy's New Data Model
 
-Laura's new data model proposal can be found in [`lucys-lantern-model`](./lucys-lantern-model.ts).
+Laura's new data model proposal can be found in [`lucys-lantern-model`](./Lucy's%20Lantern%20Model%20v2.md).
 
 ## Lucy's Initial Model Idea
 

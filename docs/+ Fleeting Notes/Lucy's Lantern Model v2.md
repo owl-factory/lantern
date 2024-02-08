@@ -1,3 +1,4 @@
+```typescript
 /* Tables - Lantern Model */
 
 // User and Auth Model
@@ -236,3 +237,4 @@ const actor: ActorTable = {
     },
   },
 };
+```
