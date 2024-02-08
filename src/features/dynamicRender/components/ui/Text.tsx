@@ -3,6 +3,7 @@ import {
   RenderComponentDefinition,
   RenderComponentProps,
 } from "features/dynamicRender/types/render";
+import { useState } from "react";
 
 /**
  * Renders a group of Pages that can be shown one at a time
@@ -17,3 +18,7 @@ export const textBundle: RenderComponentDefinition = {
   attributes: [],
   allowsChildren: false,
 };
+
+function useExpression(defaultValue = "") {
+  const [value, setValue] = useState(defaultValue);
+}

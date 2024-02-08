@@ -9,6 +9,7 @@ import { LoaderFactory, MarkupFactory, StorageFactory } from "./factory";
 import { FactoryOptions } from "features/dynamicRender/types/factory";
 import { GetOptions, QuerySource } from "features/dynamicRender/types/query";
 import { parseMarkup } from "features/dynamicRender/utils/markup/parseSheet";
+import { WebWorker } from "features/webWorker";
 
 /** The valid states of the Render Controller */
 export enum RenderControllerState {
@@ -52,10 +53,10 @@ export class RenderController {
     const mobxResult = safeMakeObservable(this, {
       ready: computed,
       _state: observable,
-      setState: action,
+      _setState: action,
     });
     if (mobxResult.ok === false) {
-      this.setState(RenderControllerState.MobxError);
+      this._setState(RenderControllerState.MobxError);
       return this;
     }
 
@@ -67,14 +68,14 @@ export class RenderController {
     this.markup = markupController;
     this.storage = storageController;
 
-    this.setState(RenderControllerState.Initialized);
+    this._setState(RenderControllerState.Initialized);
   }
 
   /**
    * Sets a new state to mark this as an action for MobX
    * @param state - The new state
    */
-  setState(state: RenderControllerState, error?: string) {
+  _setState(state: RenderControllerState, error?: string) {
     this._state = state;
     this._error = error;
   }
@@ -97,13 +98,13 @@ export class RenderController {
 
     const parseResult = parseMarkup(this.loader.markup);
     if (parseResult.ok === false) {
-      this.setState(RenderControllerState.ParsingError, `Parsing failed: ${parseResult.error}`);
+      this._setState(RenderControllerState.ParsingError, `Parsing failed: ${parseResult.error}`);
       return;
     }
 
     const { layout, prefabs } = parseResult.data;
     this.markup.setData({ layout, prefabs });
-    this.setState(RenderControllerState.Ready);
+    this._setState(RenderControllerState.Ready);
   }
 
   /**
