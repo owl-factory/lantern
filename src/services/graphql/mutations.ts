@@ -1,13 +1,10 @@
 /* eslint-disable no-restricted-syntax */
 import type { MutationResolvers, Todo } from "types/graphql";
-import { authenticateSession, deleteSessionIdCookie, setSessionIdCookie } from "lib/authentication";
-import { luciaAuth } from "lib/authentication/lucia";
+import { authenticateSession } from "lib/authentication";
 import { database } from "lib/database";
-import { User } from "lucia";
 import { NewTodo } from "types/database";
-import { isBadPassword } from "utils/authentication";
 import { getQueryFields } from "utils/graphql";
-import { emailRegex } from "utils/regex";
+import { deleteUser, loginUser, logoutSession, signupUser } from "services/authentication";
 
 /**
  * GraphQL resolver map of all mutation resolvers. Used for GraphQL request that needs to write data.
@@ -21,45 +18,15 @@ export const mutations: MutationResolvers = {
    * @returns void or the `id` of a session for the newly created user.
    */
   signup: async (_, args) => {
-    if (isBadPassword(args.password)) {
-      throw "Password does not meet requirements. Password should be between 8 and 40 characters and not be a commonly used password.";
-    }
-
-    // Create user and login key (email)
-    const user = await luciaAuth.createUser({
-      userId: crypto.randomUUID(),
-      key: {
-        providerId: "email",
-        providerUserId: args.email.toLowerCase(),
-        password: args.password,
-      },
-      attributes: {
-        email: args.email,
-        username: args.username,
-        displayName: args.displayName || undefined,
-      },
-    });
-
-    // Create secondary login key (username)
-    await luciaAuth.createKey({
-      userId: user.userId,
-      providerId: "username",
-      providerUserId: args.username.toLowerCase(),
-      password: args.password,
-    });
-
-    if (args.logIn) {
-      // Create session for new user
-      const session = await luciaAuth.createSession({
-        userId: user.userId,
-        attributes: {},
-      });
-      if (args.setCookie) {
-        setSessionIdCookie(session.sessionId);
-      }
-      return session.sessionId;
-    }
-    return "Session not created for new user.";
+    const res = await signupUser(
+      args.email,
+      args.username,
+      args.password,
+      args.logIn || false,
+      args.setCookie || false,
+      args.displayName || undefined
+    );
+    return res.ok === false ? res.error : res.data;
   },
 
   /**
@@ -70,28 +37,8 @@ export const mutations: MutationResolvers = {
    * @returns ID of the session generated for a newly logged in user.
    */
   login: async (_, args) => {
-    const providerUserId = args.username.toLowerCase();
-    // Set Lucia providerId based on whether the userId is an email or not.
-    const providerId = emailRegex.test(providerUserId) ? "email" : "username";
-
-    // key is null on authentication failure, on success it contains a userId of the correct identity.
-    const key = await luciaAuth.useKey(providerId, providerUserId, args.password);
-
-    if (key === null || key === undefined) {
-      return "Username or password is incorrect";
-    }
-
-    await luciaAuth.deleteDeadUserSessions(key.userId);
-    const session = await luciaAuth.createSession({
-      userId: key.userId,
-      attributes: {},
-    });
-
-    if (args.setCookie) {
-      setSessionIdCookie(session.sessionId);
-    }
-
-    return session.sessionId;
+    const res = await loginUser(args.username, args.password, args.setCookie || false);
+    return res.ok === false ? res.error : res.data;
   },
 
   /**
@@ -100,19 +47,8 @@ export const mutations: MutationResolvers = {
    * @returns ID of the session that was just logged out.
    */
   logout: async (_, args) => {
-    const auth = await authenticateSession();
-    if (auth.ok === false) {
-      return auth.error;
-    }
-    const session = auth.data;
-
-    await luciaAuth.deleteDeadUserSessions(session.user.userId);
-    await luciaAuth.invalidateSession(session.sessionId);
-    if (args.deleteCookie) {
-      deleteSessionIdCookie();
-    }
-
-    return session.sessionId;
+    const res = await logoutSession(args.deleteCookie || false);
+    return res.ok === false ? res.error : res.data;
   },
 
   /**
@@ -122,30 +58,8 @@ export const mutations: MutationResolvers = {
    * @returns `id` of the deleted user.
    */
   deleteUser: async (_, args) => {
-    const auth = await authenticateSession();
-    if (auth.ok === false) {
-      return auth.error;
-    }
-    const session = auth.data;
-    let userToDelete: User;
-    if (args.id === session.user.userId) {
-      userToDelete = session.user;
-    } else if (false) {
-      // TODO handle allowing Admins to delete any user by fetching them and setting userToDelete
-    } else {
-      throw "You do not have permission to delete this user.";
-    }
-    if (args.username !== userToDelete.username) {
-      throw "Provided username does not match the username of the user found with provided id.";
-    }
-
-    await luciaAuth.deleteUser(session.user.userId);
-
-    if (args.deleteCookie && session.user.userId === userToDelete.userId) {
-      deleteSessionIdCookie();
-    }
-
-    return userToDelete.userId;
+    const res = await deleteUser(args.id, args.username, args.deleteCookie || false);
+    return res.ok === false ? res.error : res.data;
   },
 
   /**
