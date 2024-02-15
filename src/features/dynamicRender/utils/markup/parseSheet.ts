@@ -4,7 +4,7 @@ import { parseLayoutMarkup } from "features/dynamicRender/utils/markup/parseLayo
 import { Err, Ok, ErrUnknown } from "utils/results";
 
 export type MarkupComponents = {
-  layout: ParsedNode[];
+  layout: ParsedNode<unknown>[];
   variables?: Variables;
   prefabs?: Prefabs;
 };

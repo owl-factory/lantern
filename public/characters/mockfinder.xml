@@ -42,6 +42,7 @@
             <Box type="background" src="/dnd-5e/title-dragon.svg">
               <TextInput id="name1_1" name="name"/>
               <Label for="name1_1">Character Name</Label>
+              ${character.name}
             </Box>
           </Column>
 

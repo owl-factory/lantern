@@ -5,7 +5,7 @@ import { ReactNode } from "react";
 /**
  * The common props used within the Render Components
  */
-export type RenderComponentProps<T = Record<string, string>> = {
+export type RenderComponentProps<T> = {
   /** The name of the node for debugging reasons */
   nodeName: string;
   /** The type of node this is expected to be */
@@ -13,19 +13,17 @@ export type RenderComponentProps<T = Record<string, string>> = {
   /** The Node object from the Markup */
   node: Node;
   /** The parsed children of this component */
-  childNodes?: ParsedNode[];
+  childNodes?: ParsedNode<T>[];
   /** The attributes of a node */
   attributes: T;
 };
 
 /** The common shared between all Render Components */
-export type RenderComponent<T = Record<string, string>> = (
-  props: RenderComponentProps<T>
-) => ReactNode;
+export type RenderComponent<T> = (props: RenderComponentProps<T>) => ReactNode;
 
 /** A bundle of like attributes for a RenderComponent */
-export type RenderComponentDefinition = {
-  Component: RenderComponent;
+export type RenderComponentDefinition<T = unknown> = {
+  Component: RenderComponent<T>;
   nodeType: NodeType;
   allowsChildren: boolean;
   attributes: AttributeDefinition[];
@@ -36,11 +34,11 @@ export type RenderComponentDefinition = {
 /**
  * A node parsed into an object for easier rendering
  */
-export type ParsedNode<T = Record<string, string>> = {
+export type ParsedNode<T = unknown> = {
   /** The unique component key for React */
   key: string;
   /** The component function to render this specific node */
   Component: RenderComponent<T>;
   /** Any arguments that should be available within the rendered component */
-  props: RenderComponentProps;
+  props: RenderComponentProps<T>;
 };
