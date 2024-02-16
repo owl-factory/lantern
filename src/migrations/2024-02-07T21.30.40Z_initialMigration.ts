@@ -1,4 +1,5 @@
 import { Kysely, sql } from "kysely";
+import { contentIndexCount } from "utils/environment";
 import "utils/kyselyExtensions";
 
 /**
@@ -51,7 +52,6 @@ export async function up(db: Kysely<any>): Promise<void> {
 
   /* Primary Tables */
   // content table
-  const CONTENT_INDEXES = 9;
   const contentTableBuilder = db.schema
     .createTable("content")
     .addBaseColumns()
@@ -60,7 +60,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("visibility", sql`visibility`, (col) => col.notNull().defaultTo("private"))
     .addColumn("isDynamic", "boolean", (col) => col.notNull())
     .addColumn("data", "jsonb");
-  for (let i = 1; i <= CONTENT_INDEXES; i++) {
+  for (let i = 1; i <= contentIndexCount; i++) {
     contentTableBuilder.addColumn("index" + i, "text");
   }
   contentTableBuilder.execute();

@@ -34,3 +34,8 @@ export const graphqlUrl = "/api/graphql";
  * site's base path followed by the relative GraphQL endpoint URL or a remote URL.
  */
 export const absoluteGraphqlUrl = !apiIsRemote ? baseUrl + graphqlUrl : remoteApiUrl + graphqlUrl;
+
+/**
+ * Number of index columns in the content table.
+ */
+export const contentIndexCount = 9;
