@@ -3,7 +3,7 @@ import type { MutationResolvers, Todo } from "types/graphql";
 import { authenticateSession } from "lib/authentication";
 import { database } from "lib/database";
 import { NewTodo } from "types/database";
-import { getQueryFields } from "utils/graphql";
+import { ErrGraphql, GraphqlResult, getQueryFields } from "utils/graphql";
 import { deleteUser, loginUser, logoutSession, signupUser } from "services/authentication";
 
 /**
@@ -26,7 +26,7 @@ export const mutations: MutationResolvers = {
       args.setCookie || false,
       args.displayName || undefined
     );
-    return res.ok === false ? res.error : res.data;
+    return GraphqlResult(res);
   },
 
   /**
@@ -38,7 +38,7 @@ export const mutations: MutationResolvers = {
    */
   login: async (_, args) => {
     const res = await loginUser(args.username, args.password, args.setCookie || false);
-    return res.ok === false ? res.error : res.data;
+    return GraphqlResult(res);
   },
 
   /**
@@ -48,7 +48,7 @@ export const mutations: MutationResolvers = {
    */
   logout: async (_, args) => {
     const res = await logoutSession(args.deleteCookie || false);
-    return res.ok === false ? res.error : res.data;
+    return GraphqlResult(res);
   },
 
   /**
@@ -59,7 +59,7 @@ export const mutations: MutationResolvers = {
    */
   deleteUser: async (_, args) => {
     const res = await deleteUser(args.id, args.username, args.deleteCookie || false);
-    return res.ok === false ? res.error : res.data;
+    return GraphqlResult(res);
   },
 
   /**
@@ -71,7 +71,7 @@ export const mutations: MutationResolvers = {
   createTodo: async (_, args, _context, info) => {
     const auth = await authenticateSession();
     if (auth.ok === false) {
-      throw auth.error; // Apollo server expects us to `throw` an error here, and that sucks!
+      return ErrGraphql(auth);
     }
     const queryFields = getQueryFields<"todo">(info);
     const newTodo = database
@@ -91,17 +91,16 @@ export const mutations: MutationResolvers = {
   updateTodo: async (_, args, _context, info) => {
     const auth = await authenticateSession();
     if (auth.ok === false) {
-      throw auth.error; // Apollo server expects us to `throw` an error here, and that sucks!
+      return ErrGraphql(auth);
     }
     const queryFields = getQueryFields<"todo">(info);
-    const updatedTodo = await database
+    const updatedTodo = database
       .updateTable("todo")
       .where("id", "=", args.id as string)
       .set(args as NewTodo)
       .returning(queryFields)
       .executeTakeFirst();
-
-    return updatedTodo as Todo;
+    return updatedTodo as Promise<Todo>;
   },
 
   /**
@@ -113,7 +112,7 @@ export const mutations: MutationResolvers = {
   deleteTodo: async (_, args) => {
     const auth = await authenticateSession();
     if (auth.ok === false) {
-      return auth.error; // Apollo server expects us to `throw` an error here, and that sucks!
+      return ErrGraphql(auth);
     }
     const deleted = await database
       .deleteFrom("todo")
@@ -123,7 +122,7 @@ export const mutations: MutationResolvers = {
     if (deleted !== undefined) {
       return deleted.id;
     } else {
-      throw `Item with ID '${args.id}' not found in database.`;
+      return ErrGraphql(`Item with ID '${args.id}' not found in database.`);
     }
   },
 };

@@ -1,4 +1,4 @@
-import { FieldNode, GraphQLResolveInfo } from "graphql";
+import { FieldNode, GraphQLError, GraphQLResolveInfo } from "graphql";
 import { DB } from "types/database";
 import { SelectFields } from "types/graphql";
 
@@ -23,4 +23,28 @@ export function getQueryFields<T extends keyof DB>(info: GraphQLResolveInfo): Se
     return allNodes;
   }, []);
   return fields.filter((field: string) => field !== "__typename") as SelectFields<T>;
+}
+
+export function GraphqlResult<T, E>(result: Result<T, E>): T | Promise<never> {
+  return result.ok === false ? ErrGraphql(result) : result.data;
+}
+
+export function ErrGraphql(error: ErrResult<string | Error> | string | Error | unknown) {
+  if (error === null || error === undefined) {
+    return Promise.reject();
+  }
+  if (typeof error === "object" && "error" in error) {
+    return wrapGraphqlError(error.error);
+  }
+  return wrapGraphqlError(error);
+}
+
+function wrapGraphqlError(error: unknown) {
+  if (typeof error === "string") {
+    return Promise.reject(new GraphQLError(error));
+  }
+  if (error instanceof Error) {
+    return Promise.reject(new GraphQLError(error.message));
+  }
+  return Promise.reject(error);
 }

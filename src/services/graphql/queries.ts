@@ -2,7 +2,7 @@
 import type { QueryResolvers, Session, Todo } from "types/graphql";
 import { authenticateSession } from "lib/authentication";
 import { database } from "lib/database";
-import { getQueryFields } from "utils/graphql";
+import { ErrGraphql, getQueryFields } from "utils/graphql";
 
 /**
  * GraphQL resolver map of all query resolvers. Used for GraphQL request that needs to read data.
@@ -16,7 +16,7 @@ export const queries: QueryResolvers = {
   session: async () => {
     const auth = await authenticateSession();
     if (auth.ok === false) {
-      throw auth.error; // GraphQL expects us to `throw` an error here, and that sucks!
+      return ErrGraphql(auth);
     }
     const { sessionId, user, isApiKey, activePeriodExpiresAt, idlePeriodExpiresAt } = auth.data;
     const session: Session = {
@@ -45,7 +45,7 @@ export const queries: QueryResolvers = {
   todo: async (_, args, _context, info) => {
     const auth = await authenticateSession();
     if (auth.ok === false) {
-      throw auth.error; // GraphQL expects us to `throw` an error here, and that sucks!
+      return ErrGraphql(auth);
     }
     const queryFields = getQueryFields<"todo">(info);
     const todo = database
@@ -64,7 +64,7 @@ export const queries: QueryResolvers = {
   todos: async (_, _args, _context, info) => {
     const auth = await authenticateSession();
     if (auth.ok === false) {
-      throw auth.error; // GraphQL expects us to `throw` an error here, and that sucks!
+      return ErrGraphql(auth);
     }
     const queryFields = getQueryFields<"todo">(info);
     const todos = database.selectFrom("todo").select(queryFields).execute();
