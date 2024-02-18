@@ -1,5 +1,6 @@
 /**
  * The type of entity that will be rendered by the Dynamic Render
+ * TODO - Rename to EntityType
  */
 export enum TargetType {
   /** A character's simple information, like HP or AC */

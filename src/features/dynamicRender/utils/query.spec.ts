@@ -8,7 +8,7 @@ describe("buildQueryOptionsFromAttributes tests", () => {
 
   test("successful character", () => {
     const res = buildQueryOptionsFromAttributes(characterAttributes) as QueryCharacterOptions;
-    expect(res.source).toBe(QuerySource.Character);
+    expect(res.source).toBe(QuerySource.Self);
     expect(res.key).toBe(characterAttributes.name);
   });
 

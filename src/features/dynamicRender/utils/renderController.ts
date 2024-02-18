@@ -122,7 +122,7 @@ export class RenderController {
     if (options.source === QuerySource.Invalid) return undefined;
 
     switch (options.source) {
-      case QuerySource.Character:
+      case QuerySource.Self:
         // case "content":
         return this.storage.get(options);
       // case "sheet":

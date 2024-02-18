@@ -62,7 +62,7 @@ export class LocalStorageController extends StorageController {
   get<T>(options: GetOptions | string): T | undefined {
     if (typeof options === "string") return undefined;
     switch (options.source) {
-      case QuerySource.Character:
+      case QuerySource.Self:
         return this._character?.data[options.key] as T | undefined;
       // case QuerySource.Content:
       //   return undefined;
@@ -77,7 +77,7 @@ export class LocalStorageController extends StorageController {
    * @returns True if the update was successful; false otherwise
    */
   update<T>(options: GetOptions, value: T): boolean {
-    if (options.source !== QuerySource.Character) return false;
+    if (options.source !== QuerySource.Self) return false;
     if (!this._character) return false;
     this._character.data[options.key] = value;
     this.triggerUpdate();

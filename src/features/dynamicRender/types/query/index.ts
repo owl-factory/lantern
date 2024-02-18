@@ -5,11 +5,14 @@ import { QueryCharacterOptions } from "./character";
  */
 export enum QuerySource {
   /** An invalid source - no-op */
-  Invalid,
-  /** A character's simple values, such as name, HP, AC, stats, etc */
-  Character,
-  /** A character's complex values that can have some indeterminate size, such as inventory and spells */
-  Content,
+  Invalid = "invalid",
+  /** The identifier to access the current target of the Render, either Character or Content */
+  Self = "self",
+  /**
+   * A character's complex values that can have some indeterminate size, such as inventory and spells
+   * TODO - remove this? Should this be a child of self?
+   */
+  Content = "content",
 }
 
 /**

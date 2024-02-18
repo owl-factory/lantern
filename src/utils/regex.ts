@@ -20,3 +20,22 @@ export const arrayRegex = /\[([0-9]+)\]/;
  * Regex for testing for a bearer keyword to remove from authorization headers.
  */
 export const bearerRegex = /Bearer\s+/i;
+
+export function matchAll(
+  regex: RegExp | string,
+  text: string,
+  additionalFlags: string = ""
+): RegExpExecArray[] {
+  if (!regex) return [];
+  if (typeof text !== "string") return [];
+  if (typeof additionalFlags !== "string") additionalFlags = "";
+
+  // New regex needs to be created, as the global flag makes it stateful
+  const expressionRegex = RegExp(regex, "g" + additionalFlags);
+  const regExpMatches: RegExpExecArray[] = [];
+  let regexResults: RegExpExecArray | null;
+  while ((regexResults = expressionRegex.exec(text)) !== null) {
+    regExpMatches.push(regexResults);
+  }
+  return regExpMatches;
+}

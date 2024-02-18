@@ -116,7 +116,7 @@ describe("RenderController - get tests", () => {
   });
 
   test("get character", () => {
-    const options: GetOptions = { source: QuerySource.Character, key: "hello" };
+    const options: GetOptions = { source: QuerySource.Self, key: "hello" };
     const res = renderController.get(options);
     expect(renderController.storage.get).toHaveBeenCalled();
     expect(res).toBeDefined();

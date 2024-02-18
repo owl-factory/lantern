@@ -68,7 +68,7 @@ describe("LocalStorage get tests", () => {
     const character = { data: { name: "Waals O'Caera" } } as Character;
     controller._character = character;
 
-    const res = controller.get({ source: QuerySource.Character, key: "name" });
+    const res = controller.get({ source: QuerySource.Self, key: "name" });
     expect(res).toBe(character.data.name);
   });
 });
@@ -85,7 +85,7 @@ describe("LocalStorage get tests", () => {
     const character = { data: { name: "Waals O'Caera" } } as Character;
     controller._character = character;
 
-    controller.update({ source: QuerySource.Character, key: "name" }, newName);
+    controller.update({ source: QuerySource.Self, key: "name" }, newName);
     expect(controller._character.data.name).toBe(newName);
   });
 });

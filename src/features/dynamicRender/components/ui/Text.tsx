@@ -31,7 +31,7 @@ function useExpression(
   const dependencies = getExpressionDependencies(expression);
 
   useEffect(() => {
-    if (!expression || expression.type === ExpressionType.Hardcoded) return;
+    if (!expression || expression.type === ExpressionType.PlainText) return;
     // const
   }, dependencies);
 
@@ -49,7 +49,7 @@ function getInitialExpressionValue(
   defaultValue: string | number = ""
 ): string | number {
   if (!expression) return defaultValue;
-  if (expression.type === ExpressionType.Hardcoded) return expression.value ?? defaultValue;
+  if (expression.type === ExpressionType.PlainText) return expression.value ?? defaultValue;
 
   // TODO - check if computed values are stored
 
@@ -62,7 +62,7 @@ function getInitialExpressionValue(
  * @returns
  */
 function getExpressionDependencies(expression: ExpressionDescriptor | undefined): string[] {
-  if (!expression || expression.type === ExpressionType.Hardcoded) return [];
+  if (!expression || expression.type === ExpressionType.PlainText) return [];
   return [];
 }
 
