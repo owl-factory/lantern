@@ -13,12 +13,12 @@ import { normalize } from "utils/strings";
 
 const DEFAULT_CLASSES = "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded";
 
-export type ButtonAttributes = {
+type ButtonAttributes = {
   action: string;
   target?: string;
 };
 
-export const attributeDefinitions: AttributeDefinition[] = [
+const attributeDefinitions: AttributeDefinition[] = [
   { name: "action", required: true },
   { name: "target" },
 ];

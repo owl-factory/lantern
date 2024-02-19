@@ -12,10 +12,10 @@ import { StateController } from "features/dynamicRender/utils/stateController";
 import { useContext, useEffect } from "react";
 import { toKey } from "utils/strings";
 
-export type PageAttributes = {
+type PageAttributes = {
   name: string;
 };
-export const attributeDefinitions: AttributeDefinition[] = [{ name: "name", required: true }];
+const attributeDefinitions: AttributeDefinition[] = [{ name: "name", required: true }];
 
 /**
  * Renders a Page that can be hidden or shown based on the state

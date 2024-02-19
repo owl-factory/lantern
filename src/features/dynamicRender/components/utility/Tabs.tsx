@@ -42,12 +42,12 @@ export function Tabs(props: RenderComponentProps<TabsAttributes>) {
   return <div>{tabs}</div>;
 }
 
-type TabProps = {
+type TabProps = Readonly<{
   page: Page;
   groupKey: string;
   active: boolean;
   state: StateController;
-};
+}>;
 
 const ENFORCED_CLASSES = "cursor-pointer";
 
