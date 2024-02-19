@@ -3,14 +3,17 @@ import { NodeType } from "features/dynamicRender/types/node";
 import { RenderComponentDefinition } from "features/dynamicRender/types/render";
 import { observer } from "lib/mobx";
 
-const dynamicComponentRegistry = new Map<NodeType, RenderComponentDefinition>();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const dynamicComponentRegistry = new Map<NodeType, RenderComponentDefinition<any>>();
 
 /**
  * Registers a Render Component for use within the DynamicRender
  * @param nodeName - The name of the node to register this component under
  * @param component - The component to register
  */
-export function registerComponentDefinition(componentDefinition: RenderComponentDefinition) {
+export function registerComponentDefinition<T extends object>(
+  componentDefinition: RenderComponentDefinition<T>
+) {
   const nodeType = componentDefinition.nodeType;
   const Component = observer(componentDefinition.Component);
 
@@ -35,5 +38,7 @@ export function registerComponentDefinition(componentDefinition: RenderComponent
  * @returns A Render Component function
  */
 export function getRenderComponentBundle(nodeType: NodeType): RenderComponentDefinition {
-  return dynamicComponentRegistry.get(nodeType) ?? voidBundle;
+  const bundle = dynamicComponentRegistry.get(nodeType);
+  if (!bundle) return voidBundle;
+  return bundle;
 }
