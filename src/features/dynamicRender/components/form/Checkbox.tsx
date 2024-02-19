@@ -1,7 +1,8 @@
-import { checkboxAttributes } from "features/dynamicRender/data/attributes/form/checkbox";
+import { COMMON_INPUT_ATTRIBUTE_DEFINITIONS } from "features/dynamicRender/data/attributes";
 import { useAttributes } from "features/dynamicRender/hooks/useAttributes";
 import { useFormValue } from "features/dynamicRender/hooks/useFormValue";
-import { CheckboxAttributes } from "features/dynamicRender/types/attributes/form/checkbox";
+import { AttributeDefinition } from "features/dynamicRender/types/attributes/definition";
+import { CommonInputAttributes } from "features/dynamicRender/types/attributes/form/common";
 import { NodeType } from "features/dynamicRender/types/node";
 import { GetOptions, QuerySource } from "features/dynamicRender/types/query";
 import {
@@ -14,11 +15,19 @@ import { ChangeEvent, useMemo } from "react";
 
 const DEFAULT_STORED_VALUE = "";
 
+export type CheckboxAttributes = CommonInputAttributes & {
+  value: string;
+};
+export const attributeDefinitions: AttributeDefinition[] = [
+  ...COMMON_INPUT_ATTRIBUTE_DEFINITIONS,
+  { name: "value", default: "on" },
+];
+
 /**
  * Renders a checkbox for the Dynamic Render
  */
-export function Checkbox(props: RenderComponentProps) {
-  const { attributes } = useAttributes<CheckboxAttributes>(props.node, checkboxAttributes);
+export function Checkbox(props: RenderComponentProps<CheckboxAttributes>) {
+  const { attributes } = useAttributes<CheckboxAttributes>(props.node, attributeDefinitions);
   const options = useMemo<GetOptions>(
     () => buildQueryOptionsFromAttributes(attributes),
     [attributes]
@@ -55,9 +64,9 @@ export function Checkbox(props: RenderComponentProps) {
   );
 }
 
-export const checkboxBundle: RenderComponentDefinition = {
+export const checkboxBundle: RenderComponentDefinition<CheckboxAttributes> = {
   Component: Checkbox,
   nodeType: NodeType.Checkbox,
-  attributes: checkboxAttributes,
+  attributeDefinitions,
   allowsChildren: false,
 };

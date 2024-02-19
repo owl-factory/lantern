@@ -1,7 +1,8 @@
-import { radioAttributes } from "features/dynamicRender/data/attributes/form/radio";
+import { COMMON_INPUT_ATTRIBUTE_DEFINITIONS } from "features/dynamicRender/data/attributes";
 import { useAttributes } from "features/dynamicRender/hooks/useAttributes";
 import { useFormValue } from "features/dynamicRender/hooks/useFormValue";
-import { RadioAttributes } from "features/dynamicRender/types/attributes/form/radio";
+import { AttributeDefinition } from "features/dynamicRender/types/attributes/definition";
+import { CommonInputAttributes } from "features/dynamicRender/types/attributes/form/common";
 import { NodeType } from "features/dynamicRender/types/node";
 import { GetOptions } from "features/dynamicRender/types/query";
 import {
@@ -11,11 +12,19 @@ import {
 import { buildQueryOptionsFromAttributes } from "features/dynamicRender/utils/query";
 import { ChangeEvent, useMemo } from "react";
 
+export type RadioAttributes = CommonInputAttributes & {
+  value: string;
+};
+export const attributeDefinitions: AttributeDefinition[] = [
+  ...COMMON_INPUT_ATTRIBUTE_DEFINITIONS,
+  { name: "value", required: true },
+];
+
 /**
  * Renders a radio button for the Dynamic Render
  */
-export function Radio(props: RenderComponentProps) {
-  const { attributes } = useAttributes<RadioAttributes>(props.node, radioAttributes);
+export function Radio(props: RenderComponentProps<RadioAttributes>) {
+  const { attributes } = useAttributes<RadioAttributes>(props.node, attributeDefinitions);
   const options = useMemo<GetOptions>(
     () => buildQueryOptionsFromAttributes(attributes),
     [attributes]
@@ -41,9 +50,9 @@ export function Radio(props: RenderComponentProps) {
   );
 }
 
-export const radioBundle: RenderComponentDefinition = {
+export const radioBundle: RenderComponentDefinition<RadioAttributes> = {
   Component: Radio,
   nodeType: NodeType.Radio,
-  attributes: radioAttributes,
+  attributeDefinitions,
   allowsChildren: false,
 };
