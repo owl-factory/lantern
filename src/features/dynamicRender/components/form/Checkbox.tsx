@@ -2,7 +2,7 @@ import { COMMON_INPUT_ATTRIBUTE_DEFINITIONS } from "features/dynamicRender/data/
 import { useAttributes } from "features/dynamicRender/hooks/useAttributes";
 import { useFormValue } from "features/dynamicRender/hooks/useFormValue";
 import { AttributeDefinition } from "features/dynamicRender/types/attributes/definition";
-import { CommonInputAttributes } from "features/dynamicRender/types/attributes/form/common";
+import { CommonInputAttributes } from "features/dynamicRender/types/attributes/form";
 import { NodeType } from "features/dynamicRender/types/node";
 import { GetOptions, QuerySource } from "features/dynamicRender/types/query";
 import {
@@ -15,10 +15,10 @@ import { ChangeEvent, useMemo } from "react";
 
 const DEFAULT_STORED_VALUE = "";
 
-export type CheckboxAttributes = CommonInputAttributes & {
+type CheckboxAttributes = CommonInputAttributes & {
   value: string;
 };
-export const attributeDefinitions: AttributeDefinition[] = [
+const attributeDefinitions: AttributeDefinition[] = [
   ...COMMON_INPUT_ATTRIBUTE_DEFINITIONS,
   { name: "value", default: "on" },
 ];

@@ -2,7 +2,7 @@ import { COMMON_INPUT_ATTRIBUTE_DEFINITIONS } from "features/dynamicRender/data/
 import { useAttributes } from "features/dynamicRender/hooks/useAttributes";
 import { useFormValue } from "features/dynamicRender/hooks/useFormValue";
 import { AttributeDefinition } from "features/dynamicRender/types/attributes/definition";
-import { CommonInputAttributes } from "features/dynamicRender/types/attributes/form/common";
+import { CommonInputAttributes } from "features/dynamicRender/types/attributes/form";
 import { NodeType } from "features/dynamicRender/types/node";
 import { GetOptions } from "features/dynamicRender/types/query";
 import {
@@ -12,10 +12,10 @@ import {
 import { buildQueryOptionsFromAttributes } from "features/dynamicRender/utils/query";
 import { ChangeEvent, useMemo } from "react";
 
-export type RadioAttributes = CommonInputAttributes & {
+type RadioAttributes = CommonInputAttributes & {
   value: string;
 };
-export const attributeDefinitions: AttributeDefinition[] = [
+const attributeDefinitions: AttributeDefinition[] = [
   ...COMMON_INPUT_ATTRIBUTE_DEFINITIONS,
   { name: "value", required: true },
 ];
