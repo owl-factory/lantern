@@ -114,14 +114,26 @@ function parseAttributes(node: Node, attributeDefinitions: AttributeDefinition[]
 
   const element = node as Element;
   attributeDefinitions.forEach((definition: AttributeDefinition) => {
-    const name = definition.name;
-    const defaultValue = definition.default ?? undefined;
-    const value = element.getAttribute(name) ?? defaultValue;
+    const { name, value } = getAttributeValue(element, definition);
 
     if (value === undefined) return;
     attributes[name] = value;
   });
   return attributes;
+}
+
+/**
+ * Identifies and fetches an attribute.
+ * @param element - The element node containing the attributes
+ * @param definition - A single attribute definition
+ * @returns An object containing the attribute name and value.
+ */
+function getAttributeValue(element: Element, definition: AttributeDefinition) {
+  const name = definition.name;
+  const defaultValue = definition.default ?? undefined;
+  let value: ExpressionDescriptor | string | undefined = element.getAttribute(name) ?? defaultValue;
+  if (value && definition.supportsExpressions) value = parseAttributeExpression(value);
+  return { name, value };
 }
 
 /**
@@ -186,7 +198,10 @@ function checkForExpression(text: string): boolean {
 }
 
 export const __testing__ = {
+  checkForExpression,
+  getAttributeValue,
   parseAttributes,
+  parseAttributeExpression,
   parseNodeChild,
   parseNodeChildren,
 };
