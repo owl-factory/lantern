@@ -63,22 +63,8 @@ export function getNodeName(node: ChildNode): string | undefined {
   return undefined;
 }
 
-/**
- * Determines the value of the checkbox. If none is present, the default is 'on'.
- * @param node - The node to extract the checkbox value from
- * @returns The value of the checkbox. Defaults to 'on'.
- */
-export function getAttributeValue(node: Node, attribute: string, defaultValue = ""): string {
-  if (node.nodeType !== Node.ELEMENT_NODE) return defaultValue;
-
-  const element = node as Element;
-  const value: string | null = element.getAttribute(attribute);
-  if (value === null) return defaultValue;
-
-  return value.trim();
-}
-
 export const __testing__ = {
+  canNodeHaveChildren,
   checkIfUsableNode,
   getNodeName,
 };

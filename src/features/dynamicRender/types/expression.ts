@@ -13,6 +13,7 @@ export type PlainTextExpression = {
   value: string;
 };
 
+/** The types of expressions, describing the sort of processing they will need */
 export enum ExpressionType {
   /** This expression is invalid for some reason or another */
   Invalid,

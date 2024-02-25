@@ -34,3 +34,5 @@ function getInitialValue(expression: ExpressionDescriptor | string) {
   if (expression.type === ExpressionType.PlainText) return expression.value;
   return "";
 }
+
+export const __testing__ = { getInitialValue };
