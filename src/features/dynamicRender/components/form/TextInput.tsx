@@ -1,7 +1,8 @@
-import { textInputAttributes } from "features/dynamicRender/data/attributes/form/textInput";
+import { COMMON_INPUT_ATTRIBUTE_DEFINITIONS } from "features/dynamicRender/data/attributes";
 import { useAttributes } from "features/dynamicRender/hooks/useAttributes";
 import { useFormValue } from "features/dynamicRender/hooks/useFormValue";
-import { TextInputAttributes } from "features/dynamicRender/types/attributes/form/textInput";
+import { AttributeDefinition } from "features/dynamicRender/types/attributes/definition";
+import { CommonInputAttributes } from "features/dynamicRender/types/attributes/form";
 import { NodeType } from "features/dynamicRender/types/node";
 import { GetOptions } from "features/dynamicRender/types/query";
 import {
@@ -11,11 +12,14 @@ import {
 import { buildQueryOptionsFromAttributes } from "features/dynamicRender/utils/query";
 import { ChangeEvent, useMemo } from "react";
 
+type TextInputAttributes = CommonInputAttributes;
+const attributeDefinitions: AttributeDefinition[] = [...COMMON_INPUT_ATTRIBUTE_DEFINITIONS];
+
 /**
  * Renders a text input for the Dynamic Render
  */
-export function TextInput(props: RenderComponentProps) {
-  const { attributes } = useAttributes<TextInputAttributes>(props.node, textInputAttributes);
+export function TextInput(props: RenderComponentProps<TextInputAttributes>) {
+  const { attributes } = useAttributes<TextInputAttributes>(props.node, attributeDefinitions);
   const options = useMemo<GetOptions>(
     () => buildQueryOptionsFromAttributes(attributes),
     [attributes]
@@ -34,9 +38,9 @@ export function TextInput(props: RenderComponentProps) {
   return <input type="text" onChange={onChange} value={value} />;
 }
 
-export const textInputBundle: RenderComponentDefinition = {
+export const textInputBundle: RenderComponentDefinition<TextInputAttributes> = {
   Component: TextInput,
   nodeType: NodeType.TextInput,
-  attributes: textInputAttributes,
+  attributeDefinitions,
   allowsChildren: false,
 };

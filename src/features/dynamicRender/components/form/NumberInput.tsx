@@ -1,7 +1,8 @@
-import { numberInputAttributes } from "features/dynamicRender/data/attributes/form/numberInput";
+import { COMMON_INPUT_ATTRIBUTE_DEFINITIONS } from "features/dynamicRender/data/attributes";
 import { useAttributes } from "features/dynamicRender/hooks/useAttributes";
 import { useFormValue } from "features/dynamicRender/hooks/useFormValue";
-import { NumberInputAttributes } from "features/dynamicRender/types/attributes/form/numberInput";
+import { AttributeDefinition } from "features/dynamicRender/types/attributes/definition";
+import { CommonInputAttributes } from "features/dynamicRender/types/attributes/form";
 import { NodeType } from "features/dynamicRender/types/node";
 import { GetOptions } from "features/dynamicRender/types/query";
 import {
@@ -11,11 +12,14 @@ import {
 import { buildQueryOptionsFromAttributes } from "features/dynamicRender/utils/query";
 import { ChangeEvent, useMemo } from "react";
 
+type NumberInputAttributes = CommonInputAttributes;
+const attributeDefinitions: AttributeDefinition[] = [...COMMON_INPUT_ATTRIBUTE_DEFINITIONS];
+
 /**
  * Renders a number input for the Dynamic Render
  */
-export function NumberInput(props: RenderComponentProps) {
-  const { attributes } = useAttributes<NumberInputAttributes>(props.node, numberInputAttributes);
+export function NumberInput(props: RenderComponentProps<NumberInputAttributes>) {
+  const { attributes } = useAttributes<NumberInputAttributes>(props.node, attributeDefinitions);
   const options = useMemo<GetOptions>(
     () => buildQueryOptionsFromAttributes(attributes),
     [attributes]
@@ -34,9 +38,9 @@ export function NumberInput(props: RenderComponentProps) {
   return <input type="number" onChange={onChange} value={value} />;
 }
 
-export const numberInputBundle: RenderComponentDefinition = {
+export const numberInputBundle: RenderComponentDefinition<NumberInputAttributes> = {
   Component: NumberInput,
   nodeType: NodeType.NumberInput,
-  attributes: numberInputAttributes,
+  attributeDefinitions,
   allowsChildren: false,
 };

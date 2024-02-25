@@ -1,8 +1,7 @@
 import { StateContext } from "features/dynamicRender/context/stateContext";
-import { collapseAttributes } from "features/dynamicRender/data/attributes/utility/collapse";
 import { useAttributes } from "features/dynamicRender/hooks/useAttributes";
 import { useChildren } from "features/dynamicRender/hooks/useChildren";
-import { CollapseAttributes } from "features/dynamicRender/types/attributes/utilities/collapse";
+import { AttributeDefinition } from "features/dynamicRender/types/attributes/definition";
 import { NodeType } from "features/dynamicRender/types/node";
 import {
   RenderComponentDefinition,
@@ -11,11 +10,16 @@ import {
 import { StateController } from "features/dynamicRender/utils/stateController";
 import { useContext, useEffect } from "react";
 
+type CollapseAttributes = {
+  id: string;
+};
+const attributeDefinitions: AttributeDefinition[] = [{ name: "id", required: true }];
+
 /**
  * Renders a Collapsable section
  */
-export function Collapse(props: RenderComponentProps) {
-  const { attributes } = useAttributes<CollapseAttributes>(props.node, collapseAttributes);
+export function Collapse(props: RenderComponentProps<CollapseAttributes>) {
+  const { attributes } = useAttributes<CollapseAttributes>(props.node, attributeDefinitions);
   const state = useContext(StateContext);
 
   const collapseId = attributes.id;
@@ -42,9 +46,9 @@ function initializeCollapse(collapseId: string | undefined, state: StateControll
   return () => state.deleteCollapse(collapseId);
 }
 
-export const collapseBundle: RenderComponentDefinition = {
+export const collapseBundle: RenderComponentDefinition<CollapseAttributes> = {
   Component: Collapse,
   nodeType: NodeType.Collapse,
-  attributes: collapseAttributes,
+  attributeDefinitions,
   allowsChildren: true,
 };

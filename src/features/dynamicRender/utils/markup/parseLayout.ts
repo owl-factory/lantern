@@ -51,7 +51,7 @@ function parseNodeChildren(childNodes: NodeListOf<ChildNode>): ParsedNode[] {
 function parseNodeChild(
   node: ChildNode,
   nodeTypeCount: Map<string, number>
-): ParsedNode | undefined {
+): ParsedNode<Record<string, string>> | undefined {
   const isUsableNode = checkIfUsableNode(node);
   if (!isUsableNode) return;
 
@@ -66,7 +66,7 @@ function parseNodeChild(
   const key = `${nodeType}_${nodeCount}`;
   const bundle = getRenderComponentBundle(nodeType);
 
-  const attributes = parseAttributes(node, bundle.attributes);
+  const attributes = parseAttributes(node, bundle.attributeDefinitions);
 
   const hasChildren = canNodeHaveChildren(nodeType);
   let children: ParsedNode[] | undefined = undefined;

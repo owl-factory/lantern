@@ -1,7 +1,6 @@
 import { StateContext } from "features/dynamicRender/context/stateContext";
-import { tabsAttributes } from "features/dynamicRender/data/attributes/utility/tabs";
 import { useAttributes } from "features/dynamicRender/hooks/useAttributes";
-import { TabsAttributes } from "features/dynamicRender/types/attributes/utilities/tabs";
+import { AttributeDefinition } from "features/dynamicRender/types/attributes/definition";
 import { NodeType } from "features/dynamicRender/types/node";
 import {
   RenderComponentDefinition,
@@ -10,11 +9,16 @@ import {
 import { Page, StateController } from "features/dynamicRender/utils/stateController";
 import { useContext } from "react";
 
+type TabsAttributes = {
+  for: string;
+};
+const attributeDefinitions: AttributeDefinition[] = [{ name: "for", required: true }];
+
 /**
  * Renders a group of tabs that can be used to select the page to show
  */
-export function Tabs(props: RenderComponentProps) {
-  const { attributes } = useAttributes<TabsAttributes>(props.node, tabsAttributes);
+export function Tabs(props: RenderComponentProps<TabsAttributes>) {
+  const { attributes } = useAttributes<TabsAttributes>(props.node, attributeDefinitions);
   const state = useContext(StateContext);
 
   const forGroup = attributes.for;
@@ -38,12 +42,12 @@ export function Tabs(props: RenderComponentProps) {
   return <div>{tabs}</div>;
 }
 
-type TabProps = {
+type TabProps = Readonly<{
   page: Page;
   groupKey: string;
   active: boolean;
   state: StateController;
-};
+}>;
 
 const ENFORCED_CLASSES = "cursor-pointer";
 
@@ -67,9 +71,9 @@ function Tab(props: TabProps) {
   );
 }
 
-export const tabsBundle: RenderComponentDefinition = {
+export const tabsBundle: RenderComponentDefinition<TabsAttributes> = {
   Component: Tabs,
   nodeType: NodeType.Tabs,
-  attributes: tabsAttributes,
+  attributeDefinitions,
   allowsChildren: false,
 };

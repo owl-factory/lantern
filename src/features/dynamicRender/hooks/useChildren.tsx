@@ -15,7 +15,5 @@ export function useChildren(nodes: ParsedNode[] | undefined): JSX.Element[] {
 
 function nodesToComponents(nodes: ParsedNode[]): JSX.Element[] {
   if (!nodes || nodes.length === 0) return [];
-  return nodes.map((node: ParsedNode<Record<string, string>>) => (
-    <node.Component key={node.key} {...node.props} />
-  ));
+  return nodes.map((node: ParsedNode) => <node.Component key={node.key} {...node.props} />);
 }

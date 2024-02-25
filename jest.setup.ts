@@ -7,12 +7,6 @@ Object.defineProperty(global, "crypto", {
   },
 });
 
-Object.defineProperty(global, "URL", {
-  value: {
-    createObjectURL: jest.fn(() => ""),
-  },
-});
-
 Object.defineProperty(global, "Worker", {
   value: jest.fn(() => ({
     postMessage: jest.fn(),

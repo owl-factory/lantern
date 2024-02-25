@@ -1,9 +1,8 @@
 import { PageGroupContext } from "features/dynamicRender/context/pageGroupContext";
 import { StateContext } from "features/dynamicRender/context/stateContext";
-import { pageAttributes } from "features/dynamicRender/data/attributes/utility/page";
 import { useAttributes } from "features/dynamicRender/hooks/useAttributes";
 import { useChildren } from "features/dynamicRender/hooks/useChildren";
-import { PageAttributes } from "features/dynamicRender/types/attributes/utilities/page";
+import { AttributeDefinition } from "features/dynamicRender/types/attributes/definition";
 import { NodeType } from "features/dynamicRender/types/node";
 import {
   RenderComponentDefinition,
@@ -13,11 +12,16 @@ import { StateController } from "features/dynamicRender/utils/stateController";
 import { useContext, useEffect } from "react";
 import { toKey } from "utils/strings";
 
+type PageAttributes = {
+  name: string;
+};
+const attributeDefinitions: AttributeDefinition[] = [{ name: "name", required: true }];
+
 /**
  * Renders a Page that can be hidden or shown based on the state
  */
-export function Page(props: RenderComponentProps) {
-  const { attributes } = useAttributes<PageAttributes>(props.node, pageAttributes);
+export function Page(props: RenderComponentProps<PageAttributes>) {
+  const { attributes } = useAttributes<PageAttributes>(props.node, attributeDefinitions);
   const state = useContext(StateContext);
   const groupKey = useContext(PageGroupContext);
   const pageName = attributes.name;
@@ -50,9 +54,9 @@ function createPage(groupKey: string, pageKey: string, pageName: string, state: 
   return () => state.deletePage(groupKey, pageKey);
 }
 
-export const pageBundle: RenderComponentDefinition = {
+export const pageBundle: RenderComponentDefinition<PageAttributes> = {
   Component: Page,
   nodeType: NodeType.Page,
-  attributes: pageAttributes,
+  attributeDefinitions,
   allowsChildren: true,
 };
