@@ -6,14 +6,11 @@ import {
   RenderComponentProps,
 } from "features/dynamicRender/types/render";
 
-export type BoxAttributes = {
+type BoxAttributes = {
   className?: string;
   type?: string;
 };
-export const attributeDefinitions: AttributeDefinition[] = [
-  { name: "className" },
-  { name: "type" },
-];
+const attributeDefinitions: AttributeDefinition[] = [{ name: "className" }, { name: "type" }];
 
 /**
  * Renders a box div element
