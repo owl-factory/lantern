@@ -25,6 +25,11 @@ export function getQueryFields<T extends keyof DB>(info: GraphQLResolveInfo): Se
   return fields.filter((field: string) => field !== "__typename") as SelectFields<T>;
 }
 
+/**
+ * For any Result\<T\>, returns either a GraphQLError Promise rejection or a successful response of type T.
+ * @param result - Any Lantern Result object to handle for GraphQL.
+ * @returns unwrapped Result value or Promise rejection containing an error.
+ */
 export function GraphqlResult<T, E>(result: Result<T, E>): T | Promise<never> {
   return result.ok === false ? ErrGraphql(result) : result.data;
 }
@@ -39,6 +44,12 @@ export function ErrGraphql(error: ErrResult<string | Error> | string | Error | u
   return wrapGraphqlError(error);
 }
 
+/**
+ * Helper function for processing unknown errors (after any potential Result unwrapping).
+ * @param error - Unknown parameter that should be a string or an Error class.
+ * @returns rejected promise that wraps a string or Error message in a GraphQLError. If unknown parameter
+ * is not a string or Error is it put in a promise rejection directly (which will likely be an unknown error in GraphQL).
+ */
 function wrapGraphqlError(error: unknown) {
   if (typeof error === "string") {
     return Promise.reject(new GraphQLError(error));

@@ -30,8 +30,8 @@ export async function signupUser(
     attributes: {
       email: email,
       username: username,
-      displayName: displayName || undefined,
-    },
+      display_name: displayName || undefined,
+    } as never,
   });
 
   // Create secondary login key (username)
@@ -46,7 +46,7 @@ export async function signupUser(
     // Create session for new user
     const session = await luciaAuth.createSession({
       userId: user.userId,
-      attributes: {},
+      attributes: {} as never,
     });
     if (setCookie) {
       setSessionIdCookie(session.sessionId);
@@ -75,7 +75,7 @@ export async function loginUser(
   await luciaAuth.deleteDeadUserSessions(key.userId);
   const session = await luciaAuth.createSession({
     userId: key.userId,
-    attributes: {},
+    attributes: {} as never,
   });
 
   if (setCookie) {

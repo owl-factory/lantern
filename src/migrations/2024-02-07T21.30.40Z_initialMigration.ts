@@ -52,7 +52,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 
   /* Primary Tables */
   // content table
-  const contentTableBuilder = db.schema
+  let contentTableBuilder = db.schema
     .createTable("content")
     .addBaseColumns()
     .addColumn("name", "text", (col) => col.notNull())
@@ -61,7 +61,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("isDynamic", "boolean", (col) => col.notNull())
     .addColumn("data", "jsonb");
   for (let i = 1; i <= contentIndexCount; i++) {
-    contentTableBuilder.addColumn("index" + i, "text");
+    contentTableBuilder = contentTableBuilder.addColumn("index" + i, "text");
   }
   contentTableBuilder.execute();
 
@@ -163,4 +163,31 @@ async function insertExampleData(db: Kysely<any>): Promise<void> {
     },
   ];
   await db.insertInto("todo").values(todos).execute();
+
+  // content table
+  const content = [
+    {
+      name: "No name",
+      id: "02d4ff74-8767-449e-9f87-8327090a2e6d",
+      ownerUserId: "0cde4c19-3ec3-4e30-9540-939b45f74aa6",
+      visibility: "public",
+      isDynamic: true,
+      data: {
+        description: "Kiss girls",
+        done: true,
+      },
+    },
+    {
+      name: "No name",
+      id: "99302d6d-9765-45d5-ac3d-34524b736282",
+      ownerUserId: "0cde4c19-3ec3-4e30-9540-939b45f74aa6",
+      visibility: "public",
+      isDynamic: true,
+      data: {
+        description: "Complete Lantern",
+        done: false,
+      },
+    },
+  ];
+  await db.insertInto("content").values(content).execute();
 }

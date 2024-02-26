@@ -2,7 +2,8 @@
 import type { QueryResolvers, Session, Todo } from "types/graphql";
 import { authenticateSession } from "lib/authentication";
 import { database } from "lib/database";
-import { ErrGraphql, getQueryFields } from "utils/graphql";
+import { ErrGraphql, GraphqlResult, getQueryFields } from "utils/graphql";
+import { getContent, getAllContent } from "services/content";
 
 /**
  * GraphQL resolver map of all query resolvers. Used for GraphQL request that needs to read data.
@@ -18,26 +19,44 @@ export const queries: QueryResolvers = {
     if (auth.ok === false) {
       return ErrGraphql(auth);
     }
-    const { sessionId, user, isApiKey, activePeriodExpiresAt, idlePeriodExpiresAt } = auth.data;
-    const session: Session = {
-      id: sessionId,
-      isApiKey: isApiKey,
-      activeExpires: activePeriodExpiresAt.toISOString(),
-      idleExpires: idlePeriodExpiresAt.toISOString(),
-      user: {
-        id: user.userId,
-        username: user.username,
-        email: user.email,
-        displayName: user.displayName,
-        iconUrl: user.iconUrl,
-      },
+    const session = auth.data;
+    const response: Session = {
+      ...session,
+      id: session.sessionId,
+      activeExpires: session.activePeriodExpiresAt,
+      idleExpires: session.idlePeriodExpiresAt,
+      user: { ...session.user, id: session.user.userId },
     };
 
-    return session;
+    return response;
   },
 
   /**
-   *  If user is authenticated, get a single Todo item from the database.
+   * If user is authenticated, get a single Content item from the database.
+   * @param args - Argument object containing only the `id` of the Content to be retrieved.
+   * @param info - GraphQL query info object that contains the list of requested fields to be returned.
+   * @returns requested Content item.
+   */
+  content: async (_, args, _context, info) => {
+    const queryFields = getQueryFields<"content">(info);
+    const content = await getContent(args.id, queryFields);
+    return GraphqlResult(content);
+  },
+
+  /**
+   * If user is authenticated, get all content they have access to from the database. Not long term sustainable, still figuring out query method.
+   * @param args - Argument object containing only the `id` of the Content to be retrieved.
+   * @param info - GraphQL query info object that contains the list of requested fields to be returned.
+   * @returns requested Content item.
+   */
+  allContent: async (_, _args, _context, info) => {
+    const queryFields = getQueryFields<"content">(info);
+    const content = await getAllContent(queryFields);
+    return GraphqlResult(content);
+  },
+
+  /**
+   * If user is authenticated, get a single Todo item from the database.
    * @param args - Argument object containing only the `id` of the Todo to be retrieved.
    * @param info - GraphQL query info object that contains the list of requested fields to be returned.
    * @returns requested Todo item.

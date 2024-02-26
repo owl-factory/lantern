@@ -1,16 +1,24 @@
+scalar JSONObject
+scalar DateTime
+
 type User {
   id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   username: String!
   email: String!
+  isOrganization: Boolean!
   displayName: String
   iconUrl: String
 }
 
 type Session {
   id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   user: User!
-  activeExpires: String!
-  idleExpires: String!
+  activeExpires: DateTime!
+  idleExpires: DateTime!
   isApiKey: Boolean!
 }
 
@@ -20,10 +28,31 @@ type Todo {
   done: Boolean!
 }
 
+type Content {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  isDynamic: Boolean!
+  name: String!
+  visibility: String!
+  data: JSONObject
+  index1: String
+  index2: String
+  index3: String
+  index4: String
+  index5: String
+  index6: String
+  index7: String
+  index8: String
+  index9: String
+}
+
 type Query {
   session: Session!
   todo(id: ID!): Todo!
   todos: [Todo!]!
+  content(id: ID!): Content!
+  allContent: [Content]!
 }
 
 type Mutation {
@@ -41,4 +70,5 @@ type Mutation {
   createTodo(description: String, done: Boolean): Todo
   updateTodo(id: ID!, description: String, done: Boolean): Todo
   deleteTodo(id: ID!): ID!
+  createContent(name: String!, data: JSONObject, isDynamic: Boolean): Content
 }

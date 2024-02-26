@@ -5,11 +5,16 @@ declare namespace Lucia {
   type DatabaseUserAttributes = {
     username: string;
     email: string;
-    displayName?: string; // display_name
-    iconUrl?: string; // icon_url
+    displayName?: string;
+    iconUrl?: string;
+    isOrganization: boolean;
+    createdAt: Date;
+    updatedAt: Date;
   };
 
   type DatabaseSessionAttributes = {
-    isApiKey?: boolean; // is_api_key
+    isApiKey?: boolean;
+    createdAt: Date;
+    updatedAt: Date;
   };
 }

@@ -32,7 +32,7 @@ export async function authenticateSession(): Promise<Result<Session>> {
       setSessionIdCookie(session.sessionId);
     }
     return Ok(session);
-  } catch (_e) {
+  } catch (_error) {
     return Err(
       "User authentication failed. Session is invalid (expired or could not be found in the database)."
     );
