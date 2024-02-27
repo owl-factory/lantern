@@ -1,6 +1,6 @@
 "use client";
 
-import { graphql } from "gql.tada";
+import { graphql } from "lib/graphql";
 import { useQuery } from "urql";
 
 const todosQuery = graphql(`
