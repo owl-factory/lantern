@@ -15,6 +15,11 @@
     "plugins": [
       {
         "name": "next"
+      },
+      {
+        "name": "@0no-co/graphqlsp",
+        "schema": "./src/services/graphql/schema.graphql",
+        "tadaOutputLocation": "./generated/graphqlsp.d.ts"
       }
     ],
     "paths": {

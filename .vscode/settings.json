@@ -6,6 +6,9 @@
   "editor.quickSuggestions": {
     "strings": "on"
   },
+  // Support gql.tada
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
   // Install the "Prettier - Code formatter" VSCode extension
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   // Run jest test from extension.

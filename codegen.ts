@@ -7,13 +7,6 @@ const config: CodegenConfig = {
     "./generated/resolvers-types.ts": {
       plugins: ["typescript", "typescript-resolvers"],
     },
-    "./generated/client/": {
-      preset: "client",
-      config: {
-        useTypeImports: true,
-      },
-      plugins: [],
-    },
   },
 };
 export default config;

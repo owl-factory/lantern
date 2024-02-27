@@ -7,8 +7,7 @@ import { getServerClient } from "lib/graphql/serverClient";
 import { PasswordField } from "app/login/PasswordField";
 import { getSessionId } from "lib/authentication";
 import Image from "next/image";
-import { graphql } from "types/graphql";
-import { SessionQuery } from "types/graphql/client";
+import { graphql } from "gql.tada";
 
 /**
  * Page metadata object, NextJs will append these values as meta tags to the <head>.
@@ -47,7 +46,7 @@ const sessionQuery = graphql(`
  * Site login page component. This login page is experimental and will be replaced eventually.
  */
 async function Page() {
-  let user: SessionQuery["session"]["user"] | undefined;
+  let user;
   if (getSessionId().ok) {
     const client = getServerClient();
     const { data } = await client.query(sessionQuery, {});
@@ -215,7 +214,15 @@ function LoggedOutSection() {
   );
 }
 
-function LoggedInSection({ user }: { user: SessionQuery["session"]["user"] }) {
+function LoggedInSection({
+  user,
+}: {
+  user: {
+    iconUrl: string | null;
+    displayName: string | null;
+    username: string;
+  };
+}) {
   let iconUrl = "";
   if (user?.iconUrl) {
     iconUrl = user.iconUrl.replace("https://lanterntt.com", "");
