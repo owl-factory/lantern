@@ -17,7 +17,7 @@
     "migrate:up": "tsx --env-file=.env.development src/scripts/runMigrations.ts --up",
     "migrate:down": "tsx --env-file=.env.development src/scripts/runMigrations.ts --down",
     "migrate:new": "tsx src/scripts/newMigration.ts",
-    "generate": "kysely-codegen --out-file ./generated/database-types.ts --camel-case --env-file=.env.development && graphql-codegen"
+    "generate": "kysely-codegen --out-file ./generated/database-types.ts --camel-case --env-file=.env.development && graphql-codegen -c ./src/services/graphql/codegen.ts"
   },
   "engines": {
     "node": ">=20",
