@@ -23,8 +23,8 @@ export const mutations: MutationResolvers = {
       args.email,
       args.username,
       args.password,
-      args.logIn || false,
-      args.setCookie || false,
+      args.logIn,
+      args.setCookie,
       args.displayName || undefined
     );
     return GraphqlResult(res);
@@ -38,7 +38,7 @@ export const mutations: MutationResolvers = {
    * @returns ID of the session generated for a newly logged in user.
    */
   login: async (_, args) => {
-    const res = await loginUser(args.username, args.password, args.setCookie || false);
+    const res = await loginUser(args.username, args.password, args.setCookie);
     return GraphqlResult(res);
   },
 
@@ -48,7 +48,7 @@ export const mutations: MutationResolvers = {
    * @returns ID of the session that was just logged out.
    */
   logout: async (_, args) => {
-    const res = await logoutSession(args.deleteCookie || false);
+    const res = await logoutSession(args.deleteCookie);
     return GraphqlResult(res);
   },
 
@@ -59,7 +59,7 @@ export const mutations: MutationResolvers = {
    * @returns `id` of the deleted user.
    */
   deleteUser: async (_, args) => {
-    const res = await deleteUser(args.id, args.username, args.deleteCookie || false);
+    const res = await deleteUser(args.id, args.username, args.deleteCookie);
     return GraphqlResult(res);
   },
 
@@ -70,7 +70,11 @@ export const mutations: MutationResolvers = {
    * @returns newly created Content object filtered to requested fields.
    */
   createContent: async (_, args, _context, info) => {
-    const res = await createContent({ ...args, isDynamic: args.isDynamic || false }, info);
+    const queryFields = getQueryFields<"content">(info);
+    const res = await createContent(
+      { ...args, visibility: args.visibility ?? undefined },
+      queryFields
+    );
     return GraphqlResult(res);
   },
 

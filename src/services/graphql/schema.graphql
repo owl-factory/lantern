@@ -73,19 +73,19 @@ type Mutation {
     username: String!
     password: String!
     displayName: String
-    logIn: Boolean
-    setCookie: Boolean
+    logIn: Boolean = false
+    setCookie: Boolean = false
   ): String
-  login(username: String!, password: String!, setCookie: Boolean): String!
-  logout(deleteCookie: Boolean): String!
-  deleteUser(id: ID!, username: String!, deleteCookie: Boolean): String!
-  createTodo(description: String, done: Boolean): Todo
-  updateTodo(id: ID!, description: String, done: Boolean): Todo
+  login(username: String!, password: String!, setCookie: Boolean = false): String!
+  logout(deleteCookie: Boolean = false): String!
+  deleteUser(id: ID!, username: String!, deleteCookie: Boolean = false): String!
+  createTodo(description: String, done: Boolean = false): Todo
+  updateTodo(id: ID!, description: String, done: Boolean = false): Todo
   deleteTodo(id: ID!): ID!
   createContent(
     name: String!
     data: JSONObject
     visibility: Visibility
-    isDynamic: Boolean
+    isDynamic: Boolean = true
   ): Content
 }
