@@ -88,4 +88,5 @@ type Mutation {
     visibility: Visibility
     isDynamic: Boolean = true
   ): Content
+  deleteContent(id: ID!): ID!
 }

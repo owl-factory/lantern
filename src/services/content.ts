@@ -61,7 +61,7 @@ export async function getAllContent(
     dbContent = undefined;
   }
   if (dbContent === undefined || dbContent.length === 0) {
-    return Err(`Failed to fetch one or more content items you have access to from the database.`);
+    return Err("Failed to fetch one or more content items you have access to from the database.");
   }
   return Ok(dbContent);
 }
@@ -89,7 +89,33 @@ export async function createContent(
     newDbContent = undefined;
   }
   if (newDbContent === undefined) {
-    return Err(`Failed to create new item in the database.`);
+    return Err("Failed to create new item in the database.");
   }
   return Ok(newDbContent);
+}
+
+export async function deleteContent(id: string): Promise<Result<string>> {
+  const auth = await authenticateSession();
+  if (auth.ok === false) {
+    return auth;
+  }
+
+  const sessionUser = auth.data.user;
+  let deleted;
+
+  try {
+    deleted = await database
+      .deleteFrom("content")
+      .where((eb) => eb.and([eb("id", "=", id), eb("ownerUserId", "=", sessionUser.userId)]))
+      .returning("id")
+      .executeTakeFirst();
+  } catch (_error) {
+    deleted = undefined;
+  }
+  if (deleted === undefined) {
+    return Err(
+      `Failed to delete content item with ID "${id}" from the database. It either does not exist or you lack permission to delete it.`
+    );
+  }
+  return Ok(deleted.id);
 }

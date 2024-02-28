@@ -5,7 +5,7 @@ import { database } from "lib/database";
 import { NewTodo } from "types/database";
 import { ErrGraphql, GraphqlResult, getQueryFields } from "utils/graphql";
 import { deleteUser, loginUser, logoutSession, signupUser } from "services/authentication";
-import { createContent } from "services/content";
+import { createContent, deleteContent } from "services/content";
 
 /**
  * GraphQL resolver map of all mutation resolvers. Used for GraphQL request that needs to write data.
@@ -55,7 +55,6 @@ export const mutations: MutationResolvers = {
   /**
    * If authenticates, deletes a user.
    * @param args - A the `id` and `username` fields of the user to delete. They must match, and both are required to make user deletion require more intention.
-   * @param info - GraphQL query info object that contains the list of requested fields to be returned.
    * @returns `id` of the deleted user.
    */
   deleteUser: async (_, args) => {
@@ -75,6 +74,16 @@ export const mutations: MutationResolvers = {
       { ...args, visibility: args.visibility ?? undefined },
       queryFields
     );
+    return GraphqlResult(res);
+  },
+
+  /**
+   * If user is authenticated, deletes a Content item from the database.
+   * @param args - Argument object containing only the `id` of the Content to be deleted.
+   * @returns `id` of the deleted Todo.
+   */
+  deleteContent: async (_, args) => {
+    const res = await deleteContent(args.id);
     return GraphqlResult(res);
   },
 
