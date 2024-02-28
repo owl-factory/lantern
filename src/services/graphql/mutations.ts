@@ -5,6 +5,7 @@ import { database } from "lib/database";
 import { NewTodo } from "types/database";
 import { ErrGraphql, GraphqlResult, getQueryFields } from "utils/graphql";
 import { deleteUser, loginUser, logoutSession, signupUser } from "services/authentication";
+import { createContent } from "services/content";
 
 /**
  * GraphQL resolver map of all mutation resolvers. Used for GraphQL request that needs to write data.
@@ -59,6 +60,17 @@ export const mutations: MutationResolvers = {
    */
   deleteUser: async (_, args) => {
     const res = await deleteUser(args.id, args.username, args.deleteCookie || false);
+    return GraphqlResult(res);
+  },
+
+  /**
+   * If user is authenticated, creates a new Content item in the database.
+   * @param args - Fields that make up a Content database object, with some optional fields or fields with defaults potentially not included.
+   * @param info - GraphQL query info object that contains the list of requested fields to be returned.
+   * @returns newly created Content object filtered to requested fields.
+   */
+  createContent: async (_, args, _context, info) => {
+    const res = await createContent({ ...args, isDynamic: args.isDynamic || false }, info);
     return GraphqlResult(res);
   },
 

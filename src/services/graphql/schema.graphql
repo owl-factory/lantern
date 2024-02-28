@@ -1,6 +1,17 @@
 scalar JSONObject
 scalar DateTime
 
+enum Visibility {
+  friends
+  private
+  public
+}
+
+enum Group {
+  user
+  admin
+}
+
 type User {
   id: ID!
   createdAt: DateTime!
@@ -10,6 +21,7 @@ type User {
   isOrganization: Boolean!
   displayName: String
   iconUrl: String
+  groups: [Group]
 }
 
 type Session {
@@ -34,7 +46,7 @@ type Content {
   updatedAt: DateTime!
   isDynamic: Boolean!
   name: String!
-  visibility: String!
+  visibility: Visibility!
   data: JSONObject
   index1: String
   index2: String
@@ -70,5 +82,10 @@ type Mutation {
   createTodo(description: String, done: Boolean): Todo
   updateTodo(id: ID!, description: String, done: Boolean): Todo
   deleteTodo(id: ID!): ID!
-  createContent(name: String!, data: JSONObject, isDynamic: Boolean): Content
+  createContent(
+    name: String!
+    data: JSONObject
+    visibility: Visibility
+    isDynamic: Boolean
+  ): Content
 }

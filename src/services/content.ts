@@ -1,6 +1,6 @@
 import { authenticateSession } from "lib/authentication";
 import { database } from "lib/database";
-import type { SelectContent } from "types/database";
+import type { NewContent, SelectContent } from "types/database";
 import type { SelectFields } from "types/graphql";
 import { Err, Ok } from "utils/results";
 
@@ -14,7 +14,7 @@ export async function getContent(
   }
 
   const sessionUser = auth.data.user;
-  let dbContent: SelectContent | undefined;
+  let dbContent;
 
   try {
     dbContent = await database
@@ -47,7 +47,7 @@ export async function getAllContent(
   }
 
   const sessionUser = auth.data.user;
-  let dbContent: SelectContent[] | undefined;
+  let dbContent;
 
   try {
     dbContent = await database
@@ -64,4 +64,32 @@ export async function getAllContent(
     return Err(`Failed to fetch one or more content items you have access to from the database.`);
   }
   return Ok(dbContent);
+}
+
+export async function createContent(
+  content: PartialSome<NewContent, "ownerUserId">,
+  fields: SelectFields<"content">
+): Promise<Result<SelectContent>> {
+  const auth = await authenticateSession();
+  if (auth.ok === false) {
+    return auth;
+  }
+
+  const sessionUser = auth.data.user;
+  const newContent: NewContent = { ...content, ownerUserId: sessionUser.userId };
+  let newDbContent;
+
+  try {
+    newDbContent = await database
+      .insertInto("content")
+      .values(newContent)
+      .returning(fields)
+      .executeTakeFirst();
+  } catch (_error) {
+    newDbContent = undefined;
+  }
+  if (newDbContent === undefined) {
+    return Err(`Failed to create new item in the database.`);
+  }
+  return Ok(newDbContent);
 }

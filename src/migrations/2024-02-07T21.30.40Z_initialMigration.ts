@@ -58,7 +58,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("name", "text", (col) => col.notNull())
     .addColumn("ownerUserId", "uuid", (col) => col.notNull().references("user.id"))
     .addColumn("visibility", sql`visibility`, (col) => col.notNull().defaultTo("private"))
-    .addColumn("isDynamic", "boolean", (col) => col.notNull())
+    .addColumn("isDynamic", "boolean", (col) => col.notNull().defaultTo(true))
     .addColumn("data", "jsonb");
   for (let i = 1; i <= contentIndexCount; i++) {
     contentTableBuilder = contentTableBuilder.addColumn("index" + i, "text");
