@@ -1,4 +1,11 @@
+import { Attributes } from "features/dynamicRender/types/attributes";
 import { AttributeDefinition } from "features/dynamicRender/types/attributes/definition";
+import {
+  ExpressionDescriptor,
+  ExpressionType,
+  InvalidExpression,
+  PlainTextExpression,
+} from "features/dynamicRender/types/expression";
 import { ParsedNode } from "features/dynamicRender/types/render";
 import {
   canNodeHaveChildren,
@@ -51,7 +58,7 @@ function parseNodeChildren(childNodes: NodeListOf<ChildNode>): ParsedNode[] {
 function parseNodeChild(
   node: ChildNode,
   nodeTypeCount: Map<string, number>
-): ParsedNode<Record<string, string>> | undefined {
+): ParsedNode<Attributes> | undefined {
   const isUsableNode = checkIfUsableNode(node);
   if (!isUsableNode) return;
 
@@ -89,17 +96,25 @@ function parseNodeChild(
  * @param attributeDefinitions - The definition for the different valid attributes for this kind of node
  * @returns The attributes of a node
  */
-function parseAttributes(node: Node, attributeDefinitions: AttributeDefinition[]) {
-  if (node.nodeType !== Node.ELEMENT_NODE) return {};
+function parseAttributes(node: Node, attributeDefinitions: AttributeDefinition[]): Attributes {
+  if (typeof node !== "object") return {};
+
+  const isElementNode = node?.nodeType === Node.ELEMENT_NODE;
+  const isTextNode = node?.nodeType === Node.TEXT_NODE;
+  if (!isElementNode && !isTextNode) return {};
+
+  const attributes: Attributes = {};
+  if (isTextNode) {
+    const textContent = node.textContent ?? "";
+    attributes.textContent = parseAttributeExpression(textContent);
+    return attributes;
+  }
+
   if (!attributeDefinitions || attributeDefinitions.length === 0) return {};
 
   const element = node as Element;
-  const attributes: Record<string, string> = {};
-
   attributeDefinitions.forEach((definition: AttributeDefinition) => {
-    const name = definition.name;
-    const defaultValue = definition.default ?? undefined;
-    const value = element.getAttribute(name) ?? defaultValue;
+    const { name, value } = getAttributeValue(element, definition);
 
     if (value === undefined) return;
     attributes[name] = value;
@@ -107,8 +122,86 @@ function parseAttributes(node: Node, attributeDefinitions: AttributeDefinition[]
   return attributes;
 }
 
+/**
+ * Identifies and fetches an attribute.
+ * @param element - The element node containing the attributes
+ * @param definition - A single attribute definition
+ * @returns An object containing the attribute name and value.
+ */
+function getAttributeValue(element: Element, definition: AttributeDefinition) {
+  const name = definition.name;
+  const defaultValue = definition.default ?? undefined;
+  let value: ExpressionDescriptor | string | undefined = element.getAttribute(name) ?? defaultValue;
+  if (value && definition.supportsExpressions) value = parseAttributeExpression(value);
+  return { name, value };
+}
+
+/**
+ * Parses the given text for expression(s), creating an Expression Descriptor that
+ * identifies the variables used and the type of
+ * @param text - The text to parse into an ExpressionDescriptor
+ * @returns Returns an ExpressionDescriptor
+ */
+function parseAttributeExpression(text: string): ExpressionDescriptor {
+  if (typeof text !== "string")
+    return newInvalidExpression("Invalid value given to parseAttributeExpression");
+
+  const hasExpression = checkForExpression(text);
+  if (!hasExpression) {
+    const plainTextExpression: PlainTextExpression = {
+      value: text,
+      type: ExpressionType.PlainText,
+    };
+    return plainTextExpression;
+  }
+
+  return newInvalidExpression(
+    "Attributes requiring expression evaluation is not currently supported",
+    text
+  );
+}
+
+/**
+ * Creates a new invalid expression given the reason for failure and
+ * optionally the triggering expression
+ * @param why - The reason for why this is invalid
+ * @param text - The triggering text, if any
+ * @returns A new invalid expression
+ */
+function newInvalidExpression(why: string, text?: string): InvalidExpression {
+  const invalidExpression: InvalidExpression = {
+    type: ExpressionType.Invalid,
+    why,
+    value: text,
+  };
+  return invalidExpression;
+}
+
+/** Matches an expression at the start of the string */
+const STARTING_EXPRESSION_REGEX = /^\${.+}/;
+/** Matches an expression that occurs later and is not escaped by a leading backslash */
+const NONESCAPED_EXPRESSION_REGEX = /[^\\]\${.+}/;
+
+/**
+ * Checks for an expression within a given string
+ * @param text - The text to check for an expression
+ * @returns True if an expression is found. False otherwise
+ */
+function checkForExpression(text: string): boolean {
+  if (typeof text !== "string") return false;
+
+  const startsWithExpression = STARTING_EXPRESSION_REGEX.test(text);
+  if (startsWithExpression) return true;
+
+  const containsNonEscapedExpression = NONESCAPED_EXPRESSION_REGEX.test(text);
+  return containsNonEscapedExpression;
+}
+
 export const __testing__ = {
+  checkForExpression,
+  getAttributeValue,
   parseAttributes,
+  parseAttributeExpression,
   parseNodeChild,
   parseNodeChildren,
 };

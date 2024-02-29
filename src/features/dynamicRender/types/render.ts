@@ -1,3 +1,4 @@
+import { Attributes } from "features/dynamicRender/types/attributes";
 import { AttributeDefinition } from "features/dynamicRender/types/attributes/definition";
 import { NodeType } from "features/dynamicRender/types/node";
 import { ReactNode } from "react";
@@ -5,7 +6,7 @@ import { ReactNode } from "react";
 /**
  * The common props used within the Render Components
  */
-export type RenderComponentProps<T extends object = Record<string, string>> = Readonly<{
+export type RenderComponentProps<T extends Attributes = Attributes> = Readonly<{
   /** The name of the node for debugging reasons */
   nodeName: string;
   /** The type of node this is expected to be */
@@ -13,18 +14,18 @@ export type RenderComponentProps<T extends object = Record<string, string>> = Re
   /** The Node object from the Markup */
   node: Node;
   /** The parsed children of this component */
-  childNodes?: ParsedNode<Record<string, string>>[];
+  childNodes?: ParsedNode<Attributes>[];
   /** The attributes of a node */
   attributes: T;
 }>;
 
 /** The common shared between all Render Components */
-export type RenderComponent<T extends object = Record<string, string>> = (
+export type RenderComponent<T extends Attributes = Attributes> = (
   props: RenderComponentProps<T>
 ) => ReactNode;
 
 /** A bundle of like attributes for a RenderComponent */
-export type RenderComponentDefinition<T extends object = Record<string, string>> = {
+export type RenderComponentDefinition<T extends Attributes = Attributes> = {
   Component: RenderComponent<T>;
   nodeType: NodeType;
   /** True if this component supports children */
@@ -38,7 +39,7 @@ export type RenderComponentDefinition<T extends object = Record<string, string>>
 /**
  * A node parsed into an object for easier rendering
  */
-export type ParsedNode<T extends object = Record<string, string>> = {
+export type ParsedNode<T extends Attributes = Attributes> = {
   /** The unique component key for React */
   key: string;
   /** The component function to render this specific node */
