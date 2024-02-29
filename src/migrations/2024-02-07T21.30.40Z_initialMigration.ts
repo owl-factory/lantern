@@ -167,7 +167,7 @@ async function insertExampleData(db: Kysely<any>): Promise<void> {
   // content table
   const content = [
     {
-      name: "No name",
+      name: "TODO ITEM",
       id: "02d4ff74-8767-449e-9f87-8327090a2e6d",
       ownerUserId: "0cde4c19-3ec3-4e30-9540-939b45f74aa6",
       visibility: "public",
@@ -178,13 +178,24 @@ async function insertExampleData(db: Kysely<any>): Promise<void> {
       },
     },
     {
-      name: "No name",
+      name: "TODO ITEM",
       id: "99302d6d-9765-45d5-ac3d-34524b736282",
       ownerUserId: "0cde4c19-3ec3-4e30-9540-939b45f74aa6",
       visibility: "public",
       isDynamic: true,
       data: {
-        description: "Complete Lantern",
+        description: "Complete Lantern Tabletop project",
+        done: false,
+      },
+    },
+    {
+      name: "TODO ITEM",
+      id: "835f50d2-e05d-424b-9efd-84cef3117ca3",
+      ownerUserId: "0cde4c19-3ec3-4e30-9540-939b45f74aa6",
+      visibility: "public",
+      isDynamic: true,
+      data: {
+        description: "Buy butts at the store",
         done: false,
       },
     },
