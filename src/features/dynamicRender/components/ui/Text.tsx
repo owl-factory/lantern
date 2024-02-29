@@ -11,7 +11,7 @@ type TextAttributes = { textContent: ExpressionDescriptor };
 const attributeDefinitions: AttributeDefinition[] = [];
 
 /**
- * Renders a group of Pages that can be shown one at a time
+ * Renders text content
  */
 export function Text(props: RenderComponentProps<TextAttributes>) {
   const textContent = useExpression(props.attributes.textContent);

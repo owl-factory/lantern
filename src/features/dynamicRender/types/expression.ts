@@ -1,3 +1,4 @@
+/** Describes an expression and how to evaluate it */
 export type ExpressionDescriptor = InvalidExpression | PlainTextExpression;
 
 /** Describes an Invalid Expression, the given value and the reason why it fails */
