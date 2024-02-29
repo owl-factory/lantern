@@ -2,6 +2,7 @@ import { authenticateSession } from "lib/authentication";
 import { database } from "lib/database";
 import type { ContentUpdate, NewContent, SelectContent } from "types/database";
 import type { SelectFields } from "types/graphql";
+import { UpdateTimestamp } from "utils/database";
 import { Err, Ok } from "utils/results";
 
 export async function getContent(
@@ -116,7 +117,7 @@ export async function updateContent(
     updatedDbContent = await database
       .updateTable("content")
       .where((eb) => eb.and([eb("id", "=", id), eb("ownerUserId", "=", sessionUser.userId)]))
-      .set(content)
+      .set(UpdateTimestamp(content))
       .returning(fields)
       .executeTakeFirst();
   } catch (_error) {

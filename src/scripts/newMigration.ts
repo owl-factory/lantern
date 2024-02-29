@@ -1,4 +1,5 @@
 import { writeFileSync } from "fs";
+import { Now } from "utils/database";
 
 const template = `import { Kysely, sql } from "kysely";
 
@@ -22,7 +23,7 @@ function newMigration(migrationName: string) {
   const fileName = migrationName.endsWith(".ts") ? migrationName : migrationName + ".ts";
   // Create an ISO datetime string with the milliseconds portion removed and all
   // colons ':' replaced with periods '.'. This is because colons are illegal in windows filenames.
-  const nowIso = new Date(Date.now()).toISOString().replaceAll(":", ".").slice(0, -5) + "Z";
+  const nowIso = Now().toISOString().replaceAll(":", ".").slice(0, -5) + "Z";
   writeFileSync(`src/migrations/${nowIso}_${fileName}`, template);
 }
 
