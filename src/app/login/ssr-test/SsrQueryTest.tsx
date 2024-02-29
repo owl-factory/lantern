@@ -3,26 +3,36 @@
 import { graphql } from "lib/graphql";
 import { useQuery } from "urql";
 
-const todosQuery = graphql(`
-  query Todos {
-    todos {
-      description
-      done
+const contentQuery = graphql(`
+  query Content {
+    allContent {
       id
+      name
+      data
     }
   }
 `);
 
 export function SsrQueryTest() {
-  const [{ data }] = useQuery({ query: todosQuery });
-  const todos = data?.todos;
+  const [{ data, error }] = useQuery({ query: contentQuery });
+  console.log(data, error);
+  let todosDisplay;
+  if (data?.allContent) {
+    todosDisplay = data.allContent
+      .filter((x) => x !== null && x.data !== null && x.data.name !== "TODO ITEM")
+      .map(({ id, data }) => (
+        <ListItem
+          key={id}
+          todo={{
+            description: content?.data?.description ?? "",
+            done: content?.data?.done ?? false,
+          }}
+        />
+      ));
+  }
 
-  return todos ? (
-    <ul className="items-start mt-4 mb-16">
-      {todos.map((todo) => (
-        <ListItem key={todo.id} todo={{ description: todo.description ?? "", done: todo.done }} />
-      ))}
-    </ul>
+  return todosDisplay ? (
+    <ul className="items-start mt-4 mb-16">{todosDisplay}</ul>
   ) : (
     <h3 className="text-red-500 text-lg">Not Logged In</h3>
   );
