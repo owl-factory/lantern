@@ -20,7 +20,7 @@ export function SsrQueryTest() {
   return todos ? (
     <ul className="items-start mt-4 mb-16">
       {todos.map((todo) => (
-        <ListItem key={todo.id} todo={{ description: todo.description || "", done: todo.done }} />
+        <ListItem key={todo.id} todo={{ description: todo.description ?? "", done: todo.done }} />
       ))}
     </ul>
   ) : (

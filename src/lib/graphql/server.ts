@@ -2,7 +2,7 @@ import { createSchema, createYoga } from "graphql-yoga";
 import { resolvers } from "services/graphql/resolvers";
 import { graphqlUrl } from "utils/environment";
 
-const typeDefs = process.env.GRAPHQL_TYPEDEFS || "";
+const typeDefs = process.env.GRAPHQL_TYPEDEFS ?? "";
 
 export const schema = createSchema({
   typeDefs,

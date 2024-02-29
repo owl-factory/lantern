@@ -1,6 +1,6 @@
 import { authenticateSession } from "lib/authentication";
 import { database } from "lib/database";
-import type { NewContent, SelectContent } from "types/database";
+import type { ContentUpdate, NewContent, SelectContent } from "types/database";
 import type { SelectFields } from "types/graphql";
 import { Err, Ok } from "utils/results";
 
@@ -92,6 +92,42 @@ export async function createContent(
     return Err("Failed to create new item in the database.");
   }
   return Ok(newDbContent);
+}
+
+export async function updateContent(
+  id: string,
+  content: PartialSome<ContentUpdate, "ownerUserId">,
+  fields: SelectFields<"content">
+): Promise<Result<SelectContent>> {
+  const auth = await authenticateSession();
+  if (auth.ok === false) {
+    return auth;
+  }
+  if (content.id !== null && content.id !== undefined && content.id !== id) {
+    return Err(
+      `Content update object contains an ID that does not match the ID of the content to be updated.`
+    );
+  }
+
+  const sessionUser = auth.data.user;
+  let updatedDbContent;
+
+  try {
+    updatedDbContent = await database
+      .updateTable("content")
+      .where((eb) => eb.and([eb("id", "=", id), eb("ownerUserId", "=", sessionUser.userId)]))
+      .set(content)
+      .returning(fields)
+      .executeTakeFirst();
+  } catch (_error) {
+    updatedDbContent = undefined;
+  }
+  if (updatedDbContent === undefined) {
+    return Err(
+      `Failed to update content item with ID "${content.id}" from the database. It either does not exist or you lack permission to delete it.`
+    );
+  }
+  return Ok(updatedDbContent);
 }
 
 export async function deleteContent(id: string): Promise<Result<string>> {

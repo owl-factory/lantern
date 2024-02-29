@@ -80,13 +80,20 @@ type Mutation {
   logout(deleteCookie: Boolean = false): String!
   deleteUser(id: ID!, username: String!, deleteCookie: Boolean = false): String!
   createTodo(description: String, done: Boolean = false): Todo
-  updateTodo(id: ID!, description: String, done: Boolean = false): Todo
+  updateTodo(id: ID!, description: String, done: Boolean): Todo
   deleteTodo(id: ID!): ID!
   createContent(
     name: String!
     data: JSONObject
     visibility: Visibility
     isDynamic: Boolean = true
+  ): Content
+  updateContent(
+    id: ID!
+    name: String
+    data: JSONObject
+    visibility: Visibility
+    isDynamic: Boolean
   ): Content
   deleteContent(id: ID!): ID!
 }

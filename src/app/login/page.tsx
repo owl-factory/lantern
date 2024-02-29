@@ -158,8 +158,8 @@ function LoggedOutSection() {
     "use server";
     const client = getServerClient();
     await client.mutation(loginMutation, {
-      username: formData.get("username")?.toString() || "",
-      password: formData.get("password")?.toString() || "",
+      username: formData.get("username")?.toString() ?? "",
+      password: formData.get("password")?.toString() ?? "",
     });
   }
 

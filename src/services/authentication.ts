@@ -30,7 +30,7 @@ export async function signupUser(
     attributes: {
       email: email,
       username: username,
-      display_name: displayName || undefined,
+      display_name: displayName ?? undefined,
     } as never,
   });
 

@@ -5,7 +5,7 @@ import { database } from "lib/database";
 import { NewTodo } from "types/database";
 import { ErrGraphql, GraphqlResult, getQueryFields } from "utils/graphql";
 import { deleteUser, loginUser, logoutSession, signupUser } from "services/authentication";
-import { createContent, deleteContent } from "services/content";
+import { createContent, deleteContent, updateContent } from "services/content";
 
 /**
  * GraphQL resolver map of all mutation resolvers. Used for GraphQL request that needs to write data.
@@ -25,7 +25,7 @@ export const mutations: MutationResolvers = {
       args.password,
       args.logIn,
       args.setCookie,
-      args.displayName || undefined
+      args.displayName ?? undefined
     );
     return GraphqlResult(res);
   },
@@ -74,6 +74,24 @@ export const mutations: MutationResolvers = {
       { ...args, visibility: args.visibility ?? undefined },
       queryFields
     );
+    return GraphqlResult(res);
+  },
+
+  /**
+   * If user is authenticated, creates a new Content item in the database.
+   * @param args - Object with the `id` of a Content item to update and the fields to be updated.
+   * @param info - GraphQL query info object that contains the list of requested fields to be returned.
+   * @returns modified Content object from database filtered to requested fields.
+   */
+  updateContent: async (_, args, _context, info) => {
+    const contentUpdate = {
+      name: args.name ?? undefined,
+      data: args.data ?? undefined,
+      visibility: args.visibility ?? undefined,
+      isDynamic: args.isDynamic ?? undefined,
+    };
+    const queryFields = getQueryFields<"content">(info);
+    const res = await updateContent(args.id, contentUpdate, queryFields);
     return GraphqlResult(res);
   },
 

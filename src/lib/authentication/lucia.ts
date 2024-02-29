@@ -34,8 +34,8 @@ export const luciaAuth = lucia({
     return {
       username: dbUser.username,
       email: dbUser.email,
-      displayName: dbUser.display_name || undefined,
-      iconUrl: dbUser.icon_url || undefined,
+      displayName: dbUser.display_name ?? undefined,
+      iconUrl: dbUser.icon_url ?? undefined,
       createdAt: dbUser.created_at,
       updatedAt: dbUser.updated_at,
       isOrganization: dbUser.is_organization,
