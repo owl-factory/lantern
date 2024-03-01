@@ -6,6 +6,7 @@ jest.mock("features/dynamicRender/utils/registry");
 
 const {
   checkForExpression,
+  extractIndividualExpressions,
   getAttributeValue,
   parseAttributes,
   parseAttributeExpression,
@@ -177,5 +178,26 @@ describe("checkForExpression tests", () => {
   it("has no expression", () => {
     const result = checkForExpression("I'm afraid you are... expressionless");
     expect(result).toBe(false);
+  });
+});
+
+describe("extractIndividualExpressions tests", () => {
+  it("handles non-text argument", () => {
+    const res = extractIndividualExpressions(undefined as unknown as string);
+    expect(res).toStrictEqual([]);
+  });
+
+  it("gets leading expression contents", () => {
+    const contents = "1 + 1";
+    const mock = "${" + contents + "}";
+    const res = extractIndividualExpressions(mock);
+    expect(res).toStrictEqual([contents]);
+  });
+
+  it("gets expressions within the text", () => {
+    const contents = "1 + 1";
+    const mock = "The answer is: ${" + contents + "}";
+    const res = extractIndividualExpressions(mock);
+    expect(res).toStrictEqual([contents]);
   });
 });

@@ -155,6 +155,9 @@ function parseAttributeExpression(text: string): ExpressionDescriptor {
     return plainTextExpression;
   }
 
+  const individualExpressions = extractIndividualExpressions(text);
+  //
+
   return newInvalidExpression(
     "Attributes requiring expression evaluation is not currently supported",
     text
@@ -178,9 +181,9 @@ function newInvalidExpression(why: string, text?: string): InvalidExpression {
 }
 
 /** Matches an expression at the start of the string */
-const STARTING_EXPRESSION_REGEX = /^\${.+}/;
+const STARTING_EXPRESSION_REGEX = /^\${(.+)}/;
 /** Matches an expression that occurs later and is not escaped by a leading backslash */
-const NONESCAPED_EXPRESSION_REGEX = /[^\\]\${.+}/;
+const NONESCAPED_EXPRESSION_REGEX = /[^\\]\${(.+)}/;
 
 /**
  * Checks for an expression within a given string
@@ -197,8 +200,25 @@ function checkForExpression(text: string): boolean {
   return containsNonEscapedExpression;
 }
 
+function extractIndividualExpressions(text: string): string[] {
+  if (typeof text !== "string") return [];
+  const leadingMatches = [...text.matchAll(new RegExp(STARTING_EXPRESSION_REGEX, "g"))];
+  const nonEscapedMatches = [...text.matchAll(new RegExp(NONESCAPED_EXPRESSION_REGEX, "g"))];
+
+  const matches = [...leadingMatches, ...nonEscapedMatches];
+  return matches.map((match) => match[1] ?? undefined).filter((match) => match !== undefined);
+}
+
+function checkIfExpressionIsComplex(text: string): boolean {
+  if (typeof text !== "string") return false;
+  return true;
+  // Grab the contents of the [], if any
+  // Check for quotes
+}
+
 export const __testing__ = {
   checkForExpression,
+  extractIndividualExpressions,
   getAttributeValue,
   parseAttributes,
   parseAttributeExpression,
