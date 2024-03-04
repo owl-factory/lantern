@@ -34,12 +34,6 @@ type Session {
   isApiKey: Boolean!
 }
 
-type Todo {
-  id: ID!
-  description: String
-  done: Boolean!
-}
-
 type Content {
   id: ID!
   createdAt: DateTime!
@@ -61,8 +55,6 @@ type Content {
 
 type Query {
   session: Session!
-  todo(id: ID!): Todo!
-  todos: [Todo!]!
   content(id: ID!): Content!
   allContent: [Content]!
 }
@@ -79,9 +71,6 @@ type Mutation {
   login(username: String!, password: String!, setCookie: Boolean = false): String!
   logout(deleteCookie: Boolean = false): String!
   deleteUser(id: ID!, username: String!, deleteCookie: Boolean = false): String!
-  createTodo(description: String, done: Boolean = false): Todo
-  updateTodo(id: ID!, description: String, done: Boolean): Todo
-  deleteTodo(id: ID!): ID!
   createContent(
     name: String!
     data: JSONObject

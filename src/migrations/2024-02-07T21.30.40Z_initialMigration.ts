@@ -64,15 +64,6 @@ export async function up(db: Kysely<any>): Promise<void> {
     contentTableBuilder = contentTableBuilder.addColumn("index" + i, "text");
   }
   contentTableBuilder.execute();
-
-  // TODO get rid of this table and associated resolvers and frontend
-  await db.schema
-    .createTable("todo")
-    .addBaseColumns()
-    .addColumn("ownerUserId", "uuid", (col) => col.notNull().references("user.id"))
-    .addColumn("description", "text")
-    .addColumn("done", "boolean", (col) => col.notNull().defaultTo(false))
-    .execute();
   /* End Primary Tables */
 
   /* Relationship Tables */
@@ -90,7 +81,6 @@ export async function up(db: Kysely<any>): Promise<void> {
 export async function down(db: Kysely<any>): Promise<void> {
   await db.schema.dropTable("key").execute();
   await db.schema.dropTable("session").execute();
-  await db.schema.dropTable("todo").execute();
   await db.schema.dropTable("content").execute();
   await db.schema.dropTable("user").execute();
 
@@ -146,23 +136,6 @@ async function insertExampleData(db: Kysely<any>): Promise<void> {
     };
     await db.insertInto("session").values(session).execute();
   }
-
-  // todo table
-  const todos = [
-    {
-      id: "57cc22f8-b4d5-44cb-a473-97b69911b9a0",
-      ownerUserId: "0cde4c19-3ec3-4e30-9540-939b45f74aa6",
-      description: "Kiss girls",
-      done: true,
-    },
-    {
-      id: "9a1b9592-ac20-4141-b18b-982b26c0bea7",
-      ownerUserId: "0cde4c19-3ec3-4e30-9540-939b45f74aa6",
-      description: "Complete Lantern",
-      done: false,
-    },
-  ];
-  await db.insertInto("todo").values(todos).execute();
 
   // content table
   const content = [

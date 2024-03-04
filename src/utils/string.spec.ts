@@ -36,7 +36,7 @@ describe("isExternalUrl tests", () => {
     { url: "https://lanterntt.com/api/graphql", expected: true },
     { url: "/api/graphql", expected: true },
     { url: "/api/ping", expected: true },
-    { url: "/api/todo/7ba4227c-0e04-4438-a5a9-5a595e6cb1c7", expected: true },
+    { url: "/api/content/7ba4227c-0e04-4438-a5a9-5a595e6cb1c7", expected: true },
     { url: "https://google.com", expected: true },
     { url: "https://en.wikipedia.org/wiki/Unit_testing", expected: true },
     { url: "https://github.com/owl-factory/lantern", expected: true },

@@ -1,9 +1,6 @@
 /* eslint-disable no-restricted-syntax */
-import type { MutationResolvers, Todo } from "types/graphql";
-import { authenticateSession } from "lib/authentication";
-import { database } from "lib/database";
-import { NewTodo } from "types/database";
-import { ErrGraphql, GraphqlResult, getQueryFields } from "utils/graphql";
+import type { MutationResolvers } from "types/graphql";
+import { GraphqlResult, getQueryFields } from "utils/graphql";
 import { deleteUser, loginUser, logoutSession, signupUser } from "services/authentication";
 import { createContent, deleteContent, updateContent } from "services/content";
 
@@ -98,74 +95,10 @@ export const mutations: MutationResolvers = {
   /**
    * If user is authenticated, deletes a Content item from the database.
    * @param args - Argument object containing only the `id` of the Content to be deleted.
-   * @returns `id` of the deleted Todo.
+   * @returns `id` of the deleted Content.
    */
   deleteContent: async (_, args) => {
     const res = await deleteContent(args.id);
     return GraphqlResult(res);
-  },
-
-  /**
-   * If user is authenticated, creates a new Todo item in the database.
-   * @param args - Fields that make up a Todo database object, with some optional fields potentially not included.
-   * @param info - GraphQL query info object that contains the list of requested fields to be returned.
-   * @returns newly created Todo object filtered to requested fields.
-   */
-  createTodo: async (_, args, _context, info) => {
-    const auth = await authenticateSession();
-    if (auth.ok === false) {
-      return ErrGraphql(auth);
-    }
-    const queryFields = getQueryFields<"todo">(info);
-    const newTodo = database
-      .insertInto("todo")
-      .values(args as NewTodo)
-      .returning(queryFields)
-      .executeTakeFirst();
-    return newTodo as Promise<Todo>;
-  },
-
-  /**
-   * If user is authenticated, updates a Todo item in the database.
-   * @param args - Fields that make up a Todo database object, with some optional fields potentially not included, but `id` is strictly required.
-   * @param info - GraphQL query info object that contains the list of requested fields to be returned.
-   * @returns updated Todo object filtered to requested fields.
-   */
-  updateTodo: async (_, args, _context, info) => {
-    const auth = await authenticateSession();
-    if (auth.ok === false) {
-      return ErrGraphql(auth);
-    }
-    const queryFields = getQueryFields<"todo">(info);
-    const updatedTodo = database
-      .updateTable("todo")
-      .where("id", "=", args.id as string)
-      .set(args as NewTodo)
-      .returning(queryFields)
-      .executeTakeFirst();
-    return updatedTodo as Promise<Todo>;
-  },
-
-  /**
-   * If user is authenticated, deletes a Todo item in the database.
-   * @param args - Argument object containing only the `id` of the Todo to be deleted.
-   * @param info - GraphQL query info object that contains the list of requested fields to be returned.
-   * @returns `id` of the deleted Todo.
-   */
-  deleteTodo: async (_, args) => {
-    const auth = await authenticateSession();
-    if (auth.ok === false) {
-      return ErrGraphql(auth);
-    }
-    const deleted = await database
-      .deleteFrom("todo")
-      .where("id", "=", args.id)
-      .returning("id")
-      .executeTakeFirst();
-    if (deleted !== undefined) {
-      return deleted.id;
-    } else {
-      return ErrGraphql(`Item with ID '${args.id}' not found in database.`);
-    }
   },
 };
