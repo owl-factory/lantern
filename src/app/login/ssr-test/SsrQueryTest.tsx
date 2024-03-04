@@ -14,28 +14,27 @@ const contentQuery = graphql(`
 `);
 
 export function SsrQueryTest() {
-  const [{ data, error }] = useQuery({ query: contentQuery });
-  console.log(data, error);
-  let todosDisplay;
-  if (data?.allContent) {
-    todosDisplay = data.allContent
-      .filter((x) => x !== null && x.data !== null && x.data.name !== "TODO ITEM")
-      .map(({ id, data }) => (
-        <ListItem
-          key={id}
-          todo={{
-            description: content?.data?.description ?? "",
-            done: content?.data?.done ?? false,
-          }}
-        />
-      ));
+  const [{ data }] = useQuery({ query: contentQuery });
+  if (!data?.allContent) {
+    return <h3 className="text-red-500 text-lg">Not Logged In</h3>;
   }
 
-  return todosDisplay ? (
-    <ul className="items-start mt-4 mb-16">{todosDisplay}</ul>
-  ) : (
-    <h3 className="text-red-500 text-lg">Not Logged In</h3>
-  );
+  const todosDisplay: JSX.Element[] = [];
+  for (const content of data.allContent) {
+    if (content !== null && content.data !== null && content.data.name !== "TODO ITEM") {
+      const data = content.data as unknown as { description?: string; done?: boolean };
+      todosDisplay.push(
+        <ListItem
+          key={content.id}
+          todo={{
+            description: data.description ?? "",
+            done: data.done ?? false,
+          }}
+        />
+      );
+    }
+  }
+  return <ul className="items-start mt-4 mb-16">{todosDisplay}</ul>;
 }
 
 function ListItem({ todo }: { todo: { description: string; done: boolean } }) {
