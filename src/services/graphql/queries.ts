@@ -2,7 +2,7 @@
 import type { QueryResolvers, Session } from "types/graphql";
 import { authenticateSession } from "lib/authentication";
 import { ErrGraphql, GraphqlResult, getQueryFields } from "utils/graphql";
-import { getContent, getAllContent } from "services/content";
+import { getContent, getContentSet } from "services/content";
 
 /**
  * GraphQL resolver map of all query resolvers. Used for GraphQL request that needs to read data.
@@ -48,9 +48,9 @@ export const queries: QueryResolvers = {
    * @param info - GraphQL query info object that contains the list of requested fields to be returned.
    * @returns requested Content item.
    */
-  allContent: async (_, _args, _context, info) => {
+  contentSet: async (_, args, _context, info) => {
     const queryFields = getQueryFields<"content">(info);
-    const content = await getAllContent(queryFields);
+    const content = await getContentSet(queryFields, args.contentTypeId ?? undefined);
     return GraphqlResult(content);
   },
 };

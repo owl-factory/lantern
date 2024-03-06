@@ -11,7 +11,10 @@ import "utils/kyselyExtensions";
 export async function up(db: Kysely<any>): Promise<void> {
   /* Enum Definitions */
   await db.schema.createType("group").asEnum(["admin", "user"]).execute();
-  await db.schema.createType("visibility").asEnum(["public", "private", "friends"]).execute();
+  await db.schema
+    .createType("visibility")
+    .asEnum(["public", "friends", "limited", "private"])
+    .execute();
   /* End Enum Definitions */
 
   /* Authentication Tables */
@@ -51,6 +54,15 @@ export async function up(db: Kysely<any>): Promise<void> {
   /* End Authentication Tables */
 
   /* Primary Tables */
+  // contentType table
+  await db.schema
+    .createTable("contentType")
+    .addBaseColumns()
+    .addColumn("name", "text", (col) => col.notNull())
+    .addColumn("ownerUserId", "uuid", (col) => col.notNull().references("user.id"))
+    .addColumn("visibility", sql`visibility`, (col) => col.notNull().defaultTo("private"))
+    .execute();
+
   // content table
   let contentTableBuilder = db.schema
     .createTable("content")
@@ -59,6 +71,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("ownerUserId", "uuid", (col) => col.notNull().references("user.id"))
     .addColumn("visibility", sql`visibility`, (col) => col.notNull().defaultTo("private"))
     .addColumn("isDynamic", "boolean", (col) => col.notNull().defaultTo(true))
+    .addColumn("contentTypeId", "uuid", (col) => col.references("contentType.id"))
     .addColumn("data", "jsonb");
   for (let i = 1; i <= contentIndexCount; i++) {
     contentTableBuilder = contentTableBuilder.addColumn("index" + i, "text");
@@ -82,6 +95,7 @@ export async function down(db: Kysely<any>): Promise<void> {
   await db.schema.dropTable("key").execute();
   await db.schema.dropTable("session").execute();
   await db.schema.dropTable("content").execute();
+  await db.schema.dropTable("contentType").execute();
   await db.schema.dropTable("user").execute();
 
   await db.schema.dropType("visibility").execute();
@@ -137,39 +151,68 @@ async function insertExampleData(db: Kysely<any>): Promise<void> {
     await db.insertInto("session").values(session).execute();
   }
 
-  // content table
+  // contentType table data
+  const todoContentType = {
+    name: "Todo List Item",
+    id: "904c33ee-f41c-4227-8192-16c41dbc206f",
+    ownerUserId: "0cde4c19-3ec3-4e30-9540-939b45f74aa6",
+    visibility: "public",
+  };
+  await db.insertInto("contentType").values(todoContentType).execute();
+
+  // content table data
   const content = [
     {
-      name: "TODO ITEM",
+      name: "Kiss girls",
       id: "02d4ff74-8767-449e-9f87-8327090a2e6d",
       ownerUserId: "0cde4c19-3ec3-4e30-9540-939b45f74aa6",
       visibility: "public",
-      isDynamic: true,
+      contentTypeId: "904c33ee-f41c-4227-8192-16c41dbc206f",
       data: {
         description: "Kiss girls",
         done: true,
       },
     },
     {
-      name: "TODO ITEM",
+      name: "Complete Lantern Tabletop project",
       id: "99302d6d-9765-45d5-ac3d-34524b736282",
       ownerUserId: "0cde4c19-3ec3-4e30-9540-939b45f74aa6",
       visibility: "public",
-      isDynamic: true,
+      contentTypeId: "904c33ee-f41c-4227-8192-16c41dbc206f",
       data: {
         description: "Complete Lantern Tabletop project",
         done: false,
       },
     },
     {
-      name: "TODO ITEM",
+      name: "Buy butts at the store",
       id: "835f50d2-e05d-424b-9efd-84cef3117ca3",
       ownerUserId: "0cde4c19-3ec3-4e30-9540-939b45f74aa6",
       visibility: "public",
-      isDynamic: true,
+      contentTypeId: "904c33ee-f41c-4227-8192-16c41dbc206f",
       data: {
         description: "Buy butts at the store",
         done: false,
+      },
+    },
+    {
+      name: "Lucina",
+      id: "76256d0a-7cb7-4d14-8cdc-a4e08300e3eb",
+      ownerUserId: "0cde4c19-3ec3-4e30-9540-939b45f74aa6",
+      visibility: "public",
+      data: {
+        purpose:
+          "This content exists to showcase that we can properly filter content by Content Type.",
+        level: "8",
+        hp: "27",
+        strength: "9",
+        magic: "2",
+        skill: "12",
+        speed: "10",
+        luck: "11",
+        defense: "8",
+        resistance: "4",
+        move: "5",
       },
     },
   ];

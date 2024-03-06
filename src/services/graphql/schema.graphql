@@ -2,9 +2,10 @@ scalar JSONObject
 scalar DateTime
 
 enum Visibility {
-  friends
-  private
   public
+  friends
+  limited
+  private
 }
 
 enum Group {
@@ -56,7 +57,7 @@ type Content {
 type Query {
   session: Session!
   content(id: ID!): Content!
-  allContent: [Content]!
+  contentSet(contentTypeId: ID): [Content]!
 }
 
 type Mutation {

@@ -39,8 +39,9 @@ export async function getContent(
   return Ok(dbContent);
 }
 
-export async function getAllContent(
-  fields: SelectFields<"content">
+export async function getContentSet(
+  fields: SelectFields<"content">,
+  contentTypeId?: string
 ): Promise<Result<SelectContent[]>> {
   const auth = await authenticateSession();
   if (auth.ok === false) {
@@ -51,8 +52,13 @@ export async function getAllContent(
   let dbContent;
 
   try {
-    dbContent = await database
-      .selectFrom("content")
+    let query = database.selectFrom("content");
+
+    if (contentTypeId) {
+      query = query.where("contentTypeId", "=", contentTypeId);
+    }
+
+    dbContent = await query
       .where((eb) =>
         eb.or([eb("visibility", "=", "public"), eb("ownerUserId", "=", sessionUser.userId)])
       )
