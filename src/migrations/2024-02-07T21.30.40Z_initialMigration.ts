@@ -109,36 +109,37 @@ export async function down(db: Kysely<any>): Promise<void> {
  * current state after the typescript schema changes.
  */
 async function insertExampleData(db: Kysely<any>): Promise<void> {
-  // Create development only auth/user data
+  // TODO pull this from an environment variable
+  const defaultUserHash =
+    "s2:xxsitlyvxxdy1tq3:05ad00259571361edadc01a5699b095b805368fbcafc283ea4631ba9adcbe4d6ec2fb9ebda3614631b1d533fcd94998832fdc2cf08f08a37a409e8a5abfbaebf";
+  // user table
+  const userId = "0cde4c19-3ec3-4e30-9540-939b45f74aa6";
+  const user = {
+    id: userId,
+    username: "lanterndev",
+    email: "dev@lanterntt.com",
+    displayName: "Lantern Developer",
+    iconUrl: "https://lanterntt.com/images/cute-anime-girl-pfp.png",
+  };
+  await db.insertInto("user").values(user).execute();
+
+  // key table
+  const keys = [
+    {
+      id: "username:lanterndev",
+      userId: userId,
+      hashedPassword: defaultUserHash,
+    },
+    {
+      id: "email:dev@lanterntt.com",
+      userId: userId,
+      hashedPassword: defaultUserHash,
+    },
+  ];
+  await db.insertInto("key").values(keys).execute();
+
+  // Only create extra long lived session for unit e2e testing in development.
   if (process.env.NODE_ENV === "development") {
-    // user table
-    const userId = "0cde4c19-3ec3-4e30-9540-939b45f74aa6";
-    const user = {
-      id: userId,
-      username: "lanterndev",
-      email: "dev@lanterntt.com",
-      displayName: "Lantern Developer",
-      iconUrl: "https://lanterntt.com/images/cute-anime-girl-pfp.png",
-    };
-    await db.insertInto("user").values(user).execute();
-
-    // key table
-    const keys = [
-      {
-        id: "username:lanterndev",
-        userId: userId,
-        hashedPassword:
-          "s2:qqk4kyzx4m4cdoei:6600f0ecdb9006cf009c457aa08160b82739827b1f567bb5c6d08525442eb1716461d2d96b79e71428a556fd05635649b436928df92ae97d59889e295b65e58d",
-      },
-      {
-        id: "email:dev@lanterntt.com",
-        userId: userId,
-        hashedPassword:
-          "s2:xxsitlyvxxdy1tq3:05ad00259571361edadc01a5699b095b805368fbcafc283ea4631ba9adcbe4d6ec2fb9ebda3614631b1d533fcd94998832fdc2cf08f08a37a409e8a5abfbaebf",
-      },
-    ];
-    await db.insertInto("key").values(keys).execute();
-
     // session table - create long lived session for use as testing session
     const session = {
       id: process.env.TEST_AUTH_TOKEN,
@@ -155,7 +156,7 @@ async function insertExampleData(db: Kysely<any>): Promise<void> {
   const todoContentType = {
     name: "Todo List Item",
     id: "904c33ee-f41c-4227-8192-16c41dbc206f",
-    ownerUserId: "0cde4c19-3ec3-4e30-9540-939b45f74aa6",
+    ownerUserId: userId,
     visibility: "public",
   };
   await db.insertInto("contentType").values(todoContentType).execute();
@@ -165,7 +166,7 @@ async function insertExampleData(db: Kysely<any>): Promise<void> {
     {
       name: "Kiss girls",
       id: "02d4ff74-8767-449e-9f87-8327090a2e6d",
-      ownerUserId: "0cde4c19-3ec3-4e30-9540-939b45f74aa6",
+      ownerUserId: userId,
       visibility: "public",
       contentTypeId: "904c33ee-f41c-4227-8192-16c41dbc206f",
       data: {
@@ -176,7 +177,7 @@ async function insertExampleData(db: Kysely<any>): Promise<void> {
     {
       name: "Complete Lantern Tabletop project",
       id: "99302d6d-9765-45d5-ac3d-34524b736282",
-      ownerUserId: "0cde4c19-3ec3-4e30-9540-939b45f74aa6",
+      ownerUserId: userId,
       visibility: "public",
       contentTypeId: "904c33ee-f41c-4227-8192-16c41dbc206f",
       data: {
@@ -187,7 +188,7 @@ async function insertExampleData(db: Kysely<any>): Promise<void> {
     {
       name: "Buy butts at the store",
       id: "835f50d2-e05d-424b-9efd-84cef3117ca3",
-      ownerUserId: "0cde4c19-3ec3-4e30-9540-939b45f74aa6",
+      ownerUserId: userId,
       visibility: "public",
       contentTypeId: "904c33ee-f41c-4227-8192-16c41dbc206f",
       data: {
@@ -198,7 +199,7 @@ async function insertExampleData(db: Kysely<any>): Promise<void> {
     {
       name: "Lucina",
       id: "76256d0a-7cb7-4d14-8cdc-a4e08300e3eb",
-      ownerUserId: "0cde4c19-3ec3-4e30-9540-939b45f74aa6",
+      ownerUserId: userId,
       visibility: "public",
       data: {
         purpose:
