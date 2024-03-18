@@ -39,3 +39,7 @@ export const absoluteGraphqlUrl = !apiIsRemote ? baseUrl + graphqlUrl : remoteAp
  * Number of index columns in the content table.
  */
 export const contentIndexCount = 9;
+
+export const buildGitCommit = process.env.NEXT_PUBLIC_BUILD_GIT_COMMIT;
+
+export const buildTimestamp = process.env.NEXT_PUBLIC_BUILD_TIMESTAMP;
