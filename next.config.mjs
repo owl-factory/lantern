@@ -1,5 +1,6 @@
 import withSerwistInit from "@serwist/next";
 import { readFileSync } from "fs";
+import { getGitCommitId } from "./src/utils/config.mjs";
 
 const withSerwist = withSerwistInit({
   cacheOnFrontEndNav: true,
@@ -24,17 +25,6 @@ function getGraphqlTypedefs() {
   return readFileSync("./src/services/graphql/schema.graphql", {
     encoding: "utf8",
   });
-}
-
-function getGitCommitId() {
-  const revision = readFileSync(".git/HEAD").toString().trim();
-  if (revision.indexOf(":") === -1) {
-    return revision;
-  } else {
-    return readFileSync(".git/" + revision.substring(5))
-      .toString()
-      .trim();
-  }
 }
 
 function getIsoTimestamp() {
