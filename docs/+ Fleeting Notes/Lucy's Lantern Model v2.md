@@ -4,63 +4,63 @@
 // User and Auth Model
 type UserTable = {
   id: string;
-  created_at: Date;
-  updated_at: Date;
+  createdAt: Date;
+  updatedAt: Date;
   username: string;
   email: string;
   groups: Group[]; // Used for group based action control
   organization: true;
-  display_name?: string;
-  icon_url?: string;
-  organization_user_ids?: string[]; //ref UserTable - not allowed when organization is true
-  friend_user_ids?: string[]; // ref UserTable - not allowed when organization is true
+  displayName?: string;
+  iconUrl?: string;
+  organizationUserIds?: string[]; //ref UserTable - not allowed when organization is true
+  friendUserIds?: string[]; // ref UserTable - not allowed when organization is true
 };
 
 type KeyTable = {
   id: string;
-  user_id: string;
-  hashed_password?: string;
-  created_at: Date;
-  updated_at: Date;
+  userId: string;
+  hashedPassword?: string;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 type SessionTable = {
   id: string;
-  user_id: string;
-  active_expires: bigint;
-  idle_expires: bigint;
-  created_at: Date;
-  updated_at: Date;
-  api_key?: boolean;
+  userId: string;
+  activeExpires: bigint;
+  idleExpires: bigint;
+  createdAt: Date;
+  updatedAt: Date;
+  apiKey?: boolean;
 };
 
 // General Model
 type DisplaySheetTable = {
   id: string;
   name: string;
-  created_at: Date;
-  updated_at: Date;
-  owner_user_id: string; // ref UserTable
+  createdAt: Date;
+  updatedAt: Date;
+  ownerUserId: string; // ref UserTable
   visibility: Visibility;
-  is_dynamic: boolean;
+  isDynamic: boolean;
   markup: string; // xml sheet markup
   css?: string; // user css definitions
-  file_url?: string; // file contents and <link> tag file contents copied to `markup` and `css`. If url is on lanterntt domain it will attempt to lookup asset in DB
-  ruleset_id?: string; // ref RulesetTable
-  content_type_id?: string; // ref ContentTypeTable
+  fileUrl?: string; // file contents and <link> tag file contents copied to `markup` and `css`. If url is on lanterntt domain it will attempt to lookup asset in DB
+  rulesetId?: string; // ref RulesetTable
+  contentTypeId?: string; // ref ContentTypeTable
 };
 
 /**
  * We need to support generic/global ContentTypes and ActorTypes for things like handouts.
- * Implemented with ether an `is_global: boolean` on Type or a special ruleset such as
+ * Implemented with ether an `isGlobal: boolean` on Type or a special ruleset such as
  * `ruleset = { id: "00000000-0000-0000-0000-000000000000", name: "Lantern Core" }`.
  */
 type RulesetTable = {
   id: string;
   name: string;
-  created_at: Date;
-  updated_at: Date;
-  owner_user_id: string; // ref UserTable
+  createdAt: Date;
+  updatedAt: Date;
+  ownerUserId: string; // ref UserTable
   visibility: Visibility;
   description: string; // Markdown
 };
@@ -68,40 +68,40 @@ type RulesetTable = {
 type ContentTable = {
   id: string;
   name: string;
-  created_at: Date;
-  updated_at: Date;
-  owner_user_id: string; // ref UserTable
+  createdAt: Date;
+  updatedAt: Date;
+  ownerUserId: string; // ref UserTable
   visibility: Visibility;
-  ruleset_id?: string; // ref RulesetTable
-  default_display_sheet_id: string; // ref DisplaySheetTable
-  content_type_id?: string; // ref ContentTypeTable
-  is_dynamic: boolean;
+  rulesetId?: string; // ref RulesetTable
+  defaultDisplaySheetId: string; // ref DisplaySheetTable
+  contentTypeId?: string; // ref ContentTypeTable
+  isDynamic: boolean;
   data: Data & DateData;
-  actor_template?: ActorTemplate;
-  has_template: boolean;
-  index_1?: string; // index_1-index_9 are data names
-  index_2?: string;
-  index_3?: string;
-  index_4?: string;
-  index_5?: string;
-  index_6?: string;
-  index_7?: string;
-  index_8?: string;
-  index_9?: string;
+  actorTemplate?: ActorTemplate;
+  hasTemplate: boolean;
+  index1?: string; // index1-index9 are data names
+  index2?: string;
+  index3?: string;
+  index4?: string;
+  index5?: string;
+  index6?: string;
+  index7?: string;
+  index8?: string;
+  index9?: string;
 };
 
 type ActorTable = {
   id: string;
   name: string;
-  created_at: Date;
-  updated_at: Date;
-  owner_user_id: string; // ref UserTable
+  createdAt: Date;
+  updatedAt: Date;
+  ownerUserId: string; // ref UserTable
   visibility: Visibility;
-  ruleset_id?: string; // ref RulesetTable
-  default_display_sheet_id: string; // ref DisplaySheetTable
-  is_character: boolean;
-  actor_type_id?: string; // ref ActorTypeTable
-  is_dynamic: boolean;
+  rulesetId?: string; // ref RulesetTable
+  defaultDisplaySheetId: string; // ref DisplaySheetTable
+  isCharacter: boolean;
+  actorTypeId?: string; // ref ActorTypeTable
+  isDynamic: boolean;
   data: Data & DateData;
   content?: ActorContent;
 };
@@ -111,29 +111,29 @@ type ActorTable = {
 type ContentTypeTable = {
   id: string;
   name: string;
-  created_at: Date;
-  updated_at: Date;
-  owner_user_id: string; // ref UserTable
+  createdAt: Date;
+  updatedAt: Date;
+  ownerUserId: string; // ref UserTable
   visibility: Visibility;
-  ruleset_id: string; // ref RulesetTable
-  default_display_sheet_id: string; // ref DisplaySheetTable
-  data_definitions: DataDefinition[];
-  has_template: boolean;
-  index_definitions?: [string, string, string, string, string, string, string, string, string]; // DataDefinition.key strings (9)
+  rulesetId: string; // ref RulesetTable
+  defaultDisplaySheetId: string; // ref DisplaySheetTable
+  dataDefinitions: DataDefinition[];
+  hasTemplate: boolean;
+  indexDefinitions?: [string, string, string, string, string, string, string, string, string]; // DataDefinition.key strings (9)
 };
 
 type ActorTypeTable = {
   id: string;
   name: string;
-  created_at: Date;
-  updated_at: Date;
-  owner_user_id: string; // ref UserTable
+  createdAt: Date;
+  updatedAt: Date;
+  ownerUserId: string; // ref UserTable
   visibility: Visibility;
-  ruleset_id: string; // ref RulesetTable
-  default_display_sheet_id: string; // ref DisplaySheetTable
-  is_character: boolean;
-  data_definitions: DataDefinition[];
-  content_definitions: ActorContentDefinition[];
+  rulesetId: string; // ref RulesetTable
+  defaultDisplaySheetId: string; // ref DisplaySheetTable
+  isCharacter: boolean;
+  dataDefinitions: DataDefinition[];
+  contentDefinitions: ActorContentDefinition[];
 };
 
 /* Primary Non-Table Types - Lantern Model */
@@ -155,7 +155,7 @@ enum Group {
  */
 type Data = { [key: string]: string } & { name: string };
 
-type DateData = { created_at: string; updated_at: string };
+type DateData = { createdAt: string; updatedAt: string };
 
 type DataDefinition = {
   key: string;
@@ -166,22 +166,22 @@ type DataDefinition = {
 
 type ActorTemplate = {
   name: string;
-  is_character: boolean;
-  actor_type_id?: string; // ref ActorTypeTable
-  is_dynamic: boolean;
+  isCharacter: boolean;
+  actorTypeId?: string; // ref ActorTypeTable
+  isDynamic: boolean;
   data: Data;
   content?: ActorContent;
 };
 
 type ContentInstance = {
-  instance_id: string; // Unique ID for looping purposes. Used for React keys and some lookups
-  content_id?: string; // ref ContentTable - exists if created from a pre-existing piece of content, undefined otherwise
+  instanceId: string; // Unique ID for looping purposes. Used for React keys and some lookups
+  contentId?: string; // ref ContentTable - exists if created from a pre-existing piece of content, undefined otherwise
   data: Data;
 };
 
 type ActorContent = {
   [key: string]: {
-    content_type_id?: string; // ref ContentTypeTable - exists if actor is not dynamic and ActorContentDefinition is not dynamic
+    contentTypeId?: string; // ref ContentTypeTable - exists if actor is not dynamic and ActorContentDefinition is not dynamic
     list: ContentInstance[];
   };
 };
@@ -189,8 +189,8 @@ type ActorContent = {
 type ActorContentDefinition = {
   key: string;
   name: string;
-  content_type_id: string; // ref ContentTypeTable
-  is_dynamic: boolean;
+  contentTypeId: string; // ref ContentTypeTable
+  isDynamic: boolean;
   description: string;
 };
 
@@ -200,19 +200,19 @@ type ActorContentDefinition = {
 const actor: ActorTable = {
   id: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
   name: "Waals O'Caera",
-  created_at: new Date("2024-01-08T04:01"),
-  updated_at: new Date("2024-01-09T04:01"),
-  owner_user_id: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
+  createdAt: new Date("2024-01-08T04:01"),
+  updatedAt: new Date("2024-01-09T04:01"),
+  ownerUserId: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
   visibility: Visibility.Public,
-  ruleset_id: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
-  default_display_sheet_id: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
-  is_character: true,
-  actor_type_id: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
-  is_dynamic: false,
+  rulesetId: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
+  defaultDisplaySheetId: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
+  isCharacter: true,
+  actorTypeId: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
+  isDynamic: false,
   data: {
     name: "Waals O'Caera",
-    created_at: "2024-01-08T04:01",
-    updated_at: "2024-01-09T04:01",
+    createdAt: "2024-01-08T04:01",
+    updatedAt: "2024-01-09T04:01",
     level1: "12",
     class1: "Wizard",
     subclass1: "Bladesinger",
@@ -222,11 +222,11 @@ const actor: ActorTable = {
   },
   content: {
     spells0: {
-      content_type_id: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX", // Links to spells content type
+      contentTypeId: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX", // Links to spells content type
       list: [
         {
-          instance_id: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX", // Random UUID for react key
-          content_id: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX", // Links to the OG Firebolt content in the DB
+          instanceId: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX", // Random UUID for react key
+          contentId: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX", // Links to the OG Firebolt content in the DB
           data: {
             name: "Firebolt",
             damage: "1d8",

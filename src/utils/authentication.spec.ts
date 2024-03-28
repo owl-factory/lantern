@@ -2,7 +2,7 @@ import "jest";
 import { isBadPassword } from "utils/authentication";
 
 test("isBadPassword function returns false if provided password meets requirements.", () => {
-  const result = isBadPassword("lanterndevpassword!");
+  const result = isBadPassword("lanterNIsNeat!");
   expect(result).toBe(false);
 });
 

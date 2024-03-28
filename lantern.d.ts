@@ -14,3 +14,9 @@ type ErrResult<E = string> = {
   error: E;
   unwrap: () => undefined;
 };
+
+/**
+ * A utility type that allows you to modify a type so one or more of it's fields (but not all)
+ * are optional (can be undefined).
+ */
+type PartialSome<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;

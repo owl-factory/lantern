@@ -1,5 +1,6 @@
 import withSerwistInit from "@serwist/next";
 import { readFileSync } from "fs";
+import { getGitCommitId } from "./src/utils/config.mjs";
 
 const withSerwist = withSerwistInit({
   cacheOnFrontEndNav: true,
@@ -12,10 +13,20 @@ const withSerwist = withSerwistInit({
 /** @type {import("next").NextConfig} */
 const nextConfig = {
   env: {
-    GRAPHQL_TYPEDEFS: readFileSync("./src/services/graphql/schema.graphql", {
-      encoding: "utf8",
-    }),
+    GRAPHQL_TYPEDEFS: getGraphqlTypedefs(),
+    NEXT_PUBLIC_BUILD_GIT_COMMIT: getGitCommitId(),
+    NEXT_PUBLIC_BUILD_TIMESTAMP: getIsoTimestamp(),
   },
 };
 
 export default withSerwist(nextConfig);
+
+function getGraphqlTypedefs() {
+  return readFileSync("./src/services/graphql/schema.graphql", {
+    encoding: "utf8",
+  });
+}
+
+function getIsoTimestamp() {
+  return new Date(Date.now()).toISOString();
+}

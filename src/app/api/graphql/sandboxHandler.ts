@@ -21,8 +21,8 @@ const staticHtml = `
       </style>
     </head>
     <body>
-      <div id="embedded-sandbox"></div>
-      <script src="https://embeddable-sandbox.cdn.apollographql.com/_latest/embeddable-sandbox.umd.production.min.js"></script>
+      <div id="embedded-sandbox" data-testid="embedded-sandbox"></div>
+      <script src="https://embeddable-sandbox.cdn.apollographql.com/_latest/embeddable-sandbox.umd.production.min.js" data-testid="apollo-script" ></script>
       <script>
         new window.EmbeddedSandbox({
           target: "#embedded-sandbox",

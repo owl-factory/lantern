@@ -43,7 +43,7 @@ export function isExternalUrl(url: string): boolean {
   }
   try {
     return new URL(url).origin !== baseUrl;
-  } catch (_e) {
+  } catch (_error) {
     return false;
   }
 }
