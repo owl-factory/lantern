@@ -66,5 +66,9 @@ test("test GraphQL API 'content' resolver using a standard HTTP POST request", a
 test("test GraphQL sandbox endpoint", async ({ page }) => {
   await page.goto(graphqlUrl);
   await page.waitForURL(graphqlUrl);
-  await expect(page.getByTestId("embedded-sandbox")).toBeVisible();
+  await expect(page.locator("#embedded-sandbox")).toBeVisible();
+  await expect(page.getByTestId("apollo-script")).toHaveAttribute(
+    "src",
+    "https://embeddable-sandbox.cdn.apollographql.com/_latest/embeddable-sandbox.umd.production.min.js"
+  );
 });
