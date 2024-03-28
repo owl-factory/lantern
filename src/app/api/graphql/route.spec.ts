@@ -13,11 +13,13 @@ query ContentSet {
 `;
 
 const contentQuery = `
-content(id: "02d4ff74-8767-449e-9f87-8327090a2e6d") {
-  data
-  id
-  name
-  visibility
+query Content {
+  content(id: "02d4ff74-8767-449e-9f87-8327090a2e6d") {
+    data
+    id
+    name
+    visibility
+  }
 }
 `;
 
@@ -49,9 +51,20 @@ test("test GraphQL API 'content' resolver using a standard HTTP POST request", a
   expect(response.ok()).toBeTruthy();
   expect(response.status()).toBe(200);
   const jsonResponse = await response.json();
-  console.log(jsonResponse);
-  expect(jsonResponse.data).toMatchObject({
+  const content = jsonResponse.data.content;
+  expect(content).toMatchObject({
     id: "02d4ff74-8767-449e-9f87-8327090a2e6d",
     name: "Kiss girls",
+    visibility: "public",
+    data: {
+      done: true,
+      description: "Kiss girls",
+    },
   });
+});
+
+test("test GraphQL sandbox endpoint", async ({ page }) => {
+  await page.goto(graphqlUrl);
+  await page.waitForURL(graphqlUrl);
+  await expect(page.getByTestId("embedded-sandbox")).toBeVisible();
 });
