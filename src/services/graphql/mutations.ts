@@ -10,7 +10,7 @@ import { createContent, deleteContent, updateContent } from "services/content";
  */
 export const mutations: MutationResolvers = {
   /**
-   * Takes user signup information, create a new user in the database and then optionally log them in immediately.
+   * GraphQL resolver wrapping the authentication service's {@link services/authentication#signupUser | signupUser}.
    * @param args - Sign up form fields.
    * @param info - GraphQL query info object that contains the list of requested fields to be returned.
    * @returns void or the `id` of a session for the newly created user.
