@@ -14,6 +14,7 @@ const withSerwist = withSerwistInit({
 const nextConfig = {
   env: {
     GRAPHQL_TYPEDEFS: getGraphqlTypedefs(),
+    NEXT_PIBLIC_BASE_URL: getBaseUrl(),
     NEXT_PUBLIC_BUILD_GIT_COMMIT: getGitCommitId(),
     NEXT_PUBLIC_BUILD_TIMESTAMP: getIsoTimestamp(),
   },
@@ -25,6 +26,10 @@ function getGraphqlTypedefs() {
   return readFileSync("./src/services/graphql/schema.graphql", {
     encoding: "utf8",
   });
+}
+
+function getBaseUrl() {
+  return process.env.DEPLOY_URL ?? "";
 }
 
 function getIsoTimestamp() {
