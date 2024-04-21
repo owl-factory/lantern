@@ -10,8 +10,8 @@ import { getContent, getContentSet } from "services/content";
  */
 export const queries: QueryResolvers = {
   /**
-   * Authenticates current user session and returns the session.
-   * @returns current user session object.
+   * GraphQL query resolver wrapping the authentication lib's {@link lib/authentication#authenticateSession | authenticateSession} function.
+   * @returns an object containing requested fields on a success, or a rejected promise on a failure.
    */
   session: async () => {
     const auth = await authenticateSession();
@@ -31,10 +31,10 @@ export const queries: QueryResolvers = {
   },
 
   /**
-   * If user is authenticated, get a single Content item from the database.
-   * @param args - Argument object containing only the `id` of the Content to be retrieved.
-   * @param info - GraphQL query info object that contains the list of requested fields to be returned.
-   * @returns requested Content item.
+   * GraphQL query resolver wrapping the content service's {@link services/content#getContent | getContent} function.
+   * @param args - Argument object containing arguments to pass along to the service function.
+   * @param info - GraphQL query info object that contains the list of fields to be returned.
+   * @returns an object containing requested fields on a success, or a rejected promise on a failure.
    */
   content: async (_, args, _context, info) => {
     const queryFields = getQueryFields<"content">(info);
@@ -43,10 +43,10 @@ export const queries: QueryResolvers = {
   },
 
   /**
-   * If user is authenticated, get all content they have access to from the database. Not long term sustainable, still figuring out query method.
-   * @param args - Argument object containing only the `id` of the Content to be retrieved.
-   * @param info - GraphQL query info object that contains the list of requested fields to be returned.
-   * @returns requested Content item.
+   * GraphQL query resolver wrapping the content service's {@link services/content#getContentSet | getContentSet} function.
+   * @param args - Argument object containing arguments to pass along to the service function.
+   * @param info - GraphQL query info object that contains the list of fields to be returned.
+   * @returns an object containing requested fields on a success, or a rejected promise on a failure.
    */
   contentSet: async (_, args, _context, info) => {
     const queryFields = getQueryFields<"content">(info);

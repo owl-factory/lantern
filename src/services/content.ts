@@ -5,6 +5,12 @@ import type { SelectFields } from "types/graphql";
 import { UpdateTimestamp } from "utils/database";
 import { Err, Ok } from "utils/results";
 
+/**
+ * Gets a single `content` row from the database that the current user has access to by it's ID.
+ * @param id - UUID of the row to get.
+ * @param fields - array of `content` field names to select from the database.
+ * @returns `content` row in object format, or an error.
+ */
 export async function getContent(
   id: string,
   fields: SelectFields<"content">
