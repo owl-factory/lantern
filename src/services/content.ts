@@ -45,6 +45,13 @@ export async function getContent(
   return Ok(dbContent);
 }
 
+/**
+ * Gets multiple `content` rows from the database that the current user has access to, filtered by a contentType ID.
+ * This function will support pagination and many more filter options later.
+ * @param fields - array of `content` field names to select from the database.
+ * @param contentTypeId - ID of the contentType to filter by.
+ * @returns multiple `content` rows as an array, or an error.
+ */
 export async function getContentSet(
   fields: SelectFields<"content">,
   contentTypeId?: string

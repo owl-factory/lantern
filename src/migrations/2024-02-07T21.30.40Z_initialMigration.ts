@@ -60,6 +60,16 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addBaseColumns()
     .addColumn("name", "text", (col) => col.notNull())
     .addColumn("ownerUserId", "uuid", (col) => col.notNull().references("user.id"))
+    .addColumn("rulesetId", "uuid", (col) => col.references("ruleset.id"))
+    .addColumn("visibility", sql`visibility`, (col) => col.notNull().defaultTo("private"))
+    .execute();
+
+  // ruleset table
+  await db.schema
+    .createTable("ruleset")
+    .addBaseColumns()
+    .addColumn("name", "text", (col) => col.notNull())
+    .addColumn("ownerUserId", "uuid", (col) => col.notNull().references("user.id"))
     .addColumn("visibility", sql`visibility`, (col) => col.notNull().defaultTo("private"))
     .execute();
 
@@ -72,6 +82,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("visibility", sql`visibility`, (col) => col.notNull().defaultTo("private"))
     .addColumn("isDynamic", "boolean", (col) => col.notNull().defaultTo(true))
     .addColumn("contentTypeId", "uuid", (col) => col.references("contentType.id"))
+    .addColumn("rulesetId", "uuid", (col) => col.references("ruleset.id"))
     .addColumn("data", "jsonb");
   for (let i = 1; i <= contentIndexCount; i++) {
     contentTableBuilder = contentTableBuilder.addColumn("index" + i, "text");
