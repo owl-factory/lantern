@@ -13,7 +13,13 @@ enum Group {
   admin
 }
 
-type User {
+interface DbItem {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type User implements DbItem {
   id: ID!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -25,17 +31,17 @@ type User {
   groups: [Group]
 }
 
-type Session {
+type Session implements DbItem {
   id: ID!
   createdAt: DateTime!
   updatedAt: DateTime!
-  user: User!
   activeExpires: DateTime!
   idleExpires: DateTime!
   isApiKey: Boolean!
+  user: User!
 }
 
-type Content {
+type Content implements DbItem {
   id: ID!
   createdAt: DateTime!
   updatedAt: DateTime!
