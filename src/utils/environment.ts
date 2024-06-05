@@ -40,6 +40,12 @@ export const absoluteGraphqlUrl = !apiIsRemote ? baseUrl + graphqlUrl : remoteAp
  */
 export const contentIndexCount = 9;
 
+/**
+ * Git commit ID of the currently running build, used for the `/api/version` route.
+ */
 export const buildGitCommit = process.env.NEXT_PUBLIC_BUILD_GIT_COMMIT;
 
+/**
+ * Timestamp of when the currently running build was produced, used for the `/api/version` route.
+ */
 export const buildTimestamp = process.env.NEXT_PUBLIC_BUILD_TIMESTAMP;
