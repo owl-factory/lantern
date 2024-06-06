@@ -155,9 +155,6 @@ function parseAttributeExpression(text: string): ExpressionDescriptor {
     return plainTextExpression;
   }
 
-  const individualExpressions = extractIndividualExpressions(text);
-  //
-
   return newInvalidExpression(
     "Attributes requiring expression evaluation is not currently supported",
     text
@@ -207,13 +204,6 @@ function extractIndividualExpressions(text: string): string[] {
 
   const matches = [...leadingMatches, ...nonEscapedMatches];
   return matches.map((match) => match[1] ?? undefined).filter((match) => match !== undefined);
-}
-
-function checkIfExpressionIsComplex(text: string): boolean {
-  if (typeof text !== "string") return false;
-  return true;
-  // Grab the contents of the [], if any
-  // Check for quotes
 }
 
 export const __testing__ = {
