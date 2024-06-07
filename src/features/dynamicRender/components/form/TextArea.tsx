@@ -1,7 +1,8 @@
-import { textAreaAttributes } from "features/dynamicRender/data/attributes/form/textArea";
+import { COMMON_INPUT_ATTRIBUTE_DEFINITIONS } from "features/dynamicRender/data/attributes";
 import { useAttributes } from "features/dynamicRender/hooks/useAttributes";
 import { useFormValue } from "features/dynamicRender/hooks/useFormValue";
-import { TextAreaAttributes } from "features/dynamicRender/types/attributes/form/textArea";
+import { AttributeDefinition } from "features/dynamicRender/types/attributes/definition";
+import { CommonInputAttributes } from "features/dynamicRender/types/attributes/form";
 import { NodeType } from "features/dynamicRender/types/node";
 import { GetOptions } from "features/dynamicRender/types/query";
 import {
@@ -11,11 +12,14 @@ import {
 import { buildQueryOptionsFromAttributes } from "features/dynamicRender/utils/query";
 import { ChangeEvent, useMemo } from "react";
 
+type TextAreaAttributes = CommonInputAttributes;
+const attributeDefinitions: AttributeDefinition[] = [...COMMON_INPUT_ATTRIBUTE_DEFINITIONS];
+
 /**
  * Renders a text input for the Dynamic Render
  */
-export function TextArea(props: RenderComponentProps) {
-  const { attributes } = useAttributes<TextAreaAttributes>(props.node, textAreaAttributes);
+export function TextArea(props: RenderComponentProps<TextAreaAttributes>) {
+  const { attributes } = useAttributes<TextAreaAttributes>(props.node, attributeDefinitions);
   const options = useMemo<GetOptions>(
     () => buildQueryOptionsFromAttributes(attributes),
     [attributes]
@@ -34,9 +38,9 @@ export function TextArea(props: RenderComponentProps) {
   return <textarea onChange={onChange} value={value} />;
 }
 
-export const textAreaBundle: RenderComponentDefinition = {
+export const textAreaBundle: RenderComponentDefinition<TextAreaAttributes> = {
   Component: TextArea,
   nodeType: NodeType.TextArea,
-  attributes: textAreaAttributes,
+  attributeDefinitions,
   allowsChildren: false,
 };

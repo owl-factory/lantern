@@ -1,3 +1,4 @@
+import { Attributes } from "features/dynamicRender/types/attributes";
 import { NodeType } from "features/dynamicRender/types/node";
 import {
   RenderComponentDefinition,
@@ -7,7 +8,7 @@ import {
 /**
  * A non-usable component that prints errors depending on Debug requirements
  */
-export function Void(props: RenderComponentProps) {
+export function Void(props: RenderComponentProps<Attributes>) {
   return (
     <>
       This component ({props.nodeName}, {props.nodeType}) was not able to render correctly
@@ -15,9 +16,9 @@ export function Void(props: RenderComponentProps) {
   );
 }
 
-export const voidBundle: RenderComponentDefinition = {
+export const voidBundle: RenderComponentDefinition<Attributes> = {
   Component: Void,
   nodeType: NodeType.Void,
-  attributes: [],
+  attributeDefinitions: [],
   allowsChildren: false,
 };

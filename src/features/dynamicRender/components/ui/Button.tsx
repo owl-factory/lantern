@@ -1,8 +1,7 @@
 import { StateContext } from "features/dynamicRender/context/stateContext";
-import { buttonAttributes } from "features/dynamicRender/data/attributes/ui/button";
 import { useAttributes } from "features/dynamicRender/hooks/useAttributes";
 import { useChildren } from "features/dynamicRender/hooks/useChildren";
-import { ButtonAttributes } from "features/dynamicRender/types/attributes/ui/button";
+import { AttributeDefinition } from "features/dynamicRender/types/attributes/definition";
 import { NodeType } from "features/dynamicRender/types/node";
 import {
   RenderComponentDefinition,
@@ -14,11 +13,21 @@ import { normalize } from "utils/strings";
 
 const DEFAULT_CLASSES = "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded";
 
+type ButtonAttributes = {
+  action: string;
+  target?: string;
+};
+
+const attributeDefinitions: AttributeDefinition[] = [
+  { name: "action", required: true },
+  { name: "target" },
+];
+
 /**
  * Renders a button that performs some action when clicked
  */
-export function Button(props: RenderComponentProps) {
-  const { attributes } = useAttributes<ButtonAttributes>(props.node, buttonAttributes);
+export function Button(props: RenderComponentProps<ButtonAttributes>) {
+  const { attributes } = useAttributes<ButtonAttributes>(props.node, attributeDefinitions);
   const state = useContext(StateContext);
   const action = useMemo(() => buildAction(attributes, state), [attributes, state]);
 
@@ -49,9 +58,9 @@ function buildAction(attributes: Partial<ButtonAttributes>, state: StateControll
   return () => {};
 }
 
-export const buttonBundle: RenderComponentDefinition = {
+export const buttonBundle: RenderComponentDefinition<ButtonAttributes> = {
   Component: Button,
   nodeType: NodeType.Button,
-  attributes: buttonAttributes,
+  attributeDefinitions,
   allowsChildren: true,
 };

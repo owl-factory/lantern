@@ -6,4 +6,6 @@ export type AttributeDefinition = {
   default?: string;
   /** If the attribute is required */
   required?: boolean;
+  /** Indicates that this attribute supports expressions */
+  supportsExpressions?: boolean;
 };

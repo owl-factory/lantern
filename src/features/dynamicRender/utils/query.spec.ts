@@ -1,4 +1,4 @@
-import { CommonInputAttributes } from "features/dynamicRender/types/attributes/form/common";
+import { CommonInputAttributes } from "features/dynamicRender/types/attributes/form";
 import { QuerySource } from "features/dynamicRender/types/query";
 import { QueryCharacterOptions } from "features/dynamicRender/types/query/character";
 import { buildQueryOptionsFromAttributes } from "./query";

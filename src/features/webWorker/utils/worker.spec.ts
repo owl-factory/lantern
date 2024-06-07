@@ -5,6 +5,12 @@ import { WorkerScript } from "features/webWorker/types/worker";
 import { workerFoundation } from "features/webWorker/utils/environments/foundation";
 import { WebWorkerState } from "features/webWorker/utils/controller";
 
+Object.defineProperty(global, "URL", {
+  value: {
+    createObjectURL: jest.fn(() => ""),
+  },
+});
+
 const {
   buildWorkerScript,
   combineScripts,
