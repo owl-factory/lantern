@@ -7,7 +7,7 @@ export const isServer = typeof window === "undefined";
 /**
  * Utility constant that contains the base url of the site, available on client and server.
  */
-export const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
+export const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "";
 
 /**
  * Determines whether to use SSL for database connections and cookies.
@@ -17,7 +17,7 @@ export const useSsl = process.env.USE_SSL !== "false";
 /**
  * GraphQL remote url. Null if GraphQL URL is local.
  */
-export const remoteApiUrl = process.env.NEXT_PUBLIC_REMOTE_API_URL || "";
+export const remoteApiUrl = process.env.NEXT_PUBLIC_REMOTE_API_URL ?? "";
 
 /**
  * True if GraphQL remote url is non null.
@@ -34,3 +34,18 @@ export const graphqlUrl = "/api/graphql";
  * site's base path followed by the relative GraphQL endpoint URL or a remote URL.
  */
 export const absoluteGraphqlUrl = !apiIsRemote ? baseUrl + graphqlUrl : remoteApiUrl + graphqlUrl;
+
+/**
+ * Number of index columns in the content table.
+ */
+export const contentIndexCount = 9;
+
+/**
+ * Git commit ID of the currently running build, used for the `/api/version` route.
+ */
+export const buildGitCommit = process.env.NEXT_PUBLIC_BUILD_GIT_COMMIT;
+
+/**
+ * Timestamp of when the currently running build was produced, used for the `/api/version` route.
+ */
+export const buildTimestamp = process.env.NEXT_PUBLIC_BUILD_TIMESTAMP;

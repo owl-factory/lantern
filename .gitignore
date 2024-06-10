@@ -28,3 +28,6 @@ generated
 
 # Typescript
 *.tsbuildinfo
+
+# direnv (primarily for NixOS)
+.direnv

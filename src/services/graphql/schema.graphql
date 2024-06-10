@@ -1,29 +1,69 @@
-type User {
+scalar JSONObject
+scalar DateTime
+
+enum Visibility {
+  public
+  friends
+  limited
+  private
+}
+
+enum Group {
+  user
+  admin
+}
+
+interface DbItem {
   id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type User implements DbItem {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   username: String!
   email: String!
+  isOrganization: Boolean!
   displayName: String
   iconUrl: String
+  groups: [Group]
 }
 
-type Session {
+type Session implements DbItem {
   id: ID!
-  user: User!
-  activeExpires: String!
-  idleExpires: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  activeExpires: DateTime!
+  idleExpires: DateTime!
   isApiKey: Boolean!
+  user: User!
 }
 
-type Todo {
+type Content implements DbItem {
   id: ID!
-  description: String
-  done: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  isDynamic: Boolean!
+  name: String!
+  visibility: Visibility!
+  data: JSONObject
+  index1: String
+  index2: String
+  index3: String
+  index4: String
+  index5: String
+  index6: String
+  index7: String
+  index8: String
+  index9: String
 }
 
 type Query {
   session: Session!
-  todo(id: ID!): Todo!
-  todos: [Todo!]!
+  content(id: ID!): Content!
+  contentSet(contentTypeId: ID): [Content]!
 }
 
 type Mutation {
@@ -32,13 +72,24 @@ type Mutation {
     username: String!
     password: String!
     displayName: String
-    logIn: Boolean
-    setCookie: Boolean
+    logIn: Boolean = false
+    setCookie: Boolean = false
   ): String
-  login(username: String!, password: String!, setCookie: Boolean): String!
-  logout(deleteCookie: Boolean): String!
-  deleteUser(id: ID!, username: String!, deleteCookie: Boolean): String!
-  createTodo(description: String, done: Boolean): Todo
-  updateTodo(id: ID!, description: String, done: Boolean): Todo
-  deleteTodo(id: ID!): ID!
+  login(username: String!, password: String!, setCookie: Boolean = false): String!
+  logout(deleteCookie: Boolean = false): String!
+  deleteUser(id: ID!, username: String!, deleteCookie: Boolean = false): String!
+  createContent(
+    name: String!
+    data: JSONObject
+    visibility: Visibility
+    isDynamic: Boolean = true
+  ): Content
+  updateContent(
+    id: ID!
+    name: String
+    data: JSONObject
+    visibility: Visibility
+    isDynamic: Boolean
+  ): Content
+  deleteContent(id: ID!): ID!
 }

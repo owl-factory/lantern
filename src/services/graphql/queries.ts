@@ -1,8 +1,8 @@
 /* eslint-disable no-restricted-syntax */
-import type { QueryResolvers, Session, Todo } from "generated/resolvers-types";
+import type { QueryResolvers, Session } from "types/graphql";
 import { authenticateSession } from "lib/authentication";
-import { database } from "lib/database";
-import { getQueryFields } from "utils/graphql";
+import { ErrGraphql, GraphqlResult, getQueryFields } from "utils/graphql";
+import { getContent, getContentSet } from "services/content";
 
 /**
  * GraphQL resolver map of all query resolvers. Used for GraphQL request that needs to read data.
@@ -10,64 +10,47 @@ import { getQueryFields } from "utils/graphql";
  */
 export const queries: QueryResolvers = {
   /**
-   * Authenticates current user session and returns the session.
-   * @returns current user session object.
+   * GraphQL query resolver wrapping the authentication lib's {@link lib/authentication#authenticateSession | authenticateSession} function.
+   * @returns an object containing requested fields on a success, or a rejected promise on a failure.
    */
   session: async () => {
     const auth = await authenticateSession();
     if (auth.ok === false) {
-      throw auth.error; // GraphQL expects us to `throw` an error here, and that sucks!
+      return ErrGraphql(auth);
     }
-    const { sessionId, user, isApiKey, activePeriodExpiresAt, idlePeriodExpiresAt } = auth.data;
-    const session: Session = {
-      id: sessionId,
-      isApiKey: isApiKey,
-      activeExpires: activePeriodExpiresAt.toISOString(),
-      idleExpires: idlePeriodExpiresAt.toISOString(),
-      user: {
-        id: user.userId,
-        username: user.username,
-        email: user.email,
-        displayName: user.displayName,
-        iconUrl: user.iconUrl,
-      },
+    const session = auth.data;
+    const response: Session = {
+      ...session,
+      id: session.sessionId,
+      activeExpires: session.activePeriodExpiresAt,
+      idleExpires: session.idlePeriodExpiresAt,
+      user: { ...session.user, id: session.user.userId },
     };
 
-    return session;
+    return response;
   },
 
   /**
-   *  If user is authenticated, get a single Todo item from the database.
-   * @param args - Argument object containing only the `id` of the Todo to be retrieved.
-   * @param info - GraphQL query info object that contains the list of requested fields to be returned.
-   * @returns requested Todo item.
+   * GraphQL query resolver wrapping the content service's {@link services/content#getContent | getContent} function.
+   * @param args - Argument object containing arguments to pass along to the service function.
+   * @param info - GraphQL query info object that contains the list of fields to be returned.
+   * @returns an object containing requested fields on a success, or a rejected promise on a failure.
    */
-  todo: async (_, args, _context, info) => {
-    const auth = await authenticateSession();
-    if (auth.ok === false) {
-      throw auth.error; // GraphQL expects us to `throw` an error here, and that sucks!
-    }
-    const queryFields = getQueryFields<"todo">(info);
-    const todo = database
-      .selectFrom("todo")
-      .where("id", "=", args.id)
-      .select(queryFields)
-      .executeTakeFirst();
-    return todo as Promise<Todo>;
+  content: async (_, args, _context, info) => {
+    const queryFields = getQueryFields<"content">(info);
+    const content = await getContent(args.id, queryFields);
+    return GraphqlResult(content);
   },
 
   /**
-   * If user is authenticated, gets a list of all Todo items from the database.
-   * @param info - GraphQL query info object that contains the list of requested fields to be returned.
-   * @returns list of all database Todo items.
+   * GraphQL query resolver wrapping the content service's {@link services/content#getContentSet | getContentSet} function.
+   * @param args - Argument object containing arguments to pass along to the service function.
+   * @param info - GraphQL query info object that contains the list of fields to be returned.
+   * @returns an object containing requested fields on a success, or a rejected promise on a failure.
    */
-  todos: async (_, _args, _context, info) => {
-    const auth = await authenticateSession();
-    if (auth.ok === false) {
-      throw auth.error; // GraphQL expects us to `throw` an error here, and that sucks!
-    }
-    const queryFields = getQueryFields<"todo">(info);
-    const todos = database.selectFrom("todo").select(queryFields).execute();
-    return todos as Promise<Todo[]>;
+  contentSet: async (_, args, _context, info) => {
+    const queryFields = getQueryFields<"content">(info);
+    const content = await getContentSet(queryFields, args.contentTypeId ?? undefined);
+    return GraphqlResult(content);
   },
 };

@@ -1,13 +1,8 @@
 /* eslint-disable no-restricted-syntax */
-import type { MutationResolvers, Todo } from "generated/resolvers-types";
-import { authenticateSession, deleteSessionIdCookie, setSessionIdCookie } from "lib/authentication";
-import { luciaAuth } from "lib/authentication/lucia";
-import { database } from "lib/database";
-import { User } from "lucia";
-import { NewTodo } from "types/database";
-import { isBadPassword } from "utils/authentication";
-import { getQueryFields } from "utils/graphql";
-import { emailRegex } from "utils/regex";
+import type { MutationResolvers } from "types/graphql";
+import { GraphqlResult, getQueryFields } from "utils/graphql";
+import { deleteUser, loginUser, logoutSession, signupUser } from "services/authentication";
+import { createContent, deleteContent, updateContent } from "services/content";
 
 /**
  * GraphQL resolver map of all mutation resolvers. Used for GraphQL request that needs to write data.
@@ -15,201 +10,92 @@ import { emailRegex } from "utils/regex";
  */
 export const mutations: MutationResolvers = {
   /**
-   * Takes user signup information, create a new user in the database and then optionally log them in immediately.
-   * @param args - Sign up form fields.
-   * @param info - GraphQL query info object that contains the list of requested fields to be returned.
-   * @returns void or the `id` of a session for the newly created user.
+   * GraphQL mutation resolver wrapping the authentication service's  {@link services/authentication#signupUser | signupUser} function.
+   * @param args - Argument object containing arguments to pass along to the service function.
+   * @returns an object containing requested fields on a success, or a rejected promise on a failure.
    */
   signup: async (_, args) => {
-    if (isBadPassword(args.password)) {
-      throw "Password does not meet requirements. Password should be between 8 and 40 characters and not be a commonly used password.";
-    }
-
-    // Create user and login key (email)
-    const user = await luciaAuth.createUser({
-      userId: crypto.randomUUID(),
-      key: {
-        providerId: "email",
-        providerUserId: args.email.toLowerCase(),
-        password: args.password,
-      },
-      attributes: {
-        email: args.email,
-        username: args.username,
-        displayName: args.displayName || undefined,
-      },
-    });
-
-    // Create secondary login key (username)
-    await luciaAuth.createKey({
-      userId: user.userId,
-      providerId: "username",
-      providerUserId: args.username.toLowerCase(),
-      password: args.password,
-    });
-
-    if (args.logIn) {
-      // Create session for new user
-      const session = await luciaAuth.createSession({
-        userId: user.userId,
-        attributes: {},
-      });
-      if (args.setCookie) {
-        setSessionIdCookie(session.sessionId);
-      }
-      return session.sessionId;
-    }
-    return "Session not created for new user.";
+    const res = await signupUser(
+      args.email,
+      args.username,
+      args.password,
+      args.logIn,
+      args.setCookie,
+      args.displayName ?? undefined
+    );
+    return GraphqlResult(res);
   },
 
   /**
-   * Authenticate a user with their credentials and create a session for them, which will always be returned by the resolver but may
-   * also be save to a cookie if the `setCookie` argument is `true`.
-   * @param args - Argument object containing `username: string` (username or email of the account to log in to), `password: string`,
-   * and `setCookie: boolean` fields.
-   * @returns ID of the session generated for a newly logged in user.
+   * GraphQL mutation resolver wrapping the authentication service's {@link services/authentication#loginUser | loginUser} function.
+   * @param args - Argument object containing arguments to pass along to the service function.
+   * @returns an object containing requested fields on a success, or a rejected promise on a failure.
    */
   login: async (_, args) => {
-    const providerUserId = args.username.toLowerCase();
-    // Set Lucia providerId based on whether the userId is an email or not.
-    const providerId = emailRegex.test(providerUserId) ? "email" : "username";
-
-    // key is null on authentication failure, on success it contains a userId of the correct identity.
-    const key = await luciaAuth.useKey(providerId, providerUserId, args.password);
-
-    if (key === null || key === undefined) {
-      return "Username or password is incorrect";
-    }
-
-    await luciaAuth.deleteDeadUserSessions(key.userId);
-    const session = await luciaAuth.createSession({
-      userId: key.userId,
-      attributes: {},
-    });
-
-    if (args.setCookie) {
-      setSessionIdCookie(session.sessionId);
-    }
-
-    return session.sessionId;
+    const res = await loginUser(args.username, args.password, args.setCookie);
+    return GraphqlResult(res);
   },
 
   /**
-   * Authenticate a user session and then log out (delete) that session. Will also try to delete the associated cookie if `deleteCookie` argument is `true`.
-   * @param args - Argument object containing just `deleteCookie: boolean`.
-   * @returns ID of the session that was just logged out.
+   * GraphQL mutation resolver wrapping the authentication service's {@link services/authentication#logoutSession | logoutSession} function.
+   * @param args - Argument object containing arguments to pass along to the service function.
+   * @returns an object containing requested fields on a success, or a rejected promise on a failure.
    */
   logout: async (_, args) => {
-    const auth = await authenticateSession();
-    if (auth.ok === false) {
-      return auth.error;
-    }
-    const session = auth.data;
-
-    await luciaAuth.deleteDeadUserSessions(session.user.userId);
-    await luciaAuth.invalidateSession(session.sessionId);
-    if (args.deleteCookie) {
-      deleteSessionIdCookie();
-    }
-
-    return session.sessionId;
+    const res = await logoutSession(args.deleteCookie);
+    return GraphqlResult(res);
   },
 
   /**
-   * If authenticates, deletes a user.
-   * @param args - A the `id` and `username` fields of the user to delete. They must match, and both are required to make user deletion require more intention.
-   * @param info - GraphQL query info object that contains the list of requested fields to be returned.
-   * @returns `id` of the deleted user.
+   * GraphQL mutation resolver wrapping the authentication service's {@link services/authentication#deleteUser | deleteUser} function.
+   * @param args - Argument object containing arguments to pass along to the service function.
+   * @returns an object containing requested fields on a success, or a rejected promise on a failure.
    */
   deleteUser: async (_, args) => {
-    const auth = await authenticateSession();
-    if (auth.ok === false) {
-      return auth.error;
-    }
-    const session = auth.data;
-    let userToDelete: User;
-    if (args.id === session.user.userId) {
-      userToDelete = session.user;
-    } else if (false) {
-      // TODO handle allowing Admins to delete any user by fetching them and setting userToDelete
-    } else {
-      throw "You do not have permission to delete this user.";
-    }
-    if (args.username !== userToDelete.username) {
-      throw "Provided username does not match the username of the user found with provided id.";
-    }
-
-    await luciaAuth.deleteUser(session.user.userId);
-
-    if (args.deleteCookie && session.user.userId === userToDelete.userId) {
-      deleteSessionIdCookie();
-    }
-
-    return userToDelete.userId;
+    const res = await deleteUser(args.id, args.username, args.deleteCookie);
+    return GraphqlResult(res);
   },
 
   /**
-   * If user is authenticated, creates a new Todo item in the database.
-   * @param args - Fields that make up a Todo database object, with some optional fields potentially not included.
-   * @param info - GraphQL query info object that contains the list of requested fields to be returned.
-   * @returns newly created Todo object filtered to requested fields.
+   * GraphQL mutation resolver wrapping the content service's {@link services/content#createContent | createContent} function.
+   * @param args - Argument object containing arguments to pass along to the service function.
+   * @param info - GraphQL query info object that contains the list of fields to be returned.
+   * @returns an object containing requested fields on a success, or a rejected promise on a failure.
    */
-  createTodo: async (_, args, _context, info) => {
-    const auth = await authenticateSession();
-    if (auth.ok === false) {
-      throw auth.error; // Apollo server expects us to `throw` an error here, and that sucks!
-    }
-    const queryFields = getQueryFields<"todo">(info);
-    const newTodo = database
-      .insertInto("todo")
-      .values(args as NewTodo)
-      .returning(queryFields)
-      .executeTakeFirst();
-    return newTodo as Promise<Todo>;
+  createContent: async (_, args, _context, info) => {
+    const queryFields = getQueryFields<"content">(info);
+    const res = await createContent(
+      { ...args, visibility: args.visibility ?? undefined },
+      queryFields
+    );
+    return GraphqlResult(res);
   },
 
   /**
-   * If user is authenticated, updates a Todo item in the database.
-   * @param args - Fields that make up a Todo database object, with some optional fields potentially not included, but `id` is strictly required.
-   * @param info - GraphQL query info object that contains the list of requested fields to be returned.
-   * @returns updated Todo object filtered to requested fields.
+   * GraphQL mutation resolver wrapping the content service's {@link services/content#updateContent | updateContent} function.
+   * @param args - Argument object containing arguments to pass along to the service function.
+   * @param info - GraphQL query info object that contains the list of fields to be returned.
+   * @returns an object containing requested fields on a success, or a rejected promise on a failure.
    */
-  updateTodo: async (_, args, _context, info) => {
-    const auth = await authenticateSession();
-    if (auth.ok === false) {
-      throw auth.error; // Apollo server expects us to `throw` an error here, and that sucks!
-    }
-    const queryFields = getQueryFields<"todo">(info);
-    const updatedTodo = await database
-      .updateTable("todo")
-      .where("id", "=", args.id as string)
-      .set(args as NewTodo)
-      .returning(queryFields)
-      .executeTakeFirst();
-
-    return updatedTodo as Todo;
+  updateContent: async (_, args, _context, info) => {
+    const contentUpdate = {
+      name: args.name ?? undefined,
+      data: args.data ?? undefined,
+      visibility: args.visibility ?? undefined,
+      isDynamic: args.isDynamic ?? undefined,
+    };
+    const queryFields = getQueryFields<"content">(info);
+    const res = await updateContent(args.id, contentUpdate, queryFields);
+    return GraphqlResult(res);
   },
 
   /**
-   * If user is authenticated, deletes a Todo item in the database.
-   * @param args - Argument object containing only the `id` of the Todo to be deleted.
-   * @param info - GraphQL query info object that contains the list of requested fields to be returned.
-   * @returns `id` of the deleted Todo.
+   * GraphQL mutation resolver wrapping the content service's {@link services/content#deleteContent | deleteContent} function.
+   * @param args - Argument object containing arguments to pass along to the service function.
+   * @returns an object containing requested fields on a success, or a rejected promise on a failure.
    */
-  deleteTodo: async (_, args) => {
-    const auth = await authenticateSession();
-    if (auth.ok === false) {
-      return auth.error; // Apollo server expects us to `throw` an error here, and that sucks!
-    }
-    const deleted = await database
-      .deleteFrom("todo")
-      .where("id", "=", args.id)
-      .returning("id")
-      .executeTakeFirst();
-    if (deleted !== undefined) {
-      return deleted.id;
-    } else {
-      throw `Item with ID '${args.id}' not found in database.`;
-    }
+  deleteContent: async (_, args) => {
+    const res = await deleteContent(args.id);
+    return GraphqlResult(res);
   },
 };

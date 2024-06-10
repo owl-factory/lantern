@@ -32,7 +32,7 @@ export async function authenticateSession(): Promise<Result<Session>> {
       setSessionIdCookie(session.sessionId);
     }
     return Ok(session);
-  } catch (_e) {
+  } catch (_error) {
     return Err(
       "User authentication failed. Session is invalid (expired or could not be found in the database)."
     );
@@ -75,6 +75,7 @@ export function setSessionIdCookie(sessionId: string): Result {
     httpOnly: true,
     path: "/",
     secure: useSsl,
+    //This creates a date with an exact expiry 2 weeks from now.
     expires: new Date(Date.now() + 12096e5),
   });
   return Ok();

@@ -7,7 +7,7 @@ import { Suspense } from "react";
  * Page metadata object, NextJs will append these values as meta tags to the <head>.
  */
 export const metadata: Metadata = {
-  title: "Todo SSR Query Test",
+  title: "Todo List SSR Query Test",
 };
 
 /**

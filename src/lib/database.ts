@@ -1,6 +1,6 @@
 import { Pool } from "pg";
 import { CamelCasePlugin, Kysely, PostgresDialect } from "kysely";
-import type { Database } from "types/database";
+import type { DB } from "types/database";
 import { useSsl } from "utils/environment";
 
 /**
@@ -8,7 +8,7 @@ import { useSsl } from "utils/environment";
  * See https://node-postgres.com/apis/pool.
  */
 export const pool = new Pool({
-  connectionString: process.env.POSTGRES_URL,
+  connectionString: process.env.DATABASE_URL,
   ssl: useSsl,
   port: 5432,
   /** This setup is for serverless functions calling a postgres pool. */
@@ -26,7 +26,7 @@ const dialect = new PostgresDialect({
  * Global Kysely database query builder class instance. Configured to use the PostgreSQL dialect and types from `types/database.ts`.
  * See https://node-postgres.com/apis/pool.
  */
-export const database = new Kysely<Database>({
+export const database = new Kysely<DB>({
   dialect,
   plugins: [new CamelCasePlugin()],
 });

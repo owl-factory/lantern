@@ -22,7 +22,7 @@ If this is your first time running in development mode, run `pnpm run migrate` t
 
 ## Building
 
-The project can be built with `pnpm run build` (as long as all dependencies are installed). Run the build with `pnpm run start`. You will need a .env.production.local file to run a local production build. It's secrets can be from the development env file or be actual production secrets.
+The project can be built with `pnpm run build` (as long as all dependencies are installed). Run the build with `pnpm run start`. You will need a `.env.production.local` file to run a local production build. It's secrets can be copied from the .env.development file or be actual production secrets.
 
 ## Testing
 

@@ -16,7 +16,7 @@ interface EnvironmentProviderProps {
  */
 export function EnvironmentProvider(props: EnvironmentProviderProps) {
   const isOnline = useOnlineStatus();
-  const authToken = props.authToken || "";
+  const authToken = props.authToken ?? "";
   return (
     <EnvironmentContext.Provider value={{ authToken, isOnline, isServer, baseUrl }}>
       {props.children}

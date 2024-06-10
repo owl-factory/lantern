@@ -3,14 +3,21 @@ import { promises as fs } from "fs";
 import { Migrator, FileMigrationProvider } from "kysely";
 import { database } from "lib/database";
 
+const run = process.env.RUN_MIGRATIONS === "true";
+const url = process.env.DATABASE_URL || undefined;
+
 /**
  * Migration script function. It runs through ts-node via the npm script `migrate`.
  * The purpose of this script is to run all Kysely migrations in the migrations folder.
  * It is needed because Kysely, by design, has no migration CLI.
  */
-async function migrateToLatest(migrationArg: string) {
-  if (!process.env.POSTGRES_URL) {
-    console.log("POSTGRES_URL environment variable is not defined, skipping migrations.");
+async function runMigrations(migrationArg: string) {
+  if (run === false || url === undefined) {
+    console.log("RUN_MIGRATIONS environment variable is not set to true, skipping migrations.");
+    process.exit(0);
+  }
+  if (url === undefined) {
+    console.log("DATABASE_URL environment variable is not defined, skipping migrations.");
     process.exit(0);
   }
 
@@ -20,7 +27,7 @@ async function migrateToLatest(migrationArg: string) {
       fs,
       path,
       // This needs to be an absolute path.
-      migrationFolder: __dirname,
+      migrationFolder: path.join(__dirname, "../migrations"),
     }),
   });
 
@@ -64,4 +71,4 @@ async function migrateToLatest(migrationArg: string) {
 
 const [, , migrationArg] = process.argv;
 
-migrateToLatest(migrationArg);
+runMigrations(migrationArg);

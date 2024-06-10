@@ -8,6 +8,9 @@ import { defineConfig } from "@playwright/test";
 import { config } from "dotenv";
 config({ path: "./.env.development" });
 
+import { getGitCommitId } from "utils/config.mjs";
+process.env.NEXT_PUBLIC_BUILD_GIT_COMMIT = getGitCommitId();
+
 /**
  * See https://playwright.dev/docs/test-configuration.
  */

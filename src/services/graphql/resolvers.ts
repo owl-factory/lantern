@@ -1,6 +1,7 @@
-import type { Resolvers } from "generated/resolvers-types";
+import type { Resolvers } from "types/graphql";
 import { mutations } from "services/graphql/mutations";
 import { queries } from "services/graphql/queries";
+import { scalars } from "services/graphql/scalars";
 
 /**
  * Full GraphQL resolver map of all resolvers in the schema.
@@ -8,4 +9,5 @@ import { queries } from "services/graphql/queries";
 export const resolvers: Resolvers = {
   Query: queries,
   Mutation: mutations,
+  ...scalars,
 };
