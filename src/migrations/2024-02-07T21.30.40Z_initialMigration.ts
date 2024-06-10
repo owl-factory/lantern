@@ -54,6 +54,15 @@ export async function up(db: Kysely<any>): Promise<void> {
   /* End Authentication Tables */
 
   /* Primary Tables */
+  // ruleset table
+  await db.schema
+    .createTable("ruleset")
+    .addBaseColumns()
+    .addColumn("name", "text", (col) => col.notNull())
+    .addColumn("ownerUserId", "uuid", (col) => col.notNull().references("user.id"))
+    .addColumn("visibility", sql`visibility`, (col) => col.notNull().defaultTo("private"))
+    .execute();
+
   // contentType table
   await db.schema
     .createTable("contentType")
@@ -61,15 +70,6 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("name", "text", (col) => col.notNull())
     .addColumn("ownerUserId", "uuid", (col) => col.notNull().references("user.id"))
     .addColumn("rulesetId", "uuid", (col) => col.references("ruleset.id"))
-    .addColumn("visibility", sql`visibility`, (col) => col.notNull().defaultTo("private"))
-    .execute();
-
-  // ruleset table
-  await db.schema
-    .createTable("ruleset")
-    .addBaseColumns()
-    .addColumn("name", "text", (col) => col.notNull())
-    .addColumn("ownerUserId", "uuid", (col) => col.notNull().references("user.id"))
     .addColumn("visibility", sql`visibility`, (col) => col.notNull().defaultTo("private"))
     .execute();
 
