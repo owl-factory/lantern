@@ -5,6 +5,16 @@ import { isBadPassword } from "utils/authentication";
 import { emailRegex } from "utils/regex";
 import { Err, Ok } from "utils/results";
 
+/**
+ * Create a new user with an email, username and password.
+ * @param email - Email for the new user.
+ * @param username - Username for the new user.
+ * @param password - Password for the new user. Only a hash of this password will be saved to the database.
+ * @param logIn - Whether to immediately log in the new user and create a session.
+ * @param setCookie - Whether to create a cookie for the new session (pass true for yes, create a cookie). Does nothing if `logIn` is false.
+ * @param displayName - Optional display name for new user row.
+ * @returns session ID of the new session if `logIn` is true, otherwise a message.
+ */
 export async function signupUser(
   email: string,
   username: string,
@@ -56,6 +66,14 @@ export async function signupUser(
   return Ok("Session not created for new user.");
 }
 
+/**
+ * Creates a session for a user by logging in with a username/email and password.
+ * In the future we will support other login methods.
+ * @param username - username or email of the user to log in.
+ * @param password - password of user to log in, will be hashed to verify and then discarded.
+ * @param setCookie - whether to create a cookie for the current session (pass true for yes, create  a cookie).
+ * @returns ID of the newly created user session.
+ */
 export async function loginUser(
   username: string,
   password: string,
@@ -67,6 +85,7 @@ export async function loginUser(
 
   // key is null on authentication failure, on success it contains a userId of the correct identity.
   const key = await luciaAuth.useKey(providerId, providerUserId, password);
+  password = "";
 
   if (key === null || key === undefined) {
     return Err("Username or password is incorrect");
@@ -101,6 +120,14 @@ export async function logoutSession(deleteCookie: boolean): Promise<Result<strin
   return Ok(session.sessionId);
 }
 
+/**
+ * Permanently deletes the current session `user` and all associated database rows if the correct user ID and username are provided.
+ * This function will be updated later to support admin functionality and to delete owned content without other owners or inheritors.
+ * @param id - ID of user to delete, must match current session user.
+ * @param username - Username of user to delete, must match current session user and provided ID.
+ * @param deleteCookie - Whether to also delete the current session cookie (pass `true` for yes, delete the session cookie).
+ * @returns ID of deleted user, or an error.
+ */
 export async function deleteUser(
   id: string,
   username: string,

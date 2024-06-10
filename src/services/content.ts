@@ -86,6 +86,13 @@ export async function getContentSet(
   return Ok(dbContent);
 }
 
+/**
+ * Creates a `content` row in the database belonging to the current session user.
+ * This function will be updated later to support admin functionality.
+ * @param content - object representing the content row to be created.
+ * @param fields - an array of fields to return back from the database after successful creation.
+ * @returns - object representing the created row filtered by the requested `fields`.
+ */
 export async function createContent(
   content: PartialSome<NewContent, "ownerUserId">,
   fields: SelectFields<"content">
@@ -114,6 +121,14 @@ export async function createContent(
   return Ok(newDbContent);
 }
 
+/**
+ * Updates a `content` row by it's ID that the current session user has access to.
+ * This function will be updated later to support admin functionality.
+ * @param id - ID of the content to update.
+ * @param content - object representing the new content state.
+ * @param fields - an array of fields to return back from the database after a successful update.
+ * @returns - object representing the updated row filtered by the requested `fields`.
+ */
 export async function updateContent(
   id: string,
   content: PartialSome<ContentUpdate, "ownerUserId">,
@@ -150,6 +165,12 @@ export async function updateContent(
   return Ok(updatedDbContent);
 }
 
+/**
+ * Deletes a `content` row in the database if it is owned by the current session user.
+ * This function will be updated later to support admin functionality.
+ * @param id - ID of content row to delete.
+ * @returns ID of deleted content row, or an error.
+ */
 export async function deleteContent(id: string): Promise<Result<string>> {
   const auth = await authenticateSession();
   if (auth.ok === false) {
